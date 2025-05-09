@@ -2,7 +2,7 @@ import { Component,OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Spinkit} from 'ng-http-loader';
 import { TranslateService } from '@ngx-translate/core';
-
+import {IconService} from './_services/icon.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppComponent {
  
 
-  constructor(private router:Router,private translate: TranslateService){
+  constructor(private router:Router,private translate: TranslateService, private iconService: IconService){
     // Set supported languages
     translate.addLangs(['en', 'es', 'fr']);
      // Set default language

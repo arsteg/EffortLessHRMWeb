@@ -1,7 +1,5 @@
 <div class="chat-container">
-    <div class="chat-header">
-        <h2>Effortless Chatbot</h2>
-    </div>
+    <h2 class="chat-header m-0">Effortless Chatbot</h2>
     <div class="chat-messages" #chatMessages>
         <div *ngFor="let message of messages" [ngClass]="{'bot': message.sender === 'bot', 'user': message.sender === 'user'}" class="message">
             <div class="message-bubble">
@@ -22,9 +20,11 @@
             #messageInput 
             (keydown)="onKeyDown($event, messageInput.value)"
         >
-        <button (click)="sendMessage(messageInput.value)" [disabled]="isLoading">Send</button>
-        <button (click)="toggleVoiceInput(messageInput)" [disabled]="isLoading" class="voice-button">
-            {{ isRecording ? '⏹️' : '🎙️' }}
+        <button mat-icon-button color="primary" (click)="sendMessage(messageInput.value)" [disabled]="isLoading" matTooltip="Send">
+            <mat-icon>send</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" (click)="toggleVoiceInput(messageInput)" [disabled]="isLoading" matTooltip="Voice Input">
+            <mat-icon>{{ isRecording ? 'stop_circle' : 'mic' }}</mat-icon>
         </button>
     </div>
 </div>

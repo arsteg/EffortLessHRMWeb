@@ -1,128 +1,154 @@
-<mat-accordion class="example-headers-align">
-    <mat-expansion-panel [expanded]="true">
-        <mat-expansion-panel-header class="header">
-            <mat-panel-title class="d-flex justify-content-between">
-                <label>Gross Salary</label>
-                <label class="text-center"><span>{{fixedAllowanceSum || 0.00}}</span><br>Total Fixed Allowances</label>
-                <label class="text-center"><span>{{variableAllowanceSum || 0.00}}</span><br>Total Variable Allowances</label>
-                <label class="text-center"><span>0.00</span><br>Gross Annual Income/Salary(with all Allowances)</label>
-            </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div>
-            <hr>
-            <table>
-                <thead>
-                    <th>Section Name</th>
-                    <th>Total Gross(Last Processed Salary)</th>
-                    <th>Annual Gross Salary</th>
-                </thead>
-                <tbody>
-                    <td>Gross Salary</td>
-                    <td>0.00</td>
-                    <td><input type="number" class="form-control"  value="{{grossSalary}}"></td>
-                </tbody>
-            </table>
+<mat-accordion class="example-headers-align" multi>
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header class="header">
+      <mat-panel-title class="d-flex justify-content-between">
+        <label>Gross Salary</label>
+        <label class="text-center">
+          <span>{{ fixedAllowanceSum || 0 | number: '1.2-2' }}</span><br>Total Fixed Allowances
+        </label>
+        <label class="text-center">
+          <span>{{ variableAllowanceSum || 0 | number: '1.2-2' }}</span><br>Total Variable Allowances
+        </label>
+        <label class="text-center">
+          <span>{{ grossSalary || 0 | number: '1.2-2' }}</span><br>Gross Annual Income/Salary(with all Allowances)
+        </label>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div>
+      <hr>
+      <table>
+        <thead>
+          <th>Section Name</th>
+          <th>Total Gross(Last Processed Salary)</th>
+          <th>Annual Gross Salary</th>
+        </thead>
+        <tbody>
+          <td>Gross Salary</td>
+          <td>{{ salaryDetail?.Amount || 0 | number: '1.2-2' }}</td>
+          <td>
+            <input type="number" class="form-control" [formControl]="grossSalaryControl" readonly>
+          </td>
+        </tbody>
+      </table>
+    </div>
+  </mat-expansion-panel>
+  <div class="d-flex justify-content-between">
+    <h3>Income Tax Section Components</h3>
+    <h3>Amount</h3>
+  </div>
+  <ng-container *ngFor="let section of taxSections; trackBy: trackBySection; let i = index">
+    <mat-expansion-panel [expanded]="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title class="d-flex justify-content-between w-100">
+          <span><b>Section: </b>{{ section.section }}</span>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="p-2">
+        @if (section?.isHRA) {
+        <input type="number" class="form-control" [formControl]="hraControl">
+        } @else {
+        <input type="number" class="form-control" [formControl]="sectionControls[section?._id]">
+        }
+        <div *ngIf="section?.isHRA && selectedRecord?.incomeTaxDeclarationHRA?.length">
+          <h4>HRA Details</h4>
+          <table class="table">
+            <thead>
+              <th>Month</th>
+              <th>Verified Amount</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let hra of selectedRecord.incomeTaxDeclarationHRA">
+                <td>{{ hra?.month || 'Not Specified' }}</td>
+                <td><input type="number" class="form-control" [value]="(hra?.verifiedAmount || 0)"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+        <div *ngIf="!section?.isHRA && selectedRecord?.incomeTaxDeclarationComponent?.length">
+          <table class="table">
+            <thead>
+              <th>Component Name</th>
+              <th>Approved Amount</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let component of getComponentsForSection(section?._id)">
+                <td>{{ component.incomeTaxComponent?.componantName || '-' }}</td>
+                <td><input type="number" class="form-control" [value]="(component?.approvedAmount || 0)"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </mat-expansion-panel>
-
-    <ng-container *ngFor="let section of taxSections">
-        <mat-expansion-panel [expanded]="false">
-            <mat-expansion-panel-header class="header">
-                <mat-panel-title class="d-flex justify-content-between">
-                    <label>{{section.section}}</label>
-                    <label class="text-center"><span>Total: {{section.total}}</span><br>{{section.regime}}</label>
-                </mat-panel-title>
-            </mat-expansion-panel-header>
-            <div>
-                <hr>
-                <table>
-                    <thead>
-                        <th>Income Tax Section Components</th>
-                        <th>Amount</th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of section.items">
-                            <td>{{item.name}}</td>
-                            <td><input type="number" class="form-control"  [value]="item.amount"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </mat-expansion-panel>
-    </ng-container>
+  </ng-container>
 </mat-accordion>
-
 <div class="mt-3">
-    <i><strong>Disclaimer: </strong> <small>The above calculator is illustrative and designed to enable Employee to get
-            a quick
-            view toward Old vs New Regime tax calculation. Please follow your discretion in deciding which plan suits
-            you the
-            best. The data shown above does not get saved anywhere. The Actual Tax calculation could be different based
-            on
-            actual & additional variable payment and paydays, if applicable, which will be part of your final respective
-            month
-            payroll cycle.</small></i>
+  <i><strong>Disclaimer: </strong> <small>The above calculator is illustrative and designed to enable Employee to get
+      a quick
+      view toward Old vs New Regime tax calculation. Please follow your discretion in deciding which plan suits
+      you the
+      best. The data shown above does not get saved anywhere. The Actual Tax calculation could be different based
+      on
+      actual & additional variable payment and paydays, if applicable, which will be part of your final respective
+      month
+      payroll cycle.</small></i>
 </div>
 
 <div class="d-flex justify-content-between mt-2 border-top pt-2">
-    <button type="reset" mat-raised-button>Cancel</button>
-    <button type="button" class="addBtn" mat-raised-button (click)="calculateTax(); open(addModal);">Calculate</button>
+  <button type="reset" mat-raised-button>Cancel</button>
+  <button type="button" class="addBtn" mat-raised-button (click)="calculateTax(); open(addModal);">Calculate</button>
 </div>
 <ng-template #addModal let-modal>
-    <div class="modal-header">
-        <h1 class="modal-title text-muted mb-0">Computed Amount</h1>
-        <button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-            (click)="modal.close('Escape clicked')"></button>
-    </div>
-    <div class="modal-body">
-        <table class="table">
-            <thead>
-                <th>Section Name</th>
-                <th>According to Old Regime</th>
-                <th>According to New Regime (U/S 115BAC)</th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Net Taxable Salary</td>
-                    <td>{{taxableSalary}}</td>
-                    <td>{{taxableSalary}}</td>
-                </tr>
-                <tr>
-                    <td>Tax payable on that Income</td>
-                    <td>{{taxPayableOldRegime}}</td>
-                    <td>{{taxPayableNewRegime}}</td>
-                </tr>
-                <tr>
-                    <td>Less U/S 87 (A) Rebate</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Surcharge</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Education cess</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><strong>Total Tax Payable</strong></td>
-                    <td>{{taxPayableOldRegime}}</td>
-                    <td>{{taxPayableNewRegime}}</td>
-                </tr>
-            </tbody>
-        </table>
+  <div class="modal-header">
+    <h1 class="modal-title text-muted mb-0">Computed Amount</h1>
+    <button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+      (click)="modal.close('Escape clicked')"></button>
+  </div>
+  <div class="modal-body">
+    <table class="table">
+      <thead>
+        <th>Section Name</th>
+        <th>According to Old Regime</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Net Taxable Salary</td>
+          <td>{{taxableSalary}}</td>
+        </tr>
+        <tr>
+          <td>Tax payable on that Income</td>
+          <td>{{taxPayableOldRegime}}</td>
+        </tr>
+        <tr>
+          <td>Less U/S 87 (A) Rebate</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Surcharge</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Education cess</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><strong>Total Tax Payable</strong></td>
+          <td>{{taxPayableOldRegime}}</td>
+        </tr>
+      </tbody>
+    </table>
 
-        <div class="mt-2 border-top pt-2"><strong>Disclaimer: </strong>
-            <i>The above calculator is illustrative and designed to enable Employee to get a quick view toward Old vs
-                New Regime tax calculation.
-                Please follow your discretion in deciding which plan suits you the best. The data shown above does not
-                get saved anywhere. the Actual
-                Tax calculation could be different based on actual & additional variable payment and paydays, if
-                applicable, which will be part of your final respective month payroll cycle.
-            </i>
-        </div>
+    <div class="mt-2 border-top pt-2"><strong>Disclaimer: </strong>
+      <i>The above calculator is illustrative and designed to enable Employee to get a quick view toward Old vs
+        New Regime tax calculation.
+        Please follow your discretion in deciding which plan suits you the best. The data shown above does not
+        get saved anywhere. the Actual
+        Tax calculation could be different based on actual & additional variable payment and paydays, if
+        applicable, which will be part of your final respective month payroll cycle.
+      </i>
     </div>
+  </div>
 </ng-template>

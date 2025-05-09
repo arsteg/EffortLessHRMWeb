@@ -68,6 +68,7 @@ import { FNFStep5Component } from './run-payroll/run-fnf-payroll/fnf-steps/step5
 import { FNFStep6Component } from './run-payroll/run-fnf-payroll/fnf-steps/step6/step6.component';
 import { FNFStep7Component } from './run-payroll/run-fnf-payroll/fnf-steps/step7/step7.component';
 import { FNFStep8Component } from './run-payroll/run-fnf-payroll/fnf-steps/step8/step8.component';
+import { FNFStep9Component } from './run-payroll/run-fnf-payroll/fnf-steps/step9/step9.component';
 @NgModule({
   declarations: [
     PayrollComponent,
@@ -133,7 +134,8 @@ import { FNFStep8Component } from './run-payroll/run-fnf-payroll/fnf-steps/step8
     FNFStep5Component,
     FNFStep6Component,
     FNFStep7Component,
-    FNFStep8Component
+    FNFStep8Component,
+    FNFStep9Component
   ],
   imports: [
     FormsModule,

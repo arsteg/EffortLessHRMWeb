@@ -733,6 +733,11 @@ export class PayrollService {
   }
 
   // FnF Attendance Summary CRUD
+
+  getAttendanceRecordsByUserAndPayroll(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-attendance-records`, payload, this.httpOptions);
+    return response;
+  }
   addFnFAttendanceSummary(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-attendance-summary`, payload, this.httpOptions);
     return response;
@@ -1004,5 +1009,9 @@ export class PayrollService {
   // get Payroll status
   getPayrollStatus(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-status-list`, this.httpOptions);
+  }
+
+  getFnFPayrollStatus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-fnf-user-status-list`, this.httpOptions);
   }
 }

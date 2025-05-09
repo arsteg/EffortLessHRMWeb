@@ -1,0 +1,66 @@
+.menu-search{
+  border-bottom: 1px solid var(--orange-20);
+  
+  .input-group-text,
+  .form-control {
+    background: none;
+    border: none;
+  }
+}
+
+.menu{
+    list-style: none;
+    padding: var(--size-24);
+    font-size: var(--size-14);
+
+    .menu-item{
+        position: relative;
+        cursor: pointer;
+        padding: var(--size-8) var(--size-16);
+        margin-bottom: var(--size-16);
+        border-radius: var(--size-6);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: var(--size-8);
+        transition: background 0.3s ease, color 0.3s ease;
+
+        &:hover {
+            background: var(--orange-20);
+        }
+
+        &.active {
+            background: var(--orange-60);
+            color: var(--white);
+        }
+
+        &.active::before {
+            content: '';
+            position: absolute;
+            left: calc(0% - var(--size-28));
+            top: 0;
+            width: var(--size-8);
+            height: 100%;
+            background-color: var(--orange-60);
+            border-radius: var(--size-4);
+        }
+    }
+
+    .active .icon-img,
+    :not(.active) .icon-img-light {
+      display: none;
+    }
+    
+    .active .icon-img-light,
+    .icon-img {
+      display: inline;
+    }
+}
+
+/**
+ng-deep is deprecated but still supported, will change it later
+**/
+::ng-deep mat-icon path {
+  fill: currentColor !important;
+}
+

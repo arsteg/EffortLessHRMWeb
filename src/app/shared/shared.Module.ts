@@ -36,8 +36,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule }from '@angular/material/card';
 import {MAT_DATE_FORMATS} from '@angular/material/core';
-import { EffortlessTranslateModule } from '../translate/translate.module';
 import {TranslateModule} from '@ngx-translate/core';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -90,6 +90,7 @@ export const MY_DATE_FORMATS = {
     MatDialogModule,
     NgxChartsModule,
     TranslateModule,
+    MatExpansionModule,
   ],
   exports: [
     CommonModule,
@@ -129,7 +130,8 @@ export const MY_DATE_FORMATS = {
     MatDialogModule,
     NgxChartsModule,
     TranslateModule,
-    SortDirective, SearchPipe, MilliSecondsToTimePipe, PaginationComponent
+    SortDirective, SearchPipe, MilliSecondsToTimePipe, PaginationComponent,
+    MatExpansionModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,

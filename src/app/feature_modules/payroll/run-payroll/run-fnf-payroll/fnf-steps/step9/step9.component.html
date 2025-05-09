@@ -1,0 +1,125 @@
+<div class="tableContainer">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center ms-auto">
+            <span class="bi bi-search searchIcon"></span>
+
+            <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                name="searchText" aria-label="default input example">
+        </div>
+    </div>
+    <table mat-table [dataSource]="generatedPayroll">
+        <ng-container matColumnDef="PayrollUsers">
+            <th mat-header-cell *matHeaderCellDef> Employee Name </th>
+            <td mat-cell *matCellDef="let element"> {{element?.PayrollUser?.user?.name || 'No User Specified'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalOvertime">
+            <th mat-header-cell *matHeaderCellDef> Total Overtime </th>
+            <td mat-cell *matCellDef="let element"> {{element?.totalOvertime}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalFixedAllowance">
+            <th mat-header-cell *matHeaderCellDef> Total Fixed Allowances </th>
+            <td mat-cell *matCellDef="let element"> {{element?.totalFixedAllowance}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalOtherBenefit">
+            <th mat-header-cell *matHeaderCellDef> Total Other Benefits </th>
+            <td mat-cell *matCellDef="let element"> {{element?.totalOtherBenefit}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalFixedDeduction">
+            <th mat-header-cell *matHeaderCellDef> Total Fixed Deductions </th>
+            <td mat-cell *matCellDef="let element"> {{element?.totalFixedDeduction}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalLoanAdvance">
+            <th mat-header-cell *matHeaderCellDef> Total Loans/Advances </th>
+            <td mat-cell *matCellDef="let element"> {{element?.totalLoanAdvance[0]?.amount || element?.totalLoanAdvance[0]?.disbursementAmount }}</td>
+        </ng-container>
+        
+        <ng-container matColumnDef="totalFlexiBenefits">
+            <th mat-header-cell *matHeaderCellDef> Total Flexi Benefits </th>
+            <td mat-cell *matCellDef="let element"> {{element?.totalFlexiBenefits}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalPfTax">
+            <th mat-header-cell *matHeaderCellDef> Total PF Tax </th>
+            <td mat-cell *matCellDef="let element"> {{element?.totalPfTax}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalIncomeTax">
+            <th mat-header-cell *matHeaderCellDef> Total TDS </th>
+            <td mat-cell *matCellDef="let element"> {{element?.totalIncomeTax || 0}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="yearlySalary">
+            <th mat-header-cell *matHeaderCellDef> Total CTC </th>
+            <td mat-cell *matCellDef="let element"> {{element?.yearlySalary}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="monthlySalary">
+            <th mat-header-cell *matHeaderCellDef> Total Gross Salary </th>
+            <td mat-cell *matCellDef="let element"> {{element?.monthlySalary }} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="totalEmployeeStatutoryContribution">
+            <th mat-header-cell *matHeaderCellDef> Total Employee Statutory Contribution </th>
+            <td mat-cell *matCellDef="let element"> {{element?.totalEmployeeStatutoryContribution }} </td>
+        </ng-container>
+        <ng-container matColumnDef="totalEmployeeStatutoryDeduction">
+            <th mat-header-cell *matHeaderCellDef> Total Employee Statutory Deduction </th>
+            <td mat-cell *matCellDef="let element"> {{element?.totalEmployeeStatutoryDeduction }} </td>
+        </ng-container>
+        <ng-container matColumnDef="payroll_status">
+            <th mat-header-cell *matHeaderCellDef> Payroll Status </th>
+            <td mat-cell *matCellDef="let element"> {{element?.payroll_status | titlecase}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions" stickyEnd>
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let element">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    
+                    <button mat-menu-item 
+                        (click)="selectedStatus = element._id; selectedRecord = element; openDialog()">
+                        <mat-icon>remove_red_eye</mat-icon>
+                        <span>View</span>
+                    </button>
+                    <mat-divider></mat-divider>
+                    
+                    <ng-container *ngFor="let status of payrollStatus">
+                        <button mat-menu-item 
+                                *ngIf="element?.payroll_status !== status"
+                                (click)="selectedStatus = element._id; changedStatus = status; openUpdateStatusDialog()">
+                          <!-- <mat-icon>autorenew</mat-icon> -->
+                          <span>{{ status | titlecase }}</span>
+                        </button>
+                      </ng-container>
+
+                </mat-menu>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+
+<ng-template #dialogTemplate>
+    <div mat-dialog-title class="d-flex justify-content-between align-items-center">
+        <h1 class="mat-title pt-3">
+            <label>
+                <h1>{{getCompanyNameFromCookies()}}&nbsp;Generated Payroll</h1>
+            </label>
+        </h1>
+        <button mat-icon-button mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <!-- <app-view-payslip [viewPayroll]="selectedRecord" [selectedPayroll]="selectedPayroll"></app-view-payslip> -->
+</ng-template>

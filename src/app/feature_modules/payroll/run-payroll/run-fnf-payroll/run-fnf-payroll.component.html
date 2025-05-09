@@ -151,11 +151,20 @@
                     [selectedFnF]="selectedFnF"></app-step8>
                 <div>
                     <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                </div>
+            </ng-template>
+        </mat-step>
+        <mat-step>
+            <ng-template matStepLabel>Generated FnF Payroll</ng-template>
+            <ng-template matStepContent><app-step9 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
+                    [selectedFnF]="selectedFnF"></app-step9>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
                     <button mat-button (click)="completeFnF()">Complete</button>
                 </div>
             </ng-template>
         </mat-step>
-
     </mat-horizontal-stepper>
 </div>
 

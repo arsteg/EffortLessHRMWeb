@@ -4,7 +4,7 @@
             <div class="d-flex justify-content-between"><label>Name of the employee:</label>
                 <span>&nbsp;{{viewPayroll?.PayrollUser?.user?.name | titlecase}}</span>
             </div>
-            
+
             <div class="d-flex justify-content-between"><label>Month & year:</label>
                 <span>&nbsp;{{selectedPayroll?.month}}-{{selectedPayroll?.year}}</span>
             </div>
@@ -12,11 +12,13 @@
 
         <div class="ms-3 w-50">
             <div class="d-flex justify-content-between">
-                <label for="">Total Days in Payroll Month: </label><span>&nbsp;{{viewPayroll?.attendanceSummary[0]?.totalDays}}</span>
+                <label for="">Total Days in Payroll Month:
+                </label><span>&nbsp;{{viewPayroll?.attendanceSummary[0]?.totalDays}}</span>
             </div>
 
             <div class="d-flex justify-content-between">
-                <label for="">Loss Of Pay Days: </label><span>&nbsp;{{viewPayroll?.attendanceSummary[0]?.lopDays}}</span>
+                <label for="">Loss Of Pay Days:
+                </label><span>&nbsp;{{viewPayroll?.attendanceSummary[0]?.lopDays}}</span>
             </div>
             <div class="d-flex justify-content-between">
                 <label for="">Paid Days: </label><span>&nbsp;{{viewPayroll?.attendanceSummary[0]?.payableDays}}</span>
@@ -60,7 +62,7 @@
             </div>
             <div class="d-flex justify-content-between py-2 border-bottom">
                 <label>Total Loans/Advances:</label>
-                <span>{{viewPayroll?.totalLoanAdvance}}</span>
+                <span>{{viewPayroll?.totalLoanAdvance[0]?.amount || 0}}</span>
             </div>
             <div class="d-flex justify-content-between py-2 border-bottom">
                 <label>Total PF Tax:</label>
@@ -70,6 +72,12 @@
                 <label>Total TDS:</label>
                 <span>{{viewPayroll?.totalIncomeTax}}</span>
             </div>
+
+            <div class="d-flex justify-content-between py-2 border-bottom">
+                <label>Employee Deduction:</label>
+                <span>{{viewPayroll?.totalEmployeeStatutoryDeduction | number:'1.2-2'}}</span>
+            </div>
+
             <div class="d-flex justify-content-between py-2 border-bottom">
                 <label>Salary after LOP:</label>
                 <span>{{salaryAfterLOP | number:'1.2-2'}}</span>
@@ -77,17 +85,30 @@
         </div>
     </div>
 
+    <div class="d-flex justify-content-between orangeBackground p-3 rounded w-50">
+        <label class="text-white">Employer Contributions</label>
+    </div>
+    <div class="col-md-6 border-start">
+        <div class="d-flex justify-content-between py-2 border-bottom">
+            <label>Employer Contribution:</label>
+            <span>{{viewPayroll?.totalEmployeeStatutoryContribution | number: '1.2-2'}}</span>
+        </div>
+    </div>
+    <div class="mt-2">Loan Disbursement Amount: {{viewPayroll?.totalLoanAdvance[0]?.disbursementAmount || 0}}</div>
+
     <div class="row mt-4">
         <div class="text-center">
             <h3><label for="">Total Pay calculated by LOP + Overtime and Deducted Loan/Advance amount: &nbsp;</label>
-            <b>{{totalPayWithOvertime}}</b></h3>
+                <b>{{totalPayWithOvertime}}</b>
+            </h3>
         </div>
     </div>
 
     <div class="row mt-4">
         <div class="text-center">
             <h3><label for="">Total Take Home / Allowances - Deductions(Net salary): &nbsp;</label>
-            <b>{{netSalary | number : '1.2-2'}}</b></h3>
+                <b>{{netSalary | number : '1.2-2'}}</b>
+            </h3>
         </div>
     </div>
 </div>

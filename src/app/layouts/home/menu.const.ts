@@ -8,6 +8,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/dashboard.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/dashboard.png',
     url: 'dashboard',
+    svgIcon: '',
   },
   {
     id: '2',
@@ -15,20 +16,15 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/screenshots.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/screenshots.png',
     url: 'screenshots',
+    svgIcon: '',
   },
-  // {
-  //   id: '19',
-  //   icon: 'assets/Sidenav-Icons/livescreen.png',
-  //   lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
-  //   title: 'View Live Screen',
-  //   url: 'viewLiveScreen'
-  // },
   {
     id: '3',
     title: 'RealTime',
     icon: 'assets/Sidenav-Icons/realtime.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/realtime.png',
     url: 'realtime',
+    svgIcon: ''
   },
   {
     id: '4',
@@ -36,6 +32,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/organization.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
     url: 'organization/organization-setup/organization-profile',
+    svgIcon: '',
   },
   {
     id: '5',
@@ -43,6 +40,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/manage.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/manage.png',
     url: 'manage',
+    svgIcon: '',
   },
   {
     id: '6',
@@ -50,6 +48,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/calendar.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/calendar.png',
     url: 'calendar/admin',
+    svgIcon: 'calendar',
   },
   {
     id: '7',
@@ -57,6 +56,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/attendance.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
     url: 'attendance/settings/general-settings',
+    svgIcon: '',
   },
   {
     id: '8',
@@ -64,6 +64,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/timesheet.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/timesheet.png',
     url: 'timesheets/admin',
+    svgIcon: 'timesheet',
   },
   {
     id: '9',
@@ -71,6 +72,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/leave.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/leave.png',
     url: 'leave/settings/general-setting',
+    svgIcon: 'leave',
   },
   {
     id: '10',
@@ -78,6 +80,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/expenses.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
     url: 'expense',
+    svgIcon: 'expenses',
   },
   {
     id: '11',
@@ -85,6 +88,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/alert.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/alerts.png',
     url: 'alerts',
+    svgIcon: 'alert',
   },
   {
     id: '12',
@@ -92,6 +96,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/payroll.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/payroll.png',
     url: 'payroll/settings/general-settings',
+    svgIcon: 'payroll',
   },
   {
     id: '13',
@@ -99,6 +104,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/taxation.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/taxation.png',
     url: 'taxation/sections',
+    svgIcon: 'taxation',
   },
   {
     id: '14',
@@ -106,6 +112,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/reports.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/reports.png',
     url: 'reports',
+    svgIcon: 'reports',
   },
   {
     id: '15',
@@ -113,6 +120,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/separation.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/separation.png',
     url: 'separation',
+    svgIcon: '',
   },
   {
     id: '16',
@@ -120,6 +128,7 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/settings.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
     url: 'settings',
+    svgIcon: 'settings',
   },
   {
     id: '17',
@@ -127,6 +136,7 @@ export const SideBarAdminMenu = [
     title: 'Permissions',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/permission.png',
     url: 'permissions',
+    svgIcon: '',
   },
   {
     id: '17',
@@ -134,6 +144,7 @@ export const SideBarAdminMenu = [
     title: 'Roles',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/roles.png',
     url: 'roles',
+    svgIcon: '',
   },
   {
     id: '18',
@@ -141,6 +152,7 @@ export const SideBarAdminMenu = [
     title: 'Role Permission',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/rolePermission.png',
     url: 'role-permission',
+    svgIcon: '',
   },
   {
     id: '19',
@@ -148,6 +160,7 @@ export const SideBarAdminMenu = [
     lightIcon: 'assets/Sidenav-Icons/light-Icons/approval.png',
     title: 'Approvals',
     url: 'approvals',
+    svgIcon: '',
   },
   {
     id: '20',
@@ -155,20 +168,23 @@ export const SideBarAdminMenu = [
     icon: 'assets/Sidenav-Icons/settings.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
     url: 'interview-process',
+    svgIcon: '',
   },
-  // {
-  //   id: '21',
-  //   title: 'Subscriptions',
-  //   icon: 'assets/Sidenav-Icons/expenses.png',
-  //   lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
-  //   url: 'subscription/plans',
-  // },
   {
     id: '22',
     title: 'Feedback',
     icon: 'assets/Sidenav-Icons/feedback.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/feedback.png',    
     url: 'feedback',
+    svgIcon: '',
+  },
+  {
+    id: '23',
+    title: 'Helpdesk',
+    icon: 'assets/Sidenav-Icons/helpdesk.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/helpdesk.png',    
+    url: 'helpdesk',
+    svgIcon: '',
   }  
 ];
 
@@ -182,6 +198,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/dashboard.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/dashboard.png',
     url: 'dashboard/user',
+    svgIcon: '',
   },
   {
     id: '2',
@@ -189,20 +206,15 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/screenshots.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/screenshots.png',
     url: 'screenshots',
+    svgIcon: '',
   },
-  // {
-  //   id: '17',
-  //   title: 'View Live Screen',
-  //   icon: 'assets/Sidenav-Icons/livescreen.png',
-  //   lightIcon: 'assets/Sidenav-Icons/light-Icons/liveScreen.png',
-  //   url: 'viewLiveScreen'
-  // },
   {
     id: '3',
     title: 'RealTime',
     icon: 'assets/Sidenav-Icons/realtime.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/realtime.png',
     url: 'realtime',
+    svgIcon: '',
   },
 
   {
@@ -211,6 +223,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/tasks.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/tasks.png',
     url: 'tasks',
+    svgIcon: '',
   },
 
   {
@@ -218,6 +231,7 @@ export const SideBarUserMenu = [
     title: 'Alerts',
     icon: 'assets/Sidenav-Icons/alert.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/alerts.png',
+    svgIcon: 'alert',
   },
   {
     id: '5',
@@ -225,6 +239,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/organization.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/organization.png',
     url: 'organization/company-policies',
+    svgIcon: '',
   },
   {
     id: '6',
@@ -232,6 +247,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/calendar.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/calendar.png',
     url: 'calendar/user',
+    svgIcon: 'calendar',
   },
   {
     id: '7',
@@ -239,6 +255,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/leave.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/leave.png',
     url: 'leave/my-application',
+    svgIcon: 'leave',
   },
   {
     id: '8',
@@ -246,6 +263,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/attendance.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/attendance.png',
     url: 'attendance/my-attendance-records',
+    svgIcon: '',
   },
   {
     id: '9',
@@ -253,6 +271,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/timesheet.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/timesheet.png',
     url: 'timesheets/user',
+    svgIcon: 'timesheet',
   },
   {
     id: '10',
@@ -260,6 +279,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/taxation.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/taxation.png',
     url: 'taxation/tax-declaration',
+    svgIcon: 'taxation',
   },
   {
     id: '11',
@@ -267,12 +287,14 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/expenses.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/expenses.png',
     url: 'expense/my-expense',
+    svgIcon: 'expenses',
   },
   {
     id: '12',
     title: 'PaySlips',
     icon: 'assets/Sidenav-Icons/payslip.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/payslip.png',
+    svgIcon: '',
   },
   {
     id: '13',
@@ -280,6 +302,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/separation.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/separation.png',
     url: 'separation',
+    svgIcon: '',
   },
   {
     id: '14',
@@ -287,6 +310,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/reports.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/reports.png',
     url: 'reports',
+    svgIcon: 'reports',
   },
   {
     id: '15',
@@ -294,6 +318,7 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/manualTime.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/manualTime.png',
     url: 'manual-time',
+    svgIcon: 'time',
   },
   {
     id: '16',
@@ -301,5 +326,14 @@ export const SideBarUserMenu = [
     icon: 'assets/Sidenav-Icons/settings.png',
     lightIcon: 'assets/Sidenav-Icons/light-Icons/settings.png',
     url: 'settings/user-preferences',
+    svgIcon: 'settings',
   },
+  {
+    id: '17',
+    title: 'Helpdesk',
+    icon: 'assets/Sidenav-Icons/helpdesk.png',
+    lightIcon: 'assets/Sidenav-Icons/light-Icons/helpdesk.png',    
+    url: 'helpdesk',
+    svgIcon: '',
+  }
 ];
