@@ -60,7 +60,7 @@
 /**
 ng-deep is deprecated but still supported, will change it later
 **/
-::ng-deep mat-icon path {
+::ng-deep .active mat-icon path {
   fill: currentColor !important;
 }
 
