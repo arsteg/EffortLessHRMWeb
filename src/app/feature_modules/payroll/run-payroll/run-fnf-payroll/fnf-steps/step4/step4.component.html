@@ -36,6 +36,11 @@
             <th mat-header-cell *matHeaderCellDef> Outplacement Services </th>
             <td mat-cell *matCellDef="let element"> {{element.outplacementServices}} </td>
         </ng-container>
+        
+        <ng-container matColumnDef="outplacementServicePay">
+            <th mat-header-cell *matHeaderCellDef> Outplacement Services Pay </th>
+            <td mat-cell *matCellDef="let element"> {{element.outplacementServicePay}} </td>
+        </ng-container>
 
         <ng-container matColumnDef="status">
             <th mat-header-cell *matHeaderCellDef> Status </th>
@@ -120,9 +125,17 @@
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Outplacement Services</mat-label>
-                    <input matInput type="number" formControlName="outplacementServices">
+                    <input matInput type="text" formControlName="outplacementServices">
                     <mat-error
                         *ngIf="terminationCompensationForm.get('outplacementServices').hasError('required')">Outplacement
+                        Services is required</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="col-md-6 my-2" >
+                    <mat-label>Outplacement Services Pay</mat-label>
+                    <input matInput type="number" formControlName="outplacementServicesPay">
+                    <mat-error
+                        *ngIf="terminationCompensationForm.get('outplacementServicesPay').hasError('required')">Outplacement
                         Services is required</mat-error>
                 </mat-form-field>
      

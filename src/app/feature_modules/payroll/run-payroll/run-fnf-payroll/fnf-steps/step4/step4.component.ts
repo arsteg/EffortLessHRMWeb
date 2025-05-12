@@ -15,7 +15,7 @@ import { SeparationService } from 'src/app/_services/separation.service';
   styleUrl: './step4.component.css'
 })
 export class FNFStep4Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'terminationDate', 'noticePeriod', 'yearsOfService', 'severancePay', 'outplacementServices', 'status', 'actions'];
+  displayedColumns: string[] = ['userName', 'terminationDate', 'noticePeriod', 'yearsOfService', 'severancePay', 'outplacementServices', 'outplacementServicePay', 'status', 'actions'];
   terminationCompensation = new MatTableDataSource<any>();
   terminationCompensationForm: FormGroup;
   selectedTerminationCompensation: any;
@@ -41,7 +41,8 @@ export class FNFStep4Component implements OnInit {
       noticePeriod: [null, Validators.required],
       yearsOfService: [0, Validators.required],
       severancePay: [0, Validators.required],
-      outplacementServices: [0, Validators.required]
+      outplacementServices: ['', Validators.required],
+      outplacementServicesPay: [0, Validators.required]
     });
   }
 
@@ -132,7 +133,8 @@ export class FNFStep4Component implements OnInit {
         noticePeriod: 0,
         yearsOfService: 0,
         severancePay: 0,
-        outplacementServices: 0
+        outplacementServices: '',
+        outplacementServicesPay: 0
       });
     }
     this.dialog.open(this.dialogTemplate, {
@@ -151,7 +153,8 @@ export class FNFStep4Component implements OnInit {
       noticePeriod: compensation.noticePeriod,
       yearsOfService: compensation.yearsOfService,
       severancePay: compensation.severancePay,
-      outplacementServices: compensation.outplacementServices    });
+      outplacementServices: compensation.outplacementServices,
+      outplacementServicesPay: compensation.outplacementServicesPay});
     this.terminationCompensationForm.get('payrollFNFUser').disable();
     this.openDialog(true);
   }
@@ -180,7 +183,8 @@ export class FNFStep4Component implements OnInit {
               noticePeriod: 0,
               yearsOfService: 0,
               severancePay: 0,
-              outplacementServices: 0            });
+              outplacementServices: '',
+              outplacementServicesPay: 0});
             this.isEdit = false;
             this.dialog.closeAll();
           },
@@ -221,7 +225,8 @@ export class FNFStep4Component implements OnInit {
         noticePeriod: this.selectedTerminationCompensation.noticePeriod,
         yearsOfService: this.selectedTerminationCompensation.yearsOfService,
         severancePay: this.selectedTerminationCompensation.severancePay,
-        outplacementServices: this.selectedTerminationCompensation.outplacementServices
+        outplacementServices: this.selectedTerminationCompensation.outplacementServices,
+        outplacementServicesPay: this.selectedTerminationCompensation.outplacementServicesPay
       });
     } else {
       this.terminationCompensationForm.reset();
