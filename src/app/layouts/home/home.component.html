@@ -1,154 +1,26 @@
-<nav class="navbar navbar-expand-lg navbar-light">
-  <div class="container-fluid d-flex">
-    <!-- Hamburger Menu Icon -->
-    <div class="mobile-hamburger d-lg-none d-block p-3">
-      <mat-icon class="hamburger" (click)="clickEvent(); drawer.toggle()">menu</mat-icon>
-    </div>
-
-    <div class="d-flex justify-content-end header__options">
-      <div class="text-right">
-        <form class="d-flex">
-          <div class=" d-flex align-items-center">
-            <app-notification></app-notification>
-            <span (click)="openMainOffcanvas()">
-              <section>
-                <div class="example-button-row ps-2">
-                  <div class="example-flex-container profile pe-2 d-flex align-items-baseline">
-                    <button mat-icon-button aria-label="Example icon button with a menu icon">
-                      <img src="assets/images/profile.png" height="35" alt="">
-                    </button>
-                    <p class="text-white ps-2 d-lg-block d-none">
-                      {{currentProfile?.firstName}}&nbsp;{{currentProfile?.lastName}}</p>
-                    <i class="bi bi-caret-down-fill text-white ps-2 d-lg-block d-none"></i>
-                    <i class="bi bi-caret-down-fill text-white ps-2 d-lg-none d-block"></i>
-                  </div>
-                </div>
-              </section>
-            </span>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</nav>
+<app-header 
+  [loggedInUser]="currentProfile" 
+  [profileSwitch]="portalType === 'admin'" 
+  [role]="adminView" 
+  (onMenuToggled)="drawer.toggle()" 
+  (onProfileSwitch)="switchView($event)">
+</app-header>
 
 <!-- Sidebar - icons with text -->
-<div class="d-flex" id="wrapper">
-  <mat-drawer #drawer class="drawer" [opened]="true">
-
-  </mat-drawer>
-
-
-  <!-- Sidebar - only icons -->
-  <div class="sidebar-title border-right" id="sidebar-wrapper" [ngClass]="isCollapsedMenu ? 'collapsed-menu' : 'show'">
-    <div class="sidebar-heading pt-4 px-2" *ngIf="!isCollapsedMenu"><img src="assets/logo/expanded-logo.svg" width="170"
-        alt="expanded logo"></div>
-    <div class="sidebar-heading py-3 ps-2" *ngIf="isCollapsedMenu"><img src="assets/logo/collapsed-logo.svg" width="55"
-        alt="collapsed logo"></div>
-    <div>
-      <mat-icon *ngIf="!isCollapsedMenu" (click)="clickEvent()" (click)="drawer.toggle()" class="exp-col expanded"
-        data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-        aria-expanded="false" aria-label="Toggle navigation">chevron_left</mat-icon>
-      <mat-icon *ngIf="isCollapsedMenu" (click)="clickEvent()" (click)="drawer.toggle()"
-        class="exp-col d-lg-block d-none" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false"
-        aria-label="Toggle navigation">chevron_right</mat-icon>
-    </div>
-
-    <div class="d-flex align-items-center justify-content-evenly mx-1" *ngIf="!isCollapsedMenu"
-      style="margin-top: -15px;">
-      <i class="bi bi-search"></i>
-      <input type="text" placeholder="Search" class="w-75 border-bottom" (input)="filteredMenuItems()"
-        [(ngModel)]="searchText" style="border: none; border-radius: 0 !important;">
-    </div>
-
-    <!--Expanded Menu-->
-    <div class="list-group list-group-flush" *ngIf="!isCollapsedMenu">
-      <div class="expandedMenu">
-        <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
-          <li class="nav-item has-submenu">
-            <a class="nav-link sidebar-links ps-0"  [routerLink]="menu.url"
-              routerLinkActive="active" [routerLinkOptions]="{ exact: false }" (click)="clickMenu(menu.id)">
-              <span [ngClass]="menu.icon" class="ms-3 collapse-icons"></span>
-              <img [ngClass]="{'active': menu.url== ''}" class="item" [src]="menu.icon" height="25" alt="">
-              <img [ngClass]="{'active': menu.url== ''}" class="item1" [src]="menu.lightIcon" height="25" alt="">
-              <span> {{menu.title}}</span>
-            </a>
-          </li>
-        </ul>
+<div id="wrapper">
+  <mat-drawer-container class="content-container" autosize>
+    <mat-drawer #drawer class="sidenav-drawer" mode="side" opened>
+      <app-sidebar [menuList]="menuList"></app-sidebar>
+    </mat-drawer>
+  
+    <div id="page-content-wrapper" class="w-100" [ngClass]="!isCollapsedMenu? 'expandedContent': 'collapsedContent'">
+      <div class="container-fluid p-2">
+        <router-outlet></router-outlet>
+        <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100" [extraDuration]="1000"
+          [minDuration]="1000" [backdropBackgroundColor]="'#777777'" [spinner]="spinnerStyle.skThreeBounce">
+        </ng-http-loader>
       </div>
     </div>
-
-    <!--Collapsed Menu-->
-    <div *ngIf="isCollapsedMenu" class="list-group" style="margin-top: -25px;">
-      <div class="expandedMenu">
-        <ul class="nav flex-column" id="nav_accordion" *ngFor="let menu of menuList">
-          <li class="nav-item has-submenu" dropdown container="body" placement="right">
-            <a class="nav-link sidebar-links" dropdownToggle [ngClass]="{'active': menu.url== ''}"
-              [routerLink]="menu.url" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }"
-              [tooltip]="menu.title" placement="left">
-              <span [ngClass]="menu.icon" class="ms-2 collapse-icons fa-lg"></span>
-              <img [ngClass]="{'active': menu.url== ''}" class="item" [src]="menu.icon" height="25" alt="">
-              <img [ngClass]="{'active': menu.url== ''}" class="item1" [src]="menu.lightIcon" height="25" alt="">
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div id="page-content-wrapper" class="w-100" [ngClass]="!isCollapsedMenu? 'expandedContent': 'collapsedContent'">
-    <div class="container-fluid p-0" style="margin-top: 64px;">
-      <router-outlet></router-outlet>
-      <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100" [extraDuration]="1000"
-        [minDuration]="1000" [backdropBackgroundColor]="'#777777'" [spinner]="spinnerStyle.skThreeBounce">
-      </ng-http-loader>
-    </div>
-  </div>
-
-  <!-- User Change option -->
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="mainOffcanvas" aria-labelledby="mainOffcanvasLabel">
-
-    <div class="offcanvas-body">
-      <div class="container p-0">
-        <div class="profile py-2">
-          <div class="d-flex justify-content-between align-items-baseline">
-            <button type="button" class="btn-close text-reset times" data-bs-dismiss="offcanvas"
-              aria-label="Close"></button>
-            <span class="fa fa-edit fa-lg edit" data-bs-dismiss="offcanvas" [routerLink]="'profile'"></span>
-          </div>
-
-          <div class="text-center">
-            <img src="../assets/profile-image.png" class="profile-img mb-5" alt="Profile Picture">
-            <p class="employee-id">{{currentProfile?.firstName}} {{currentProfile?.lastName}} - 01</p>
-            <p class="position">{{currentProfile?.jobTitle}}</p>
-            <p class="email contentHeading">{{currentProfile?.email}}</p>
-            <div class="my-4 d-flex justify-content-center">
-              <div class="mx-4" *ngIf="portalType === 'admin'">
-                <button mat-raised-button class="addBtn" (click)="switchView('user')" *ngIf="adminView === 'admin'">
-                  User Portal
-                </button>
-                <button mat-raised-button class="addBtn" (click)="switchView('admin')" *ngIf="adminView === 'user'">
-                  Admin Portal
-                </button>
-              </div>
-              <div>
-                <button mat-button color="warn" class="" (click)="onLogout()">Sign Out</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-<!-- User profile -->
-  <div *ngIf="isEdit" class="offcanvas offcanvas-end w-75" tabindex="-1" id="nestedOffcanvas" aria-labelledby="nestedOffcanvasLabel"  [ngClass]="{'show': isEdit}" data-bs-backdrop="true">
-    <div class="offcanvas-body">
-      <div class="d-flex justify-content-between align-items-baseline">
-        <span class="btn-close text-reset times" (click)="isEdit = false"></span>
-      </div>
-      <app-user-profile [currentProfile]="currentProfile"></app-user-profile>
-    </div>
-  </div>
+  
+  </mat-drawer-container>
 </div>

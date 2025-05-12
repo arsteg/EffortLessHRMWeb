@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Spinkit } from 'ng-http-loader';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
 import { SideBarAdminMenu, SideBarUserMenu } from './menu.const';
+import { MatMenuTrigger } from '@angular/material/menu';
+
 declare var bootstrap: any;
 
 @Component({
@@ -13,6 +15,7 @@ declare var bootstrap: any;
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
+  @ViewChild(MatMenuTrigger) profileMenu!: MatMenuTrigger;
   title = 'sideBarNav';
   isCollapsedMenu: boolean = false;
   menuList: any = SideBarUserMenu;
@@ -22,7 +25,6 @@ export class HomeComponent implements OnInit {
   currentProfile: any;
   dropdownOpen: boolean = false;
   selectedOption: string;
-  searchText: string = '';
   options: string[] = [
     'You spent the 7 connects on the availability',
     'The work week has ended, and your weekly summary is available for summary',
@@ -40,8 +42,6 @@ export class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.showSidebar();
-
     let role = localStorage.getItem('role');
     this.adminView = localStorage.getItem('adminView');
     // this.auth.getRole(roleId).subscribe((response: any) => {
@@ -99,7 +99,6 @@ export class HomeComponent implements OnInit {
       this.menuList = SideBarAdminMenu;
       this.router.navigateByUrl('home/dashboard');
     }
-    this.collapseSidebar(); // Automatically collapse the sidebar
   }
 
   onLogout() {
@@ -113,72 +112,5 @@ export class HomeComponent implements OnInit {
     localStorage.removeItem('loginTime');
     window.location.reload();
     this.router.navigateByUrl('/login');
-  }
-
-  clickMenu(id: string) {
-    this.menuList.forEach((element) => {
-      if (element.id == id) {
-        element.show = !element.show;
-      }
-    });
-    this.collapseSidebar();
-  }
-
-  clickEvent() {
-    this.isCollapsedMenu = !this.isCollapsedMenu;
-    localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu));
-  }
-
-  showSidebar() {
-    const screenWidth = window.innerWidth;
-
-    if (screenWidth <= 992) {
-      this.isCollapsedMenu = true;
-    } else {
-      this.isCollapsedMenu = false;
-    }
-    localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu));
-  }
-
-  collapseSidebar() {
-    if (window.innerWidth <= 992) {
-      this.isCollapsedMenu = true;
-    } else {
-      this.isCollapsedMenu = false;
-    }
-    localStorage.setItem('sidebar', JSON.stringify(this.isCollapsedMenu));
-  }
-
-  filteredMenuItems() {
-    const searchTerm = this.searchText.trim().toLowerCase();
-    if (searchTerm === '') {
-      this.menuList = SideBarAdminMenu;
-    } else {
-      const filtered = SideBarAdminMenu.filter((item) =>
-        item.title.toLowerCase().includes(searchTerm)
-      );
-      this.menuList = filtered;
-    }
-    if (this.searchText === '') {
-      this.menuList = SideBarAdminMenu;
-    }
-  }
-  openMainOffcanvas() {
-    const mainOffcanvasElement = document.getElementById('mainOffcanvas');
-    const mainOffcanvas = new bootstrap.Offcanvas(mainOffcanvasElement);
-    mainOffcanvas.show();
-  }
-
-  openNestedOffcanvas() {
-    const mainOffcanvasElement = document.getElementById('mainOffcanvas');
-    const mainOffcanvas = bootstrap.Offcanvas.getInstance(mainOffcanvasElement);
-    if (mainOffcanvas) {
-      mainOffcanvas.hide();
-    }
-    this.isEdit = true;
-
-    const nestedOffcanvasElement = document.getElementById('nestedOffcanvas');
-    const nestedOffcanvas = new bootstrap.Offcanvas(nestedOffcanvasElement);
-    nestedOffcanvas.show();
   }
 }

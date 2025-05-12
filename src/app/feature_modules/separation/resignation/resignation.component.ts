@@ -9,7 +9,8 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { UserService } from 'src/app/_services/users.service';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 
-import { TranslateService } from '@ngx-translate/core';interface ResignationStatus {
+import { TranslateService } from '@ngx-translate/core';
+interface ResignationStatus {
   Pending: string,
   Completed: string,
   InProgress:string,

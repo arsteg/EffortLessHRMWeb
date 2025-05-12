@@ -70,20 +70,15 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item active" (click)="taxView = false; taxEditView = false;">My Tax Declarations</li>
-            <li *ngIf="taxView" aria-current="page">Tax Calculator</li>
+            <li *ngIf="taxView" aria-current="page"> &nbsp; / &nbsp; Tax Calculator</li>
             <li *ngIf="taxEditView" aria-current="page">&nbsp;/&nbsp;Tax Declaration of Year
                 {{selectedRecord?.financialYear}}</li>
         </ol>
     </nav>
     <div *ngIf="taxView" class="p-3">
-        <button mat-icon-button (click)="goBackToMainView()" aria-label="Back to main view">
-            <mat-icon>arrow_back</mat-icon>
-        </button>
-
-        <h2>Employee Tax Calculator</h2>
-        <div class="d-flex justify-content-between px-4">
-            <label for="">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}} |
-                {{selectedRecord?.financialYear}}</label>
+        <div class="d-flex justify-content-between">
+            <p>{{selectedRecord?.user?.firstName | titlecase}}&nbsp;{{selectedRecord?.user?.lastName | titlecase}} |
+                {{selectedRecord?.financialYear}}</p>
         </div>
         <app-tax-calculator [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-tax-calculator>
     </div>

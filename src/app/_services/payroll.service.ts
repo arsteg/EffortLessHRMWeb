@@ -1017,4 +1017,8 @@ export class PayrollService {
   getPayrollStatus(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-status-list`, this.httpOptions);
   }
+
+  getFnFPayrollStatus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-fnf-user-status-list`, this.httpOptions);
+  }
 }
