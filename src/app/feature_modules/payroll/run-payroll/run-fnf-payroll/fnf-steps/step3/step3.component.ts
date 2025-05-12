@@ -6,6 +6,8 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { CommonService } from 'src/app/_services/common.Service';
+import { forkJoin } from 'rxjs';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-step3',
@@ -17,6 +19,7 @@ export class FNFStep3Component implements OnInit {
   manualArrears = new MatTableDataSource<any>();
   manualArrearForm: FormGroup;
   selectedManualArrear: any;
+  salaryPerDay : any; // or fetch dynamically if needed
   isEdit: boolean = false;
   selectedFNFUser: any;
   @Input() settledUsers: any[];
@@ -26,6 +29,7 @@ export class FNFStep3Component implements OnInit {
 
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
+    private userService: UserService,
     public dialog: MatDialog,
     private toast: ToastrService) {
     this.manualArrearForm = this.fb.group({
@@ -34,16 +38,56 @@ export class FNFStep3Component implements OnInit {
       arrearDays: [0, Validators.required],
       lopReversalDays: [0, Validators.required],
       salaryRevisionDays: [0, Validators.required],
-      lopReversalArrears: [0, Validators.required],
-      totalArrears: [0, Validators.required]
+      lopReversalArrears: [{ value: 0, disabled: true }, Validators.required],
+      totalArrears: [{ value: 0, disabled: true }, Validators.required]
     });
   }
 
   ngOnInit(): void {
       this.fetchManualArrears(this.selectedFnF);
+      this.manualArrearForm.valueChanges.subscribe(() => {
+        this.recalculateFields();
+      });
+    
   }
-
+   getSalaryDetails(userId: string): void {  
+       
+        this.userService.getSalaryByUserId(userId).subscribe(
+          (res: any) => {
+            
+            this.salaryPerDay = res.data[0].BasicSalary / 30;
+          },
+          (error: any) => {
+            this.toast.error('Failed to add Manual Arrear', 'Error');
+          })
+    }
+  recalculateFields(): void {
+    const manualArrears = this.manualArrearForm.get('manualArrears')?.value || 0;
+    const arrearDays = this.manualArrearForm.get('arrearDays')?.value || 0;
+    const lopReversalDays = this.manualArrearForm.get('lopReversalDays')?.value || 0;
+    const salaryRevisionDays = this.manualArrearForm.get('salaryRevisionDays')?.value || 0;
+  
+    const lopReversalArrears = lopReversalDays * this.salaryPerDay;
+    const totalArrears = manualArrears + ((arrearDays + salaryRevisionDays) * this.salaryPerDay) + lopReversalArrears;
+  
+    this.manualArrearForm.patchValue({
+      lopReversalArrears: lopReversalArrears,
+      totalArrears: totalArrears
+    }, { emitEvent: false }); // Prevent recursive loop
+  }
+  
   onUserChange(fnfUserId: string): void {
+    this.selectedFNFUser = fnfUserId;
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === fnfUserId);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+    if (payrollFNFUserId) {
+      this.payrollService.getFnFUserById(payrollFNFUserId).subscribe((res: any) => {
+         this.getSalaryDetails(res.data.user);
+        });
+    }
+  }
+  onPayrollUserChange(fnfUserId: string): void {
     this.selectedFNFUser = fnfUserId;
     const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === fnfUserId);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
@@ -54,11 +98,11 @@ export class FNFStep3Component implements OnInit {
         this.manualArrears.data.forEach((arrear: any) => {
           const user = this.settledUsers.find(user => user?._id === fnfUserId);
           arrear.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+          this.getSalaryDetails(user._id);
         });
       });
     }
   }
-
   openDialog(isEdit: boolean): void {
     this.isEdit = isEdit;
     this.dialog.open(this.dialogTemplate, {
@@ -85,6 +129,8 @@ export class FNFStep3Component implements OnInit {
   }
 
   onSubmit(): void {
+    this.manualArrearForm.get('lopReversalArrears')?.enable();
+    this.manualArrearForm.get('totalArrears')?.enable();
     const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 

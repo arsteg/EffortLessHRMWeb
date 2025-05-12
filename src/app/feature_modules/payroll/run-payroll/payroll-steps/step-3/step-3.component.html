@@ -70,7 +70,7 @@
                     <mat-select formControlName="variableDeduction">
                         <mat-option value="" selected disabled>- Select Variable Deduction -</mat-option>
                         <mat-option [value]="deduction?.variableDeduction" *ngFor="let deduction of salary?.variableDeductionList">
-                            {{getVariableDeduction(deduction?.variableDeduction)}}</mat-option>
+                            {{getVariableDeduction(deduction?.variableDeduction._id)}}</mat-option>
                     </mat-select>
                     <mat-error *ngIf="variablePayForm.get('variableDeduction')?.invalid && variablePayForm.get('variableDeduction')?.touched">
                         Variable Deduction is required.
@@ -84,7 +84,7 @@
                     <mat-select formControlName="variableAllowance">
                         <mat-option value="" selected disabled>- Select Variable Allowance -</mat-option>
                         <mat-option [value]="allowance?.variableAllowance" *ngFor="let allowance of salary?.variableAllowanceList">
-                            {{getVariableAllowance(allowance?.variableAllowance)}}</mat-option>
+                            {{getVariableAllowance(allowance?.variableAllowance._id)}}</mat-option>
                     </mat-select>
                     <mat-error *ngIf="variablePayForm.get('variableAllowance')?.invalid && variablePayForm.get('variableAllowance')?.touched">
                         Variable Allowance is required.

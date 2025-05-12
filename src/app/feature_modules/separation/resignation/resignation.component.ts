@@ -101,6 +101,7 @@ export class ResignationComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.resignationForm.get('notice_period')?.enable();
     this.resignationForm.patchValue({
       user: this.currentUser.id
     });
@@ -133,6 +134,7 @@ export class ResignationComponent implements OnInit {
     } else {
       this.saveResignation(); // Skip asset check if not marked as returned
     }
+    this.resignationForm.get('notice_period')?.disable();
   }
   saveResignation() {
     if (this.resignationForm.valid) {
@@ -174,9 +176,9 @@ export class ResignationComponent implements OnInit {
         next: (res: any) => {
            if (res.data && res.data.length > 0) {
             this.resignationForm.patchValue({
-              notice_period: res.data[0].notice_period || 'N/A'
+              notice_period: res.data[0].noticePeriod || 'N/A'
             });
-          }
+           }
           else{
             this.toast.error(
               this.translate.instant('separation.notice_period_fetch_fail'),

@@ -78,6 +78,9 @@ export class SeparationService {
   getTerminationAppealStatusList(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/common/get-termination-appeal-status-list`, this.httpOptions);
   }
+  getFNFDateRangeByUser(userId: string, ): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/separation/fnf-date-range-by-user/${userId}`, this.httpOptions);
+  }
   updateTerminationStatus(id: string, status: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/separation/termination-by-status/${id}`,  status, this.httpOptions);
   }

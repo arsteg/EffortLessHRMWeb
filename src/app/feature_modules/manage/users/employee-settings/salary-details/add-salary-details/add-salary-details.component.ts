@@ -45,7 +45,7 @@ export class AddSalaryDetailsComponent {
       actualEffectiveDate: [''],
       frequencyToEnterCTC: [''],
       CTCTemplate: ['manual'],
-      isEmployerPartInclusiveInSalaryStructure: [false],
+      isEmployerPartInclusiveInSalaryStructure: [{ value: true, disabled: true }],
       enteringAmount: ['Yearly'],
       Amount: [0],
       BasicSalary: [0],

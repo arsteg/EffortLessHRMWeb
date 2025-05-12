@@ -881,7 +881,14 @@ export class PayrollService {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-loan-advances-by-payroll-fnf/${payrollFnF}`, this.httpOptions);
     return response;
   }
-
+  getTotalPFAmountByUser(userId: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/get-total-pf-amount/${userId}`, this.httpOptions);
+    return response;
+  }
+  getTotalGratuityAmountByUser(userId: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/get-total-gratuity-amount/${userId}`, this.httpOptions);
+    return response;
+  }
   // FnF Statutory Benefits CRUD
   addFnFStatutoryBenefit(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-fnf-statutory-benefits`, payload, this.httpOptions);

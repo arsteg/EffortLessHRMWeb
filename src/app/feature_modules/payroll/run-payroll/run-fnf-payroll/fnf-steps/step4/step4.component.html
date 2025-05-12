@@ -1,7 +1,7 @@
 <div class="border-top">
     <div class="d-flex justify-content-between align-items-baseline pt-2">
         <div class="d-flex">
-            <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
+            <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onPayrollUserChange($event)"></app-fnf-users>
             <button mat-raised-button class="addBtn ms-2 mt-1" (click)="openDialog(false)">Add Termination
                 Compensation</button>
         </div>
@@ -20,23 +20,13 @@
         <ng-container matColumnDef="noticePeriod">
             <th mat-header-cell *matHeaderCellDef> Notice Period </th>
             <td mat-cell *matCellDef="let element"> {{element.noticePeriod}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="gratuityEligible">
-            <th mat-header-cell *matHeaderCellDef> Gratuity Eligible </th>
-            <td mat-cell *matCellDef="let element"> {{element.gratuityEligible}} </td>
-        </ng-container>
+        </ng-container>      
 
         <ng-container matColumnDef="yearsOfService">
             <th mat-header-cell *matHeaderCellDef> Years of Service </th>
             <td mat-cell *matCellDef="let element"> {{element.yearsOfService}} </td>
         </ng-container>
-
-        <ng-container matColumnDef="gratuityAmount">
-            <th mat-header-cell *matHeaderCellDef> Gratuity Amount </th>
-            <td mat-cell *matCellDef="let element"> {{element.gratuityAmount}} </td>
-        </ng-container>
-
+   
         <ng-container matColumnDef="severancePay">
             <th mat-header-cell *matHeaderCellDef> Severance Pay </th>
             <td mat-cell *matCellDef="let element"> {{element.severancePay}} </td>
@@ -113,27 +103,14 @@
                         Period is required</mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="col-md-6 my-2" >
-                    <mat-label>Gratuity Eligible</mat-label>
-                    <input matInput type="number" formControlName="gratuityEligible">
-                    <mat-error *ngIf="terminationCompensationForm.get('gratuityEligible').hasError('required')">Gratuity
-                        Eligible is required</mat-error>
-                </mat-form-field>
-
+               
                 <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Years of Service</mat-label>
                     <input matInput type="number" formControlName="yearsOfService">
                     <mat-error *ngIf="terminationCompensationForm.get('yearsOfService').hasError('required')">Years of
                         Service is required</mat-error>
                 </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2" >
-                    <mat-label>Gratuity Amount</mat-label>
-                    <input matInput type="number" formControlName="gratuityAmount">
-                    <mat-error *ngIf="terminationCompensationForm.get('gratuityAmount').hasError('required')">Gratuity
-                        Amount is required</mat-error>
-                </mat-form-field>
-
+              
                 <mat-form-field appearance="outline" class="col-md-6 my-2" >
                     <mat-label>Severance Pay</mat-label>
                     <input matInput type="number" formControlName="severancePay">
@@ -148,13 +125,7 @@
                         *ngIf="terminationCompensationForm.get('outplacementServices').hasError('required')">Outplacement
                         Services is required</mat-error>
                 </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2" >
-                    <mat-label>Status</mat-label>
-                    <input matInput formControlName="status">
-                    <mat-error *ngIf="terminationCompensationForm.get('status').hasError('required')">Status is
-                        required</mat-error>
-                </mat-form-field>
+     
             </div>
 
             <div class="d-flex justify-content-between mt-3">
