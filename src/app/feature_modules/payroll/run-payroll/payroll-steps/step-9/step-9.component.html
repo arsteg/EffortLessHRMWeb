@@ -92,7 +92,7 @@
                     </button>
                     <mat-divider></mat-divider>
                     
-                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Cleared"
+                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus?.Cleared"
                         (click)="selectedStatus = element._id; changedStatus = payrollStatus.Cleared; openUpdateStatusDialog()">
                         <mat-icon>check_circle</mat-icon>
                         <span>Complete</span>
@@ -100,23 +100,23 @@
                     
                     
                     <!-- New status options -->
-                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Pending"
+                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus?.Pending"
                         (click)="selectedStatus = element._id; changedStatus = payrollStatus.Pending; openUpdateStatusDialog()">
                         <mat-icon>hourglass_empty</mat-icon>
                         <span>Pending</span>
                     </button>
-                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.OnHold"
+                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus?.OnHold"
                         (click)="selectedStatus = element._id; changedStatus = payrollStatus.OnHold; openUpdateStatusDialog()">
                         <mat-icon>pause</mat-icon>
                         <span>On Hold</span>
                     </button>
-                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.OnHold"
-                        (click)="selectedStatus = element._id; changedStatus = payrollStatus.OnHold; openUpdateStatusDialog()">
+                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus?.OnHold"
+                        (click)="selectedStatus = element?._id; changedStatus = payrollStatus?.OnHold; openUpdateStatusDialog()">
                         <mat-icon>pause</mat-icon>
                         <span>In Process</span>
                     </button>
-                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus.Processed"
-                        (click)="selectedStatus = element._id; changedStatus = payrollStatus.Processed; openUpdateStatusDialog()">
+                    <button mat-menu-item *ngIf="element?.payroll_status !== payrollStatus?.Processed"
+                        (click)="selectedStatus = element?._id; changedStatus = payrollStatus?.Processed; openUpdateStatusDialog()">
                         <mat-icon>settings</mat-icon>
                         <span>Processed</span>
                     </button>
