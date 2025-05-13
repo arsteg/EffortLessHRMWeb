@@ -18,6 +18,8 @@
     <table>
         <thead>
             <th>Employee Name</th>
+            <th>Variable Allowance</th>
+            <th>Variable Deduction</th>
             <th>Amount</th>
             <th>Period</th>
             <th>Actions</th>
@@ -25,6 +27,8 @@
         <tbody>
             <tr *ngFor="let data of variablePay | search: searchText">
                 <td>{{data?.payrollUserDetails | titlecase}}</td>
+                <td>{{data?.variableAllowance?.label}} <i *ngIf="!data?.variableAllowance">Not Specified</i></td>
+                <td>{{data?.variableDeduction?.label}} <i *ngIf="!data?.variableDeduction">Not Specified</i></td>
                 <td>{{data?.amount}}</td>
                 <td>{{data?.month}}-{{data?.year}}</td>
                 <td>
@@ -60,7 +64,7 @@
             <div class="col-md-6" *ngIf="changeMode === 'Update'">
                 <mat-form-field appearance="outline" class="my-2">
                     <mat-label>Payroll User</mat-label>
-                    <input matInput type="text" [disabled] formControlName="payrollUser">
+                    <input matInput type="text" formControlName="payrollUser" readonly>
                 </mat-form-field>
             </div>
 
@@ -72,9 +76,7 @@
                         <mat-option [value]="deduction?.variableDeduction" *ngFor="let deduction of salary?.variableDeductionList">
                             {{getVariableDeduction(deduction?.variableDeduction._id)}}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="variablePayForm.get('variableDeduction')?.invalid && variablePayForm.get('variableDeduction')?.touched">
-                        Variable Deduction is required.
-                    </mat-error>
+                    
                 </mat-form-field>
             </div>
 
@@ -83,12 +85,10 @@
                     <mat-label>Variable Allowance</mat-label>
                     <mat-select formControlName="variableAllowance">
                         <mat-option value="" selected disabled>- Select Variable Allowance -</mat-option>
-                        <mat-option [value]="allowance?.variableAllowance" *ngFor="let allowance of salary?.variableAllowanceList">
+                        <mat-option [value]="allowance?.variableAllowance?._id" *ngFor="let allowance of salary?.variableAllowanceList">
                             {{getVariableAllowance(allowance?.variableAllowance._id)}}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="variablePayForm.get('variableAllowance')?.invalid && variablePayForm.get('variableAllowance')?.touched">
-                        Variable Allowance is required.
-                    </mat-error>
+                    
                 </mat-form-field>
             </div>
 
