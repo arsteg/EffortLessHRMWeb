@@ -38,6 +38,7 @@ import { MatCardModule }from '@angular/material/card';
 import {MAT_DATE_FORMATS} from '@angular/material/core';
 import {TranslateModule} from '@ngx-translate/core';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -138,7 +139,14 @@ export const MY_DATE_FORMATS = {
     NO_ERRORS_SCHEMA
   ],
   providers: [
-    {provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS}
+    {provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS},
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+         appearance: 'outline',
+         floatLabel: 'never'
+      }
+    },
   ]
 })
 export class SharedModule { }

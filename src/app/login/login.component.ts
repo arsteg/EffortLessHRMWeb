@@ -50,11 +50,7 @@ export class LoginComponent implements OnInit {
       this.authenticationService.login(this.loginForm.value).pipe(
         catchError(err => {
           this.loading = false;
-          if (err === 'Unauthorized') {
-            this.errorMessage = 'Authentication failed. Invalid email or password.';
-          } else {
-            this.errorMessage = 'An unexpected error occurred.';
-          }
+          this.errorMessage = err || 'An unexpected error occurred.';
           return throwError(err);
         })
       ).subscribe(data => {

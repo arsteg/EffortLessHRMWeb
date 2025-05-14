@@ -1,9 +1,17 @@
 /* Override styles for material button variable */
-.mat-mdc-raised-button.mat-accent, .mat-mdc-raised-button.mat-primary {
-  --mdc-protected-button-label-text-color: white;
+.mat-mdc-raised-button.mat-accent,
+.mat-mdc-raised-button.mat-primary {
+  --mdc-protected-button-label-text-color: var(--white);
 }
 
 html .mat-mdc-fab.mat-accent,
 html .mat-mdc-mini-fab.mat-accent {
-  --mat-fab-foreground-color: white;
+  --mat-fab-foreground-color: var(--white);
+}
+
+html {
+  // --mdc-text-button-container-height: var(--size-48);
+  --mdc-filled-button-container-height: var(--size-48);
+  // --mdc-outlined-button-container-height: var(--size-48);
+  // --mdc-protected-button-container-height: var(--size-48);
 }
