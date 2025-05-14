@@ -89,7 +89,10 @@ export class FNFStep1Component implements OnInit {
       console.log(res.data);
       this.attendanceSummaryForm.patchValue({
         overtimeHours: res.data.OvertimeHours,
-        totalDays: res.data.TotalDays
+        totalDays: res.data.TotalDays,
+        lopDays: res.data.lopDays,
+        payableDays: res.data.payableDays,
+        leaveBalance:res.data.leaveBalance
       })
     });
   }
@@ -165,8 +168,7 @@ export class FNFStep1Component implements OnInit {
     this.openDialog(true);
   }
 
-  onSubmit(): void {
-
+  onSubmit(): void {       
     const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedUserId);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 

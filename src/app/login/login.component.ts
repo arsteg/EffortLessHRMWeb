@@ -5,6 +5,9 @@ import { catchError } from 'rxjs/operators';
 import { AuthenticationService } from '../_services/authentication.service';
 import { signup } from '../models/user';
 import { throwError } from 'rxjs';
+import { PreferenceService } from '../_services/user-preference.service';
+import { PreferenceKeys } from '../constants/userpreference-keys';
+import { th } from 'date-fns/locale';
 
 @Component({
   selector: 'app-login',
@@ -21,13 +24,15 @@ export class LoginComponent implements OnInit {
   inValidForm: boolean;
   hidePassword: boolean = true;
   errorMessage: string;
+  selectedAppMode: string;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private preferenceService: PreferenceService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -50,11 +55,7 @@ export class LoginComponent implements OnInit {
       this.authenticationService.login(this.loginForm.value).pipe(
         catchError(err => {
           this.loading = false;
-          if (err === 'Unauthorized') {
-            this.errorMessage = 'Authentication failed. Invalid email or password.';
-          } else {
-            this.errorMessage = 'An unexpected error occurred.';
-          }
+          this.errorMessage = err || 'An unexpected error occurred.';
           return throwError(err);
         })
       ).subscribe(data => {
@@ -73,14 +74,29 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('currentUser', JSON.stringify(this.user));
           localStorage.setItem('rememberMe', JSON.stringify(this.loginForm.value.rememberMe));
           localStorage.setItem('role', data.data.user?.role?.name);
-          localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));
-          if (data.data.user?.role?.name === 'Admin') {
-            localStorage.setItem('adminView', 'admin');
-            this.router.navigateByUrl( this.returnUrl);
-          } else {
-            localStorage.setItem('adminView','user');
-            this.router.navigateByUrl(this.returnUrl);
-          }
+          localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));          
+
+          // Check for existing AppMode preference
+          this.preferenceService.getPreferencesByUserId(this.user.id).subscribe(preferences => {
+            const appModePreference = preferences.data.preferences.find(pref => 
+              pref.preferenceOptionId && 
+              pref.preferenceOptionId['preferenceKey'] === PreferenceKeys.APP_MODE
+            );
+
+            if (appModePreference) {
+              this.selectedAppMode = appModePreference.preferenceOptionId['preferenceValue'];
+            } else {
+              this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
+            }        
+            // Store the selected AppMode
+            this.createUserPreference(this.user.id, PreferenceKeys.APP_MODE, this.selectedAppMode);
+            
+          }, error => {
+            console.error('Error fetching preferences:', error);
+            this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
+            // Store the selected AppMode in error case
+            this.createUserPreference(this.user.id, PreferenceKeys.APP_MODE, this.selectedAppMode);
+          });
         }
       });
     } else {
@@ -95,5 +111,25 @@ export class LoginComponent implements OnInit {
 
   getCurrentYear(): number {
     return new Date().getFullYear();
+  }
+
+  createUserPreference(userId: string, preferenceKey: string, preferenceValue: string) {
+    this.preferenceService.createOrUpdatePreference(
+      userId,
+      preferenceKey,
+      preferenceValue
+    ).subscribe({
+      next: () => {
+        localStorage.setItem('adminView', this.selectedAppMode);
+        this.router.navigateByUrl(this.returnUrl);
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error saving AppMode preference:', err);
+        localStorage.setItem('adminView', this.selectedAppMode);
+        this.router.navigateByUrl(this.returnUrl);
+        this.loading = false;
+      }
+    });
   }
 } 

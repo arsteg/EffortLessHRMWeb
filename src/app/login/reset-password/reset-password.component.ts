@@ -9,7 +9,7 @@ import { signup } from 'src/app/models/user';
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
-  styleUrls: ['./reset-password.component.css']
+  styleUrls: ['../login.component.css']
 })
 
 export class ResetPasswordComponent implements OnInit {
@@ -21,6 +21,7 @@ export class ResetPasswordComponent implements OnInit {
   @ViewChild('f') resetPasswordForm: NgForm;
   hidePassword: boolean = true;
   hideConfirmPassword: boolean = true;
+  errorMessage: string = '';
 
   constructor(private route: ActivatedRoute,
     private router: Router,
@@ -35,6 +36,7 @@ export class ResetPasswordComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
+    this.errorMessage = '';
     this.user.password = this.resetPasswordForm.value.password;
     this.user.passwordConfirm = this.resetPasswordForm.value.confirm_password;
     if (this.resetPasswordForm.value.password !== this.resetPasswordForm.value.confirm_password) {
@@ -53,8 +55,9 @@ export class ResetPasswordComponent implements OnInit {
           }, 30);
         },
         err => {
+          this.errorMessage = err;
+          this.loading = false;
           if (err.error) {
-            this.loading = false;
             this.notifyService.showError(err.message, "Error");
           }
         }

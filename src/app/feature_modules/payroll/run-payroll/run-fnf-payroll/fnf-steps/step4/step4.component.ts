@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { CommonService } from 'src/app/_services/common.Service';
 import { UserService } from 'src/app/_services/users.service';
+import { SeparationService } from 'src/app/_services/separation.service';
 
 @Component({
   selector: 'app-step4',
@@ -14,7 +15,7 @@ import { UserService } from 'src/app/_services/users.service';
   styleUrl: './step4.component.css'
 })
 export class FNFStep4Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'terminationDate', 'noticePeriod', 'gratuityEligible', 'yearsOfService', 'gratuityAmount', 'severancePay', 'outplacementServices', 'status', 'actions'];
+  displayedColumns: string[] = ['userName', 'terminationDate', 'noticePeriod', 'yearsOfService', 'severancePay', 'outplacementServices', 'outplacementServicePay', 'status', 'actions'];
   terminationCompensation = new MatTableDataSource<any>();
   terminationCompensationForm: FormGroup;
   selectedTerminationCompensation: any;
@@ -32,17 +33,16 @@ export class FNFStep4Component implements OnInit {
     private payrollService: PayrollService,
     public dialog: MatDialog,
     private toast: ToastrService,
-    private userService: UserService) {
+    private userService: UserService,
+    private separationService: SeparationService ) {
     this.terminationCompensationForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
       terminationDate: [Date, Validators.required],
       noticePeriod: [null, Validators.required],
-      gratuityEligible: [0, Validators.required],
       yearsOfService: [0, Validators.required],
-      gratuityAmount: [0, Validators.required],
       severancePay: [0, Validators.required],
-      outplacementServices: [0, Validators.required],
-      status: ['pending', Validators.required]
+      outplacementServices: ['', Validators.required],
+      outplacementServicesPay: [0, Validators.required]
     });
   }
 
@@ -53,23 +53,75 @@ export class FNFStep4Component implements OnInit {
   jobInformation: any;
   onUserChange(fnfUserId: string): void {
     this.selectedFNFUser = fnfUserId;
-    this.userService.getJobInformationByUserId(fnfUserId).subscribe((res: any) => {
-      this.jobInformation = res.data;
-      this.selectedFNFUser = this.fnfUsers[0]._id;
-      this.terminationCompensationForm.patchValue({
-        noticePeriod: this.fnfUsers[0].noticePeriod,
-      });
-    });
-    // const fnfUser = this.selectedFnF.userList[0].user;
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === fnfUserId);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
-    // this.payrollService.getFnFTerminationCompensationByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
-    //   this.terminationCompensation.data = res.data;
-    //   this.terminationCompensation.data.forEach((compensation: any) => {
-    //     const user = this.userList.find(user => user._id === fnfUser);
-    //     console.log(user);
-    //     compensation.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
-    //   });
-    // });
+    if (payrollFNFUserId) {
+      this.payrollService.getFnFUserById(payrollFNFUserId).subscribe((res: any) => {
+         this.getJobInformationByUserId(res.data.user);
+        });
+    }   
+  }
+  getJobInformationByUserId(userId: string): void {
+    this.userService.getJobInformationByUserId(userId).subscribe(
+      (res: any) => {
+        this.jobInformation = res.data;
+        
+        this.terminationCompensationForm.patchValue({
+          noticePeriod: res.data[0].noticePeriod,
+        });
+  
+        // Try to calculate years of service if termination date already loaded
+        this.tryCalculateYearsOfService();
+      },
+      (error: any) => {
+        this.toast.error('Failed to fetch Job Information', 'Error');
+      }
+    );
+  
+    this.separationService.getFNFDateRangeByUser(userId).subscribe(
+      (res: any) => {
+        this.terminationCompensationForm.patchValue({
+          terminationDate: res.data.endDate,
+        });
+  
+        // Try to calculate years of service if job info already loaded
+        this.tryCalculateYearsOfService();
+      },
+      (error: any) => {
+        this.toast.error('Failed to fetch FNF Date Range', 'Error');
+      }
+    );
+  }
+  tryCalculateYearsOfService(): void {
+    const effectiveFrom = this.jobInformation?.[0]?.effectiveFrom;
+    const terminationDate = this.terminationCompensationForm.get('terminationDate')?.value;
+  
+    if (effectiveFrom && terminationDate) {
+      const start = new Date(effectiveFrom);
+      const end = new Date(terminationDate);
+      console.log(end); console.log(start);
+      // Calculate total difference in years (rounded down)
+      const diffInMs = end.getTime() - start.getTime();
+      const yearsOfService = +(diffInMs / (1000 * 60 * 60 * 24 * 365.25)).toFixed(2);
+      this.terminationCompensationForm.patchValue({
+        yearsOfService
+      });
+    }
+  }
+  
+  onPayrollUserChange(fnfUserId: string): void {
+
+    const fnfUser = this.selectedFnF.userList[0].user;
+
+     this.payrollService.getFnFTerminationCompensationByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
+       this.terminationCompensation.data = res.data;
+       this.terminationCompensation.data.forEach((compensation: any) => {
+         const user = this.userList.find(user => user._id === fnfUser);
+        console.log(user);
+         compensation.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+     });
+   });
   }
 
   openDialog(isEdit: boolean): void {
@@ -79,12 +131,10 @@ export class FNFStep4Component implements OnInit {
         payrollFNFUser: '',
         terminationDate: '',
         noticePeriod: 0,
-        gratuityEligible: 0,
         yearsOfService: 0,
-        gratuityAmount: 0,
         severancePay: 0,
-        outplacementServices: 0,
-        status: 'pending'
+        outplacementServices: '',
+        outplacementServicesPay: 0
       });
     }
     this.dialog.open(this.dialogTemplate, {
@@ -101,13 +151,10 @@ export class FNFStep4Component implements OnInit {
       payrollFNFUser: compensation.userName,
       terminationDate: compensation.terminationDate,
       noticePeriod: compensation.noticePeriod,
-      gratuityEligible: compensation.gratuityEligible,
       yearsOfService: compensation.yearsOfService,
-      gratuityAmount: compensation.gratuityAmount,
       severancePay: compensation.severancePay,
       outplacementServices: compensation.outplacementServices,
-      status: compensation.status
-    });
+      outplacementServicesPay: compensation.outplacementServicesPay});
     this.terminationCompensationForm.get('payrollFNFUser').disable();
     this.openDialog(true);
   }
@@ -134,13 +181,10 @@ export class FNFStep4Component implements OnInit {
               payrollFNFUser: '',
               terminationDate: '',
               noticePeriod: 0,
-              gratuityEligible: 0,
               yearsOfService: 0,
-              gratuityAmount: 0,
               severancePay: 0,
-              outplacementServices: 0,
-              status: 'pending'
-            });
+              outplacementServices: '',
+              outplacementServicesPay: 0});
             this.isEdit = false;
             this.dialog.closeAll();
           },
@@ -179,12 +223,10 @@ export class FNFStep4Component implements OnInit {
         payrollFNFUser: this.selectedTerminationCompensation.payrollFNFUser,
         terminationDate: this.selectedTerminationCompensation.terminationDate,
         noticePeriod: this.selectedTerminationCompensation.noticePeriod,
-        gratuityEligible: this.selectedTerminationCompensation.gratuityEligible,
         yearsOfService: this.selectedTerminationCompensation.yearsOfService,
-        gratuityAmount: this.selectedTerminationCompensation.gratuityAmount,
         severancePay: this.selectedTerminationCompensation.severancePay,
         outplacementServices: this.selectedTerminationCompensation.outplacementServices,
-        status: this.selectedTerminationCompensation.status
+        outplacementServicesPay: this.selectedTerminationCompensation.outplacementServicesPay
       });
     } else {
       this.terminationCompensationForm.reset();

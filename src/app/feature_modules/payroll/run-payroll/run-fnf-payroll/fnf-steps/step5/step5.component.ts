@@ -14,7 +14,7 @@ import { catchError, forkJoin, map } from 'rxjs';
   styleUrl: './step5.component.css'
 })
 export class FNFStep5Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'loanAndAdvance', 'LoanAdvanceAmount', 'status', 'finalSettlementAmount', 'fnfClearanceStatus', 'fnfDate', 'actions'];
+  displayedColumns: string[] = ['userName', 'loanAndAdvance', 'LoanAdvanceAmount', 'finalSettlementAmount', 'fnfClearanceStatus', 'actions'];
   loanAdvances = new MatTableDataSource<any>();
   userLoanAdvances: any[] = [];
   loanAdvanceForm: FormGroup;
@@ -36,12 +36,10 @@ export class FNFStep5Component implements OnInit {
     private toast: ToastrService) {
     this.loanAdvanceForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
-      loanAndAdvance: ['', Validators.required],
+      loanAndAdvance: ['', Validators.required],      
       LoanAdvanceAmount: [0],
-      status: ['', Validators.required],
       finalSettlementAmount: [0, Validators.required],
-      fnfClearanceStatus: ['', Validators.required],
-      fnfDate: ['', Validators.required]
+      fnfClearanceStatus: ['', Validators.required]
     });
   }
 
@@ -58,6 +56,25 @@ export class FNFStep5Component implements OnInit {
         console.error('An error occurred:', error);
       }
     );
+    this.loanAdvanceForm.get('loanAndAdvance')?.valueChanges.subscribe((selectedLoanId: string) => {
+      const selectedLoan = this.userLoanAdvances.find(loan => loan._id === selectedLoanId);
+      if (selectedLoan) {
+        const amount = selectedLoan.amount || 0;
+        const monthly = selectedLoan.monthlyInstallment || 0;
+        const remaining = selectedLoan.remainingInstallment || 0;  
+        const calculatedFinalSettlement = monthly * remaining;  
+        this.loanAdvanceForm.patchValue({
+          LoanAdvanceAmount: amount,
+          finalSettlementAmount: calculatedFinalSettlement
+        });
+      } else {
+        this.loanAdvanceForm.patchValue({
+          LoanAdvanceAmount: 0,
+          finalSettlementAmount: 0
+        });
+      }
+    });
+    this.loanAdvanceForm.get('LoanAdvanceAmount')?.disable();
   }
 
   onUserChange(fnfUserId: string): void {
@@ -76,12 +93,12 @@ export class FNFStep5Component implements OnInit {
     }
     if (!this.isEdit) {
       this.userService.getLoansAdvancesByUserId(fnfUserId, { skip: '', next: '' }).subscribe((res: any) => {
-        this.userLoanAdvances = res.data.map((res: any) => {
-          return {
-            ...res,
-            loanAdvanceCategory: this.getMatchingCategory(res.loanAdvancesCategory)
-          }
-        });
+        this.userLoanAdvances = res.data;
+      if (this.userLoanAdvances.length > 0) {
+        this.userLoanAdvances.unshift({ loanAdvancesCategory: { name: 'Select Loan/Advance' } });
+      } else {
+        this.userLoanAdvances.unshift({ loanAdvancesCategory: { name: 'Loans/Advances not Assigned to the Selected User' } });
+      }
       })
     }
   }
@@ -131,10 +148,8 @@ export class FNFStep5Component implements OnInit {
           payrollFNFUser: advance.userName,
           loanAndAdvance: advance.loanAndAdvance,
           LoanAdvanceAmount: advance.LoanAdvanceAmount,
-          status: advance.status,
           finalSettlementAmount: advance.finalSettlementAmount,
-          fnfClearanceStatus: advance.fnfClearanceStatus,
-          fnfDate: advance.fnfDate
+          fnfClearanceStatus: advance.fnfClearanceStatus
         });
         this.loanAdvanceForm.get('payrollFNFUser').disable();
         this.openDialog(true);
@@ -145,7 +160,7 @@ export class FNFStep5Component implements OnInit {
   onSubmit(): void {
     const matchedUser = this.selectedFnF.userList.find((user: any) => user?.user === this.selectedFNFUser);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
-
+    this.loanAdvanceForm.get('LoanAdvanceAmount')?.enable();
     this.loanAdvanceForm.patchValue({
       payrollFNFUser: payrollFNFUserId,
       loanAndAdvance: this.loanAdvanceForm.get('loanAndAdvance').value
@@ -168,10 +183,8 @@ export class FNFStep5Component implements OnInit {
               payrollFNFUser: '',
               loanAndAdvance: '',
               LoanAdvanceAmount: 0,
-              status: '',
               finalSettlementAmount: 0,
-              fnfClearanceStatus: '',
-              fnfDate: ''
+              fnfClearanceStatus: ''
             });
             this.isEdit = false;
             this.dialog.closeAll();
@@ -198,11 +211,9 @@ export class FNFStep5Component implements OnInit {
               payrollFNFUser: '',
               loanAndAdvance: '',
               LoanAdvanceAmount: 0,
-              status: '',
               finalSettlementAmount: 0,
-              fnfClearanceStatus: '',
-              fnfDate: ''
-            });
+              fnfClearanceStatus: ''
+       });
             this.dialog.closeAll();
           },
           (error: any) => {
@@ -221,10 +232,8 @@ export class FNFStep5Component implements OnInit {
         payrollFNFUser: this.selectedLoanAdvance.payrollFNFUser,
         loanAndAdvance: this.selectedLoanAdvance.loanAndAdvance,
         LoanAdvanceAmount: this.selectedLoanAdvance.LoanAdvanceAmount,
-        status: this.selectedLoanAdvance.status,
         finalSettlementAmount: this.selectedLoanAdvance.finalSettlementAmount,
-        fnfClearanceStatus: this.selectedLoanAdvance.fnfClearanceStatus,
-        fnfDate: this.selectedLoanAdvance.fnfDate
+        fnfClearanceStatus: this.selectedLoanAdvance.fnfClearanceStatus
       });
     } else {
       this.loanAdvanceForm.reset();

@@ -26,7 +26,8 @@ export class EmploymentDetailsComponent {
   designations: any = [];
   locations: any = [];
   appointment: any;
-
+  isNew: boolean = true;
+  jobInformationId:any;
   constructor(
     private userService: UserService,
     private companyService: CompanyService,
@@ -48,7 +49,7 @@ export class EmploymentDetailsComponent {
 
     this.jobInformationForm = this.fb.group({
       user: ['', Validators.required],
-      effectiveFrom: [, Validators.required],
+      effectiveFrom: ['', Validators.required],
       location: ['', Validators.required],
       designation: ['', Validators.required],
       employmentType: ['', Validators.required],
@@ -56,7 +57,7 @@ export class EmploymentDetailsComponent {
       department: ['', Validators.required],
       band: ['', Validators.required],
       subDepartments: ['', Validators.required],
-      employmentStatusEffectiveFrom: [, Validators.required],
+      employmentStatusEffectiveFrom: ['', Validators.required],
       zone: ['', Validators.required],
       noticePeriod: ['0', Validators.required]
     });
@@ -102,25 +103,25 @@ export class EmploymentDetailsComponent {
   }
 
   onSubmissionJobInformation() {
-    if (this.jobInformationForm.valid) {
+    console.log( this.selectedUser[0]?._id);
+    this.jobInformationForm.enable();  
       this.jobInformationForm.value.user = this.selectedUser[0]?._id;
-      this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
-        if (res.data.length <= 0) {
+      if( this.isNew === true)
+        {
           this.jobInformationForm.value.user = this.selectedUser[0]._id;
           this.userService.addJobInformation(this.jobInformationForm.value).subscribe((res: any) => {
             this.toast.success('Job Information Added Successfully');
           }, err => { this.toast.error('Job Information Not Added', 'Error'); })
         } else {
-          this.userService.updateJobInformation(res.data[0]._id, this.jobInformationForm.value).subscribe((res: any) => {
-            this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
-              this.jobInformationForm.patchValue(res.data[0]);
-            })
-          })
+          this.userService.updateJobInformation(this.jobInformationId, this.jobInformationForm.value).subscribe((res: any) => {
+            this.toast.success('Job Information updated Successfully');
+          });
         }
-      })
-    } else {
-      this.jobInformationForm.markAllAsTouched();
-    }
+        this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
+        this.jobInformationForm.patchValue(res.data[0]);
+        this.jobInformationId=res.data[0]._id;
+        this.isNew === false;
+        })   
   }
 
   logUrlSegmentsForUser() {
@@ -149,6 +150,11 @@ export class EmploymentDetailsComponent {
       this.appointment = results[0].data;
       this.appointmentForm.patchValue(results[0].data);
       this.jobInformationForm.patchValue(results[1].data[0]);
+      if(results[1].data[0])
+      {
+        this.isNew=false;
+        this.jobInformationId=results[1].data[0]._id;
+      }
       this.supervisors = results[2].data.data;
       this.bands = results[3].data;
       this.zones = results[4].data;

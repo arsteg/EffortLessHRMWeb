@@ -71,7 +71,7 @@ export class AttendanceTemplateComponent {
   updateTemplateAssignmentCount() {
     if (this.attendanceTemplate?.length > 0 && this.attendanceAssignment?.length > 0) {
       this.templateAssignmentCount = this.attendanceTemplate.reduce((acc, template) => {
-        const count = this.attendanceAssignment.filter(assignment => assignment.attandanceTemplate === template._id).length;
+        const count = this.attendanceAssignment.filter(assignment => assignment.attendanceTemplate === template._id).length;
         return { ...acc, [template?._id]: count };
       }, {});
     }

@@ -59,7 +59,6 @@ export class HelpdeskService {
     }),
     withCredentials: true
   };
-  debugger;
   return this.http.patch<any>(`${environment.apiUrlDotNet}/helpdesk/${id}`, body, httpOptions);
 }
     

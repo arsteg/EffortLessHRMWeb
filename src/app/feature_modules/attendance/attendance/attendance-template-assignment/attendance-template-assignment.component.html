@@ -32,7 +32,7 @@
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="attendanceTemplateAssignment" data-name="attandanceTemplate"
+                        <th [appSort]="attendanceTemplateAssignment" data-name="attendanceTemplate"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Assigned Attendance Template
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
@@ -58,7 +58,7 @@
                 <tbody>
                     <tr *ngFor="let template of attendanceTemplateAssignment| search: searchText">
                         <td>{{getUser(template?.employee) | titlecase}}</td>
-                        <td>{{getTemplate(template?.attandanceTemplate) | titlecase}}</td>
+                        <td>{{getTemplate(template?.attendanceTemplate) | titlecase}}</td>
                         <td>{{getUser(template?.primaryApprover) | titlecase}}</td>
                         <td>{{getUser(template?.secondaryApprover) | titlecase}}</td>
                         <td>{{template?.effectiveFrom | date: 'mediumDate'}}</td>
@@ -119,7 +119,7 @@
         <div class="form-group my-2">
             <label for="">Select Template <span class="text-danger">*</span></label>
             <select id="attendanceTemplate" class="form-control" [attr.disabled]="isEdit === true"
-                formControlName="attandanceTemplate" name="attendanceTemp" class="form-select form-select-sm"
+                formControlName="attendanceTemplate" name="attendanceTemp" class="form-select form-select-sm"
                 aria-label=".form-select-sm example" (change)="onTemplateSelectionChange($event)">
                 <option value="" disabled selected>Select Template -- </option>
                 <option *ngFor="let template of templates" [value]="template?._id">
@@ -127,7 +127,7 @@
                 </option>
             </select>
             <div class="text-danger"
-                *ngIf="attendanceTemplateAssignmentForm.get('attandanceTemplate').hasError('required') && attendanceTemplateAssignmentForm.get('attandanceTemplate').touched">
+                *ngIf="attendanceTemplateAssignmentForm.get('attendanceTemplate').hasError('required') && attendanceTemplateAssignmentForm.get('attendanceTemplate').touched">
                 Attendance Template is required!
             </div>
         </div>
@@ -189,7 +189,7 @@
             <h1 class="modal-title text-muted mb-0">Update Attendance Template Assignment</h1>
             <small>Employee: <span class="small-text">{{getUser(selectedTemplate?.employee)}}</span></small><br>
             <small>Attendance Template: <span
-                    class="small-text">{{getTemplate(selectedTemplate?.attandanceTemplate)}}</span></small>
+                    class="small-text">{{getTemplate(selectedTemplate?.attendanceTemplate)}}</span></small>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="closeModal()"></button>

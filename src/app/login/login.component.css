@@ -1,167 +1,69 @@
 .login-container {
-  max-width: 400px;
-  margin: 60px auto 0;
-}
+  padding-top: 200px;
 
-.error {
-  color: white;
-  font-size: 12px;
-  padding-top: 4px
-}
-
-input.ng-invalid.ng-touched {
-  border: 1px solid white;
-}
-
-.validationErroMessage {
-  color: white;
-}
-
-.check {
-  border-radius: 2px !important;
-  padding: 0 !important;
-  min-height: 0 !important
-}
-
-.card {
-  background: #ff8b5b !important;
-}
-
-@media screen and (max-width: 480px) {
-  .dashImg {
-    position: absolute;
-  }
-
-  .login-row{
-    justify-content: center !important;
-  }
-  .card-box{
-    width:100%;
+  .login-box {
+    max-width: 465px;
+    margin: 0 auto;
+    padding: var(--size-32);
+    border-radius: var(--size-16);
+    border: 1px solid var(--orange-10);
   }
 }
 
-@media screen and (min-width: 1024px) {
-  .card {
-    min-width: 440px !important;
-  }
-  .copy{
-    position: absolute !important;
-    bottom: 10px !important;
-    left: 35% !important;
-  }
-}
-.login-banner {
-
-  animation: moving_object 6s infinite linear;
-}
-@keyframes moving_object {
-  0% {
-      transform: translateY(0);
-  }
-  50% {
-      transform: translateY(-30px);
-  }
-  100% {
-      transform: translateY(0);
-  }
+.signup{
+  padding-top: 100px;
 }
 
-.hero_bg {
-  animation: mymove 10s infinite;
-}
-.hero_bg {
-  position: absolute;
-  top: -200px;
-  /* right: 50px; */
-}
-@keyframes mymove{
-  50% {
-      transform: rotate(180deg);
+.login-intro-container {
+  min-height: 100dvh;
+  background: url("../../assets/png/login-intro-bg.png") no-repeat center bottom;
+  background-size: cover;
+
+  .login-intro {
+    padding: var(--size-16) 70px;
+
+    .login-intro-text {
+      font-size: var(--size-32);
+      color: var(--orange-60);
+      font-weight: 500;
+      line-height: var(--size-36);
+      width: 75%;
+      margin: var(--size-12) auto;
+    }
+  }
+
+  .logo-container {
+    padding-left: var(--size-40);
+    padding-top: var(--size-36);
+    padding-bottom: var(--size-64);
+    .login-logo {
+      height: var(--size-64);
+    }
   }
 }
 
-.bannerImg {
-  z-index: 10;
-  position: relative;
-}
-.main-bannerSection {
-
-  position: relative;
-  animation: moving_position_animatin 6s infinite linear;
-  z-index: -1;
-}
-
-.main-bannerSection2 {
-
-  animation: moving_object 6s infinite linear;
-}
-
-.home {
-  border-radius: 20px;
-  box-shadow: 0px 4px 10px #f6b568;
-  ;
-  margin-bottom: 20px;
-
-}
-
-
-.banner2 {
-  /* height: 25%; */
-  width: 80%;
-}
-
-.banner3,
-.banner4 {
-  width: 90%;
-}
-
-@keyframes moving_position_animatin {
-  0% {
-      transform: translateY(0);
+@media (max-width: 767px) {
+  .login-logo {
+    height: var(--size-42);
   }
 
-  50% {
-      transform: translateY(-30px);
-  }
+  .login-main-container {
+    min-height: 30dvh;
+    background: url("../../assets/png/login-intro-bg.png") no-repeat center -40dvh;
+    background-size: cover;
+    padding: 100px 0 0 0;
 
-  100% {
-      transform: translateY(0);
-  }
-}
+    .login-intro-text{
+      font-weight: 500;
+    }
 
-@keyframes moving_object {
-  0% {
-      transform: translateY(0);
-  }
-
-  50% {
-      transform: translateY(-30px);
-  }
-
-  100% {
-      transform: translateY(0);
+    .login-container {
+      background: var(--white);
+      padding: var(--size-32) var(--size-16);
+      border-radius: 50px;
+      .login-box {
+        padding: var(--size-32) var(--size-16);
+      }
+    }
   }
 }
-
-.secondCol{
-  margin-left:-60px;
-}
-
-@media (max-width: 575px){
-  .dashImg{
-    display: none;
-  }
-  .card-box{
-    width:100% !important;
-  }
-}
-
-.showPswrd{
-  position: absolute;
-    left: 88%;
-    padding: 15px 10px 0px;
-    background: none;
-}
- .showPswrd i{
-  font-size: larger;
- }

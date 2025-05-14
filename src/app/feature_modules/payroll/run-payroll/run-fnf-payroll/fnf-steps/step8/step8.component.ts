@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-step8',
@@ -24,11 +25,11 @@ export class FNFStep8Component implements OnInit {
   @Input() isSteps: boolean;
   @Input() selectedFnF: any;
   selectedFNFUser: any;
-  taxCalculatedMethods: string[] = ['Manual', 'System'];
 
   constructor(private fb: FormBuilder,
     private payrollService: PayrollService,
     public dialog: MatDialog,
+    private userService: UserService,
     private toast: ToastrService) {
     this.incomeTaxForm = this.fb.group({
       PayrollFNFUser: ['', Validators.required],
@@ -41,12 +42,25 @@ export class FNFStep8Component implements OnInit {
   ngOnInit(): void {
     this.fetchIncomeTax(this.selectedFnF);
   }
+  onUserSelectedFromChild(user: any): void {
+    const matchedUser = this.selectedFnF?.userList.find((res: any) => res?.user === user);
+    this.selectedFNFUser = matchedUser ? matchedUser?._id : null;
 
+    this.userService.CalculateFNFTDSAmountByUserId(user).subscribe((res: any) => {
+      this.incomeTaxForm.patchValue({
+        TaxCalculatedMethod: res.data.regime,
+        TaxCalculated: res.data.yearlyTDS,
+        TDSCalculated: res.data.fnfDaysTDS
+      });
+    }, err => {
+      this.toast.error('Payroll Income Tax Can not be Added', 'Error!');
+    });
+  }
   onUserChange(fnfUserId: string): void {
-    this.selectedFNFUser = fnfUserId;
     const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === fnfUserId);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
+    this.selectedFNFUser = payrollFNFUserId;
     if (payrollFNFUserId) {
       this.payrollService.getFnFIncomeTaxByPayrollFnFUser(payrollFNFUserId).subscribe((res: any) => {
         this.incomeTax.data = res.data['records'];
@@ -66,81 +80,29 @@ export class FNFStep8Component implements OnInit {
       disableClose: true
     });
   }
-
-  editIncomeTax(incomeTax: any): void {
-    this.isEdit = true;
-    this.selectedIncomeTax = incomeTax;
-    console.log(incomeTax)
-    this.incomeTaxForm.patchValue({
-      PayrollFNFUser: incomeTax.userName,
-      TaxCalculatedMethod: incomeTax.TaxCalculatedMethod,
-      TaxCalculated: incomeTax.TaxCalculated,
-      TDSCalculated: incomeTax.TDSCalculated
-    });
-    this.incomeTaxForm.get('PayrollFNFUser').disable();
-    this.openDialog(true);
-  }
-
   onSubmit(): void {
-    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
-    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
-
-    this.incomeTaxForm.patchValue({
-      PayrollFNFUser: payrollFNFUserId
-    });
-    if (this.incomeTaxForm.valid) {
-      this.incomeTaxForm.get('PayrollFNFUser').enable();
-
-      const payload = this.incomeTaxForm.value;
-
-      if (this.isEdit) {
-        this.incomeTaxForm.patchValue({
-          PayrollFNFUser: this.selectedIncomeTax.PayrollFNFUser,
-        });
-        this.payrollService.updateFnFIncomeTax(this.selectedIncomeTax._id, payload).subscribe(
-          (res: any) => {
-            this.toast.success('Income Tax updated successfully', 'Success');
-            this.fetchIncomeTax(this.selectedFnF);
-            this.isEdit = false;
-            this.incomeTaxForm.reset({
-              PayrollFNFUser: '',
-              TaxCalculatedMethod: '',
-              TaxCalculated: 0,
-              TDSCalculated: 0
-            });
-            this.dialog.closeAll();
-          },
-          (error: any) => {
-            this.toast.error('Failed to update Income Tax', 'Error');
-          }
-        );
-      }
-      else {
-        const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
-        const payrollFNFUserId = matchedUser ? matchedUser._id : null;
-
-        this.incomeTaxForm.patchValue({
-          PayrollFNFUser: payrollFNFUserId
-        });
-        this.payrollService.addFnFIncomeTax(payload).subscribe(
-          (res: any) => {
-            this.toast.success('Income Tax added successfully', 'Success');
-            this.fetchIncomeTax(this.selectedFnF);
-            this.incomeTaxForm.reset({
-              PayrollFNFUser: '',
-              TaxCalculatedMethod: '',
-              TaxCalculated: 0,
-              TDSCalculated: 0
-            });
-            this.dialog.closeAll();
-          },
-          (error: any) => {
-            this.toast.error('Failed to add Income Tax', 'Error');
-          });
-      }
-    } else {
-      this.incomeTaxForm.markAllAsTouched();
+    let payload = {
+      PayrollFNFUser: this.selectedFNFUser,
+      TaxCalculatedMethod: this.incomeTaxForm.value.TaxCalculatedMethod,
+      TaxCalculated: this.incomeTaxForm.value.TaxCalculated,
+      TDSCalculated: this.incomeTaxForm.value.TDSCalculated
     }
+    this.payrollService.addFnFIncomeTax(payload).subscribe(
+      (res: any) => {
+        this.toast.success('Income Tax added successfully', 'Success');
+        this.fetchIncomeTax(this.selectedFnF);
+        this.incomeTaxForm.reset({
+          PayrollFNFUser: '',
+          TaxCalculatedMethod: '',
+          TaxCalculated: 0,
+          TDSCalculated: 0
+        });
+        this.dialog.closeAll();
+      },
+      (error: any) => {
+        this.toast.error('Failed to add Income Tax', 'Error');
+      });
+
   }
 
   onCancel(): void {

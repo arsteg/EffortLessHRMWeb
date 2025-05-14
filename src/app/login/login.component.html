@@ -1,91 +1,90 @@
-<section class="h-100">
-  <div class="container h-100">
-    <div><img src="assets/logo/expanded-logo.svg" alt="" style="height: 80px;"></div>
-    <div class="justify-content-between login-row align-items-end d-flex pt-5">
-      <div class="hero_bg">
-        <img src="assets/main/bg-effect.png" alt="">
-      </div>
-      <div class="dashImg">
-
-        <div class="row ps-3 bannerImg">
-          <div class="col-6">
-            <span><img src="assets/main/login/log1.png" class="w-100 main-bannerSection home banner1" alt=""></span>
-            <span><img src="assets/main/login/log2.png" class="w-100 main-bannerSection home banner2 ms-2"
-                alt=""></span>
-          </div>
-          <div class="col-6 align-content-center secondCol">
-            <span><img src="assets/main/login/log3.png" class="w-75 main-bannerSection2 home banner3" alt=""></span>
-            <span><img src="assets/main/login/log4.png" class="w-75 main-bannerSection2 home banner4" alt=""></span>
-          </div>
-        </div>
-      </div>
-      <div class="card-box">
-        <div class="card shadow-lg mb-5 pb-5">
-          <div class="card-body p-5">
-            <h1 class="fs-4 card-title fw-bold mb-4 text-white border-bottom pb-2" translate>login.title</h1>
-            <form (ngSubmit)=onSubmit() [formGroup]="loginForm" class="needs-validation">
-              <div class="mb-3">
-                <label class="mb-2 text-light" for="email">E-Mail Address</label>
-                <input id="username" type="username" class="rounded-pill form-control" name="username"  required formControlName="email">
-                <div *ngIf="!loginForm.get('email').valid && loginForm.get('email').touched" class="validationErroMessage">
-                  Email is required!
-                </div>
-              </div>
-
-              <div class="mb-3">
-                <div class=" d-flex justify-content-between">
-                  <label class="text-light" for="password">Password</label>
-                  <a routerLink="/forgotPassword" class="float-end text-white">
-                    Forgot Password?
-                  </a>
-                </div>
-                <div class="input-group">
-                  <input [type]="hidePassword ? 'password' : 'text'" id="password" class="rounded-pill form-control" name="password" required formControlName="password">
-                  <div class="input-group-append">
-                    <button type="button" class="showPswrd" (click)="togglePasswordVisibility()" aria-label="Toggle Password Visibility">
-                      <i [class]="hidePassword ? 'bi bi-eye-slash' : 'bi bi-eye'" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </div>
-                <div *ngIf="!loginForm.get('password').valid && loginForm.get('password').touched" class="validationErroMessage">
-                  Password is required!
-                </div>                
-              </div>
-              <div class="mb-3">
-                <div class="mb-2 w-100">
-
-                  <div class="form-check">
-                    <input type="checkbox" name="remember" id="remember" class="form-check-input  check" formControlName="rememberMe">
-                    <label for="remember" class="form-check-label text-light">Remember Me</label>
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex align-items-center">
-
-                <div *ngIf="errorMessage" class="text-light mt-3">
-                  {{ errorMessage }}
-                </div>                
-                
-                <button mat-raised-button color="primary" type="submit" class="addBtn ms-auto d-flex">
-                  <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
-                  Login
-                </button>                
-              </div>
-            </form>
-          </div>
-          <div class="card-footer py-3 border-0">
-            <div class="text-center text-white">
-              Don't have an account? <a routerLink="/register" class="text-light">Create One</a>
-            </div>
-          </div>
-        </div>
-      </div>
+<div class="row h-100 m-0">
+  <div class="col-md-6 d-none d-md-block login-intro-container">
+    <div class="logo-container">
+      <img src="assets/logo/expanded-logo.svg" alt="" class="login-logo" />
     </div>
-    <div class="text-center footer pt-5 mt-5 text-muted">
-      <div class="">
-        Copyright &copy; 2015-{{getCurrentYear()}} &mdash; ARSTEG Solutions Pvt Ltd.
-      </div>
+    <div class="login-intro text-center">
+      <h1 class="login-intro-text" translate>
+        login.intro
+      </h1>
+      <img src="assets/png/login-intro-1.png" class="img-fluid" />
     </div>
-
   </div>
-</section>
+
+  <div class="col-12 col-md-6 login-main-container">
+    <!--mobile logo & intro-->
+    <div class="d-md-none">
+      <div class="logo-container text-center">
+        <img src="assets/logo/expanded-logo.svg" alt="" class="login-logo" />
+      </div>
+      <div class="login-intro text-center">
+        <h1 class="login-intro-text text-primary pt-3 pb-5" translate>
+          login.intro
+        </h1>
+      </div>
+    </div>
+    <!--mobile logo & intro end-->
+    <div class="login-container">
+      <h1 class="text-center fs-4 fw-normal" translate>login.title</h1>
+      <div class="login-box">
+        <form (ngSubmit)=onSubmit() [formGroup]="loginForm" class="needs-validation">
+          <mat-form-field class="w-100">
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-label translate>login.email</mat-label>
+            <input type="text" required formControlName="email" matInput autocomplete="off"/>
+            <mat-error>
+              @if(!loginForm.get('email').valid && loginForm.get('email').touched){
+                {{'login.email_required' | translate }}
+              }
+            </mat-error>
+          </mat-form-field>
+  
+          <mat-form-field class="w-100">
+            <mat-icon matPrefix>lock</mat-icon>
+            <mat-label translate>login.password</mat-label>
+            <input [type]="hidePassword ? 'password' : 'text'" matInput required formControlName="password" autocomplete="off"/>
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="togglePasswordVisibility()"
+              [attr.aria-pressed]="hidePassword"
+              type="button"
+            >
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error>
+              @if(!loginForm.get('password').valid && loginForm.get('password').touched){
+                {{'login.password_required' | translate }}
+              }
+            </mat-error>
+          </mat-form-field>
+  
+          <div class="mb-3 text-end">
+              <a routerLink="/forgotPassword" translate>
+                login.forgot_password
+              </a>
+          </div>
+          
+          <div>
+            <button mat-flat-button color="primary" type="submit" class="w-100" [disabled]="loading">
+              @if(loading){
+                <span class="spinner-border spinner-border-sm me-1"></span>
+              }
+              {{ 'login.login' | translate }}
+            </button>
+          </div>
+
+          <div *ngIf="errorMessage" class="text-danger">
+            {{ errorMessage }}
+          </div>
+
+        </form>
+      </div>
+      <div class="card-footer py-3 border-0">
+        <div class="text-center">
+          {{'login.dont_have_an_account' | translate}} <a routerLink="/register">{{'login.create_one' | translate}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

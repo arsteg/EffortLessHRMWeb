@@ -63,6 +63,7 @@ import { HelpdeskDashboardComponent } from './feature_modules/helpdesk/helpdesk-
 import { UpdateHelpdeskTaskComponent } from './feature_modules/helpdesk/update-helpdesk-task/update-helpdesk-task.component';
 import { SidebarComponent } from './layouts/home/sidebar/sidebar.component';
 import { HeaderComponent } from './layouts/home/header/header.component';
+
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
 @NgModule({

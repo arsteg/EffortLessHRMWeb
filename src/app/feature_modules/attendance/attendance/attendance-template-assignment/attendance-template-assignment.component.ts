@@ -45,7 +45,7 @@ export class AttendanceTemplateAssignmentComponent {
   ) {
     this.attendanceTemplateAssignmentForm = this.fb.group({
       employee: ['', Validators.required],
-      attandanceTemplate: ['', Validators.required],
+      attendanceTemplate: ['', Validators.required],
       effectiveFrom: [, Validators.required],
       primaryApprover: ['', Validators.required],
       secondaryApprover: ['', Validators.required]
@@ -124,7 +124,7 @@ export class AttendanceTemplateAssignmentComponent {
   setFormValues(formValue: any) {
     this.isEdit = true;
     // this.getTemplateById();
-    this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attandanceTemplate).subscribe((res: any) => {
+    this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attendanceTemplate).subscribe((res: any) => {
       this.templateById = res.data;
 
       if (this.templateById.approversType === 'template-wise') {
@@ -212,8 +212,7 @@ export class AttendanceTemplateAssignmentComponent {
 
   }
   getTemplateById() {
-    console.log(this.selectedTemplate.attandanceTemplate)
-    this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attandanceTemplate).subscribe((res: any) => {
+     this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attendanceTemplate).subscribe((res: any) => {
       this.templateById = res.data;
 
       if (this.templateById.approversType === 'template-wise') {
@@ -271,7 +270,7 @@ export class AttendanceTemplateAssignmentComponent {
         this.templateById = res.data;
         let payload = {
           employee: this.attendanceTemplateAssignmentForm.value.employee,
-          attandanceTemplate: this.attendanceTemplateAssignmentForm.value.attandanceTemplate,
+          attendanceTemplate: this.attendanceTemplateAssignmentForm.value.attendanceTemplate,
           effectiveFrom: this.attendanceTemplateAssignmentForm.value.effectiveFrom,
           primaryApprover: this.attendanceTemplateAssignmentForm.value.primaryApprover,
           secondaryApprover: this.attendanceTemplateAssignmentForm.value.secondaryApprover
@@ -289,7 +288,7 @@ export class AttendanceTemplateAssignmentComponent {
           this.toast.success('Attendance Template Assigned', 'Successfully');
           this.attendanceTemplateAssignmentForm.reset({
             employee: '',
-            attandanceTemplate: '',
+            attendanceTemplate: '',
             effectiveFrom: new Date(),
             primaryApprover: '',
             secondaryApprover: ''

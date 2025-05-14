@@ -13,7 +13,7 @@ import { CommonService } from 'src/app/_services/common.Service';
   styleUrl: './step6.component.css'
 })
 export class FNFStep6Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'IsGratuityApplicable', 'GratuityAmount', 'IsProvidentFundApplicable', 'ProvidentFundAmount', 'ProvidentFundPaymentProcess', 'IsProvidentFundWithdrawFormSubmitted', 'actions'];
+  displayedColumns: string[] = ['userName', 'GratuityAmount', 'ProvidentFundAmount', 'ProvidentFundPaymentProcess', 'IsProvidentFundWithdrawFormSubmitted', 'actions'];
   statutoryBenefits = new MatTableDataSource<any>();
   statutoryBenefitForm: FormGroup;
   selectedStatutoryBenefit: any;
@@ -33,9 +33,7 @@ export class FNFStep6Component implements OnInit {
     private toast: ToastrService) {
     this.statutoryBenefitForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
-      IsGratuityApplicable: [true],
       GratuityAmount: [0, Validators.required],
-      IsProvidentFundApplicable: [true],
       ProvidentFundAmount: [0, Validators.required],
       ProvidentFundPaymentProcess: ['', Validators.required],
       IsProvidentFundWithdrawFormSubmitted: [true],
@@ -47,28 +45,41 @@ export class FNFStep6Component implements OnInit {
     this.fetchStatutoryBenefits(this.selectedFnF);
 
   }
-
-  onUserChange(fnfUserId: string): void {
+  getTotalPFAmountByUser(userId: string) {
+    return this.payrollService.getTotalPFAmountByUser(userId).subscribe((res: any) => {
+      this.statutoryBenefitForm.patchValue({
+        ProvidentFundAmount: res.data
+      });
+      });
+  }
+  getTotalGratuityAmountByUser(userId: string) {
+    return this.payrollService.getTotalGratuityAmountByUser(userId).subscribe((res: any) => {
+      this.statutoryBenefitForm.patchValue({
+        GratuityAmount: res.data
+      });
+      });
+  }
+  onUserChange(fnfUserId: string): void {  
+    this.selectedFNFUser = fnfUserId; 
+     this.getTotalPFAmountByUser(this.selectedFNFUser);    
+     this.getTotalGratuityAmountByUser(this.selectedFNFUser);    
+  }
+onPayrollUserChange(fnfUserId: string): void {
     this.selectedFNFUser = fnfUserId;
     const fnfUser = this.selectedFnF.userList[0].user;
     this.payrollService.getFnFStatutoryBenefitByPayrollFnFUser(fnfUserId).subscribe((res: any) => {
       this.statutoryBenefits.data = res.data;
       this.statutoryBenefits.data.forEach((benefit: any) => {
         const user = this.settledUsers.find(user => user._id === fnfUser);
-        console.log(user);
-        benefit.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
       });
     });
   }
-
   openDialog(isEdit: boolean): void {
     this.isEdit = isEdit;
     if (!this.isEdit) {
       this.statutoryBenefitForm.reset({
         payrollFNFUser: '',
-        IsGratuityApplicable: false,
         GratuityAmount: 0,
-        IsProvidentFundApplicable: false,
         ProvidentFundAmount: 0,
         ProvidentFundPaymentProcess: '',
         IsProvidentFundWithdrawFormSubmitted: false,
@@ -87,9 +98,7 @@ export class FNFStep6Component implements OnInit {
 
     this.statutoryBenefitForm.patchValue({
       payrollFNFUser: benefit.userName,
-      IsGratuityApplicable: benefit.IsGratuityApplicable,
       GratuityAmount: benefit.GratuityAmount,
-      IsProvidentFundApplicable: benefit.IsProvidentFundApplicable,
       ProvidentFundAmount: benefit.ProvidentFundAmount,
       ProvidentFundPaymentProcess: benefit.ProvidentFundPaymentProcess,
       IsProvidentFundWithdrawFormSubmitted: benefit.IsProvidentFundWithdrawFormSubmitted,
@@ -108,17 +117,10 @@ export class FNFStep6Component implements OnInit {
       payrollFNFUser: payrollFNFUserId
     });
 
-    // this.statutoryBenefitForm.get('payrollFNFUser').enable();
-    // this.statutoryBenefitForm.patchValue({ payrollFNFUser: this.selectedStatutoryBenefit.payrollFNFUser });
-    // console.log(this.statutoryBenefitForm.value);
-    console.log(this.isEdit);
-    console.log(this.statutoryBenefitForm.value);
-
     // if (this.statutoryBenefitForm.valid) {
     // this.statutoryBenefitForm.get('payrollFNFUser').enable();
     if (this.isEdit) {
       this.statutoryBenefitForm.patchValue({ payrollFNFUser: this.selectedStatutoryBenefit.payrollFNFUser });
-      console.log(this.statutoryBenefitForm.value);
       this.payrollService.updateFnFStatutoryBenefit(this.selectedStatutoryBenefit._id, this.statutoryBenefitForm.value).subscribe(
         (res: any) => {
           this.toast.success('Statutory Benefit updated successfully', 'Success');
