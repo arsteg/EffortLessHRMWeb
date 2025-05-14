@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular
 import { PayrollService } from 'src/app/_services/payroll.service';
 import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-generate-payslips',
@@ -13,20 +14,57 @@ export class GeneratePayslipsComponent {
   payslip: any;
   totalPayWithOvertime: any;
   salaryAfterLOP: string;
+  totalEarnings: number = 0;
+  totalDeductions: number = 0;
 
   @ViewChild('payslipContainer') payslipContainer: ElementRef;
 
-  constructor(private payrollService: PayrollService) {
+  constructor(private payrollService: PayrollService,
+    private userService: UserService) {
     this.payrollService.payslip.subscribe((data: any) => {
       this.payslip = data;
+      console.log(this.payslip)
       this.calculateSalaryAfterLOP();
       this.calculateTotalPayWithOvertime();
+      this.calculateTotals();
     });
+  }
+
+
+  ngOnInit(): void {
+    this.getUserDetails();
+  }
+  
+  calculateTotals(): void {
+    const ps = this.payslip;
+
+    // Ensure all values are numbers, defaulting to 0
+    const fixed = ps?.totalFixedAllowance || 0;
+    const variable = ps?.totalVariableAllowance || 0;
+    const overtime = ps?.totalOvertime || 0;
+    const flexi = ps?.totalFlexiBenefits || 0;
+    const other = ps?.totalOtherBenefit || 0;
+
+    const fixedDeduction = ps?.totalFixedDeduction || 0;
+    const pfTax = ps?.totalPfTax || 0;
+    const incomeTax = ps?.totalIncomeTax || 0;
+    const loanAdvance = ps?.totalLoanAdvance || 0;
+
+    this.totalEarnings = fixed + variable + overtime + flexi + other;
+    this.totalDeductions = fixedDeduction + pfTax + incomeTax + loanAdvance;
+
+    // Optionally, add statutory deductions (ContributorType === 'Employee')
+    if (ps?.statutoryDetails?.length) {
+      const employeeContribs = ps.statutoryDetails
+        .filter(s => s.ContributorType === 'Employee')
+        .reduce((sum, s) => sum + (s.amount || 0), 0);
+      this.totalDeductions += employeeContribs;
+    }
   }
 
   calculateSalaryAfterLOP() {
     const monthlySalary = this.payslip.monthlySalary;
-    const totalDays = this.payslip?.attendanceSummary[0].totalDays;
+    const totalDays = this.payslip?.attendanceSummary[0]?.totalDays;
     const payableDays = this.payslip?.attendanceSummary[0]?.payableDays;
     const perDayPay = monthlySalary / totalDays;
     const lopSalary = perDayPay * payableDays;
@@ -38,6 +76,12 @@ export class GeneratePayslipsComponent {
     const totalOvertime = parseFloat(this.payslip?.totalOvertime);
     this.totalPayWithOvertime = (lopSalary + totalOvertime).toFixed(2);
     this.totalPayWithOvertime -= this.payslip?.totalLoanAdvance;
+  }
+
+  getUserDetails() {
+    this.userService.getJobInformationByUserId(this.payslip?.PayrollUser?._id).subscribe((res: any) => {
+      this.payslip.user = res;
+    });
   }
 
   getCompanyNameFromCookies(): string | null {

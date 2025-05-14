@@ -111,18 +111,6 @@ export const SideBarAdminMenu = [
     svgIcon: '',
   },
   {
-    id: '17',
-    title: 'Roles',
-    url: 'roles',
-    svgIcon: 'roles',
-  },
-  {
-    id: '18',
-    title: 'Role Permission',
-    url: 'role-permission',
-    svgIcon: 'roles_permission',
-  },
-  {
     id: '19',
     title: 'Approvals',
     url: 'approvals',

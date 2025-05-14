@@ -13,17 +13,11 @@
 
         <ng-container matColumnDef="loanAndAdvance">
             <th mat-header-cell *matHeaderCellDef> Loan and Advance </th>
-            <td mat-cell *matCellDef="let element"> {{element.loanAdvanceCategory}} </td>
+            <td mat-cell *matCellDef="let element"> {{element?.loanAndAdvance?.loanAdvancesCategory?.name}} </td>
         </ng-container>
-
         <ng-container matColumnDef="LoanAdvanceAmount">
             <th mat-header-cell *matHeaderCellDef> Loan Advance Amount </th>
             <td mat-cell *matCellDef="let element"> {{element.LoanAdvanceAmount}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef> Status </th>
-            <td mat-cell *matCellDef="let element"> {{element.status}} </td>
         </ng-container>
 
         <ng-container matColumnDef="finalSettlementAmount">
@@ -35,12 +29,6 @@
             <th mat-header-cell *matHeaderCellDef> FnF Clearance Status </th>
             <td mat-cell *matCellDef="let element"> {{element.fnfClearanceStatus}} </td>
         </ng-container>
-
-        <ng-container matColumnDef="fnfDate">
-            <th mat-header-cell *matHeaderCellDef> FnF Date </th>
-            <td mat-cell *matCellDef="let element"> {{element.fnfDate | date: 'mediumDate'}} </td>
-        </ng-container>
-
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let element">
@@ -48,10 +36,6 @@
                     <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="editLoanAdvance(element)">
-                        <mat-icon>edit</mat-icon>
-                        <span>Edit</span>
-                    </button>
                     <button mat-menu-item (click)="deleteFnF(element._id)">
                         <mat-icon>delete</mat-icon>
                         <span>Delete</span>
@@ -86,20 +70,16 @@
                 <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
                 }
                
-                <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Loan and Advance</mat-label>
-                    <mat-select formControlName="loanAndAdvance">
-                        <mat-option *ngIf="userLoanAdvances?.length === 0" disabled>
-                            No Loan/Advance Assigned. Please skip this step
-                        </mat-option>
-                        <mat-option *ngFor="let loan of userLoanAdvances" [value]="loan.loanAdvancesCategory">
-                            {{ loan?.loanAdvanceCategory }}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="loanAdvanceForm.get('loanAndAdvance').hasError('required')">
-                        Loan and Advance is required
-                    </mat-error>
-                </mat-form-field>
+                <div class="form-group col-md-6">
+                    <mat-form-field appearance="outline" class="my-2 w-100">
+                        <mat-label [selected] [disabled]>Select Loans and Advances</mat-label>
+                        <mat-select formControlName="loanAndAdvance">
+                            <mat-option *ngFor="let loanAdvance of userLoanAdvances" [value]="loanAdvance?._id">
+                                {{ loanAdvance?.loanAdvancesCategory?.name }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Loan Advance Amount</mat-label>
@@ -107,18 +87,6 @@
                     <mat-error *ngIf="loanAdvanceForm.get('LoanAdvanceAmount').hasError('required')">Loan Advance Amount
                         is required</mat-error>
                 </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Status</mat-label>
-                    <mat-select formControlName="status">
-                        <mat-option value="Pending">Pending</mat-option>
-                        <mat-option value="Approved">Approved</mat-option>
-                        <mat-option value="Cleared">Cleared</mat-option>
-                        <mat-option value="Partially Cleared">Partially Cleared</mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="loanAdvanceForm.get('status').hasError('required')">Status is required</mat-error>
-                </mat-form-field>
-
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Final Settlement Amount</mat-label>
                     <input matInput type="number" formControlName="finalSettlementAmount">
@@ -129,21 +97,11 @@
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
                     <mat-label>Final Clearance Status</mat-label>
                     <mat-select formControlName="fnfClearanceStatus">
-                        <mat-option value="Pending">Pending</mat-option>
                         <mat-option value="Cleared">Cleared</mat-option>
                         <mat-option value="Partially Cleared">Partially Cleared</mat-option>
                     </mat-select>
                     <mat-error *ngIf="loanAdvanceForm.get('fnfClearanceStatus').hasError('required')">FnF Clearance
                         Status is required</mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>FnF Date</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="fnfDate">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                    <mat-error *ngIf="loanAdvanceForm.get('fnfDate').hasError('required')">FnF Date
-                        is required</mat-error>
                 </mat-form-field>
             </div>
 

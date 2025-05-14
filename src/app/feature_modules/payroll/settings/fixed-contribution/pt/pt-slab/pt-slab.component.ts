@@ -18,56 +18,50 @@ export class PtSlabComponent {
   isEdit: boolean = false;
   ptSlabForm: FormGroup;
   closeResult: string = '';
-  recordsPerPage: number = 10;  
+  recordsPerPage: number = 10;
   selectedState: string = '';
   totalRecords: number;
   currentPage: number = 1;
   searchText: string = '';
   states: any;
+  frequency: any[] = ['Monthly', 'Annually', 'Semi-Annually', 'Bi-Monthly', 'Quarterly']
 
   constructor(private fb: FormBuilder,
     private modalService: NgbModal,
-    private payrollService: PayrollService,    
+    private payrollService: PayrollService,
     private companyService: CompanyService,
     private toast: ToastrService,
     private dialog: MatDialog) {
     this.ptSlabForm = this.fb.group({
-      state: [{ value: this.selectedState, disabled: true }, Validators.required],
+      state: ['', Validators.required],
       fromAmount: [0],
       toAmount: [0],
       employeePercentage: [0, Validators.required],
       employeeAmount: [0, Validators.required],
       twelfthMonthValue: [0, Validators.required],
-      twelfthMonthAmount: [0, Validators.required]
+      twelfthMonthAmount: [0, Validators.required],
+      frequency: ['Monthly', Validators.required],
     })
   }
 
   ngOnInit() {
-    this.payrollService.getStateWisePTSlabs().subscribe((res: any) => {
-      this.ptSlab = res.data.states;
-    });
-    this.payrollService.getAllStates().subscribe((res: any) => {
-      this.states = res.data;
-    });
-    // this.getPtSlab();
     this.getCompanyState();
+    this.getPtSlab();
   }
-  getCompanyState()
-  {
+
+  getCompanyState() {
     this.companyService.getCompany().subscribe((res: any) => {
-      this.selectedState = res.data.company.state;
-       // ✅ Patch it into the form after fetching
-    this.ptSlabForm.patchValue({
-      state: this.selectedState
+      const companyState = res?.data?.company?.state;
+      this.ptSlabForm.patchValue({ state: companyState });
     });
-    })
   }
 
   onPageChange(page: number) {
     this.currentPage = page;
     this.getPtSlab();
   }
-  clearForm(){
+
+  clearForm() {
     this.ptSlabForm.patchValue({
       state: '',
       fromAmount: 0,
@@ -78,6 +72,7 @@ export class PtSlabComponent {
       twelfthMonthAmount: 0
     })
   }
+
   onRecordsPerPageChange(recordsPerPage: number) {
     this.recordsPerPage = recordsPerPage;
     this.getPtSlab();
@@ -95,8 +90,8 @@ export class PtSlabComponent {
   }
 
   editRecord() {
-    this.ptSlabForm.patchValue(this.selectedRecord);
     this.isEdit = true;
+    this.ptSlabForm.patchValue(this.selectedRecord);
   }
 
   closeModal() {
@@ -105,18 +100,30 @@ export class PtSlabComponent {
 
   onSubmission() {
     const payload = {
-      ...this.ptSlabForm.value,
-      state: this.selectedState
+      ...this.ptSlabForm.value
     };
-    this.payrollService.addPTSlab(this.ptSlabForm.value).subscribe((res) => {
-      this.getPtSlab();
-      this.clearForm();
-      this.toast.success('Successfully Added!!!', 'PT Slab');
-    },
-      (err) => {
-        this.toast.error('PT Slab can not be added', 'PT Slab');
-      }
-    )
+    if (!this.isEdit) {
+      this.payrollService.addPTSlab(this.ptSlabForm.value).subscribe((res) => {
+        this.getPtSlab();
+        this.clearForm();
+        this.toast.success('Successfully Added!!!', 'PT Slab');
+      },
+        (err) => {
+          this.toast.error('PT Slab can not be added', 'PT Slab');
+        }
+      )
+    }
+    else if (this.isEdit) {
+      this.payrollService.updatePTSlab(this.selectedRecord._id, payload).subscribe((res) => {
+        this.getPtSlab();
+        this.clearForm();
+        this.toast.success('Successfully Updated!!!', 'PT Slab');
+      },
+        (err) => {
+          this.toast.error('PT Slab can not be updated', 'PT Slab');
+        }
+      )
+    }
   }
 
   deleteRecord(_id: string) {
@@ -144,7 +151,7 @@ export class PtSlabComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
