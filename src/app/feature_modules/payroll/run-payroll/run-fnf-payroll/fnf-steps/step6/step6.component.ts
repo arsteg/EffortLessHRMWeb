@@ -117,17 +117,10 @@ onPayrollUserChange(fnfUserId: string): void {
       payrollFNFUser: payrollFNFUserId
     });
 
-    // this.statutoryBenefitForm.get('payrollFNFUser').enable();
-    // this.statutoryBenefitForm.patchValue({ payrollFNFUser: this.selectedStatutoryBenefit.payrollFNFUser });
-    // console.log(this.statutoryBenefitForm.value);
-    console.log(this.isEdit);
-    console.log(this.statutoryBenefitForm.value);
-
     // if (this.statutoryBenefitForm.valid) {
     // this.statutoryBenefitForm.get('payrollFNFUser').enable();
     if (this.isEdit) {
       this.statutoryBenefitForm.patchValue({ payrollFNFUser: this.selectedStatutoryBenefit.payrollFNFUser });
-      console.log(this.statutoryBenefitForm.value);
       this.payrollService.updateFnFStatutoryBenefit(this.selectedStatutoryBenefit._id, this.statutoryBenefitForm.value).subscribe(
         (res: any) => {
           this.toast.success('Statutory Benefit updated successfully', 'Success');

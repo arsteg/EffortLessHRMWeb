@@ -208,7 +208,12 @@ export class UserService {
   getSalaryByUserId(id: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/users/salary-details-by-userId/${id}`, this.httpOptions);
   }
-
+  CalculateTDSAmountByUserId(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/payroll/calculate-total-tds-amount/${id}`, this.httpOptions);
+  }
+  CalculateFNFTDSAmountByUserId(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/payroll/calculate-total-fnf-tds-amount/${id}`, this.httpOptions);
+  }
   getSalaryDetailsById(id: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/users/salary-details/${id}`, this.httpOptions);
   }
