@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
@@ -81,7 +81,7 @@ export class AddSalaryDetailsComponent {
       salaryComponentVariableAllowance: this.fb.array([]),
       salaryComponentVariableDeduction: this.fb.array([]),
       salaryComponentPFCharge: this.fb.array([])
-    });
+    }, { validators: this.totalSalaryComponentsValidator() });
   }
 
   ngOnInit(): void {
@@ -140,6 +140,33 @@ export class AddSalaryDetailsComponent {
     }
   }
 
+ totalSalaryComponentsValidator(): ValidatorFn {
+  return (formGroup: AbstractControl): ValidationErrors | null => {
+    const grossSalary = formGroup.get('Amount')?.value || 0;
+    const arrays = [
+      'salaryComponentFixedAllowance',
+      'salaryComponentOtherBenefits',
+      'salaryComponentFixedDeduction',
+      'salaryComponentVariableAllowance',
+      'salaryComponentVariableDeduction',
+    ];
+
+    let totalYearlyAmount = 0;
+    const basicSalary = grossSalary * 0.4;
+    totalYearlyAmount += basicSalary;
+
+    arrays.forEach(arrayName => {
+      const formArray = formGroup.get(arrayName) as FormArray;
+      formArray.controls.forEach(control => {
+        const yearlyAmount = control.get('yearlyAmount')?.value || 0;
+        totalYearlyAmount += yearlyAmount;
+      });
+    });
+
+    return totalYearlyAmount <= grossSalary ? null : { exceedsGrossSalary: true };
+  };
+}
+
   getAllComponents() {
     forkJoin({
       fixedAllowance: this.payrollService.getFixedAllowance({ next: '', skip: '' }),
@@ -157,8 +184,6 @@ export class AddSalaryDetailsComponent {
       this.fixedDeduction = result.fixedDeduction.data;
       this.variableAllowance = result.variableAllowance.data;
       this.variableDeduction = result.variableDeduction.data;
-console.log(this.fixedAllowance, this.otherBenefits, this.employerContribution, this.employeeDeduction, this.fixedDeduction, this.variableAllowance, this.variableDeduction);
-
       this.salaryDetailsForm.patchValue({
         salaryComponentFixedAllowance: this.fixedAllowance,
         salaryComponentOtherBenefits: this.otherBenefits,
@@ -172,15 +197,6 @@ console.log(this.fixedAllowance, this.otherBenefits, this.employerContribution, 
     });
   }
 
-  // onCTCTemplateChange(value: string) {
-  //   if (value === 'manual') {
-  //     this.addButtons = true;
-  //     this.enableManualEntry();
-  //   } else {
-  //     this.addButtons = false;
-  //     this.getCTCTemplateById(value);
-  //   }
-  // }
   onCTCTemplateChange(value: string): void {
     if (value === 'manual') {
       this.enableManualEntry();
@@ -397,7 +413,6 @@ console.log(this.fixedAllowance, this.otherBenefits, this.employerContribution, 
       let employee;
       if (this.view === 'admin') { employee = segments[segments.length - 3]; }
       else { employee = this.currentUser?.empCode }
-      console.log('Employee:', employee);
       this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
         this.selectedUser = res.data[0];
       });

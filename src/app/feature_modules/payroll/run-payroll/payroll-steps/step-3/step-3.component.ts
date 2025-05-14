@@ -93,12 +93,13 @@ export class Step3Component {
     if (this.changeMode === 'Update') {
       this.payrollService.getPayrollUserById(this.selectedRecord.payrollUser).subscribe((res: any) => {
         this.payrollUser = res.data;
-
+        this.getSalarydetailsByUser();
         const payrollUser = this.payrollUser?.user;
+        console.log(this.selectedRecord)
         this.variablePayForm.patchValue({
           payrollUser: this.getUser(payrollUser),
-          variableDeduction: this.selectedRecord?.variableDeduction,
-          variableAllowance: this.selectedRecord?.variableAllowance,
+          variableDeduction: this.selectedRecord?.variableDeduction?._id,
+          variableAllowance: this.selectedRecord?.variableAllowance?._id,
           amount: this.selectedRecord?.amount,
           month: this.selectedRecord?.month,
           year: this.selectedRecord?.year
@@ -121,10 +122,11 @@ export class Step3Component {
   }
 
   getSalarydetailsByUser() {
-    this.userService.getSalaryByUserId(this.selectedUserId).subscribe((res: any) => {
+    this.userService.getSalaryByUserId(this.selectedUserId || this.payrollUser?.user).subscribe((res: any) => {
       this.salary = res.data[res.data.length - 1];
     })
   }
+
   onUserSelectedFromChild(userId: any) {
     this.selectedUserId = userId.value.user;
     this.selectedPayrollUser = userId.value._id;
@@ -133,7 +135,7 @@ export class Step3Component {
   }
 
   getVariablePay() {
-    this.payrollService.getVariablePay(this.selectedPayrollUser).subscribe((res: any) => {
+    this.payrollService.getVariablePay(this.selectedRecord?.payrollUser).subscribe((res: any) => {
       this.variablePay = res.data;
       const userRequests = this.variablePay.map((item: any) => {
         const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
@@ -145,7 +147,7 @@ export class Step3Component {
       this.variablePay = userRequests
     },
       (error) => {
-        this.toast.error("Error fetching attendance summary:", error);
+        this.toast.error("Error fetching Variable Pay:", error);
       }
     );
   }

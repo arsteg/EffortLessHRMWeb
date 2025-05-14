@@ -3,6 +3,8 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { UserService } from 'src/app/_services/users.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { OraginzationService } from 'src/app/_services/oraganization.service';
+import { CompanyService } from 'src/app/_services/company.service';
 
 @Component({
   selector: 'app-tax-calculator',
@@ -33,7 +35,7 @@ export class TaxCalculatorComponent implements OnInit {
   taxableSalary: number = 0;
   taxPayableOldRegime: number = 0;
   taxPayableNewRegime: number = 0;
- newRegime: number = 0;
+  newRegime: number = 0;
   user = JSON.parse(localStorage.getItem('currentUser'));
   hraVerifiedTotal: number = 0;
 
@@ -41,12 +43,14 @@ export class TaxCalculatorComponent implements OnInit {
   grossSalaryControl = new FormControl({ value: 0, disabled: true });
   hraControl = new FormControl(0);
   sectionControls: { [key: string]: FormControl } = {};
+  taxSlabs: any;
 
   constructor(
     private modalService: NgbModal,
     private userService: UserService,
-    private taxService: TaxationService
-  ) {}
+    private taxService: TaxationService,
+    private companyService: CompanyService
+  ) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedRecord'] && this.selectedRecord) {
@@ -60,6 +64,7 @@ export class TaxCalculatorComponent implements OnInit {
     this.getTaxSections();
     this.getTaxComponents();
     this.getSalaryByUser();
+    this.getTaxSlabs();
   }
 
   calculateIncomeTaxComponentsTotal() {
@@ -126,15 +131,14 @@ export class TaxCalculatorComponent implements OnInit {
 
   calculateTax() {
     if (this.salaryDetail?.Amount) {
-        this.calculateHraVerifiedTotal();
-        this.calculateIncomeTaxComponentsTotal();
-        const componentDeductions = Object.values(this.incomeTaxComponentsTotal || {}).reduce((sum, amount) => sum + (amount || 0), 0);
-        const totalDeductions = (this.hraVerifiedTotal || 0) + componentDeductions;
-        this.taxableSalary = this.grossSalary - totalDeductions;
-        this.taxPayableOldRegime = this.calculateOldRegimeTax(this.taxableSalary);
-        // this.taxPayableNewRegime = this.calculateNewRegimeTax(this.taxableSalary);
+      this.calculateHraVerifiedTotal();
+      this.calculateIncomeTaxComponentsTotal();
+      const componentDeductions = Object.values(this.incomeTaxComponentsTotal || {}).reduce((sum, amount) => sum + (amount || 0), 0);
+      const totalDeductions = (this.hraVerifiedTotal || 0) + componentDeductions;
+      this.taxableSalary = this.grossSalary - totalDeductions;
+      this.taxPayableOldRegime = this.calculateOldRegimeTax(this.taxableSalary);
     }
-}
+  }
 
   calculateOldRegimeTax(taxableSalary: number): number {
     let tax = 0;
@@ -150,25 +154,15 @@ export class TaxCalculatorComponent implements OnInit {
     return tax;
   }
 
-  // calculateNewRegimeTax(taxableSalary: number): number {
-  //   let tax = 0;
-  //   if (taxableSalary <= 250000) {
-  //     tax = 0;
-  //   } else if (taxableSalary <= 500000) {
-  //     tax = (taxableSalary - 250000) * 0.05;
-  //   } else if (taxableSalary <= 750000) {
-  //     tax = 12500 + (taxableSalary - 500000) * 0.1;
-  //   } else if (taxableSalary <= 1000000) {
-  //     tax = 37500 + (taxableSalary - 750000) * 0.15;
-  //   } else if (taxableSalary <= 1250000) {
-  //     tax = 75000 + (taxableSalary - 1000000) * 0.2;
-  //   } else if (taxableSalary <= 1500000) {
-  //     tax = 125000 + (taxableSalary - 1250000) * 0.25;
-  //   } else {
-  //     tax = 187500 + (taxableSalary - 1500000) * 0.3;
-  //   }
-  //   return tax;
-  // }
+  getTaxSlabs() {
+    let payload = {
+      companyId: this.user?.companyId,
+    }
+    this.companyService.getTaxSlabByCompany(payload).subscribe((res: any) => {
+      this.taxSlabs = res.data.find((slab: any)=> slab?.regime === 'New Regime');
+      console.log('Tax Slabs:', this.taxSlabs);
+    });
+  }
 
   initializeSectionControls() {
     this.taxSections.forEach(section => {
