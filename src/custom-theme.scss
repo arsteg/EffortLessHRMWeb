@@ -20,7 +20,25 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$EffortLessHRMWeb-primary: mat.define-palette(mat.$orange-palette);
+$custom-orange: (
+  50: #fcf1e7,
+  100: #f7d3b6,
+  200: #f3be92,
+  300: #eda060,
+  400: #e98d41,
+  500: #e47112,  // Your base color
+  600: #cf6710,
+  contrast: (
+    50: #000,
+    100: #000,
+    200: #000,
+    300: #000,
+    400: #000,
+    500: #fff,
+    600: #fff,
+  )
+);
+$EffortLessHRMWeb-primary: mat.define-palette($custom-orange, 500, 100, 600);
 $EffortLessHRMWeb-accent: mat.define-palette(mat.$green-palette);
 $EffortLessHRMWeb-warn: mat.define-palette(mat.$red-palette);
 
