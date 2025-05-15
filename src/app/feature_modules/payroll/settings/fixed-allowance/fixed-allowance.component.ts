@@ -97,6 +97,7 @@ export class FixedAllowanceComponent {
             this.toast.error('This Can not be Updated as it is already used in the system', 'Fixed Allowance');
           })
       }
+      this.fixedAllowanceForm.get('label').enable();
     }
     else {
       this.markFormGroupTouched(this.fixedAllowanceForm);
@@ -123,6 +124,13 @@ export class FixedAllowanceComponent {
       isProfessionalTaxAffected: this.selectedRecord.isProfessionalTaxAffected,
       isTDSAffected: this.selectedRecord.isTDSAffected,
     });
+    if(this.selectedRecord.isDelete===false)
+    {
+    this.fixedAllowanceForm.get('label').disable();
+    }
+    else{
+      this.fixedAllowanceForm.get('label').enable();
+    }
     console.log(this.selectedRecord);
     console.log(this.fixedAllowanceForm.value);
   }
