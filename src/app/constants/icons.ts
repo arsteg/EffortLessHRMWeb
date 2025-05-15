@@ -23,5 +23,9 @@ export const ICONS = [
     "feedback",
     "helpdesk",
     "interview-process",
-    "job-description"
+    "job-description",
+    "permission",
+    "payslip",
+    "manual-time",
+    "timetable"
 ];

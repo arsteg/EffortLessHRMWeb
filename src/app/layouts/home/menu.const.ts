@@ -5,16 +5,12 @@ export const SideBarAdminMenu = [
   {
     id: '1',
     title: 'Dashboard',
-    icon: 'assets/Sidenav-Icons/dashboard.png',
-    lightIcon: 'assets/Sidenav-Icons/light-Icons/dashboard.png',
     url: 'dashboard',
     svgIcon: 'dashboard',
   },
   {
     id: '2',
     title: 'Screenshots',
-    icon: 'assets/Sidenav-Icons/screenshots.png',
-    lightIcon: 'assets/Sidenav-Icons/light-Icons/screenshots.png',
     url: 'screenshots',
     svgIcon: 'screenshot',
   },
@@ -22,7 +18,7 @@ export const SideBarAdminMenu = [
     id: '3',
     title: 'RealTime',
     url: 'realtime',
-    svgIcon: 'time'
+    svgIcon: 'timetable'
   },
   {
     id: '4',
@@ -105,10 +101,8 @@ export const SideBarAdminMenu = [
   {
     id: '17',
     title: 'Permissions',
-    icon: 'assets/Sidenav-Icons/permission.png',
-    lightIcon: 'assets/Sidenav-Icons/light-Icons/permission.png',
     url: 'permissions',
-    svgIcon: '',
+    svgIcon: 'permission',
   },
   {
     id: '19',
@@ -156,7 +150,7 @@ export const SideBarUserMenu = [
     id: '3',
     title: 'RealTime',
     url: 'realtime',
-    svgIcon: 'time',
+    svgIcon: 'timetable',
   },
 
   {
@@ -218,9 +212,7 @@ export const SideBarUserMenu = [
   {
     id: '12',
     title: 'PaySlips',
-    icon: 'assets/Sidenav-Icons/payslip.png',
-    lightIcon: 'assets/Sidenav-Icons/light-Icons/payslip.png',
-    svgIcon: '',
+    svgIcon: 'payslip',
   },
   {
     id: '13',
@@ -238,7 +230,7 @@ export const SideBarUserMenu = [
     id: '15',
     title: 'Manual Time',
     url: 'manual-time',
-    svgIcon: 'time',
+    svgIcon: 'manual-time',
   },
   {
     id: '16',
