@@ -1,26 +1,28 @@
-<app-header 
-  [loggedInUser]="currentProfile" 
-  [profileSwitch]="portalType === 'admin'" 
-  [role]="adminView" 
-  (onMenuToggled)="drawer.toggle()" 
-  (onProfileSwitch)="switchView($event)">
+<app-header [loggedInUser]="currentProfile" [profileSwitch]="portalType === 'admin'" [role]="adminView"
+  (onMenuToggled)="toggleDrawer()" (onProfileSwitch)="switchView($event)">
 </app-header>
 
 <!-- Sidebar - icons with text -->
 <div id="wrapper">
   <mat-drawer-container class="content-container" autosize>
-    <mat-drawer #drawer class="sidenav-drawer" mode="side" opened>
-      <app-sidebar [menuList]="menuList"></app-sidebar>
+    <mat-drawer #drawerRef class="sidenav-drawer" [mode]="isMobile ? 'over' : 'side'"
+      (openedChange)="onDrawerOpenedChange($event)"
+      [opened]="!isMobile || isMobile && drawerOpened" [ngClass]="{
+      'collapsed': !isMobile && isCollapsedMenu,
+      'expanded': !isMobile && !isCollapsedMenu
+    }">
+      <app-sidebar [menuList]="menuList" [railMenu]="!isMobile && isCollapsedMenu"></app-sidebar>
     </mat-drawer>
-  
-    <div id="page-content-wrapper" class="w-100" [ngClass]="!isCollapsedMenu? 'expandedContent': 'collapsedContent'">
-      <div class="container-fluid p-2">
-        <router-outlet></router-outlet>
-        <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100" [extraDuration]="1000"
-          [minDuration]="1000" [backdropBackgroundColor]="'#777777'" [spinner]="spinnerStyle.skThreeBounce">
-        </ng-http-loader>
+
+    <mat-drawer-content #contentArea>
+      <div id="page-content-wrapper" class="w-100">
+        <div class="container-fluid p-2">
+          <router-outlet></router-outlet>
+          <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100" [extraDuration]="1000"
+            [minDuration]="1000" [backdropBackgroundColor]="'#777777'" [spinner]="spinnerStyle.skThreeBounce">
+          </ng-http-loader>
+        </div>
       </div>
-    </div>
-  
+    </mat-drawer-content>
   </mat-drawer-container>
 </div>

@@ -9,6 +9,7 @@ import { SideBarAdminMenu, SideBarUserMenu } from '../menu.const';
 export class SidebarComponent {
   searchText: string = '';
   @Input() menuList = [];
+  @Input() railMenu = false;
 
   constructor() { }
 
