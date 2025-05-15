@@ -1,0 +1,14 @@
+<div [class]="cssClass">
+    <button #languageMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="languageMenu" mat-stroked-button>
+        <mat-icon>language</mat-icon>
+        <span class="d-flex align-items-center">{{currentLang | uppercase}}  <mat-icon>keyboard_arrow_down</mat-icon></span>
+    </button>
+    <mat-menu #languageMenu="matMenu">
+        @for(language of languages; track language){
+            <button mat-menu-item (click)="switchLanguage(language.code)">
+                <span>{{language.name}}</span>
+            </button>
+        }
+        
+    </mat-menu>
+</div>

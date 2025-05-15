@@ -3,14 +3,16 @@ import { SharedModule } from "../shared/shared.Module";
 import { SubordinateSelectionComponent } from "./subordinateSelection/subordinateSelection.component";
 import { CRUDComponent } from './crud/crud.component';
 import { RouterModule } from "@angular/router";
+import { LanguageSelectorComponent } from "./language-selector/language-selector.component";
 
 @NgModule({
-    declarations:[SubordinateSelectionComponent, CRUDComponent],
+    declarations:[SubordinateSelectionComponent, CRUDComponent, LanguageSelectorComponent],
     exports:[
       SharedModule,
       RouterModule,
       SubordinateSelectionComponent,
-      CRUDComponent
+      CRUDComponent,
+      LanguageSelectorComponent
     ],
     imports:[
       SharedModule,
