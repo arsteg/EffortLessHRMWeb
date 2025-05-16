@@ -1,16 +1,17 @@
-<div class="input-group mb-2 w-75 mx-auto menu-search">
-    <span class="input-group-text p-0">
-        <mat-icon>search</mat-icon>
-    </span>
-    <input type="text" [(ngModel)]="searchText" placeholder="Search..." class="form-control"
-        (input)="filteredMenuItems()">
-</div>
+
+    <div class="input-group w-75 mx-auto menu-search mt-3" [class.d-none]="railMenu">
+        <span class="input-group-text p-0">
+            <mat-icon>search</mat-icon>
+        </span>
+        <input type="text" [(ngModel)]="searchText" placeholder="Search..." class="form-control"
+            (input)="filteredMenuItems()">
+    </div>
 
 <!--Expanded Menu-->
 
-<ul class="menu">
+<ul class="menu mt-3" [class.rail-menu]="railMenu">
     @for(menu of menuList; track menu) {
-    <li class="menu-item" [routerLink]="menu.url" routerLinkActive="active"
+    <li class="menu-item" [class.rail-menu-item]="railMenu" [routerLink]="menu.url" routerLinkActive="active" [matTooltip]="railMenu ? menu.title : ''"
         [routerLinkActiveOptions]="{ exact: false }">
         @if(menu.svgIcon) {
         <mat-icon [svgIcon]="menu.svgIcon"></mat-icon>

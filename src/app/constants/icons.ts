@@ -27,5 +27,6 @@ export const ICONS = [
     "permission",
     "payslip",
     "manual-time",
-    "timetable"
+    "timetable",
+    "manage"
 ];

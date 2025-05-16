@@ -1,4 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {
+  Component, OnInit, ViewChild, HostListener, ElementRef,
+  AfterViewInit,
+  OnDestroy
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { Spinkit } from 'ng-http-loader';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
@@ -7,17 +11,19 @@ import { MatDialog } from '@angular/material/dialog';
 import { SideBarAdminMenu, SideBarUserMenu } from './menu.const';
 import { MatMenuTrigger } from '@angular/material/menu';
 
-declare var bootstrap: any;
-
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+  resizeObserver!: ResizeObserver;
   @ViewChild(MatMenuTrigger) profileMenu!: MatMenuTrigger;
-  title = 'sideBarNav';
+  @ViewChild('drawerRef', { read: ElementRef }) drawerRef!: ElementRef;
+  @ViewChild('contentArea', { read: ElementRef }) contentArea!: ElementRef;
   isCollapsedMenu: boolean = false;
+  isMobile = false;
+  drawerOpened = false; // for mobile
   menuList: any = SideBarUserMenu;
   spinnerStyle = Spinkit;
   portalType: string = 'user';
@@ -83,6 +89,42 @@ export class HomeComponent implements OnInit {
       this.commonService.setCurrentUser(this.currentProfile);
       return this.currentProfile;
     });
+  }
+
+  ngAfterViewInit(): void {
+    if (this.drawerRef && this.contentArea) {
+      this.resizeObserver = new ResizeObserver(() => {
+        const drawerWidth = this.drawerRef.nativeElement.offsetWidth;
+        this.contentArea.nativeElement.style.marginLeft = this.isMobile ? '0' : drawerWidth + 'px';
+      });
+
+      this.resizeObserver.observe(this.drawerRef.nativeElement);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+  }
+
+  @HostListener('window:resize')
+  checkScreen() {
+    this.isMobile = window.innerWidth < 768;
+  }
+
+  toggleDrawer() {
+    if (this.isMobile) {
+      this.drawerOpened = !this.drawerOpened;
+    } else {
+      this.isCollapsedMenu = !this.isCollapsedMenu;
+    }
+  }
+
+  onDrawerOpenedChange(opened: boolean) {
+    if (this.isMobile) {
+      this.drawerOpened = opened;
+    }
   }
 
   toggleDropdown() {

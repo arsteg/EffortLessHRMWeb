@@ -30,7 +30,7 @@ export const SideBarAdminMenu = [
     id: '5',
     title: 'Manage',
     url: 'manage',
-    svgIcon: 'attendance',
+    svgIcon: 'manage',
   },
   {
     id: '6',

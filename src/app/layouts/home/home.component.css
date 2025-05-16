@@ -1,9 +1,22 @@
 .sidenav-drawer{
     background: var(--orange-10);
     border-right-color: var(--orange-20);
+    transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    overflow: overlay;
 
     ::-webkit-scrollbar-track {
         background: var(--orange-10);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0);
+    }
+
+    &.collapsed {
+        width: 60px;
+    }
+    &.expanded {
+        width: 240px;
     }
 }
 
