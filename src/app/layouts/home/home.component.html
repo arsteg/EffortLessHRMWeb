@@ -1,4 +1,4 @@
-<app-header [loggedInUser]="currentProfile" [profileSwitch]="portalType === 'admin'" [role]="adminView"
+<app-header [loggedInUser]="currentProfile" [profileSwitch]="portalType?.toLowerCase() === 'admin'" [role]="adminView"
   (onMenuToggled)="toggleDrawer()" (onProfileSwitch)="switchView($event)">
 </app-header>
 

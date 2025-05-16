@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   drawerOpened = false; // for mobile
   menuList: any = SideBarUserMenu;
   spinnerStyle = Spinkit;
-  portalType: string = 'user';
+  portalType: string = localStorage.getItem('role');
   adminView: string = 'admin';
   currentProfile: any;
   dropdownOpen: boolean = false;
@@ -60,8 +60,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.adminView = 'admin';
         localStorage.setItem('adminView', 'admin');
         this.menuList = SideBarAdminMenu;
-        this.portalType = this.adminView?.toLowerCase();
-        console.log(this.portalType);
+        //this.portalType = this.adminView?.toLowerCase();
+        //console.log(this.portalType);
       }
       if (this.adminView?.toLowerCase() == 'user') {
         this.adminView = 'user';
@@ -71,8 +71,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       if (role && role?.toLowerCase() == 'admin') {
         this.menuList = SideBarAdminMenu;
-        this.portalType = role?.toLowerCase();
-        console.log(this.portalType)
+        // this.portalType = role?.toLowerCase();
+        // console.log(this.portalType)
       }
       if (role && role?.toLowerCase() == 'user') {
         this.menuList = SideBarUserMenu;
