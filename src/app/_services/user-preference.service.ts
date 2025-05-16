@@ -153,13 +153,13 @@ export class PreferenceService {
       );
   }
 
-  getPreferenceByKey(preferenceKey: string): Observable<PreferenceOption[]> {
+  getPreferenceByKey(preferenceKey: string, userId: string): Observable<PreferenceOption[]> {
     const httpOptions = {
         headers: new HttpHeaders({
             'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
         }),
         withCredentials: true
     };
-    return this.http.get<PreferenceOption[]>(`${environment.apiUrlDotNet}/userPreferences/preference-key/${preferenceKey}`, httpOptions);
+    return this.http.get<PreferenceOption[]>(`${environment.apiUrlDotNet}/userPreferences/preference-key/${preferenceKey}?userId=${userId}`, httpOptions);
   }
 }
