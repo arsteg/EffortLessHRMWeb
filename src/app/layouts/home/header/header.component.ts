@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Output, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { PreferenceService } from '../../../_services/user-preference.service';
-import { PreferenceKeys } from '../../../constants/userpreference-keys';
 
 @Component({
   selector: 'app-header',
@@ -24,19 +23,15 @@ export class HeaderComponent {
 
   switchView(view:string){
     this.onProfileSwitch.emit(view);
-    let selectedAppMode = view === 'Admin' ? 'admin' : 'user';
+    const selectedAppMode = view?.toLowerCase() === 'admin' ? 'admin' : 'user';
     this.preferenceService.createOrUpdatePreference(
-                  this.loggedInUser._id,
-                  PreferenceKeys.APP_MODE,
-                  selectedAppMode
-                ).subscribe({
-                  next: () => {
-                    console.log('AppMode preference saved successfully!');
-                  },
-                  error: (err) => {
-                    console.error('Error saving AppMode preference:', err);
-                  }
-                });
+      this.loggedInUser._id,
+      'AppMode',
+      selectedAppMode
+    ).subscribe({
+      next: () => console.log('AppMode updated successfully'),
+      error: (err) => console.error('Error updating AppMode:', err)
+    });
   }
 
   onLogout() {

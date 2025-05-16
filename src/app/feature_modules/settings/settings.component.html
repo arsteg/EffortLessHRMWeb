@@ -6,7 +6,7 @@
             <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">
                 Generic Settings</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3">
-                User Preferences</button>
+                {{ view === 'admin' ? 'User Settings' : 'User Preferences' }}</button>
 
 
 
