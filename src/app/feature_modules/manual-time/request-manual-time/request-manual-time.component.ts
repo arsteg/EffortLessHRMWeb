@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { Observable, first, tap } from 'rxjs';
-import { TimeLogService } from 'src/app/_services/timeLogService';
 import { ManualTimeRequestService } from 'src/app/_services/manualTimeRequest.Service';
 import { UtilsService } from 'src/app/_services/utils.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { TasksService } from 'src/app/_services/tasks.service';
 import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+
 @Component({
   selector: 'app-request-manual-time',
   templateUrl: './request-manual-time.component.html',
@@ -25,7 +25,6 @@ export class RequestManualTimeComponent implements OnInit {
   today: string = new Date().toISOString().split('T')[0];
   id: string;
   projectId: string;
-  closeResult: string = '';
   addRequestForm: FormGroup;
   searchText: string = "";
   p: number = 1;
@@ -45,10 +44,11 @@ export class RequestManualTimeComponent implements OnInit {
   currentPage: number = 1;
   isEdit: boolean = false;
   view = localStorage.getItem('adminView');
+  dialogRef: MatDialogRef<any>;
 
-  constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
+  constructor(private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
-    private timeLogService: TimeLogService,
+    private dialog: MatDialog,
     private toastService: ToastrService,
     private manualTimeRequestService: ManualTimeRequestService,
     private utilsService: UtilsService,
@@ -106,20 +106,6 @@ export class RequestManualTimeComponent implements OnInit {
     console.log(`Selected item with id: ${newId}`);
   }
 
-  // onProjectChange(event): Observable<any> {
-  //   const projectId = event.value;
-  //  return this.getUserTaskListByProject(projectId);
-  // }
-  // getUserTaskListByProject(projectId: string): Observable<any> {
-  //   return this.authenticationService.getUserTaskListByProject(this.id, projectId, '', '').
-  //   pipe(
-  //     tap(res => {
-  //       this.tasks = res && res['taskList'];
-  //       console.log(this.tasks);
-  //     })
-  //   );
-  // }
-
   onProjectChange(event): void {
     const projectId = event.value;
     if (projectId) {
@@ -136,11 +122,13 @@ export class RequestManualTimeComponent implements OnInit {
       }));
   }
 
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  openModal(template,  width="50%") {
+    this.dialogRef = this.dialog.open(template, {
+      width: width,
+      disableClose: true
+    })
+    this.dialogRef.afterClosed().subscribe((result) => {
+      
     });
   }
 
@@ -162,15 +150,6 @@ export class RequestManualTimeComponent implements OnInit {
     return null;
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
 
   onSubmit() {
     var currentUser = JSON.parse(localStorage.getItem('currentUser'));

@@ -8,8 +8,8 @@
           <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
             (input)="filterRecords()" name="searchText" aria-label="default input example">
 
-          <button mat-raised-button class="addBtn rounded-pill ms-3" data-bs-toggle="modal"
-            data-bs-target="#requestModal" (click)="clearselectedRequest();changeMode='Add'; isEdit = false;">New
+          <button mat-raised-button class="addBtn rounded-pill ms-3"
+            (click)="clearselectedRequest();changeMode='Add'; isEdit = false;openModal(requestModal)">New
             Request</button>
         </div>
       </div>
@@ -82,14 +82,13 @@
             </td>
             <td>
               <button class="actions" *ngIf="record.status=='pending'" mat-mini-fab matTooltip="Edit"
-                matTooltipPosition="before" data-bs-toggle="modal" data-bs-target="#requestModal"
-                (click)="setUpdateMode(record);changeMode='Update';selectedRequest = record; isEdit = true"
+                matTooltipPosition="before"
+                (click)="setUpdateMode(record);changeMode='Update';selectedRequest = record; isEdit = true; openModal(requestModal)"
                 aria-label="Example icon button with a menu icon">
                 <i class="bi bi-pencil-fill"></i>
               </button>
               <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                data-bs-toggle="modal" data-bs-target="#deleteModal" (click)="selectedRequest = record"
-                aria-label="Example icon button with a menu icon">
+                (click)="selectedRequest = record; openModal(deleteModal, '300px')">
                 <i class="bi bi-trash"></i>
               </button>
             </td>
@@ -100,59 +99,57 @@
   </div>
 </div>
 
-<div class="modal" id="requestModal">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header pb-0">
-        <div>
-          <h1 class="modal-title text-muted mb-0">{{changeMode}} Manual Time Request</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"></button>
-        </div>
-      </div>
+<ng-template #requestModal>
 
-      <div class="modal-body">
-        <form [formGroup]="addRequestForm" (ngSubmit)="onSubmit()">
-          <div class="row d-flex justify-content-center">
-            <div class="row">
-              <div class="col-md-6">
-                <label for="project" class="text-start">
-                  Project <span class="text-danger">*</span>
-                </label>
-                <select class="custom-select p-2" formControlName="project" (change)="onProjectChange($event.target)">
-                  <option disabled selected value="undefined">Choose Any Project</option>
-                  <option *ngFor="let project of projects" [value]="project.id">
-                    {{project.projectName}}
-                  </option>
-                </select>
-                <div *ngIf="addRequestForm.controls['project'].invalid && addRequestForm.controls['project'].touched"
-                  class="alert alert-danger error">
-                  <div *ngIf="addRequestForm.controls['project'].errors['required']">
-                    Project is required.
-                  </div>
-                </div>
-              </div>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>{{changeMode}} Manual Time Request</h1>
+    <button type="button" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 
-              <div class="col-md-6">
-                <label for="manager" class="text-start">Manager<span class="text-danger">*</span></label>
-                <select class="custom-select p-2" formControlName="manager">
-                  <option disabled selected value="undefined">Choose Any Manager</option>
-                  <option *ngFor="let manager of managers" [value]="manager?.id">
-                    {{manager.name}}
-                  </option>
-                </select>
-                <div *ngIf="addRequestForm.controls['manager'].invalid && addRequestForm.controls['manager'].touched"
-                  class="alert alert-danger error">
-                  <div *ngIf="addRequestForm.controls['manager'].errors['required']">
-                    Manager is required.
-                  </div>
-                </div>
+  <mat-dialog-content>
+    <form [formGroup]="addRequestForm" (ngSubmit)="onSubmit()">
+      <div class="row d-flex justify-content-center">
+        <div class="row">
+          <div class="col-md-6 mt-3">
+            <label for="project" class="text-start">
+              Project <span class="text-danger">*</span>
+            </label>
+            <select class="custom-select p-2" formControlName="project" (change)="onProjectChange($event.target)">
+              <option disabled selected value="undefined">Choose Any Project</option>
+              <option *ngFor="let project of projects" [value]="project.id">
+                {{project.projectName}}
+              </option>
+            </select>
+            <div *ngIf="addRequestForm.controls['project'].invalid && addRequestForm.controls['project'].touched"
+              class="alert alert-danger error">
+              <div *ngIf="addRequestForm.controls['project'].errors['required']">
+                Project is required.
               </div>
             </div>
+          </div>
 
-            <div class="row mt-3">
-              <label for="task" class="text-start">Task<span class="text-danger">*</span></label>
+          <div class="col-md-6 mt-3">
+            <label for="manager" class="text-start">Manager<span class="text-danger">*</span></label>
+            <select class="custom-select p-2" formControlName="manager">
+              <option disabled selected value="undefined">Choose Any Manager</option>
+              <option *ngFor="let manager of managers" [value]="manager?.id">
+                {{manager.name}}
+              </option>
+            </select>
+            <div *ngIf="addRequestForm.controls['manager'].invalid && addRequestForm.controls['manager'].touched"
+              class="alert alert-danger error">
+              <div *ngIf="addRequestForm.controls['manager'].errors['required']">
+                Manager is required.
+              </div>
             </div>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col">
+            <label for="task" class="text-start">Task<span class="text-danger">*</span></label>
             <select class="custom-select p-2" formControlName="task" [disabled]="changeMode === 'update'">
               <option selected value="undefined" disabled>Choose Any Task</option>
               <option *ngFor="let task of tasks" [value]="task?._id">
@@ -165,93 +162,80 @@
                 Task is required.
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="row">
-              <div class="col-md-6">
-                <label for="fromDate" class="text-start">Start Date<span class="text-danger">*</span></label>
-                <input type="datetime-local" id="fromDate" class="form-control" formControlName="fromDate" required
-                  [max]="today">
-                <div *ngIf="addRequestForm.controls['fromDate'].invalid && addRequestForm.controls['fromDate'].touched"
-                  class="alert alert-danger error">
-                  <div *ngIf="addRequestForm.controls['fromDate'].errors['required']">
-                    Start Date is required.
-                  </div>
-                  <div *ngIf="addRequestForm.get('fromDate').hasError('endDateBeforeStartDate')">
-                    End Date must be after Start Date.
-                  </div>
-                </div>
+        <div class="row  mt-3">
+          <div class="col-md-6">
+            <label for="fromDate" class="text-start">Start Date<span class="text-danger">*</span></label>
+            <input type="datetime-local" id="fromDate" class="form-control" formControlName="fromDate" required
+              [max]="today">
+            <div *ngIf="addRequestForm.controls['fromDate'].invalid && addRequestForm.controls['fromDate'].touched"
+              class="alert alert-danger error">
+              <div *ngIf="addRequestForm.controls['fromDate'].errors['required']">
+                Start Date is required.
               </div>
-
-              <div class="col-md-6">
-                <label for="toDate" class="text-start">End Date<span class="text-danger">*</span></label>
-                <input matInput type="datetime-local" name="toDate" id="toDate" placeholder="end date"
-                  formControlName="toDate" class="form-control input pt-0" [max]="today">
-                <div *ngIf="addRequestForm.controls['toDate'].invalid && addRequestForm.controls['toDate'].touched"
-                  class="alert alert-danger error">
-                  <div *ngIf="addRequestForm.controls['toDate'].errors['required']">
-                    End Date is required.
-                  </div>
-                  <div *ngIf="addRequestForm.get('toDate').hasError('endDateBeforeStartDate')">
-                    The end date cannot be earlier than the start date.
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-12">
-              <label for="reason" class="text-start">Reason <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" formControlName="reason" id="reason" rows="4" />
-              <div *ngIf="addRequestForm.controls['reason'].invalid && addRequestForm.controls['reason'].touched"
-                class="alert alert-danger error">
-                <div *ngIf="addRequestForm.controls['reason'].errors['required']">Reason is required.</div>
+              <div *ngIf="addRequestForm.get('fromDate').hasError('endDateBeforeStartDate')">
+                End Date must be after Start Date.
               </div>
             </div>
           </div>
 
-          <div *ngIf="dateMismatchError" class="alert alert-danger error text-end pe-4">
-            Start Date and End Date should be Similar!
+          <div class="col-md-6">
+            <label for="toDate" class="text-start">End Date<span class="text-danger">*</span></label>
+            <input matInput type="datetime-local" name="toDate" id="toDate" placeholder="end date"
+              formControlName="toDate" class="form-control input pt-0" [max]="today">
+            <div *ngIf="addRequestForm.controls['toDate'].invalid && addRequestForm.controls['toDate'].touched"
+              class="alert alert-danger error">
+              <div *ngIf="addRequestForm.controls['toDate'].errors['required']">
+                End Date is required.
+              </div>
+              <div *ngIf="addRequestForm.get('toDate').hasError('endDateBeforeStartDate')">
+                The end date cannot be earlier than the start date.
+              </div>
+            </div>
           </div>
-          <div class="modal-footer mt-2 d-flex justify-content-between">
-            <button mat-raised-button class="mx-2" type="button" *ngIf="changeMode == 'Add'"
-              (click)="clearselectedRequest()">Cancel</button>
-            <button mat-raised-button class="mx-2" type="button" *ngIf="changeMode == 'Update'"
-              (click)="getManualById()">Cancel</button>
-            <button mat-raised-button class="addBtn" type="submit">{{changeMode}} Request</button>
+
+          <div class="col-12  mt-3">
+            <label for="reason" class="text-start">Reason <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" formControlName="reason" id="reason" rows="4" />
+            <div *ngIf="addRequestForm.controls['reason'].invalid && addRequestForm.controls['reason'].touched"
+              class="alert alert-danger error">
+              <div *ngIf="addRequestForm.controls['reason'].errors['required']">Reason is required.</div>
+            </div>
           </div>
-        </form>
+        </div>
+
       </div>
-    </div>
-  </div>
-</div>
+
+      <div *ngIf="dateMismatchError" class="alert alert-danger error text-end pe-4">
+        Start Date and End Date should be Similar!
+      </div>
+      <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
+        <button mat-raised-button class="mx-2" type="button" *ngIf="changeMode == 'Add'"
+          (click)="clearselectedRequest()">Cancel</button>
+        <button mat-raised-button class="mx-2" type="button" *ngIf="changeMode == 'Update'"
+          (click)="getManualById()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit">{{changeMode}} Request</button>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+</ng-template>
 
 <!-- Delete -->
-<div class="modal" id="deleteModal">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-body">
-        <div class="d-flex justify-content-between">
-          <div class="">
-            <h4 class="modal-title text-start">Delete Request</h4>
-          </div>
-          <div class="">
-            <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-          </div>
-        </div>
-        <hr class="mt-0">
-        <div class="row">
-          <div class="col-md-12 text-center">
-            <h3>Are you sure to delete the request?</h3>
-          </div>
-        </div>
-        <div class="d-flex justify-content-between m-3">
-          <div>
-            <button mat-raised-button class="mx-2" data-bs-dismiss="modal">No</button>
-          </div>
-          <div>
-            <button mat-raised-button class="addBtn" data-bs-dismiss="modal" (click)="deleteRequest()">Yes</button>
-          </div>
-        </div>
-      </div>
-    </div>
+<ng-template #deleteModal>
+  <div class="d-flex justify-content-between">
+    <h4 mat-dialog-title>Delete Request</h4>
+    <button type="button" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
-</div>
+  <mat-dialog-content>
+    <p>Are you sure to delete the request?</p>
+  </mat-dialog-content>
+  <div class="d-flex justify-content-between mt-3" mat-dialog-actions>
+    <button mat-raised-button class="mx-2" mat-dialog-close>No</button>
+    <button mat-raised-button color="warn" (click)="deleteRequest()">Yes</button>
+  </div>
+</ng-template>

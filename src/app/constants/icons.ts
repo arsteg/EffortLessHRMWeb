@@ -4,6 +4,7 @@ export const ICONS = [
     "notifications",
     "organization",
     "payroll",
+    "realtime",
     "reports",
     "roles",
     "roles_permission",
