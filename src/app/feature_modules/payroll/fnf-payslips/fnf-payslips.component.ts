@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
   selector: 'app-fnf-payslips',
@@ -7,27 +9,43 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
   styleUrl: './fnf-payslips.component.css'
 })
 export class FnfPayslipsComponent {
-  searchText: string = '';
   closeResult: string = '';
+  searchText: string = '';
+  showPayslipDetail: boolean;
+  displayedColumns: string[] = ['PayrollUser', 'period', 'payroll', 'status', 'actions'];
+  payslips = new MatTableDataSource<any>;
+  selectedRecord: any;
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private dialog: MatDialog,
+    private payrollService: PayrollService
+  ) { }
+
+  ngOnInit() {
+    this.payrollService.getGeneratedFnFPayroll().subscribe((res: any) => {
+      this.payslips = res.data;
+    })
+  }
+
+  refreshData(){
+    this.ngOnInit();
+  }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    const dialogRef = this.dialog.open(content, {
+      width: '500px',
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+  viewPayslip() {
+    this.showPayslipDetail = true;
+    this.payrollService.payslip.next(this.selectedRecord)
   }
 
+  closePayslipDetail() {
+    this.showPayslipDetail = false;
+  }
 }
