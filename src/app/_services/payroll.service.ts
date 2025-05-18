@@ -1021,4 +1021,14 @@ export class PayrollService {
   getFnFPayrollStatus(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/common/get-fnf-user-status-list`, this.httpOptions);
   }
+
+  getGeneratedFnFPayrollByFNFPayroll(fnfPayroll: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-fnf-payroll/${fnfPayroll}`, this.httpOptions);
+    return response;
+  }
+
+  getGeneratedFnFPayroll(): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/generatedFNFPayroll-by-company`,{}, this.httpOptions);
+    return response;
+  }
 }
