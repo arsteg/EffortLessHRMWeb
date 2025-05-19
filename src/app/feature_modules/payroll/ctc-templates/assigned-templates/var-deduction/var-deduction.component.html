@@ -11,8 +11,7 @@
         <td mat-cell *matCellDef="let allowance" [formGroup]="allowance">
           <mat-form-field appearance="fill">
             <mat-select formControlName="criteria">
-              <mat-option value="Amount">Amount</mat-option>
-              <mat-option value="Percentage">Percentage</mat-option>
+              <mat-option value="Amount" [selected] readonly>Amount</mat-option>
             </mat-select>
           </mat-form-field>
         </td>

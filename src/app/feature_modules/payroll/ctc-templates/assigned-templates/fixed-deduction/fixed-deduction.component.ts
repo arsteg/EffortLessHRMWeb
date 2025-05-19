@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
   selector: 'app-assigned-fixed-deduction',
@@ -61,8 +60,6 @@ export class AssignedFixedDeductionComponent {
   patchFormValues() {
     const allowancesControl = this.fixedDeductionForm.get('fixedDeduction') as FormArray;
     allowancesControl.clear();
-
-    // if (this.selectedRecord?.ctcTemplateFixedDeductions?.length) {
     if (this.isEdit) {
       this.selectedRecord.ctcTemplateFixedDeductions.forEach((item: any) => {
         allowancesControl.push(this.fb.group({
