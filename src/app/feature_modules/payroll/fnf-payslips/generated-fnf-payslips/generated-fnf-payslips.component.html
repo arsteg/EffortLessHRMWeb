@@ -1,8 +1,8 @@
 <div class="payslip-detail">
        <div class="d-flex justify-content-between">
-           <button class="backBtn" mat-raised-button (click)="close.emit()">{{'payroll.back' | translate}}</button>
+           <button class="backBtn" mat-raised-button (click)="close.emit()" translate>payroll.back</button>
            <h2 translate>payroll.generated_salary_slip</h2>
-           <button color="primary" mat-raised-button (click)="downloadPDF()">{{'payroll.download' | translate}}</button>
+           <button color="primary" mat-raised-button (click)="downloadPDF()" translate>payroll.download</button>
        </div>
        <div id="payslipContainer" #payslipContainer class="container bg-white py-5 px-4">
            <div class="d-flex justify-content-between align-items-center mb-5">
@@ -104,12 +104,13 @@
                                <td translate>payroll.loan_advances</td>
                                <td>{{payslip?.totalLoanAdvance}}</td>
                            </tr>
-                           <tr *ngFor="let statutory of payslip?.statutoryDetails">
-                               <ng-container *ngIf="statutory?.ContributorType == 'Employee'">
-                                   <td>{{statutory?.StautoryName}}</td>
-                                   <td>{{statutory?.amount}}</td>
-                               </ng-container>
-                           </tr>
+                          <tr *ngFor="let statutory of payslip?.statutoryDetails">
+                            @if(statutory?.ContributorType == 'Employee')
+                            {
+                            <td>{{statutory?.StautoryName}}</td>
+                            <td>{{statutory?.amount}}</td>
+                            }
+                        </tr>
                        </tbody>
                        <tfoot>
                            <tr class="fw-bold">
@@ -129,12 +130,13 @@
                            </tr>
                        </thead>
                        <tbody>
-                           <tr *ngFor="let statutory of payslip?.statutoryDetails">
-                               <ng-container *ngIf="statutory?.ContributorType == 'Employer'">
-                                   <td>{{statutory?.StautoryName}}</td>
-                                   <td>{{statutory?.amount}}</td>
-                               </ng-container>
-                           </tr>
+                          <tr *ngFor="let statutory of payslip?.statutoryDetails">
+                            @if(statutory?.ContributorType == 'Employer')
+                            {
+                            <td>{{statutory?.StautoryName}}</td>
+                            <td>{{statutory?.amount}}</td>
+                            }
+                        </tr>
                        </tbody>
                    </table>
                </div>

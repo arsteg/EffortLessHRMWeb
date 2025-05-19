@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SettingsComponent implements OnInit {
   selectedTab: number = 1;
+  view = localStorage.getItem('adminView');
+  
   constructor(
     ) { }
 

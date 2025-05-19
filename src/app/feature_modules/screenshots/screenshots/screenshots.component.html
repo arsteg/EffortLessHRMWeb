@@ -126,8 +126,8 @@
                   [tooltip]="timeLog.col1.allKeysPressed">keyboard</mat-icon></span>
             </div>
 
-            <img src="{{timeLog.col1.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-              (click)="setSelectedScreenshot($event)" />
+            <img src="{{timeLog.col1.url}}"
+              (click)="setSelectedScreenshot($event,bigImageModal )" />
             <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col1.clicks || 0) + ', Keyboard: '+ (timeLog.col1.keysPressed || 0) + ', Scroll: '+ (timeLog.col1.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog.col1.GetActivityLevel)">{{timeLog.col1.timeLabel}}
@@ -166,8 +166,8 @@
               <span *ngIf="role == 'admin'"><mat-icon class="bg-white"
                   [tooltip]="timeLog.col2.allKeysPressed">keyboard</mat-icon></span>
             </div>
-            <img src="{{timeLog.col2.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-              (click)="setSelectedScreenshot($event)" />
+            <img src="{{timeLog.col2.url}}"
+              (click)="setSelectedScreenshot($event,bigImageModal )" />
             <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col2.clicks || 0) + ', Keyboard: '+ (timeLog.col2.keysPressed || 0) + ', Scroll: '+ (timeLog.col2.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog?.col2?.GetActivityLevel)">{{timeLog.col2.timeLabel}}
@@ -207,8 +207,8 @@
                   [tooltip]="timeLog.col3.allKeysPressed">keyboard</mat-icon></span>
 
             </div>
-            <img src="{{timeLog.col3.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-              (click)="setSelectedScreenshot($event)" />
+            <img src="{{timeLog.col3.url}}"
+              (click)="setSelectedScreenshot($event,bigImageModal )" />
             <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col3.clicks || 0) + ', Keyboard: '+ (timeLog.col3.keysPressed || 0) + ', Scroll: '+ (timeLog.col3.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog?.col3?.GetActivityLevel)">{{timeLog?.col3?.timeLabel}}
@@ -247,8 +247,8 @@
               <span *ngIf="role == 'admin'"><mat-icon class="bg-white"
                   [tooltip]="timeLog.col4.allKeysPressed">keyboard</mat-icon></span>
             </div>
-            <img src="{{timeLog.col4.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-              (click)="setSelectedScreenshot($event)" />
+            <img src="{{timeLog.col4.url}}"
+              (click)="setSelectedScreenshot($event,bigImageModal )" />
             <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col4.clicks || 0) + ', Keyboard: '+ (timeLog.col4.keysPressed || 0) + ', Scroll: '+ (timeLog.col4.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog?.col4?.GetActivityLevel)">{{timeLog?.col4?.timeLabel}}
@@ -288,8 +288,8 @@
                   [tooltip]="timeLog.col5.allKeysPressed">keyboard</mat-icon></span>
 
             </div>
-            <img src="{{timeLog.col5.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-              (click)="setSelectedScreenshot($event)" />
+            <img src="{{timeLog.col5.url}}"
+              (click)="setSelectedScreenshot($event,bigImageModal )" />
             <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col5.clicks || 0) + ', Keyboard: '+ (timeLog.col5.keysPressed || 0) + ', Scroll: '+ (timeLog.col5.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog?.col5?.GetActivityLevel)">{{timeLog.col5.timeLabel}}
@@ -329,8 +329,8 @@
                   [tooltip]="timeLog.col6.allKeysPressed">keyboard</mat-icon></span>
 
             </div>
-            <img src="{{timeLog.col6.url}}" data-bs-toggle="modal" data-bs-target="#bigImageModal"
-              (click)="setSelectedScreenshot($event)" />
+            <img src="{{timeLog.col6.url}}"
+              (click)="setSelectedScreenshot($event,bigImageModal )" />
             <figcaption class="figure-caption text-center mt-2"
               [tooltip]="'Clicks: ' + (timeLog.col6.clicks || 0) + ', Keyboard: '+ (timeLog.col6.keysPressed || 0) + ', Scroll: '+ (timeLog.col6.scrolls || 0)"
               [style.background-color]="getActivityColor(timeLog?.col6?.GetActivityLevel)">{{timeLog.col6.timeLabel}}
@@ -364,16 +364,13 @@
 </div>
 
 <!-- Screenshot Modal -->
-<div class="modal fade" role="dialog" id="bigImageModal" tabindex="0" data-bs-backdrop="false" aria-labelledby="bigImageModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-xl" [ngClass]="getModalClass()">
-    <div class="modal-content">
-      <div class="modal-header d-flex justify-content-end py-1">
-        <div class="screenshotImg btn btn-sm" (click)="toggleImageSize()">
-          <span *ngIf="isMaximized" class="bi bi-files"></span>
-          <span *ngIf="!isMaximized" class="bi bi-square"></span>
-        </div>
-        <span class="btn  btn-sm ms-1 bi bi-x-lg screenshotImg" data-bs-dismiss="modal"></span>
+<ng-template #bigImageModal>
+      <div class="d-flex justify-content-end">
+        <span *ngIf="isMaximized" class="screenshotImg btn btn-sm" (click)="toggleImageSize()"><mat-icon>fullscreen_exit</mat-icon></span>
+        <span *ngIf="!isMaximized" class="screenshotImg btn btn-sm" (click)="toggleImageSize()"><mat-icon>fullscreen</mat-icon></span>
+        <span class="btn btn-sm ms-1" mat-dialog-close>
+          <mat-icon>close</mat-icon>
+        </span>
       </div>
 
       <div class="modal-body">
@@ -395,6 +392,4 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
+</ng-template>

@@ -1,15 +1,16 @@
 <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
-  <a mat-tab-link routerLink="settings" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">Settings</a>
-  <a mat-tab-link routerLink="ctc-template" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">CTC
-    Template</a>
-  <a mat-tab-link routerLink="lop-reversal" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">LOP
-    Reversal</a>
-  <a mat-tab-link routerLink="run-payroll" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">Run
-    Payroll</a>
+  <a mat-tab-link routerLink="settings" routerLinkActive #rla1="routerLinkActive"
+    [active]="rla1.isActive">{{'payroll.settings' | translate}}</a>
+  <a mat-tab-link routerLink="ctc-template" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">{{
+    'payroll.ctc_template' | translate}}</a>
+  <a mat-tab-link routerLink="lop-reversal" routerLinkActive #rla3="routerLinkActive"
+    [active]="rla3.isActive">{{'payroll.lop_reversal' | translate}}</a>
+  <a mat-tab-link routerLink="run-payroll" routerLinkActive #rla3="routerLinkActive"
+    [active]="rla3.isActive">{{'payroll.run_payroll' | translate}}</a>
   <a mat-tab-link routerLink="payslips" routerLinkActive #rla3="routerLinkActive"
-    [active]="rla3.isActive">Payslips</a>
-  <a mat-tab-link routerLink="fnf-payslips" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">Full &
-    Final</a>
+    [active]="rla3.isActive">{{'payroll.payslips' | translate}}</a>
+  <a mat-tab-link routerLink="fnf-payslips" routerLinkActive #rla3="routerLinkActive"
+    [active]="rla3.isActive">{{'payroll.full_final' | translate}}</a>
 </nav>
 <mat-tab-nav-panel #tabPanel>
   <router-outlet></router-outlet>

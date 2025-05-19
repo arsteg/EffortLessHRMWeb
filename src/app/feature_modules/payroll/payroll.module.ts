@@ -18,8 +18,6 @@ import { PayslipsComponent } from './payslips/payslips.component';
 import { FnfPayslipsComponent } from './fnf-payslips/fnf-payslips.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.Module';
-import { RoundingRulesComponent } from './settings/general-settings/rounding-rules/rounding-rules.component';
-import { PfTemplateComponent } from './settings/general-settings/pf-template/pf-template.component';
 import { LwfComponent } from './settings/fixed-contribution/lwf/lwf.component';
 import { LwfSlabComponent } from './settings/fixed-contribution/lwf/lwf-slab/lwf-slab.component';
 import { PtComponent } from './settings/fixed-contribution/pt/pt.component';
@@ -69,6 +67,9 @@ import { FNFStep6Component } from './run-payroll/run-fnf-payroll/fnf-steps/step6
 import { FNFStep7Component } from './run-payroll/run-fnf-payroll/fnf-steps/step7/step7.component';
 import { FNFStep8Component } from './run-payroll/run-fnf-payroll/fnf-steps/step8/step8.component';
 import { FNFStep9Component } from './run-payroll/run-fnf-payroll/fnf-steps/step9/step9.component';
+import { ViewFnfPayslipComponent } from './run-payroll/run-fnf-payroll/fnf-steps/step9/view-fnf-payslip/view-fnf-payslip.component';
+import { GeneratedFnfPayslipsComponent } from './fnf-payslips/generated-fnf-payslips/generated-fnf-payslips.component';
+import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
   declarations: [
     PayrollComponent,
@@ -88,8 +89,6 @@ import { FNFStep9Component } from './run-payroll/run-fnf-payroll/fnf-steps/step9
     RunPayrollComponent,
     PayslipsComponent,
     FnfPayslipsComponent,
-    RoundingRulesComponent,
-    PfTemplateComponent,
     LwfComponent,
     LwfSlabComponent,
     PtComponent,
@@ -135,7 +134,9 @@ import { FNFStep9Component } from './run-payroll/run-fnf-payroll/fnf-steps/step9
     FNFStep6Component,
     FNFStep7Component,
     FNFStep8Component,
-    FNFStep9Component
+    FNFStep9Component,
+    ViewFnfPayslipComponent,
+    GeneratedFnfPayslipsComponent
   ],
   imports: [
     FormsModule,
@@ -144,6 +145,7 @@ import { FNFStep9Component } from './run-payroll/run-fnf-payroll/fnf-steps/step9
     OverlayModule,
     CommonComponentsModule,
     PayrollRoutingModule,
+    TranslateModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

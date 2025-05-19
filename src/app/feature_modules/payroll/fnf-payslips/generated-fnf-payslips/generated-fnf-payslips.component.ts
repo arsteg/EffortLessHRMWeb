@@ -5,11 +5,11 @@ import html2canvas from 'html2canvas';
 import { UserService } from 'src/app/_services/users.service';
 
 @Component({
-  selector: 'app-generate-payslips',
-  templateUrl: './generate-payslips.component.html',
-  styleUrl: './generate-payslips.component.css'
+  selector: 'app-generated-fnf-payslips',
+  templateUrl: './generated-fnf-payslips.component.html',
+  styleUrl: './generated-fnf-payslips.component.css'
 })
-export class GeneratePayslipsComponent {
+export class GeneratedFnfPayslipsComponent {
   @Output() close = new EventEmitter<void>();
   payslip: any;
   totalPayWithOvertime: any;
@@ -34,7 +34,7 @@ export class GeneratePayslipsComponent {
   ngOnInit(): void {
     this.getUserDetails();
   }
-  
+
   calculateTotals(): void {
     const ps = this.payslip;
 
@@ -53,6 +53,7 @@ export class GeneratePayslipsComponent {
     this.totalEarnings = fixed + variable + overtime + flexi + other;
     this.totalDeductions = fixedDeduction + pfTax + incomeTax + loanAdvance;
 
+    // Optionally, add statutory deductions (ContributorType === 'Employee')
     if (ps?.statutoryDetails?.length) {
       const employeeContribs = ps.statutoryDetails
         .filter(s => s.ContributorType === 'Employee')

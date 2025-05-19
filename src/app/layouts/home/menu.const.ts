@@ -18,7 +18,7 @@ export const SideBarAdminMenu = [
     id: '3',
     title: 'RealTime',
     url: 'realtime',
-    svgIcon: 'timetable'
+    svgIcon: 'realtime'
   },
   {
     id: '4',
@@ -150,7 +150,7 @@ export const SideBarUserMenu = [
     id: '3',
     title: 'RealTime',
     url: 'realtime',
-    svgIcon: 'timetable',
+    svgIcon: 'realtime',
   },
 
   {

@@ -6,8 +6,6 @@ import { AuthenticationService } from '../_services/authentication.service';
 import { signup } from '../models/user';
 import { throwError } from 'rxjs';
 import { PreferenceService } from '../_services/user-preference.service';
-import { PreferenceKeys } from '../constants/userpreference-keys';
-import { th } from 'date-fns/locale';
 
 @Component({
   selector: 'app-login',
@@ -25,6 +23,7 @@ export class LoginComponent implements OnInit {
   hidePassword: boolean = true;
   errorMessage: string;
   selectedAppMode: string;
+  appModePreferenceKey: string = 'AppMode';
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -77,25 +76,28 @@ export class LoginComponent implements OnInit {
           localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));          
 
           // Check for existing AppMode preference
-          this.preferenceService.getPreferencesByUserId(this.user.id).subscribe(preferences => {
-            const appModePreference = preferences.data.preferences.find(pref => 
-              pref.preferenceOptionId && 
-              pref.preferenceOptionId['preferenceKey'] === PreferenceKeys.APP_MODE
-            );
-
-            if (appModePreference) {
-              this.selectedAppMode = appModePreference.preferenceOptionId['preferenceValue'];
-            } else {
+          this.preferenceService.getPreferencesByUserId(this.user.id).subscribe({
+            next: (response) => {
+              const preferences = response.data?.preferences || [];
+              const appModePreference = preferences.find(pref =>
+                pref.preferenceOptionId &&
+                typeof pref.preferenceOptionId !== 'string' &&
+                pref.preferenceOptionId.preferenceKey === this.appModePreferenceKey
+              );
+              
+              if (appModePreference && typeof appModePreference.preferenceOptionId !== 'string') {
+                this.selectedAppMode = appModePreference.preferenceOptionId.preferenceValue;
+              } else {
+                this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
+              }
+              // Store the selected AppMode
+              this.createUserPreference(this.user.id, this.appModePreferenceKey, this.selectedAppMode);
+            },
+            error: (error) => {
+              console.error('Error fetching preferences:', error);
               this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
-            }        
-            // Store the selected AppMode
-            this.createUserPreference(this.user.id, PreferenceKeys.APP_MODE, this.selectedAppMode);
-            
-          }, error => {
-            console.error('Error fetching preferences:', error);
-            this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
-            // Store the selected AppMode in error case
-            this.createUserPreference(this.user.id, PreferenceKeys.APP_MODE, this.selectedAppMode);
+              this.createUserPreference(this.user.id, this.appModePreferenceKey, this.selectedAppMode);
+            }
           });
         }
       });

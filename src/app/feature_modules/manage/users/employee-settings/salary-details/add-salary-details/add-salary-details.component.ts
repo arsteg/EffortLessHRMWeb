@@ -318,7 +318,8 @@ export class AddSalaryDetailsComponent {
       fixedAllowanceLabel: [''],
       fixedAllowance: ['', Validators.required],
       monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required]
+      yearlyAmount: [0, Validators.required],
+      isNew: [true]
     });
     this.fixedAllowances.push(allowanceGroup);
   }
@@ -331,7 +332,8 @@ export class AddSalaryDetailsComponent {
       otherBenefits: ['', Validators.required],
       otherBenefitsLabel: [''],
       monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required]
+      yearlyAmount: [0, Validators.required],
+      isNew: [true]
     });
     this.otherBenefitsArray.push(allowanceGroup);
   }
@@ -344,7 +346,8 @@ export class AddSalaryDetailsComponent {
       fixedDeduction: ['', Validators.required],
       fixedDeductionLabel: [''],
       monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required]
+      yearlyAmount: [0, Validators.required],
+      isNew: [true]
     });
     this.fixedDeductionArray.push(allowanceGroup);
   }
@@ -357,7 +360,8 @@ export class AddSalaryDetailsComponent {
       variableAllowance: ['', Validators.required],
       variableAllowanceLabel: [''],
       monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required]
+      yearlyAmount: [0, Validators.required],
+      isNew: [true]
     });
     this.variableAllowanceArray.push(allowanceGroup);
   }
@@ -370,7 +374,8 @@ export class AddSalaryDetailsComponent {
       variableDeduction: ['', Validators.required],
       variableDeductionLabel: [''],
       monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required]
+      yearlyAmount: [0, Validators.required],
+      isNew: [true]
     });
     this.variableDeductionArray.push(allowanceGroup);
   }

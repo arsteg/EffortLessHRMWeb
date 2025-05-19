@@ -1,6 +1,6 @@
 import { Component, OnInit, HostListener, ElementRef, ViewChild, Renderer2 } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, NgForm, Validators, FormArray } from '@angular/forms';
-import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -49,11 +49,12 @@ export class ScreenshotsComponent implements OnInit {
   myControl = new FormControl();
   filteredMembers: Observable<teamMember[]>;
   data: any = [];
+  dialogRef: MatDialogRef<any>;
 
   constructor(
     private timeLogService: TimeLogService,
     private route: ActivatedRoute,
-    private router: Router,
+    private dialog: MatDialog,
     private datePipe: DatePipe,
     private fb: FormBuilder, private renderer: Renderer2,
     private auth: AuthenticationService) {
@@ -303,9 +304,14 @@ export class ScreenshotsComponent implements OnInit {
     return row;
   }
 
-  setSelectedScreenshot(event: any) {
+  setSelectedScreenshot(event: any, template: any) {
     this.selectedScreenShot = event.currentTarget.src;
     this.currentTargetLabel = event.currentTarget.nextSibling.innerText;
+    this.isMaximized = false;
+    this.dialogRef = this.dialog.open(template, {
+      width: '80%',
+      maxWidth: 'none',
+    });
   }
 
   SetPreviousDay() {
@@ -540,11 +546,13 @@ export class ScreenshotsComponent implements OnInit {
 
   isMaximized: boolean = false; // Track the image size state
 
-  getModalClass() {
-    return this.isMaximized ? 'maximized-modal' : 'normal-modal';
-  }
   toggleImageSize() {
     this.isMaximized = !this.isMaximized;
+    if(this.isMaximized) {
+     this.dialogRef.updateSize('100vw');
+    } else {
+      this.dialogRef.updateSize('80vw');
+    }
   }
 
 }

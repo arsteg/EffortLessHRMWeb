@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
   selector: 'app-assigned-fixed-allowance',
@@ -18,7 +17,6 @@ export class AssignedFixedAllowanceComponent {
   @Input() ctcTemplateFixedAllowance: any;
 
   constructor(
-    private payroll: PayrollService,
     private fb: FormBuilder
   ) {
     this.fixedAllowanceForm = this.fb.group({

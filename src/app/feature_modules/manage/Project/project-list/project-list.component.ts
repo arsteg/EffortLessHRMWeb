@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProjectService } from 'src/app/_services/project.service';
 import { addUser, project } from '../model/project';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
@@ -40,12 +40,15 @@ export class ProjectListComponent implements OnInit {
   totalRecords: number // example total records
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  dialogRef: MatDialogRef<any>;
 
   constructor(
     private projectService: ProjectService,
     private fb: FormBuilder,
     private toastr: ToastrService,
-    public commonservice: CommonService, public datePipe: DatePipe
+    public commonservice: CommonService,
+    public datePipe: DatePipe,
+    private dialog: MatDialog,
   ) {
     this.form = this.fb.group({
       projectName: ['', Validators.required],
@@ -200,15 +203,16 @@ export class ProjectListComponent implements OnInit {
     }
   }
 
-  // getProjectUser(id) {
-  //   this.projectService.getprojectUser(id).subscribe(response => {
-  //     this.projectUserList = response && response.data && response.data['projectUserList'];
-  //     if (this.projectUserList) {
-  //       this.projectUserList = this.projectUserList.filter(user => user.user != null);
-  //       this.selectedUser = this.projectUserList.map(user => user.user.id);
-  //     }
-  //   });
-  // }
+  openModal(template, selectedProject?, width="50%") {
+    this.selectedProject = selectedProject;
+    this.dialogRef = this.dialog.open(template, {
+      width: width,
+      disableClose: true
+    })
+    this.dialogRef.afterClosed().subscribe((result) => {
+      
+    });
+  }
 
   onModelChange(projectUserList) {
     let index = this.projectUserList.findIndex(user => user.id === projectUserList.id);

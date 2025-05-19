@@ -1,17 +1,17 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
-import * as jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import { UserService } from 'src/app/_services/users.service';
 
 @Component({
-  selector: 'app-generate-payslips',
-  templateUrl: './generate-payslips.component.html',
-  styleUrl: './generate-payslips.component.css'
+  selector: 'app-view-fnf-payslip',
+  templateUrl: './view-fnf-payslip.component.html',
+  styleUrl: './view-fnf-payslip.component.css'
 })
-export class GeneratePayslipsComponent {
+export class ViewFnfPayslipComponent {
   @Output() close = new EventEmitter<void>();
   payslip: any;
+  @Input() viewPayroll: any;
+  @Input() selectedPayroll: any;
   totalPayWithOvertime: any;
   salaryAfterLOP: string;
   totalEarnings: number = 0;
@@ -19,26 +19,18 @@ export class GeneratePayslipsComponent {
 
   @ViewChild('payslipContainer') payslipContainer: ElementRef;
 
-  constructor(private payrollService: PayrollService,
-    private userService: UserService) {
-    this.payrollService.payslip.subscribe((data: any) => {
-      this.payslip = data;
-      console.log(this.payslip)
-      this.calculateSalaryAfterLOP();
-      this.calculateTotalPayWithOvertime();
-      this.calculateTotals();
-    });
-  }
-
+  constructor(private userService: UserService) { }
 
   ngOnInit(): void {
+    console.log(this.selectedPayroll);
     this.getUserDetails();
+    this.calculateSalaryAfterLOP();
+    this.calculateTotalPayWithOvertime();
+    this.calculateTotals();
   }
-  
-  calculateTotals(): void {
-    const ps = this.payslip;
 
-    // Ensure all values are numbers, defaulting to 0
+  calculateTotals(): void {
+    const ps = this.viewPayroll;
     const fixed = ps?.totalFixedAllowance || 0;
     const variable = ps?.totalVariableAllowance || 0;
     const overtime = ps?.totalOvertime || 0;
@@ -62,9 +54,9 @@ export class GeneratePayslipsComponent {
   }
 
   calculateSalaryAfterLOP() {
-    const monthlySalary = this.payslip.monthlySalary;
-    const totalDays = this.payslip?.attendanceSummary[0]?.totalDays;
-    const payableDays = this.payslip?.attendanceSummary[0]?.payableDays;
+    const monthlySalary = this.viewPayroll?.monthlySalary;
+    const totalDays = this.viewPayroll?.attendanceSummary[0]?.totalDays;
+    const payableDays = this.viewPayroll?.attendanceSummary[0]?.payableDays;
     const perDayPay = monthlySalary / totalDays;
     const lopSalary = perDayPay * payableDays;
     this.salaryAfterLOP = lopSalary.toFixed(2);
@@ -72,15 +64,15 @@ export class GeneratePayslipsComponent {
 
   calculateTotalPayWithOvertime() {
     const lopSalary = parseFloat(this.salaryAfterLOP);
-    const totalOvertime = parseFloat(this.payslip?.totalOvertime);
+    const totalOvertime = parseFloat(this.viewPayroll?.totalOvertime);
     this.totalPayWithOvertime = (lopSalary + totalOvertime).toFixed(2);
-    this.totalPayWithOvertime -= this.payslip?.totalLoanAdvance;
+    this.totalPayWithOvertime -= this.viewPayroll?.totalLoanAdvance;
   }
 
   getUserDetails() {
-    this.userService.getJobInformationByUserId(this.payslip?.PayrollUser?._id).subscribe((res: any) => {
-      this.payslip.user = res;
-    });
+    // this.userService.getJobInformationByUserId(this.viewPayroll?.PayrollUser?.user?.id).subscribe((res: any) => {
+    //   this.viewPayroll.user = res;
+    // });
   }
 
   getCompanyNameFromCookies(): string | null {
@@ -94,16 +86,5 @@ export class GeneratePayslipsComponent {
     return null;
   }
 
-  downloadPDF() {
-    const element = this.payslipContainer.nativeElement;
-    html2canvas(element).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF.default('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('payslip.pdf');
-    });
-  }
+
 }
