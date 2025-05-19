@@ -46,7 +46,6 @@ export class StatutoryDetailsComponent {
       taxRegimeUpdated: [],
       taxRegimeUpdatedBy: [''],
       roundOffApplicable: [true],
-      dailyWageApplicable: [true],
       eligibleForOvertime: [true]
     })
   }

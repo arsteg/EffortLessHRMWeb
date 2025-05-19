@@ -50,8 +50,7 @@ export class FNFStep3Component implements OnInit {
       });
     
   }
-   getSalaryDetails(userId: string): void {  
-       
+   getSalaryDetails(userId: string): void {       
         this.userService.getSalaryByUserId(userId).subscribe(
           (res: any) => {
             

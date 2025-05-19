@@ -16,7 +16,6 @@ export class AssignedTemplatesComponent {
   fixedDeductionData: any;
   variableAllowanceData: any;
   variableDeductionData: any;
-  otherBenefitsData: any;
   employerContributionsData: any;
   employeeDeductionsData: any;
   form: any;
@@ -74,9 +73,6 @@ export class AssignedTemplatesComponent {
       this.payroll.variableDeductions.subscribe(res => {
         this.variableDeductionData = res;
       });
-      this.payroll.otherBenefits.subscribe(res => {
-        this.otherBenefitsData = res;
-      });
       this.payroll.employeeDeduction.subscribe(res => {
         this.employeeDeductionsData = res;
       });
@@ -110,9 +106,8 @@ export class AssignedTemplatesComponent {
       ctcTemplateFixedDeduction: this.fixedDeductionData || [],
       ctcTemplateVariableAllowance: this.variableAllowanceData || [],
       ctcTemplateVariableDeduction: this.variableDeductionData || [],
-      ctcTemplateEmployerContribution:  this.employerContributionsData || this.selectedRecord?.ctcTemplateEmployerContributions.filter(Boolean).map(fixedContribution => ({ fixedContribution: fixedContribution.fixedContribution._id, value: 'As per the Norms' })) || [],
-      ctcTemplateOtherBenefitAllowance: this.otherBenefitsData || this.selectedRecord?.ctcTemplateOtherBenefitAllowances.filter(Boolean).map(otherBenefit => ({ otherBenefit: otherBenefit.otherBenefit._id, value: 'As per the Norms' })) || template?.ctcTemplateOtherBenefitAllowances || [],
-      ctcTemplateEmployeeDeduction: this.employeeDeductionsData || this.selectedRecord?.ctcTemplateEmployeeDeductions.filter(Boolean).map(employeeDeduction => ({ employeeDeduction: employeeDeduction.employeeDeduction._id, value: 'As per the Norms' })) || template?.ctcTemplateEmployeeDeductions || [],
+      ctcTemplateEmployerContribution:  this.employerContributionsData || [],
+      ctcTemplateEmployeeDeduction: this.employeeDeductionsData || [],
     };
     if (this.isEdit) {
       const id = this.payroll.selectedCTCTemplate.getValue()._id;

@@ -28,10 +28,6 @@
                 (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">CTC&nbsp;Effective&nbsp;From
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
-                <th class="pe-md-0 pe-3" [appSort]="salaryDetails" data-name="actualEffectiveDate"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">CTC&nbsp;Effective&nbsp;To
-                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                </th>
                 <th class="pe-md-0 pe-3" [appSort]="salaryDetails" data-name="Amount"
                 (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Gross&nbsp;Salary(Yearly)
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
@@ -43,7 +39,6 @@
                 <tr *ngFor="let data of salaryDetails | search:searchText; let i = index">
                     <td>{{data?.enteringAmount }}</td>
                     <td class="px-4">{{ data?.payrollEffectiveFrom | date: 'mediumDate' }}</td>
-                    <td class="px-4">{{ data?.actualEffectiveDate | date: 'mediumDate' }}</td>
                     <td class="px-4">{{ calculateTotalAmount(data?.enteringAmount, data?.Amount) }}</td>
 
                     <td>

@@ -40,7 +40,6 @@ export class Step1Component {
       totalTakeHome: [0],
       status: [''],
       totalFixedAllowance: [0],
-      totalOtherBenefits: [0],
       totalEmployeeStatutoryDeduction: [0],
       totalEmployeeStatutoryContribution: [0],
       totalFixedDeduction: [0],

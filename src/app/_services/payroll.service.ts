@@ -37,7 +37,6 @@ export class PayrollService {
 
   fixedAllowances: any = new BehaviorSubject('');
   fixedDeductions: any = new BehaviorSubject('');
-  otherBenefits: any = new BehaviorSubject('');
   employeeDeduction: any = new BehaviorSubject('');
   fixedContributions: any = new BehaviorSubject('');
   variableAllowances: any = new BehaviorSubject('');
@@ -320,24 +319,6 @@ export class PayrollService {
   }
   getVariableDeduction(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/variable-deductions-list`, payload, this.httpOptions);
-    return response;
-  }
-
-  // Other Benefits CRUD
-  addOtherBenefits(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/other-benefits`, payload, this.httpOptions);
-    return response;
-  }
-  getOtherBenefits(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/other-benefits-by-company`, payload, this.httpOptions);
-    return response;
-  }
-  updateOtherBenefits(id: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/other-benefits/${id}`, payload, this.httpOptions);
-    return response;
-  }
-  deleteOtherBenefits(id: string): Observable<any> {
-    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/other-benefits/${id}`, this.httpOptions);
     return response;
   }
   // Loans/Advances CRUD
