@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject  } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payslips',
@@ -15,6 +16,8 @@ export class PayslipsComponent {
   displayedColumns: string[] = ['PayrollUser', 'period', 'payroll', 'status', 'actions'];
   payslips = new MatTableDataSource<any>;
   selectedRecord: any;
+    private readonly translate = inject(TranslateService);
+  
 
   constructor(private dialog: MatDialog,
     private payrollService: PayrollService

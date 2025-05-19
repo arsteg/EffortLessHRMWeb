@@ -127,10 +127,10 @@ export class TaxComponent {
       this.taxList = res.data;
 
       const sectionIds = this.taxList.flatMap((tax: any) =>
-        tax.incomeTaxDeclarationComponent.map((component: any) => component.section)
+        tax.incomeTaxDeclarationComponent.map((component: any) => component?.section?._id)
       );
 
-      const sectionRequests = sectionIds.map((sectionId: string) =>
+      const sectionRequests = sectionIds.map((sectionId: any) =>
         this.taxService.getTaxSectionById(sectionId).toPromise()
       );
 
@@ -244,12 +244,12 @@ export class TaxComponent {
     let componentCount = tax.incomeTaxDeclarationComponent?.filter(
       (comp: any) => comp?.incomeTaxComponent?.section?._id === section._id
     ).length || 0;
-  
+
     if (section.isHRA === true) {
       componentCount += tax.incomeTaxDeclarationHRA?.length || 0;
     }
-  
+
     return componentCount;
   }
-  
+
 }

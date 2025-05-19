@@ -1,152 +1,149 @@
 <div class="payslip-detail">
-    <div class="d-flex justify-content-between">
-        <button class="backBtn" mat-raised-button (click)="close.emit()">Back</button>
-        <h2>Generated Salary Slip</h2>
-        <button color="primary" mat-raised-button (click)="downloadPDF()">Download</button>
-    </div>
-    <div id="payslipContainer" #payslipContainer class="container bg-white py-5 px-4">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <span>
-                <img class="w-50" src="assets/images/company-logo.jpg" alt="">
-            </span>
+       <div class="d-flex justify-content-between">
+           <button class="backBtn" mat-raised-button (click)="close.emit()">{{'payroll.back' | translate}}</button>
+           <h2 translate>payroll.generated_salary_slip</h2>
+           <button color="primary" mat-raised-button (click)="downloadPDF()">{{'payroll.download' | translate}}</button>
+       </div>
+       <div id="payslipContainer" #payslipContainer class="container bg-white py-5 px-4">
+           <div class="d-flex justify-content-between align-items-center mb-5">
+               <span>
+                   <img class="w-50" src="assets/images/company-logo.jpg" alt="">
+               </span>
+               <div class="">
+                   <label for="company-name" class="fw-bold">{{getCompanyNameFromCookies()}}</label><br>
+                   <label for="" translate>payroll.company_address</label>
+               </div>
+           </div>
 
-            <div class="">
-                <label for="company-name" class="fw-bold">{{getCompanyNameFromCookies()}}</label><br>
-                <label for="">Company Address</label>
-            </div>
-        </div>
+           <div class="row mb-4">
+               <div class="col-3">
+                   <span class="fw-bold" translate>payroll.date_of_joining</span><br>
+                   <span class="fw-bold" translate>payroll.pay_period</span><br>
+                   <span class="fw-bold" translate>payroll.gross_pay</span><br>
+                   <span class="fw-bold" translate>payroll.payable_days</span><br>
+               </div>
+               <div class="col-3">
+                   <span>05 Dec, 2022</span><br>
+                   <span>{{payslip?.payroll?.month}}, {{payslip?.payroll?.year}}</span><br>
+                   <span>{{payslip?.monthlySalary}}</span><br>
+                   <span>{{payslip?.attendanceSummary[0]?.payableDays}}</span><br>
+               </div>
+               <div class="col-3">
+                   <span class="fw-bold" translate>payroll.employee_name</span><br>
+                   <span class="fw-bold" translate>payroll.designation</span><br>
+                   <span class="fw-bold" translate>payroll.department</span><br>
+               </div>
+               <div class="col-3">
+                   <span>{{payslip?.PayrollUser?.user?.name}}</span><br>
+                   <span translate>payroll.designation</span><br>
+                   <span translate>payroll.department</span><br>
+               </div>
+           </div>
 
-        <div class="row mb-4">
-            <div class="col-3">
-                <span class="fw-bold">Date of joining:</span><br>
-                <span class="fw-bold">Pay Period:</span><br>
-                <span class="fw-bold">Gross Pay:</span><br>
-                <span class="fw-bold">Payable days:</span><br>
-            </div>
-            <div class="col-3">
-                <span>05 Dec, 2022</span><br>
-                <span>{{payslip?.payroll?.month}}, {{payslip?.payroll?.year}}</span><br>
-                <span>{{payslip?.monthlySalary}}</span><br>
-                <span>{{payslip?.attendanceSummary[0]?.payableDays}}</span><br>
-            </div>
-            <div class="col-3">
-                <span class="fw-bold">Employee Name:</span><br>
-                <span class="fw-bold">Designation:</span><br>
-                <span class="fw-bold">Department:</span><br>
-            </div>
-            <div class="col-3">
-                <span>{{payslip?.PayrollUser?.user?.name}}</span><br>
-                <span>Software Engineer</span><br>
-                <span>Software Development</span><br>
-            </div>
-        </div>
+           <div class="row mb-4">
+               <div class="col-6">
+                   <table class="table">
+                       <thead>
+                           <tr>
+                               <th translate>payroll.earnings</th>
+                               <th translate>payroll.amount</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <tr>
+                               <td translate>payroll.fixed_allowance_basic_salary</td>
+                               <td>{{payslip?.totalFixedAllowance}}</td>
+                           </tr>
+                           <tr>
+                               <td translate>payroll.variable_allowance</td>
+                               <td>{{payslip?.totalVariableAllowance}}</td>
+                           </tr>
+                           <tr>
+                               <td translate>payroll.overtime</td>
+                               <td>{{payslip?.totalOvertime | number:'1.2-2'}}</td>
+                           </tr>
+                           <tr>
+                               <td translate>payroll.flexi_benefits</td>
+                               <td>{{payslip?.totalFlexiBenefits}}</td>
+                           </tr>
+                           <tr>
+                               <td translate>payroll.other_benefits</td>
+                               <td>{{payslip?.totalOtherBenefit}}</td>
+                           </tr>
+                       </tbody>
+                       <tfoot>
+                           <tr class="fw-bold">
+                               <td translate>payroll.total_earnings</td>
+                               <td>{{ totalEarnings | number:'1.2-2' }}</td>
+                           </tr>
+                       </tfoot>
+                   </table>
+               </div>
+               <div class="col-6">
+                   <table class="table">
+                       <thead>
+                           <tr>
+                               <th translate>payroll.deductions</th>
+                               <th translate>payroll.amount</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <tr>
+                               <td translate>payroll.fixed_deductions</td>
+                               <td>{{payslip?.totalFixedDeduction}}</td>
+                           </tr>
+                           <tr>
+                               <td translate>payroll.professional_tax</td>
+                               <td>{{payslip?.totalPfTax}}</td>
+                           </tr>
+                           <tr>
+                               <td translate>payroll.income_tax</td>
+                               <td>{{payslip?.totalIncomeTax}}</td>
+                           </tr>
+                           <tr>
+                               <td translate>payroll.loan_advances</td>
+                               <td>{{payslip?.totalLoanAdvance}}</td>
+                           </tr>
+                           <tr *ngFor="let statutory of payslip?.statutoryDetails">
+                               <ng-container *ngIf="statutory?.ContributorType == 'Employee'">
+                                   <td>{{statutory?.StautoryName}}</td>
+                                   <td>{{statutory?.amount}}</td>
+                               </ng-container>
+                           </tr>
+                       </tbody>
+                       <tfoot>
+                           <tr class="fw-bold">
+                               <td translate>payroll.total_deductions</td>
+                               <td>{{ totalDeductions | number:'1.2-2' }}</td>
+                           </tr>
+                       </tfoot>
+                   </table>
+               </div>
 
-        <div class="row mb-4">
-            <div class="col-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Earnings</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Fixed Allowance + Basic Salary</td>
-                            <td>{{payslip?.totalFixedAllowance}}</td>
-                        </tr>
-                        <tr>
-                            <td>Variable Allowance</td>
-                            <td>{{payslip?.totalVariableAllowance}}</td>
-                        </tr>
-                        <tr>
-                            <td>Overtime</td>
-                            <td>{{payslip?.totalOvertime | number:'1.2-2'}}</td>
-                        </tr>
-                        <tr>
-                            <td>Flexi Benefits</td>
-                            <td>{{payslip?.totalFlexiBenefits}}</td>
-                        </tr>
-                        <tr>
-                            <td>Other benefits</td>
-                            <td>{{payslip?.totalOtherBenefit}}</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr class="fw-bold">
-                            <td>Total Earnings</td>
-                            <td>{{ totalEarnings | number:'1.2-2' }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="col-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Deductions</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Fixed Deductions</td>
-                            <td>{{payslip?.totalFixedDeduction}}</td>
-                        </tr>
-                        <tr>
-                            <td>Professional Tax</td>
-                            <td>{{payslip?.totalPfTax}}</td>
-                        </tr>
-                        <tr>
-                            <td>Income Tax</td>
-                            <td>{{payslip?.totalIncomeTax}}</td>
-                        </tr>
-                        <tr>
-                            <td>Loan/Advances</td>
-                            <td>{{payslip?.totalLoanAdvance}}</td>
-                        </tr>
-                        <tr *ngFor="let statutory of payslip?.statutoryDetails">
-                            @if(statutory?.ContributorType == 'Employee')
-                            {
-                            <td>{{statutory?.StautoryName}}</td>
-                            <td>{{statutory?.amount}}</td>
-                            }
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr class="fw-bold">
-                            <td>Total Deductions</td>
-                            <td>{{ totalDeductions | number:'1.2-2' }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
+               <div class="col-12">
+                   <table class="table">
+                       <thead>
+                           <tr>
+                               <th translate>payroll.employer_contribution</th>
+                               <th translate>payroll.amount</th>
+                           </tr>
+                       </thead>
+                       <tbody>
+                           <tr *ngFor="let statutory of payslip?.statutoryDetails">
+                               <ng-container *ngIf="statutory?.ContributorType == 'Employer'">
+                                   <td>{{statutory?.StautoryName}}</td>
+                                   <td>{{statutory?.amount}}</td>
+                               </ng-container>
+                           </tr>
+                       </tbody>
+                   </table>
+               </div>
+           </div>
 
-            <div class="col-12">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Employer Contribution</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let statutory of payslip?.statutoryDetails">
-                            @if(statutory?.ContributorType == 'Employer')
-                            {
-                            <td>{{statutory?.StautoryName}}</td>
-                            <td>{{statutory?.amount}}</td>
-                            }
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="col-12 text-end">
-            <h4>
-                Take Home Salary (Net Pay): ₹ {{ (totalEarnings - totalDeductions) | number:'1.2-2' }}
-            </h4>
-        </div>
-    </div>
-</div>
+           <div class="col-12 text-end">
+               <h4>
+                   <span translate>payroll.take_home_salary</span>: ₹ {{ (totalEarnings - totalDeductions) | number:'1.2-2' }}
+               </h4>
+           </div>
+       </div>
+   </div>

@@ -53,7 +53,6 @@ export class GeneratePayslipsComponent {
     this.totalEarnings = fixed + variable + overtime + flexi + other;
     this.totalDeductions = fixedDeduction + pfTax + incomeTax + loanAdvance;
 
-    // Optionally, add statutory deductions (ContributorType === 'Employee')
     if (ps?.statutoryDetails?.length) {
       const employeeContribs = ps.statutoryDetails
         .filter(s => s.ContributorType === 'Employee')

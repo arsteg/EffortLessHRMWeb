@@ -67,6 +67,7 @@ import { FNFStep8Component } from './run-payroll/run-fnf-payroll/fnf-steps/step8
 import { FNFStep9Component } from './run-payroll/run-fnf-payroll/fnf-steps/step9/step9.component';
 import { ViewFnfPayslipComponent } from './run-payroll/run-fnf-payroll/fnf-steps/step9/view-fnf-payslip/view-fnf-payslip.component';
 import { GeneratedFnfPayslipsComponent } from './fnf-payslips/generated-fnf-payslips/generated-fnf-payslips.component';
+import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
   declarations: [
     PayrollComponent,
@@ -140,6 +141,7 @@ import { GeneratedFnfPayslipsComponent } from './fnf-payslips/generated-fnf-pays
     OverlayModule,
     CommonComponentsModule,
     PayrollRoutingModule,
+    TranslateModule
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
