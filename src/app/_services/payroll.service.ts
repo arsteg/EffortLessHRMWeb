@@ -68,44 +68,6 @@ export class PayrollService {
     return response;
   }
 
-  // Rounding Rules CRUD
-  addRoundingRules(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/rounding-rules`, payload, this.httpOptions);
-    return response;
-  }
-
-  updateRoundingRules(id: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/rounding-rules/${id}`, payload, this.httpOptions);
-    return response;
-  }
-
-  getRoundingRules(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/rounding-rules-list`, payload, this.httpOptions);
-    return response;
-  }
-
-  deleteRoundingRules(id: string): Observable<any> {
-    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/rounding-rules/${id}`, this.httpOptions);
-    return response;
-  }
-  // PF templates CRUD
-  addPFTemplate(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates`, payload, this.httpOptions);
-    return response;
-  }
-  getPfTemplate(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/pf-templates-by-company`, payload, this.httpOptions);
-    return response;
-  }
-
-  updatePFTemplate(id: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/pf-templates/${id}`, payload, this.httpOptions);
-    return response;
-  }
-  deletePFTemplate(id: string): Observable<any> {
-    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/pf-templates/${id}`, this.httpOptions);
-    return response;
-  }
   // Gratuity Templates CRUD
   addGratuityTemplate(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates`, payload, this.httpOptions);

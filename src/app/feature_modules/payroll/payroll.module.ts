@@ -18,8 +18,6 @@ import { PayslipsComponent } from './payslips/payslips.component';
 import { FnfPayslipsComponent } from './fnf-payslips/fnf-payslips.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from 'src/app/shared/shared.Module';
-import { RoundingRulesComponent } from './settings/general-settings/rounding-rules/rounding-rules.component';
-import { PfTemplateComponent } from './settings/general-settings/pf-template/pf-template.component';
 import { LwfComponent } from './settings/fixed-contribution/lwf/lwf.component';
 import { LwfSlabComponent } from './settings/fixed-contribution/lwf/lwf-slab/lwf-slab.component';
 import { PtComponent } from './settings/fixed-contribution/pt/pt.component';
@@ -90,8 +88,6 @@ import { GeneratedFnfPayslipsComponent } from './fnf-payslips/generated-fnf-pays
     RunPayrollComponent,
     PayslipsComponent,
     FnfPayslipsComponent,
-    RoundingRulesComponent,
-    PfTemplateComponent,
     LwfComponent,
     LwfSlabComponent,
     PtComponent,

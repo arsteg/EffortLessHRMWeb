@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
-import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -27,18 +25,11 @@ export class GeneralSettingsComponent {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   months: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   fixedAllowance: any[];
-  totalRecords: number
-  recordsPerPage: number = 10;
-  currentPage: number = 1;
-  roundingRules: any;
-  pfTemplates: any;
   gratuityTemplate: any;
-  public sortOrder: string = '';
   dialogRef: MatDialogRef<any>;
 
   constructor(private fb: FormBuilder,
     private payroll: PayrollService,
-    private dialog: MatDialog,
     private toast: ToastrService,
     private authService: AuthenticationService
   ) {
@@ -75,13 +66,10 @@ export class GeneralSettingsComponent {
       isAllowToCalculateOvertime: [true]
     });
     this.generalSettingForm.disable();
-
-
   }
 
   ngOnInit() {
     this.getData();
-    this.loadRecords();
   }
 
   getData() {
@@ -128,12 +116,6 @@ export class GeneralSettingsComponent {
         })
       })
     });
-  }
-
-  selectTab(tabId: string) {
-    this.activeTab = tabId;
-    console.log(this.activeTab);
-    this.loadRecords();
   }
 
   onCancel() {
@@ -185,65 +167,6 @@ export class GeneralSettingsComponent {
       }
     });
   }
-  open(content: any) {
-    this.payroll.generalSettings.next(this.generalSettings);
-    this.payroll.fixedAllowance.next(this.fixedAllowance);
-    if (this.isEdit) {
-      this.payroll.data.next(this.selectedRecord);
-      this.payroll.generalSettings.next(this.generalSettings);
-    }
-    this.dialogRef = this.dialog.open(content, {
-      width: '600px',
-      disableClose: true,
-    });
-
-    this.dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        const new_record = this.payroll.addResponse.getValue();
-        this.roundingRules.push(new_record);
-      }
-    });
-  }
-
-  deleteRecord(_id: string) {
-    console.log(this.activeTab)
-    if (this.activeTab === 'tabRoundingRules') {
-      this.payroll.deleteRoundingRules(_id).subscribe((res: any) => {
-        const index = this.roundingRules.findIndex(res => res._id === _id);
-        if (index !== -1) {
-          this.roundingRules.splice(index, 1);
-        }
-        this.toast.success('Successfully Deleted!!!', 'Rounding Rules');
-      },
-        (err) => {
-          this.toast.error('This Can not be delete as it is already used in the system', 'Rounding Rules');
-        })
-    }
-    else if (this.activeTab === 'tabPFTemplate') {
-      this.payroll.deletePFTemplate(_id).subscribe((res: any) => {
-        const index = this.fixedAllowance.findIndex(temp => temp._id === _id);
-        if (index!== -1) {
-          this.fixedAllowance.splice(index, 1);
-        }
-        this.toast.success('Successfully Deleted!!!', 'Fixed Allowance');
-      },
-        (err) => {
-          this.toast.error('This Can not be delete as it is already used in the system', 'Fixed Allowance');
-        })
-    }
-    
-  }
-
-  deleteDialog(id: string): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      width: '400px',
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'delete') {
-        this.deleteRecord(id);
-      }
-    });
-  }
 
   toggleEdit() {
     this.isEdit = !this.isEdit;
@@ -257,46 +180,4 @@ export class GeneralSettingsComponent {
   resetSettings() {
     this.toggleEdit();
   }
-  
-  onPageChange(page: number) {
-    this.currentPage = page;
-    this.loadRecords();
-  }
-
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.loadRecords();
-  }
-
-  loadRecords() {
-    const pagination = {
-      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: this.recordsPerPage.toString()
-    };
-    if (this.activeTab == 'tabRoundingRules') {
-      this.payroll.getRoundingRules(pagination).subscribe((res: any) => {
-        this.roundingRules = res.data;
-        this.totalRecords = res.total;
-      });
-    }
-    else if (this.activeTab == 'tabPFTemplate') {
-      console.log(this.activeTab)
-      this.payroll.getPfTemplate(pagination).subscribe((res: any) => {
-        this.pfTemplates = res.data;
-        this.totalRecords = res.total;
-      });
-    }
-   
-  }
-
-  onClose(event) {
-    if (event) {
-
-
-
-      this.dialogRef.close();
-      this.loadRecords();
-    }
-  }
-
 }
