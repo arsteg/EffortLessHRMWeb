@@ -99,9 +99,8 @@ export class StatutoryDetailsComponent {
   
     this.userService.getStatutoryByUserId(this.selectedUser?._id).subscribe((res: any) => {
       this.statutoryDetailsForm.get('isGratuityEligible').enable();
-      console.log(this.selectedUser?._id);
-      console.log(this.statutoryDetailsForm.value);
-      if (!res.data || res.data.length === 0) {
+      
+      if (!res.data || res.data.length === 0 || res.data === null) {
         this.userService.addStatutoryDetails(this.statutoryDetailsForm.value).subscribe((res: any) => {
           this.getStatutoryDetailsByUser();
           this.toast.success('Statutory Details Added Successfully');
