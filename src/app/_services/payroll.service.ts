@@ -219,7 +219,7 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-slabs-list-by-state`, payload, this.httpOptions);
     return response;
   }
- 
+
   // LWF_deduction month CRUD
   addLWFDeductionMonth(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-deduction-months`, payload, this.httpOptions);
@@ -397,6 +397,11 @@ export class PayrollService {
     return response;
   }
 
+  updatePayroll(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
   getPayroll(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-by-company`, payload, this.httpOptions);
     return response;
@@ -429,6 +434,10 @@ export class PayrollService {
     return response;
   }
 
+  updatePayrollUserStatus(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/users-status/${id}`, payload, this.httpOptions);
+    return response;
+  }
 
   // Run Payroll: (step-2) Attendance summary
   addAttendanceSummary(payload: any): Observable<any> {
@@ -675,6 +684,11 @@ export class PayrollService {
     return response;
   }
 
+  updateFnFUserStatus(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/fnf/users-status/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  
   // FnF Attendance Summary CRUD
 
   getAttendanceRecordsByUserAndPayroll(payload: any): Observable<any> {
@@ -961,17 +975,26 @@ export class PayrollService {
     return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-status-list`, this.httpOptions);
   }
 
-  getFnFPayrollStatus(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/common/get-fnf-user-status-list`, this.httpOptions);
+  getPayrollUserStatus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-user-status-list`, this.httpOptions);
   }
 
+  getFNFPayrollStatus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-fnf-status-list`, this.httpOptions);
+  }
+
+  getFNFPayrollUserStatus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-fnf-user-status-list`, this.httpOptions);
+  }
+
+  // Generated FnF Payroll
   getGeneratedFnFPayrollByFNFPayroll(fnfPayroll: string): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-fnf-payroll/${fnfPayroll}`, this.httpOptions);
     return response;
   }
 
   getGeneratedFnFPayroll(): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/generatedFNFPayroll-by-company`,{}, this.httpOptions);
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/generatedFNFPayroll-by-company`, {}, this.httpOptions);
     return response;
   }
 }

@@ -1,6 +1,7 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
 interface PayrollStatus {
@@ -33,15 +34,17 @@ export class FNFStep9Component {
 
   generatedPayroll: any;
   payrollStatus: any;
+  payrollStatusArray: any;
+  selectedStatus: string = '';
+  selectedPayrollUser: any;
   statusKeys: string[] = [];
-
+  @ViewChild('updateStatus') updateStatus: TemplateRef<any>;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   @ViewChild('updateStatusResignation') updateStatusResignation: TemplateRef<any>;
   isEditMode: boolean = false;
 
   payrollForm: FormGroup;
   changedStatus: string;
-  selectedStatus: string;
   dialogRef: any;
   displayedColumns = [
     'PayrollUsers',
@@ -62,7 +65,8 @@ export class FNFStep9Component {
 
   constructor(
     private dialog: MatDialog,
-    private payrollService: PayrollService
+    private payrollService: PayrollService,
+    private toast: ToastrService
   ) { }
 
   ngOnInit() {
@@ -78,13 +82,36 @@ export class FNFStep9Component {
   }
 
   getFNFPayrollStatus() {
-    this.payrollService.getFnFPayrollStatus().subscribe((res: any) => {
+    this.payrollService.getFNFPayrollStatus().subscribe((res: any) => {
       this.payrollStatus = res.data;
-    },
-      (error) => {
-        console.error('Error fetching payroll status:', error);
-      }
-    );
+      this.payrollStatusArray = Object.values(this.payrollStatus).filter(status => status);
+    });
+  }
+
+  openUpdateStatusDialog(status: string) {
+    this.selectedStatus = status;
+    const dialogRef = this.dialog.open(this.updateStatus, {
+      width: '600px',
+      disableClose: true,
+      data: status
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) { }
+    });
+  }
+
+   updatePayrollStatus() {
+    const id = this.selectedPayrollUser?.PayrollUser?.id;
+    const payload = {
+      updatedOnDate: new Date(),
+      status: this.selectedStatus
+    };
+    this.payrollService.updateFnFUserStatus(id, payload).subscribe((res: any) => {
+      this.toast.success('Payroll status updated successfully', 'Success');
+      this.getGeneratedPayroll();
+      this.closeDialog();
+    })
   }
 
   getGeneratedPayroll() {
@@ -114,12 +141,6 @@ export class FNFStep9Component {
 
   closeDialog() {
     this.dialog.closeAll();
-  }
-
-  openUpdateStatusDialog(): void {
-    this.dialogRef = this.dialog.open(this.updateStatusResignation, {
-      disableClose: true
-    });
   }
 
   getCompanyNameFromCookies(): string | null {

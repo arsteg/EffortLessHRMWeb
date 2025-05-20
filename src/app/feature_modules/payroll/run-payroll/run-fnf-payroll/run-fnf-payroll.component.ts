@@ -39,6 +39,10 @@ export class RunFnfPayrollComponent implements OnInit {
   selectedFnF: any;
 
   @ViewChild('fnfUserModal') fnfUserModal: TemplateRef<any>;
+  @ViewChild('updateStatus') updateStatus: TemplateRef<any>;
+  payrollStatus: any;
+  payrollStatusArray: any;
+  selectedStatus: string = '';
 
   constructor(private modalService: NgbModal,
     private fb: FormBuilder,
@@ -69,7 +73,46 @@ export class RunFnfPayrollComponent implements OnInit {
     this.generateYearList();
     this.getSettledUsers();
     this.fetchFnFPayroll();
+    this.getPayrollStatus();
   }
+
+  openUpdateStatusDialog(status: string) {
+    this.selectedStatus = status;
+    const dialogRef = this.dialog.open(this.updateStatus, {
+      width: '600px',
+      disableClose: true,
+      data: status
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) { }
+    });
+  }
+
+  closeAddDialog() {
+    this.dialog.closeAll();
+  }
+
+  getPayrollStatus() {
+    this.payrollService.getFNFPayrollStatus().subscribe((res: any) => {
+      this.payrollStatus = res.data;
+      this.payrollStatusArray = Object.values(this.payrollStatus).filter(status => status);
+    });
+  }
+
+  updatePayrollStatus() {
+    const id = this.selectedFnF?._id;
+    const payload = {
+      updatedOnDate: new Date(),
+      status: this.selectedStatus
+    };
+    this.payrollService.updateFnF(id, payload).subscribe((res: any)=>{
+      this.toast.success('FNF Payroll status updated successfully', 'Success');
+      this.fetchFnFPayroll();
+      this.closeAddDialog();
+    })
+  }
+
 
   getSettledUsers() {
     this.userService.getUsersByStatus('Settled').subscribe((res: any) => {
@@ -136,11 +179,11 @@ export class RunFnfPayrollComponent implements OnInit {
 
   fetchFnFPayroll() {
     const payload = { skip: '', next: '' };
-  
+
     this.payrollService.getFnF(payload).subscribe(
       (res: any) => {
         this.fnfPayroll.data = res.data; // Assign the data to the `fnfPayroll` property
-  
+
         // Prepare an array of observables for user API calls
         const userRequests = this.fnfPayroll.data.map((fnf: any) =>
           this.payrollService.getFnFUsers({ skip: '', next: '', payrollFNF: fnf?._id }).pipe(
@@ -150,7 +193,7 @@ export class RunFnfPayrollComponent implements OnInit {
             }))
           )
         );
-  
+
         // Use forkJoin to execute all user-related API requests concurrently
         forkJoin(userRequests).subscribe(
           (userResponses: any[]) => {
@@ -159,7 +202,7 @@ export class RunFnfPayrollComponent implements OnInit {
               const fnfPayroll = this.fnfPayroll.data.find((fnf: any) => fnf._id === fnfId);
               if (fnfPayroll) {
                 fnfPayroll.userList = users;
-  
+
                 // Map user details
                 const userNames = users.map((user: any) => {
                   const matchedUser = this.settledUser.find((u: any) => u._id === user.user);
@@ -167,7 +210,7 @@ export class RunFnfPayrollComponent implements OnInit {
                     ? `${matchedUser.firstName} ${matchedUser.lastName}`
                     : 'Unknown User';
                 });
-  
+
                 // Join usernames into a single string and assign to `details`
                 fnfPayroll.details = userNames.length > 0 ? userNames.join(', ') : 'No Users';
               }
@@ -185,7 +228,7 @@ export class RunFnfPayrollComponent implements OnInit {
       }
     );
   }
-  
+
 
   open(content: any) {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {

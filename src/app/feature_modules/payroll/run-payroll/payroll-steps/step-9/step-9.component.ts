@@ -1,6 +1,7 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
 interface PayrollStatus {
@@ -28,14 +29,17 @@ export class Step9Component {
   selectedRecord: any;
   payrollUser: any;
   @Input() selectedPayroll: any;
+  selectedPayrollUser: any;
   generatedPayroll: any[] = [];
+  payrollStatus: any;
+  payrollStatusArray: any;
+  selectedStatus: string = '';
+  @ViewChild('updateStatus') updateStatus: TemplateRef<any>;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   @ViewChild('updateStatusResignation') updateStatusResignation: TemplateRef<any>;
   isEditMode: boolean = false;
-  payrollStatus: PayrollStatus;
   payrollForm: FormGroup;
   changedStatus: string;
-  selectedStatus: string;
   dialogRef: any;
   displayedColumns = [
     'PayrollUsers',
@@ -57,7 +61,8 @@ export class Step9Component {
 
   constructor(
     private dialog: MatDialog,
-    private payrollService: PayrollService
+    private payrollService: PayrollService,
+    private toast: ToastrService
   ) { }
 
   ngOnInit() {
@@ -72,13 +77,39 @@ export class Step9Component {
   }
 
   getPayrollStatus() {
-    this.payrollService.getPayrollStatus().subscribe((res: any) => {
-      this.payrollStatus = res.data.statusList;
-    },
-      (error) => {
-        console.error('Error fetching payroll status:', error);
-      }
-    );
+    this.payrollService.getPayrollUserStatus().subscribe((res: any) => {
+      this.payrollStatus = res.data;
+      this.payrollStatusArray = Object.values(this.payrollStatus).filter(status => status);
+    });
+  }
+
+  openUpdateStatusDialog(status: string) {
+    this.selectedStatus = status;
+    const dialogRef = this.dialog.open(this.updateStatus, {
+      width: '600px',
+      disableClose: true,
+      data: status
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) { }
+    });
+  }
+  closeAddDialog() {
+    this.dialog.closeAll();
+  }
+
+  updatePayrollStatus() {
+    const id = this.selectedPayrollUser?.PayrollUser?.id;
+    const payload = {
+      updatedOnDate: new Date(),
+      status: this.selectedStatus
+    };
+    this.payrollService.updatePayrollUserStatus(id, payload).subscribe((res: any) => {
+      this.toast.success('Payroll status updated successfully', 'Success');
+      this.getGeneratedPayroll();
+      this.closeAddDialog();
+    })
   }
 
   getGeneratedPayroll() {
@@ -133,12 +164,6 @@ export class Step9Component {
 
   closeDialog() {
     this.dialog.closeAll();
-  }
-
-  openUpdateStatusDialog(): void {
-    this.dialogRef = this.dialog.open(this.updateStatusResignation, {
-      disableClose: true
-    });
   }
 
   getCompanyNameFromCookies(): string | null {
