@@ -99,7 +99,6 @@ export class StatutoryDetailsComponent {
   
     this.userService.getStatutoryByUserId(this.selectedUser?._id).subscribe((res: any) => {
       this.statutoryDetailsForm.get('isGratuityEligible').enable();
-      
       if (!res.data || res.data.length === 0 || res.data === null) {
         this.userService.addStatutoryDetails(this.statutoryDetailsForm.value).subscribe((res: any) => {
           this.getStatutoryDetailsByUser();

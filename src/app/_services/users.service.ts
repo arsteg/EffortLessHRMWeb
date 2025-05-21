@@ -30,7 +30,8 @@ export class UserService {
   toggleEmployeesDetails: any = new BehaviorSubject('');
   empCode: any = new BehaviorSubject('');
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient
+  ) {
   }
 
   setData(data: any, isEdit: boolean): void {
@@ -275,4 +276,7 @@ export class UserService {
   getUsersByCompany(companyId: string) {
     return this.http.get<any>(`${environment.apiUrlDotNet}/users/getUsersByCompany/${companyId}`,this.httpOptions);
   }  
+  getBasicSalaryByUserId(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/basic-salary-by-userId/${id}`, this.httpOptions);
+  }
 }

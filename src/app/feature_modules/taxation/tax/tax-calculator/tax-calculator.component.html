@@ -52,7 +52,7 @@
       <div class="p-2">
         <!-- HRA Section -->
         @if (section?.isHRA) {
-        <input type="number" class="form-control" [formControl]="hraControl">
+        <input type="number" class="form-control" [formControl]="hraControl" readonly>
         <h4>HRA Details</h4>
         <table class="table">
           <thead>
@@ -60,17 +60,17 @@
             <th>Verified Amount</th>
           </thead>
           <tbody>
-            <tr *ngFor="let hra of getAllHraMonths(); trackBy: trackByHra">
+            <tr *ngFor="let hra of getAllHraMonths(); trackBy: trackByHra; let i = index">
               <td>{{ hra.month }}</td>
               <td>
-                <input type="number" class="form-control" [value]="hra.verifiedAmount || 0">
+                <input type="number" class="form-control" [formControl]="hraControls[i]">
               </td>
             </tr>
           </tbody>
         </table>
         } @else {
         <!-- Non-HRA Section -->
-        <input type="number" class="form-control" [formControl]="sectionControls[section?._id]">
+        <input type="number" class="form-control" [formControl]="sectionControls[section?._id]" readonly>
         @if (getAllComponentsForSection(section?._id)?.length) {
         <h4>Section Components</h4>
         <table class="table">
@@ -80,10 +80,10 @@
           </thead>
           <tbody>
             <tr *ngFor="let component of getAllComponentsForSection(section?._id); trackBy: trackByComponent">
-              <td>{{ component.componantName || 'Unnamed Component' }} <span> | Maximum
+              <td>{{ component.componantName || 'Unnamed Component' }} <span *ngIf="component?.maximumAmount"> | Maximum
                   Amount Limit: {{component?.maximumAmount}}</span></td>
               <td>
-                <input type="number" class="form-control" [value]="component.approvedAmount || 0">
+                <input type="number" class="form-control" [formControl]="componentControls[component._id]">
               </td>
             </tr>
           </tbody>

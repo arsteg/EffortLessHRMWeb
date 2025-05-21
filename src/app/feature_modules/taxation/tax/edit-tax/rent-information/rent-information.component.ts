@@ -58,11 +58,10 @@ export class RentInformationComponent {
     this.formGroup.setControl('employeeIncomeTaxDeclarationHRA', this.fb.array([]));
 
     const form = this.formGroup.get('employeeIncomeTaxDeclarationHRA') as FormArray;
-    this.userService.getSalaryByUserId(this.selectedRecord?.user?._id).subscribe((res: any) => {
-      const result = res.data[res.data.length - 1]; // Fixed length issue
-      const basicSalary = result.BasicSalary;
-      this.metroDeclaredRent = (basicSalary * 0.5) / 12;
-      this.nonMetroDeclaredRent = (basicSalary * 0.4) / 12;
+    this.userService.getBasicSalaryByUserId(this.selectedRecord?.user?._id).subscribe((res: any) => {
+      const basicSalary = res.data;
+      this.metroDeclaredRent = (basicSalary * 0.5);
+      this.nonMetroDeclaredRent = (basicSalary * 0.4);
       this.validateRentDeclared();
     }, (error) => {
     });
@@ -307,15 +306,14 @@ export class RentInformationComponent {
 
   onSubmissionRowData(index: number) {
     const form = this.formGroup.get(`employeeIncomeTaxDeclarationHRA.${index}`) as FormGroup;
-    this.userService.getSalaryByUserId(this.selectedRecord?.user?._id).subscribe((res: any) => {
-      const result = res.data[res.data.length - 1];
-      const basicSalary = result.BasicSalary;
+    this.userService.getBasicSalaryByUserId(this.selectedRecord?.user?._id).subscribe((res: any) => {
+      const basicSalary = res.data;     
       if (form.value.cityType === 'Metro') {
-        const declaredRent = (basicSalary * 0.5) / 12;
+        const declaredRent = (basicSalary * 0.5);
         this.formGroup.patchValue({ rentDeclared: declaredRent });
       }
       if (form.value.cityType === 'Non-Metro') {
-        const declaredRent = (basicSalary * 0.4) / 12;
+        const declaredRent = (basicSalary * 0.4);
         this.formGroup.patchValue({ rentDeclared: declaredRent });
       }
       const rentDeclared = this.formGroup.value.rentDeclared;
@@ -348,15 +346,14 @@ export class RentInformationComponent {
   }
 
   onSubmission() {
-    this.userService.getSalaryByUserId(this.selectedRecord?.user?._id).subscribe((res: any) => {
-      const result = res.data[res.data.length - 1];
-      const basicSalary = result.BasicSalary;
+    this.userService.getBasicSalaryByUserId(this.selectedRecord?.user?._id).subscribe((res: any) => {
+      const basicSalary = res.data;     
       if (this.formGroup.value.cityType === 'Metro') {
-        const declaredRent = (basicSalary * 0.5) / 12;
+        const declaredRent = (basicSalary * 0.5);
         this.formGroup.patchValue({ rentDeclared: declaredRent });
       }
       if (this.formGroup.value.cityType === 'Non-Metro') {
-        const declaredRent = (basicSalary * 0.4) / 12;
+        const declaredRent = (basicSalary * 0.4);
         this.formGroup.patchValue({ rentDeclared: declaredRent });
       }
     });

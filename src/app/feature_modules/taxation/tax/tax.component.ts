@@ -5,7 +5,6 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -20,6 +19,7 @@ export class TaxComponent {
   offcanvasData = 'Initial data';
   showOffcanvas: boolean = false;
   isEdit: boolean = false;
+  @ViewChild(TaxCalculatorComponent) taxCalculator: TaxCalculatorComponent;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
   selectedUser: any;
   taxView: boolean;
@@ -47,7 +47,7 @@ export class TaxComponent {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private taxService: TaxationService,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
     this.taxDeclarationForm = this.fb.group({
       financialYear: [''],
@@ -67,7 +67,6 @@ export class TaxComponent {
     this.userService.getTaxDeclarationByUserId(this.user.id, { skip: '', next: '' }).subscribe((res: any) => {
       this.taxDeclarations = res.data;
       this.totalRecords = res.total;
-      // this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
     });
     this.userService.getStatutoryByUserId(this.user.id).subscribe((res: any) => {
       this.userTaxRegime = res?.data?.taxRegime;
@@ -83,22 +82,20 @@ export class TaxComponent {
     this.taxViewChange.emit(false);
   }
 
-  // Handle back from edit view
   goBackToSalaryDetails() {
     this.taxView = false;
-    this.taxEditView = false; // Hide edit view
+    this.taxEditView = false;
     this.isEdit = false;
     this.selectedRecord = null;
   }
 
-  // When opening edit view
   openEditView(tax: any) {
     this.selectedRecord = tax;
     this.isEdit = true;
-    this.taxView = false; // Hide calculator
-    this.taxEditView = true; // Show edit view
+    this.taxView = false;
+    this.taxEditView = true;
   }
-  // When opening calculator view
+
   openCalculatorView(tax: any) {
     this.selectedRecord = tax;
     this.isEdit = false;
@@ -123,66 +120,65 @@ export class TaxComponent {
   }
 
   getTaxDeclaration() {
-  this.taxView = true; // Show calculator
-  this.taxEditView = false; // Hide edit view
-  this.taxViewChange.emit(true);
+    this.taxView = true;
+    this.taxEditView = false;
+    this.taxViewChange.emit(true);
 
-  const pagination = {
-    skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-    next: this.recordsPerPage.toString()
-  };
+    const pagination = {
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
+    };
 
-  this.userService.getTaxDeclarationByUserId(this.user?.id, pagination).subscribe((res: any) => {
-    // Assign the last tax declaration object to taxList
-    this.taxList = res.data && res.data.length > 0 ? res.data[res.data.length - 1] : null;
+    this.userService.getTaxDeclarationByUserId(this.user?.id, pagination).subscribe((res: any) => {
+      this.taxList = res.data && res.data.length > 0 ? res.data[res.data.length - 1] : null;
+      console.log('getTaxDeclaration taxList:', this.taxList); // Debug: Verify taxList
+      this.selectedRecord = this.taxList; // Ensure selectedRecord is set
+      console.log('selectedRecord set:', this.selectedRecord); // Debug: Verify selectedRecord
 
-    if (!this.taxList) {
-      this.totalRecords = 0;
-      return;
-    }
-
-    // Extract section IDs from incomeTaxDeclarationComponent
-    const sectionIds = this.taxList?.incomeTaxDeclarationComponent?.map((component: any) =>
-      component?.incomeTaxComponent?.section?._id || component?.section?._id
-    ).filter(id => id) || [];
-
-    // Fetch section details
-    const sectionRequests = sectionIds.map((sectionId: any) =>
-      this.taxService.getTaxSectionById(sectionId).toPromise()
-    );
-
-    forkJoin(sectionRequests).subscribe({
-      next: (sections: any[]) => {
-        const allSections = sections.map(section => section.data);
-
-        // Map incomeTaxDeclarationComponent with section names
-        const incomeTaxComponents = this.taxList.incomeTaxDeclarationComponent || [];
-        const mappedIncomeTaxComponents = incomeTaxComponents.map((component: any) => {
-          const sectionId = component?.incomeTaxComponent?.section?._id || component?.section?._id;
-          const section = allSections.find((s: any) => s._id === sectionId);
-          return {
-            ...component,
-            section: section ? section.section : 'Unnamed Section'
-          };
-        });
-
-        const componentSums = this.calculateComponentSums(mappedIncomeTaxComponents);
-        this.taxList.totalRentDeclared = this.getTotalRentDeclared(this.taxList.incomeTaxDeclarationHRA || []);
-        const hra = this.taxList.totalRentDeclared;
-        this.taxList.componentSums = { componentSums, hra };
-
-        this.taxService.taxByUser.next(this.taxList);
-
-        this.totalRecords = res.total || 0;
-      },
-      error: (err) => {
-        console.error('Error fetching sections:', err);
+      if (!this.taxList) {
+        this.totalRecords = 0;
+        return;
       }
+
+      const sectionIds = this.taxList?.incomeTaxDeclarationComponent?.map((component: any) =>
+        component?.incomeTaxComponent?.section?._id || component?.section?._id
+      ).filter(id => id) || [];
+
+      const sectionRequests = sectionIds.map((sectionId: any) =>
+        this.taxService.getTaxSectionById(sectionId).toPromise()
+      );
+
+      forkJoin(sectionRequests).subscribe({
+        next: (sections: any[]) => {
+          const allSections = sections.map(section => section.data);
+
+          const incomeTaxComponents = this.taxList.incomeTaxDeclarationComponent || [];
+          const mappedIncomeTaxComponents = incomeTaxComponents.map((component: any) => {
+            const sectionId = component?.incomeTaxComponent?.section?._id || component?.section?._id;
+            const section = allSections.find((s: any) => s._id === sectionId);
+            return {
+              ...component,
+              section: section ? section.section : 'Unnamed Section'
+            };
+          });
+
+          const componentSums = this.calculateComponentSums(mappedIncomeTaxComponents);
+          this.taxList.totalRentDeclared = this.getTotalRentDeclared(this.taxList.incomeTaxDeclarationHRA || []);
+          const hra = this.taxList.totalRentDeclared;
+          this.taxList.componentSums = { componentSums, hra };
+
+          this.taxService.taxByUser.next(this.taxList);
+
+          this.totalRecords = res.total || 0;
+        },
+        error: (err) => {
+          console.error('Error fetching sections:', err);
+        }
+      });
+    }, (err) => {
+      console.error('Error fetching tax declaration:', err);
     });
-  }, (err) => {
-    console.error('Error fetching tax declaration:', err);
-  });
-}
+  }
 
   calculateComponentSums(components: any[]): any {
     const sums: any = {};
@@ -201,7 +197,6 @@ export class TaxComponent {
 
   extractSectionsFromTaxList(taxList: any[]): string[] {
     const allSections: string[] = [];
-
     taxList.forEach(item => {
       if (item.incomeTaxDeclarationComponent) {
         item.incomeTaxDeclarationComponent.forEach(component => {
@@ -233,24 +228,41 @@ export class TaxComponent {
   }
 
   taxDeclaration() {
-    let payload = {
+    if (!this.taxCalculator) {
+      console.error('taxCalculator not available');
+      this.toastr.error('Tax calculator component not loaded');
+      return;
+    }
+
+    const payload = {
       financialYear: this.taxDeclarationForm.value.financialYear,
       user: this.user.id,
-      employeeIncomeTaxDeclarationComponent: [],
-      employeeIncomeTaxDeclarationHRA: []
+      employeeIncomeTaxDeclarationComponent: Object.keys(this.taxCalculator.componentControls).map(componentId => ({
+        incomeTaxComponent: componentId,
+        approvedAmount: this.taxCalculator.componentControls[componentId].value || 0
+      })),
+      employeeIncomeTaxDeclarationHRA: this.taxCalculator.hraControls.map((control, index) => ({
+        month: this.taxCalculator.getAllMonths()[index],
+        verifiedAmount: control.value || 0
+      }))
     };
-    // if user selected Old regime
+
+    console.log('taxDeclaration payload:', payload); // Debug: Verify payload
+
     this.userService.getStatutoryByUserId(this.user.id).subscribe((res: any) => {
       if (res.data[0].taxRegime === 'Old Regime') {
-        this.taxService.addIncomeTax(payload).subscribe((res: any) => {
-          this.taxList.push(res.data);
-          this.toastr.success('Tax Declaration Added Successfully');
-          this.modalService.dismissAll();
-        }, err => {
-          this.toastr.error('Something went wrong');
+        this.taxService.addIncomeTax(payload).subscribe({
+          next: (res: any) => {
+            this.taxList.push(res.data);
+            this.toastr.success('Tax Declaration Added Successfully');
+            this.modalService.dismissAll();
+          },
+          error: (err) => {
+            console.error('Error saving tax declaration:', err);
+            this.toastr.error('Something went wrong');
+          }
         });
-      }
-      else if (res.data[0].taxRegime === 'New Regime') {
+      } else if (res.data[0].taxRegime === 'New Regime') {
         this.toastr.error('Tax Declaration is not allowed in New Regime');
         this.modalService.dismissAll();
       }
@@ -268,5 +280,4 @@ export class TaxComponent {
 
     return componentCount;
   }
-
 }
