@@ -252,6 +252,7 @@ export class TaxCalculatorComponent implements OnInit {
       return {
         _id: component._id,
         componantName: component.componantName || 'Unnamed Component',
+        maximumAmount: declared ? (declared.maximumAmount || 0) : 0,
         section: component.section,
         approvedAmount: declared ? (declared.approvedAmount || 0) : 0
       };
