@@ -58,6 +58,7 @@ export class TaxCalculatorComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('Selected Record:', this.selectedRecord);
     this.getTaxSections();
     this.getTaxComponents();
     this.getSalaryByUser();
@@ -89,6 +90,7 @@ export class TaxCalculatorComponent implements OnInit {
     this.hraVerifiedTotal = this.selectedRecord?.incomeTaxDeclarationHRA?.reduce((sum, hra) => {
       return sum + (hra.verifiedAmount || 0);
     }, 0) || 0;
+    console.log('HRA Verified Total:', this.hraVerifiedTotal);
     this.hraControl.setValue(this.hraVerifiedTotal);
   }
 

@@ -70,7 +70,7 @@
             <p>{{taxList?.user?.firstName | titlecase}}&nbsp;{{taxList?.user?.lastName | titlecase}} |
                 {{taxList?.financialYear}}</p>
         </div>
-        <app-tax-calculator [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-tax-calculator>
+        <app-tax-calculator [selectedRecord]="taxList" [isEdit]="isEdit"></app-tax-calculator>
     </div>
 
     <app-edit-tax *ngIf="taxEditView && !taxView" [edit]=isEdit [selectedRecord]="selectedRecord"

@@ -122,45 +122,70 @@ export class TaxComponent {
   }
 
   getTaxDeclaration() {
-    this.taxView = true; // Show calculator
-    this.taxEditView = false; // Hide edit view
-    this.taxViewChange.emit(true);
+  this.taxView = true; // Show calculator
+  this.taxEditView = false; // Hide edit view
+  this.taxViewChange.emit(true);
 
-    const pagination = {
-      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: this.recordsPerPage.toString()
-    };
-    this.userService.getTaxDeclarationByUserId(this.user?.id, pagination).subscribe((res: any) => {
-      this.taxList = res.data[res.data.length - 1];
-      const sectionIds = this.taxList.flatMap((tax: any) =>
-        tax.incomeTaxDeclarationComponent.map((component: any) => component?.section?._id)
-      );
+  const pagination = {
+    skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+    next: this.recordsPerPage.toString()
+  };
 
-      const sectionRequests = sectionIds.map((sectionId: any) =>
-        this.taxService.getTaxSectionById(sectionId).toPromise()
-      );
+  this.userService.getTaxDeclarationByUserId(this.user?.id, pagination).subscribe((res: any) => {
+    // Assign the last tax declaration object to taxList
+    this.taxList = res.data && res.data.length > 0 ? res.data[res.data.length - 1] : null;
 
-      forkJoin(sectionRequests).subscribe((sections: any[]) => {
+    if (!this.taxList) {
+      this.totalRecords = 0;
+      return;
+    }
+
+    // Extract section IDs from incomeTaxDeclarationComponent
+    const sectionIds = this.taxList?.incomeTaxDeclarationComponent?.map((component: any) =>
+      component?.incomeTaxComponent?.section?._id || component?.section?._id
+    ).filter(id => id) || [];
+
+    // Fetch section details
+    const sectionRequests = sectionIds.map((sectionId: any) =>
+      this.taxService.getTaxSectionById(sectionId).toPromise()
+    );
+
+    forkJoin(sectionRequests).subscribe({
+      next: (sections: any[]) => {
         const allSections = sections.map(section => section.data);
 
-        this.taxList.forEach((tax: any) => {
-          const incomeTaxComponents = tax.incomeTaxDeclarationComponent;
-
-          const mappedIncomeTaxComponents = incomeTaxComponents.map((component: any) => ({
+        // Map incomeTaxDeclarationComponent with section names
+        const incomeTaxComponents = this.taxList.incomeTaxDeclarationComponent || [];
+        const mappedIncomeTaxComponents = incomeTaxComponents.map((component: any) => {
+          const sectionId = component?.incomeTaxComponent?.section?._id || component?.section?._id;
+          const section = allSections.find((s: any) => s._id === sectionId);
+          return {
             ...component,
-            section: allSections.find((section: any) => section._id === component.section)?.section
-          }));
-          const componentSums = this.calculateComponentSums(mappedIncomeTaxComponents);
-          tax.totalRentDeclared = this.getTotalRentDeclared(tax.incomeTaxDeclarationHRA);
-          const hra = tax.totalRentDeclared;
-          tax.componentSums = { componentSums, hra };
-          this.taxService.taxByUser.next(tax.componentSums);
+            section: section ? section.section : 'Unnamed Section'
+          };
         });
-        this.totalRecords = res.total;
-        this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
-      });
+
+        // Calculate component sums and HRA
+        const componentSums = this.calculateComponentSums(mappedIncomeTaxComponents);
+        this.taxList.totalRentDeclared = this.getTotalRentDeclared(this.taxList.incomeTaxDeclarationHRA || []);
+        const hra = this.taxList.totalRentDeclared;
+        this.taxList.componentSums = { componentSums, hra };
+
+        // Emit tax data to subscribers (e.g., for TaxCalculatorComponent)
+        this.taxService.taxByUser.next(this.taxList);
+
+        // Update total records
+        this.totalRecords = res.total || 0;
+        this.uniqueFinancialYears = this.getUniqueFinancialYears([this.taxList]); // Pass as array
+      },
+      error: (err) => {
+        console.error('Error fetching sections:', err);
+      }
     });
-  }
+  }, (err) => {
+    console.error('Error fetching tax declaration:', err);
+  });
+}
 
   calculateComponentSums(components: any[]): any {
     const sums: any = {};
