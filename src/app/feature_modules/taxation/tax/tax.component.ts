@@ -40,6 +40,7 @@ export class TaxComponent {
   taxEditView: boolean = false;
   userTaxRegime: any;
   userStatutoryDetails: any;
+  taxDeclarations: any;
 
   constructor(
     private userService: UserService,
@@ -64,9 +65,9 @@ export class TaxComponent {
   ngOnInit() {
     this.getSections();
     this.userService.getTaxDeclarationByUserId(this.user.id, { skip: '', next: '' }).subscribe((res: any) => {
-      this.taxList = res.data;
+      this.taxDeclarations = res.data;
       this.totalRecords = res.total;
-      this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
+      // this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
     });
     this.userService.getStatutoryByUserId(this.user.id).subscribe((res: any) => {
       this.userTaxRegime = res?.data?.taxRegime;
@@ -165,18 +166,14 @@ export class TaxComponent {
           };
         });
 
-        // Calculate component sums and HRA
         const componentSums = this.calculateComponentSums(mappedIncomeTaxComponents);
         this.taxList.totalRentDeclared = this.getTotalRentDeclared(this.taxList.incomeTaxDeclarationHRA || []);
         const hra = this.taxList.totalRentDeclared;
         this.taxList.componentSums = { componentSums, hra };
 
-        // Emit tax data to subscribers (e.g., for TaxCalculatorComponent)
         this.taxService.taxByUser.next(this.taxList);
 
-        // Update total records
         this.totalRecords = res.total || 0;
-        this.uniqueFinancialYears = this.getUniqueFinancialYears([this.taxList]); // Pass as array
       },
       error: (err) => {
         console.error('Error fetching sections:', err);
@@ -200,17 +197,6 @@ export class TaxComponent {
 
   getTotalRentDeclared(hraList: any[]): number {
     return hraList.reduce((sum, item) => sum + item.rentDeclared, 0);
-  }
-
-  getUniqueFinancialYears(taxList: any[]): string[] {
-    const financialYearsSet = new Set<string>();
-
-    taxList.forEach(item => {
-      if (item.financialYear) {
-        financialYearsSet.add(item.financialYear);
-      }
-    });
-    return Array.from(financialYearsSet);
   }
 
   extractSectionsFromTaxList(taxList: any[]): string[] {

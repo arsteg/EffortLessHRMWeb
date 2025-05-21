@@ -27,7 +27,7 @@
             </thead>
 
             <tbody>
-                <tr *ngFor="let tax of taxList | search:searchText">
+                <tr *ngFor="let tax of taxDeclarations | search:searchText">
                     <td>{{tax?.financialYear}}</td>
                     <td *ngFor="let section of sections">
                         {{ getComponentCountForSection(tax, section) }}
