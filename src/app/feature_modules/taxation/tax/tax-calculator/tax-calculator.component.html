@@ -1,32 +1,17 @@
 <mat-accordion class="example-headers-align" multi>
   <!-- Gross Salary Section -->
   <mat-expansion-panel [expanded]="true">
-    <mat-expansion-panel-header class="header">
-      <mat-panel-title class="d-flex justify-content-between">
-        <label>Gross Salary</label>
-        <label class="text-center">
-          <span>{{ fixedAllowanceSum || 0 | number: '1.2-2' }}</span><br>Total Fixed Allowances
-        </label>
-        <label class="text-center">
-          <span>{{ variableAllowanceSum || 0 | number: '1.2-2' }}</span><br>Total Variable Allowances
-        </label>
-        <label class="text-center">
-          <span>{{ grossSalary || 0 | number: '1.2-2' }}</span><br>Gross Annual Income/Salary
-        </label>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
     <div>
       <hr>
       <table>
         <thead>
-          <th>Section Name</th>
-          <th>Total Gross (Last Processed Salary)</th>
+          <th>Regime</th>
           <th>Annual Gross Salary</th>
         </thead>
         <tbody>
           <tr>
-            <td>Gross Salary</td>
-            <td>{{ salaryDetail?.Amount || 0 | number: '1.2-2' }}</td>
+           
+            <td>{{ userRegime }}</td>
             <td>
               <input type="number" class="form-control" [formControl]="grossSalaryControl" readonly>
             </td>
@@ -46,7 +31,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title class="d-flex justify-content-between w-100">
           <span><b>Section: </b>{{ section.section || 'Unnamed Section' }} <span *ngIf="section?.maximumAmount"> |
-              Maximum Amount Limit {{section?.maximumAmount}}</span></span>
+              Maximum Amount Limit {{section?.maximumAmount | number: '1.2-2'}}</span></span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <div class="p-2">
@@ -81,7 +66,7 @@
           <tbody>
             <tr *ngFor="let component of getAllComponentsForSection(section?._id); trackBy: trackByComponent">
               <td>{{ component.componantName || 'Unnamed Component' }} <span *ngIf="component?.maximumAmount"> | Maximum
-                  Amount Limit: {{component?.maximumAmount}}</span></td>
+                  Amount Limit: {{component?.maximumAmount | number: '1.2-2'}}</span></td>
               <td>
                 <input type="number" class="form-control" [formControl]="componentControls[component._id]">
               </td>

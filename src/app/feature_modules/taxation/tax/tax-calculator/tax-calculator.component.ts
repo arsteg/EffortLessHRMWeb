@@ -1,34 +1,35 @@
-import { Component, Input, SimpleChanges, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, Input, SimpleChanges, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { UserService } from 'src/app/_services/users.service';
 import { FormControl, Validators } from '@angular/forms';
 import { CompanyService } from 'src/app/_services/company.service';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
   selector: 'app-tax-calculator',
   templateUrl: './tax-calculator.component.html',
   styleUrls: ['./tax-calculator.component.css']
 })
-export class TaxCalculatorComponent implements OnInit, OnDestroy {
+export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() isEdit: boolean;
   @Input() selectedRecord: any = null;
 
   incomeTaxComponentsTotal: { [key: string]: number } = {};
-  salaryDetail: any;
+  userRegime: string;
   grossSalary: number = 0;
   taxSections: any[] = [];
   taxComponents: any[] = [];
   cityType: string;
   closeResult: string = '';
-  fixedAllowanceSum: number = 0;
-  variableAllowanceSum: number = 0;
   hraVerifiedTotal: number = 0;
   taxableSalary: number = 0;
   taxPayableOldRegime: number = 0;
-  taxSlabs: any;
+  taxSlabs: any[] = []; // Initialize as empty array
+
   user = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
   // List of all months for HRA
@@ -52,23 +53,36 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private taxService: TaxationService,
     private companyService: CompanyService,
+    private payrollService: PayrollService,
+    private toastr: ToastrService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    this.getStatutorySetting();
     this.getTaxSections();
     this.getTaxComponents();
     this.getSalaryByUser();
-    this.getTaxSlabs();
+  }
+
+  ngAfterViewInit() {
+    if (this.selectedRecord && this.taxComponents.length) {
+      this.initializeComponentControls();
+      this.initializeHraControls();
+      this.calculateIncomeTaxComponentsTotal();
+      this.calculateHraVerifiedTotal();
+      this.updateFormControls();
+      this.subscribeToControlChanges();
+      this.cdr.detectChanges();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['selectedRecord'] && this.selectedRecord) {
-      console.log('ngOnChanges selectedRecord:', JSON.stringify(this.selectedRecord, null, 2)); // Debug
-      this.calculateIncomeTaxComponentsTotal();
-      this.calculateHraVerifiedTotal();
+    if (changes['selectedRecord'] && this.selectedRecord && this.taxComponents.length) {
       this.initializeComponentControls();
       this.initializeHraControls();
+      this.calculateIncomeTaxComponentsTotal();
+      this.calculateHraVerifiedTotal();
       this.updateFormControls();
       this.subscribeToControlChanges();
       this.cdr.detectChanges();
@@ -97,7 +111,6 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
         }
       });
     }
-    console.log('calculateIncomeTaxComponentsTotal:', this.incomeTaxComponentsTotal); // Debug
     this.updateFormControls();
   }
 
@@ -106,8 +119,7 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
       return sum + (hra.verifiedAmount || 0);
     }, 0) || 0;
     this.hraControl.setValue(this.hraVerifiedTotal, { emitEvent: false });
-    console.log('calculateHraVerifiedTotal:', this.hraVerifiedTotal); // Debug
-  }
+   }
 
   getTaxSections() {
     this.taxService.getAllTaxSections().subscribe({
@@ -124,10 +136,12 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
           return section;
         }).filter(section => section) || [];
         this.initializeSectionControls();
-        this.cdr.detectChanges();
-        console.log('taxSections:', this.taxSections); // Debug
+        this.cdr.detectChanges();       
       },
-      error: (err) => console.error('Error fetching tax sections:', err)
+      error: (err) => {
+        console.error('Error fetching tax sections:', err);
+        this.toastr.error('Failed to fetch tax sections');
+      }
     });
   }
 
@@ -144,48 +158,55 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
           }
           return component;
         }) || [];
-        console.log('taxComponents:', this.taxComponents); // Debug
-        this.initializeComponentControls();
-        this.subscribeToControlChanges();
+        if (this.selectedRecord) {
+          this.initializeComponentControls();
+          this.subscribeToControlChanges();
+        }
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Error fetching tax components:', err)
+      error: (err) => {
+        console.error('Error fetching tax components:', err);
+        this.toastr.error('Failed to fetch tax components');
+      }
     });
   }
 
   getSalaryByUser() {
-    this.userService.getSalaryByUserId(this.user?.id).subscribe({
-      next: (res: any) => {
-        const record = res.data || [];
-        this.salaryDetail = record[record.length - 1];
-        if (this.salaryDetail?.enteringAmount === 'Yearly') {
-          this.grossSalary = this.salaryDetail?.Amount || 0;
-        } else {
-          this.grossSalary = (this.salaryDetail?.Amount || 0) * 12;
-        }
+    this.payrollService.getTaxableSalaryAmountByUserId(this.user?.id).subscribe({
+      next: (res: any) => {     
+        this.grossSalary = res.data * 12;
         this.grossSalaryControl.setValue(this.grossSalary, { emitEvent: false });
-        this.calculateSum();
         this.cdr.detectChanges();
-        console.log('salaryDetail:', this.salaryDetail); // Debug
       },
-      error: (err) => console.error('Error fetching salary:', err)
+      error: (err) => {
+        console.error('Error fetching salary:', err);
+        this.toastr.error('Failed to fetch salary details');
+      }
     });
   }
 
-  calculateSum() {
-    this.fixedAllowanceSum = this.salaryDetail?.fixedAllowanceList?.reduce((sum, allowance) => {
-      return sum + (allowance.monthlyAmount || 0);
-    }, 0) || 0;
-    this.variableAllowanceSum = this.salaryDetail?.variableAllowanceList?.reduce((sum, allowance) => {
-      return sum + (allowance.monthlyAmount || 0);
-    }, 0) || 0;
+  getStatutorySetting() {
+    this.userService.getStatutoryByUserId(this.user?.id).subscribe({
+      next: (results: any) => {
+        this.userRegime = results.data?.taxRegime || 'Old Regime';
+        this.getTaxSlabs(); // Fetch tax slabs after userRegime is set
+      },
+      error: (err) => {
+        console.error('Error fetching statutory settings:', err);
+        this.toastr.error('Failed to fetch statutory settings');
+        this.userRegime = 'Old Regime';
+        this.getTaxSlabs();
+      }
+    });
   }
-
   calculateTax() {
-    if (this.salaryDetail?.Amount) {
+    if (this.grossSalary) {
       this.incomeTaxComponentsTotal = {};
       Object.keys(this.componentControls).forEach(componentId => {
         const component = this.taxComponents.find(c => c._id === componentId);
+        const declared = this.selectedRecord?.incomeTaxDeclarationComponent?.find(
+          d => d.incomeTaxComponent?._id === componentId
+        );
         if (component) {
           let sectionId = component.section?._id;
           if (typeof component.section === 'string') {
@@ -196,7 +217,10 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
             }
           }
           if (sectionId) {
-            this.incomeTaxComponentsTotal[sectionId] = (this.incomeTaxComponentsTotal[sectionId] || 0) + (this.componentControls[componentId].value || 0);
+            const approvedAmount = this.componentControls[componentId].value || 0;
+            const maximumAmount = declared?.maximumAmount || component.maximumAmount || Infinity;
+            const effectiveAmount = Math.min(approvedAmount, maximumAmount);
+            this.incomeTaxComponentsTotal[sectionId] = (this.incomeTaxComponentsTotal[sectionId] || 0) + effectiveAmount;
           }
         }
       });
@@ -204,34 +228,76 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
       const componentDeductions = Object.values(this.incomeTaxComponentsTotal).reduce((sum, amount) => sum + (amount || 0), 0);
       const totalDeductions = (this.hraVerifiedTotal || 0) + componentDeductions;
       this.taxableSalary = this.grossSalary - totalDeductions;
-      this.taxPayableOldRegime = this.calculateOldRegimeTax(this.taxableSalary);
-      console.log('calculateTax:', { taxableSalary: this.taxableSalary, taxPayableOldRegime: this.taxPayableOldRegime, componentDeductions }); // Debug
+      this.taxPayableOldRegime = this.calculateTaxByRegime(this.taxableSalary);
       this.cdr.detectChanges();
     }
   }
 
-  calculateOldRegimeTax(taxableSalary: number): number {
+  calculateTaxByRegime(taxableSalary: number): number {
     let tax = 0;
-    if (taxableSalary <= 250000) {
-      tax = 0;
-    } else if (taxableSalary <= 500000) {
-      tax = (taxableSalary - 250000) * 0.05;
-    } else if (taxableSalary <= 1000000) {
-      tax = 12500 + (taxableSalary - 500000) * 0.2;
-    } else {
-      tax = 112500 + (taxableSalary - 1000000) * 0.3;
+  
+    // Handle edge cases
+    if (taxableSalary <= 0) {
+       return 0;
     }
-    return tax;
+  
+    if (!this.taxSlabs || this.taxSlabs.length === 0) {
+      console.warn('No tax slabs available, using default Old Regime calculation');
+      // Fallback to default Old Regime slabs
+      if (taxableSalary <= 250000) {
+        tax = 0;
+      } else if (taxableSalary <= 500000) {
+        tax = (taxableSalary - 250000) * 0.05;
+      } else if (taxableSalary <= 1000000) {
+        tax = 12500 + (taxableSalary - 500000) * 0.2;
+      } else {
+        tax = 112500 + (taxableSalary - 1000000) * 0.3;
+      }
+      return tax;
+    }
+
+    // Progressive tax calculation
+    for (const slab of this.taxSlabs) {
+      const min = slab.minAmount ?? 0;
+      const max = slab.maxAmount === 0 ? Infinity : (slab.maxAmount ?? Infinity); // Treat maxAmount 0 as unlimited
+      const rate = (slab.taxPercentage ?? 0) / 100; // Convert percentage to decimal
+  
+      if (taxableSalary > min) {
+        const taxableInSlab = Math.min(taxableSalary, max) - min;
+        const slabTax = taxableInSlab * rate;
+        tax += slabTax;       
+      }
+    }
+     return tax;
   }
 
   getTaxSlabs() {
+    if (!this.userRegime) {
+      console.warn('userRegime not set, skipping getTaxSlabs');
+      this.taxSlabs = [];
+      return;
+    }
     const payload = { companyId: this.user?.companyId };
     this.companyService.getTaxSlabByCompany(payload).subscribe({
       next: (res: any) => {
-        this.taxSlabs = res.data?.find((slab: any) => slab?.regime === 'New Regime');
+        if (Array.isArray(res.data)) {
+          this.taxSlabs = res.data.filter((slab: any) => slab?.regime === this.userRegime);
+          if (this.taxSlabs.length === 0) {
+            console.warn(`No tax slabs found for regime: ${this.userRegime}`);
+            this.toastr.warning(`No tax slabs found for ${this.userRegime}`);
+          }
+        } else {
+          console.warn('getTaxSlabs: res.data is not an array', res.data);
+          this.taxSlabs = [];
+          this.toastr.error('Invalid tax slab data received');
+        }
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Error fetching tax slabs:', err)
+      error: (err) => {
+        console.error('Error fetching tax slabs:', err);
+        this.toastr.error('Failed to fetch tax slabs');
+        this.taxSlabs = [];
+      }
     });
   }
 
@@ -242,7 +308,6 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
         disabled: true
       });
     });
-    console.log('sectionControls:', Object.keys(this.sectionControls)); // Debug
   }
 
   initializeComponentControls() {
@@ -251,9 +316,17 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
       this.selectedRecord.incomeTaxDeclarationComponent.forEach(declaration => {
         const componentId = declaration.incomeTaxComponent?._id;
         if (componentId) {
+          const approvedAmount = declaration.approvedAmount || 0;
+          const maximumAmount = declaration.maximumAmount || Infinity;
+          if (approvedAmount > maximumAmount) {
+            this.toastr.warning(
+              `Approved Amount (${approvedAmount}) for ${declaration.incomeTaxComponent?.componantName || 'component'} exceeds Maximum Amount (${maximumAmount})`,
+              'Amount Exceeded'
+            );
+          }
           this.componentControls[componentId] = new FormControl(
-            declaration.approvedAmount || 0,
-            [Validators.min(0), Validators.max(declaration.maximumAmount || Infinity)]
+            approvedAmount,
+            [Validators.min(0), Validators.max(maximumAmount)]
           );
         } else {
           console.warn('Missing componentId in declaration:', declaration); // Debug
@@ -267,11 +340,7 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
           [Validators.min(0), Validators.max(component.maximumAmount || Infinity)]
         );
       }
-    });
-    console.log('initializeComponentControls:', Object.keys(this.componentControls).map(id => ({
-      id,
-      value: this.componentControls[id].value
-    }))); // Debug
+    });   
   }
 
   initializeHraControls() {
@@ -279,7 +348,6 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
       const hra = this.selectedRecord?.incomeTaxDeclarationHRA?.find(h => h.month === month);
       return new FormControl(hra ? (hra.verifiedAmount || 0) : 0, [Validators.min(0)]);
     });
-    console.log('initializeHraControls:', this.hraControls.map(c => c.value)); // Debug
   }
 
   subscribeToControlChanges() {
@@ -288,6 +356,9 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
 
     Object.keys(this.componentControls).forEach(componentId => {
       const component = this.taxComponents.find(c => c._id === componentId);
+      const declared = this.selectedRecord?.incomeTaxDeclarationComponent?.find(
+        d => d.incomeTaxComponent?._id === componentId
+      );
       if (component) {
         let sectionId = component.section?._id;
         if (typeof component.section === 'string') {
@@ -298,11 +369,18 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
           }
         }
         if (sectionId) {
+          const maximumAmount = declared?.maximumAmount || component.maximumAmount || Infinity;
           const sub = this.componentControls[componentId].valueChanges.pipe(
-            debounceTime(300) // Debounce to reduce rapid updates
+            debounceTime(300)
           ).subscribe(value => {
-            console.log(`componentControl(${componentId}) changed:`, value); // Debug
+            if (value > maximumAmount) {
+              this.toastr.warning(
+                `Approved Amount (${value}) for ${component.componantName || 'component'} exceeds Maximum Amount (${maximumAmount})`,
+                'Amount Exceeded'
+              );
+            }
             this.updateSectionTotal(sectionId);
+            this.cdr.detectChanges();
           });
           this.controlSubscriptions.push(sub);
         } else {
@@ -317,8 +395,8 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
       const sub = control.valueChanges.pipe(
         debounceTime(300)
       ).subscribe(value => {
-        console.log(`hraControl(${this.allMonths[index]}) changed:`, value); // Debug
         this.updateHraTotal();
+        this.cdr.detectChanges();
       });
       this.controlSubscriptions.push(sub);
     });
@@ -334,7 +412,6 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
     if (this.sectionControls[sectionId]) {
       this.sectionControls[sectionId].setValue(total, { emitEvent: false });
     }
-    console.log(`updateSectionTotal(${sectionId}):`, total); // Debug
     this.cdr.detectChanges();
   }
 
@@ -342,7 +419,6 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
     const total = this.hraControls.reduce((sum, control) => sum + (control.value || 0), 0);
     this.hraVerifiedTotal = total;
     this.hraControl.setValue(total, { emitEvent: false });
-    console.log('updateHraTotal:', total); // Debug
     this.cdr.detectChanges();
   }
 
@@ -350,11 +426,7 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
     this.hraControl.setValue(this.hraVerifiedTotal || 0, { emitEvent: false });
     Object.keys(this.sectionControls).forEach(sectionId => {
       this.sectionControls[sectionId].setValue(this.incomeTaxComponentsTotal[sectionId] || 0, { emitEvent: false });
-    });
-    console.log('updateFormControls:', Object.keys(this.sectionControls).map(id => ({
-      id,
-      value: this.sectionControls[id].value
-    }))); // Debug
+    });   
     this.cdr.detectChanges();
   }
 
@@ -403,9 +475,7 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
         approvedAmount
       };
     });
-
-    console.log(`getAllComponentsForSection(${sectionId}):`, allComponents); // Debug
-    return allComponents;
+     return allComponents;
   }
 
   getAllHraMonths() {
@@ -413,7 +483,6 @@ export class TaxCalculatorComponent implements OnInit, OnDestroy {
       month,
       verifiedAmount: this.hraControls[index]?.value || 0
     }));
-    console.log('getAllHraMonths:', months); // Debug
     return months;
   }
 

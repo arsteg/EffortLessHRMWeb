@@ -71,7 +71,7 @@ export class TaxComponent {
     this.userService.getStatutoryByUserId(this.user.id).subscribe((res: any) => {
       this.userTaxRegime = res?.data?.taxRegime;
       this.userStatutoryDetails = res?.data;
-    });
+     });
   }
 
   goBackToMainView() {
@@ -131,12 +131,11 @@ export class TaxComponent {
 
     this.userService.getTaxDeclarationByUserId(this.user?.id, pagination).subscribe((res: any) => {
       this.taxList = res.data && res.data.length > 0 ? res.data[res.data.length - 1] : null;
-      console.log('getTaxDeclaration taxList:', this.taxList); // Debug: Verify taxList
-      this.selectedRecord = this.taxList; // Ensure selectedRecord is set
-      console.log('selectedRecord set:', this.selectedRecord); // Debug: Verify selectedRecord
-
+      this.selectedRecord = this.taxList || {};
+  
       if (!this.taxList) {
         this.totalRecords = 0;
+        this.toastr.warning('No tax declaration found');
         return;
       }
 
@@ -173,10 +172,12 @@ export class TaxComponent {
         },
         error: (err) => {
           console.error('Error fetching sections:', err);
+          this.toastr.error('Failed to fetch tax sections');
         }
       });
     }, (err) => {
       console.error('Error fetching tax declaration:', err);
+      this.toastr.error('Failed to fetch tax declaration');
     });
   }
 
@@ -192,7 +193,7 @@ export class TaxComponent {
   }
 
   getTotalRentDeclared(hraList: any[]): number {
-    return hraList.reduce((sum, item) => sum + item.rentDeclared, 0);
+    return hraList.reduce((sum, item) => sum + (item.rentDeclared || 0), 0);
   }
 
   extractSectionsFromTaxList(taxList: any[]): string[] {
@@ -245,10 +246,7 @@ export class TaxComponent {
         month: this.taxCalculator.getAllMonths()[index],
         verifiedAmount: control.value || 0
       }))
-    };
-
-    console.log('taxDeclaration payload:', payload); // Debug: Verify payload
-
+    };  
     this.userService.getStatutoryByUserId(this.user.id).subscribe((res: any) => {
       if (res.data[0].taxRegime === 'Old Regime') {
         this.taxService.addIncomeTax(payload).subscribe({

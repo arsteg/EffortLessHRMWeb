@@ -997,4 +997,8 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/generatedFNFPayroll-by-company`, {}, this.httpOptions);
     return response;
   }
+
+  getTaxableSalaryAmountByUserId(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/payroll/get-total-taxable-amount-from-salary-structure-by-user/${id}`, this.httpOptions);
+  }
 }
