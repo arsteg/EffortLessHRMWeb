@@ -19,9 +19,13 @@ import { VariableAllowanceComponent } from './settings/variable-allowance/variab
 import { FixedContributionComponent } from './settings/fixed-contribution/fixed-contribution.component';
 import { UpdateCTCTemplateComponent } from './ctc-templates/update-ctctemplate/update-ctctemplate.component';
 import { AssignedTemplatesComponent } from './ctc-templates/assigned-templates/assigned-templates.component';
-import { AssignedFixedAllowanceComponent } from './ctc-templates/assigned-templates/fixed-allowance/fixed-allowance.component';
 
 const routes: Routes = [
+  {
+        path: '',
+        redirectTo: (localStorage.getItem('adminView') === 'user') ? 'my-payslips' : 'PayrollComponent',
+        pathMatch: 'full'
+      },
   {
     path: '', component: PayrollComponent, canActivate: [AuthGuard],
     children: [
@@ -70,7 +74,8 @@ const routes: Routes = [
       { path: 'payslips', component: PayslipsComponent },
       { path: 'fnf-payslips', component: FnfPayslipsComponent }
     ]
-  }
+  },
+  { path: 'my-payslips', component: PayslipsComponent }
 ];
 
 @NgModule({

@@ -212,6 +212,7 @@ export const SideBarUserMenu = [
   {
     id: '12',
     title: 'PaySlips',
+    url:'payroll/my-payslips',
     svgIcon: 'payslip',
   },
   {
