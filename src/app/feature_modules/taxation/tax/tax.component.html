@@ -8,7 +8,8 @@
                 <input class="form-control" type="text" placeholder="Search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example">
             </div>
-            <button class="addBtn" mat-raised-button (click)="isEdit= false; open(addModal)">Add</button>
+            <button type="button" mat-raised-button [disabled]="userTaxRegime != 'Old Regime' && userStatutoryDetails === null" (click)="isEdit= false; open(addModal)">Add&nbsp;Tax&nbsp;Declaration</button>
+            <button type="button" class="ms-2 " mat-raised-button [disabled]="userStatutoryDetails === null" (click)="getTaxDeclaration(); taxEditView= false; taxView = true;">Tax&nbsp;Calculator</button>
         </div>
     </div>
 
@@ -33,17 +34,6 @@
                     </td>
                     <td class="action text-center">
                         <mat-menu #menu="matMenu">
-                            <button mat-menu-item>
-                                <mat-icon class="text-danger">arrow_downward</mat-icon>
-                                <span class="ms-2">Download</span>
-                            </button>
-
-                            <button mat-menu-item
-                                (click)="getTaxDeclaration(); selectedRecord = tax; isEdit = false; taxEditView= false;  taxView = true;">
-                                <mat-icon class="text-primary">calculate</mat-icon>
-                                <span class="ms-2">Tax Calculator</span>
-                            </button>
-
                             <button mat-menu-item
                                 (click)="selectedRecord = tax; isEdit = true; taxView = false; taxEditView = true;">
                                 <mat-icon class="text-success">edit</mat-icon>
@@ -77,8 +67,8 @@
     </nav>
     <div *ngIf="taxView" class="p-3">
         <div class="d-flex justify-content-between">
-            <p>{{selectedRecord?.user?.firstName | titlecase}}&nbsp;{{selectedRecord?.user?.lastName | titlecase}} |
-                {{selectedRecord?.financialYear}}</p>
+            <p>{{taxList?.user?.firstName | titlecase}}&nbsp;{{taxList?.user?.lastName | titlecase}} |
+                {{taxList?.financialYear}}</p>
         </div>
         <app-tax-calculator [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-tax-calculator>
     </div>

@@ -191,7 +191,6 @@ export class TaxCalculatorComponent implements OnInit {
     this.companyService.getTaxSlabByCompany(payload).subscribe({
       next: (res: any) => {
         this.taxSlabs = res.data?.find((slab: any) => slab?.regime === 'New Regime');
-        console.log('Tax Slabs:', this.taxSlabs);
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error fetching tax slabs:', err)

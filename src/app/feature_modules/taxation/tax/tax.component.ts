@@ -16,7 +16,7 @@ import { forkJoin } from 'rxjs';
 export class TaxComponent {
   searchText: string = '';
   selectedRecord: any;
-  taxList: any[];
+  taxList: any;
   offcanvasData = 'Initial data';
   showOffcanvas: boolean = false;
   isEdit: boolean = false;
@@ -38,6 +38,8 @@ export class TaxComponent {
   sectionComponents: any;
   @Output() taxViewChange = new EventEmitter<boolean>();
   taxEditView: boolean = false;
+  userTaxRegime: any;
+  userStatutoryDetails: any;
 
   constructor(
     private userService: UserService,
@@ -66,10 +68,15 @@ export class TaxComponent {
       this.totalRecords = res.total;
       this.uniqueFinancialYears = this.getUniqueFinancialYears(this.taxList);
     });
+    this.userService.getStatutoryByUserId(this.user.id).subscribe((res: any) => {
+      this.userTaxRegime = res?.data?.taxRegime;
+      this.userStatutoryDetails = res?.data;
+    });
   }
+
   goBackToMainView() {
     this.taxView = false;
-    this.taxEditView = false; // Ensure edit view is also hidden
+    this.taxEditView = false;
     this.isEdit = false;
     this.selectedRecord = null;
     this.taxViewChange.emit(false);
@@ -124,8 +131,7 @@ export class TaxComponent {
       next: this.recordsPerPage.toString()
     };
     this.userService.getTaxDeclarationByUserId(this.user?.id, pagination).subscribe((res: any) => {
-      this.taxList = res.data;
-
+      this.taxList = res.data[res.data.length - 1];
       const sectionIds = this.taxList.flatMap((tax: any) =>
         tax.incomeTaxDeclarationComponent.map((component: any) => component?.section?._id)
       );
