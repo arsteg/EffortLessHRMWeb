@@ -33,6 +33,11 @@ export class AuthGuard  {
   }
 
   const currentMenuName = next.data['permission'];
+  if (!currentMenuName || currentMenuName.trim() === '') {
+    this.toastrService.error("You are not authorized to access this page.");
+    return false;
+  }
+
   try {
     const hasAccess = await firstValueFrom(this.authService.isMenuAccessible(currentMenuName, userRole));
     if(hasAccess || currentMenuName.toLowerCase() === 'home'){
