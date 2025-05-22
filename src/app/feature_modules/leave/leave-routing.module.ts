@@ -20,7 +20,8 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: (localStorage.getItem('adminView') === 'user') ? 'my-application' : 'settings',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        data: { permission: 'Leave' }
       },
       { path: 'my-application', component: LeaveApplicationComponent },
       { path: 'my-leave-balance', component: LeaveBalanceComponent },
@@ -33,6 +34,7 @@ const routes: Routes = [
       { path: 'general-information', component: GeneralComponent },
       {
         path: 'settings', component: LeaveSettingComponent, canActivate: [AuthGuard],
+        data: { permission: 'Leave' },
         children: [
           { path: '', redirectTo: 'general-setting', pathMatch: 'full' },
           { path: 'general-setting', component: GeneralSettingsComponent },

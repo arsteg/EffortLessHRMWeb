@@ -10,6 +10,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog } from '@angular/material/dialog';
 import { SideBarAdminMenu, SideBarUserMenu } from './menu.const';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { Role } from 'src/app/models/role.model';
 
 @Component({
   selector: 'app-home',
@@ -59,23 +60,27 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.adminView?.toLowerCase() == 'admin') {
         this.adminView = 'admin';
         localStorage.setItem('adminView', 'admin');
-        this.menuList = SideBarAdminMenu;
+        //this.menuList = SideBarAdminMenu;
+        this.GetPermissionsByRole(Role.Admin, SideBarAdminMenu);
         //this.portalType = this.adminView?.toLowerCase();
         //console.log(this.portalType);
       }
       if (this.adminView?.toLowerCase() == 'user') {
         this.adminView = 'user';
-        this.menuList = SideBarUserMenu;
+        //this.menuList = SideBarUserMenu;
+        this.GetPermissionsByRole(Role.User, SideBarUserMenu);
         localStorage.setItem('adminView', 'user');
       }
     } else {
       if (role && role?.toLowerCase() == 'admin') {
-        this.menuList = SideBarAdminMenu;
+        //this.menuList = SideBarAdminMenu;
+        this.GetPermissionsByRole(Role.Admin, SideBarAdminMenu);
         // this.portalType = role?.toLowerCase();
         // console.log(this.portalType)
       }
       if (role && role?.toLowerCase() == 'user') {
-        this.menuList = SideBarUserMenu;
+        //this.menuList = SideBarUserMenu;
+        this.GetPermissionsByRole(Role.User, SideBarUserMenu);
       }
       this.adminView = role?.toLowerCase();
     }
@@ -134,11 +139,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   switchView(view: string) {
     this.adminView = view;
     localStorage.setItem('adminView', view);
-    if (view == 'user') {
-      this.menuList = SideBarUserMenu;
+    if (view == 'user') {      
+      //this.menuList = SideBarUserMenu;
+      this.GetPermissionsByRole(Role.User, SideBarUserMenu);
       this.router.navigateByUrl('home/dashboard/user');
     } else if (view == 'admin') {
-      this.menuList = SideBarAdminMenu;
+      //this.menuList = SideBarAdminMenu;
+      this.GetPermissionsByRole(Role.Admin, SideBarAdminMenu);
       this.router.navigateByUrl('home/dashboard');
     }
   }
@@ -154,5 +161,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     localStorage.removeItem('loginTime');
     window.location.reload();
     this.router.navigateByUrl('/login');
+  }
+
+  GetPermissionsByRole(role: string, sideBarMenuList?: any) {
+    this.auth.getPermissionsByRole(role).subscribe((response: any) => {
+      if (response && response.data && response.data.length > 0) {
+        const allowedPermissions: string[] = response.data;
+        this.menuList = sideBarMenuList.filter(item => 
+          !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
+        );
+      } else {
+        this.menuList = [];
+      }
+    });
   }
 }

@@ -28,8 +28,10 @@ const routes: Routes = [
               import('./users/employee-settings/employee-settings.module').then(
                 (m) => m.EmployeeSettingsModule
               ),
+              data: { permission: 'profile' },
           },
         ],
+        data: { permission: 'profile' },
       },
       { path: 'projects', component: ProjectListComponent },
       { path: 'tasks', component: TasksComponent },

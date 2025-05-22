@@ -66,7 +66,7 @@
             <mat-icon matSuffix>search</mat-icon>
           </mat-form-field>
           <div>
-            <button mat-raised-button color="accent" class="me-1" (click)="openAddEditDialog('permission')">
+            <button mat-raised-button color="accent" class="me-1" (click)="openAddEditDialog('permission')" *ngIf="false">
               <mat-icon>add</mat-icon>{{'permissions.add_permission' | translate}}
             </button>
             <button class="me-1" mat-stroked-button *ngIf="false">
@@ -95,7 +95,7 @@
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef class="text-center">{{'permissions.actions' | translate}}</th>
             <td mat-cell *matCellDef="let permission" class="text-center">
-              <button mat-icon-button [matMenuTriggerFor]="menu">
+              <button mat-icon-button [matMenuTriggerFor]="menu" *ngIf="false">
                 <mat-icon>more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
