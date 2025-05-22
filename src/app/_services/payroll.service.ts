@@ -627,6 +627,11 @@ export class PayrollService {
     return response;
   }
 
+  getGeneratedPayrollByUser(payrollUser: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-userId/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
   // FnF CRUD
   addFnF(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fnf`, payload, this.httpOptions);
