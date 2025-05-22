@@ -164,9 +164,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   GetPermissionsByRole(role: string, sideBarMenuList?: any) {
-    debugger;
     this.auth.getPermissionsByRole(role).subscribe((response: any) => {
-      debugger;
       if (response && response.data && response.data.length > 0) {
         const allowedPermissions: string[] = response.data;
         this.menuList = sideBarMenuList.filter(item => 
