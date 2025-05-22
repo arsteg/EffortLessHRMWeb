@@ -43,14 +43,16 @@ export class RolePermissionDialogComponent {
         : data.rolePermission.roleId;
 
       // Allow current permission + unassigned permissions
-      this.availableRoles = data.roles.filter(role =>
-        !assignedRoleIds.includes(role._id) || role._id === currentRoleId
-      );
+      this.availableRoles = data.roles;
+      // .filter(role =>
+      //   !assignedRoleIds.includes(role._id) || role._id === currentRoleId
+      // );
     }
     else {
-      this.availableRoles = data.roles.filter(role =>
-        !assignedRoleIds.includes(role._id)
-      );
+      this.availableRoles = data.roles;
+      // .filter(role =>
+      //   !assignedRoleIds.includes(role._id)
+      // );
     }
   }
 
@@ -60,6 +62,7 @@ export class RolePermissionDialogComponent {
       if (this.isEdit) {
         this.authService.updateRolePermission(this.data.rolePermission._id, rolePermissionData).subscribe({
           next: () => {
+            this.toastr.success(this.translate.instant('Role permission updated successfully'));
             this.dialogRef.close(true);
           },
           error: (error) => { 
@@ -71,6 +74,7 @@ export class RolePermissionDialogComponent {
           this.authService.createRolePermission(rolePermissionData).subscribe({
           next: () => {
             this.dialogRef.close(true);
+            this.toastr.success(this.translate.instant('Role permission created successfully'));
           },
           error: (error) => { 
             const errorMessage = error || 'Failed to create role permission';
