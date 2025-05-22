@@ -46,12 +46,12 @@ export class GeneratedFnfPayslipsComponent {
     const other = ps?.totalOtherBenefit || 0;
 
     const fixedDeduction = ps?.totalFixedDeduction || 0;
-    const pfTax = ps?.totalPfTax || 0;
+    
     const incomeTax = ps?.totalIncomeTax || 0;
-    const loanAdvance = ps?.totalLoanAdvance || 0;
+    const loanRepayment = ps?.totalLoanRepayment || 0;
 
     this.totalEarnings = fixed + variable + overtime + flexi + other;
-    this.totalDeductions = fixedDeduction + pfTax + incomeTax + loanAdvance;
+    this.totalDeductions = fixedDeduction + incomeTax + loanRepayment;
 
     // Optionally, add statutory deductions (ContributorType === 'Employee')
     if (ps?.statutoryDetails?.length) {

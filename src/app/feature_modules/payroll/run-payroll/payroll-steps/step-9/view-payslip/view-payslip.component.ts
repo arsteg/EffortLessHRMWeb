@@ -20,7 +20,7 @@ export class ViewPayslipComponent {
     this.calculateSalaryAfterLOP();
     this.netSalary =
       Number(this.viewPayroll?.totalFixedAllowance) + Number(this.viewPayroll?.totalOvertime + Number(this.viewPayroll?.totalFlexiBenefits)) -
-      (Number(this.viewPayroll?.totalFixedDeduction) + Number(this.viewPayroll?.totalPfTax) + Number(this.viewPayroll?.totalIncomeTax));
+      (Number(this.viewPayroll?.totalFixedDeduction) + Number(this.viewPayroll?.totalIncomeTax));
     if (this.viewPayroll?.totalLoanAdvance?.length) {
       this.viewPayroll.totalLoanAdvance.forEach(loan => {
         if (loan.type === "Disbursement") {

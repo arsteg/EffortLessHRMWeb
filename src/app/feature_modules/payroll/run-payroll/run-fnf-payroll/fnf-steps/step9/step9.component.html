@@ -36,14 +36,7 @@
         <ng-container matColumnDef="totalLoanAdvance">
             <th mat-header-cell *matHeaderCellDef> Total Loans/Advances </th>
             <td mat-cell *matCellDef="let element"> {{element?.totalLoanAdvance[0]?.amount || element?.totalLoanAdvance[0]?.disbursementAmount }}</td>
-        </ng-container>
-        
-        
-
-        <ng-container matColumnDef="totalPfTax">
-            <th mat-header-cell *matHeaderCellDef> Total PF Tax </th>
-            <td mat-cell *matCellDef="let element"> {{element?.totalPfTax}} </td>
-        </ng-container>
+        </ng-container>     
 
         <ng-container matColumnDef="totalIncomeTax">
             <th mat-header-cell *matHeaderCellDef> Total TDS </th>

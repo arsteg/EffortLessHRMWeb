@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { receiveMessageOnPort } from 'worker_threads';
 
 interface PayrollStatus {
   InProgress: string,
@@ -45,17 +46,17 @@ export class Step9Component {
     'PayrollUsers',
     'totalOvertime',
     'totalFixedAllowance',
-    'totalOtherBenefit',
     'totalFixedDeduction',
-    'totalLoanAdvance',
+    'totalLoanRepayment',
+    'totalLoanDisbursed',
     'totalFlexiBenefits',
-    'totalPfTax',
     'totalIncomeTax',
     'yearlySalary',
     'monthlySalary',
     'totalEmployeeStatutoryContribution',
     'totalEmployeeStatutoryDeduction',
     'payroll_status',
+    'totalTakeHome',
     'actions'
   ];
 
@@ -124,14 +125,15 @@ export class Step9Component {
             ...record,
             totalOvertime: parseFloat(record?.totalOvertime || 0).toFixed(2),
             totalFixedAllowance: parseFloat(record?.totalFixedAllowance || 0).toFixed(2),
-            totalOtherBenefit: parseFloat(record?.totalOtherBenefit || 0).toFixed(2),
             totalFixedDeduction: parseFloat(record?.totalFixedDeduction || 0).toFixed(2),
-            totalLoanAdvance: record?.totalLoanAdvance,
+            totalLoanRepayment: record?.totalLoanRepayment,
+            totalLoanDisbursed:record.totalLoanDisbursed,
             totalFlexiBenefits: parseFloat(record?.totalFlexiBenefits || 0).toFixed(2),
-            totalPfTax: parseFloat(record?.totalPfTax || 0).toFixed(2),
             totalIncomeTax: parseFloat(record?.totalIncomeTax || 0).toFixed(2),
             yearlySalary: parseFloat(record?.yearlySalary || 0).toFixed(2),
             monthlySalary: parseFloat(record?.monthlySalary || 0).toFixed(2),
+            totalTakeHome: parseFloat(record?.totalTakeHome || 0).toFixed(2),
+            
             payroll_status: record?.payroll_status || 'Pending'
           };
         });
