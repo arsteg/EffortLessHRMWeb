@@ -37,9 +37,15 @@
         "fixed_deductions": "Fixed Deductions",
         "professional_tax": "Professional Tax",
         "income_tax": "Income Tax",
-        "loan_advances": "Loan/Advances",
+        "loan_advances_repayment": "Loan/Advances Repayment",
+        "disbursed": "Loan/Advances Disbursed",
         "total_deductions": "Total Deductions",
-        "employer_contribution": "Employer Contribution",
-        "take_home_salary": "Take Home Salary (Net Pay)"
+        "statutory_deductions": "Statutory Employee Deductions",
+        "employer_contribution": "Statutory Employer Contribution",
+        "take_home_salary": "Take Home Salary (Net Pay)",
+        "amount": "Amount",
+        "employee_statutory_deduction": "Total Statutory Deductions",
+        "employer_statutory_contribution": "Total Statutory Contributions"
+
     }
 }

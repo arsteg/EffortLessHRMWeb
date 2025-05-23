@@ -16,6 +16,8 @@ export class PayslipsComponent {
   displayedColumns: string[] = ['PayrollUser', 'period', 'payroll', 'status', 'actions'];
   payslips = new MatTableDataSource<any>;
   selectedRecord: any;
+  view = localStorage.getItem('adminView');
+  user = JSON.parse(localStorage.getItem('currentUser'));
   private readonly translate = inject(TranslateService);
 
   constructor(private dialog: MatDialog,
@@ -23,12 +25,15 @@ export class PayslipsComponent {
   ) { }
 
   ngOnInit() {
-    this.payrollService.getAllGeneratedPayroll().subscribe((res: any) => {
-      this.payslips = res.data;
-    })
-    this.payrollService.getGeneratedPayrollByUser('68224ac2bc15a5efaf2cf44d').subscribe((res: any) => {
-      console.log(res.data);
-    })
+    if (this.view == 'admin') {
+      this.payrollService.getAllGeneratedPayroll().subscribe((res: any) => {
+        this.payslips = res.data;
+      });
+    } else {
+      this.payrollService.getGeneratedPayrollByUser('68120a7f6602ce9410720605').subscribe((res: any) => {
+        this.payslips = res.data;
+      })
+    }
   }
 
   refreshData() {
