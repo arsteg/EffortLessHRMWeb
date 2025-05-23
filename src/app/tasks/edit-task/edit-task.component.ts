@@ -10,6 +10,7 @@ import { taskAttachments, attachments } from '../task';
 import { NavigationExtras } from '@angular/router';
 import { GetTaskService } from 'src/app/_services/get-task.service';
 import { ProjectService } from 'src/app/_services/project.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   providers: [DatePipe],
@@ -76,6 +77,7 @@ export class EditTaskComponent implements OnInit {
   loading: boolean = true;
   taskDeleted: boolean = false;
   projectisNull;
+  dialogRef: MatDialogRef<any>;
 
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
@@ -83,7 +85,7 @@ export class EditTaskComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     public commonService: CommonService,
-    private taskIdService: GetTaskService,
+    private dialog: MatDialog,
     private getTaskId: GetTaskService,
     private projectService: ProjectService) {
 
@@ -450,8 +452,11 @@ export class EditTaskComponent implements OnInit {
   }
 
   // Define a function to open the modal and set the selectedAttachment variable
-  public openTaskAttachmentModal(attachment: any): void {
+  public openTaskAttachmentModal(attachment: any, template: any): void {
     this.selectedAttachment = attachment;
+    this.dialogRef = this.dialog.open(template, {
+      width: '80%',
+    });
   }
 
   deleteTaskAttachment(taskAttachmentId: string): void {

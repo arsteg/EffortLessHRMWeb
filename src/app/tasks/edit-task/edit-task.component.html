@@ -215,7 +215,9 @@
 
                                         <span>|</span>
 
-                                        <span class="text-muted">&nbsp;&nbsp;<strong>Reporter:</strong>&nbsp;{{tasks?.data?.task?.createdBy?.firstName |
+                                        <span
+                                            class="text-muted">&nbsp;&nbsp;<strong>Reporter:</strong>&nbsp;{{tasks?.data?.task?.createdBy?.firstName
+                                            |
                                             titlecase}}&nbsp;{{tasks?.data?.task?.createdBy?.lastName |
                                             titlecase}}&nbsp;&nbsp;</span>
 
@@ -344,8 +346,7 @@
                                                         class="bi bi-trash btn text-danger text-right deleteAttachment"
                                                         (click)="deleteTaskAttachment(attachment.id)"></button>
                                                     <img src="{{attachment.url}}" class="card-img-top" alt="..."
-                                                        data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
-                                                        (click)="openTaskAttachmentModal(attachment)" />
+                                                        (click)="openTaskAttachmentModal(attachment, bigAttachmentModal)" />
                                                     <div class="card-body py-0 border-top">
                                                         <small class="card-text"> {{attachment?.attachmentName}}</small>
                                                     </div>
@@ -357,8 +358,7 @@
                                                         class="bi bi-trash btn text-danger text-right deleteAttachment"
                                                         (click)="deleteTaskAttachment(attachment.id)"></button>
                                                     <img src="{{attachment.url}}" class="card-img-top" alt="..."
-                                                        data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
-                                                        (click)="openTaskAttachmentModal(attachment)" />
+                                                        (click)="openTaskAttachmentModal(attachment, bigAttachmentModal)" />
                                                     <div class="card-body py-0 border-top">
                                                         <small class="card-text"> {{attachment?.attachmentName}}</small>
                                                     </div>
@@ -370,8 +370,7 @@
                                                         class="bi bi-trash btn text-danger text-right deleteAttachment"
                                                         (click)="deleteTaskAttachment(attachment.id)"></button>
                                                     <img src="{{attachment.url}}" class="card-img-top" alt="..."
-                                                        data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
-                                                        (click)="openTaskAttachmentModal(attachment)" />
+                                                        (click)="openTaskAttachmentModal(attachment, bigAttachmentModal)" />
                                                     <div class="card-body py-0  border-top">
                                                         <small class="card-text"> {{attachment?.attachmentName}}</small>
                                                     </div>
@@ -383,8 +382,7 @@
                                                         class="bi bi-trash btn text-danger text-right deleteAttachment"
                                                         (click)="deleteTaskAttachment(attachment.id)"></button>
                                                     <img src="{{attachment.url}}" class="card-img-top" alt="..."
-                                                        data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
-                                                        (click)="openTaskAttachmentModal(attachment)" />
+                                                        (click)="openTaskAttachmentModal(attachment, bigAttachmentModal)" />
                                                     <div class="card-body py-0  border-top">
                                                         <small class="card-text"> {{attachment?.attachmentName}}</small>
                                                     </div>
@@ -396,8 +394,7 @@
                                                         class="bi bi-trash btn text-danger text-right deleteAttachment"
                                                         (click)="deleteTaskAttachment(attachment.id)"></button>
                                                     <img src="{{attachment.url}}" class="card-img-top" alt="..."
-                                                        data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
-                                                        (click)="openTaskAttachmentModal(attachment)" />
+                                                        (click)="openTaskAttachmentModal(attachment, bigAttachmentModal)" />
                                                     <div class="card-body py-0  border-top">
                                                         <small class="card-text"> {{attachment?.attachmentName}}</small>
                                                     </div>
@@ -409,8 +406,7 @@
                                                         class="bi bi-trash btn text-danger text-right deleteAttachment"
                                                         (click)="deleteTaskAttachment(attachment.id)"></button>
                                                     <img src="{{attachment.url}}" class="card-img-top" alt="..."
-                                                        data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
-                                                        (click)="openTaskAttachmentModal(attachment)" />
+                                                        (click)="openTaskAttachmentModal(attachment, bigAttachmentModal)" />
                                                     <div class="card-body py-0  border-top">
                                                         <small class="card-text"> {{attachment?.attachmentName}}</small>
                                                     </div>
@@ -767,28 +763,19 @@
     </div>
 </div>
 
-<div class="modal fade" role="dialog" id="bigAttachmentModal" tabindex="0" aria-labelledby="bigAttachmentModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-fixed-size modal-xl">
-        <div class="modal-content">
-            <div class="d-flex"> <span class="bi bi-image text-warning px-3" style="font-size: 40px;"></span>
-                <small>{{selectedAttachment?.attachmentName }}<br>image - {{
-                    convertBytesToKB(selectedAttachment?.attachmentSize) }}</small>
-                <button type="button" class="btn-close m-3 ms-auto" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="carousel-item active text-center">
-                                    <img class="modal-image big-img w-auto" [src]="selectedAttachment?.url" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<ng-template #bigAttachmentModal>
+    <div class="d-flex justify-content-between">
+        <h2 mat-dialog-title>{{selectedAttachment?.attachmentName }}<br>image - {{
+            convertBytesToKB(selectedAttachment?.attachmentSize) }}</h2>
+        <button type="button" mat-dialog-close mat-icon-button>
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
-</div>
+    
+    <mat-dialog-content>
+        <div class="text-center">
+            <img class="img-fluid" [src]="selectedAttachment?.url" />
+        </div>
+    </mat-dialog-content>
+
+</ng-template>
