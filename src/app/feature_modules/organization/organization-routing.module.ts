@@ -24,7 +24,8 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: (localStorage.getItem('adminView') === 'user') ? 'company-policies' : 'organization-setup',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        data: { permission: 'Organization' }
       },
       { path: 'company-policies', component: AssetManagerComponent },
       { path: 'organization-tree', component: AssetManagerComponent },
@@ -33,6 +34,7 @@ const routes: Routes = [
 
       {
         path: 'organization-setup', component: SetupComponent, canActivate: [AuthGuard],
+        data: { permission: 'Organization' },
         children: [
           { path: '', redirectTo: 'organization-profile', pathMatch: 'full' },
           { path: 'organization-profile', component: ProfileComponent },
