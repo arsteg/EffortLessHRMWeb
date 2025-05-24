@@ -41,7 +41,7 @@ export class Step1Component {
       status: [''],
       totalFixedAllowance: [0],
       totalEmployeeStatutoryDeduction: [0],
-      totalEmployeeStatutoryContribution: [0],
+      totalEmployerStatutoryContribution: [0],
       totalFixedDeduction: [0],
       totalVariableDeduction: [0],
       totalLoan: [0],
