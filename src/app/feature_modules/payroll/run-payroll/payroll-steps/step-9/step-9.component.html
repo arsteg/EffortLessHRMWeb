@@ -11,7 +11,7 @@
     <table mat-table [dataSource]="generatedPayroll">
         <ng-container matColumnDef="PayrollUsers">
             <th mat-header-cell *matHeaderCellDef> Employee Name </th>
-            <td mat-cell *matCellDef="let element"> {{element?.PayrollUser?.user?.name}} </td>
+            <td mat-cell *matCellDef="let element"> {{element?.PayrollUser?.user?.firstName +  ' ' + element?.PayrollUser?.user?.lastName  || 'No User Specified'}} </td>
         </ng-container>
 
         <ng-container matColumnDef="totalOvertime">
