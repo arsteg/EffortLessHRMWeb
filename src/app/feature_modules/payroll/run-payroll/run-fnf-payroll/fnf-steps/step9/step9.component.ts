@@ -55,7 +55,7 @@ export class FNFStep9Component {
     'totalIncomeTax',
     'yearlySalary',
     'monthlySalary',
-    'totalEmployeeStatutoryContribution',
+    'totalEmployerStatutoryContribution',
     'totalEmployeeStatutoryDeduction',
     'payroll_status',
     'actions'
