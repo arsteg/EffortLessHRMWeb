@@ -42,7 +42,7 @@ export class FNFStep4Component implements OnInit {
       yearsOfService: [0, Validators.required],
       severancePay: [0, Validators.required],
       outplacementServices: ['', Validators.required],
-      outplacementServicesPay: [0, Validators.required]
+      outplacementServicePay: [0, Validators.required]
     });
   }
 
@@ -134,7 +134,7 @@ export class FNFStep4Component implements OnInit {
         yearsOfService: 0,
         severancePay: 0,
         outplacementServices: '',
-        outplacementServicesPay: 0
+        outplacementServicePay: 0
       });
     }
     this.dialog.open(this.dialogTemplate, {
@@ -154,7 +154,7 @@ export class FNFStep4Component implements OnInit {
       yearsOfService: compensation.yearsOfService,
       severancePay: compensation.severancePay,
       outplacementServices: compensation.outplacementServices,
-      outplacementServicesPay: compensation.outplacementServicesPay});
+      outplacementServicePay: compensation.outplacementServicePay});
     this.terminationCompensationForm.get('payrollFNFUser').disable();
     this.openDialog(true);
   }
@@ -184,7 +184,7 @@ export class FNFStep4Component implements OnInit {
               yearsOfService: 0,
               severancePay: 0,
               outplacementServices: '',
-              outplacementServicesPay: 0});
+              outplacementServicePay: 0});
             this.isEdit = false;
             this.dialog.closeAll();
           },
@@ -226,7 +226,7 @@ export class FNFStep4Component implements OnInit {
         yearsOfService: this.selectedTerminationCompensation.yearsOfService,
         severancePay: this.selectedTerminationCompensation.severancePay,
         outplacementServices: this.selectedTerminationCompensation.outplacementServices,
-        outplacementServicesPay: this.selectedTerminationCompensation.outplacementServicesPay
+        outplacementServicePay: this.selectedTerminationCompensation.outplacementServicePay
       });
     } else {
       this.terminationCompensationForm.reset();

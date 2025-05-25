@@ -53,7 +53,7 @@ export class Step9Component {
     'totalIncomeTax',
     'yearlySalary',
     'monthlySalary',
-    'totalEmployeeStatutoryContribution',
+    'totalEmployerStatutoryContribution',
     'totalEmployeeStatutoryDeduction',
     'payroll_status',
     'totalTakeHome',

@@ -51,11 +51,11 @@ export class FNFStep9Component {
     'totalOvertime',
     'totalFixedAllowance',
     'totalFixedDeduction',
-    'totalLoanAdvance',   
+    'totalLoanRepayment',   
     'totalIncomeTax',
     'yearlySalary',
     'monthlySalary',
-    'totalEmployeeStatutoryContribution',
+    'totalEmployerStatutoryContribution',
     'totalEmployeeStatutoryDeduction',
     'payroll_status',
     'actions'
