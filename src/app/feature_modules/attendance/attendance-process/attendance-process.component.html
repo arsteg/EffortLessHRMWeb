@@ -96,7 +96,10 @@
                 <mat-tab label="FnF Attendance Process">
                     <ng-template matTabContent>
                         <div class="d-flex justify-content-end pt-3">
-                            <button mat-raised-button class="addBtn" type="button"
+                             <button mat-raised-button class="ms-auto"
+                                (click)="changeMode = 'Add'; openLopFormDialog()">Create&nbsp;LOP</button>
+
+                            <button mat-raised-button class="ms-1" type="button"
                                 (click)="changeMode = 'Add'; open(addFnFModal)">Add FnF</button>
                         </div>
                         <div class="mt-2 bg-white tableContainer">
