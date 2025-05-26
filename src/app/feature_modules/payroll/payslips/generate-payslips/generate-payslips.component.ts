@@ -1,8 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { PayrollService } from 'src/app/_services/payroll.service';
 import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-generate-payslips',
@@ -21,10 +19,9 @@ export class GeneratePayslipsComponent {
   employerContributions: any;
   @ViewChild('payslipContainer') payslipContainer: ElementRef;
 
-  constructor(private userService: UserService) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.calculateTotalPayWithOvertime();
     this.calculateTotals();
   }
 
@@ -33,20 +30,17 @@ export class GeneratePayslipsComponent {
 
     const fixed = ps?.PayrollUser?.totalFixedAllowance || 0;
     const flexi = ps?.PayrollUser?.totalFlexiBenefits || 0;
+    const variable = ps?.PayrollUser?.totalVariableAllowance || 0;
+    const finalOvertime = ps?.finalOvertime || 0;
 
-    this.totalEarnings = fixed + flexi;
+    this.totalEarnings = fixed + flexi + variable + finalOvertime;
 
     const fixedDeduction = ps?.PayrollUser?.totalFixedDeduction || 0;
-    const incomeTax = ps?.PayrollUser?.totalIncomeTax || 0;
+    const variableDeduction = ps?.PayrollUser?.totalVariableDeduction || 0;
+    const incomeTax = ps?.PayrollUser?.tdsCalculated || 0;
     const loanAdvance = ps?.PayrollUser?.totalLoanRepayment || 0;
-    this.totalDeductions = fixedDeduction + incomeTax + loanAdvance;
-  }
-
-  calculateTotalPayWithOvertime() {
-    const lopSalary = parseFloat(this.salaryAfterLOP);
-    const totalOvertime = parseFloat(this.payslip?.totalOvertime);
-    this.totalPayWithOvertime = (lopSalary + totalOvertime).toFixed(2);
-    this.totalPayWithOvertime -= this.payslip?.totalLoanAdvance;
+    
+    this.totalDeductions = fixedDeduction + variableDeduction + incomeTax + loanAdvance;
   }
 
   getCompanyNameFromCookies(): string | null {

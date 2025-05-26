@@ -4,7 +4,7 @@
         <h2 translate>payroll.generated_salary_slip</h2>
         <button color="primary" mat-raised-button (click)="downloadPDF()">{{'payroll.download' | translate}}</button>
     </div>
-    <div id="payslipContainer" #payslipContainer class="container bg-white py-5 px-4">
+    <div id="payslipContainer" #payslipContainer class="payslipContainer bg-white py-5 px-4">
         <div class="d-flex justify-content-between align-items-center mb-5">
             <span>
                 <img class="w-50" src="assets/images/company-logo.jpg" alt="">
@@ -49,13 +49,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td translate>payroll.fixed_allowance_basic_salary</td>
-                            <td>{{payslip?.PayrollUser?.totalFixedAllowance}}</td>
+                        <tr *ngFor="let fixedAllowances of payslip?.fixedAllowancesList">
+                            <td>{{fixedAllowances?.fixedAllowance?.label}}</td>
+                            <td>{{fixedAllowances?.amount}}</td>
+                        </tr>
+                        <tr *ngFor="let variableAllowances of payslip?.variableAllowancesList">
+                            <td>{{variableAllowances?.variableAllowance?.label}}</td>
+                            <td>{{variableAllowances?.amount}}</td>
+                        </tr>
+                         <tr>
+                            <td>Flexi Bneefits</td>
+                            <td>{{payslip?.PayrollUser?.totalFlexiBenefits}}</td>
                         </tr>
                         <tr>
-                            <td translate>payroll.flexi_benefits</td>
-                            <td>{{payslip?.PayrollUser?.totalFlexiBenefits}}</td>
+                            <td>Overtime</td>
+                            <td>{{payslip?.finalOvertime}}</td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -75,17 +83,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td translate>payroll.fixed_deductions</td>
-                            <td>{{payslip?.PayrollUser?.totalFixedDeduction}}</td>
+                        <tr *ngFor="let fixedDeductions of payslip?.fixedDeductionsList">
+                            <td>{{fixedDeductions?.fixedDeduction?.label}}</td>
+                            <td>{{fixedDeductions?.amount}}</td>
+                        </tr>
+                        <tr *ngFor="let variableDeductions of payslip?.variableDeductionsList">
+                            <td>{{variableDeductions?.variableDeduction?.label}}</td>
+                            <td>{{variableDeductions?.amount}}</td>
                         </tr>
                         <tr>
-                            <td translate>payroll.income_tax</td>
+                            <td>Loan Repayment</td>
+                            <td>{{payslip?.PayrollUser?.totalLoanRepayment}}</td>
+                        </tr>
+                        <tr>
+                            <td>Tax Calulated</td>
                             <td>{{payslip?.tdsCalculated}}</td>
-                        </tr>
-                        <tr>
-                            <td translate>payroll.loan_advances_repayment</td>
-                            <td>{{ payslip?.PayrollUser?.totalLoanRepayment || 0 }}</td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -141,7 +153,7 @@
                     <tfoot>
                         <tr class="fw-bold">
                             <td translate>payroll.employer_statutory_contribution</td>
-                            <td>{{ payslip?.PayrollUser?.totalEmployeeStatutoryContribution | number:'1.2-2' }}</td>
+                            <td>{{ payslip?.PayrollUser?.totalEmployerStatutoryContribution | number:'1.2-2' }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -150,7 +162,8 @@
 
         <div class="col-12 text-end">
             <h4>
-                <span translate>payroll.take_home_salary</span>: ₹ {{ payslip?.PayrollUser?.totalTakeHome | number:'1.2-2' }}
+                <span translate>payroll.take_home_salary</span>: ₹ {{ payslip?.PayrollUser?.totalTakeHome |
+                number:'1.2-2' }}
             </h4>
         </div>
     </div>

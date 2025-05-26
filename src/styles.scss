@@ -1,17 +1,17 @@
 @use 'app/styles/theme.scss';
 @import '~quill/dist/quill.snow.css';
 
-:root{
+:root {
   /** colors**/
   --white: #ffffff;
   --black: #000000;
   --orange-10: #fcf1e7;
   --orange-20: #f7d3b6;
-  --orange-30:#f3be92;
-  --orange-40:#eda060;
-  --orange-50:#e98d41;
-  --orange-60:#e47112;
-  --orange-70:#cf6710;
+  --orange-30: #f3be92;
+  --orange-40: #eda060;
+  --orange-50: #e98d41;
+  --orange-60: #e47112;
+  --orange-70: #cf6710;
   --grey: #2e2e2e;
   --light-grey: #828282;
   --neutral-grey: #f5f5f5;
@@ -60,7 +60,7 @@ body {
   height: 100%;
 }
 
-*{
+* {
   font-family: "Nunito Sans", sans-serif;
 }
 
@@ -126,7 +126,8 @@ select :focus-visible {
 .cdk-global-overlay-wrapper {
   z-index: 1000 !important;
 }
-.cdk-overlay-container{
+
+.cdk-overlay-container {
   z-index: 1066 !important;
 }
 
@@ -713,7 +714,7 @@ button.active {
   font-size: smaller;
 }
 
-.form-check-input:checked{
+.form-check-input:checked {
   background-color: #76bc21 !important;
 }
 
@@ -791,6 +792,11 @@ h2 {
   z-index: 1060 !important;
 }
 
-.input-group-append{
+.input-group-append {
   z-index: 1000;
+}
+
+.payslipContainer {
+  width: 240mm;
+  margin: auto;
 }

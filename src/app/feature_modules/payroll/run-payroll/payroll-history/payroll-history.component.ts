@@ -35,6 +35,8 @@ export class PayrollHistoryComponent {
   payrollStatus: any;
   payrollStatusArray: any;
   selectedStatus: string = '';
+  payrollPeriod: any;
+  duplicatePayrollError = false;
 
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -69,6 +71,40 @@ export class PayrollHistoryComponent {
     this.generateYearList();
     this.getAllUsers();
     this.getPayrollWithUserCounts();
+    this.getPayroll();
+    this.payrollForm.get('month').valueChanges.subscribe(() => {
+      this.checkForDuplicatePayrollPeriod();
+    });
+
+    this.payrollForm.get('year').valueChanges.subscribe(() => {
+      this.checkForDuplicatePayrollPeriod();
+    });
+  }
+
+  checkForDuplicatePayrollPeriod() {
+    const selectedMonth = this.payrollForm.get('month').value;
+    const selectedYear = this.payrollForm.get('year').value;
+
+    if (selectedMonth && selectedYear) {
+      console.log(selectedMonth, selectedYear);
+      this.duplicatePayrollError = this.payrollPeriod?.some(period =>
+        period?.month === selectedMonth && period?.year === selectedYear
+      );
+      console.log(this.duplicatePayrollError);
+    } else {
+      this.duplicatePayrollError = false;
+    }
+  }
+
+
+  getPayroll() {
+    let payload = {
+      skip: '0',
+      next: ''
+    }
+    this.payrollService.getPayroll(payload).subscribe((res: any) => {
+      this.payrollPeriod = res.data;
+    })
   }
 
   getPayrollStatus() {
@@ -175,7 +211,7 @@ export class PayrollHistoryComponent {
       updatedOnDate: new Date(),
       status: this.selectedStatus
     };
-    this.payrollService.updatePayroll(id, payload).subscribe((res: any)=>{
+    this.payrollService.updatePayroll(id, payload).subscribe((res: any) => {
       this.toast.success('Payroll status updated successfully', 'Success');
       this.getPayrollWithUserCounts();
       this.closeAddDialog();

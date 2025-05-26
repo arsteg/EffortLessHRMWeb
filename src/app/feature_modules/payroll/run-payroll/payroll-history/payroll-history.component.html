@@ -104,6 +104,25 @@
   <div mat-dialog-content>
     <form [formGroup]="payrollForm" (ngSubmit)="onSubmission()">
       <div class="row">
+        <mat-form-field appearance="outline" class="my-2 col-md-6">
+          <mat-label>Payroll Month</mat-label>
+          <mat-select formControlName="month">
+            <mat-option *ngFor="let month of months" [value]="month">{{ month }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="payrollForm.get('month').hasError('required')">Month is required</mat-error>
+        </mat-form-field>
+<div *ngIf="duplicatePayrollError" class="text-danger my-2">
+  A payroll for the selected month and year already exists.
+</div>
+
+        <mat-form-field appearance="outline" class="my-2 col-md-6">
+          <mat-label>Payroll Year</mat-label>
+          <mat-select formControlName="year">
+            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="payrollForm.get('year').hasError('required')">Year is required</mat-error>
+        </mat-form-field>
+
         <mat-form-field appearance="outline" class="col-md-6 my-2">
           <mat-label>Payroll Date</mat-label>
           <input matInput [matDatepicker]="picker" formControlName="date">
@@ -123,28 +142,12 @@
           </mat-select>
           <mat-error *ngIf="payrollForm.get('status').hasError('required')">Status is required</mat-error>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="my-2 col-md-6">
-          <mat-label>Payroll Month</mat-label>
-          <mat-select formControlName="month">
-            <mat-option *ngFor="let month of months" [value]="month">{{ month }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="payrollForm.get('month').hasError('required')">Month is required</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="my-2 col-md-6">
-          <mat-label>Payroll Year</mat-label>
-          <mat-select formControlName="year">
-            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="payrollForm.get('year').hasError('required')">Year is required</mat-error>
-        </mat-form-field>
       </div>
     </form>
   </div>
   <div mat-dialog-actions>
     <button mat-button (click)="closeAddDialog()">Close</button>
-    <button mat-raised-button color="primary" (click)="onSubmission()">Save</button>
+    <button mat-raised-button color="primary" [disabled]="duplicatePayrollError" (click)="onSubmission()">Save</button>
   </div>
 </ng-template>
 

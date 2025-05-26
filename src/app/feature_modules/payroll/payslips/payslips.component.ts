@@ -30,7 +30,7 @@ export class PayslipsComponent {
         this.payslips = res.data;
       });
     } else {
-      this.payrollService.getGeneratedPayrollByUser('68120a7f6602ce9410720605').subscribe((res: any) => {
+      this.payrollService.getGeneratedPayrollByUser(this.user?.id).subscribe((res: any) => {
         this.payslips = res.data;
       })
     }
