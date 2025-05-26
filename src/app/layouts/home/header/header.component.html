@@ -15,11 +15,13 @@
                     <section>
                         <div class="d-flex align-items-center ms-3 profile-menu" #profileMenuTrigger="matMenuTrigger"
                             [matMenuTriggerFor]="profileMenu">
-                            <!-- (click)="toggleProfileMenu()"-->
-                            <!-- <img src="assets/images/profile.png" height="48"> -->
-                            <button mat-icon-button>
+                            @if(loggedInUser?.photo) {
+                            <img src="{{loggedInUser?.photo}}" class="header-profile-img" height="48">
+                            }
+                            @else {<button mat-icon-button>
                                 <mat-icon>person</mat-icon>
                             </button>
+                            }
 
                             <p class="ps-2 mb-0 d-lg-block d-none">
                                 @if(loggedInUser) {
@@ -33,8 +35,8 @@
                             @if(loggedInUser) {
                             <div class="text-center p-2">
                                 <div class="position-relative d-inline-block mb-5">
-                                    <img [src]="loggedInUser?.photo || '../assets/profile-image.png'" class="profile-img"
-                                        width="100" height="100" alt="Profile Picture">
+                                    <img [src]="loggedInUser?.photo || '../assets/profile-image.png'"
+                                        class="profile-img" width="100" height="100" alt="Profile Picture">
 
                                     <span class="edit-icon" (click)="triggerFileInput()">
                                         <i class="bi bi-pencil"></i>
