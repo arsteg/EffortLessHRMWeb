@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Output, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Output, Input, inject, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { PreferenceService } from '../../../_services/user-preference.service';
+import { AuthenticationService } from 'src/app/_services/authentication.service';
 
 @Component({
   selector: 'app-header',
@@ -14,14 +15,64 @@ export class HeaderComponent {
   @Input() loggedInUser: any;
   @Input() profileSwitch: any;
   @Input() role: any;
+  profileImageUrl: string;
 
-  constructor(private preferenceService: PreferenceService) {}
+  constructor(private preferenceService: PreferenceService,
+    private auth: AuthenticationService,
+  ) { }
 
-  toggleMenu(){
+  @ViewChild('fileInput') fileInput: ElementRef;
+
+  triggerFileInput(): void {
+    this.fileInput.nativeElement.click();
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1]; // Get base64 without prefix
+        const extension = file.name.split('.').pop()?.toLowerCase();
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+        const payload = {
+          profileImage: [
+            {
+              attachmentSize: file.size,
+              extention: extension,
+              file: base64String // base64 string of the file
+            }
+          ]
+        };
+
+        // Optionally set image preview
+        this.profileImageUrl = reader.result as string;
+
+        // Upload to backend
+        this.preferenceService.uploadProfileImage(currentUser?.id, payload).subscribe({
+          next: (response) => {
+            this.auth.GetMe(currentUser.id).subscribe((response: any) => {
+              this.loggedInUser = response && response.data.users;
+            });
+          },
+          error: (error) => {
+            console.error('Upload failed:', error);
+          }
+        });
+      };
+
+      reader.readAsDataURL(file); // Trigger FileReader
+    }
+  }
+
+  toggleMenu() {
     this.onMenuToggled.emit();
   }
 
-  switchView(view:string){
+  switchView(view: string) {
     this.onProfileSwitch.emit(view);
     const selectedAppMode = view?.toLowerCase() === 'admin' ? 'admin' : 'user';
     this.preferenceService.createOrUpdatePreference(
@@ -35,15 +86,15 @@ export class HeaderComponent {
   }
 
   onLogout() {
-      localStorage.removeItem('roleName');
-      localStorage.removeItem('jwtToken');
-      localStorage.removeItem('user.email');
-      localStorage.removeItem('adminView');
-      localStorage.removeItem('roleId');
-      localStorage.removeItem('currentUser');
-      localStorage.removeItem('rememberMe');
-      localStorage.removeItem('loginTime');
-      window.location.reload();
-      this.router.navigateByUrl('/login');
-    }
+    localStorage.removeItem('roleName');
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('user.email');
+    localStorage.removeItem('adminView');
+    localStorage.removeItem('roleId');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('rememberMe');
+    localStorage.removeItem('loginTime');
+    window.location.reload();
+    this.router.navigateByUrl('/login');
+  }
 }
