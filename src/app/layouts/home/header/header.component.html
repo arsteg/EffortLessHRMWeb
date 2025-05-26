@@ -32,6 +32,7 @@
                         </div>
 
                         <mat-menu #profileMenu="matMenu" class="dropdown-menu-default drpLog shadow">
+                            <div (click)="$event.stopPropagation()">
                             @if(loggedInUser) {
                             <div class="text-center p-2">
                                 <div class="position-relative d-inline-block mb-5">
@@ -73,6 +74,7 @@
                                 <mat-icon>logout</mat-icon>
                                 <span>Sign out</span>
                             </button>
+                            </div>
                         </mat-menu>
                     </section>
                 </div>
