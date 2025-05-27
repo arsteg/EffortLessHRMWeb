@@ -1,19 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-fixed-allowance',
   templateUrl: './fixed-allowance.component.html',
-  styleUrl: './fixed-allowance.component.css'
+  styleUrls: ['./fixed-allowance.component.css']
 })
 export class FixedAllowanceComponent {
+  private readonly translate = inject(TranslateService);
   fixedAllowance: any;
   searchText: string = '';
-  totalRecords: number
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   isEdit = false;
@@ -23,7 +25,8 @@ export class FixedAllowanceComponent {
   public sortOrder: string = '';
   dialogRef: MatDialogRef<any>;
 
-  constructor(private payroll: PayrollService,
+  constructor(
+    private payroll: PayrollService,
     private toast: ToastrService,
     private fb: FormBuilder,
     private dialog: MatDialog
@@ -36,7 +39,7 @@ export class FixedAllowanceComponent {
       isLWFAffected: [false],
       isProfessionalTaxAffected: [false],
       isTDSAffected: [false],
-    })
+    });
   }
 
   ngOnInit() {
@@ -80,26 +83,40 @@ export class FixedAllowanceComponent {
   onSubmission() {
     if (this.fixedAllowanceForm.valid) {
       if (!this.isEdit) {
-        this.payroll.addAllowanceTemplate(this.fixedAllowanceForm.value).subscribe((res: any) => {
-          this.toast.success('Successfully Added!!!', 'Fixed Allowance');
-          this.closeModal();
-        },
-          (err) => {
-            this.toast.error('This Can not be Added as it is already used in the system', 'Fixed Allowance');
-          })
-      }
-      else {
-        this.payroll.updateAllowanceTemplate(this.selectedRecord._id, this.fixedAllowanceForm.value).subscribe((res: any) => {
-          this.toast.success('Successfully Updated!!!', 'Fixed Allowance');
-          this.closeModal();
-        },
-          (err) => {
-            this.toast.error('This Can not be Updated as it is already used in the system', 'Fixed Allowance');
-          })
+        this.payroll.addAllowanceTemplate(this.fixedAllowanceForm.value).subscribe({
+          next: (res: any) => {
+            this.toast.success(
+              this.translate.instant('payroll.fixed_allowance_added'),
+              this.translate.instant('payroll.fixed_allowance_title')
+            );
+            this.closeModal();
+          },
+          error: (err) => {
+            this.toast.error(
+              this.translate.instant('payroll.fixed_allowance_add_error'),
+              this.translate.instant('payroll.fixed_allowance_title')
+            );
+          }
+        });
+      } else {
+        this.payroll.updateAllowanceTemplate(this.selectedRecord._id, this.fixedAllowanceForm.value).subscribe({
+          next: (res: any) => {
+            this.toast.success(
+              this.translate.instant('payroll.fixed_allowance_updated'),
+              this.translate.instant('payroll.fixed_allowance_title')
+            );
+            this.closeModal();
+          },
+          error: (err) => {
+            this.toast.error(
+              this.translate.instant('payroll.fixed_allowance_update_error'),
+              this.translate.instant('payroll.fixed_allowance_title')
+            );
+          }
+        });
       }
       this.fixedAllowanceForm.get('label').enable();
-    }
-    else {
+    } else {
       this.markFormGroupTouched(this.fixedAllowanceForm);
     }
   }
@@ -113,7 +130,6 @@ export class FixedAllowanceComponent {
     });
   }
 
-
   editRecord() {
     this.fixedAllowanceForm.patchValue({
       label: this.selectedRecord.label,
@@ -124,33 +140,35 @@ export class FixedAllowanceComponent {
       isProfessionalTaxAffected: this.selectedRecord.isProfessionalTaxAffected,
       isTDSAffected: this.selectedRecord.isTDSAffected,
     });
-    if(this.selectedRecord.isDelete===false)
-    {
-    this.fixedAllowanceForm.get('label').disable();
-    }
-    else{
+    if (this.selectedRecord.isDelete === false) {
+      this.fixedAllowanceForm.get('label').disable();
+    } else {
       this.fixedAllowanceForm.get('label').enable();
     }
     console.log(this.selectedRecord);
     console.log(this.fixedAllowanceForm.value);
   }
 
- 
-
   deleteRecord(_id: string) {
-    this.payroll.deleteAllowanceTemplate(_id).subscribe((res: any) => {
-      const index = this.fixedAllowance.findIndex(res => res._id === _id);
-      if (index !== -1) {
-        this.fixedAllowance.splice(index, 1);
+    this.payroll.deleteAllowanceTemplate(_id).subscribe({
+      next: (res: any) => {
+        const index = this.fixedAllowance.findIndex(res => res._id === _id);
+        if (index !== -1) {
+          this.fixedAllowance.splice(index, 1);
+        }
+        this.toast.success(
+          this.translate.instant('payroll.fixed_allowance_deleted'),
+          this.translate.instant('payroll.fixed_allowance_title')
+        );
+      },
+      error: (err) => {
+        this.toast.error(
+          this.translate.instant('payroll.fixed_allowance_delete_error'),
+          this.translate.instant('payroll.fixed_allowance_title')
+        );
       }
-      this.toast.success('Successfully Deleted!!!', 'Rounding Rules');
-    },
-      (err) => {
-        this.toast.error('This Can not be delete as it is already used in the system', 'Rounding Rules');
-      })
-
+    });
   }
-
 
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -162,6 +180,4 @@ export class FixedAllowanceComponent {
       }
     });
   }
-
-
 }
