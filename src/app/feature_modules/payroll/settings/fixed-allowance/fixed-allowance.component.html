@@ -1,22 +1,22 @@
 <div class="main-content container-fluid">
     <div class="bg-white">
         <div class="d-flex align-items-center px-2">
-            <p class="mb-0 me-auto">({{fixedAllowance?.length}}) Records Found</p>
+            <p class="mb-0 me-auto" translate [translateParams]="{ count: fixedAllowance?.length }">payroll.records_found</p>
             <div class="d-flex align-items-center">
                 <span class="bi bi-search searchIcon"></span>
-                <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
+                <input class="form-control search" type="text" [placeholder]="'payroll.search_placeholder' | translate" [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example">
-                <button class="addBtn mx-2" mat-raised-button (click)="isEdit= false; open(modal);">Add</button>
+                <button class="addBtn mx-2" mat-raised-button (click)="isEdit= false; open(modal);">{{'payroll.add'| translate}}</button>
             </div>
         </div>
         <table mat-table [dataSource]="fixedAllowance">
             <ng-container matColumnDef="label">
-                <th mat-header-cell *matHeaderCellDef> Allowance Name </th>
+                <th mat-header-cell *matHeaderCellDef translate>payroll.allowance_name</th>
                 <td mat-cell *matCellDef="let fa"> {{fa?.label}} </td>
             </ng-container>
 
             <ng-container matColumnDef="isProvidentFundAffected">
-                <th mat-header-cell *matHeaderCellDef> PF </th>
+                <th mat-header-cell *matHeaderCellDef translate>payroll.pf</th>
                 <td mat-cell *matCellDef="let fa">
                     <span *ngIf="fa?.isProvidentFundAffected==true else fixed">
                         <mat-icon style="color: green;">check</mat-icon>
@@ -28,7 +28,7 @@
             </ng-container>
 
             <ng-container matColumnDef="isESICAffected">
-                <th mat-header-cell *matHeaderCellDef> ESIC </th>
+                <th mat-header-cell *matHeaderCellDef translate>payroll.esic</th>
                 <td mat-cell *matCellDef="let fa">
                     <span *ngIf="fa?.isESICAffected==true else fixed">
                         <mat-icon style="color: green;">check</mat-icon>
@@ -40,7 +40,7 @@
             </ng-container>
 
             <ng-container matColumnDef="isLWFAffected">
-                <th mat-header-cell *matHeaderCellDef> LWF </th>
+                <th mat-header-cell *matHeaderCellDef translate>payroll.lwf</th>
                 <td mat-cell *matCellDef="let fa">
                     <span *ngIf="fa?.isLWFAffected==true else fixed">
                         <mat-icon style="color: green;">check</mat-icon>
@@ -52,7 +52,7 @@
             </ng-container>
 
             <ng-container matColumnDef="isProfessionalTaxAffected">
-                <th mat-header-cell *matHeaderCellDef> PT </th>
+                <th mat-header-cell *matHeaderCellDef translate>payroll.pt</th>
                 <td mat-cell *matCellDef="let fa">
                     <span *ngIf="fa?.isProfessionalTaxAffected==true else fixed">
                         <mat-icon style="color: green;">check</mat-icon>
@@ -64,7 +64,7 @@
             </ng-container>
 
             <ng-container matColumnDef="isTDSAffected">
-                <th mat-header-cell *matHeaderCellDef> TDS </th>
+                <th mat-header-cell *matHeaderCellDef translate>payroll.tds</th>
                 <td mat-cell *matCellDef="let fa">
                     <span *ngIf="fa?.isTDSAffected==true else fixed">
                         <mat-icon style="color: green;">check</mat-icon>
@@ -76,7 +76,7 @@
             </ng-container>
 
             <ng-container matColumnDef="isGratuityFundAffected">
-                <th mat-header-cell *matHeaderCellDef> Gratuity </th>
+                <th mat-header-cell *matHeaderCellDef translate>payroll.gratuity</th>
                 <td mat-cell *matCellDef="let fa">
                     <span *ngIf="fa?.isGratuityFundAffected==true else fixed">
                         <mat-icon style="color: green;">check</mat-icon>
@@ -88,19 +88,19 @@
             </ng-container>
 
             <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <th mat-header-cell *matHeaderCellDef translate>payroll.actions</th>
                 <td mat-cell *matCellDef="let fa">
                     <button mat-icon-button [matMenuTriggerFor]="menu">
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item (click)="selectedRecord = fa; isEdit= true; open(modal); editRecord(); ">
+                        <button mat-menu-item (click)="selectedRecord = fa; isEdit= true; open(modal); editRecord();" translate>
                             <mat-icon>edit</mat-icon>
-                            <span>Edit</span>
+                            <span translate>payroll.edit</span>
                         </button>
-                        <button *ngIf="fa?.isDelete" mat-menu-item (click)="deleteDialog(fa?._id)">
+                        <button *ngIf="fa?.isDelete" mat-menu-item (click)="deleteDialog(fa?._id)" translate>
                             <mat-icon>delete</mat-icon>
-                            <span>Delete</span>
+                            <span translate>payroll.delete</span>
                         </button>
                     </mat-menu>
                 </td>
@@ -120,85 +120,84 @@
 </div>
 
 <ng-template #modal let-modal>
-    <h1 mat-dialog-title>{{isEdit ? 'Update' : 'Add'}} Fixed Allowance</h1>
+    <h1 mat-dialog-title translate>{{isEdit ? 'payroll.update_fixed_allowance' : 'payroll.add_fixed_allowance'}}</h1>
     <hr class="mt-0">
     <form [formGroup]="fixedAllowanceForm" (ngSubmit)="onSubmission()">
         <div mat-dialog-content>
             <div class="row">
                 <div class="form-group col-md-6">
                     <mat-form-field appearance="fill" class="w-100">
-                        <mat-label>What is the label of this Fixed Allowance</mat-label>
+                        <mat-label translate>payroll.fixed_allowance_label</mat-label>
                         <input matInput type="text" formControlName="label">
                         <mat-error
-                            *ngIf="fixedAllowanceForm.get('label').invalid && (fixedAllowanceForm.get('label').dirty || fixedAllowanceForm.get('label').touched)">
-                            Label is required
-                        </mat-error>
+                            *ngIf="fixedAllowanceForm.get('label').invalid && (fixedAllowanceForm.get('label').dirty || fixedAllowanceForm.get('label').touched)"
+                            translate>payroll.label_required</mat-error>
                     </mat-form-field>
                 </div>
                 <div class="form-group my-2 col-md-6">
-                    <label>Does this Allowance affect TDS?</label>
+                    <label translate>payroll.is_tds_affected</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isTDSAffected">
-                            <mat-radio-button [value]=true>Yes</mat-radio-button>
-                            <mat-radio-button [value]=false>No</mat-radio-button>
+                            <mat-radio-button [value]=true>{{'payroll.yes' | translate}}</mat-radio-button>
+                            <mat-radio-button [value]=false>{{'payroll.no' | translate}}</mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group my-2 col-md-6">
-                    <label>Does this Allowance affect Provident Fund?</label>
+                    <label translate>payroll.is_provident_fund_affected</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isProvidentFundAffected">
-                            <mat-radio-button [value]=true>Yes</mat-radio-button>
-                            <mat-radio-button [value]=false>No</mat-radio-button>
+                            <mat-radio-button [value]=true>{{'payroll.yes' | translate}}</mat-radio-button>
+                            <mat-radio-button [value]=false>{{'payroll.no' | translate}}</mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
                 <div class="form-group my-2 col-md-6">
-                    <label>Does this Allowance affect Professional Tax?</label>
+                    <label translate>payroll.is_professional_tax_affected</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isProfessionalTaxAffected">
-                            <mat-radio-button [value]=true>Yes</mat-radio-button>
-                            <mat-radio-button [value]=false>No</mat-radio-button>
+                            <mat-radio-button [value]=true>{{'payroll.yes' | translate}}</mat-radio-button>
+                            <mat-radio-button [value]=false>{{'payroll.no' | translate}}</mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group my-2 col-md-6">
-                    <label>Does this Allowance affect ESIC?</label>
+                    <label translate>payroll.is_esic_affected</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isESICAffected">
-                            <mat-radio-button [value]=true>Yes</mat-radio-button>
-                            <mat-radio-button [value]=false>No</mat-radio-button>
+                            <mat-radio-button [value]=true>{{'payroll.yes' | translate}}</mat-radio-button>
+                            <mat-radio-button [value]=false>{{'payroll.no' | translate}}</mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
                 <div class="form-group my-2 col-md-6">
-                    <label>Does this Allowance affect Gratuity fund?</label>
+                    <label translate>payroll.is_gratuity_fund_affected</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isGratuityFundAffected">
-                            <mat-radio-button [value]=true>Yes</mat-radio-button>
-                            <mat-radio-button [value]=false>No</mat-radio-button>
+                            <mat-radio-button [value]=true>{{'payroll.yes' | translate}}</mat-radio-button>
+                            <mat-radio-button [value]=false>{{'payroll.no' | translate}}</mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="form-group my-2 col-md-6">
-                    <label>Does this Allowance affect LWF?</label>
+                    <label translate>payroll.is_lwf_affected</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isLWFAffected">
-                            <mat-radio-button [value]=true>Yes</mat-radio-button>
-                            <mat-radio-button [value]=false>No</mat-radio-button>
+                            <mat-radio-button [value]=true>{{'payroll.yes' | translate}}</mat-radio-button>
+                            <mat-radio-button [value]=false>{{'payroll.no' | translate}}</mat-radio-button>
                         </mat-radio-group>
                     </div>
                 </div>
             </div>
             <div class="d-flex border-top mt-2 py-2 justify-content-between">
-                <button mat-raised-button type="button" (click)="closeModal()">Close</button>
-                <button mat-raised-button type="submit" class="addBtn">Submit</button>
+                <button mat-raised-button type="button" (click)="closeModal()">{{'payroll.close' | translate}}</button>
+                <button mat-raised-button type="submit" class="addBtn">{{'payroll.submit' | translate}}</button>
             </div>
         </div>
     </form>

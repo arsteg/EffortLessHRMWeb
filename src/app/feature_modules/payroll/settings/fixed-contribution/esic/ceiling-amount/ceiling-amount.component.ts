@@ -1,19 +1,20 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ceiling-amount',
   templateUrl: './ceiling-amount.component.html',
-  styleUrl: './ceiling-amount.component.css'
+  styleUrls: ['./ceiling-amount.component.css']
 })
 export class CeilingAmountComponent {
   searchText: string = '';
-  totalRecords: number
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   isEdit = false;
@@ -22,17 +23,18 @@ export class CeilingAmountComponent {
   ceilingAmountForm: FormGroup;
   selectedRecord: any;
 
-  constructor(private payroll: PayrollService,
+  constructor(
+    private payroll: PayrollService,
     private modalService: NgbModal,
     private toast: ToastrService,
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService
   ) {
     this.ceilingAmountForm = this.fb.group({
       employeeCount: [0, Validators.required],
       maxGrossAmount: [0, Validators.required]
     });
-    
   }
 
   ngOnInit(): void {
@@ -57,7 +59,7 @@ export class CeilingAmountComponent {
     this.payroll.getESICCeiling(pagination).subscribe((res: any) => {
       this.ceilingAmount = res.data;
       this.totalRecords = res.total;
-    })
+    });
   }
 
   open(content: any) {
@@ -69,7 +71,7 @@ export class CeilingAmountComponent {
         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
       }
     );
-  
+
     // Delay DOM access to ensure modal is rendered
     setTimeout(() => {
       const focusableElement = document.querySelector('input[formControlName="employeeCount"]');
@@ -78,7 +80,7 @@ export class CeilingAmountComponent {
       }
     }, 100);
   }
-  
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -88,62 +90,84 @@ export class CeilingAmountComponent {
       return `with: ${reason}`;
     }
   }
+
   closeModal() {
     this.modalService.dismissAll();
   }
 
   onSubmission() {
     if (!this.isEdit) {
-      this.payroll.addESICCeiling(this.ceilingAmountForm.value).subscribe((res: any) => {
-        this.ceilingAmount.push(res.data);
-        this.toast.success('Successfully Added!!!', 'ESIC Ceiling Amount');
-        this.ceilingAmountForm.patchValue({ employeeCount: 0, maxGrossAmount: 0 })
-      },
-        (err) => {
-          this.toast.error('ESIC Ceiling Amount Can not be Added', 'ESIC Ceiling Amount');
-        })
-    }
-    else {
-      this.payroll.updateESICCeiling(this.selectedRecord._id, this.ceilingAmountForm.value).subscribe((res: any) => {
-        const index = this.ceilingAmount.findIndex(item => item._id === this.selectedRecord._id);
-        if (index !== -1) {
-          this.ceilingAmount[index] = res.data;
+      this.payroll.addESICCeiling(this.ceilingAmountForm.value).subscribe({
+        next: (res: any) => {
+          this.ceilingAmount.push(res.data);
+          this.toast.success(
+            this.translate.instant('payroll.esic_ceiling_amount_added'),
+            this.translate.instant('payroll.esic_ceiling_amount_title')
+          );
+          this.ceilingAmountForm.patchValue({ employeeCount: 0, maxGrossAmount: 0 });
+        },
+        error: () => {
+          this.toast.error(
+            this.translate.instant('payroll.esic_ceiling_amount_add_error'),
+            this.translate.instant('payroll.esic_ceiling_amount_title')
+          );
         }
-        this.toast.success('Successfully Updated!!!', 'ESIC Ceiling Amount');
-        this.isEdit = false;
-        this.ceilingAmountForm.patchValue({ employeeCount: 0, maxGrossAmount: 0})
-
-      },
-        (err) => {
-          this.toast.error('ESIC Ceiling Amount Can not be Updated', 'ESIC Ceiling Amount');
-        })
+      });
+    } else {
+      this.payroll.updateESICCeiling(this.selectedRecord._id, this.ceilingAmountForm.value).subscribe({
+        next: (res: any) => {
+          const index = this.ceilingAmount.findIndex(item => item._id === this.selectedRecord._id);
+          if (index !== -1) {
+            this.ceilingAmount[index] = res.data;
+          }
+          this.toast.success(
+            this.translate.instant('payroll.esic_ceiling_amount_updated'),
+            this.translate.instant('payroll.esic_ceiling_amount_title')
+          );
+          this.isEdit = false;
+          this.ceilingAmountForm.patchValue({ employeeCount: 0, maxGrossAmount: 0 });
+        },
+        error: () => {
+          this.toast.error(
+            this.translate.instant('payroll.esic_ceiling_amount_update_error'),
+            this.translate.instant('payroll.esic_ceiling_amount_title')
+          );
+        }
+      });
     }
   }
 
-  editRecord() {    
+  editRecord() {
     this.ceilingAmountForm.patchValue(this.selectedRecord);
   }
 
   clearForm() {
     this.ceilingAmountForm.patchValue({
-      employeeCount: 0, maxGrossAmount: 0
-    })
+      employeeCount: 0,
+      maxGrossAmount: 0
+    });
   }
 
   deleteRecord(_id: string) {
-    this.payroll.deleteESICCeiling(_id).subscribe((res: any) => {
-      const index = this.ceilingAmount.findIndex(res => res._id === _id);
-      if (index !== -1) {
-        this.ceilingAmount.splice(index, 1);
+    this.payroll.deleteESICCeiling(_id).subscribe({
+      next: (res: any) => {
+        const index = this.ceilingAmount.findIndex(res => res._id === _id);
+        if (index !== -1) {
+          this.ceilingAmount.splice(index, 1);
+        }
+        this.toast.success(
+          this.translate.instant('payroll.esic_ceiling_amount_deleted'),
+          this.translate.instant('payroll.esic_ceiling_amount_title')
+        );
+      },
+      error: () => {
+        this.toast.error(
+          this.translate.instant('payroll.esic_ceiling_amount_delete_error'),
+          this.translate.instant('payroll.esic_ceiling_amount_title')
+        );
       }
-      this.toast.success('Successfully Deleted!!!', 'ESIC Ceiling Amount');
-    },
-      (err) => {
-        this.toast.error('ESIC Ceiling Amount Can not be Deleted', 'ESIC Ceiling Amount');
-      })
-
+    });
   }
-
 
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -155,6 +179,4 @@ export class CeilingAmountComponent {
       }
     });
   }
-
-
 }
