@@ -21,10 +21,12 @@ import { FeedbackSettingsComponent } from './feature_modules/feedback/feedback.s
 import { NotificationDetailsComponent } from './layouts/home/notification/notification-details/notification-details.component';
 import { TranslationResolver } from './_helpers/translation.resolver';
 import { HelpdeskDashboardComponent } from './feature_modules/helpdesk/helpdesk-dashboard/helpdesk-dashboard.component';
+import { LandingPageComponent } from './layouts//landing-page/landing-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
   { path: 'landing', component: MainComponent },
+  { path: 'landing-1', component: LandingPageComponent },
   {
     path: 'home', component: HomeComponent, canActivate: [AuthGuard],
     data: { permission: 'Home' },

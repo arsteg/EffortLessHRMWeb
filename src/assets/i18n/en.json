@@ -65,5 +65,11 @@
     "settings": {
       "language": "Language",
       "select_language": "Select Language"
+    },
+    "landing": {
+      "title": "WE ARE EFFORTLESS HRM",
+      "subtitle": "We help streamline your HRM operations",
+      "header_desc": "EffortlessHRM changes the way companies handle HR and track employee time. It's a complete software solution made.",
+      "header_desc2": "Everything you're looking for is here"
     }
   }

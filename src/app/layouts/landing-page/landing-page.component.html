@@ -1,0 +1,279 @@
+<nav class="navbar navbar-expand sticky-top">
+    <div class="container d-flex">
+        <img src="assets/logo/expanded-logo.svg" alt="Effortless HRM" height="54">
+
+        <span class="spacer"></span>
+
+        <ul class="navbar-nav d-none d-lg-flex">
+            <li class="nav-item">
+                <a href="/" class="nav-link">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a href="/" class="nav-link">Plans <mat-icon>keyboard_arrow_down</mat-icon></a>
+            </li>
+            <li class="nav-item">
+                <a href="/" class="nav-link">Features <mat-icon>keyboard_arrow_down </mat-icon></a>
+            </li>
+            <li class="nav-item">
+                <a href="/" class="nav-link">Download <mat-icon>keyboard_arrow_down</mat-icon></a>
+            </li>
+        </ul>
+
+        <span class="spacer"></span>
+
+        <hrm-language-selector></hrm-language-selector>
+
+        <span class="spacer"></span>
+        <div class="d-none d-lg-block">
+            <a href="/" class="login-link me-2">Login</a>
+            <button mat-flat-button color="primary" class="rounded-pill px-4 fs-6">Sign Up</button>
+        </div>
+
+        <button mat-icon-button class="d-lg-none">
+            <mat-icon>menu</mat-icon>
+        </button>
+    </div>
+</nav>
+
+
+
+<!-- Hero Section -->
+<section class="intro-container">
+    <div class="container text-center">
+        <div class="intro-text-container">
+            <h1 class="fs-6 text-primary">{{ 'landing.title' | translate }}</h1>
+            <h2 class="sub-title">{{ 'landing.subtitle' | translate }}</h2>
+            <p class="lead">{{ 'landing.header_desc' | translate }}</p>
+        </div>
+    </div>
+    <div class="intro-image text-center">
+        <img src="assets/png/hero-bg.png" alt="Hero Image" class="hero-bg">
+        <img src="assets/png/hero-image.png" alt="Hero Image" class="hero-image img-fluid">
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="carousel-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-3">
+                <h1 class="fs-6 text-primary">{{ 'landing.title' | translate }}</h1>
+                <h2 class="sub-title">{{ 'landing.header_desc2' | translate }}</h2>
+            </div>
+            <div class="d-flex carousel col-12 col-lg-9">
+                <div class="col-12 col-md-4">
+                    <div class="card border px-2 py-4 h-100 me-3">
+                        <img src="assets/thumb/attendance.svg" alt="" width="68">
+                        <h1 class="mt-3 mb-2">Attendance Monitoring</h1>
+                        <p>Simplify attendance tracking with EffortlessHRM Time Tracker. Easily monitor employee
+                            start
+                            and end times in a structured format.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card border px-2 py-4 h-100 me-3">
+                        <img src="assets/thumb/time-tracking.svg" alt="" width="68">
+                        <h1 class="mt-3 mb-2">Automatic Time Tracking</h1>
+                        <p>Gain insights into your team's productivity with detailed analytics on work time.
+                            EffortlessHRM automatically tracks time.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card border px-2 py-4 h-100 me-3">
+                        <img src="assets/thumb/realtime.svg" alt="" width="68">
+                        <h1 class="mt-3 mb-2">Real-Time Reports</h1>
+                        <p>Access accurate data on tracked hours, productivity levels, and computer usage with
+                            timely
+                            reports presented in clear charts and tables for easy analysis.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card border px-2 py-4 h-100 me-3">
+                        <img src="assets/thumb/employee-activity.svg" alt="" width="68">
+                        <h1 class="mt-3 mb-2">Employee Activity Level</h1>
+                        <p>Measure employee performance based on keystrokes and mouse clicks, allowing you to gauge
+                            productivity levels effectively.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card border px-2 py-4 h-100 me-3">
+                        <img src="assets/thumb/monitoring.svg" alt="" width="68">
+                        <h1 class="mt-3 mb-2">Apps & Websites Usage Monitoring</h1>
+                        <p>Track employee productivity in real-time by monitoring computer activities, including top
+                            visited apps and websites.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card border px-2 py-4 h-100 me-3">
+                        <img src="assets/thumb/tms.svg" alt="" width="68">
+                        <h1 class="mt-3 mb-2">Task Management System</h1>
+                        <p>Organize tasks, track progress, and improve workflow efficiency with EffortlessHRM's
+                            centralized task management system.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="card border px-2 py-4 h-100">
+                        <img src="assets/thumb/employee-activity.svg" alt="" width="68">
+                        <h1 class="mt-3 mb-2">Live Screen Viewing</h1>
+                        <p>Monitor employee screen activity in real-time, supplemented by periodic screenshots
+                            captured
+                            at random intervals.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--About Us Section-->
+<section class="container pb-3">
+    <div class="row">
+        <div class="col-12 col-lg-6 order-2 order-lg-1">
+            <h2 class="sub-title">About Us</h2>
+            <p>From attendance monitoring to payroll management, EffortlessHRM provides automated solutions that
+                eliminate manual tasks, reduce paperwork, and improve accuracy. With real-time insights and detailed
+                analytics, businesses can make informed decisions, optimize resource allocation, and drive better
+                outcomes.</p>
+            <p>EffortlessHRM's user-friendly interface and intuitive design ensure easy adoption and seamless
+                integration into existing workflows. Whether managing organizational hierarchies, onboarding new
+                hires,
+                or tracking employee performance, EffortlessHRM empowers businesses to efficiently manage their
+                workforce and achieve their goals.</p>
+            <p>With a commitment to simplifying HR processes and enhancing operational efficiency, EffortlessHRM is
+                the
+                preferred choice for businesses striving to create a productive and engaged workforce in today's
+                dynamic
+                business environment.</p>
+        </div>
+        <div class="col-12 col-lg-6 order-1 order-lg-2">
+            <img src="assets/png/about-us.png" alt="About Us" class="img-fluid">
+        </div>
+    </div>
+</section>
+
+<!-- Trust Section-->
+<section class="trust-section pt-5 pb-4">
+    <div class="container">
+        <div class="rounded-pill border border-primary p-2 container mx-auto w-50 text-center mb-3">
+            Connect your favorite tools to effectively plan your workday
+        </div>
+        <h2 class="sub-title text-center my-5">
+            Trusted and Loved by Companies Worldwide
+        </h2>
+
+        <div class="row">
+            <div class="col-12 col-lg-4">
+                <div class="card mt-3">
+                    <img src="assets/png/task-summary.png" alt="">
+                    <h2 class="card-title">Project Management</h2>
+                    <p>Start projects and track time spent on them all inside the tracker. Create projects, assign
+                        them
+                        to team members, fill in other details and manage projects on EffortLessHRM.</p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8">
+                <div class="card mt-3">
+                    <div class="row">
+                        <div class="col-5">
+                            <img src="assets/png/team-chat1.png" alt="">
+                        </div>
+                        <div class="col-7">
+                            <h2 class="card-title">Team Chat</h2>
+                            <p>Work, track and chat on the same platform. EffortLessHRM has a chat that makes
+                                communication faster thus making collaboration between team members easier.</p>
+                            <img src="assets/png/team-chat2.png" alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <h2 class="card-title">Task Management</h2>
+                    <p>Create and assign tasks to your team members without leaving the tracker. Watch tasks go from
+                        open to in progress to done and closed as your team members work on them.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--HRM FEATURES-->
+<section class="hrm-features">
+    <div class="container">
+        <h2 class="sub-title text-center">HRM Features</h2>
+        <p class="text-center sub-title-2">EffortlessHRM streamlines HR management and time tracking with innovative features tailored to enhance the employee experience and organizational efficiency.</p>
+    
+        <div class="row">
+            <div class="col-12 col-md-2 col-lg-4">
+                <div class="card p-3">
+                    <img src="assets/png/org.png" alt="" width="99">
+                    <h1 class="mt-3 mb-2">Organization Set-up</h1>
+                    <p>Effortlessly set up your organization, assign templates, managers, and create an organizational hierarchy. Bulk upload employee data and manage leaves, expenses, and attendance with ease.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-4">
+                <div class="card p-3">
+                    <img src="assets/png/management.png" alt="" width="99">
+                    <h1 class="mt-3 mb-2">Management Dashboards & Reports</h1>
+                    <p>Access actionable insights and analytics to drive better business outcomes. Govern data access and share insights with customizable reports in various formats.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-4">
+                <div class="card p-3">
+                    <img src="assets/png/employees.png" alt="" width="99">
+                    <h1 class="mt-3 mb-2">Employee Onboarding</h1>
+                    <p>Simplify employee onboarding with integrated HR management. Set up multiple office locations, departments, designations, and streamline the onboarding process for new hires.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-4">
+                <div class="card p-3">
+                    <img src="assets/png/payroll.png" alt="" width="99">
+                    <h1 class="mt-3 mb-2">Payroll</h1>
+                    <p>Organize payroll tasks efficiently with automated salary slip generation and CTC calculations, ensuring accurate and timely employee payments.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-4">
+                <div class="card p-3">
+                    <img src="assets/png/expense.png" alt="" width="99">
+                    <h1 class="mt-3 mb-2">Expense Management</h1>
+                    <p>Streamline expense reporting with easy-to-use modules that sync with employee reporting managers for seamless approval processes. Define expense policies, track expenses, and optimize expenditures.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-4">
+                <div class="card p-3">
+                    <img src="assets/png/attendance.png" alt="" width="99">
+                    <h1 class="mt-3 mb-2">Attendance Management</h1>
+                    <p>Adapt to complex labor environments with automated attendance tracking and comprehensive reporting features. Manage time logs, approvals, and off-site worker attendance effortlessly.</p>
+                </div>
+            </div>
+
+            @if(showMoreFeatures){
+            <div class="col-12 col-md-2 col-lg-4">
+                <div class="card p-3">
+                    <img src="assets/png/leave.png" alt="" width="99">
+                    <h1 class="mt-3 mb-2">Leave Management</h1>
+                    <p>Customize leave policies and structures, automate leave approvals, and manage leave entitlements with ease. Configure different templates and workflows to suit departmental requirements.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-4">
+                <div class="card p-3">
+                    <img src="assets/png/recruitment.png" alt="" width="99">
+                    <h1 class="mt-3 mb-2">Recruitment System</h1>
+                    <p>Simplify recruitment processes with EffortlessHRM's intuitive features for job requisition, candidate engagement, collaboration, and onboarding.</p>
+                </div>
+            </div>
+            <div class="col-12 col-md-2 col-lg-4">
+                <div class="card p-3">
+                    <img src="assets/png/interview.png" alt="" width="99">
+                    <h1 class="mt-3 mb-2">Interview Process</h1>
+                    <p>Create custom templates to streamline candidate data storage, interview scheduling, and feedback collection. Conduct interviews online and efficiently manage the entire recruitment process.</p>
+                </div>
+            </div>
+            }
+        </div>
+        <div class="text-center mt-4">
+            <button color="primary" mat-flat-button class="rounded-pill px-4 me-2">Get Started</button>
+            <button color="primary" mat-stroked-button class="rounded-pill p-4" (click)="showMoreFeatures = !showMoreFeatures">{{showMoreFeatures ? 'Show Less Features' : 'Show More Features'}}</button>
+        </div>
+    </div>
+</section>
