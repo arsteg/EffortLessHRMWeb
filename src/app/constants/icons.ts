@@ -29,5 +29,11 @@ export const ICONS = [
     "payslip",
     "manual-time",
     "timetable",
-    "manage"
+    "manage",
+    "x",
+    "google",
+    "facebook",
+    "linkedin",
+    "youtube",
+    "instagram"
 ];

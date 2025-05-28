@@ -1,0 +1,42 @@
+
+
+.workspace {
+  .overflow-auto {
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    &.no-scroll {
+      &::scroll-button(left),
+      &::scroll-button(right) {
+        display: none;
+      }
+    }
+
+    &::-webkit-scrollbar-track,
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+    }
+
+    &::scroll-button(left) {
+      content: "\e5c4";
+      margin-right: var(--size-8);
+    }
+
+    &::scroll-button(right) {
+      content: "\e5c8";
+    }
+
+    &::scroll-button(left),
+    &::scroll-button(right) {
+      font-family: "Material Icons Outlined";
+      font-size: var(--size-24);
+      cursor: pointer;
+      background: rgb(var(--bs-light-rgb));
+      color: rgb(var(--bs-dark-rgb));
+      border: 0;
+      border-radius: 50%;
+      padding: var(--size-6);
+      position: relative;
+    }
+  }
+}

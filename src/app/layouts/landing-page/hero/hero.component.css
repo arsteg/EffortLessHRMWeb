@@ -1,0 +1,24 @@
+/* Hero Section */
+.intro-container {
+  .intro-text-container {
+    max-width: 685px;
+    margin: 0 auto;
+    padding: 46px 20px;
+  }
+
+  .intro-image {
+    position: relative;
+
+    .hero-image {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-bg {
+      position: absolute;
+      top: -20%;
+      right: 20%;
+      z-index: 0;
+    }
+  }
+}

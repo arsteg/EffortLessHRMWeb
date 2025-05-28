@@ -1,3 +1,15 @@
 .text-primary { 
     color: var(--primary) !important;
 }
+
+.sub-title {
+  font-size: var(--size-42) !important;
+  color: var(--grey);
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+}
+
+.sub-title-2 {
+  font-size: var(--size-20) !important;
+  line-height: 1.2 !important;
+}

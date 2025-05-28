@@ -1,0 +1,50 @@
+
+/* Features Section */
+.carousel-section {
+  margin-top: 120px;
+  margin-bottom: 65px;
+
+  .card {
+    background: rgba(245, 245, 245, 0.39);
+    border-color: rgba(213, 213, 213, 0.42);
+  }
+
+  .carousel {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+
+    &::scroll-button(left),
+    &::scroll-button(right) {
+      font-family: "Material Icons Outlined";
+      font-size: var(--size-24);
+      cursor: pointer;
+      background: var(--orange-10);
+      color: var(--primary);
+      border: 0;
+      border-radius: 50%;
+      padding: var(--size-6);
+      position: relative;
+      top: -50px;
+    }
+
+    &::scroll-button(left):disabled,
+    &::scroll-button(right):disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &::scroll-button(left) {
+      content: "\e5c4";
+      margin-right: var(--size-8);
+    }
+
+    &::scroll-button(right) {
+      content: "\e5c8";
+    }
+
+    .col-12 {
+      scroll-snap-align: start;
+    }
+  }
+}

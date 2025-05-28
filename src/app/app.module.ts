@@ -64,6 +64,14 @@ import { UpdateHelpdeskTaskComponent } from './feature_modules/helpdesk/update-h
 import { SidebarComponent } from './layouts/home/sidebar/sidebar.component';
 import { HeaderComponent } from './layouts/home/header/header.component';
 import { LandingPageComponent } from './layouts/landing-page/landing-page.component';
+import { NavbarComponent } from './layouts/landing-page/navbar/navbar.component';
+import { HeroComponent } from './layouts/landing-page/hero/hero.component';
+import { FeaturesComponent } from './layouts/landing-page/features/features.component';
+import { AboutUsComponent } from './layouts/landing-page/about-us/about-us.component';
+import { TrustComponent } from './layouts/landing-page/trust/trust.component';
+import { HrmFeaturesComponent } from './layouts/landing-page/hrm-features/hrm-features.component';
+import { WorkspaceComponent } from './layouts/landing-page/workspace/workspace.component';
+import { FooterComponent } from './layouts/landing-page/footer/footer.component';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -81,6 +89,14 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     ProfileComponent,
     MainComponent,
     LandingPageComponent,
+    NavbarComponent,
+    HeroComponent,
+    FeaturesComponent,
+    AboutUsComponent,
+    TrustComponent,
+    HrmFeaturesComponent,
+    WorkspaceComponent,
+    FooterComponent,
     PermissionsComponent,
     RolePermissionComponent,
     NotificationComponent,
