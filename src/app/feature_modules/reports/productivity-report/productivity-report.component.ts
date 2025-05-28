@@ -4,6 +4,8 @@ import { Productivity } from '../model/productivityModel';
 import { ReportsService } from '../../../_services/reports.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { UtilsService } from 'src/app/_services/utils.service';
+import { PreferenceService } from 'src/app/_services/user-preference.service';
+import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
 
 @Component({
   selector: 'app-productivity-report',
@@ -32,14 +34,34 @@ export class ProductivityReportComponent implements OnInit {
     private timeLogService: TimeLogService,
     private reportService: ReportsService,
     public commonservice: CommonService,
-    private utilsService:UtilsService
+    private utilsService:UtilsService,
+    private preferenceService: PreferenceService
   ) {
     this.fromDate = new Date().toISOString().slice(0, 10);
     this.toDate = new Date().toISOString().slice(0, 10);
   }
 
   ngOnInit(): void {
-    this.toggleSingleMember();
+    
+    this.preferenceService.getPreferenceByKey(PreferenceKeys.ReportsProductivityReportsBy, this.currentUser?.id)
+      .subscribe({
+        next: (response: any) => {
+          const preferences = response?.data?.preferences || [];
+          const match = preferences.find((pref: any) =>
+            pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ReportsProductivityReportsBy
+          );
+          const prefvalue = match?.preferenceOptionId?.preferenceValue || '';
+          if (prefvalue === 'Single') {
+            this.toggleSingleMember();
+          } else if (prefvalue === 'Members') {
+            this.toggleAllMembers();
+          }
+        },
+        error: (err) => {
+          console.error('Failed to load language preference', err);
+          this.toggleSingleMember();
+        }
+      });
     this.populateUsers();
   }
 
@@ -47,11 +69,29 @@ export class ProductivityReportComponent implements OnInit {
     this.showSingleMember = true;
     this.showAllMembers = false;
     this.activeButton = 'Single';
+
+    this.preferenceService.createOrUpdatePreference(
+          this.currentUser.id,
+          PreferenceKeys.ReportsProductivityReportsBy,
+          'Single'
+        ).subscribe({
+          next: () => console.log(`Menu state updated to singe`),
+          error: (err) => console.error('Error updating menu state:', err)
+        });
   }
   toggleAllMembers() {
     this.showSingleMember = false;
     this.showAllMembers = true;
     this.activeButton = 'Members';
+
+    this.preferenceService.createOrUpdatePreference(
+          this.currentUser.id,
+          PreferenceKeys.ReportsProductivityReportsBy,
+          'Members'
+        ).subscribe({
+          next: () => console.log(`Menu state updated to members`),
+          error: (err) => console.error('Error updating menu state:', err)
+        });
   }
 
   populateUsers() {

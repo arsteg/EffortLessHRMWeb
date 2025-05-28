@@ -19,6 +19,8 @@ import { UpcomingPaymentModel } from 'src/app/models/dashboard/upcomingPaymentMo
 import { LastInvoiceModel } from 'src/app/models/dashboard/lastInvoiceModel';
 import { SubscriptionService } from 'src/app/_services/subscription.service';
 import {LegendPosition, Color, ScaleType} from '@swimlane/ngx-charts';
+import { PreferenceService } from 'src/app/_services/user-preference.service';
+import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -70,6 +72,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     selectable: true,
     name: 'custom',
   };
+  selectedTabIndex: number = 0;
 
   constructor(
     private timelog: TimeLogService,
@@ -80,9 +83,24 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     protected override commonService: CommonService,
     activatedRoute: ActivatedRoute,
     private subscriptionService: SubscriptionService,
-    router: Router
+    router: Router,
+    private preferenceService: PreferenceService
   ) {
     super(commonService,activatedRoute,router);
+  }
+
+  onTabChange(index: number): void {
+    this.selectedTabIndex = index;
+
+    this.preferenceService.createOrUpdatePreference(
+      this.currentUser.id,
+      PreferenceKeys.DashboardTimeSpent,
+      this.selectedTabIndex.toString()
+    ).subscribe({
+      next: () => console.log(`Menu state updated to ${this.selectedTabIndex.toString()}`),
+      error: (err) => console.error('Error updating menu state:', err)
+    });
+
   }
 
     openPaymentsDialog() {
@@ -216,6 +234,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     // }
     this.populateUpcomingPayment();
     this.populateLastInvoice();
+    this.getPreferences();
     super.ngOnInit();
   }
   filterDate() {
@@ -292,6 +311,16 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   onTaskTimeMemberSelectionChange(member: any) {
     this.member = JSON.parse(member.value);
     this.populateTaskwiseHours(this.member.id);
+
+    this.preferenceService.createOrUpdatePreference(
+      this.currentUser.id,
+      PreferenceKeys.DashboardProjectwiseMember,
+      this.member ? JSON.stringify(this.member) : ''
+    ).subscribe({
+      next: () => console.log(`Menu state updated to ${this.selectedTabIndex.toString()}`),
+      error: (err) => console.error('Error updating menu state:', err)
+    });
+
   }
   onProductivityMemberSelectionChange(member: any) {
     this.member = JSON.parse(member.value);
@@ -418,6 +447,23 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     },
       err => {
         console.log(err);        
+      });
+  }
+
+  getPreferences(){
+    this.preferenceService.getPreferenceByKey(PreferenceKeys.DashboardTimeSpent, this.currentUser?.id)
+      .subscribe({
+        next: (response: any) => {
+          const preferences = response?.data?.preferences || [];
+          const match = preferences.find((pref: any) =>
+            pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.DashboardTimeSpent
+          );
+          this.selectedTabIndex = +match?.preferenceOptionId?.preferenceValue || 0;
+        },
+        error: (err) => {
+          console.error('Failed to load language preference', err);
+          this.selectedTabIndex = + 0;
+        }
       });
   }
 }

@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output, Input, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, EventEmitter, Output, Input, inject, ViewChild, ElementRef, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { PreferenceService } from '../../../_services/user-preference.service';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
 
 @Component({
   selector: 'app-header',
@@ -16,6 +17,7 @@ export class HeaderComponent {
   @Input() profileSwitch: any;
   @Input() role: any;
   profileImageUrl: string;
+  isMenuCollapsed: boolean = false;
 
   constructor(private preferenceService: PreferenceService,
     private auth: AuthenticationService,
@@ -25,6 +27,36 @@ export class HeaderComponent {
 
   triggerFileInput(): void {
     this.fileInput.nativeElement.click();
+  }
+  
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['loggedInUser'] && this.loggedInUser?._id) {
+      this.loadMenuPreference();
+    }
+  }
+    
+  private loadMenuPreference() {
+  this.preferenceService.getPreferenceByKey(PreferenceKeys.MenuCollapseOrExpand, this.loggedInUser._id)
+    .subscribe({
+      next: (response: any) => {
+        const preferences = response?.data?.preferences || [];
+        const match = preferences.find((pref: any) =>
+          pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.MenuCollapseOrExpand
+        );
+        if (match?.preferenceOptionId?.preferenceValue === 'collapsed') {
+          this.isMenuCollapsed = true;
+          this.onMenuToggled.emit(true); // Emit to update layout
+        } else {
+          this.isMenuCollapsed = false;
+          this.onMenuToggled.emit(false);
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load menu preference', err);
+        this.isMenuCollapsed = false;
+        this.onMenuToggled.emit(false);
+      }
+    });
   }
 
   onFileSelected(event: Event): void {
@@ -69,7 +101,18 @@ export class HeaderComponent {
   }
 
   toggleMenu() {
-    this.onMenuToggled.emit();
+    this.isMenuCollapsed = !this.isMenuCollapsed;
+    this.onMenuToggled.emit(this.isMenuCollapsed);
+
+    const menuState = this.isMenuCollapsed ? 'collapsed' : 'expanded';
+    this.preferenceService.createOrUpdatePreference(
+      this.loggedInUser._id,
+      PreferenceKeys.MenuCollapseOrExpand,
+      menuState
+    ).subscribe({
+      next: () => console.log(`Menu state updated to ${menuState}`),
+      error: (err) => console.error('Error updating menu state:', err)
+    });
   }
 
   switchView(view: string) {
@@ -77,7 +120,7 @@ export class HeaderComponent {
     const selectedAppMode = view?.toLowerCase() === 'admin' ? 'admin' : 'user';
     this.preferenceService.createOrUpdatePreference(
       this.loggedInUser._id,
-      'AppMode',
+      PreferenceKeys.AppMode,
       selectedAppMode
     ).subscribe({
       next: () => console.log('AppMode updated successfully'),

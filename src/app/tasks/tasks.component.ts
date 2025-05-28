@@ -16,6 +16,8 @@ import { Observable, switchMap } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
+import { PreferenceService } from '../_services/user-preference.service';
+import { PreferenceKeys } from '../constants/preference-keys.constant';
 
 @Component({
   selector: 'app-tasks',
@@ -110,6 +112,7 @@ export class TasksComponent implements OnInit {
     private timelog: TimeLogService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
+    private preferenceService: PreferenceService,
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -738,14 +741,38 @@ export class TasksComponent implements OnInit {
   }
 
   setDefaultViewMode() {
-    const queryParams = this.route.snapshot.queryParamMap;
-    this.isListView = queryParams.get('view') !== 'board';
-    this.updateViewModeQueryParam(this.isListView);
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.preferenceService.getPreferenceByKey(PreferenceKeys.TaskSelectedTasksView, currentUser?.id)
+      .subscribe({
+        next: (response: any) => {
+          const preferences = response?.data?.preferences || [];
+          const match = preferences.find((pref: any) =>
+            pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.TaskSelectedTasksView
+          );
+          this.isListView = match?.preferenceOptionId?.preferenceValue === 'List';
+          this.updateViewModeQueryParam(this.isListView);
+        },
+        error: (err) => {
+          console.error('Failed to load language preference', err);
+          const queryParams = this.route.snapshot.queryParamMap;
+          this.isListView = queryParams.get('view') !== 'board';
+          this.updateViewModeQueryParam(this.isListView);
+        }
+      });
   }
 
   toggleViewMode() {
     this.isListView = !this.isListView;
     this.updateViewModeQueryParam(this.isListView);
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.preferenceService.createOrUpdatePreference(
+      currentUser.id,
+      PreferenceKeys.TaskSelectedTasksView,
+      this.isListView ? 'List' : 'Board'
+    ).subscribe({
+      next: () => console.log(`Task view updated ${this.isListView.toString()}`),
+      error: (err) => console.error('Error updating task view:', err)
+    });
   }
 
   updateViewModeQueryParam(isListView: boolean) {
