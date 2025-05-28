@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core'; // Import TranslateService
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
@@ -13,7 +14,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 })
 export class ContributionComponent {
   searchText: string = '';
-  totalRecords: number
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   isEdit = false;
@@ -22,17 +23,18 @@ export class ContributionComponent {
   contribution: any;
   contributionForm: FormGroup;
 
-  constructor(private payroll: PayrollService,
+  constructor(
+    private payroll: PayrollService,
     private modalService: NgbModal,
     private toast: ToastrService,
     private fb: FormBuilder,
-    private dialog: MatDialog
-  ) { 
+    private dialog: MatDialog,
+    private translate: TranslateService // Inject TranslateService
+  ) {
     this.contributionForm = this.fb.group({
       employeePercentage: [0, Validators.required],
       employerPercentage: [0, Validators.required],
-    })
-    
+    });
   }
 
   ngOnInit(): void {
@@ -57,17 +59,18 @@ export class ContributionComponent {
     this.payroll.getContribution(pagination).subscribe(res => {
       this.contribution = res.data;
       this.totalRecords = res.total;
-    })
+    });
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-
-    }, (reason) => {
-
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      }
+    );
   }
 
   private getDismissReason(reason: any): string {
@@ -79,33 +82,45 @@ export class ContributionComponent {
       return `with: ${reason}`;
     }
   }
+
   closeModal() {
     this.modalService.dismissAll();
   }
 
   onSubmission() {
     if (!this.isEdit) {
-      this.payroll.addContribution(this.contributionForm.value).subscribe((res: any) => {
-        this.contribution.push(res.data);
-        this.toast.success('Successfully Added!!!', 'ESIC Contribution');
-        this.clearForm();
-      },
+      this.payroll.addContribution(this.contributionForm.value).subscribe(
+        (res: any) => {
+          this.contribution.push(res.data);
+          this.translate.get(['esic.toast.success_added', 'esic.title']).subscribe(translations => {
+            this.toast.success(translations['esic.toast.success_added'], translations['esic.title']);
+          });
+          this.clearForm();
+        },
         (err) => {
-          this.toast.error('ESIC Contribution Can not be Added', 'ESIC Contribution');
-        })
-    }
-    else {
-      this.payroll.updateContribution(this.selectedRecord._id, this.contributionForm.value).subscribe((res: any) => {
-        const index = this.contribution.findIndex(item => item._id === this.selectedRecord._id);
-        if (index !== -1) {
-          this.contribution[index] = res.data;
+          this.translate.get(['esic.toast.error_add', 'esic.title']).subscribe(translations => {
+            this.toast.error(translations['esic.toast.error_add'], translations['esic.title']);
+          });
         }
-        this.toast.success('Successfully Updated!!!', 'ESIC Contribution');
-        this.clearForm();
-      },
+      );
+    } else {
+      this.payroll.updateContribution(this.selectedRecord._id, this.contributionForm.value).subscribe(
+        (res: any) => {
+          const index = this.contribution.findIndex(item => item._id === this.selectedRecord._id);
+          if (index !== -1) {
+            this.contribution[index] = res.data;
+          }
+          this.translate.get(['esic.toast.success_updated', 'esic.title']).subscribe(translations => {
+            this.toast.success(translations['esic.toast.success_updated'], translations['esic.title']);
+          });
+          this.clearForm();
+        },
         (err) => {
-          this.toast.error('ESIC Contribution Can not be Updated', 'ESIC Contribution');
-        })
+          this.translate.get(['esic.toast.error_update', 'esic.title']).subscribe(translations => {
+            this.toast.error(translations['esic.toast.error_update'], translations['esic.title']);
+          });
+        }
+      );
     }
   }
 
@@ -117,20 +132,26 @@ export class ContributionComponent {
     this.contributionForm.patchValue({
       employeePercentage: 0,
       employerPercentage: 0,
-    })
+    });
   }
 
   deleteRecord(_id: string) {
-    this.payroll.deleteContribution(_id).subscribe((res: any) => {
-      const index = this.contribution.findIndex(res => res._id === _id);
-      if (index !== -1) {
-        this.contribution.splice(index, 1);
-      }
-      this.toast.success('Successfully Deleted!!!', 'ESIC Contribution');
-    },
+    this.payroll.deleteContribution(_id).subscribe(
+      (res: any) => {
+        const index = this.contribution.findIndex(res => res._id === _id);
+        if (index !== -1) {
+          this.contribution.splice(index, 1);
+        }
+        this.translate.get(['esic.toast.success_deleted', 'esic.title']).subscribe(translations => {
+          this.toast.success(translations['esic.toast.success_deleted'], translations['esic.title']);
+        });
+      },
       (err) => {
-        this.toast.error('ESIC Contribution Can not be deleted', 'ESIC Contribution');
-      })
+        this.translate.get(['esic.toast.error_delete', 'esic.title']).subscribe(translations => {
+          this.toast.error(translations['esic.toast.error_delete'], translations['esic.title']);
+        });
+      }
+    );
   }
 
   deleteDialog(id: string): void {

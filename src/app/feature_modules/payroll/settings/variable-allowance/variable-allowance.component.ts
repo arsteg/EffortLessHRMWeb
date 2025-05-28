@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { co } from '@fullcalendar/core/internal-common';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core'; // Import TranslateService
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -10,9 +10,9 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 @Component({
   selector: 'app-variable-allowance',
   templateUrl: './variable-allowance.component.html',
-  styleUrl: './variable-allowance.component.css'
+  styleUrls: ['./variable-allowance.component.css']
 })
-export class VariableAllowanceComponent {
+export class VariableAllowanceComponent implements OnInit {
   variableAllowances: any;
   searchText: string = '';
   selectedRecord: any;
@@ -22,7 +22,11 @@ export class VariableAllowanceComponent {
   currentPage: number = 1;
   variableAllowanceForm: FormGroup;
   members: any[];
-  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  // Use lowercase month names to match translation keys
+  months = [
+    'january', 'february', 'march', 'april', 'may', 'june',
+    'july', 'august', 'september', 'october', 'november', 'december'
+  ];
   years: number[] = [];
   public sortOrder: string = '';
 
@@ -31,7 +35,8 @@ export class VariableAllowanceComponent {
     private toast: ToastrService,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private translate: TranslateService // Inject TranslateService
   ) {
     this.variableAllowanceForm = this.fb.group({
       label: ['', Validators.required],
@@ -41,9 +46,9 @@ export class VariableAllowanceComponent {
       isESICAffected: [false],
       isLWFAffected: [false],
       isIncomeTaxAffected: [false],
-      deductIncomeTaxAllowance: ['', Validators.required],
-      taxRegime: [['']],
-      paidAllowanceFrequently: ['', Validators.required],
+      deductIncomeTaxAllowance: [''],
+      taxRegime: [[]],
+      paidAllowanceFrequently: [''],
       allowanceEffectiveFromMonth: ['', Validators.required],
       allowanceEffectiveFromYear: ['', Validators.required],
       isEndingPeriod: [false],
@@ -94,7 +99,7 @@ export class VariableAllowanceComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'save') {
         this.onSubmission();
-      } else { }
+      }
     });
   }
 
@@ -106,65 +111,85 @@ export class VariableAllowanceComponent {
     const formValue = this.variableAllowanceForm.value;
 
     if (this.variableAllowanceForm.valid) {
-      if (this.isEdit == false) {
-        this.payroll.addVariableAllowance(formValue).subscribe((res: any) => {
-          this.variableAllowances.push(res.data);
-          this.variableAllowanceForm.reset({
-            label: '',
-            allowanceRatePerDay: 0,
-            isPayrollEditable: true,
-            isProvidentFundAffected: true,
-            isESICAffected: true,
-            isLWFAffected: true,
-            isIncomeTaxAffected: true,
-            deductIncomeTaxAllowance: '',
-            taxRegime: '',
-            paidAllowanceFrequently: '',
-            allowanceEffectiveFromMonth: '',
-            allowanceEffectiveFromYear: '',
-            isEndingPeriod: true,
-            allowanceStopMonth: '',
-            allowanceStopYear: '',
-            isProfessionalTaxAffected: true,
-          });
-          this.toast.success('Successfully Added!!!', 'Variable Allowance');
-        },
+      if (!this.isEdit) {
+        this.payroll.addVariableAllowance(formValue).subscribe(
+          (res: any) => {
+            this.variableAllowances.push(res.data);
+            this.variableAllowanceForm.reset({
+              label: '',
+              allowanceRatePerDay: 0,
+              isPayrollEditable: false,
+              isProvidentFundAffected: false,
+              isESICAffected: false,
+              isLWFAffected: false,
+              isIncomeTaxAffected: false,
+              deductIncomeTaxAllowance: '',
+              taxRegime: [],
+              paidAllowanceFrequently: '',
+              allowanceEffectiveFromMonth: '',
+              allowanceEffectiveFromYear: '',
+              isEndingPeriod: false,
+              allowanceStopMonth: '',
+              allowanceStopYear: '',
+              isProfessionalTaxAffected: false,
+            });
+            this.translate.get([
+              'payroll._variable_allowance.toast.success_added',
+              'payroll._variable_allowance.title'
+            ]).subscribe(translations => {
+              this.toast.success(
+                translations['payroll._variable_allowance.toast.success_added'],
+                translations['payroll._variable_allowance.title']
+              );
+            });
+          },
           (err) => {
-            this.toast.error('Variable Allowance Can not be Added', 'Variable Allowance');
-          });
+            const errorMessage = err?.error?.message || this.translate.instant('payroll._variable_allowance.toast.error_add');
+            this.translate.get('payroll._variable_allowance.title').subscribe(title => {
+              this.toast.error(errorMessage, title);
+            });
+          }
+        );
       } else {
-        this.payroll.updateVariableAllowance(this.selectedRecord._id, formValue).subscribe((res: any) => {
-          this.getVariableAllowances();
-          this.variableAllowanceForm.reset({
-            label: '',
-            allowanceRatePerDay: 0,
-            isPayrollEditable: true,
-            isProvidentFundAffected: true,
-            isESICAffected: true,
-            isLWFAffected: true,
-            isIncomeTaxAffected: true,
-            deductIncomeTaxAllowance: '',
-            taxRegime: '',
-            isShowInCTCStructure: true,
-            paidAllowanceFrequently: '',
-            allowanceEffectiveFromMonth: '',
-            allowanceEffectiveFromYear: '',
-            isEndingPeriod: true,
-            allowanceStopMonth: '',
-            allowanceStopYear: '',
-            amountEnterForThisVariableAllowance: '',
-            amount: 0,
-            percentage: 0,
-            isProfessionalTaxAffected: true,
-            isAttandanceToAffectEligibility: true,
-            variableAllowanceApplicableEmployee: []
-          });
-          this.isEdit = false;
-          this.toast.success('Successfully Updated!!!', 'Variable Allowance');
-        },
+        this.payroll.updateVariableAllowance(this.selectedRecord._id, formValue).subscribe(
+          (res: any) => {
+            this.getVariableAllowances();
+            this.variableAllowanceForm.reset({
+              label: '',
+              allowanceRatePerDay: 0,
+              isPayrollEditable: false,
+              isProvidentFundAffected: false,
+              isESICAffected: false,
+              isLWFAffected: false,
+              isIncomeTaxAffected: false,
+              deductIncomeTaxAllowance: '',
+              taxRegime: [],
+              paidAllowanceFrequently: '',
+              allowanceEffectiveFromMonth: '',
+              allowanceEffectiveFromYear: '',
+              isEndingPeriod: false,
+              allowanceStopMonth: '',
+              allowanceStopYear: '',
+              isProfessionalTaxAffected: false,
+            });
+            this.isEdit = false;
+            this.translate.get([
+              'payroll._variable_allowance.toast.success_updated',
+              'payroll._variable_allowance.title'
+            ]).subscribe(translations => {
+              this.toast.success(
+                translations['payroll._variable_allowance.toast.success_updated'],
+                translations['payroll._variable_allowance.title']
+              );
+            });
+          },
           (err) => {
-            this.toast.error('Variable Allowance Can not be Updated', 'Variable Allowance');
-          });
+            const errorMessage = err?.error?.message || this.translate.instant('payroll._variable_allowance.toast.error_update');
+            this.translate.get('payroll._variable_allowance.title').subscribe(title => {
+              this.toast.error(errorMessage, title);
+            });
+          }
+        );
       }
     } else {
       this.variableAllowanceForm.markAllAsTouched();
@@ -174,26 +199,39 @@ export class VariableAllowanceComponent {
   editRecord() {
     this.variableAllowanceForm.patchValue({
       ...this.selectedRecord,
-      isPayrollEditable: this.selectedRecord.isPayrollEditable ? true : false,
-      isProvidentFundAffected: this.selectedRecord.isProvidentFundAffected ? true : false,
-      isESICAffected: this.selectedRecord.isESICAffected ? true : false,
-      isLWFAffected: this.selectedRecord.isLWFAffected ? true : false,
-      isIncomeTaxAffected: this.selectedRecord.isIncomeTaxAffected ? true : false,
-      isProfessionalTaxAffected: this.selectedRecord.isProfessionalTaxAffected ? true : false,
-      isEndingPeriod: this.selectedRecord.isEndingPeriod ? true : false,
+      isPayrollEditable: !!this.selectedRecord.isPayrollEditable,
+      isProvidentFundAffected: !!this.selectedRecord.isProvidentFundAffected,
+      isESICAffected: !!this.selectedRecord.isESICAffected,
+      isLWFAffected: !!this.selectedRecord.isLWFAffected,
+      isIncomeTaxAffected: !!this.selectedRecord.isIncomeTaxAffected,
+      isProfessionalTaxAffected: !!this.selectedRecord.isProfessionalTaxAffected,
+      isEndingPeriod: !!this.selectedRecord.isEndingPeriod,
       allowanceEffectiveFromYear: Number(this.selectedRecord.allowanceEffectiveFromYear),
-      allowanceStopYear: Number(this.selectedRecord.allowanceStopYear)
+      allowanceStopYear: this.selectedRecord.allowanceStopYear ? Number(this.selectedRecord.allowanceStopYear) : ''
     });
   }
 
   deleteRecord(_id: string) {
-    this.payroll.deleteVariableAllowance(_id).subscribe((res: any) => {
-      this.getVariableAllowances();
-      this.toast.success('Successfully Deleted!!!', 'Variable Allowance');
-    },
+    this.payroll.deleteVariableAllowance(_id).subscribe(
+      (res: any) => {
+        this.getVariableAllowances();
+        this.translate.get([
+          'payroll._variable_allowance.toast.success_deleted',
+          'payroll._variable_allowance.title'
+        ]).subscribe(translations => {
+          this.toast.success(
+            translations['payroll._variable_allowance.toast.success_deleted'],
+            translations['payroll._variable_allowance.title']
+          );
+        });
+      },
       (err) => {
-        this.toast.error('Variable Allowance Can not be deleted', 'Variable Allowance');
-      });
+        const errorMessage = err?.error?.message || this.translate.instant('payroll._variable_allowance.toast.error_delete');
+        this.translate.get('payroll._variable_allowance.title').subscribe(title => {
+          this.toast.error(errorMessage, title);
+        });
+      }
+    );
   }
 
   deleteDialog(id: string): void {

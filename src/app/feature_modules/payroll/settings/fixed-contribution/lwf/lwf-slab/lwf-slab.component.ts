@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core'; // Import TranslateService
 import { CompanyService } from 'src/app/_services/company.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -28,12 +29,15 @@ export class LwfSlabComponent {
   @Input() selectedRecord: any;
   eligibleStates: any;
   route: any;
-  constructor(private payrollService: PayrollService,
+
+  constructor(
+    private payrollService: PayrollService,
     private companyService: CompanyService,
     private fb: FormBuilder,
     private modalService: NgbModal,
     private toast: ToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService // Inject TranslateService
   ) {
     this.lwfSLabForm = this.fb.group({
       fixedContribution: ['', Validators.required],
@@ -44,7 +48,7 @@ export class LwfSlabComponent {
       maxContribution: [0],
       minAmount: [0],
       maxAmount: [0]
-    })
+    });
   }
 
   ngOnInit() {
@@ -52,26 +56,27 @@ export class LwfSlabComponent {
       this.eligibleStates = res.data;
     }); 
     this.getCompanyState();
-    
   }
 
   onPageChange(page: number) {
     this.currentPage = page;
     this.getLwfSlab();
   }
+
   clearForm() {
     this.isEdit = false;
     this.lwfSLabForm.patchValue({
       fixedContribution: this.selectedRecord?._id,
-      employeeAmount: 0, // Default value for employeeAmount
-      employerAmount: 0, // Default value for employerAmount
-      employeePercentage: 0, // Default value for employeePercentage
-      employerPercentage: 0, // Default value for employerPercentage
-      maxContribution: 0, // Default value for maxContribution
-      minAmount: 0, // Default value for minAmount
-      maxAmount: 0 // Default value for maxAmount
-    })
+      employeeAmount: 0,
+      employerAmount: 0,
+      employeePercentage: 0,
+      employerPercentage: 0,
+      maxContribution: 0,
+      minAmount: 0,
+      maxAmount: 0
+    });
   }
+
   onRecordsPerPageChange(recordsPerPage: number) {
     this.recordsPerPage = recordsPerPage;
     this.getLwfSlab();
@@ -81,20 +86,21 @@ export class LwfSlabComponent {
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString(),
-      state:this.selectedState
+      state: this.selectedState
     };
     this.payrollService.getLWFByState(pagination).subscribe((res: any) => {
       this.lwfSlabs = res.data;
       this.totalRecords = res.total;
-    })
+    });
   }
-  getCompanyState()
-  {
+
+  getCompanyState() {
     this.companyService.getCompany().subscribe((res: any) => {
       this.selectedState = res.data.company.state;
       this.getLwfSlab();
-    })
+    });
   }
+
   editRecord() {
     console.log(this.selectedData);
     this.lwfSLabForm.patchValue(this.selectedData);
@@ -111,42 +117,59 @@ export class LwfSlabComponent {
     };
   
     if (!this.isEdit) {
-      this.payrollService.addLWF(payload).subscribe((res) => {  
-        this.getLwfSlab();     
-        this.toast.success('Successfully Added!!!', 'LWF Slab');
-      }, (err) => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        || 'LWF Slab can not be added.';
-        this.toast.error(errorMessage, 'Error!');  });
+      this.payrollService.addLWF(payload).subscribe(
+        (res) => {  
+          this.getLwfSlab();     
+          this.translate.get(['payroll._lwf.slab.success_added', 'payroll.lwf_title']).subscribe(translations => {
+            this.toast.success(translations['payroll._lwf.slab.success_added'], translations['payroll.lwf_title']);
+          });
+        },
+        (err) => {
+          const errorMessage = err?.error?.message || err?.message || this.translate.instant('payroll._lwf.slab.error_add');
+          this.translate.get('payroll.lwf_title').subscribe(title => {
+            this.toast.error(errorMessage, title);
+          });
+        }
+      );
     } else {
-      this.payrollService.updateLWF(this.selectedData._id, payload).subscribe((res) => {      
-        this.getLwfSlab();   
-        this.lwfSLabForm.reset();
-        this.toast.success('Successfully Updated!!!', 'LWF Slab');
-      }, (err) => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        || 'LWF Slab can not be updated.';
-        this.toast.error(errorMessage, 'Error!');
-      });
+      this.payrollService.updateLWF(this.selectedData._id, payload).subscribe(
+        (res) => {      
+          this.getLwfSlab();   
+          this.lwfSLabForm.reset();
+          this.translate.get(['payroll._lwf.slab.success_updated', 'payroll.lwf_title']).subscribe(translations => {
+            this.toast.success(translations['payroll._lwf.slab.success_updated'], translations['payroll.lwf_title']);
+          });
+        },
+        (err) => {
+          const errorMessage = err?.error?.message || err?.message || this.translate.instant('payroll._lwf.slab.error_update');
+          this.translate.get('payroll.lwf_title').subscribe(title => {
+            this.toast.error(errorMessage, title);
+          });
+        }
+      );
     }  
-    this.closeModal(); // Optionally close the modal after submission
+    this.closeModal();
   }  
 
   deleteRecord(_id: string) {
-    this.payrollService.deleteLWF(_id).subscribe((res: any) => {
-      const index = this.lwfSlabs.findIndex(res => res._id === _id);
-      if (index !== -1) {
-        this.lwfSlabs.splice(index, 1);
-      }
-      this.toast.success('Successfully Deleted!!!', 'LWF Slab');
-    },
+    this.payrollService.deleteLWF(_id).subscribe(
+      (res: any) => {
+        const index = this.lwfSlabs.findIndex(res => res._id === _id);
+        if (index !== -1) {
+          this.lwfSlabs.splice(index, 1);
+        }
+        this.translate.get(['payroll._lwf.slab.success_deleted', 'payroll.lwf_title']).subscribe(translations => {
+          this.toast.success(translations['payroll._lwf.slab.success_deleted'], translations['payroll.lwf_title']);
+        });
+      },
       (err) => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        || 'LWF Slab can not be deleted.';
-        this.toast.error(errorMessage, 'Error!');   })
-
+        const errorMessage = err?.error?.message || err?.message || this.translate.instant('payroll._lwf.slab.error_delete');
+        this.translate.get('payroll.lwf_title').subscribe(title => {
+          this.toast.error(errorMessage, title);
+        });
+      }
+    );
   }
-
 
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -158,10 +181,13 @@ export class LwfSlabComponent {
       }
     });
   }
+
   handleAdd(modal: any) {
     this.stateTouched = true;
     if (!this.selectedState) {
-      this.toast.warning('Please select a state before adding.');
+      this.translate.get('payroll._lwf.slab.warning_state').subscribe(message => {
+        this.toast.warning(message);
+      });
       return;
     }
   
@@ -171,11 +197,14 @@ export class LwfSlabComponent {
   }
   
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      }
+    );
   }
 
   private getDismissReason(reason: any): string {

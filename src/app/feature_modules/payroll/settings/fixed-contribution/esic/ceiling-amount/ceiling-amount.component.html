@@ -41,8 +41,8 @@
 <ng-template #modal let-modal>
     <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
         <div>
-            <h1 class="modal-title text-muted mb-0" translate>{{isEdit ? 'payroll.update_esic_ceiling_amount' :
-                'payroll.add_esic_ceiling_amount'}}</h1>
+            <h1 class="modal-title text-muted mb-0">{{(isEdit ? 'payroll.update_esic_ceiling_amount' :
+                'payroll.add_esic_ceiling_amount') | translate}}</h1>
         </div>
         <div>
             <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
