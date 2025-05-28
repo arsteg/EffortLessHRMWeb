@@ -23,17 +23,18 @@
           <ng-container *ngFor="let pref of explicitPreferences">
             <div class="col-md-6">
               <div class="form-group">
-                <div class="form-check">
-                    <input
-                        type="checkbox"
-                        class="form-check-input"
-                        [id]="pref.metadata?.id"
-                        [name]="pref.metadata?.name"
-                        [ngModel]="userPreferences[pref.key] === 'true'"
-                        (ngModelChange)="userPreferences[pref.key] = $event ? 'true' : 'false'"
-                        (change)="updateFormValidity()"
-                        [ngClass]="{ 'is-invalid': !formValid }"
-                        />
+                <!-- Checkbox type -->
+                <div *ngIf="pref.metadata?.inputType === 'checkbox'" class="form-check">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [id]="pref.metadata?.id"
+                    [name]="pref.metadata?.name"
+                    [ngModel]="userPreferences[pref.key] === 'true'"
+                    (ngModelChange)="userPreferences[pref.key] = $event ? 'true' : 'false'"
+                    (change)="updateFormValidity()"
+                    [ngClass]="{ 'is-invalid': !formValid }"
+                  />
                   <label
                     class="form-check-label"
                     [for]="pref.metadata?.id"
@@ -41,6 +42,26 @@
                   >
                     {{ pref.metadata?.label || pref.key }}
                   </label>
+                </div>
+
+                <!-- Number input type -->
+                <div *ngIf="pref.metadata?.inputType === 'number'">
+                  <label
+                    [for]="pref.metadata?.id"
+                    [title]="pref.metadata?.placeholder || pref.metadata?.label"
+                  >
+                    {{ pref.metadata?.label || pref.key }}
+                  </label>
+                  <input 
+                    type="number"
+                    class="form-control"
+                    [id]="pref.metadata?.id"
+                    [name]="pref.metadata?.name"
+                    [ngModel]="userPreferences[pref.key]"
+                    (ngModelChange)="userPreferences[pref.key] = $event"
+                    (change)="updateFormValidity()"
+                    [ngClass]="{ 'is-invalid': !formValid }"
+                  />
                 </div>
                 <div *ngIf="!formValid" class="invalid-feedback">
                   Invalid {{ pref.metadata?.label || pref.key }}!

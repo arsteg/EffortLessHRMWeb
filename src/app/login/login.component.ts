@@ -6,6 +6,7 @@ import { AuthenticationService } from '../_services/authentication.service';
 import { signup } from '../models/user';
 import { throwError } from 'rxjs';
 import { PreferenceService } from '../_services/user-preference.service';
+import { PreferenceKeys } from '../constants/preference-keys.constant';
 
 @Component({
   selector: 'app-login',
@@ -23,7 +24,6 @@ export class LoginComponent implements OnInit {
   hidePassword: boolean = true;
   errorMessage: string;
   selectedAppMode: string;
-  appModePreferenceKey: string = 'AppMode';
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -82,7 +82,7 @@ export class LoginComponent implements OnInit {
               const appModePreference = preferences.find(pref =>
                 pref.preferenceOptionId &&
                 typeof pref.preferenceOptionId !== 'string' &&
-                pref.preferenceOptionId.preferenceKey === this.appModePreferenceKey
+                pref.preferenceOptionId.preferenceKey === PreferenceKeys.AppMode
               );
               
               if (appModePreference && typeof appModePreference.preferenceOptionId !== 'string') {
@@ -91,12 +91,12 @@ export class LoginComponent implements OnInit {
                 this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
               }
               // Store the selected AppMode
-              this.createUserPreference(this.user.id, this.appModePreferenceKey, this.selectedAppMode);
+              this.createUserPreference(this.user.id, PreferenceKeys.AppMode, this.selectedAppMode);
             },
             error: (error) => {
               console.error('Error fetching preferences:', error);
               this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
-              this.createUserPreference(this.user.id, this.appModePreferenceKey, this.selectedAppMode);
+              this.createUserPreference(this.user.id, PreferenceKeys.AppMode, this.selectedAppMode);
               this.errorMessage = error;
             }
           });

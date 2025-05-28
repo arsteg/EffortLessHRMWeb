@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
@@ -9,13 +10,18 @@ import { PayrollService } from 'src/app/_services/payroll.service';
   styleUrls: ['./deduction.component.css']
 })
 export class DeductionComponent implements OnInit {
-  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  // Use lowercase month names to match translation keys
+  months = [
+    'january', 'february', 'march', 'april', 'may', 'june',
+    'july', 'august', 'september', 'october', 'november', 'december'
+  ];
   deductionForm: FormGroup;
 
   constructor(
     private payroll: PayrollService,
     private fb: FormBuilder,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private translate: TranslateService
   ) {
     this.deductionForm = this.fb.group({
       months: this.fb.array([])
@@ -32,7 +38,7 @@ export class DeductionComponent implements OnInit {
     this.months.forEach(month => {
       monthsArray.push(this.fb.group({
         paymentMonth: month,
-        processMonth: false
+        processMonth: [false]
       }));
     });
   }
@@ -47,9 +53,10 @@ export class DeductionComponent implements OnInit {
         this.updateFormValues(data.data);
       },
       err => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        || 'LWF Slab can not be updated.';
-        this.toast.error(errorMessage, 'Error!');
+        const errorMessage = err?.error?.message || this.translate.instant('payroll._lwf.monthly_deduction.toast.error_fetch');
+        this.translate.get('payroll._lwf.monthly_deduction.title').subscribe(title => {
+          this.toast.error(errorMessage, title);
+        });
       }
     );
   }
@@ -57,7 +64,9 @@ export class DeductionComponent implements OnInit {
   updateFormValues(deductionData: any) {
     const monthsArray = this.deductionForm.get('months') as FormArray;
     deductionData.forEach((deduction: any) => {
-      const monthForm = monthsArray.controls.find((monthForm) => monthForm.value.paymentMonth === deduction.paymentMonth);
+      const monthForm = monthsArray.controls.find((monthForm) => 
+        monthForm.value.paymentMonth === deduction.paymentMonth.toLowerCase()
+      );
       if (monthForm) {
         monthForm.patchValue({ processMonth: deduction.processMonth });
       }
@@ -65,22 +74,30 @@ export class DeductionComponent implements OnInit {
   }
 
   onSelectionChange(month: string, value: boolean) {
-    const monthForm = (this.deductionForm.get('months') as FormArray).controls.find((control) => control.value.paymentMonth === month);
+    const monthForm = (this.deductionForm.get('months') as FormArray).controls.find(
+      (control) => control.value.paymentMonth === month.toLowerCase()
+    );
     if (monthForm) {
       monthForm.patchValue({ processMonth: value });
     }
   }
 
   onSubmit() {
-    console.log(this.deductionForm.value);
     this.payroll.updateLWFDeductionMonth(this.deductionForm.value).subscribe(
       data => {
-        this.toast.success('Deduction month updated successfully');
+        this.translate.get([
+          'payroll._lwf.monthly_deduction.toast.success_updated',
+        ]).subscribe(translations => {
+          this.toast.success(
+            translations['payroll._lwf.monthly_deduction.toast.success_updated'],
+          );
+        });
       },
       err => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        || 'LWF Slab can not be updated.';
-        this.toast.error(errorMessage, 'Error!');
+        const errorMessage = err?.error?.message || this.translate.instant('payroll._lwf.monthly_deduction.toast.error_update');
+        this.translate.get('payroll._lwf.monthly_deduction.title').subscribe(title => {
+          this.toast.error(errorMessage, title);
+        });
       }
     );
   }

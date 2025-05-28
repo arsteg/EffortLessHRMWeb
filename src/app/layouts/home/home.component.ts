@@ -118,11 +118,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isMobile = window.innerWidth < 768;
   }
 
-  toggleDrawer() {
+  toggleDrawer(collapsed: boolean) {
     if (this.isMobile) {
       this.drawerOpened = !this.drawerOpened;
     } else {
-      this.isCollapsedMenu = !this.isCollapsedMenu;
+      this.isCollapsedMenu = collapsed;//!this.isCollapsedMenu;
     }
   }
 

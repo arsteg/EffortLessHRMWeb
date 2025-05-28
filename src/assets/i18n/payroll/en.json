@@ -30,7 +30,7 @@
         "fixed_allowance_basic_salary": "Fixed Allowance + Basic Salary",
         "variable_allowance": "Variable Allowance",
         "overtime": "Overtime",
-        "flexi_benefits": "Flexi Benefits",
+        "_flexi_benefits": "Flexi Benefits",
         "other_benefits": "Other Benefits",
         "total_earnings": "Total Earnings",
         "deductions": "Deductions",
@@ -99,11 +99,359 @@
         "update_esic_ceiling_amount": "Update ESIC Ceiling Amount",
         "field_required": "Field is required",
         "esic_ceiling_amount_added": "Successfully added!",
-    "esic_ceiling_amount_updated": "Successfully updated!",
-    "esic_ceiling_amount_deleted": "Successfully deleted!",
-    "esic_ceiling_amount_add_error": "Cannot be added",
-    "esic_ceiling_amount_update_error": "Cannot be updated",
-    "esic_ceiling_amount_delete_error": "Cannot be deleted",
-    "esic_ceiling_amount_title": "ESIC Ceiling Amount"
+        "esic_ceiling_amount_updated": "Successfully updated!",
+        "esic_ceiling_amount_deleted": "Successfully deleted!",
+        "esic_ceiling_amount_add_error": "Cannot be added",
+        "esic_ceiling_amount_update_error": "Cannot be updated",
+        "esic_ceiling_amount_delete_error": "Cannot be deleted",
+        "esic_ceiling_amount_title": "ESIC Ceiling Amount",
+        "employee_percentage": "Employee Percentage",
+        "employer_percentage": "Employer Percentage",
+        "modal": {
+            "add_title": "Add ESIC Contribution",
+            "update_title": "Update ESIC Contribution"
+        },
+        "form": {
+            "employee_percentage": "Employee Percentage",
+            "employer_percentage": "Employer Percentage",
+            "error": {
+                "required": "Field is required"
+            }
+        },
+        "toast": {
+            "success_added": "Successfully Added!",
+            "error_add": "ESIC Contribution cannot be added",
+            "success_updated": "Successfully Updated!",
+            "error_update": "ESIC Contribution cannot be updated",
+            "success_deleted": "Successfully Deleted!",
+            "error_delete": "ESIC Contribution cannot be deleted"
+        },
+        "professional-tax": {
+            "title": "Professional Tax",
+            "tab": {
+                "pt_slab": "PT Slab"
+            },
+            "table": {
+                "state": "State",
+                "from": "From",
+                "to": "To",
+                "pt_amount": "PT Amount",
+                "twelfth_month_amount": "12th Month Amount",
+                "frequency": "Frequency",
+                "actions": "Actions",
+                "upto": "Upto {{amount}}",
+                "above": "Above {{amount}}"
+            },
+            "toast": {
+                "success_added": "Successfully Added!",
+                "error_add": "PT Slab cannot be added",
+                "success_updated": "Successfully Updated!",
+                "error_update": "PT Slab cannot be updated",
+                "success_deleted": "Successfully Deleted!",
+                "error_delete": "PT Slab cannot be deleted"
+            },
+            "modal": {
+                "add_title": "Add Professional Tax Slab",
+                "update_title": "Update Professional Tax Slab"
+            },
+            "form": {
+                "state": "Eligible State",
+                "from_amount": "From Amount",
+                "to_amount": "To Amount",
+                "frequency": "Frequency",
+                "employee_percentage": "Employee Percentage of Professional Tax",
+                "employee_amount": "Employee Amount of Professional Tax",
+                "twelfth_month_value": "12th Month Value",
+                "twelfth_month_amount": "12th Month Amount",
+                "error": {
+                    "required": "Field is required"
+                }
+            },
+            "frequency": {
+                "monthly": "Monthly",
+                "annually": "Annually",
+                "semi_annually": "Semi-Annually",
+                "bi_monthly": "Bi-Monthly",
+                "quarterly": "Quarterly"
+            }
+        },
+        "lwf_title": "Labour Welfare Fund",
+        "lwf_slab": "LWF Slab",
+        "deduction_month": "Deduction Month",
+        "_lwf": {
+            "title": "Labour Welfare Fund",
+            "tab": {
+                "lwf_slab": "LWF Slab",
+                "deduction_month": "Deduction Month"
+            },
+            "slab": {
+                "form": {
+                    "state": "State",
+                    "state_aria": "Select state for Labour Welfare Fund",
+                    "state_placeholder": "Select State",
+                    "employee_amount": "Employee Amount",
+                    "employer_amount": "Employer Amount",
+                    "employee_percentage": "Employee Percentage",
+                    "employer_percentage": "Employer Percentage",
+                    "max_contribution": "Max Contribution",
+                    "min_amount": "Min Amount",
+                    "max_amount": "Max Amount",
+                    "error": {
+                        "required": "Field is required",
+                        "state_required": "Please select a state"
+                    }
+                },
+                "table": {
+                    "employee_amount": "Employee Amount",
+                    "employer_amount": "Employer Amount",
+                    "employee_percentage": "Employee Percentage",
+                    "employer_percentage": "Employer Percentage",
+                    "max_contribution": "Max Contribution (if in %)",
+                    "min_amount": "Min Amount",
+                    "max_amount": "Max Amount",
+                    "frequency": "Frequency",
+                    "active": "Active",
+                    "actions": "Actions"
+                },
+                "modal": {
+                    "add_title": "Add LWF Slab",
+                    "update_title": "Update LWF Slab"
+                },
+                "success_added": "Successfully Added!",
+                "error_add": "LWF Slab cannot be added",
+                "success_updated": "Successfully Updated!",
+                "error_update": "LWF Slab cannot be updated",
+                "success_deleted": "Successfully Deleted!",
+                "error_delete": "LWF Slab cannot be deleted",
+                "warning_state": "Please select a state before adding"
+            },
+            "monthly_deduction": {
+                "button": {
+                    "update": "Update"
+                },
+                "radio": {
+                    "yes_aria": "Deduct for this month",
+                    "no_aria": "Do not deduct for this month"
+                },
+                "month": {
+                    "january": "January",
+                    "february": "February",
+                    "march": "March",
+                    "april": "April",
+                    "may": "May",
+                    "june": "June",
+                    "july": "July",
+                    "august": "August",
+                    "september": "September",
+                    "october": "October",
+                    "november": "November",
+                    "december": "December"
+                },
+                "toast": {
+                    "success_updated": "Deduction month updated successfully",
+                    "error_update": "Deduction months cannot be updated",
+                    "error_fetch": "Failed to fetch deduction months"
+                }
+            }
+        },
+        "update_variable_allowance": "Update Variable Allowance",
+        "add_variable_allowance": "Add Variable Allowance",
+        "label_question": "Enter the label of variable allowance?",
+        "allowance_rate_question": "What is the allowance rate per day?",
+        "it": "IT",
+        "frequency": "Frequency",
+        "_variable_allowance": {
+            "title": "Variable Allowance",
+            "table": {
+                "allowance_name": "Allowance Name",
+                "pf": "PF",
+                "esic": "ESIC",
+                "lwf": "LWF",
+                "pt": "PT",
+                "it": "IT",
+                "frequency": "Frequency",
+                "actions": "Actions",
+                "affected_aria": "Affected",
+                "not_affected_aria": "Not Affected"
+            },
+            "frequency": {
+                "monthly": "Monthly",
+                "quaterly": "Quarterly",
+                "half_yearly": "Half Yearly",
+                "annually": "Annually"
+            },
+            "menu": {
+                "edit": "Edit",
+                "delete": "Delete",
+                "edit_aria": "Edit variable allowance",
+                "delete_aria": "Delete variable allowance",
+                "actions_aria": "More actions"
+            },
+            "modal": {
+                "add_title": "Add Variable Allowance",
+                "update_title": "Update Variable Allowance"
+            },
+            "form": {
+                "label": "Enter the label of variable allowance",
+                "allowance_rate": "What is the allowance rate per day?",
+                "pf_affected": "Does this allowance affect Provident Fund?",
+                "esic_affected": "Does this allowance affect ESIC?",
+                "payroll_editable": "Is variable allowance editable in payroll?",
+                "lwf_affected": "Does this allowance affect LWF?",
+                "pt_affected": "Does this allowance affect Professional Tax?",
+                "it_affected": "Does this allowance affect Income Tax?",
+                "tax_regime": "For which Tax Regimes will the Income Tax be calculated?",
+                "tax_regime_type": {
+                    "new": "New regime",
+                    "old": "Old regime"
+                },
+                "frequency": "How frequently does the Employee get paid this variable allowance?",
+                "effective_period": "From what period is this variable allowance effective?",
+                "month": "Select Month",
+                "year": "Select Year",
+                "month_placeholder": "Select Month",
+                "year_placeholder": "Select Year",
+                "ending_period": "Does this variable allowance have an ending period?",
+                "ending_period_yes": "Yes, It has an End Period",
+                "ending_period_no": "No, It is Continual",
+                "error": {
+                    "label_required": "Label is required",
+                    "frequency_required": "This field is required",
+                    "month_required": "Effective Month is required",
+                    "year_required": "Effective Year is required"
+                }
+            },
+            "toast": {
+                "success_added": "Variable allowance, Successfully added",
+                "error_add": "Variable allowance cannot be added",
+                "success_updated": "Successfully updated",
+                "error_update": "Variable allowance cannot be updated",
+                "success_deleted": "Successfully deleted",
+                "error_delete": "Variable allowance cannot be deleted"
+            }
+        },
+        "variable_deduction": {
+            "title_add": "Add Variable Deduction",
+            "title_update": "Update Variable Deduction",
+            "name_header": "Deduction Name",
+            "label_question": "What is the label of this variable deduction?",
+            "label_placeholder": "Deduction Name",
+            "ctc_question": "Does this Variable deduction show up in CTC structure?",
+            "frequency_question": "How frequently does employee pay this variable deduction?",
+            "frequency": {
+                "monthly": "Monthly",
+                "annually": "Annually",
+                "quarterly": "Quarterly"
+            },
+            "effective_period_question": "From what period is the variable deduction effective?",
+            "month_placeholder": "Select Month",
+            "year_placeholder": "Select Year",
+            "ending_period_question": "Does this variable deduction have a ending period?",
+            "ending_period_yes": "Yes, It has an End Period",
+            "ending_period_no": "No, It is Continual",
+            "amount_question": "How would you like to enter the amount for this variable deduction?",
+            "amount_manual": "Manually at the time of running Payroll",
+            "amount_fixed": "Fixed Amount",
+            "amount_percentage_gross": "Percentage of gross salary paid",
+            "amount_percentage_basic_da": "Percentage of(Basic + DA) paid (or Basic if DA is not applicable)",
+            "amount_label": "Provide the Amount",
+            "percentage_label": "Provide the Percentage",
+            "toast": {
+                "success_added": "Successfully Added!!!",
+                "success_updated": "Successfully Updated!!!",
+                "success_deleted": "Successfully Deleted!!!",
+                "title": "Variable Deduction",
+                "error_add": "Variable Deduction Can not be added",
+                "error_update": "Variable Deduction Can not be Updated",
+                "error_delete": "Variable Deduction Can not be deleted"
+            }
+        },
+        "fixed_deduction": {
+            "title": "Fixed Deduction",
+            "table": {
+                "deduction_name": "Deduction Name",
+                "actions_aria": "More actions"
+            },
+            "modal": {
+                "add_title": "Add Fixed Deduction",
+                "update_title": "Update Fixed Deduction"
+            },
+            "form": {
+                "label": "What would you want to call this deduction?",
+                "label_placeholder": "Deduction Name",
+                "error": {
+                    "label_required": "Label is required"
+                }
+            },
+            "menu": {
+                "actions_aria": "More actions"
+            },
+            "toast": {
+                "success_added": "Successfully Added!!!",
+                "error_add": "Fixed Deduction Can not be added",
+                "success_updated": "Successfully Updated!!!",
+                "error_update": "Fixed Deduction Can not be Updated",
+                "success_deleted": "Successfully Deleted!!!",
+                "error_delete": "Fixed Deduction Can not be deleted"
+            }
+        },
+        "loans_advances": {
+            "title": "Loans/Advances Category",
+            "table": {
+                "category_name": "Deduction Name",
+                "actions_aria": "More actions"
+            },
+            "modal": {
+                "add_title": "Add Loans/Advances Category",
+                "update_title": "Update Loans/Advances Category"
+            },
+            "form": {
+                "name": "Enter name for Category",
+                "name_placeholder": "Enter Custom Label",
+                "error": {
+                    "name_required": "Field is required"
+                }
+            },
+            "menu": {
+                "actions_aria": "More actions"
+            },
+            "toast": {
+                "success_added": "Successfully Added!!!",
+                "error_add": "Loans/Advances Category Can not be added",
+                "success_updated": "Successfully Updated!!!",
+                "error_update": "Loans/Advances Category Can not be Updated",
+                "success_deleted": "Successfully Deleted!!!",
+                "error_delete": "Loans/Advances Category Can not be deleted"
+            }
+        },
+        "flexi_benefits": {
+            "title": "Flexi Benefits Category",
+            "table": {
+                "category_name": "Deduction Name",
+                "actions_aria": "More actions"
+            },
+            "modal": {
+                "add_title": "Add Flexi Benefits Category",
+                "update_title": "Update Flexi Benefits Category"
+            },
+            "form": {
+                "name": "Enter name for Category",
+                "name_placeholder": "Enter Custom Label",
+                "error": {
+                    "name_required": "Field is required"
+                }
+            },
+            "menu": {
+                "actions_aria": "More actions"
+            },
+            "toast": {
+                "success_added": "Successfully Added!!!",
+                "error_add": "Flexi Benefits Category Can not be added",
+                "success_updated": "Successfully Updated!!!",
+                "error_update": "Flexi Benefits Category Can not be Updated",
+                "success_deleted": "Successfully Deleted!!!",
+                "error_delete": "Flexi Benefits Category Can not be deleted"
+            }
+        }
     }
 }

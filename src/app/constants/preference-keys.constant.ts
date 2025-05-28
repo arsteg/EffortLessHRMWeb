@@ -1,0 +1,22 @@
+export const PreferenceKeys = {
+  AppMode: 'AppMode',
+  MenuCollapseOrExpand: 'MenuCollapseOrExpand',
+  DashboardTimeSpent: 'Dashboard.TimeSpent',
+  DashboardProjectwiseMember: 'Dashboard.ProjectwiseMember',
+  DashboardProductivitywiseMember: 'Dashboard.ProductivitywiseMember',
+  DashboardProjectwiseMemberForEachTask: 'Dashboard.ProjectwiseMemberForEachTask',
+  ScreenshotSelectedMember: 'Screenshot.SelectedMember',
+  TaskSelectedTasksView: 'Task.SelectedTasksView',
+  ManageProjectsSelectedMember: 'Manage.Projects.SelectedMember',
+  ReportsTimelineSelectedMember: 'Reports.Timeline.SelectedMember',
+  ReportsTimelineSelectedProject: 'Reports.Timeline.SelectedProject',
+  ReportsTimelineColumnBy: 'Reports.Timeline.ColumnBy',
+  ReportsBrowserHistorySelectedMember: 'Reports.BrowserHistory.SelectedMember',
+  ReportsAppWebsiteSelectedMember: 'Reports.AppWebsite.SelectedMember',
+  ReportsAppWebsiteSelectedProject: 'Reports.AppWebsite.SelectedProject',
+  ReportsProductivityReportsBy: 'Reports.Productivity.ReportsBy',
+  ReportsLeaveSelectedMember: 'Reports.Leave.SelectedMember',
+  SettingsUserSettingsSelectedMember: 'Settings.UserSettings.SelectedMember',
+  ApprovalsProductivityAppsSelectedMember: 'Approvals.ProductivityApps.SelectedMember',
+  ApprovalsManualTimeSelectedMember: 'Approvals.ManualTime.SelectedMember'
+};

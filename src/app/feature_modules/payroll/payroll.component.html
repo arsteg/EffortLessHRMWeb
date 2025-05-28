@@ -5,12 +5,12 @@
     'payroll.ctc_template' | translate}}</a>
   <a mat-tab-link routerLink="lop-reversal" routerLinkActive #rla3="routerLinkActive"
     [active]="rla3.isActive">{{'payroll.lop_reversal' | translate}}</a>
-  <a mat-tab-link routerLink="run-payroll" routerLinkActive #rla3="routerLinkActive"
-    [active]="rla3.isActive">{{'payroll.run_payroll' | translate}}</a>
-  <a mat-tab-link routerLink="payslips" routerLinkActive #rla3="routerLinkActive"
-    [active]="rla3.isActive">{{'payroll.payslips' | translate}}</a>
-  <a mat-tab-link routerLink="fnf-payslips" routerLinkActive #rla3="routerLinkActive"
-    [active]="rla3.isActive">{{'payroll.full_final' | translate}}</a>
+  <a mat-tab-link routerLink="run-payroll" routerLinkActive #rla4="routerLinkActive"
+    [active]="rla4.isActive">{{'payroll.run_payroll' | translate}}</a>
+  <a mat-tab-link routerLink="payslips" routerLinkActive #rla5="routerLinkActive"
+    [active]="rla5.isActive">{{'payroll.payslips' | translate}}</a>
+  <a mat-tab-link routerLink="fnf-payslips" routerLinkActive #rla6="routerLinkActive"
+    [active]="rla6.isActive">{{'payroll.full_final' | translate}}</a>
 </nav>
 <mat-tab-nav-panel #tabPanel>
   <router-outlet></router-outlet>

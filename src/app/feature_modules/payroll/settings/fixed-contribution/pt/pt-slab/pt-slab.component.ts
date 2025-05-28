@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core'; // Import TranslateService
 import { CompanyService } from 'src/app/_services/company.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -24,14 +25,17 @@ export class PtSlabComponent {
   currentPage: number = 1;
   searchText: string = '';
   states: any;
-  frequency: any[] = ['Monthly', 'Annually', 'Semi-Annually', 'Bi-Monthly', 'Quarterly']
+  frequency: string[] = []; // Initialize as empty, to be populated with translated values
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private modalService: NgbModal,
     private payrollService: PayrollService,
     private companyService: CompanyService,
     private toast: ToastrService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private translate: TranslateService // Inject TranslateService
+  ) {
     this.ptSlabForm = this.fb.group({
       state: ['', Validators.required],
       fromAmount: [0],
@@ -41,7 +45,24 @@ export class PtSlabComponent {
       twelfthMonthValue: [0, Validators.required],
       twelfthMonthAmount: [0, Validators.required],
       frequency: ['Monthly', Validators.required],
-    })
+    });
+
+    // Translate frequency options
+    this.translate.get([
+      'payroll.professional-tax.frequency.monthly',
+      'payroll.professional-tax.frequency.annually',
+      'payroll.professional-tax.frequency.semi_annually',
+      'payroll.professional-tax.frequency.bi_monthly',
+      'payroll.professional-tax.frequency.quarterly'
+    ]).subscribe(translations => {
+      this.frequency = [
+        translations['payroll.professional-tax.frequency.monthly'],
+        translations['payroll.professional-tax.frequency.annually'],
+        translations['payroll.professional-tax.frequency.semi_annually'],
+        translations['payroll.professional-tax.frequency.bi_monthly'],
+        translations['payroll.professional-tax.frequency.quarterly']
+      ];
+    });
   }
 
   ngOnInit() {
@@ -70,7 +91,7 @@ export class PtSlabComponent {
       employeeAmount: 0,
       twelfthMonthValue: 0,
       twelfthMonthAmount: 0
-    })
+    });
   }
 
   onRecordsPerPageChange(recordsPerPage: number) {
@@ -86,7 +107,7 @@ export class PtSlabComponent {
     this.payrollService.getPTSlab(pagination).subscribe((res: any) => {
       this.ptSlab = res.data;
       this.totalRecords = res.total;
-    })
+    });
   }
 
   editRecord() {
@@ -103,40 +124,55 @@ export class PtSlabComponent {
       ...this.ptSlabForm.value
     };
     if (!this.isEdit) {
-      this.payrollService.addPTSlab(this.ptSlabForm.value).subscribe((res) => {
-        this.getPtSlab();
-        this.clearForm();
-        this.toast.success('Successfully Added!!!', 'PT Slab');
-      },
+      this.payrollService.addPTSlab(this.ptSlabForm.value).subscribe(
+        (res) => {
+          this.getPtSlab();
+          this.clearForm();
+          this.translate.get(['payroll.professional-tax.toast.success_added', 'payroll.professional-tax.title']).subscribe(translations => {
+            this.toast.success(translations['payroll.professional-tax.toast.success_added'], translations['payroll.professional-tax.title']);
+          });
+        },
         (err) => {
-          this.toast.error('PT Slab can not be added', 'PT Slab');
+          this.translate.get(['payroll.professional-tax.toast.error_add', 'payroll.professional-tax.title']).subscribe(translations => {
+            this.toast.error(translations['payroll.professional-tax.toast.error_add'], translations['payroll.professional-tax.title']);
+          });
         }
-      )
-    }
-    else if (this.isEdit) {
-      this.payrollService.updatePTSlab(this.selectedRecord._id, payload).subscribe((res) => {
-        this.getPtSlab();
-        this.clearForm();
-        this.toast.success('Successfully Updated!!!', 'PT Slab');
-      },
+      );
+    } else {
+      this.payrollService.updatePTSlab(this.selectedRecord._id, payload).subscribe(
+        (res) => {
+          this.getPtSlab();
+          this.clearForm();
+          this.translate.get(['payroll.professional-tax.toast.success_updated', 'payroll.professional-tax.title']).subscribe(translations => {
+            this.toast.success(translations['payroll.professional-tax.toast.success_updated'], translations['payroll.professional-tax.title']);
+          });
+        },
         (err) => {
-          this.toast.error('PT Slab can not be updated', 'PT Slab');
+          this.translate.get(['payroll.professional-tax.toast.error_update', 'payroll.professional-tax.title']).subscribe(translations => {
+            this.toast.error(translations['payroll.professional-tax.toast.error_update'], translations['payroll.professional-tax.title']);
+          });
         }
-      )
+      );
     }
   }
 
   deleteRecord(_id: string) {
-    this.payrollService.deletePTSlab(_id).subscribe((res: any) => {
-      const index = this.ptSlab.findIndex(res => res._id === _id);
-      if (index !== -1) {
-        this.ptSlab.splice(index, 1);
-      }
-      this.toast.success('Successfully Deleted!!!', 'PT Slab');
-    },
+    this.payrollService.deletePTSlab(_id).subscribe(
+      (res: any) => {
+        const index = this.ptSlab.findIndex(res => res._id === _id);
+        if (index !== -1) {
+          this.ptSlab.splice(index, 1);
+        }
+        this.translate.get(['payroll.professional-tax.toast.success_deleted', 'payroll.professional-tax.title']).subscribe(translations => {
+          this.toast.success(translations['payroll.professional-tax.toast.success_deleted'], translations['payroll.professional-tax.title']);
+        });
+      },
       (err) => {
-        this.toast.error('PT Slab can not be deleted', 'Error');
-      })
+        this.translate.get(['payroll.professional-tax.toast.error_delete', 'payroll.professional-tax.title']).subscribe(translations => {
+          this.toast.error(translations['payroll.professional-tax.toast.error_delete'], translations['payroll.professional-tax.title']);
+        });
+      }
+    );
   }
 
   deleteDialog(id: string): void {
@@ -151,11 +187,14 @@ export class PtSlabComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      }
+    );
   }
 
   private getDismissReason(reason: any): string {
@@ -167,5 +206,4 @@ export class PtSlabComponent {
       return `with: ${reason}`;
     }
   }
-
 }
