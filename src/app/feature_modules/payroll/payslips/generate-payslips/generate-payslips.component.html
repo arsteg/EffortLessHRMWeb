@@ -23,7 +23,7 @@
                 <span class="fw-bold" translate>payroll.payable_days</span><br>
             </div>
             <div class="col-3">
-                <span>05 Dec, 2022</span><br>
+                <span>{{payslip?.userEmployment?.effectiveFrom | date: 'medium'}}</span><br>
                 <span>{{payslip?.PayrollUser?.payroll?.month}}, {{payslip?.PayrollUser?.payroll?.year}}</span><br>
                 <span>{{payslip?.PayrollUser?.totalGrossSalary}}</span><br>
             </div>
@@ -34,13 +34,13 @@
             </div>
             <div class="col-3">
                 <span>{{payslip?.PayrollUser?.user?.firstName}}&nbsp;{{payslip?.PayrollUser?.user?.lastName}}</span><br>
-                <span translate>payroll.designation</span><br>
-                <span translate>payroll.department</span><br>
+                <span translate>{{payslip?.userEmployment?.designation?.designation}}</span><br>
+                <span translate>{{payslip?.userEmployment?.department?.departmentName}}</span><br>
             </div>
         </div>
 
         <div class="row mb-4">
-            <div class="col-12">
+            <div class="col-6">
                 <table class="table">
                     <thead>
                         <tr>
@@ -49,21 +49,43 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <th>Fixed Allowances</th>
                         <tr *ngFor="let fixedAllowances of payslip?.fixedAllowancesList">
                             <td>{{fixedAllowances?.fixedAllowance?.label}}</td>
                             <td>{{fixedAllowances?.amount}}</td>
                         </tr>
+                        <th>Variable Allowances</th>
                         <tr *ngFor="let variableAllowances of payslip?.variableAllowancesList">
                             <td>{{variableAllowances?.variableAllowance?.label}}</td>
                             <td>{{variableAllowances?.amount}}</td>
                         </tr>
-                         <tr>
+                        <th>Flexi Benefits</th>
+                        <tr>
                             <td>Flexi Bneefits</td>
                             <td>{{payslip?.PayrollUser?.totalFlexiBenefits}}</td>
                         </tr>
+                        <th>Attendance</th>
+                        <tr>
+                            <td>Payable Days</td>
+                            <td>{{payslip?.latestAttendanceSummary || '--'}}</td>
+                        </tr>
+
+                        <th>Overtime</th>
                         <tr>
                             <td>Overtime</td>
-                            <td>{{payslip?.finalOvertime}}</td>
+                            <td>{{payslip?.latestOvertime?.OvertimeAmount}}</td>
+                        </tr>
+                        <th>Loan Disbursement</th>
+                        <tr *ngFor="let loan of payslip?.allLoanAdvances">
+                            @if(loan?.type === 'Disbursement')
+                            {<td>{{loan?.loanAndAdvance?.loanAdvancesCategory?.name}}</td>
+                            <td>{{loan?.disbursementAmount}}</td>}
+                        </tr>
+
+                        <th>Manual Arrear</th>
+                        <tr *ngFor="let arrear of payslip?.manualArrears">
+                            <td>Arrears Days: {{arrear?.arrearDays}}</td>
+                            <td>{{arrear?.totalArrears}}</td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -74,7 +96,7 @@
                     </tfoot>
                 </table>
             </div>
-            <div class="col-12">
+            <div class="col-6">
                 <table class="table">
                     <thead>
                         <tr>
@@ -83,18 +105,23 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <th>Fixed Deductions</th>
                         <tr *ngFor="let fixedDeductions of payslip?.fixedDeductionsList">
                             <td>{{fixedDeductions?.fixedDeduction?.label}}</td>
                             <td>{{fixedDeductions?.amount}}</td>
                         </tr>
+                        <th>Variable Deductions</th>
                         <tr *ngFor="let variableDeductions of payslip?.variableDeductionsList">
                             <td>{{variableDeductions?.variableDeduction?.label}}</td>
                             <td>{{variableDeductions?.amount}}</td>
                         </tr>
-                        <tr>
-                            <td>Loan Repayment</td>
-                            <td>{{payslip?.PayrollUser?.totalLoanRepayment}}</td>
+                        <th>Loan Repayment</th>
+                        <tr *ngFor="let loan of payslip?.allLoanAdvances">
+                            @if(loan?.type === 'Repayment')
+                            {<td>{{loan?.loanAndAdvance?.loanAdvancesCategory?.name}}</td>
+                            <td>{{loan?.amount}}</td>}
                         </tr>
+                        <th>Taxes</th>
                         <tr>
                             <td>Tax Calulated</td>
                             <td>{{payslip?.tdsCalculated}}</td>
@@ -109,7 +136,7 @@
                 </table>
             </div>
 
-            <div class="col-12">
+            <div class="col-6">
                 <table class="table">
                     <thead>
                         <tr>
@@ -134,7 +161,7 @@
                 </table>
             </div>
 
-            <div class="col-12">
+            <div class="col-6">
                 <table class="table">
                     <thead>
                         <tr>

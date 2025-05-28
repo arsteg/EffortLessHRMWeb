@@ -30,7 +30,7 @@
         "fixed_allowance_basic_salary": "Fixed Allowance + Basic Salary",
         "variable_allowance": "Variable Allowance",
         "overtime": "Overtime",
-        "flexi_benefits": "Flexi Benefits",
+        "_flexi_benefits": "Flexi Benefits",
         "other_benefits": "Other Benefits",
         "total_earnings": "Total Earnings",
         "deductions": "Deductions",

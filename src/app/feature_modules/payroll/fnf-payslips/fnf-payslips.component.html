@@ -45,4 +45,4 @@
     </div>
 </div>
 
-<app-generated-fnf-payslips *ngIf="showPayslipDetail" (close)="closePayslipDetail()"></app-generated-fnf-payslips>
+<app-generated-fnf-payslips *ngIf="showPayslipDetail" [payslip]="selectedRecord" (close)="closePayslipDetail()"></app-generated-fnf-payslips>
