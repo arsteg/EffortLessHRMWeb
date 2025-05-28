@@ -1,17 +1,16 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
-import { PayrollService } from 'src/app/_services/payroll.service';
+import { Component, ElementRef, EventEmitter, Output, ViewChild, Input } from '@angular/core';
 import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-generated-fnf-payslips',
   templateUrl: './generated-fnf-payslips.component.html',
-  styleUrl: './generated-fnf-payslips.component.css'
+  styleUrls: ['./generated-fnf-payslips.component.css']
 })
+
 export class GeneratedFnfPayslipsComponent {
   @Output() close = new EventEmitter<void>();
-  payslip: any;
+  @Input() payslip: any;
   totalPayWithOvertime: any;
   salaryAfterLOP: string;
   totalEarnings: number = 0;
@@ -19,21 +18,9 @@ export class GeneratedFnfPayslipsComponent {
 
   @ViewChild('payslipContainer') payslipContainer: ElementRef;
 
-  constructor(private payrollService: PayrollService,
-    private userService: UserService) {
-    this.payrollService.payslip.subscribe((data: any) => {
-      this.payslip = data;
-      console.log(this.payslip)
-      this.calculateSalaryAfterLOP();
-      this.calculateTotalPayWithOvertime();
-      this.calculateTotals();
-    });
-  }
+  constructor() { }
 
-
-  ngOnInit(): void {
-    this.getUserDetails();
-  }
+  ngOnInit(): void { }
 
   calculateTotals(): void {
     const ps = this.payslip;
@@ -46,7 +33,7 @@ export class GeneratedFnfPayslipsComponent {
     const other = ps?.totalOtherBenefit || 0;
 
     const fixedDeduction = ps?.totalFixedDeduction || 0;
-    
+
     const incomeTax = ps?.totalIncomeTax || 0;
     const loanRepayment = ps?.totalLoanRepayment || 0;
 
@@ -60,28 +47,6 @@ export class GeneratedFnfPayslipsComponent {
         .reduce((sum, s) => sum + (s.amount || 0), 0);
       this.totalDeductions += employeeContribs;
     }
-  }
-
-  calculateSalaryAfterLOP() {
-    const monthlySalary = this.payslip.monthlySalary;
-    const totalDays = this.payslip?.attendanceSummary[0]?.totalDays;
-    const payableDays = this.payslip?.attendanceSummary[0]?.payableDays;
-    const perDayPay = monthlySalary / totalDays;
-    const lopSalary = perDayPay * payableDays;
-    this.salaryAfterLOP = lopSalary.toFixed(2);
-  }
-
-  calculateTotalPayWithOvertime() {
-    const lopSalary = parseFloat(this.salaryAfterLOP);
-    const totalOvertime = parseFloat(this.payslip?.totalOvertime);
-    this.totalPayWithOvertime = (lopSalary + totalOvertime).toFixed(2);
-    this.totalPayWithOvertime -= this.payslip?.totalLoanAdvance;
-  }
-
-  getUserDetails() {
-    this.userService.getJobInformationByUserId(this.payslip?.PayrollUser?._id).subscribe((res: any) => {
-      this.payslip.user = res;
-    });
   }
 
   getCompanyNameFromCookies(): string | null {
