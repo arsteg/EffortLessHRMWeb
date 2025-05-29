@@ -769,10 +769,7 @@ export class TasksComponent implements OnInit {
       currentUser.id,
       PreferenceKeys.TaskSelectedTasksView,
       this.isListView ? 'List' : 'Board'
-    ).subscribe({
-      next: () => console.log(`Task view updated ${this.isListView.toString()}`),
-      error: (err) => console.error('Error updating task view:', err)
-    });
+    ).subscribe();
   }
 
   updateViewModeQueryParam(isListView: boolean) {

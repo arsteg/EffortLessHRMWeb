@@ -98,10 +98,7 @@ export class UserPreferencesComponent implements OnInit {
       currentUser.id,
       PreferenceKeys.SettingsUserSettingsSelectedMember,
       userId
-    ).subscribe({
-      next: () => console.log(`user preferences state updated to ${userId}`),
-      error: (err) => console.error('Error updating menu state:', err)
-    });
+    ).subscribe();
   }
 
   // Update form validity

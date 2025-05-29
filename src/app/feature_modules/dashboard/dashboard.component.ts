@@ -96,10 +96,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
       this.currentUser.id,
       PreferenceKeys.DashboardTimeSpent,
       this.selectedTabIndex.toString()
-    ).subscribe({
-      next: () => console.log(`Menu state updated to ${this.selectedTabIndex.toString()}`),
-      error: (err) => console.error('Error updating menu state:', err)
-    });
+    ).subscribe();
 
   }
 
@@ -316,10 +313,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
       this.currentUser.id,
       PreferenceKeys.DashboardProjectwiseMember,
       this.member ? JSON.stringify(this.member) : ''
-    ).subscribe({
-      next: () => console.log(`Menu state updated to ${this.selectedTabIndex.toString()}`),
-      error: (err) => console.error('Error updating menu state:', err)
-    });
+    ).subscribe();
 
   }
   onProductivityMemberSelectionChange(member: any) {

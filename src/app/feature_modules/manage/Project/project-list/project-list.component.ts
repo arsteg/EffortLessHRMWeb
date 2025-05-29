@@ -162,10 +162,7 @@ export class ProjectListComponent implements OnInit {
       currentUser.id,
       PreferenceKeys.ManageProjectsSelectedMember,
       this.userId === '' ? '0' : this.userId
-    ).subscribe({
-      next: () => console.log(`member state updated to ${this.userId}`),
-      error: (err) => console.error('Error updating menu state:', err)
-    });
+    ).subscribe();
 
   }
 
