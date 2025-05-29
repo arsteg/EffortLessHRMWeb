@@ -46,7 +46,7 @@ export class CtcTemplatesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.tableService.initializeDataSource([], this.paginator);
+    this.tableService.initializeDataSource([]);
     this.getCTCTemplate();
   }
 

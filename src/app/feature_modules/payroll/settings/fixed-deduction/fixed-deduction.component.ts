@@ -45,7 +45,7 @@ export class FixedDeductionComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.tableService.initializeDataSource([], this.paginator);
+    this.tableService.initializeDataSource([]);
     this.getFixedDeduction();
   }
 

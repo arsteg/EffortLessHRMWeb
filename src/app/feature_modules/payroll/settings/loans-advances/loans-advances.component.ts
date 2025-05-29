@@ -46,7 +46,7 @@ export class LoansAdvancesComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.tableService.initializeDataSource([], this.paginator);
+    this.tableService.initializeDataSource([]);
     this.getLoanAdvances();
   }
 

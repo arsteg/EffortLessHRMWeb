@@ -46,7 +46,7 @@ export class FlexiBenefitsComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.tableService.initializeDataSource([], this.paginator);
+    this.tableService.initializeDataSource([]);
     this.getFlexiBenefits();
   }
 

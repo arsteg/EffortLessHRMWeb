@@ -69,7 +69,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.tableService.initializeDataSource([], this.paginator);
+    this.tableService.initializeDataSource([]);
     this.getVariableDeduction();
   }
 

@@ -14,11 +14,18 @@ export class TableService<T> {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  initializeDataSource(data: T[], paginator: MatPaginator) {
-    this.dataSource = new MatTableDataSource<T>(data);
-    this.dataSource.paginator = paginator;
-    this.totalRecords = data.length;
+  // initializeDataSource(data: T[], paginator: MatPaginator) {
+  //   this.dataSource = new MatTableDataSource<T>(data);
+  //   this.dataSource.paginator = paginator;
+  //   this.totalRecords = data.length;
+  // }
+initializeDataSource(data: T[], paginator?: MatPaginator) {
+  this.dataSource = new MatTableDataSource<T>(data);
+  if (paginator) {
+    this.dataSource.paginator = paginator; // ONLY for client-side
   }
+  this.totalRecords = data.length;
+}
 
   applyFilter() {
     this.dataSource.filter = this.searchText.trim().toLowerCase();
