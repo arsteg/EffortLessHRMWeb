@@ -1,43 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
-import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { TableService } from 'src/app/_services/table.service';
 
 @Component({
   selector: 'app-flexi-benefits',
   templateUrl: './flexi-benefits.component.html',
-  styleUrls: ['./flexi-benefits.component.css'] // Corrected styleUrl to styleUrls
+  styleUrls: ['./flexi-benefits.component.css']
 })
-export class FlexiBenefitsComponent {
-  closeResult: string;
+export class FlexiBenefitsComponent implements AfterViewInit {
   isEdit: boolean = false;
   selectedRecord: any;
-  flexiBenefits: any;
   flexiBenefitsForm: FormGroup;
-  searchText: string = '';
-  totalRecords: number;
-  recordsPerPage: number = 10;
-  currentPage: number = 1;
+  dialogRef: MatDialogRef<any>;
+  sortOrder: string = '';
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  user: any;
-  public sortOrder: string = '';
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
-    private modalService: NgbModal,
     private toast: ToastrService,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private payroll: PayrollService,
-    private auth: AuthenticationService,
-    private translate: TranslateService // Added TranslateService
+    private translate: TranslateService,
+    public tableService: TableService<any>
   ) {
     this.flexiBenefitsForm = this.fb.group({
       name: ['', Validators.required]
+    });
+
+    // Set custom filter predicate to search by name
+    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+      return data.name.toLowerCase().includes(filter);
     });
   }
 
@@ -45,76 +45,87 @@ export class FlexiBenefitsComponent {
     this.getFlexiBenefits();
   }
 
+  ngAfterViewInit() {
+    this.tableService.initializeDataSource([], this.paginator);
+    this.getFlexiBenefits();
+  }
+
   clearForm() {
-    this.flexiBenefitsForm.patchValue({
+    this.flexiBenefitsForm.reset({
       name: ''
     });
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
-  }
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true,
+    });
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+    this.dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.getFlexiBenefits();
+      }
+    });
   }
 
   closeModal() {
-    this.modalService.dismissAll();
+    this.dialogRef.close(true);
   }
 
   onSubmission() {
-    if (!this.isEdit) {
-      this.payroll.addFlexiBenefits(this.flexiBenefitsForm.value).subscribe(
-        (res: any) => {
-          this.flexiBenefits.push(res.data);
-          this.flexiBenefitsForm.reset();
-          this.toast.success(
-            this.translate.instant('payroll.flexi_benefits.toast.success_added'),
-            this.translate.instant('payroll.flexi_benefits.title')
-          );
-        },
-        (err) => {
-          this.toast.error(
-            this.translate.instant('payroll.flexi_benefits.toast.error_add'),
-            this.translate.instant('payroll.flexi_benefits.title')
-          );
-        }
-      );
-    } else {
-      this.payroll.updateFlexiBenefits(this.selectedRecord._id, this.flexiBenefitsForm.value).subscribe(
-        (res: any) => {
-          const reason = res.data;
-          const index = this.flexiBenefits.findIndex((reas: any) => reas._id === reason._id);
-          if (index !== -1) {
-            this.flexiBenefits[index] = reason;
+    if (this.flexiBenefitsForm.valid) {
+      if (!this.isEdit) {
+        this.payroll.addFlexiBenefits(this.flexiBenefitsForm.value).subscribe({
+          next: (res: any) => {
+            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+            this.clearForm();
+            this.toast.success(
+              this.translate.instant('payroll.flexi_benefits.toast.success_added'),
+              this.translate.instant('payroll.flexi_benefits.title')
+            );
+            this.closeModal();
+          },
+          error: (err) => {
+            this.toast.error(
+              this.translate.instant('payroll.flexi_benefits.toast.error_add'),
+              this.translate.instant('payroll.flexi_benefits.title')
+            );
           }
-          this.toast.success(
-            this.translate.instant('payroll.flexi_benefits.toast.success_updated'),
-            this.translate.instant('payroll.flexi_benefits.title')
-          );
-        },
-        (err) => {
-          this.toast.error(
-            this.translate.instant('payroll.flexi_benefits.toast.error_update'),
-            this.translate.instant('payroll.flexi_benefits.title')
-          );
-        }
-      );
+        });
+      } else {
+        this.payroll.updateFlexiBenefits(this.selectedRecord._id, this.flexiBenefitsForm.value).subscribe({
+          next: (res: any) => {
+            const updatedData = this.tableService.dataSource.data.map(item =>
+              item._id === res.data._id ? res.data : item
+            );
+            this.tableService.setData(updatedData);
+            this.toast.success(
+              this.translate.instant('payroll.flexi_benefits.toast.success_updated'),
+              this.translate.instant('payroll.flexi_benefits.title')
+            );
+            this.closeModal();
+          },
+          error: (err) => {
+            this.toast.error(
+              this.translate.instant('payroll.flexi_benefits.toast.error_update'),
+              this.translate.instant('payroll.flexi_benefits.title')
+            );
+          }
+        });
+      }
+    } else {
+      this.markFormGroupTouched(this.flexiBenefitsForm);
     }
+  }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 
   editRecord() {
@@ -122,25 +133,21 @@ export class FlexiBenefitsComponent {
   }
 
   deleteRecord(_id: string) {
-    this.payroll.deleteFlexiBenefits(_id).subscribe(
-      (res: any) => {
-        const index = this.flexiBenefits.findIndex((res: any) => res._id === _id);
-        if (index !== -1) {
-          this.flexiBenefits.splice(index, 1);
-          this.totalRecords--;
-        }
+    this.payroll.deleteFlexiBenefits(_id).subscribe({
+      next: (res: any) => {
+        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
         this.toast.success(
           this.translate.instant('payroll.flexi_benefits.toast.success_deleted'),
           this.translate.instant('payroll.flexi_benefits.title')
         );
       },
-      (err) => {
+      error: (err) => {
         this.toast.error(
           this.translate.instant('payroll.flexi_benefits.toast.error_delete'),
           this.translate.instant('payroll.flexi_benefits.title')
         );
       }
-    );
+    });
   }
 
   deleteDialog(id: string): void {
@@ -154,24 +161,19 @@ export class FlexiBenefitsComponent {
     });
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
-    this.getFlexiBenefits();
-  }
-
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
+  onPageChange(event: any) {
+    this.tableService.updatePagination(event);
     this.getFlexiBenefits();
   }
 
   getFlexiBenefits() {
     const pagination = {
-      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: this.recordsPerPage.toString()
+      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
+      next: this.tableService.recordsPerPage.toString()
     };
     this.payroll.getFlexiBenefits(pagination).subscribe((res: any) => {
-      this.flexiBenefits = res.data;
-      this.totalRecords = res.total;
+      this.tableService.setData(res.data);
+      this.tableService.totalRecords = res.total;
     });
   }
 }

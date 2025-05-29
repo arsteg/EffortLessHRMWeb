@@ -1,34 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { TranslateService } from '@ngx-translate/core'; // Import TranslateService
+import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { TableService } from 'src/app/_services/table.service';
 
 @Component({
   selector: 'app-variable-allowance',
   templateUrl: './variable-allowance.component.html',
   styleUrls: ['./variable-allowance.component.css']
 })
-export class VariableAllowanceComponent implements OnInit {
-  variableAllowances: any;
-  searchText: string = '';
+export class VariableAllowanceComponent implements OnInit, AfterViewInit {
+  variableAllowanceForm: FormGroup;
   selectedRecord: any;
   isEdit: boolean = false;
-  totalRecords: number;
-  recordsPerPage: number = 10;
-  currentPage: number = 1;
-  variableAllowanceForm: FormGroup;
   members: any[];
-  // Use lowercase month names to match translation keys
   months = [
     'january', 'february', 'march', 'april', 'may', 'june',
     'july', 'august', 'september', 'october', 'november', 'december'
   ];
   years: number[] = [];
-  public sortOrder: string = '';
+  dialogRef: MatDialogRef<any>;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private payroll: PayrollService,
@@ -36,7 +34,8 @@ export class VariableAllowanceComponent implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private commonService: CommonService,
-    private translate: TranslateService // Inject TranslateService
+    private translate: TranslateService,
+    public tableService: TableService<any>
   ) {
     this.variableAllowanceForm = this.fb.group({
       label: ['', Validators.required],
@@ -56,6 +55,11 @@ export class VariableAllowanceComponent implements OnInit {
       allowanceStopYear: [''],
       isProfessionalTaxAffected: [false],
     });
+
+    // Set custom filter predicate to search by label
+    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+      return data.label.toLowerCase().includes(filter);
+    });
   }
 
   ngOnInit(): void {
@@ -69,70 +73,70 @@ export class VariableAllowanceComponent implements OnInit {
     }
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  ngAfterViewInit() {
+    this.tableService.initializeDataSource([], this.paginator);
     this.getVariableAllowances();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
+  onPageChange(event: any) {
+    this.tableService.updatePagination(event);
     this.getVariableAllowances();
   }
 
   getVariableAllowances() {
     const pagination = {
-      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: this.recordsPerPage.toString()
+      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
+      next: this.tableService.recordsPerPage.toString()
     };
     this.payroll.getVariableAllowance(pagination).subscribe(res => {
-      this.variableAllowances = res.data;
-      this.totalRecords = res.total;
+      this.tableService.setData(res.data);
+      this.tableService.totalRecords = res.total;
     });
   }
 
   open(content: any) {
-    const dialogRef = this.dialog.open(content, {
+    this.dialogRef = this.dialog.open(content, {
       width: '600px',
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'save') {
-        this.onSubmission();
+    this.dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.getVariableAllowances();
       }
     });
   }
 
   closeModal() {
-    this.dialog.closeAll();
+    this.variableAllowanceForm.reset({
+      label: '',
+      allowanceRatePerDay: 0,
+      isPayrollEditable: false,
+      isProvidentFundAffected: false,
+      isESICAffected: false,
+      isLWFAffected: false,
+      isIncomeTaxAffected: false,
+      deductIncomeTaxAllowance: '',
+      taxRegime: [],
+      paidAllowanceFrequently: '',
+      allowanceEffectiveFromMonth: '',
+      allowanceEffectiveFromYear: '',
+      isEndingPeriod: false,
+      allowanceStopMonth: '',
+      allowanceStopYear: '',
+      isProfessionalTaxAffected: false,
+    });
+    this.dialogRef.close(true);
   }
 
   onSubmission() {
-    const formValue = this.variableAllowanceForm.value;
-
     if (this.variableAllowanceForm.valid) {
+      const formValue = this.variableAllowanceForm.value;
       if (!this.isEdit) {
-        this.payroll.addVariableAllowance(formValue).subscribe(
-          (res: any) => {
-            this.variableAllowances.push(res.data);
-            this.variableAllowanceForm.reset({
-              label: '',
-              allowanceRatePerDay: 0,
-              isPayrollEditable: false,
-              isProvidentFundAffected: false,
-              isESICAffected: false,
-              isLWFAffected: false,
-              isIncomeTaxAffected: false,
-              deductIncomeTaxAllowance: '',
-              taxRegime: [],
-              paidAllowanceFrequently: '',
-              allowanceEffectiveFromMonth: '',
-              allowanceEffectiveFromYear: '',
-              isEndingPeriod: false,
-              allowanceStopMonth: '',
-              allowanceStopYear: '',
-              isProfessionalTaxAffected: false,
-            });
+        this.payroll.addVariableAllowance(formValue).subscribe({
+          next: (res: any) => {
+            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+            this.closeModal();
             this.translate.get([
               'payroll._variable_allowance.toast.success_added',
               'payroll._variable_allowance.title'
@@ -143,35 +147,21 @@ export class VariableAllowanceComponent implements OnInit {
               );
             });
           },
-          (err) => {
+          error: (err) => {
             const errorMessage = err?.error?.message || this.translate.instant('payroll._variable_allowance.toast.error_add');
             this.translate.get('payroll._variable_allowance.title').subscribe(title => {
               this.toast.error(errorMessage, title);
             });
           }
-        );
+        });
       } else {
-        this.payroll.updateVariableAllowance(this.selectedRecord._id, formValue).subscribe(
-          (res: any) => {
-            this.getVariableAllowances();
-            this.variableAllowanceForm.reset({
-              label: '',
-              allowanceRatePerDay: 0,
-              isPayrollEditable: false,
-              isProvidentFundAffected: false,
-              isESICAffected: false,
-              isLWFAffected: false,
-              isIncomeTaxAffected: false,
-              deductIncomeTaxAllowance: '',
-              taxRegime: [],
-              paidAllowanceFrequently: '',
-              allowanceEffectiveFromMonth: '',
-              allowanceEffectiveFromYear: '',
-              isEndingPeriod: false,
-              allowanceStopMonth: '',
-              allowanceStopYear: '',
-              isProfessionalTaxAffected: false,
-            });
+        this.payroll.updateVariableAllowance(this.selectedRecord._id, formValue).subscribe({
+          next: (res: any) => {
+            const updatedData = this.tableService.dataSource.data.map(item =>
+              item._id === res.data._id ? res.data : item
+            );
+            this.tableService.setData(updatedData);
+            this.closeModal();
             this.isEdit = false;
             this.translate.get([
               'payroll._variable_allowance.toast.success_updated',
@@ -183,17 +173,26 @@ export class VariableAllowanceComponent implements OnInit {
               );
             });
           },
-          (err) => {
+          error: (err) => {
             const errorMessage = err?.error?.message || this.translate.instant('payroll._variable_allowance.toast.error_update');
             this.translate.get('payroll._variable_allowance.title').subscribe(title => {
               this.toast.error(errorMessage, title);
             });
           }
-        );
+        });
       }
     } else {
-      this.variableAllowanceForm.markAllAsTouched();
+      this.markFormGroupTouched(this.variableAllowanceForm);
     }
+  }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 
   editRecord() {
@@ -212,9 +211,9 @@ export class VariableAllowanceComponent implements OnInit {
   }
 
   deleteRecord(_id: string) {
-    this.payroll.deleteVariableAllowance(_id).subscribe(
-      (res: any) => {
-        this.getVariableAllowances();
+    this.payroll.deleteVariableAllowance(_id).subscribe({
+      next: (res: any) => {
+        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
         this.translate.get([
           'payroll._variable_allowance.toast.success_deleted',
           'payroll._variable_allowance.title'
@@ -225,13 +224,13 @@ export class VariableAllowanceComponent implements OnInit {
           );
         });
       },
-      (err) => {
+      error: (err) => {
         const errorMessage = err?.error?.message || this.translate.instant('payroll._variable_allowance.toast.error_delete');
         this.translate.get('payroll._variable_allowance.title').subscribe(title => {
           this.toast.error(errorMessage, title);
         });
       }
-    );
+    });
   }
 
   deleteDialog(id: string): void {

@@ -3,26 +3,20 @@
         <div class="bg-white">
             <div class="d-flex align-items-center px-2 py-1">
                 <p class="mb-0 me-auto">
-                    {{ 'payroll.records_found' | translate: { count: variableAllowances?.length } }}
+                    {{ 'payroll.records_found' | translate: { count: tableService.totalRecords } }}
                 </p>
                 <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon" ></span>
-                    <input class="form-control search" type="text" 
+                    <span class="bi bi-search searchIcon"></span>
+                    <input class="form-control search" type="text"
                            [placeholder]="'payroll.search_placeholder' | translate"
-                           [(ngModel)]="searchText" name="searchText" 
-                           >
-                    <div class="d-flex align-items-center">
-                        <button class="addBtn mx-2" mat-raised-button (click)="isEdit= false; open(modal)">
-                            {{ 'payroll.add' | translate }}
-                        </button>
-                        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
-                            (pageChange)="onPageChange($event)"
-                            (recordsPerPageChange)="onRecordsPerPageChange($event)"></app-pagination>
-                    </div>
+                           [(ngModel)]="tableService.searchText" (input)="tableService.applyFilter()"
+                           name="searchText">
+                    <button class="addBtn mx-2" mat-raised-button (click)="isEdit= false; open(modal)">
+                        {{ 'payroll.add' | translate }}
+                    </button>
                 </div>
             </div>
-            <table mat-table [dataSource]="variableAllowances | search:searchText">
+            <table mat-table [dataSource]="tableService.dataSource">
                 <ng-container matColumnDef="label">
                     <th mat-header-cell *matHeaderCellDef>
                         {{ 'payroll._variable_allowance.table.allowance_name' | translate }}
@@ -137,6 +131,9 @@
                     *matRowDef="let row; columns: ['label', 'isProvidentFundAffected', 'isESICAffected', 'isTDSAffected', 'isProfessionalTaxAffected', 'isIncomeTaxAffected', 'paidAllowanceFrequently', 'actions'];">
                 </tr>
             </table>
+            <mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
+                           [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
+            </mat-paginator>
         </div>
     </div>
 

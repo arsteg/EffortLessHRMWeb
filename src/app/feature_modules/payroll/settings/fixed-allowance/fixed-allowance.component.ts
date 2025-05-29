@@ -1,35 +1,33 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { TableService } from 'src/app/_services/table.service';
 
 @Component({
   selector: 'app-fixed-allowance',
   templateUrl: './fixed-allowance.component.html',
   styleUrls: ['./fixed-allowance.component.css']
 })
-export class FixedAllowanceComponent {
+export class FixedAllowanceComponent implements AfterViewInit {
   private readonly translate = inject(TranslateService);
-  fixedAllowance: any;
-  searchText: string = '';
-  totalRecords: number;
-  recordsPerPage: number = 10;
-  currentPage: number = 1;
-  isEdit = false;
-  closeResult: string = '';
-  selectedRecord: any;
   fixedAllowanceForm: FormGroup;
-  public sortOrder: string = '';
+  isEdit = false;
+  selectedRecord: any;
   dialogRef: MatDialogRef<any>;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private payroll: PayrollService,
     private toast: ToastrService,
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    public tableService: TableService<any>
   ) {
     this.fixedAllowanceForm = this.fb.group({
       label: ['', Validators.required],
@@ -40,26 +38,35 @@ export class FixedAllowanceComponent {
       isProfessionalTaxAffected: [false],
       isTDSAffected: [false],
     });
+
+    // Set custom filter predicate for searching by label
+    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+      return data.label.toLowerCase().includes(filter);
+    });
   }
 
   ngOnInit() {
     this.getFixedAllowance();
   }
 
+  ngAfterViewInit() {
+    this.tableService.initializeDataSource([], this.paginator);
+    this.getFixedAllowance();
+  }
+
   onPageChange(event: any) {
-    this.currentPage = event.pageIndex + 1;
-    this.recordsPerPage = event.pageSize;
+    this.tableService.updatePagination(event);
     this.getFixedAllowance();
   }
 
   getFixedAllowance() {
     const pagination = {
-      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: this.recordsPerPage.toString()
+      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
+      next: this.tableService.recordsPerPage.toString()
     };
     this.payroll.getFixedAllowance(pagination).subscribe((res: any) => {
-      this.fixedAllowance = res.data;
-      this.totalRecords = res.total;
+      this.tableService.setData(res.data);
+      this.tableService.totalRecords = res.total;
     });
   }
 
@@ -145,17 +152,12 @@ export class FixedAllowanceComponent {
     } else {
       this.fixedAllowanceForm.get('label').enable();
     }
-    console.log(this.selectedRecord);
-    console.log(this.fixedAllowanceForm.value);
   }
 
   deleteRecord(_id: string) {
     this.payroll.deleteAllowanceTemplate(_id).subscribe({
       next: (res: any) => {
-        const index = this.fixedAllowance.findIndex(res => res._id === _id);
-        if (index !== -1) {
-          this.fixedAllowance.splice(index, 1);
-        }
+        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
         this.toast.success(
           this.translate.instant('payroll.fixed_allowance_deleted'),
           this.translate.instant('payroll.fixed_allowance_title')
