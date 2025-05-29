@@ -7,6 +7,9 @@ import { ExportService } from 'src/app/_services/export.service';
 import { DatePipe } from '@angular/common';
 import * as moment from 'moment';
 import { CommonService } from 'src/app/_services/common.Service';
+import { PreferenceService } from 'src/app/_services/user-preference.service';
+import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
+
 @Component({
   selector: 'app-timeline',
   templateUrl: './timeline.component.html',
@@ -59,7 +62,8 @@ export class TimelineComponent implements OnInit {
     private exportService: ExportService,
     private reportService: ReportsService,
     public datepipe: DatePipe,
-    public commonservice: CommonService
+    public commonservice: CommonService,
+    private preferenceService: PreferenceService
   ) {
     this.fromDate = this.datepipe.transform(new Date(this.currentDate), 'yyyy-MM-dd');
     this.toDate = this.datepipe.transform(new Date(this.currentDate), 'yyyy-MM-dd');
@@ -67,6 +71,8 @@ export class TimelineComponent implements OnInit {
 
   ngOnInit(): void {
     this.populateUsers();
+
+    this.getUserPrefereces();
 
     setTimeout(() => {
       this.getProjectList();
@@ -211,8 +217,8 @@ export class TimelineComponent implements OnInit {
       });
     });
 
-    this.showMembersColumn = true;
-    this.showProjectsColumn = true;
+    // this.showMembersColumn = true;
+    // this.showProjectsColumn = true;
   }
 
 
@@ -380,7 +386,42 @@ export class TimelineComponent implements OnInit {
       this.showProjectsColumn = false;
       this.showMembersColumn = true
     }
+
+    this.preferenceService.createOrUpdatePreference(
+      this.currentUser.id,
+      PreferenceKeys.ReportsTimelineColumnBy,
+      column
+    ).subscribe({
+      next: () => console.log(`Menu state updated to ${column}`),
+      error: (err) => console.error('Error updating menu state:', err)
+    });
+
   }
 
+  getUserPrefereces() {
+    this.preferenceService.getPreferenceByKey(PreferenceKeys.ReportsTimelineColumnBy, this.currentUser?.id)
+      .subscribe({
+        next: (response: any) => {
+          const preferences = response?.data?.preferences || [];
+          const match = preferences.find((pref: any) =>
+            pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ReportsTimelineColumnBy
+          );
+          const prefvalue = match?.preferenceOptionId?.preferenceValue || '';
+          if (prefvalue === 'projects') {
+            this.showProjectsColumn = true;
+            this.showMembersColumn = false;
+            //this.showProjectsColumn = true
+          } else if (prefvalue === 'members') {
+            this.showMembersColumn = true;
+            this.showProjectsColumn = false;
+            //this.showMembersColumn = true
+          }
+        },
+        error: (err) => {
+          console.error('Failed to load language preference', err);
+        }
+      });
+	  
+  }
 
 }

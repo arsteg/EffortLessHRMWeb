@@ -1,4 +1,4 @@
-import { Component, inject  } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { PayrollService } from 'src/app/_services/payroll.service';
@@ -16,20 +16,27 @@ export class PayslipsComponent {
   displayedColumns: string[] = ['PayrollUser', 'period', 'payroll', 'status', 'actions'];
   payslips = new MatTableDataSource<any>;
   selectedRecord: any;
-    private readonly translate = inject(TranslateService);
-  
+  view = localStorage.getItem('adminView');
+  user = JSON.parse(localStorage.getItem('currentUser'));
+  private readonly translate = inject(TranslateService);
 
   constructor(private dialog: MatDialog,
     private payrollService: PayrollService
   ) { }
 
   ngOnInit() {
-    this.payrollService.getAllGeneratedPayroll().subscribe((res: any) => {
-      this.payslips = res.data;
-    })
+    if (this.view == 'admin') {
+      this.payrollService.getAllGeneratedPayroll().subscribe((res: any) => {
+        this.payslips = res.data;
+      });
+    } else {
+      this.payrollService.getGeneratedPayrollByUser(this.user?.id).subscribe((res: any) => {
+        this.payslips = res.data;
+      })
+    }
   }
 
-  refreshData(){
+  refreshData() {
     this.ngOnInit();
   }
 

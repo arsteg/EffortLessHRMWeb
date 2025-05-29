@@ -7,15 +7,12 @@
                     <span class="bi bi-search searchIcon"></span>
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
-                        <button 
-                        class="ms-2 w-100" 
-                        mat-raised-button color="primary"
+                    <button class="ms-2 w-100" mat-raised-button color="primary"
                         [matTooltip]="settledUser.length === 0 ? 'There is no User available to add in FNF payroll' : ''"
                         [matTooltipDisabled]="settledUser.length > 0"
-                        (click)="settledUser.length > 0 ? open(modal) : null"
-                      >
+                        (click)="settledUser.length > 0 ? open(modal) : null">
                         Add FnF Payroll
-                      </button>
+                    </button>
                 </div>
             </div>
             <table mat-table [dataSource]="fnfPayroll" class="shadow">
@@ -65,6 +62,12 @@
                                 <mat-icon>delete</mat-icon>
                                 <span>Delete</span>
                             </button>
+                            <ng-container *ngFor="let status of payrollStatusArray">
+                                <button mat-menu-item *ngIf="status.toLowerCase() !== element?.status?.toLowerCase()"
+                                    (click)="selectedFnF = element; openUpdateStatusDialog(status)">
+                                    <span>{{ status }}</span>
+                                </button>
+                            </ng-container>
                         </mat-menu>
                     </td>
                 </ng-container>
@@ -75,6 +78,18 @@
         </div>
     </div>
 </div>
+
+<ng-template #updateStatus>
+  <h1 mat-dialog-title>Change Payroll status to {{ selectedStatus }}</h1>
+  <div mat-dialog-content>
+    <div class="d-flex justify-content-between">
+      <button mat-raised-button type="button" (click)="closeAddDialog()">Close</button>
+      <button mat-raised-button type="submit" color="primary" (click)="updatePayrollStatus()">
+        {{ selectedStatus }}
+      </button>
+    </div>
+  </div>
+</ng-template>
 
 <div *ngIf="!showFnFPayroll">
     <button mat-raised-button (click)="goBack()">Back to Table</button>

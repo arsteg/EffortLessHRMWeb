@@ -1,0 +1,5 @@
+footer {
+  a {
+    border: 1px solid var(--orange-30);
+  }
+}

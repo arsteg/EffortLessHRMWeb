@@ -1,15 +1,13 @@
 <div class="tableContainer bg-white">
     <div class="d-flex align-items-center px-2">
-        <p class="mb-0 me-auto">({{ptSlab?.length}}) Records Found</p>
+        <p class="mb-0 me-auto">{{ 'payroll.records_found' | translate: { count: ptSlab?.length } }}</p>
         <div class="d-flex align-items-center">
-
             <span class="bi bi-search searchIcon"></span>
-
-            <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                name="searchText" aria-label="default input example">
-
-            <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false;">Add</button>
-
+            <input class="form-control search" type="text" placeholder="{{ 'payroll.search_placeholder' | translate }}"
+                [(ngModel)]="searchText" name="searchText">
+            <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false;">
+                {{ 'payroll.add' | translate }}
+            </button>
             <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
                 [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
                 (recordsPerPageChange)="onRecordsPerPageChange($event)">
@@ -18,30 +16,31 @@
     </div>
     <table>
         <thead>
-            <th>State</th>
-            <th>From</th>
-            <th>To</th>
-            <th>PT Amount</th>
-            <th>12th Month Amount</th>
-            <th>Frequency</th>
-            <th>Actions</th>
+            <th>{{ 'payroll.professional-tax.table.state' | translate }}</th>
+            <th>{{ 'payroll.professional-tax.table.from' | translate }}</th>
+            <th>{{ 'payroll.professional-tax.table.to' | translate }}</th>
+            <th>{{ 'payroll.professional-tax.table.pt_amount' | translate }}</th>
+            <th>{{ 'payroll.professional-tax.table.twelfth_month_amount' | translate }}</th>
+            <th>{{ 'payroll.professional-tax.table.frequency' | translate }}</th>
+            <th>{{ 'payroll.professional-tax.table.actions' | translate }}</th>
         </thead>
         <tbody>
             <tr *ngFor="let slab of ptSlab">
                 <td>{{ slab?.state }}</td>
-                <td>{{ slab?.fromAmount || ('Upto ' + (slab?.toAmount)) }}</td>
-                <td>{{ slab?.toAmount || ('above ' + (slab?.fromAmount)) }}</td>
+                <td>{{ slab?.fromAmount ? slab.fromAmount : ('payroll.professional-tax.table.upto' | translate: { amount: slab?.toAmount }) }}</td>
+                <td>{{ slab?.toAmount ? slab.toAmount : ('payroll.professional-tax.table.above' | translate: { amount: slab?.fromAmount }) }}</td>
                 <td>{{ slab?.employeeAmount }}</td>
                 <td>{{ slab?.twelfthMonthAmount }}</td>
                 <td>{{ slab?.frequency }}</td>
                 <td>
-                    <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                        data-bs-toggle="modal" data-bs-target="#modal"
+                    <button class="actions" mat-mini-fab matTooltip="{{ 'payroll.edit' | translate }}"
+                        matTooltipPosition="before" data-bs-toggle="modal" data-bs-target="#modal"
                         (click)="selectedRecord = slab; editRecord(); open(modal);">
                         <i class="bi bi-pencil-fill"></i>
                     </button>
-                    <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                        aria-label="Example icon button with a menu icon" (click)="deleteDialog(slab?._id)">
+                    <button class="actions ms-2" mat-mini-fab matTooltip="{{ 'payroll.delete' | translate }}"
+                        matTooltipPosition="after"
+                        (click)="deleteDialog(slab?._id)">
                         <i class="bi bi-trash"></i>
                     </button>
                 </td>
@@ -50,109 +49,106 @@
     </table>
 </div>
 
-
 <ng-template #modal let-modal>
     <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Professional Tax Slab</h1>
+            <h1 class="modal-title text-muted mb-0">
+                {{ (isEdit ? 'payroll.professional-tax.modal.update_title' : 'payroll.professional-tax.modal.add_title') | translate }}
+            </h1>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="closeModal()"></button>
+        <div>
+            <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"
+               ></button>
         </div>
     </div>
     <form [formGroup]="ptSlabForm" (ngSubmit)="onSubmission()">
         <div class="row">
             <div class="form-group col-md-6">
-                <label for="state">Eligible State <span class="text-danger">*</span></label>
+                <label for="state">{{ 'payroll.professional-tax.form.state' | translate }} <span class="text-danger">*</span></label>
                 <input type="text" class="form-control" formControlName="state" readonly>
                 <div
                     *ngIf="ptSlabForm.get('state').invalid && (ptSlabForm.get('state').dirty || ptSlabForm.get('state').touched)">
-                    <small class="text-danger" *ngIf="ptSlabForm.get('state')['errors']['required']">State is
-                        required</small>
+                    <small class="text-danger" *ngIf="ptSlabForm.get('state')['errors']['required']">
+                        {{ 'payroll.professional-tax.form.error.required' | translate }}
+                    </small>
                 </div>
             </div>
-
             <div class="form-group col-md-6">
-                <label for="">From Amount <span class="text-danger">*</span></label>
+                <label for="">{{ 'payroll.professional-tax.form.from_amount' | translate }} <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="fromAmount">
                 <div
                     *ngIf="ptSlabForm.get('fromAmount').invalid && (ptSlabForm.get('fromAmount').dirty || ptSlabForm.get('fromAmount').touched)">
-                    <small class="text-danger" *ngIf="ptSlabForm.get('fromAmount')['errors']['required']">Field is
-                        required</small>
+                    <small class="text-danger" *ngIf="ptSlabForm.get('fromAmount')['errors']['required']">
+                        {{ 'payroll.professional-tax.form.error.required' | translate }}
+                    </small>
                 </div>
             </div>
-
             <div class="form-group col-md-6 mt-2">
-                <label for="">To Amount <span class="text-danger">*</span></label>
+                <label for="">{{ 'payroll.professional-tax.form.to_amount' | translate }} <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="toAmount">
                 <div
                     *ngIf="ptSlabForm.get('toAmount').invalid && (ptSlabForm.get('toAmount').dirty || ptSlabForm.get('toAmount').touched)">
-                    <small class="text-danger" *ngIf="ptSlabForm.get('toAmount')['errors']['required']">Field is
-                        required</small>
+                    <small class="text-danger" *ngIf="ptSlabForm.get('toAmount')['errors']['required']">
+                        {{ 'payroll.professional-tax.form.error.required' | translate }}
+                    </small>
                 </div>
             </div>
-
             <div class="form-group col-md-6 mt-2">
-                <label for="">Frequency<span class="text-danger">*</span></label>
+                <label for="">{{ 'payroll.professional-tax.form.frequency' | translate }} <span class="text-danger">*</span></label>
                 <select id="" class="form-select" formControlName="frequency">
-                    <option value="frequency" *ngFor="let frequency of frequency">{{frequency}}</option>
+                    <option value="frequency" *ngFor="let frequency of frequency">{{ frequency }}</option>
                 </select>
                 <div
                     *ngIf="ptSlabForm.get('frequency').invalid && (ptSlabForm.get('frequency').dirty || ptSlabForm.get('frequency').touched)">
-                    <small class="text-danger" *ngIf="ptSlabForm.get('frequency')['errors']['required']">Field is
-                        required</small>
+                    <small class="text-danger" *ngIf="ptSlabForm.get('frequency')['errors']['required']">
+                        {{ 'payroll.professional-tax.form.error.required' | translate }}
+                    </small>
                 </div>
             </div>
-
             <div class="form-group col-md-6 mt-2">
-                <label for="">Employee Percentage of Professional tax<span class="text-danger">*</span></label>
+                <label for="">{{ 'payroll.professional-tax.form.employee_percentage' | translate }} <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="employeePercentage">
                 <div
                     *ngIf="ptSlabForm.get('employeePercentage').invalid && (ptSlabForm.get('employeePercentage').dirty || ptSlabForm.get('employeePercentage').touched)">
-                    <small class="text-danger" *ngIf="ptSlabForm.get('employeePercentage')['errors']['required']">Field
-                        is
-                        required</small>
+                    <small class="text-danger" *ngIf="ptSlabForm.get('employeePercentage')['errors']['required']">
+                        {{ 'payroll.professional-tax.form.error.required' | translate }}
+                    </small>
                 </div>
             </div>
-
             <div class="form-group col-md-6 mt-2">
-                <label for="">Employee Amount of Professional tax<span class="text-danger">*</span></label>
+                <label for="">{{ 'payroll.professional-tax.form.employee_amount' | translate }} <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="employeeAmount">
                 <div
                     *ngIf="ptSlabForm.get('employeeAmount').invalid && (ptSlabForm.get('employeeAmount').dirty || ptSlabForm.get('employeeAmount').touched)">
-                    <small class="text-danger" *ngIf="ptSlabForm.get('employeeAmount')['errors']['required']">Field is
-                        required</small>
+                    <small class="text-danger" *ngIf="ptSlabForm.get('employeeAmount')['errors']['required']">
+                        {{ 'payroll.professional-tax.form.error.required' | translate }}
+                    </small>
                 </div>
             </div>
-
-
             <div class="form-group col-md-6 mt-2">
-                <label for="">12th Month Value <span class="text-danger">*</span></label>
+                <label for="">{{ 'payroll.professional-tax.form.twelfth_month_value' | translate }} <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="twelfthMonthValue">
                 <div
                     *ngIf="ptSlabForm.get('twelfthMonthValue').invalid && (ptSlabForm.get('twelfthMonthValue').dirty || ptSlabForm.get('twelfthMonthValue').touched)">
-                    <small class="text-danger" *ngIf="ptSlabForm.get('twelfthMonthValue')['errors']['required']">Field
-                        is
-                        required</small>
+                    <small class="text-danger" *ngIf="ptSlabForm.get('twelfthMonthValue')['errors']['required']">
+                        {{ 'payroll.professional-tax.form.error.required' | translate }}
+                    </small>
                 </div>
             </div>
-
             <div class="form-group col-md-6 mt-2">
-                <label for="">12th Month Amount <span class="text-danger">*</span></label>
+                <label for="">{{ 'payroll.professional-tax.form.twelfth_month_amount' | translate }} <span class="text-danger">*</span></label>
                 <input type="number" class="form-control" formControlName="twelfthMonthAmount">
                 <div
                     *ngIf="ptSlabForm.get('twelfthMonthAmount').invalid && (ptSlabForm.get('twelfthMonthAmount').dirty || ptSlabForm.get('twelfthMonthAmount').touched)">
-                    <small class="text-danger" *ngIf="ptSlabForm.get('twelfthMonthAmount')['errors']['required']">Field
-                        is
-                        required</small>
+                    <small class="text-danger" *ngIf="ptSlabForm.get('twelfthMonthAmount')['errors']['required']">
+                        {{ 'payroll.professional-tax.form.error.required' | translate }}
+                    </small>
                 </div>
             </div>
         </div>
-
         <div class="d-flex border-top mt-2 py-2 justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn">Submit</button>
+            <button mat-raised-button type="reset">{{ 'payroll.cancel' | translate }}</button>
+            <button mat-raised-button type="submit" class="addBtn">{{ 'payroll.submit' | translate }}</button>
         </div>
     </form>
-
 </ng-template>

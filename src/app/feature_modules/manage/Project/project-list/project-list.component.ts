@@ -7,6 +7,8 @@ import { ToastrService } from 'ngx-toastr';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CommonService } from 'src/app/_services/common.Service';
 import { DatePipe } from '@angular/common';
+import { PreferenceService } from 'src/app/_services/user-preference.service';
+import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
 @Component({
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
@@ -49,6 +51,7 @@ export class ProjectListComponent implements OnInit {
     public commonservice: CommonService,
     public datePipe: DatePipe,
     private dialog: MatDialog,
+    private preferenceService: PreferenceService
   ) {
     this.form = this.fb.group({
       projectName: ['', Validators.required],
@@ -77,12 +80,32 @@ export class ProjectListComponent implements OnInit {
 
   ngOnInit(): void {
     this.isChecked = true;
-    this.getProjectList();
 
     this.commonservice.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.firstLetter = this.commonservice.firstletter;
+
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.preferenceService.getPreferenceByKey(
+      PreferenceKeys.ManageProjectsSelectedMember,
+      currentUser?.id
+      ).subscribe({
+        next: (response: any) => {
+          const preferences = response?.data?.preferences || [];
+          const match = preferences.find((pref: any) =>
+            pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ManageProjectsSelectedMember
+          );
+          const value = match?.preferenceOptionId?.preferenceValue;
+          this.userId = (value === 0 || value === '0') ? '' : value;
+          this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
+        },
+        error: (err) => {
+          console.error('Failed to load preference', err);
+          this.userId = '';
+          this.getProjectList();
+        }
+    });
 
     this.manageUsersForm = this.fb.group({});
     // this.getProjectUser(this.selectedProject.id);
@@ -90,12 +113,12 @@ export class ProjectListComponent implements OnInit {
 
   onPageChange(page: number) {
     this.currentPage = page;
-    this.getProjectList();
+    this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
   }
 
   onRecordsPerPageChange(recordsPerPage: number) {
     this.recordsPerPage = recordsPerPage;
-    this.getProjectList();
+    this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
   }
 
   getProjectList() {
@@ -133,6 +156,17 @@ export class ProjectListComponent implements OnInit {
       this.getProjectList();
     }
     else { this.getProjectsByUser(); }
+
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.preferenceService.createOrUpdatePreference(
+      currentUser.id,
+      PreferenceKeys.ManageProjectsSelectedMember,
+      this.userId === '' ? '0' : this.userId
+    ).subscribe({
+      next: () => console.log(`member state updated to ${this.userId}`),
+      error: (err) => console.error('Error updating menu state:', err)
+    });
+
   }
 
   addProject() {

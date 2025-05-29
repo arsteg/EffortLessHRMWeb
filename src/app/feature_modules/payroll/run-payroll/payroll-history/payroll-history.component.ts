@@ -29,8 +29,14 @@ export class PayrollHistoryComponent {
   @Output() changeView = new EventEmitter<void>();
   @ViewChild('addDialogTemplate') addDialogTemplate: TemplateRef<any>;
   @ViewChild('addUserModal') addUserModal: TemplateRef<any>;
+  @ViewChild('updateStatus') updateStatus: TemplateRef<any>;
   salaries: any[] = [];
   addedUserIds: string[] = [];
+  payrollStatus: any;
+  payrollStatusArray: any;
+  selectedStatus: string = '';
+  payrollPeriod: any;
+  duplicatePayrollError = false;
 
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -61,9 +67,51 @@ export class PayrollHistoryComponent {
   }
 
   ngOnInit() {
+    this.getPayrollStatus();
     this.generateYearList();
     this.getAllUsers();
     this.getPayrollWithUserCounts();
+    this.getPayroll();
+    this.payrollForm.get('month').valueChanges.subscribe(() => {
+      this.checkForDuplicatePayrollPeriod();
+    });
+
+    this.payrollForm.get('year').valueChanges.subscribe(() => {
+      this.checkForDuplicatePayrollPeriod();
+    });
+  }
+
+  checkForDuplicatePayrollPeriod() {
+    const selectedMonth = this.payrollForm.get('month').value;
+    const selectedYear = this.payrollForm.get('year').value;
+
+    if (selectedMonth && selectedYear) {
+      console.log(selectedMonth, selectedYear);
+      this.duplicatePayrollError = this.payrollPeriod?.some(period =>
+        period?.month === selectedMonth && period?.year === selectedYear
+      );
+      console.log(this.duplicatePayrollError);
+    } else {
+      this.duplicatePayrollError = false;
+    }
+  }
+
+
+  getPayroll() {
+    let payload = {
+      skip: '0',
+      next: ''
+    }
+    this.payrollService.getPayroll(payload).subscribe((res: any) => {
+      this.payrollPeriod = res.data;
+    })
+  }
+
+  getPayrollStatus() {
+    this.payrollService.getPayrollStatus().subscribe((res: any) => {
+      this.payrollStatus = res.data;
+      this.payrollStatusArray = Object.values(this.payrollStatus).filter(status => status);
+    });
   }
 
   goBack() {
@@ -93,6 +141,19 @@ export class PayrollHistoryComponent {
     });
   }
 
+  openUpdateStatusDialog(status: string) {
+    this.selectedStatus = status;
+    const dialogRef = this.dialog.open(this.updateStatus, {
+      width: '600px',
+      disableClose: true,
+      data: status
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) { }
+    });
+  }
+
   closeAddDialog() {
     this.dialog.closeAll();
   }
@@ -114,12 +175,10 @@ export class PayrollHistoryComponent {
     this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe(
       (res: any) => {
         this.addedUserIds = res.data.map(user => user.user);
-        this.cdr.detectChanges();
       },
       (err) => {
         this.toast.error('Error fetching payroll users');
         this.addedUserIds = [];
-        this.cdr.detectChanges();
       }
     );
 
@@ -144,6 +203,19 @@ export class PayrollHistoryComponent {
     this.salaries = [];
     this.addedUserIds = [];
     this.dialog.closeAll();
+  }
+
+  updatePayrollStatus() {
+    const id = this.selectedPayroll?._id;
+    const payload = {
+      updatedOnDate: new Date(),
+      status: this.selectedStatus
+    };
+    this.payrollService.updatePayroll(id, payload).subscribe((res: any) => {
+      this.toast.success('Payroll status updated successfully', 'Success');
+      this.getPayrollWithUserCounts();
+      this.closeAddDialog();
+    })
   }
 
   getPayrollWithUserCounts() {

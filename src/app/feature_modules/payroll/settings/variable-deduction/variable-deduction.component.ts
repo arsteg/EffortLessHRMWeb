@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -12,27 +13,29 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
   templateUrl: './variable-deduction.component.html',
   styleUrl: './variable-deduction.component.css'
 })
-export class VariableDeductionComponent {
+export class VariableDeductionComponent implements OnInit {
   closeResult: string;
   isEdit: boolean = false;
   selectedRecord: any;
   variableDeduction: any;
   variableDeductionForm: FormGroup;
   searchText: string = '';
-  totalRecords: number
+  totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  months: string[] = [];
   years: number[] = [];
   members: any[];
   public sortOrder: string = '';
 
-  constructor(private modalService: NgbModal,
+  constructor(
+    private modalService: NgbModal,
     private toast: ToastrService,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private payroll: PayrollService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private translate: TranslateService
   ) {
     this.variableDeductionForm = this.fb.group({
       label: ['', Validators.required],
@@ -54,6 +57,8 @@ export class VariableDeductionComponent {
   }
 
   ngOnInit() {
+    // Load translated months
+    this.months = this.translate.instant('payroll.months');
     this.getVariableDeduction();
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
@@ -73,14 +78,18 @@ export class VariableDeductionComponent {
       amountEnterForThisVariableDeduction: '',
       amount: 0,
       percentage: 0
-    })
-  }
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
+  }
+
+  open(content: any) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      }
+    );
   }
 
   private getDismissReason(reason: any): string {
@@ -103,24 +112,39 @@ export class VariableDeductionComponent {
       ...formValue
     };
     // if (this.variableDeductionForm.valid) {
-      if (!this.isEdit) {
-        this.payroll.addVariableDeduction(payload).subscribe((res: any) => {
+    if (!this.isEdit) {
+      this.payroll.addVariableDeduction(payload).subscribe(
+        (res: any) => {
           this.variableDeduction.push(res.data);
-          this.toast.success('Successfully Added!!!', 'Variable Deduction');
+          this.toast.success(
+            this.translate.instant('payroll.variable_deduction.toast.success_added'),
+            this.translate.instant('payroll.variable_deduction.toast.title')
+          );
         },
-          (err) => {
-            this.toast.error('Variable Deduction Can not be added', 'Variable Deduction');
-          })
-      }
-      else {
-        this.payroll.updateVariableDeduction(this.selectedRecord._id, payload).subscribe((res: any) => {
-          this.toast.success('Successfully Updated!!!', 'Variable Deduction');
+        (err) => {
+          this.toast.error(
+            this.translate.instant('payroll.variable_deduction.toast.error_add'),
+            this.translate.instant('payroll.variable_deduction.toast.title')
+          );
+        }
+      );
+    } else {
+      this.payroll.updateVariableDeduction(this.selectedRecord._id, payload).subscribe(
+        (res: any) => {
+          this.toast.success(
+            this.translate.instant('payroll.variable_deduction.toast.success_updated'),
+            this.translate.instant('payroll.variable_deduction.toast.title')
+          );
           this.getVariableDeduction();
         },
-          (err) => {
-            this.toast.error('Variable Deduction Can not be Updated', 'Variable Deduction');
-          })
-      }
+        (err) => {
+          this.toast.error(
+            this.translate.instant('payroll.variable_deduction.toast.error_update'),
+            this.translate.instant('payroll.variable_deduction.toast.title')
+          );
+        }
+      );
+    }
     // }
     // else {
     //   this.markFormGroupTouched(this.variableDeductionForm);
@@ -138,7 +162,10 @@ export class VariableDeductionComponent {
 
   isPercentageSelected(): boolean {
     const value = this.variableDeductionForm.get('amountEnterForThisVariableDeduction').value;
-    return value === 'Percentage of gross salary paid' || value === 'Percentage of(Basic + DA) paid (or Basic if DA is not applicable)';
+    return (
+      value === this.translate.instant('payroll.variable_deduction.amount_percentage_gross') ||
+      value === this.translate.instant('payroll.variable_deduction.amount_percentage_basic_da')
+    );
   }
 
   editRecord() {
@@ -146,13 +173,21 @@ export class VariableDeductionComponent {
   }
 
   deleteRecord(_id: string) {
-    this.payroll.deleteVariableDeduction(_id).subscribe((res: any) => {
-      this.getVariableDeduction();
-      this.toast.success('Successfully Deleted!!!', 'Variable Deduction');
-    },
+    this.payroll.deleteVariableDeduction(_id).subscribe(
+      (res: any) => {
+        this.getVariableDeduction();
+        this.toast.success(
+          this.translate.instant('payroll.variable_deduction.toast.success_deleted'),
+          this.translate.instant('payroll.variable_deduction.toast.title')
+        );
+      },
       (err) => {
-        this.toast.error('Variable Deduction Can not be deleted', 'Variable Deduction');
-      })
+        this.toast.error(
+          this.translate.instant('payroll.variable_deduction.toast.error_delete'),
+          this.translate.instant('payroll.variable_deduction.toast.title')
+        );
+      }
+    );
   }
 
   deleteDialog(id: string): void {
@@ -184,6 +219,6 @@ export class VariableDeductionComponent {
     this.payroll.getVariableDeduction(pagination).subscribe(res => {
       this.variableDeduction = res.data;
       this.totalRecords = res.total;
-    })
+    });
   }
 }

@@ -7,7 +7,7 @@ import { UserListComponent } from '../users/user-list/user-list.component';
 // import { UserProfileComponent } from '../users/user-profile/user-profile.component';
 import { ScreenshotsComponent } from 'src/app/feature_modules/screenshots/screenshots/screenshots.component';
 import { Role } from '../models/role.model';
-import { AuthGuard } from '../_helpers/auth.guard';
+import { AuthGuard } from '../auth.guard';
 import { TeammembersComponent } from '../manage/teammembers/teammembers.component';
 
 export const LayoutRoutes: Routes = [

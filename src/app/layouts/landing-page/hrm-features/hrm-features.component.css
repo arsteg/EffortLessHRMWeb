@@ -1,0 +1,9 @@
+.hrm-features {
+  padding-top: var(--size-42);
+  padding-bottom: 110px;
+  .card {
+    border: 1px solid var(--orange-10);
+    border-radius: var(--size-24);
+    margin-top: var(--size-16);
+  }
+}

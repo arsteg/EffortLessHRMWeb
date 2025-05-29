@@ -47,18 +47,7 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <div class="form-group mt-2 col-md-6">
-    <mat-form-field appearance="outline" class="w-100 mx-1">
-      <mat-label>Other Benefits Allowances</mat-label>
-      <mat-select multiple formControlName="ctcTemplateOtherBenefitAllowance"
-        (selectionChange)="onDropdownChange($event, 'otherBenefit')">
-        <mat-option *ngFor="let fa of otherBenefits" [value]="fa._id">
-          {{fa?.label}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-  <div class="form-group mt-2 col-md-6">
+   <div class="form-group mt-2 col-md-6">
     <mat-form-field appearance="outline" class="w-100 mx-1">
       <mat-label>Employee Deductions</mat-label>
       <mat-select multiple formControlName="ctcTemplateEmployeeDeduction"

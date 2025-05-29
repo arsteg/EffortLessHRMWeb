@@ -1,18 +1,17 @@
-<h2>Labour Welfare Fund</h2>
+<h2>{{ 'payroll.lwf_title' | translate }}</h2>
 <hr>
-
 
 <ul class="nav nav-tabs">
     <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tablwfSlab'}" (click)="selectTab('tablwfSlab')">LWF
-            Slab</a>
+        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tablwfSlab'}" (click)="selectTab('tablwfSlab')">
+            {{ 'payroll.lwf_slab' | translate }}
+        </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabDeductionMon'}"
-            (click)="selectTab('tabDeductionMon')">
-            Deduction Month</a>
+        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabDeductionMon'}" (click)="selectTab('tabDeductionMon')">
+            {{ 'payroll.deduction_month' | translate }}
+        </a>
     </li>
-
 </ul>
 
 <div class="tab-content pt-0">
@@ -22,5 +21,4 @@
     <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabDeductionMon'}" id="tabDeductionMon">
         <app-deduction></app-deduction>
     </div>
-
 </div>

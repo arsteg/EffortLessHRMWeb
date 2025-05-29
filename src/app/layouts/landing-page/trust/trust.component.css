@@ -1,0 +1,26 @@
+
+/* trust section */
+.trust-section {
+  background: linear-gradient(
+    270deg,
+    rgba(255, 242, 232, 0) 0%,
+    rgba(255, 242, 232, 0.39) 100%
+  );
+  .card {
+    border: 1px solid rgba(213, 213, 213, 0.42);
+    padding: var(--size-16);
+    border-radius: var(--size-24);
+
+    .card-title {
+      font-size: var(--size-32);
+      color: var(--grey);
+      font-weight: 700;
+      margin-top: var(--size-32);
+      line-height: 1.2;
+    }
+
+    p {
+      font-size: var(--size-18);
+    }
+  }
+}

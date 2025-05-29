@@ -1,5 +1,5 @@
 <app-header [loggedInUser]="currentProfile" [profileSwitch]="portalType?.toLowerCase() === 'admin'" [role]="adminView"
-  (onMenuToggled)="toggleDrawer()" (onProfileSwitch)="switchView($event)">
+  (onMenuToggled)="toggleDrawer($event)" (onProfileSwitch)="switchView($event)">
 </app-header>
 
 <!-- Sidebar - icons with text -->

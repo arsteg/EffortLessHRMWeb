@@ -12,6 +12,8 @@ import { AnimationDurations } from '@angular/material/core';
 import { Observable, Subscription } from 'rxjs';
 import { teamMember } from 'src/app/models/teamMember';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { PreferenceService } from 'src/app/_services/user-preference.service';
+import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
 // import { threadId } from 'worker_threads';
 
 @Component({
@@ -50,6 +52,7 @@ export class ScreenshotsComponent implements OnInit {
   filteredMembers: Observable<teamMember[]>;
   data: any = [];
   dialogRef: MatDialogRef<any>;
+  selectedMember: any;
 
   constructor(
     private timeLogService: TimeLogService,
@@ -57,6 +60,7 @@ export class ScreenshotsComponent implements OnInit {
     private dialog: MatDialog,
     private datePipe: DatePipe,
     private fb: FormBuilder, private renderer: Renderer2,
+    private preferenceService: PreferenceService,
     private auth: AuthenticationService) {
     this.route.params.subscribe(params => {
       this.resetToken = params['token'];
@@ -66,8 +70,7 @@ export class ScreenshotsComponent implements OnInit {
   ngOnInit(): void {
     this.members = [];
     this.populateMembers();
-
-    this.showScreenShots();
+    //this.showScreenShots();
     this.subscription = this.timeLogService.currentMessage.subscribe((message: any) => this.message = message);
 
     this.intervalId = setInterval(() => {
@@ -87,8 +90,23 @@ export class ScreenshotsComponent implements OnInit {
   }
 
   onMemberSelectionChange(member: any) {
-    this.member = JSON.parse(member.value);
-    this.showScreenShots();
+    this.member = JSON.parse(member);
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.preferenceService.createOrUpdatePreference(
+      currentUser.id,
+      PreferenceKeys.ScreenshotSelectedMember,
+      this.member ? JSON.stringify(this.member) : ''
+    ).subscribe({
+      next: () =>{ 
+        console.log('Member preference updated');
+        this.showScreenShots();
+      },
+      error: (err) =>{
+         console.error('Error updating member preference:', err);
+         this.showScreenShots();
+      }
+    });
+
   }
   populateMembers() {
     this.members = [];
@@ -112,20 +130,42 @@ export class ScreenshotsComponent implements OnInit {
             otherMembers.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
             this.members = [this.members[0], ...otherMembers];
+            this.showScreenShots();
           },
           error: error => {
             console.log('There was an error!', error);
+            this.showScreenShots();
           }
         });
       },
       error: error => {
         console.log('There was an error!', error);
+        this.showScreenShots();
       }
     });
   }
 
   showScreenShots() {
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.preferenceService.getPreferenceByKey(PreferenceKeys.ScreenshotSelectedMember, currentUser?.id)
+      .subscribe({
+        next: (response: any) => {
+          const preferences = response?.data?.preferences || [];
+          const match = preferences.find((pref: any) =>
+            pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ScreenshotSelectedMember
+          );
+          //this.selectedMember = JSON.parse(match?.preferenceOptionId?.preferenceValue);
+          const savedMember = JSON.parse(match.preferenceOptionId.preferenceValue);
+          // Find the matching member object from the current members list
+          this.selectedMember = this.members.find(m => m.id === savedMember.id);
+          this.member = this.selectedMember || currentUser;
+        },
+        error: (err) => {
+          console.error('Failed to load language preference', err);
+          this.selectedMember = currentUser;
+        }
+      });
+      
     let formattedDate = this.formatDate(this.selectedDate);
     var result = this.timeLogService.getLogsWithImages(this.member.id, formattedDate);
     result.subscribe(res => {

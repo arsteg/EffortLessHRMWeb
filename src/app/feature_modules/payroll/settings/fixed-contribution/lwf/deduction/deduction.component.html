@@ -1,13 +1,16 @@
-
-   <div class="tableContainer bg-white">
+<div class="tableContainer bg-white">
     <form [formGroup]="deductionForm" (ngSubmit)="onSubmit()">
       <div class="d-flex justify-content-end mb-3">
-        <button class="addBtn mx-2" mat-raised-button type="submit">Update</button>
+        <button class="updateBtn mx-2" mat-raised-button type="submit">
+          {{ 'payroll._lwf.monthly_deduction.button.update' | translate }}
+        </button>
       </div>
       <div class="row">
         <div class="col-md-6 border-end" *ngFor="let month of monthsArray; let i = index">
           <div class="d-flex justify-content-between">
-            <label for="" class="me-2">{{ month.value.paymentMonth }}</label>
+            <label class="me-2" [attr.for]="month.value.paymentMonth + '-yes'">
+              {{ 'payroll._lwf.monthly_deduction.month.' + month.value.paymentMonth | translate }}
+            </label>
             <div class="d-flex">
               <div class="form-check">
                 <input 
@@ -16,9 +19,10 @@
                   [id]="month.value.paymentMonth + '-yes'" 
                   (change)="onSelectionChange(month.value.paymentMonth, true)" 
                   [checked]="month.value.processMonth"
-                  >
+                  [attr.aria-label]="'payroll._lwf.monthly_deduction.radio.yes_aria' | translate"
+                >
                 <label class="form-check-label" [for]="month.value.paymentMonth + '-yes'">
-                  Yes
+                  {{ 'payroll.yes' | translate }}
                 </label>
               </div>
               <div class="form-check ms-3">
@@ -28,9 +32,10 @@
                   [id]="month.value.paymentMonth + '-no'" 
                   (change)="onSelectionChange(month.value.paymentMonth, false)" 
                   [checked]="!month.value.processMonth"
-                  >
+                  [attr.aria-label]="'payroll._lwf.monthly_deduction.radio.no_aria' | translate"
+                >
                 <label class="form-check-label" [for]="month.value.paymentMonth + '-no'">
-                  No
+                  {{ 'payroll.no' | translate }}
                 </label>
               </div>
             </div>
@@ -39,5 +44,3 @@
       </div>
     </form>
   </div>
-  
-  

@@ -44,7 +44,7 @@
                             <mat-label>Role </mat-label>
                             <mat-select formControlName="role">
                                 <mat-option value="" disabled>Select Role</mat-option>
-                                <mat-option *ngFor="let role of roles" [value]="role?.id">{{ role?.Name }}</mat-option>
+                                <mat-option *ngFor="let role of roles" [value]="role?.id">{{ role?.name }}</mat-option>
                             </mat-select>
                             <mat-error *ngIf="userForm.get('role')?.touched && userForm.get('role')?.invalid">
                                 <small *ngIf="userForm.get('role')?.errors?.['required']">Role is required.</small>

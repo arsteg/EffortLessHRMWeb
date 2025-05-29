@@ -14,7 +14,6 @@ export class UpdateCTCTemplateComponent {
   @Output() recordUpdatedFromAssigned: EventEmitter<any> = new EventEmitter<any>();
   fixedAllowances: any;
   fixedDeduction: any;
-  otherBenefits: any;
   fixedContribution: any;
   variableAllowance: any;
   variableDeduction: any;
@@ -131,12 +130,7 @@ export class UpdateCTCTemplateComponent {
         property: 'ctcTemplateEmployerContributions',
         dataSource: this.fixedContribution,
         subject: this.payroll.fixedContributions
-      },
-      otherBenefit: {
-        property: 'ctcTemplateOtherBenefitAllowances',
-        dataSource: this.otherBenefits,
-        subject: this.payroll.otherBenefits
-      },
+      },     
       employeeDeduction: {
         property: 'ctcTemplateEmployeeDeductions',
         dataSource: this.fixedContribution, // Double-check this
@@ -218,12 +212,6 @@ export class UpdateCTCTemplateComponent {
       this.fixedDeduction = res.data;
       this.payroll.fixedDeductions.next(this.fixedAllowances); // Note: Likely should be this.fixedDeduction
     });
-
-    this.payroll.getOtherBenefits(payload).subscribe((res: any) => {
-      this.otherBenefits = res.data;
-      this.payroll.otherBenefits.next(this.fixedAllowances); // Note: Likely should be this.otherBenefits
-    });
-
     this.payroll.getFixedContribution(payload).subscribe((res: any) => {
       this.fixedContribution = res.data;
       this.payroll.fixedContributions.next(this.fixedAllowances); // Note: Likely should be this.fixedContribution

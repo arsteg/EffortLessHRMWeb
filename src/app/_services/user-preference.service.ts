@@ -4,32 +4,32 @@ import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'r
 import { environment } from '../../environments/environment';
 
 export interface UserPreference {
-    _id: string;
-    userId: string;
-    preferenceOptionId: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
+  _id: string;
+  userId: string;
+  preferenceOptionId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export interface PreferenceOption {
-    _id: string;
-    preferenceKey: string;
-    preferenceValue: string;
-    createdAt: Date;
-    updatedAt: Date;
-  }
+  _id: string;
+  preferenceKey: string;
+  preferenceValue: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 export interface UserPreferenceStructure {
-    key: string;
-    metadata?: {
-        inputType: string;
-        id: string;
-        name: string;
-        label?: string;
-        placeholder?: string;
-        options?: string[];
-        setbyadmin?: boolean;
-    };
+  key: string;
+  metadata?: {
+    inputType: string;
+    id: string;
+    name: string;
+    label?: string;
+    placeholder?: string;
+    options?: string[];
+    setbyadmin?: boolean;
+  };
 }
 
 @Injectable({
@@ -40,20 +40,20 @@ export class PreferenceService {
   preferences = this.preferencesSubject.asObservable();
   private isLoadingSubject = new BehaviorSubject<boolean>(false);
   isLoading = this.isLoadingSubject.asObservable();
-    
+
   constructor(private http: HttpClient) {
     this.loadPreferencesStructure();
   }
 
   private getHttpOptions() {
-      const token = localStorage.getItem('jwtToken');
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Authorization': `Bearer ${token}`
-      });
-      const httpOptions = { headers, withCredentials: true };
-      return httpOptions;
+    const token = localStorage.getItem('jwtToken');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Authorization': `Bearer ${token}`
+    });
+    const httpOptions = { headers, withCredentials: true };
+    return httpOptions;
   }
 
   private loadPreferencesStructure(): void {
@@ -74,7 +74,7 @@ export class PreferenceService {
   getPreferencesStructure(): Observable<UserPreferenceStructure[]> {
     return this.preferences;
   }
-  
+
   getPreferenceStructureByKey(key: string): Observable<UserPreferenceStructure | undefined> {
     return this.preferences.pipe(
       map(preferences => preferences.find(pref => pref.key === key))
@@ -89,41 +89,41 @@ export class PreferenceService {
 
   // Refresh preferences (e.g., after locale change)
   refreshPreferences(): void {
-        this.loadPreferencesStructure();
+    this.loadPreferencesStructure();
   }
 
   getPreferenceStructure(): Observable<any> {
     const httpOptions = {
-        headers: new HttpHeaders({
-            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-        }),
-        withCredentials: true
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+      }),
+      withCredentials: true
     };
 
     return this.http.get<{ status: string; message: string; data: UserPreferenceStructure[] }>(
-            `${environment.apiUrlDotNet}/userpreferences/structure`,
-            httpOptions
-        ).pipe(
-            tap(response => {
-                if (response.status !== 'success') {
-                    throw new Error(response.message || 'Failed to fetch preferences structure.');
-                }
-            }),
-            map(response => response.data),
-            catchError(error => {
-                console.error('Error fetching preference structure:', error);
-                return throwError(() => new Error(`Failed to fetch preference structure: ${error.message || error.statusText}`));
-            })
-        );
+      `${environment.apiUrlDotNet}/userpreferences/structure`,
+      httpOptions
+    ).pipe(
+      tap(response => {
+        if (response.status !== 'success') {
+          throw new Error(response.message || 'Failed to fetch preferences structure.');
+        }
+      }),
+      map(response => response.data),
+      catchError(error => {
+        console.error('Error fetching preference structure:', error);
+        return throwError(() => new Error(`Failed to fetch preference structure: ${error.message || error.statusText}`));
+      })
+    );
     //return this.http.get<any>(`${environment.apiUrlDotNet}/userpreferences/structure`, httpOptions);
   }
 
   getPreferencesByUserId(userId: string): Observable<any> {
     const httpOptions = {
-        headers: new HttpHeaders({
-            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-        }),
-        withCredentials: true
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+      }),
+      withCredentials: true
     };
     return this.http.get<any>(`${environment.apiUrlDotNet}/userPreferences/user/${userId}`, httpOptions);
   }
@@ -134,10 +134,10 @@ export class PreferenceService {
     preferenceValue: string
   ): Observable<{ status: string; message: string; data: { userPreference: UserPreference } }> {
     const httpOptions = {
-        headers: new HttpHeaders({
-            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-        }),
-        withCredentials: true
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+      }),
+      withCredentials: true
     };
 
     const body = {
@@ -146,20 +146,32 @@ export class PreferenceService {
       preferenceValue: preferenceValue
     };
     return this.http.post<any>(`${environment.apiUrlDotNet}/userPreferences/create`, body, httpOptions).pipe(
-        catchError(error => {
-          console.error('Error in createOrUpdatePreference:', error);
-          return throwError(() => new Error(`Failed to create or update preference: ${error.message || error.statusText}`));
-        })
-      );
+      catchError(error => {
+        console.error('Error in createOrUpdatePreference:', error);
+        return throwError(() => new Error(`Failed to create or update preference: ${error.message || error.statusText}`));
+      })
+    );
   }
 
   getPreferenceByKey(preferenceKey: string, userId: string): Observable<PreferenceOption[]> {
     const httpOptions = {
-        headers: new HttpHeaders({
-            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
-        }),
-        withCredentials: true
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+      }),
+      withCredentials: true
     };
     return this.http.get<PreferenceOption[]>(`${environment.apiUrlDotNet}/userPreferences/preference-key/${preferenceKey}?userId=${userId}`, httpOptions);
   }
+
+  uploadProfileImage(userId, payload): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+      }),
+      withCredentials: true
+    };
+    return this.http.put<any>(`${environment.apiUrlDotNet}/users/update-profile-picture/${userId}`, payload, httpOptions);
+  }
+  
+
 }

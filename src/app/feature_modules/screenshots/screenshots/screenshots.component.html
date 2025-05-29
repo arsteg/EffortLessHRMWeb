@@ -19,7 +19,9 @@
           class="col-lg-3 col-md-9 col-sm-8 pt-md-0 pt-lg-1 mb-md-0 mb-3 order-md-0 order-1 d-flex justify-content-center align-items-baseline text-center">
           <label for="member" class="pt-2 pe-3">Member</label>
           <select id="member" name="member" class="form-control form-select form-select-sm select_member"
-            aria-label=".form-select-sm example" #member (change)="onMemberSelectionChange(member)">
+                  aria-label=".form-select-sm example"
+                  [ngModel]="selectedMember | json"
+                  (ngModelChange)="onMemberSelectionChange($event)">
             <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
           </select>
         </div>

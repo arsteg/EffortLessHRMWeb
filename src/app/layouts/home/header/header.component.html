@@ -6,63 +6,79 @@
                 <mat-icon svgIcon="menu"></mat-icon>
             </button>
         </div>
-  
+
         <div class="d-flex justify-content-end">
             <div class="text-right">
                 <div class=" d-flex align-items-center">
                     <hrm-language-selector cssClass="pe-2"></hrm-language-selector>
                     <app-notification></app-notification>
                     <section>
-                        <div class="d-flex align-items-center ms-3 profile-menu" #profileMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="profileMenu"> 
-                            <!-- (click)="toggleProfileMenu()"-->
-                            <!-- <img src="assets/images/profile.png" height="48"> -->
-                            <button mat-icon-button>
+                        <div class="d-flex align-items-center ms-3 profile-menu" #profileMenuTrigger="matMenuTrigger"
+                            [matMenuTriggerFor]="profileMenu">
+                            @if(loggedInUser?.photo) {
+                            <img src="{{loggedInUser?.photo}}" class="header-profile-img" height="48">
+                            }
+                            @else {<button mat-icon-button>
                                 <mat-icon>person</mat-icon>
                             </button>
-                            
+                            }
+
                             <p class="ps-2 mb-0 d-lg-block d-none">
                                 @if(loggedInUser) {
-                                    {{loggedInUser?.firstName + ' ' + loggedInUser?.lastName}}
+                                {{loggedInUser?.firstName + ' ' + loggedInUser?.lastName}}
                                 }
                             </p>
                             <mat-icon>keyboard_arrow_down</mat-icon>
                         </div>
 
                         <mat-menu #profileMenu="matMenu" class="dropdown-menu-default drpLog shadow">
+                            <div (click)="$event.stopPropagation()">
                             @if(loggedInUser) {
-                                <div class="text-center p-2">
-                                    <img src="../assets/profile-image.png" class="profile-img mb-5" width="100" height="100" alt="Profile Picture">
-                                    <p class="employee-id">{{loggedInUser?.firstName}} {{loggedInUser?.lastName}}</p>
-                                    <p class="position">{{loggedInUser?.jobTitle}}</p>
-                                    <p class="email contentHeading">{{loggedInUser?.email}}</p>
+                            <div class="text-center p-2">
+                                <div class="position-relative d-inline-block mb-5">
+                                    <img [src]="loggedInUser?.photo || '../assets/profile-image.png'"
+                                        class="profile-img" width="100" height="100" alt="Profile Picture">
+
+                                    <span class="edit-icon" (click)="triggerFileInput()">
+                                        <i class="bi bi-pencil"></i>
+                                    </span>
+
+                                    <input type="file" #fileInput accept="image/*" (change)="onFileSelected($event)"
+                                        style="display: none;">
                                 </div>
-                                <mat-divider></mat-divider>
+
+                                <p class="employee-id">{{loggedInUser?.firstName}} {{loggedInUser?.lastName}}</p>
+                                <p class="position">{{loggedInUser?.jobTitle}}</p>
+                                <p class="email contentHeading">{{loggedInUser?.email}}</p>
+                            </div>
+                            <mat-divider></mat-divider>
                             }
                             @if(profileSwitch){
-                                @if(role === 'admin'){
-                                    <button mat-menu-item (click)="switchView('user')">
-                                        <mat-icon>toggle_on</mat-icon>
-                                        <span>Switch to User</span>
-                                    </button>
-                                } @else {
-                                    <button mat-menu-item (click)="switchView('admin')">
-                                        <mat-icon>toggle_off</mat-icon>
-                                        <span>Switch to Admin</span>
-                                    </button>
-                                }
+                            @if(role === 'admin'){
+                            <button mat-menu-item (click)="switchView('user')">
+                                <mat-icon>toggle_on</mat-icon>
+                                <span>Switch to User</span>
+                            </button>
+                            } @else {
+                            <button mat-menu-item (click)="switchView('admin')">
+                                <mat-icon>toggle_off</mat-icon>
+                                <span>Switch to Admin</span>
+                            </button>
+                            }
                             }
                             <button mat-menu-item [routerLink]="'profile'">
-                              <mat-icon>person</mat-icon>
-                              <span>Profile</span>
+                                <mat-icon>person</mat-icon>
+                                <span>Profile</span>
                             </button>
                             <button mat-menu-item (click)="onLogout()">
-                              <mat-icon>logout</mat-icon>
-                              <span>Sign out</span>
+                                <mat-icon>logout</mat-icon>
+                                <span>Sign out</span>
                             </button>
-                          </mat-menu>
+                            </div>
+                        </mat-menu>
                     </section>
                 </div>
             </div>
         </div>
     </div>
-  </nav>
+</nav>

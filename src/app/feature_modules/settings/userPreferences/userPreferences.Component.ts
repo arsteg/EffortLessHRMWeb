@@ -4,6 +4,7 @@ import { PreferenceOption, UserPreference, PreferenceService, UserPreferenceStru
 import { map, Observable } from 'rxjs';
 import { UserService } from 'src/app/_services/users.service';
 import { ToastrService } from 'ngx-toastr';
+import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
 
 @Component({
   selector: 'app-user-preferences',
@@ -34,8 +35,22 @@ export class UserPreferencesComponent implements OnInit {
       next: (response) => {
         this.userList = response?.data?.data || [];
         if (this.view === 'admin' && this.userList.length > 0) {
-          this.selectedUsersByAdmin = this.userList[0]._id;
-          this.loadUserPreferences(this.selectedUsersByAdmin);
+          this.preferenceService.getPreferenceByKey(PreferenceKeys.SettingsUserSettingsSelectedMember, this.userId?.id)
+          .subscribe({
+            next: (response: any) => {
+              const preferences = response?.data?.preferences || [];
+              const match = preferences.find((pref: any) =>
+                pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.SettingsUserSettingsSelectedMember
+              );
+              this.selectedUsersByAdmin = match?.preferenceOptionId?.preferenceValue || ''; 
+              this.loadUserPreferences(this.selectedUsersByAdmin);
+            },
+            error: (err) => {
+              console.error('Failed to load language preference', err);
+              this.selectedUsersByAdmin = this.userList[0]._id;
+              this.loadUserPreferences(this.selectedUsersByAdmin);
+            }
+          });
         } else {
           this.loadUserPreferences(this.userId.id);
         }
@@ -75,6 +90,18 @@ export class UserPreferencesComponent implements OnInit {
       },
       error: (error) => console.error('Failed to load user preferences:', error)
     });
+    
+
+    //Set selected user as preferences
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.preferenceService.createOrUpdatePreference(
+      currentUser.id,
+      PreferenceKeys.SettingsUserSettingsSelectedMember,
+      userId
+    ).subscribe({
+      next: () => console.log(`user preferences state updated to ${userId}`),
+      error: (err) => console.error('Error updating menu state:', err)
+    });
   }
 
   // Update form validity
@@ -90,7 +117,8 @@ export class UserPreferencesComponent implements OnInit {
         this.preferenceService.createOrUpdatePreference(
           this.view.toLowerCase() === 'admin'? this.selectedUsersByAdmin : this.userId.id,
           pref.key,
-          this.userPreferences[pref.key] || 'false'
+          (pref.metadata?.inputType === 'checkbox' ? this.userPreferences[pref.key] || 'false'
+          : (pref.metadata?.inputType === 'number'? this.userPreferences[pref.key] || '0' : ''))
         )
       );
 

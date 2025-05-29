@@ -13,22 +13,26 @@ import { FixedAllowanceComponent } from './settings/fixed-allowance/fixed-allowa
 import { PfChargesComponent } from './settings/pf-charges/pf-charges.component';
 import { FlexiBenefitsComponent } from './settings/flexi-benefits/flexi-benefits.component';
 import { LoansAdvancesComponent } from './settings/loans-advances/loans-advances.component';
-import { OtherBenefitsComponent } from './settings/other-benefits/other-benefits.component';
 import { VariableDeductionComponent } from './settings/variable-deduction/variable-deduction.component';
 import { FixedDeductionComponent } from './settings/fixed-deduction/fixed-deduction.component';
 import { VariableAllowanceComponent } from './settings/variable-allowance/variable-allowance.component';
 import { FixedContributionComponent } from './settings/fixed-contribution/fixed-contribution.component';
 import { UpdateCTCTemplateComponent } from './ctc-templates/update-ctctemplate/update-ctctemplate.component';
 import { AssignedTemplatesComponent } from './ctc-templates/assigned-templates/assigned-templates.component';
-import { AssignedFixedAllowanceComponent } from './ctc-templates/assigned-templates/fixed-allowance/fixed-allowance.component';
 
 const routes: Routes = [
+  {
+        path: '',
+        redirectTo: (localStorage.getItem('adminView') === 'user') ? 'my-payslips' : 'PayrollComponent',
+        pathMatch: 'full'
+      },
   {
     path: '', component: PayrollComponent, canActivate: [AuthGuard],
     children: [
       { path: '', redirectTo: 'settings', pathMatch: 'full' },
       {
         path: 'settings', component: SettingsComponent, canActivate: [AuthGuard],
+        data: { permission: 'Payroll' },
         children: [
           { path: '', redirectTo: 'general-settings', pathMatch: 'full' },
           { path: 'general-settings', component: GeneralSettingsComponent },
@@ -37,7 +41,6 @@ const routes: Routes = [
           { path: 'variable-allowances', component: VariableAllowanceComponent },
           { path: 'fixed-deductions', component: FixedDeductionComponent },
           { path: 'variable-deductions', component: VariableDeductionComponent },
-          { path: 'other-benefits', component: OtherBenefitsComponent },
           { path: 'loans-advances', component: LoansAdvancesComponent },
           { path: 'flexi-benefits', component: FlexiBenefitsComponent },
           { path: 'pf-charges', component: PfChargesComponent }
@@ -72,7 +75,8 @@ const routes: Routes = [
       { path: 'payslips', component: PayslipsComponent },
       { path: 'fnf-payslips', component: FnfPayslipsComponent }
     ]
-  }
+  },
+  { path: 'my-payslips', component: PayslipsComponent }
 ];
 
 @NgModule({

@@ -7,7 +7,6 @@ import { FixedContributionComponent } from './settings/fixed-contribution/fixed-
 import { VariableAllowanceComponent } from './settings/variable-allowance/variable-allowance.component';
 import { FixedDeductionComponent } from './settings/fixed-deduction/fixed-deduction.component';
 import { VariableDeductionComponent } from './settings/variable-deduction/variable-deduction.component';
-import { OtherBenefitsComponent } from './settings/other-benefits/other-benefits.component';
 import { LoansAdvancesComponent } from './settings/loans-advances/loans-advances.component';
 import { FlexiBenefitsComponent } from './settings/flexi-benefits/flexi-benefits.component';
 import { PfChargesComponent } from './settings/pf-charges/pf-charges.component';
@@ -34,7 +33,6 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { UpdateCTCTemplateComponent } from './ctc-templates/update-ctctemplate/update-ctctemplate.component';
 import { AssignedTemplatesComponent } from './ctc-templates/assigned-templates/assigned-templates.component';
 import { EmployeeDeductionComponent } from './ctc-templates/assigned-templates/employee-deduction/employee-deduction.component';
-import { OtherBenefitComponent } from './ctc-templates/assigned-templates/other-benefit/other-benefit.component';
 import { AssignedFixedAllowanceComponent } from './ctc-templates/assigned-templates/fixed-allowance/fixed-allowance.component';
 import { AssignedFixedContributionComponent } from './ctc-templates/assigned-templates/fixed-contribution/fixed-contribution.component';
 import { AssignedFixedDeductionComponent } from './ctc-templates/assigned-templates/fixed-deduction/fixed-deduction.component';
@@ -80,7 +78,6 @@ import { TranslateModule } from '@ngx-translate/core';
     VariableAllowanceComponent,
     FixedDeductionComponent,
     VariableDeductionComponent,
-    OtherBenefitsComponent,
     LoansAdvancesComponent,
     FlexiBenefitsComponent,
     PfChargesComponent,
@@ -104,7 +101,6 @@ import { TranslateModule } from '@ngx-translate/core';
     UpdateCTCTemplateComponent,
     AssignedTemplatesComponent,
     EmployeeDeductionComponent,
-    OtherBenefitComponent,
     AssignedFixedAllowanceComponent,
     AssignedFixedContributionComponent,
     AssignedFixedDeductionComponent,

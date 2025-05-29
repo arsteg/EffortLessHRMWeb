@@ -1,0 +1,11 @@
+.landing-page{
+  scroll-behavior: smooth;
+}
+
+section {
+  padding: 0 var(--size-20);
+}
+
+.bg-orange-10 {
+  background-color: var(--orange-10);
+}

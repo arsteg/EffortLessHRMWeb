@@ -1,16 +1,14 @@
-<h2>Employees State Insurance Corporation</h2>
+<h2>{{'payroll.esic_fullname' | translate}}</h2>
 <hr>
-
 
 <ul class="nav nav-tabs">
     <li class="nav-item">
         <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabCeilingAmount'}"
-            (click)="selectTab('tabCeilingAmount')">Ceiling Amount</a>
+            (click)="selectTab('tabCeilingAmount')" translate>payroll.ceiling_amount</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabContribution'}"
-            (click)="selectTab('tabContribution')">
-            Contribution</a>
+            (click)="selectTab('tabContribution')" translate>payroll.contribution</a>
     </li>
 </ul>
 

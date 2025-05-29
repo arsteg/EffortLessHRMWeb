@@ -37,7 +37,6 @@ export class PayrollService {
 
   fixedAllowances: any = new BehaviorSubject('');
   fixedDeductions: any = new BehaviorSubject('');
-  otherBenefits: any = new BehaviorSubject('');
   employeeDeduction: any = new BehaviorSubject('');
   fixedContributions: any = new BehaviorSubject('');
   variableAllowances: any = new BehaviorSubject('');
@@ -220,7 +219,7 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-contribution-slabs-list-by-state`, payload, this.httpOptions);
     return response;
   }
- 
+
   // LWF_deduction month CRUD
   addLWFDeductionMonth(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/lwf-fixed-deduction-months`, payload, this.httpOptions);
@@ -322,24 +321,6 @@ export class PayrollService {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/variable-deductions-list`, payload, this.httpOptions);
     return response;
   }
-
-  // Other Benefits CRUD
-  addOtherBenefits(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/other-benefits`, payload, this.httpOptions);
-    return response;
-  }
-  getOtherBenefits(payload: any): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/other-benefits-by-company`, payload, this.httpOptions);
-    return response;
-  }
-  updateOtherBenefits(id: string, payload: any): Observable<any> {
-    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/other-benefits/${id}`, payload, this.httpOptions);
-    return response;
-  }
-  deleteOtherBenefits(id: string): Observable<any> {
-    var response = this.http.delete<any>(`${environment.apiUrlDotNet}/payroll/other-benefits/${id}`, this.httpOptions);
-    return response;
-  }
   // Loans/Advances CRUD
   addLoans(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/loan-advances-category`, payload, this.httpOptions);
@@ -416,6 +397,11 @@ export class PayrollService {
     return response;
   }
 
+  updatePayroll(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/${id}`, payload, this.httpOptions);
+    return response;
+  }
+
   getPayroll(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/payroll-by-company`, payload, this.httpOptions);
     return response;
@@ -448,6 +434,10 @@ export class PayrollService {
     return response;
   }
 
+  updatePayrollUserStatus(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/users-status/${id}`, payload, this.httpOptions);
+    return response;
+  }
 
   // Run Payroll: (step-2) Attendance summary
   addAttendanceSummary(payload: any): Observable<any> {
@@ -637,6 +627,11 @@ export class PayrollService {
     return response;
   }
 
+  getGeneratedPayrollByUser(payrollUser: string): Observable<any> {
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-userId/${payrollUser}`, this.httpOptions);
+    return response;
+  }
+
   // FnF CRUD
   addFnF(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/fnf`, payload, this.httpOptions);
@@ -694,6 +689,11 @@ export class PayrollService {
     return response;
   }
 
+  updateFnFUserStatus(id: string, payload: any): Observable<any> {
+    var response = this.http.put<any>(`${environment.apiUrlDotNet}/payroll/fnf/users-status/${id}`, payload, this.httpOptions);
+    return response;
+  }
+  
   // FnF Attendance Summary CRUD
 
   getAttendanceRecordsByUserAndPayroll(payload: any): Observable<any> {
@@ -980,17 +980,30 @@ export class PayrollService {
     return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-status-list`, this.httpOptions);
   }
 
-  getFnFPayrollStatus(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/common/get-fnf-user-status-list`, this.httpOptions);
+  getPayrollUserStatus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-user-status-list`, this.httpOptions);
   }
 
+  getFNFPayrollStatus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-fnf-status-list`, this.httpOptions);
+  }
+
+  getFNFPayrollUserStatus(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/common/get-payroll-fnf-user-status-list`, this.httpOptions);
+  }
+
+  // Generated FnF Payroll
   getGeneratedFnFPayrollByFNFPayroll(fnfPayroll: string): Observable<any> {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/generatedPayroll-by-fnf-payroll/${fnfPayroll}`, this.httpOptions);
     return response;
   }
 
   getGeneratedFnFPayroll(): Observable<any> {
-    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/generatedFNFPayroll-by-company`,{}, this.httpOptions);
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/generatedFNFPayroll-by-company`, {}, this.httpOptions);
     return response;
+  }
+
+  getTaxableSalaryAmountByUserId(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/payroll/get-total-taxable-amount-from-salary-structure-by-user/${id}`, this.httpOptions);
   }
 }

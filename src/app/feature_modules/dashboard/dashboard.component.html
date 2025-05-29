@@ -89,7 +89,7 @@
       <div class="col-md-4 mb-4">
         <div class="card p-2 shadow-sm">
           <h3 class="d-flex align-items-center"><mat-icon>hourglass_empty</mat-icon>Time spent</h3>
-          <mat-tab-group>
+          <mat-tab-group [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onTabChange($event)">
             <mat-tab label="Daily">
               <div class="mx-auto w-75" style="height: 200px">
                 <ngx-charts-bar-vertical [results]="hoursWorked?.chartData" [legend]="false" [xAxis]="true"

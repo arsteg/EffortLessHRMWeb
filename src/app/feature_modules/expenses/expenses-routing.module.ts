@@ -22,13 +22,15 @@ const routes: Routes = [
       {
         path: '',
         redirectTo: (localStorage.getItem('adminView') === 'user') ? 'my-expense' : 'settings',
-        pathMatch: 'full'
+        pathMatch: 'full',
+        data: { permission: 'Expenses' },
       },
       { path: 'my-expense', component: ShowMyExpensesComponent },
       { path: 'team-expense', component: TeamExpenseComponent },
       { path: 'general-information', component: GeneralInformationComponent },
       {
         path: 'settings', component: SettingsComponent, canActivate: [AuthGuard],
+        data: { permission: 'Expenses' },
         children: [
           { path: '', redirectTo: 'expense-category', pathMatch: 'full' },
           { path: 'expense-category', component: ExpensesCategoriesComponent },

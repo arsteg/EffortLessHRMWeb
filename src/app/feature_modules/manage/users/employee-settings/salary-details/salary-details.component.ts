@@ -23,6 +23,7 @@ export class SalaryDetailsComponent {
   showAddSalaryDetails: boolean = false;
   selectedUser: any;
   public sortOrder: string = '';
+  showAddButton: boolean = true; // New property to control button visibility
 
   constructor(
     private modalService: NgbModal,
@@ -32,13 +33,13 @@ export class SalaryDetailsComponent {
     private router: Router,
     public authService: AuthenticationService,
     private route: ActivatedRoute,
-
   ) { }
 
   ngOnInit(): void {
     this.logUrlSegmentsForUser();
+    // Check if the URL contains 'profile'
+    this.showAddButton = !this.router.url.includes('profile');
   }
-
 
   calculateTotalAmount(frequency: string, amount: number): number {
     const frequencyMultiplier: { [key: string]: number } = {

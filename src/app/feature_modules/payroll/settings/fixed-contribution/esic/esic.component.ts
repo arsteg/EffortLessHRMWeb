@@ -9,9 +9,7 @@ export class EsicComponent {
   activeTab: string = 'tabCeilingAmount';
   @Input() selectedRecord: any;
 
-  ngOnInit(){
-    console.log(this.selectedRecord)
-  }
+  ngOnInit() { }
   selectTab(tabId: string) {
     this.activeTab = tabId;
   }

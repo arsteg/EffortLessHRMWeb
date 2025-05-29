@@ -16,13 +16,7 @@
                 <input matInput [matDatepicker]="joiningDatePicker1" (focus)="joiningDatePicker1.open()"
                     formControlName="payrollEffectiveFrom">
                 <mat-datepicker #joiningDatePicker1></mat-datepicker>
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
-                <mat-label>Select Actual Effective Date</mat-label>
-                <input matInput [matDatepicker]="joiningDatePicker2" (focus)="joiningDatePicker2.open()"
-                    formControlName="actualEffectiveDate">
-                <mat-datepicker #joiningDatePicker2></mat-datepicker>
-            </mat-form-field>
+            </mat-form-field>          
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>For what frequency would you like to enter the CTC amount?</mat-label>
                 <input matInput type="text" value="Yearly" formControlName="frequencyToEnterCTC" readonly>
@@ -38,12 +32,8 @@
             </mat-form-field>
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>Enter Yearly Gross Amount</mat-label>
-                <input matInput type="number" formControlName="Amount">
-            </mat-form-field>
-            <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
-                <mat-label>Monthly Basic Salary</mat-label>
-                <input matInput type="number" formControlName="BasicSalary">
-            </mat-form-field>
+                <input matInput type="number" formControlName="Amount" readonly>
+            </mat-form-field>      
             <div class="col-md-6 my-2 border-bottom">
                 <mat-label>Is employer part inclusive in salary structure</mat-label>
                 <mat-radio-group formControlName="isEmployerPartInclusiveInSalaryStructure">
@@ -212,65 +202,7 @@
                         </tbody>
                     </table>
                 </div>
-            </mat-expansion-panel>
-
-            <!-- Other Benefits -->
-            <mat-expansion-panel [expanded]="true">
-                <mat-expansion-panel-header class="header">
-                    <mat-panel-title>Salary Component Other Benefits</mat-panel-title>
-                </mat-expansion-panel-header>
-                <div formArrayName="salaryComponentOtherBenefits">
-                    <div *ngFor="let benefit of salaryDetailsForm.get('salaryComponentOtherBenefits')['controls']; let i = index" [formGroupName]="i" class="row align-items-center">
-                        <ng-container *ngIf="salaryDetailsForm.get('CTCTemplate').value === 'manual' || benefit.get('isNew')?.value">
-                            <mat-form-field appearance="outline" class="col-md-3 my-2">
-                                <mat-label>Other Benefit</mat-label>
-                                <mat-select formControlName="otherBenefits" (selectionChange)="updateLabel(i, $event.value, 'otherBenefits')">
-                                    <mat-option *ngFor="let item of otherBenefits" [value]="item._id">
-                                        {{item.label}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </ng-container>
-                        <ng-container *ngIf="salaryDetailsForm.get('CTCTemplate').value !== 'manual' && !benefit.get('isNew')?.value">
-                            <mat-form-field appearance="outline" class="col-md-3 my-2">
-                                <mat-label>Other Benefit</mat-label>
-                                <input matInput type="text" formControlName="otherBenefitsLabel" readonly>
-                            </mat-form-field>
-                        </ng-container>
-                        <mat-form-field appearance="outline" class="col-md-3 my-2">
-                            <mat-label>Monthly Amount</mat-label>
-                            <input matInput type="number" formControlName="monthlyAmount" (input)="updateYearlyAmount(i, 'salaryComponentOtherBenefits')">
-                        </mat-form-field>
-                        <mat-form-field appearance="outline" class="col-md-3 my-2">
-                            <mat-label>Yearly Amount</mat-label>
-                            <input matInput type="number" formControlName="yearlyAmount">
-                        </mat-form-field>
-                        <div class="col-md-1 my-2">
-                            <button mat-icon-button color="warn" (click)="removeOtherBenefit(i)" type="button" *ngIf="!edit">
-                                <mat-icon>delete</mat-icon>
-                            </button>
-                        </div>
-                    </div>
-                    <button mat-raised-button color="primary" (click)="addOtherBenefit()" type="button" *ngIf="!edit && addButtons">Add Other Benefit</button>
-                </div>
-                <div *ngIf="edit">
-                    <table>
-                        <thead>
-                            <th>Other Benefits</th>
-                            <th>Monthly Amount</th>
-                            <th>Yearly Amount</th>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let fixedAll of salaryDetails?.otherBenefitList">
-                                <td>{{fixedAll?.otherBenefits?.label}}</td>
-                                <td>{{fixedAll?.monthlyAmount | number:'1.2-2'}}</td>
-                                <td>{{fixedAll?.yearlyAmount | number:'1.2-2'}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </mat-expansion-panel>
-
+            </mat-expansion-panel>         
             <!-- Fixed Deduction -->
             <mat-expansion-panel [expanded]="true">
                 <mat-expansion-panel-header class="header">

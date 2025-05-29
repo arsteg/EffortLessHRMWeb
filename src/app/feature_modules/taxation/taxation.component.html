@@ -1,20 +1,15 @@
     <div>
         @if(view === 'admin'){
            <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
-           <a mat-tab-link>Settings</a>
-           <a mat-tab-link>Tax Exemptions</a>
-           <a mat-tab-link
+            <a mat-tab-link
               routerLink="sections"
                  routerLinkActive #rla1="routerLinkActive"
               [active]="rla1.isActive">Income Tax Sections</a>
               <a mat-tab-link
               routerLink="components"
                  routerLinkActive #rla4="routerLinkActive"
-              [active]="rla4.isActive">Income Tax Sections Components</a>
-              
-              <a mat-tab-link>Tax Overrides</a>
-
-              <a mat-tab-link>eTDS</a>
+              [active]="rla4.isActive">Income Tax Sections Components</a>              
+             
               <a mat-tab-link
               routerLink="all-tax-declarations"
                  routerLinkActive #rla7="routerLinkActive"

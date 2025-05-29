@@ -5,6 +5,7 @@ import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { signup, User, changeUserPassword, webSignup } from '../models/user';
 import { Router } from '@angular/router';
+import { Role } from '../models/role.model';
 
 @Injectable({ providedIn: 'root' })
 
@@ -64,6 +65,10 @@ export class AuthenticationService {
     this.currentUser = this.currentUserSubject.asObservable();
     const storedUser = JSON.parse(localStorage.getItem('currentUser'));
     if (storedUser) {
+      const storedUserRole = localStorage.getItem('role');
+      if (storedUserRole) {
+          storedUser.role = storedUserRole;
+      }
       this.currentUserSubject.next(storedUser);
     }
     const subscription = JSON.parse(localStorage.getItem('subscription'));
@@ -106,6 +111,7 @@ export class AuthenticationService {
             lastName: user.data.user.lastName,
             freeCompany: user.data.user.company.freeCompany,
             empCode: user.data.user.appointment?.[0]?.empCode,
+            role: user.data.user.role.name.toLowerCase() == "admin"? Role.Admin : Role.User,
           }
         );
         this.companySubscription.next(user.data.companySubscription);
@@ -131,6 +137,10 @@ export class AuthenticationService {
       this.router.navigate(['/login']);
       resolve();
     });
+  }
+
+  getAppView() {
+    return localStorage.getItem('adminView');
   }
 
   redirectToLogin() {
@@ -310,6 +320,24 @@ export class AuthenticationService {
   getRolePermissions(): Observable<any> {
     const httpOptions = this.getHttpOptions();
     return this.http.get(`${environment.apiUrlDotNet}/auth/rolePermissions`, httpOptions);
+  }
+
+  getPermissionsByRole(roleName: string): Observable<any> {
+    const httpOptions = this.getHttpOptions();
+    const url = `${environment.apiUrlDotNet}/auth/rolePermissions/by-role?roleName=${encodeURIComponent(roleName)}`;
+    return this.http.get(url, httpOptions);
+  }
+
+  isMenuAccessible(menuName: string, roleName: string): Observable<boolean> {
+    return this.getPermissionsByRole(roleName).pipe(
+      map((response: any) => {
+        if (response && response.data && Array.isArray(response.data)) {
+          const allowedPermissions: string[] = response.data.map((p: string) => p.toLowerCase());
+          return allowedPermissions.includes(menuName.toLowerCase());
+        }
+        return false;
+      })
+    );
   }
 
   getRolePermissionById(id: string): Observable<any> {

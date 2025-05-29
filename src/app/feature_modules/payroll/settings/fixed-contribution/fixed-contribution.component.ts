@@ -45,8 +45,7 @@ export class FixedContributionComponent {
   closeOffcanvas() {
     const offcanvas = document.getElementById('contribution');
     if (offcanvas) {
-      offcanvas.classList.remove('show'); // This is just an example to hide the offcanvas.
+      offcanvas.classList.remove('show');
     }
-    // this.showOffcanvas = false;
   }
 }

@@ -12,22 +12,22 @@
     <table mat-table [dataSource]="payslips" class="mat-elevation-z8">
       <ng-container matColumnDef="PayrollUser">
         <th mat-header-cell *matHeaderCellDef translate>payroll.employee</th>
-        <td mat-cell *matCellDef="let element"> {{element.PayrollUser?.user?.name}} </td>
+        <td mat-cell *matCellDef="let element"> {{element?.PayrollUser?.user?.firstName}}&nbsp;{{element?.PayrollUser?.user?.lastName}} </td>
       </ng-container>
 
       <ng-container matColumnDef="period">
         <th mat-header-cell *matHeaderCellDef translate>payroll.period</th>
-        <td mat-cell *matCellDef="let element"> {{element.payroll?.month}} - {{element?.payroll?.year}} </td>
+        <td mat-cell *matCellDef="let element"> {{element?.PayrollUser?.payroll?.month}} - {{element?.PayrollUser?.payroll?.year}} </td>
       </ng-container>
 
       <ng-container matColumnDef="payroll">
         <th mat-header-cell *matHeaderCellDef translate>payroll.generated_on</th>
-        <td mat-cell *matCellDef="let element"> {{element.payroll?.date | date: 'mediumDate'}} </td>
+        <td mat-cell *matCellDef="let element"> {{element?.PayrollUser?.payroll?.date | date: 'mediumDate'}} </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef translate>payroll.status</th>
-        <td mat-cell *matCellDef="let data"> {{data?.payroll?.status}} </td>
+        <td mat-cell *matCellDef="let data"> {{data?.PayrollUser?.payroll?.status}} </td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
@@ -44,4 +44,4 @@
   </div>
 </div>
 
-<app-generate-payslips *ngIf="showPayslipDetail" (close)="closePayslipDetail()"></app-generate-payslips>
+<app-generate-payslips *ngIf="showPayslipDetail" [payslip]="selectedRecord" (close)="closePayslipDetail()"></app-generate-payslips>

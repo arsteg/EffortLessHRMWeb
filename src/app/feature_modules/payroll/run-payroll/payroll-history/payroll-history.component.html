@@ -70,6 +70,12 @@
                 <mat-icon>delete</mat-icon>
                 <span>Delete</span>
               </button>
+              <ng-container *ngFor="let status of payrollStatusArray">
+                <button mat-menu-item *ngIf="status.toLowerCase() !== data?.status?.toLowerCase()" (click)="selectedPayroll = data; openUpdateStatusDialog(status)">
+                  <span>{{ status }}</span>
+                </button>
+              </ng-container>
+
             </mat-menu>
           </td>
         </ng-container>
@@ -81,11 +87,42 @@
   </div>
 </div>
 
+<ng-template #updateStatus>
+  <h1 mat-dialog-title>Change Payroll status to {{ selectedStatus }}</h1>
+  <div mat-dialog-content>
+    <div class="d-flex justify-content-between">
+      <button mat-raised-button type="button" (click)="closeAddDialog()">Close</button>
+      <button mat-raised-button type="submit" color="primary" (click)="updatePayrollStatus()">
+        {{ selectedStatus }}
+      </button>
+    </div>
+  </div>
+</ng-template>
+
 <ng-template #addDialogTemplate>
   <h1 mat-dialog-title>Create Payroll</h1>
   <div mat-dialog-content>
     <form [formGroup]="payrollForm" (ngSubmit)="onSubmission()">
       <div class="row">
+        <mat-form-field appearance="outline" class="my-2 col-md-6">
+          <mat-label>Payroll Month</mat-label>
+          <mat-select formControlName="month">
+            <mat-option *ngFor="let month of months" [value]="month">{{ month }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="payrollForm.get('month').hasError('required')">Month is required</mat-error>
+        </mat-form-field>
+<div *ngIf="duplicatePayrollError" class="text-danger my-2">
+  A payroll for the selected month and year already exists.
+</div>
+
+        <mat-form-field appearance="outline" class="my-2 col-md-6">
+          <mat-label>Payroll Year</mat-label>
+          <mat-select formControlName="year">
+            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="payrollForm.get('year').hasError('required')">Year is required</mat-error>
+        </mat-form-field>
+
         <mat-form-field appearance="outline" class="col-md-6 my-2">
           <mat-label>Payroll Date</mat-label>
           <input matInput [matDatepicker]="picker" formControlName="date">
@@ -105,28 +142,12 @@
           </mat-select>
           <mat-error *ngIf="payrollForm.get('status').hasError('required')">Status is required</mat-error>
         </mat-form-field>
-
-        <mat-form-field appearance="outline" class="my-2 col-md-6">
-          <mat-label>Payroll Month</mat-label>
-          <mat-select formControlName="month">
-            <mat-option *ngFor="let month of months" [value]="month">{{ month }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="payrollForm.get('month').hasError('required')">Month is required</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="my-2 col-md-6">
-          <mat-label>Payroll Year</mat-label>
-          <mat-select formControlName="year">
-            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="payrollForm.get('year').hasError('required')">Year is required</mat-error>
-        </mat-form-field>
       </div>
     </form>
   </div>
   <div mat-dialog-actions>
-    <button mat-button (click)="closeAddDialog()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="onSubmission()">Save</button>
+    <button mat-button (click)="closeAddDialog()">Close</button>
+    <button mat-raised-button color="primary" [disabled]="duplicatePayrollError" (click)="onSubmission()">Save</button>
   </div>
 </ng-template>
 
@@ -138,8 +159,7 @@
         <mat-form-field appearance="outline" class="col-md-6 my-2">
           <mat-label>Employee Selection for Payroll</mat-label>
           <mat-select formControlName="user" (selectionChange)="getGrossSalaryBySalaryStructure()">
-            <mat-option *ngFor="let user of users" [value]="user?.id"
-            >{{user?.firstName | titlecase}} {{user.lastName |
+            <mat-option *ngFor="let user of users" [value]="user?.id">{{user?.firstName | titlecase}} {{user.lastName |
               titlecase}}</mat-option>
           </mat-select>
           <mat-error *ngIf="payrollUserForm.get('user').touched && payrollUserForm.get('user').hasError('required')">
@@ -148,7 +168,7 @@
           <mat-error *ngIf="payrollUserForm.get('user').valid && payrollUserForm.get('user').hasError('noSalary')">
             Please add the Salary details first to add the selected user in payroll.
           </mat-error>
-          
+
           <mat-error *ngIf="payrollUserForm.get('user')?.hasError('noSalary')">
             Please add the Salary details first to add the selected user in payroll.
           </mat-error>
@@ -160,7 +180,7 @@
       </div>
 
       <div class="row">
-        
+
         <mat-form-field appearance="outline" class="col-md-6 my-2">
           <mat-label>Total CTC</mat-label>
           <input matInput type="number" formControlName="totalCTC" placeholder="Enter Total CTC">
@@ -172,8 +192,6 @@
           <mat-label>Total Gross Salary</mat-label>
           <input matInput type="number" formControlName="totalGrossSalary" placeholder="Enter Total Gross Salary">
         </mat-form-field>
-
-       
       </div>
 
       <mat-form-field appearance="outline" class="col-md-6 my-2">
@@ -186,9 +204,9 @@
     </form>
   </div>
   <div mat-dialog-actions>
-    <button mat-button (click)="closeAddUserDialog()" type="button">Cancel</button>
-    <button mat-raised-button color="primary" (click)="updatePayrollUser()"
-      [disabled]="payrollUserForm.invalid" type="submit">Save</button>
+    <button mat-button (click)="closeAddUserDialog()" type="button">Close</button>
+    <button mat-raised-button color="primary" (click)="updatePayrollUser()" [disabled]="payrollUserForm.invalid"
+      type="submit">Save</button>
   </div>
 </ng-template>
 

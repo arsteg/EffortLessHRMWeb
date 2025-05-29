@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand sticky-top">
+    <div class="container d-flex">
+        <img src="assets/logo/expanded-logo.svg" alt="Effortless HRM" height="54">
+
+        <span class="spacer"></span>
+
+        <ul class="navbar-nav d-none d-lg-flex">
+            <li class="nav-item">
+                <a (click)="scrollToSection('about-us')" class="nav-link">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">Plans <mat-icon>keyboard_arrow_down</mat-icon></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" [matMenuTriggerFor]="featuresMenu">
+                    Features <mat-icon>keyboard_arrow_down</mat-icon>
+                </a>
+                <mat-menu #featuresMenu="matMenu">
+                    <a mat-menu-item (click)="scrollToSection('time-tracking')"><mat-icon>schedule</mat-icon>Time
+                        Tracking Features</a>
+                    <a mat-menu-item (click)="scrollToSection('hrm-features')"><mat-icon>fact_check</mat-icon>HRM
+                        Features</a>
+                </mat-menu>
+            </li>
+            <li class="nav-item">
+                <a [matMenuTriggerFor]="downloadMenu" class="nav-link">Download
+                    <mat-icon>keyboard_arrow_down</mat-icon></a>
+                <mat-menu #downloadMenu="matMenu">
+                    <a mat-menu-item (click)="downloadWindowsInstaller()"><mat-icon>view_cozy</mat-icon>Windows
+                        Installer</a>
+                </mat-menu>
+            </li>
+        </ul>
+
+        <span class="spacer"></span>
+
+        <hrm-language-selector></hrm-language-selector>
+
+        <span class="spacer"></span>
+        <div class="d-none d-lg-block">
+            <a routerLink="/login" class="login-link me-2">Login</a>
+            <a routerLink="/register" mat-flat-button color="primary" class="rounded-pill px-4 fs-6">Sign Up</a>
+        </div>
+
+        <button mat-icon-button class="d-lg-none">
+            <mat-icon>menu</mat-icon>
+        </button>
+    </div>
+</nav>
