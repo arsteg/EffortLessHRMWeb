@@ -3,50 +3,51 @@
     <ng-container *ngIf="showTable">
       <div class="bg-white">
         <div class="d-flex align-items-center px-2 py-1">
-          <p class="mb-0 me-auto">({{totalRecords}}) Records Found</p>
+          <p class="mb-0 me-auto">
+            {{ 'payroll.records_found' | translate: { count: tableService.totalRecords } }}
+          </p>
           <div class="d-flex align-items-center">
             <span class="bi bi-search searchIcon"></span>
-            <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-              name="searchText" aria-label="default input example">
+            <input class="form-control search" type="text"
+                   [placeholder]="'payroll.search_placeholder' | translate"
+                   [(ngModel)]="tableService.searchText" (input)="tableService.applyFilter()"
+                   name="searchText" aria-label="Search CTC templates">
             <button class="addBtn ms-2" mat-raised-button
-              (click)="isEdit = false; navigateToUpdateCTCTemplate();">Add</button>
+                    (click)="isEdit = false; navigateToUpdateCTCTemplate();">
+              {{ 'payroll.add' | translate }}
+            </button>
           </div>
         </div>
-        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-          [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-          (recordsPerPageChange)="onRecordsPerPageChange($event)">
-        </app-pagination>
-        <mat-table [dataSource]="dataSource">
+        <mat-table [dataSource]="tableService.dataSource">
           <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef> Template Name </mat-header-cell>
-            <mat-cell *matCellDef="let ctc"> {{ctc?.name}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef> {{ 'payroll._ctc_templates.table.name' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let ctc"> {{ ctc?.name }} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="fixedAllowances">
-            <mat-header-cell *matHeaderCellDef> Fixed Allowance </mat-header-cell>
-            <mat-cell *matCellDef="let ctc"> {{ctc?.ctcTemplateFixedAllowances?.length}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef> {{ 'payroll._ctc_templates.table.fixed_allowances' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let ctc"> {{ ctc?.ctcTemplateFixedAllowances?.length || 0 }} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="fixedDeductions">
-            <mat-header-cell *matHeaderCellDef> Fixed Deduction </mat-header-cell>
-            <mat-cell *matCellDef="let ctc"> {{ctc?.ctcTemplateFixedDeductions?.length}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef> {{ 'payroll._ctc_templates.table.fixed_deductions' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let ctc"> {{ ctc?.ctcTemplateFixedDeductions?.length || 0 }} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="otherAllowances">
-            <mat-header-cell *matHeaderCellDef> Other Allowances </mat-header-cell>
-            <mat-cell *matCellDef="let ctc"> {{ctc?.ctcTemplateOtherBenefitAllowances?.length}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef> {{ 'payroll._ctc_templates.table.other_allowances' | translate }} </mat-header-cell>
+            <mat-cell *matCellDef="let ctc"> {{ ctc?.ctcTemplateOtherBenefitAllowances?.length || 0 }} </mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef> {{ 'payroll.actions' | translate }} </mat-header-cell>
             <mat-cell *matCellDef="let ctc">
-              <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                (click)=" showTable = false; getComponentsDetail(ctc);">
+              <button class="actions" mat-mini-fab [matTooltip]="'payroll.edit' | translate" matTooltipPosition="before"
+                      (click)="getComponentsDetail(ctc);">
                 <i class="bi bi-pencil-fill"></i>
               </button>
-
-              <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                aria-label="Example icon button with a menu icon" (click)="deleteDialog(ctc?._id)">
+              <button class="actions ms-2" mat-mini-fab [matTooltip]="'payroll.delete' | translate" matTooltipPosition="after"
+                      aria-label="Delete CTC template" (click)="deleteDialog(ctc?._id)">
                 <i class="bi bi-trash"></i>
               </button>
             </mat-cell>
@@ -55,9 +56,11 @@
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
+        <mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
+                       [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
+        </mat-paginator>
       </div>
     </ng-container>
-    <router-outlet *ngIf="!this.showTable"></router-outlet>
-
+    <router-outlet *ngIf="!showTable"></router-outlet>
   </div>
 </div>

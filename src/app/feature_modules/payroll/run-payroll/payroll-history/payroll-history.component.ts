@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, TemplateRef, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Output, TemplateRef, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -7,16 +7,18 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { TableService } from 'src/app/_services/table.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-payroll-history',
   templateUrl: './payroll-history.component.html',
-  styleUrl: './payroll-history.component.css'
+  styleUrls: ['./payroll-history.component.css']
 })
-export class PayrollHistoryComponent {
+export class PayrollHistoryComponent implements AfterViewInit {
   closeResult: string = '';
   isAllEmployees: boolean = true;
-  searchText: string = '';
   payroll: any;
   payrollUsers: any;
   selectedPayroll: any;
@@ -25,11 +27,11 @@ export class PayrollHistoryComponent {
   years: number[] = [];
   users: any;
   displayedColumns: string[] = ['payrollPeriod', 'date', 'payrollDetails', 'status', 'actions'];
-  dataSource: MatTableDataSource<any>;
   @Output() changeView = new EventEmitter<void>();
   @ViewChild('addDialogTemplate') addDialogTemplate: TemplateRef<any>;
   @ViewChild('addUserModal') addUserModal: TemplateRef<any>;
   @ViewChild('updateStatus') updateStatus: TemplateRef<any>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   salaries: any[] = [];
   addedUserIds: string[] = [];
   payrollStatus: any;
@@ -47,7 +49,9 @@ export class PayrollHistoryComponent {
     private toast: ToastrService,
     private commonService: CommonService,
     private userService: UserService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    public tableService: TableService<any>,
+    private translate: TranslateService
   ) {
     this.salaries = [];
     this.addedUserIds = [];
@@ -64,6 +68,15 @@ export class PayrollHistoryComponent {
       totalGrossSalary: [0],
       status: ['Active']
     });
+
+    // Set custom filter predicate to search by payroll period and status
+    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+      const searchString = filter.toLowerCase();
+      return (
+        `${data.month} ${data.year}`.toLowerCase().includes(searchString) ||
+        data.status.toLowerCase().includes(searchString)
+      );
+    });
   }
 
   ngOnInit() {
@@ -75,10 +88,14 @@ export class PayrollHistoryComponent {
     this.payrollForm.get('month').valueChanges.subscribe(() => {
       this.checkForDuplicatePayrollPeriod();
     });
-
     this.payrollForm.get('year').valueChanges.subscribe(() => {
       this.checkForDuplicatePayrollPeriod();
     });
+  }
+
+  ngAfterViewInit() {
+    this.tableService.initializeDataSource([], this.paginator);
+    this.getPayrollWithUserCounts();
   }
 
   checkForDuplicatePayrollPeriod() {
@@ -86,25 +103,22 @@ export class PayrollHistoryComponent {
     const selectedYear = this.payrollForm.get('year').value;
 
     if (selectedMonth && selectedYear) {
-      console.log(selectedMonth, selectedYear);
       this.duplicatePayrollError = this.payrollPeriod?.some(period =>
         period?.month === selectedMonth && period?.year === selectedYear
       );
-      console.log(this.duplicatePayrollError);
     } else {
       this.duplicatePayrollError = false;
     }
   }
 
-
   getPayroll() {
-    let payload = {
-      skip: '0',
-      next: ''
-    }
-    this.payrollService.getPayroll(payload).subscribe((res: any) => {
+    const pagination = {
+      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
+      next: this.tableService.recordsPerPage.toString()
+    };
+    this.payrollService.getPayroll(pagination).subscribe((res: any) => {
       this.payrollPeriod = res.data;
-    })
+    });
   }
 
   getPayrollStatus() {
@@ -170,14 +184,19 @@ export class PayrollHistoryComponent {
     });
     this.payrollUserForm.get('user').setErrors(null);
 
-    // Fetch users already added to the selected payroll
-    const payrollUsersPayload = { skip: '', next: '', payroll: this.selectedPayroll };
+    const payrollUsersPayload = {
+      skip: '',
+      next: '',
+      payroll: this.selectedPayroll
+    };
     this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe(
       (res: any) => {
         this.addedUserIds = res.data.map(user => user.user);
       },
       (err) => {
-        this.toast.error('Error fetching payroll users');
+        this.translate.get('payroll._history.toast.error_fetch_users').subscribe(message => {
+          this.toast.error(message, this.translate.instant('payroll._history.title'));
+        });
         this.addedUserIds = [];
       }
     );
@@ -211,39 +230,63 @@ export class PayrollHistoryComponent {
       updatedOnDate: new Date(),
       status: this.selectedStatus
     };
-    this.payrollService.updatePayroll(id, payload).subscribe((res: any) => {
-      this.toast.success('Payroll status updated successfully', 'Success');
-      this.getPayrollWithUserCounts();
-      this.closeAddDialog();
-    })
+    this.payrollService.updatePayroll(id, payload).subscribe(
+      (res: any) => {
+        this.translate.get([
+          'payroll._history.toast.status_updated',
+          'payroll._history.title'
+        ]).subscribe(translations => {
+          this.toast.success(
+            translations['payroll._history.toast.status_updated'],
+            translations['payroll._history.title']
+          );
+        });
+        this.getPayrollWithUserCounts();
+        this.closeAddDialog();
+      },
+      (err) => {
+        this.translate.get('payroll._history.title').subscribe(title => {
+          this.toast.error(
+            err?.error?.message || this.translate.instant('payroll._history.toast.error_update_status'),
+            title
+          );
+        });
+      }
+    );
   }
 
   getPayrollWithUserCounts() {
-    const payrollPayload = { skip: '', next: '' };
-    this.payrollService.getPayroll(payrollPayload).subscribe((payrollRes: any) => {
+    const pagination = {
+      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
+      next: this.tableService.recordsPerPage.toString()
+    };
+    this.payrollService.getPayroll(pagination).subscribe((payrollRes: any) => {
       this.payroll = payrollRes.data;
 
-      this.payroll.forEach((payrollItem, index) => {
-        const payrollUsersPayload = { skip: '', next: '', payroll: payrollItem._id };
+      const payrollData = this.payroll.map((payrollItem: any, index: number) => {
+        return new Promise(resolve => {
+          const payrollUsersPayload = { skip: '', next: '', payroll: payrollItem._id };
+          this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe((payrollUsersRes: any) => {
+            const users = payrollUsersRes.data;
+            this.payrollUsers = users;
+            const activeCount = users.filter(user => user.status === 'Active').length;
+            const onHoldCount = users.filter(user => user.status === 'OnHold').length;
+            const processedCount = users.filter(user => user.status === 'Processed').length;
 
-        this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe((payrollUsersRes: any) => {
-          const users = payrollUsersRes.data;
-
-          this.payrollUsers = users;
-          const activeCount = users.filter(user => user.status === 'Active').length;
-          const onHoldCount = users.filter(user => user.status === 'OnHold').length;
-          const processedCount = users.filter(user => user.status === 'Processed').length;
-
-          this.payroll[index] = {
-            ...payrollItem,
-            activeCount: activeCount,
-            onHoldCount: onHoldCount,
-            processedCount: processedCount,
-            users: this.payrollUsers
-          };
-
-          this.dataSource = new MatTableDataSource(this.payroll);
+            resolve({
+              ...payrollItem,
+              activeCount: activeCount,
+              onHoldCount: onHoldCount,
+              processedCount: processedCount,
+              users: this.payrollUsers
+            });
+          });
         });
+      });
+
+      Promise.all(payrollData).then(data => {
+        this.tableService.setData(data);
+        this.tableService.totalRecords = payrollRes.total;
       });
     });
   }
@@ -257,21 +300,37 @@ export class PayrollHistoryComponent {
 
   getMonthName(monthNumber: number): string {
     const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    return monthNames[monthNumber - 1] || "Invalid month";
+    return monthNames[monthNumber - 1] || 'Invalid month';
   }
 
   onSubmission() {
     if (this.payrollForm.valid) {
-      this.payrollService.addPayroll(this.payrollForm.value).subscribe((res: any) => {
-        this.getPayrollWithUserCounts();
-        this.toast.success('Payroll Created', 'Successfully!');
-        this.closeAddDialog();
-      }, err => {
-        this.toast.error('Payroll cannot be created', 'Error!');
-      });
+      this.payrollService.addPayroll(this.payrollForm.value).subscribe(
+        (res: any) => {
+          this.translate.get([
+            'payroll._history.toast.created',
+            'payroll._history.title'
+          ]).subscribe(translations => {
+            this.toast.success(
+              translations['payroll._history.toast.created'],
+              translations['payroll._history.title']
+            );
+          });
+          this.getPayrollWithUserCounts();
+          this.closeAddDialog();
+        },
+        err => {
+          this.translate.get('payroll._history.title').subscribe(title => {
+            this.toast.error(
+              err?.error?.message || this.translate.instant('payroll._history.toast.error_create'),
+              title
+            );
+          });
+        }
+      );
     } else {
       this.payrollForm.markAllAsTouched();
     }
@@ -289,8 +348,16 @@ export class PayrollHistoryComponent {
 
         this.payrollService.addPayrollUser(this.payrollUserForm.value).subscribe(
           (res: any) => {
+            this.translate.get([
+              'payroll._history.toast.employee_added',
+              'payroll._history.title'
+            ]).subscribe(translations => {
+              this.toast.success(
+                translations['payroll._history.toast.employee_added'],
+                translations['payroll._history.title']
+              );
+            });
             this.getPayrollWithUserCounts();
-            this.toast.success('Employee added to the payroll', 'Successfully');
             this.payrollUserForm.reset({
               payroll: '',
               user: '',
@@ -302,16 +369,25 @@ export class PayrollHistoryComponent {
             this.closeAddUserDialog();
           },
           (err) => {
-            this.toast.error('Error adding employee to payroll');
+            this.translate.get('payroll._history.title').subscribe(title => {
+              this.toast.error(
+                err?.error?.message || this.translate.instant('payroll._history.toast.error_add_employee'),
+                title
+              );
+            });
           }
         );
       });
     } else {
       this.payrollUserForm.markAllAsTouched();
       if (this.salaries?.length === 0) {
-        this.toast.error('Please add the Salary details first to add the selected user in payroll.');
+        this.translate.get('payroll._history.form.no_salary').subscribe(message => {
+          this.toast.error(message);
+        });
       } else if (this.payrollUserForm.get('user').hasError('userExists')) {
-        this.toast.error('This employee is already added to the payroll.');
+        this.translate.get('payroll._history.form.user_exists').subscribe(message => {
+          this.toast.error(message);
+        });
       }
     }
   }
@@ -329,7 +405,6 @@ export class PayrollHistoryComponent {
     this.payrollUserForm.get('totalCTC')?.enable();
 
     if (this.payrollUserForm.value.user) {
-      // Check if user is already added to the payroll
       if (this.addedUserIds.includes(this.payrollUserForm.value.user)) {
         this.payrollUserForm.get('user').setErrors({ userExists: true });
         this.cdr.detectChanges();
@@ -356,9 +431,12 @@ export class PayrollHistoryComponent {
         (error) => {
           this.salaries = [];
           this.payrollUserForm.get('user').setErrors({ noSalary: true });
-          this.toast.error('Error fetching salary details');
+          this.translate.get('payroll._history.toast.error_salary_fetch').subscribe(message => {
+            this.toast.error(message, this.translate.instant('payroll._history.title'));
+          });
           this.cdr.detectChanges();
-        });
+        }
+      );
     } else {
       this.salaries = [];
       this.cdr.detectChanges();
@@ -368,11 +446,24 @@ export class PayrollHistoryComponent {
   deleteTemplate(_id: string) {
     this.payrollService.deletePayroll(_id).subscribe(
       (res: any) => {
-        this.getPayrollWithUserCounts();
-        this.toast.success('Successfully Deleted!!!', 'Payroll');
+        this.translate.get([
+          'payroll._history.toast.deleted',
+          'payroll._history.title'
+        ]).subscribe(translations => {
+          this.toast.success(
+            translations['payroll._history.toast.deleted'],
+            translations['payroll._history.title']
+          );
+        });
+        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
       },
       (err) => {
-        this.toast.error('This Payroll Can not be deleted!');
+        this.translate.get('payroll._history.title').subscribe(title => {
+          this.toast.error(
+            err?.error?.message || this.translate.instant('payroll._history.toast.error_delete'),
+            title
+          );
+        });
       }
     );
   }
@@ -386,5 +477,10 @@ export class PayrollHistoryComponent {
         this.deleteTemplate(id);
       }
     });
+  }
+
+  onPageChange(event: any) {
+    this.tableService.updatePagination(event);
+    this.getPayrollWithUserCounts();
   }
 }
