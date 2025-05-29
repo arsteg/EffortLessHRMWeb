@@ -14,11 +14,6 @@ export class TableService<T> {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  // initializeDataSource(data: T[], paginator: MatPaginator) {
-  //   this.dataSource = new MatTableDataSource<T>(data);
-  //   this.dataSource.paginator = paginator;
-  //   this.totalRecords = data.length;
-  // }
 initializeDataSource(data: T[], paginator?: MatPaginator) {
   this.dataSource = new MatTableDataSource<T>(data);
   if (paginator) {

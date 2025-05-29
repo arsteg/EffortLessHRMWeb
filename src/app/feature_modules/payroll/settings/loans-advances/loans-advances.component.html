@@ -2,9 +2,8 @@
     <div class="container-fluid">
         <div class="bg-white">
             <div class="d-flex align-items-center px-2 py-1">
-                <p class="mb-0 me-auto">
-                    {{ 'payroll.records_found' | translate: { count: tableService.totalRecords } }}
-                </p>
+                <p class="mb-0 me-auto"> ({{tableService.totalRecords}}) {{ 'payroll.records_found' | translate}}
+            </p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
                     <input class="form-control search" type="text"

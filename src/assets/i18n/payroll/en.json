@@ -73,7 +73,7 @@
         },
         "_fnf": {
             "title": "Full and Final Payroll",
-            "records_found": "{{count}} Full and Final Records Found",
+            "records_found": "Full and Final Records Found",
             "add": "Add FnF Payroll",
             "no_users_tooltip": "There is no user available to add in FnF payroll",
             "add_title": "Add Full & Final Payroll",
@@ -186,7 +186,7 @@
         "save": "Save",
         "yes": "Yes",
         "no": "No",
-        "records_found": "{{count}} Records Found",
+        "records_found": "Records Found",
         "allowance_name": "Allowance Name",
         "pf": "PF",
         "esic": "ESIC",
@@ -577,6 +577,19 @@
                 "error_update": "Flexi Benefits Category Can not be Updated",
                 "success_deleted": "Successfully Deleted!!!",
                 "error_delete": "Flexi Benefits Category Can not be deleted"
+            }
+        },
+        "_ctc_templates": {
+            "title": "CTC Templates",
+            "table": {
+                "name": "Template Name",
+                "fixed_allowances": "Fixed Allowances",
+                "fixed_deductions": "Fixed Deductions",
+                "other_allowances": "Other Allowances"
+            },
+            "toast": {
+                "success_deleted": "CTC Template deleted successfully",
+                "error_delete": "Failed to delete CTC Template"
             }
         }
     }

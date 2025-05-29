@@ -94,7 +94,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.tableService.initializeDataSource([], this.paginator);
+    this.tableService.initializeDataSource([]);
     this.getPayrollWithUserCounts();
   }
 

@@ -89,7 +89,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.tableService.initializeDataSource([], this.paginator);
+    this.tableService.initializeDataSource([]);
     this.fetchFnFPayroll();
   }
 
