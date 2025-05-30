@@ -1,15 +1,18 @@
 <div class="main-content container-fluid">
     <div class="bg-white">
         <div class="d-flex align-items-center px-2">
-            <p class="mb-0 me-auto" translate [translateParams]="{ count: fixedAllowance?.length }">payroll.records_found</p>
+            <p class="mb-0 me-auto"> ({{tableService.totalRecords}}) {{ 'payroll.records_found' | translate}}
+            </p>
             <div class="d-flex align-items-center">
                 <span class="bi bi-search searchIcon"></span>
-                <input class="form-control search" type="text" [placeholder]="'payroll.search_placeholder' | translate" [(ngModel)]="searchText"
-                    name="searchText" aria-label="default input example">
-                <button class="addBtn mx-2" mat-raised-button (click)="isEdit= false; open(modal);">{{'payroll.add'| translate}}</button>
+                <input class="form-control search" type="text" [placeholder]="'payroll.search_placeholder' | translate"
+                    [(ngModel)]="tableService.searchText" (input)="tableService.applyFilter()" name="searchText"
+                    aria-label="default input example">
+                <button class="addBtn mx-2" mat-raised-button (click)="isEdit= false; open(modal);">{{'payroll.add'|
+                    translate}}</button>
             </div>
         </div>
-        <table mat-table [dataSource]="fixedAllowance">
+        <table mat-table [dataSource]="tableService.dataSource">
             <ng-container matColumnDef="label">
                 <th mat-header-cell *matHeaderCellDef translate>payroll.allowance_name</th>
                 <td mat-cell *matCellDef="let fa"> {{fa?.label}} </td>
@@ -94,7 +97,8 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item (click)="selectedRecord = fa; isEdit= true; open(modal); editRecord();" translate>
+                        <button mat-menu-item (click)="selectedRecord = fa; isEdit= true; open(modal); editRecord();"
+                            translate>
                             <mat-icon>edit</mat-icon>
                             <span translate>payroll.edit</span>
                         </button>
@@ -113,8 +117,8 @@
                 *matRowDef="let row; columns: ['label', 'isProvidentFundAffected', 'isESICAffected', 'isLWFAffected', 'isProfessionalTaxAffected', 'isTDSAffected', 'isGratuityFundAffected', 'actions']">
             </tr>
         </table>
-        <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]"
-            (page)="onPageChange($event)">
+        <mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
+            [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
         </mat-paginator>
     </div>
 </div>

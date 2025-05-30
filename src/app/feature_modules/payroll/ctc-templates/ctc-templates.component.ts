@@ -1,82 +1,88 @@
-import { ChangeDetectorRef, Component, ComponentFactoryResolver, ElementRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { UpdateCTCTemplateComponent } from './update-ctctemplate/update-ctctemplate.component';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatDrawer } from '@angular/material/sidenav';
-import { Router, NavigationExtras, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatPaginator } from '@angular/material/paginator';
+import { TableService } from 'src/app/_services/table.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ctc-templates',
   templateUrl: './ctc-templates.component.html',
-  styleUrl: './ctc-templates.component.css'
+  styleUrls: ['./ctc-templates.component.css']
 })
-export class CtcTemplatesComponent {
-  ctcTemplate: any;
-  searchText: string = '';
-  closeResult: string = '';
-  selectedRecord: any;
-  showAssignedTemplates = false;
+export class CtcTemplatesComponent implements OnInit, AfterViewInit {
   isEdit: boolean = false;
-  @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
-  @ViewChild('drawer', { static: true }) drawer: MatDrawer;
-  totalRecords: number;
+  selectedRecord: any;
+  showAssignedTemplates: boolean = false;
+  totalRecords: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  offcanvasData = 'Initial data';
-  showOffcanvas: boolean = false;
-  public sortOrder: string = '';
-  displayedColumns: string[] = ['name', 'fixedAllowances', 'fixedDeductions', 'otherAllowances', 'actions'];
-  dataSource: MatTableDataSource<any>;
   showTable: boolean = true;
+  displayedColumns: string[] = ['name', 'fixedAllowances', 'fixedDeductions', 'otherAllowances', 'actions'];
 
-  constructor(private modalService: NgbModal,
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  constructor(
     private payroll: PayrollService,
     private toast: ToastrService,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef,
     private router: Router,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    public tableService: TableService<any>,
+    private translate: TranslateService
+  ) {
+    // Set custom filter predicate to search by name
+    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+      return data.name.toLowerCase().includes(filter.toLowerCase());
+    });
+  }
 
   ngOnInit() {
     this.getCTCTemplate();
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
-    this.getCTCTemplate();
-  }
-
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
+  ngAfterViewInit() {
+    this.tableService.initializeDataSource([]);
     this.getCTCTemplate();
   }
 
   getCTCTemplate() {
     const pagination = {
-      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: this.recordsPerPage.toString()
+      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
+      next: this.tableService.recordsPerPage.toString()
     };
     this.payroll.getCTCTemplate(pagination).subscribe(data => {
-      this.ctcTemplate = data.data;
-      this.totalRecords = data.total;
-      this.dataSource = new MatTableDataSource(this.ctcTemplate);
+      this.tableService.setData(data.data);
+      this.tableService.totalRecords = data.total;
     });
   }
 
   deleteRecord(_id: string) {
-    this.payroll.deleteCTCTemplate(_id).subscribe((res: any) => {
-      const index = this.ctcTemplate.findIndex(res => res._id === _id);
-      if (index !== -1) {
-        this.ctcTemplate.splice(index, 1);
+    this.payroll.deleteCTCTemplate(_id).subscribe({
+      next: (res: any) => {
+        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
+        this.translate.get([
+          'payroll._ctc_templates.toast.success_deleted',
+          'payroll._ctc_templates.title'
+        ]).subscribe(translations => {
+          this.toast.success(
+            translations['payroll._ctc_templates.toast.success_deleted'],
+            translations['payroll._ctc_templates.title']
+          );
+        });
+      },
+      error: (err) => {
+        this.translate.get('payroll._ctc_templates.title').subscribe(title => {
+          this.toast.error(
+            err?.error?.message || this.translate.instant('payroll._ctc_templates.toast.error_delete'),
+            title
+          );
+        });
       }
-      this.toast.success('Successfully Deleted!!!', 'CTC Template');
-    }, (err) => {
-      this.toast.error('CTC Template can not be deleted', 'Error');
     });
   }
 
@@ -91,25 +97,26 @@ export class CtcTemplatesComponent {
     });
   }
 
-  handleRecordUpdate(updatedRecord: any) {
-    this.getCTCTemplate();
-    this.cdr.detectChanges();
-  }
-
   getComponentsDetail(data: any) {
     this.isEdit = true;
     this.payroll.isEdit.next(true);
     this.payroll.selectedCTCTemplate.next(data);
-    this.payroll.showTable.next(this.showTable);
+    this.payroll.showTable.next(false);
     this.payroll.showAssignedTemplate.next(true);
+    this.showTable = false;
     this.router.navigate([`update-ctc-template`, data._id], { relativeTo: this.route });
   }
 
   navigateToUpdateCTCTemplate() {
     this.payroll.isEdit.next(false);
     this.payroll.showTable.next(false);
-    // this.payroll.selectedCTCTemplate.next();
     this.payroll.showAssignedTemplate.next(true);
+    this.showTable = false;
     this.router.navigate(['home/payroll/ctc-template/create-ctc-template']);
+  }
+
+  onPageChange(event: any) {
+    this.tableService.updatePagination(event);
+    this.getCTCTemplate();
   }
 }

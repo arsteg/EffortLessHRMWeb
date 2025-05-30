@@ -2,34 +2,24 @@
     <div class="container-fluid">
         <div class="bg-white">
             <div class="d-flex align-items-center px-2 py-1">
-                <p class="mb-0 me-auto">
-                    {{ 'payroll.records_found' | translate: { count: loans?.length } }}
-                </p>
+                <p class="mb-0 me-auto"> ({{tableService.totalRecords}}) {{ 'payroll.records_found' | translate}}
+            </p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
                     <input class="form-control search" type="text"
                            [placeholder]="'payroll.search_placeholder' | translate"
-                           [(ngModel)]="searchText" name="searchText"
-                           aria-label="default input example">
-                    <div class="d-flex align-items-center">
-                        <button class="addBtn mx-2" mat-raised-button
-                                (click)="open(modal); isEdit= false; clearForm()">
-                            {{ 'payroll.add' | translate }}
-                        </button>
-                        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
-                            (pageChange)="onPageChange($event)"
-                            (recordsPerPageChange)="onRecordsPerPageChange($event)">
-                        </app-pagination>
-                    </div>
+                           [(ngModel)]="tableService.searchText" (input)="tableService.applyFilter()"
+                           name="searchText" aria-label="default input example">
+                    <button class="addBtn mx-2" mat-raised-button
+                            (click)="open(modal); isEdit= false; clearForm()">
+                        {{ 'payroll.add' | translate }}
+                    </button>
                 </div>
             </div>
-            <table mat-table [dataSource]="loans | search:searchText">
+            <table mat-table [dataSource]="tableService.dataSource">
                 <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef [appSort]="loans" data-name="name"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                    <th mat-header-cell *matHeaderCellDef>
                         {{ 'payroll.loans_advances.table.category_name' | translate }}
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                     </th>
                     <td mat-cell *matCellDef="let loan"> {{ loan?.name }} </td>
                 </ng-container>
@@ -58,6 +48,9 @@
                 <tr mat-header-row *matHeaderRowDef="['name', 'actions']"></tr>
                 <tr mat-row *matRowDef="let row; columns: ['name', 'actions'];"></tr>
             </table>
+            <mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
+                           [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
+            </mat-paginator>
         </div>
     </div>
 </div>
@@ -81,7 +74,7 @@
             </div>
         </div>
         <div mat-dialog-actions class="d-flex border-top mt-2 py-2 justify-content-between">
-            <button mat-raised-button type="button" (click)="clearForm()">
+            <button mat-raised-button type="button" (click)="clearForm(); closeModal()">
                 {{ 'payroll.cancel' | translate }}
             </button>
             <button mat-raised-button type="submit" class="addBtn" [disabled]="!loansAdvancesForm.valid">

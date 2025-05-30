@@ -1,277 +1,304 @@
 <div class="main-content" *ngIf="showFnFPayroll">
-    <div class="container-fluid">
-        <div class="bg-white mt-2">
-            <div class="d-flex justify-content-between align-items-center px-2 py-1">
-                <p class="mb-0">Full and Final Payroll History</p>
-                <div class="ms-auto d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                    <button class="ms-2 w-100" mat-raised-button color="primary"
-                        [matTooltip]="settledUser.length === 0 ? 'There is no User available to add in FNF payroll' : ''"
-                        [matTooltipDisabled]="settledUser.length > 0"
-                        (click)="settledUser.length > 0 ? open(modal) : null">
-                        Add FnF Payroll
-                    </button>
-                </div>
-            </div>
-            <table mat-table [dataSource]="fnfPayroll" class="shadow">
-                <ng-container matColumnDef="period">
-                    <th mat-header-cell *matHeaderCellDef> Full & Final Period </th>
-                    <td mat-cell *matCellDef="let element"> {{element.month}} - {{element.year}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="date">
-                    <th mat-header-cell *matHeaderCellDef> Date </th>
-                    <td mat-cell *matCellDef="let element"> {{element.date | date:'mediumDate'}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="details">
-                    <th mat-header-cell *matHeaderCellDef> Full & Final Users </th>
-                    <td mat-cell *matCellDef="let element">
-                        <mat-icon matTooltip="{{element.details | titlecase}}"
-                            matTooltipPosition="below">info</mat-icon>
-                    </td>
-                </ng-container>
-
-
-
-                <ng-container matColumnDef="status">
-                    <th mat-header-cell *matHeaderCellDef> Status </th>
-                    <td mat-cell *matCellDef="let element"> {{element.status}} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef> Actions </th>
-                    <td mat-cell *matCellDef="let element">
-                        <button mat-icon-button [matMenuTriggerFor]="menu">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item (click)="selectedFnF=element ;editFnF(element)">
-                                <mat-icon>group</mat-icon>
-                                <span>Add Users</span>
-                            </button>
-
-                            <button mat-menu-item (click)="selectedFnF = element; openFnFSteps(element)">
-                                <mat-icon>edit</mat-icon>
-                                <span>Edit</span>
-                            </button>
-
-                            <button mat-menu-item (click)="deleteFnF(element?._id)">
-                                <mat-icon>delete</mat-icon>
-                                <span>Delete</span>
-                            </button>
-                            <ng-container *ngFor="let status of payrollStatusArray">
-                                <button mat-menu-item *ngIf="status.toLowerCase() !== element?.status?.toLowerCase()"
-                                    (click)="selectedFnF = element; openUpdateStatusDialog(status)">
-                                    <span>{{ status }}</span>
-                                </button>
-                            </ng-container>
-                        </mat-menu>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
+  <div class="container-fluid">
+    <div class="bg-white mt-2">
+      <div class="d-flex justify-content-between align-items-center px-2 py-1">
+        <p class="mb-0 me-auto"> ({{tableService.totalRecords}}) {{ 'payroll.records_found' | translate}}
+            </p>
+        <div class="ms-auto d-flex align-items-center">
+          <span class="bi bi-search searchIcon"></span>
+          <input class="form-control search" type="text"
+                 [placeholder]="'payroll.search_placeholder' | translate"
+                 [(ngModel)]="tableService.searchText" (input)="tableService.applyFilter()"
+                 name="searchText" aria-label="Search FnF payroll history">
+          <button class="ms-2 w-100" mat-raised-button color="primary"
+                  [matTooltip]="settledUser.length === 0 ? ('payroll._fnf.no_users_tooltip' | translate) : ''"
+                  [matTooltipDisabled]="settledUser.length > 0"
+                  (click)="settledUser.length > 0 ? open(modal) : null">
+            {{ 'payroll._fnf.add' | translate }}
+          </button>
         </div>
+      </div>
+      <mat-table [dataSource]="tableService.dataSource" class="shadow">
+        <ng-container matColumnDef="period">
+          <mat-header-cell *matHeaderCellDef> {{ 'payroll._fnf.table.period' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.month }} - {{ element.year }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <mat-header-cell *matHeaderCellDef> {{ 'payroll._fnf.table.date' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ element.date | date:'mediumDate' }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="details">
+          <mat-header-cell *matHeaderCellDef> {{ 'payroll._fnf.table.users' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <mat-icon [matTooltip]="element.details | titlecase"
+                      matTooltipPosition="below">info</mat-icon>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef> {{ 'payroll._fnf.table.status' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{ 'payroll._fnf.status.' + element.status.toLowerCase() | translate }} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef> {{ 'payroll.actions' | translate }} </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="selectedFnF = element; editFnF(element)">
+                <mat-icon>group</mat-icon>
+                <span>{{ 'payroll._fnf.actions.add_users' | translate }}</span>
+              </button>
+              <button mat-menu-item (click)="selectedFnF = element; openFnFSteps(element)">
+                <mat-icon>edit</mat-icon>
+                <span>{{ 'payroll.edit' | translate }}</span>
+              </button>
+              <button mat-menu-item (click)="deleteFnF(element?._id)">
+                <mat-icon>delete</mat-icon>
+                <span>{{ 'payroll.delete' | translate }}</span>
+              </button>
+              <ng-container *ngFor="let status of payrollStatusArray">
+                <button mat-menu-item *ngIf="status.toLowerCase() !== element?.status?.toLowerCase()"
+                        (click)="selectedFnF = element; openUpdateStatusDialog(status)">
+                  <span>{{ 'payroll._fnf.status.' + status.toLowerCase() | translate }}</span>
+                </button>
+              </ng-container>
+            </mat-menu>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
+                     [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)"
+                     aria-label="Select page of FnF payroll history">
+      </mat-paginator>
     </div>
+  </div>
 </div>
 
 <ng-template #updateStatus>
-  <h1 mat-dialog-title>Change Payroll status to {{ selectedStatus }}</h1>
+  <h1 mat-dialog-title>{{ 'payroll._fnf.change_status' | translate: { status: ('payroll._fnf.status.' + selectedStatus.toLowerCase() | translate) } }}</h1>
   <div mat-dialog-content>
     <div class="d-flex justify-content-between">
-      <button mat-raised-button type="button" (click)="closeAddDialog()">Close</button>
+      <button mat-raised-button type="button" (click)="closeAddDialog()">{{ 'payroll.close' | translate }}</button>
       <button mat-raised-button type="submit" color="primary" (click)="updatePayrollStatus()">
-        {{ selectedStatus }}
+        {{ 'payroll._fnf.status.' + selectedStatus.toLowerCase() | translate }}
       </button>
     </div>
   </div>
 </ng-template>
 
 <div *ngIf="!showFnFPayroll">
-    <button mat-raised-button (click)="goBack()">Back to Table</button>
-    <mat-horizontal-stepper orientation="vertical" [linear]="false" #stepper>
-        <mat-step>
-            <ng-template matStepLabel>Attendance Summary</ng-template>
-            <ng-template matStepContent><app-step1 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
-                    [selectedFnF]="selectedFnF"></app-step1>
-                <button mat-button matStepperNext>Next</button></ng-template>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>Variable Pay</ng-template>
-            <ng-template matStepContent><app-step2 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
-                    [selectedFnF]="selectedFnF"></app-step2>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
-            </ng-template>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>Manual Arrears</ng-template>
-            <ng-template matStepContent><app-step3 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
-                    [selectedFnF]="selectedFnF"></app-step3>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
-            </ng-template>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>Termination/Resignation Compensation</ng-template>
-            <ng-template matStepContent><app-step4 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
-                    [selectedFnF]="selectedFnF"></app-step4>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
-            </ng-template>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>Loan/Advances</ng-template>
-            <ng-template matStepContent><app-step5 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
-                    [selectedFnF]="selectedFnF"></app-step5>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
-            </ng-template>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>Statutory Benefits</ng-template>
-            <ng-template matStepContent><app-step6 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
-                    [selectedFnF]="selectedFnF"></app-step6>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
-            </ng-template>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>Overtime</ng-template>
-            <ng-template matStepContent><app-step7 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
-                    [selectedFnF]="selectedFnF"></app-step7>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
-            </ng-template>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>Income Tax</ng-template>
-            <ng-template matStepContent><app-step8 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
-                    [selectedFnF]="selectedFnF"></app-step8>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
-                </div>
-            </ng-template>
-        </mat-step>
-        <mat-step>
-            <ng-template matStepLabel>Generated FnF Payroll</ng-template>
-            <ng-template matStepContent><app-step9 [isSteps]="showFnFSteps" [settledUsers]="settledUser"
-                    [selectedFnF]="selectedFnF"></app-step9>
-                <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button (click)="completeFnF()">Complete</button>
-                </div>
-            </ng-template>
-        </mat-step>
-    </mat-horizontal-stepper>
+  <button mat-raised-button (click)="goBack()">{{ 'payroll.back' | translate }}</button>
+  <mat-horizontal-stepper orientation="vertical" [linear]="false" #stepper>
+    <mat-step>
+      <ng-template matStepLabel>{{ 'payroll._fnf.steps.attendance' | translate }}</ng-template>
+      <ng-template matStepContent>
+        <app-step1 [isSteps]="showFnFSteps" [settledUsers]="settledUser" [selectedFnF]="selectedFnF"></app-step1>
+        <button mat-button matStepperNext>{{ 'payroll.next' | translate }}</button>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>{{ 'payroll._fnf.steps.variable_pay' | translate }}</ng-template>
+      <ng-template matStepContent>
+        <app-step2 [isSteps]="showFnFSteps" [settledUsers]="settledUser" [selectedFnF]="selectedFnF"></app-step2>
+        <div>
+          <button mat-button matStepperPrevious>{{ 'payroll.back' | translate }}</button>
+          <button mat-button matStepperNext>{{ 'payroll.next' | translate }}</button>
+        </div>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>{{ 'payroll._fnf.steps.arrears' | translate }}</ng-template>
+      <ng-template matStepContent>
+        <app-step3 [isSteps]="showFnFSteps" [settledUsers]="settledUser" [selectedFnF]="selectedFnF"></app-step3>
+        <div>
+          <button mat-button matStepperPrevious>{{ 'payroll.back' | translate }}</button>
+          <button mat-button matStepperNext>{{ 'payroll.next' | translate }}</button>
+        </div>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>{{ 'payroll._fnf.steps.compensation' | translate }}</ng-template>
+      <ng-template matStepContent>
+        <app-step4 [isSteps]="showFnFSteps" [settledUsers]="settledUser" [selectedFnF]="selectedFnF"></app-step4>
+        <div>
+          <button mat-button matStepperPrevious>{{ 'payroll.back' | translate }}</button>
+          <button mat-button matStepperNext>{{ 'payroll.next' | translate }}</button>
+        </div>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>{{ 'payroll._fnf.steps.loans' | translate }}</ng-template>
+      <ng-template matStepContent>
+        <app-step5 [isSteps]="showFnFSteps" [settledUsers]="settledUser" [selectedFnF]="selectedFnF"></app-step5>
+        <div>
+          <button mat-button matStepperPrevious>{{ 'payroll.back' | translate }}</button>
+          <button mat-button matStepperNext>{{ 'payroll.next' | translate }}</button>
+        </div>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>{{ 'payroll._fnf.steps.statutory' | translate }}</ng-template>
+      <ng-template matStepContent>
+        <app-step6 [isSteps]="showFnFSteps" [settledUsers]="settledUser" [selectedFnF]="selectedFnF"></app-step6>
+        <div>
+          <button mat-button matStepperPrevious>{{ 'payroll.back' | translate }}</button>
+          <button mat-button matStepperNext>{{ 'payroll.next' | translate }}</button>
+        </div>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>{{ 'payroll._fnf.steps.overtime' | translate }}</ng-template>
+      <ng-template matStepContent>
+        <app-step7 [isSteps]="showFnFSteps" [settledUsers]="settledUser" [selectedFnF]="selectedFnF"></app-step7>
+        <div>
+          <button mat-button matStepperPrevious>{{ 'payroll.back' | translate }}</button>
+          <button mat-button matStepperNext>{{ 'payroll.next' | translate }}</button>
+        </div>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>{{ 'payroll._fnf.steps.income_tax' | translate }}</ng-template>
+      <ng-template matStepContent>
+        <app-step8 [isSteps]="showFnFSteps" [settledUsers]="settledUser" [selectedFnF]="selectedFnF"></app-step8>
+        <div>
+          <button mat-button matStepperPrevious>{{ 'payroll.back' | translate }}</button>
+          <button mat-button matStepperNext>{{ 'payroll.next' | translate }}</button>
+        </div>
+      </ng-template>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>{{ 'payroll._fnf.steps.generated' | translate }}</ng-template>
+      <ng-template matStepContent>
+        <app-step9 [isSteps]="showFnFSteps" [settledUsers]="settledUser" [selectedFnF]="selectedFnF"></app-step9>
+        <div>
+          <button mat-button matStepperPrevious>{{ 'payroll.back' | translate }}</button>
+          <button mat-button (click)="completeFnF()">{{ 'payroll._fnf.complete' | translate }}</button>
+        </div>
+      </ng-template>
+    </mat-step>
+  </mat-horizontal-stepper>
 </div>
 
 <ng-template #modal let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">Add Full & Final</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
+  <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
+    <div>
+      <h1 class="modal-title text-muted mb-0">{{ 'payroll._fnf.add_title' | translate }}</h1>
     </div>
-    <div class="modal-body">
-        <form [formGroup]="fnfForm" (ngSubmit)="onSubmission()">
-            <div class="form-group">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Date</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="date">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
-            </div>
-            <div class="form-group my-2">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Full and Final Month</mat-label>
-                    <mat-select formControlName="month">
-                        <mat-option *ngFor="let month of fnfMonths" [value]="month">{{month}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="form-group">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Full and Final Year</mat-label>
-                    <mat-select formControlName="year">
-                        <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-            </div>
-
-            <div class="d-flex justify-content-between mt-3">
-                <button mat-raised-button type="button" (click)="resetForm()">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit">Submit</button>
-            </div>
-        </form>
+    <div>
+      <button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+              (click)="modal.close('Escape clicked')"></button>
     </div>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="fnfForm" (ngSubmit)="onSubmission()">
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'payroll._fnf.form.date' | translate }}</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="fnfForm.get('date').hasError('required')">
+            {{ 'payroll._fnf.form.date_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-group my-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'payroll._fnf.form.month' | translate }}</mat-label>
+          <mat-select formControlName="month">
+            <mat-option *ngFor="let month of fnfMonths" [value]="month">{{ month }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="fnfForm.get('month').hasError('required')">
+            {{ 'payroll._fnf.form.month_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-group">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'payroll._fnf.form.year' | translate }}</mat-label>
+          <mat-select formControlName="year">
+            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="fnfForm.get('year').hasError('required')">
+            {{ 'payroll._fnf.form.year_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="d-flex justify-content-between mt-3">
+        <button mat-raised-button type="button" (click)="resetForm()">{{ 'payroll.cancel' | translate }}</button>
+        <button mat-raised-button class="addBtn" type="submit">{{ 'payroll.submit' | translate }}</button>
+      </div>
+    </form>
+  </div>
 </ng-template>
 
 <ng-template #fnfUserModal let-modal>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">Add Settled User for Full & Final Payroll</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
+  <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
+    <div>
+      <h1 class="modal-title text-muted mb-0">{{ 'payroll._fnf.add_user_title' | translate }}</h1>
     </div>
-    <div class="modal-body">
-        <form [formGroup]="fnfUserForm" (ngSubmit)="onFnFUserSubmission()">
-
-            <div class="form-group my-2">
-                <app-fnf-users [selectedFnF]="selectedFnF"
-                    (changeUser)="onUserSelectedFromChild($event)"></app-fnf-users>
-            </div>
-            <div class="form-group my-2">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Total Flexi Benefits</mat-label>
-                    <input matInput formControlName="totalFlexiBenefits" type="number" [disabled]>
-                </mat-form-field>
-            </div>
-            <div class="form-group my-2">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Total CTC</mat-label>
-                    <input matInput formControlName="totalCTC" type="number">
-                </mat-form-field>
-            </div>
-            <div class="form-group my-2">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Total Gross Salary</mat-label>
-                    <input matInput formControlName="totalGrossSalary" type="number">
-                </mat-form-field>
-            </div>
-            <div class="form-group my-2">
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>Total Take Home</mat-label>
-                    <input matInput formControlName="totalTakeHome" type="number">
-                </mat-form-field>
-            </div>
-
-            <div class="d-flex justify-content-between mt-3">
-                <button mat-raised-button type="button" (click)="modal.close()">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit">Submit</button>
-            </div>
-        </form>
+    <div>
+      <button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+              (click)="modal.close('Escape clicked')"></button>
     </div>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="fnfUserForm" (ngSubmit)="onFnFUserSubmission()">
+      <div class="form-group my-2">
+        <app-fnf-users [selectedFnF]="selectedFnF"
+                       (changeUser)="onUserSelectedFromChild($event)"></app-fnf-users>
+        <mat-error *ngIf="fnfUserForm.get('user').touched && fnfUserForm.get('user').hasError('required')">
+          {{ 'payroll._fnf.form.user_required' | translate }}
+        </mat-error>
+      </div>
+      <div class="form-group my-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'payroll._fnf.form.flexi_benefits' | translate }}</mat-label>
+          <input matInput formControlName="totalFlexiBenefits" type="number" [disabled]="true">
+          <mat-error *ngIf="fnfUserForm.get('totalFlexiBenefits').hasError('required')">
+            {{ 'payroll._fnf.form.flexi_benefits_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-group my-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'payroll._fnf.form.total_ctc' | translate }}</mat-label>
+          <input matInput formControlName="totalCTC" type="number" [disabled]="true">
+          <mat-error *ngIf="fnfUserForm.get('totalCTC').hasError('required')">
+            {{ 'payroll._fnf.form.total_ctc_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-group my-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'payroll._fnf.form.gross_salary' | translate }}</mat-label>
+          <input matInput formControlName="totalGrossSalary" type="number" [disabled]="true">
+          <mat-error *ngIf="fnfUserForm.get('totalGrossSalary').hasError('required')">
+            {{ 'payroll._fnf.form.gross_salary_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-group my-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'payroll._fnf.form.take_home' | translate }}</mat-label>
+          <input matInput formControlName="totalTakeHome" type="number" [disabled]="true">
+          <mat-error *ngIf="fnfUserForm.get('totalTakeHome').hasError('required')">
+            {{ 'payroll._fnf.form.take_home_required' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="d-flex justify-content-between mt-3">
+        <button mat-raised-button type="button" (click)="modal.close()">{{ 'payroll.cancel' | translate }}</button>
+        <button mat-raised-button class="addBtn" type="submit">{{ 'payroll.submit' | translate }}</button>
+      </div>
+    </form>
+  </div>
 </ng-template>

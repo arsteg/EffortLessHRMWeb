@@ -109,10 +109,7 @@ export class HeaderComponent {
       this.loggedInUser._id,
       PreferenceKeys.MenuCollapseOrExpand,
       menuState
-    ).subscribe({
-      next: () => console.log(`Menu state updated to ${menuState}`),
-      error: (err) => console.error('Error updating menu state:', err)
-    });
+    ).subscribe();
   }
 
   switchView(view: string) {
@@ -122,10 +119,7 @@ export class HeaderComponent {
       this.loggedInUser._id,
       PreferenceKeys.AppMode,
       selectedAppMode
-    ).subscribe({
-      next: () => console.log('AppMode updated successfully'),
-      error: (err) => console.error('Error updating AppMode:', err)
-    });
+    ).subscribe();
   }
 
   onLogout() {

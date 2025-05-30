@@ -74,10 +74,7 @@ export class ProductivityReportComponent implements OnInit {
           this.currentUser.id,
           PreferenceKeys.ReportsProductivityReportsBy,
           'Single'
-        ).subscribe({
-          next: () => console.log(`Menu state updated to singe`),
-          error: (err) => console.error('Error updating menu state:', err)
-        });
+        ).subscribe();
   }
   toggleAllMembers() {
     this.showSingleMember = false;
@@ -88,10 +85,7 @@ export class ProductivityReportComponent implements OnInit {
           this.currentUser.id,
           PreferenceKeys.ReportsProductivityReportsBy,
           'Members'
-        ).subscribe({
-          next: () => console.log(`Menu state updated to members`),
-          error: (err) => console.error('Error updating menu state:', err)
-        });
+        ).subscribe();
   }
 
   populateUsers() {
