@@ -32,6 +32,7 @@ export class FixedDeductionComponent implements AfterViewInit {
   ) {
     this.fixedContributionForm = this.fb.group({
       label: ['', Validators.required],
+      isEffectAttendanceOnEligibility: [false]
     });
 
     // Set custom filter predicate to search by label

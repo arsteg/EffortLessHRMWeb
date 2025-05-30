@@ -496,6 +496,7 @@
             "title": "Fixed Deduction",
             "table": {
                 "deduction_name": "Deduction Name",
+                "deduction_eligilibity": "Deduction Eligibility",
                 "actions_aria": "More actions"
             },
             "modal": {
