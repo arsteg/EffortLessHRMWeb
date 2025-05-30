@@ -27,7 +27,8 @@
             "status": {
                 "in_progress": "In Progress",
                 "complete_approval": "Complete Approval Pending",
-                "on_hold": "On Hold",
+                "onhold": "On Hold",
+                "closed": "Closed",
                 "processed": "Processed",
                 "active": "Active",
                 "inactive": "Inactive"
@@ -508,7 +509,8 @@
                 "label_placeholder": "Deduction Name",
                 "error": {
                     "label_required": "Label is required"
-                }
+                },
+                "isEffectAttendanceOnEligibility": "Does attendance determine eligibility"
             },
             "menu": {
                 "actions_aria": "More actions"

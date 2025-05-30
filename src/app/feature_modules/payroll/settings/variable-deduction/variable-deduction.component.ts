@@ -57,11 +57,31 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
     this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
       return data.label.toLowerCase().includes(filter);
     });
+
+    // Add validator updates for conditional fields
+    this.variableDeductionForm.get('isEndingPeriod').valueChanges.subscribe(value => {
+      const stopMonthControl = this.variableDeductionForm.get('deductionStopMonth');
+      const stopYearControl = this.variableDeductionForm.get('deductionStopYear');
+      if (value === true) {
+        stopMonthControl.setValidators(Validators.required);
+        stopYearControl.setValidators(Validators.required);
+      } else {
+        stopMonthControl.clearValidators();
+        stopYearControl.clearValidators();
+        stopMonthControl.setValue('');
+        stopYearControl.setValue('');
+      }
+      stopMonthControl.updateValueAndValidity();
+      stopYearControl.updateValueAndValidity();
+    });
   }
 
   ngOnInit() {
-    // Load translated months
-    this.months = this.translate.instant('payroll.months');
+    this.translate.get('payroll._lwf.monthly_deduction.month').subscribe((translations) => {
+      this.months = Object.values(translations); // ['January', 'February', ...]
+      console.log('Months:', this.months);
+    });
+
     this.getVariableDeduction();
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
@@ -70,6 +90,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.tableService.initializeDataSource([]);
+    this.tableService.paginator = this.paginator;
     this.getVariableDeduction();
   }
 
@@ -108,7 +129,6 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
   }
 
   onSubmission() {
-    if (this.variableDeductionForm.valid) {
       const formValue = this.variableDeductionForm.value;
       const payload = { ...formValue };
       if (!this.isEdit) {
@@ -128,7 +148,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
             );
           }
         });
-      } else {
+      } else if (this.isEdit) {
         this.payroll.updateVariableDeduction(this.selectedRecord._id, payload).subscribe({
           next: (res: any) => {
             const updatedData = this.tableService.dataSource.data.map(item =>
@@ -149,9 +169,6 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
           }
         });
       }
-    } else {
-      this.markFormGroupTouched(this.variableDeductionForm);
-    }
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
@@ -166,13 +183,28 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
   isPercentageSelected(): boolean {
     const value = this.variableDeductionForm.get('amountEnterForThisVariableDeduction').value;
     return (
-      value === this.translate.instant('payroll.variable_deduction.amount_percentage_gross') ||
-      value === this.translate.instant('payroll.variable_deduction.amount_percentage_basic_da')
+      value === 'Percentage of gross salary paid' ||
+      value === 'Percentage of(Basic + DA) paid (or Basic if DA is not applicable)'
     );
   }
 
   editRecord() {
-    this.variableDeductionForm.patchValue(this.selectedRecord);
+    if (this.selectedRecord) {
+      this.variableDeductionForm.patchValue({
+        label: this.selectedRecord.label || '',
+        isShowINCTCStructure: this.selectedRecord.isShowINCTCStructure ?? this.selectedRecord.isShowInCTCStructure ?? true,
+        paidDeductionFrequently: this.selectedRecord.paidDeductionFrequently || '',
+        deductionEffectiveFromMonth: this.selectedRecord.deductionEffectiveFromMonth || '',
+        deductionEffectiveFromYear: Number(this.selectedRecord.deductionEffectiveFromYear),
+        isEndingPeriod: this.selectedRecord.isEndingPeriod ?? true,
+        deductionStopMonth: this.selectedRecord.isEndingPeriod ? this.selectedRecord.deductionStopMonth || '' : '',
+        deductionStopYear: this.selectedRecord.isEndingPeriod ? this.selectedRecord.deductionStopYear ? String(this.selectedRecord.deductionStopYear) : '' : '',
+        amountEnterForThisVariableDeduction: this.selectedRecord.amountEnterForThisVariableDeduction || '',
+        amount: this.selectedRecord.amount || 0,
+        percentage: this.selectedRecord.percentage || 0
+      });
+      this.variableDeductionForm.get('isEndingPeriod').updateValueAndValidity();
+    }
   }
 
   deleteRecord(_id: string) {

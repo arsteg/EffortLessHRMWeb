@@ -107,8 +107,7 @@
                         {{ 'payroll._variable_allowance.table.frequency' | translate }}
                     </th>
                     <td mat-cell *matCellDef="let va">
-                        {{ 'payroll._variable_allowance.frequency.' + va?.paidAllowanceFrequently.toLowerCase() |
-                        translate }}
+                        {{ va?.paidAllowanceFrequently | titlecase }}
                     </td>
                 </ng-container>
 
@@ -279,7 +278,7 @@
                     </div>
                 </div>
 
-                <div class="row d-none">
+                <div class="row">
                     <div class="form-check mt-2 col-md-6">
                         <mat-form-field appearance="fill" class="w-100">
                             <mat-label>{{ 'payroll._variable_allowance.form.frequency' | translate }}</mat-label>
