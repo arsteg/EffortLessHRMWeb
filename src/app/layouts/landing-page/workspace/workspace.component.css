@@ -3,6 +3,11 @@
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
 
+    .col-12 {
+      scroll-snap-align: start;
+      padding-right: var(--size-16);
+    }
+
     &.no-scroll {
       &::scroll-button(left),
       &::scroll-button(right) {
