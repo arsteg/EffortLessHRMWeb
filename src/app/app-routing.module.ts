@@ -7,7 +7,7 @@ import { ForgotPasswordComponent } from './login/forgot-password/forgot-password
 import { AuthGuard } from './auth.guard';
 import { ChangePasswordComponent } from './login/change-password/change-password.component';
 import { HomeComponent } from './layouts/home/home.component';
-import { MainComponent } from './layouts/main/main.component';
+// import { MainComponent } from './layouts/main/main.component';
 import { TasksComponent } from './tasks/tasks.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 import { TagComponent } from './tasks/task.tag/tag.component';
@@ -25,8 +25,8 @@ import { LandingPageComponent } from './layouts//landing-page/landing-page.compo
 
 const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
-  { path: 'landing', component: MainComponent },
-  { path: 'landing-1', component: LandingPageComponent },
+  // { path: 'landing', component: MainComponent },
+  { path: 'landing', component: LandingPageComponent },
   {
     path: 'home', component: HomeComponent, canActivate: [AuthGuard],
     data: { permission: 'Home' },

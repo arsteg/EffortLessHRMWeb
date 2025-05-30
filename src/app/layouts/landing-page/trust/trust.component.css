@@ -1,6 +1,6 @@
-
 /* trust section */
 .trust-section {
+  view-timeline-name: --trust-timeline;
   background: linear-gradient(
     270deg,
     rgba(255, 242, 232, 0) 0%,
@@ -20,7 +20,54 @@
     }
 
     p {
-      font-size: var(--size-18);
+      font-size: var(--size-16);
+      line-height: 1.2;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .slide-left {
+    animation: slide-left linear;
+  }
+  
+  .slide-right {
+    animation: slide-right linear;
+  }
+  
+  .slide-top {
+    animation: slide-top linear;
+  }
+
+  .slide-top, .slide-right, .slide-left {
+    animation-timeline: --trust-timeline;
+    animation-range: entry 0% entry 100%;
+  }
+
+  @keyframes slide-top {
+    0% {
+      transform: translateY(300px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  @keyframes slide-left {
+    0% {
+      transform: translateX(-300px);
+    }
+    100% {
+      transform: translateX(0px);
+    }
+  }
+
+  @keyframes slide-right {
+    0% {
+      transform: translateX(300px);
+    }
+    100% {
+      transform: translateX(0px);
     }
   }
 }
