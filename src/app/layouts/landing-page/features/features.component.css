@@ -1,12 +1,17 @@
-
 /* Features Section */
 .carousel-section {
+  view-timeline-name: --features-timeline;
   margin-top: 120px;
   margin-bottom: 65px;
 
   .card {
     background: rgba(245, 245, 245, 0.39);
     border-color: rgba(213, 213, 213, 0.42);
+
+    p {
+      font-size: var(--size-16);
+      line-height: 1.2;
+    }
   }
 
   .carousel {
@@ -46,5 +51,22 @@
     .col-12 {
       scroll-snap-align: start;
     }
+  }
+}
+
+.text-fade-in {
+  animation: text-fade-in linear;
+  animation-timeline: --features-timeline;
+  animation-range: entry 0% entry 100%;
+}
+
+@keyframes text-fade-in {
+  0% {
+    scale: 0.5;
+    opacity: 0;
+  }
+  100% {
+    scale: 1;
+    opacity: 1;
   }
 }

@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  selectedTab: number = 1;
+  selectedTab: number = 3;
   view = localStorage.getItem('adminView');
   
   constructor(

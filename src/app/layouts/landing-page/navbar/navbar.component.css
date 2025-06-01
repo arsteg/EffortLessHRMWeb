@@ -15,6 +15,7 @@ nav {
       /** override Bootstrap's default link color **/
       color: var(--grey) !important;
       font-size: var(--size-16);
+      cursor: pointer;
 
       mat-icon {
         line-height: 1.5;

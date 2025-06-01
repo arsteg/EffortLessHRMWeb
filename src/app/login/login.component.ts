@@ -84,7 +84,7 @@ export class LoginComponent implements OnInit {
                 typeof pref.preferenceOptionId !== 'string' &&
                 pref.preferenceOptionId.preferenceKey === PreferenceKeys.AppMode
               );
-              
+
               if (appModePreference && typeof appModePreference.preferenceOptionId !== 'string') {
                 this.selectedAppMode = appModePreference.preferenceOptionId.preferenceValue;
               } else {
@@ -97,7 +97,6 @@ export class LoginComponent implements OnInit {
               console.error('Error fetching preferences:', error);
               this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
               this.createUserPreference(this.user.id, PreferenceKeys.AppMode, this.selectedAppMode);
-              this.errorMessage = error;
             }
           });
         }
@@ -121,18 +120,10 @@ export class LoginComponent implements OnInit {
       userId,
       preferenceKey,
       preferenceValue
-    ).subscribe({
-      next: () => {
-        localStorage.setItem('adminView', this.selectedAppMode);
-        this.router.navigateByUrl(this.returnUrl);
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error saving AppMode preference:', err);
-        localStorage.setItem('adminView', this.selectedAppMode);
-        this.router.navigateByUrl(this.returnUrl);
-        this.loading = false;
-      }
-    });
+    ).subscribe();
+
+    localStorage.setItem('adminView', this.selectedAppMode);
+    this.router.navigateByUrl(this.returnUrl);
+    this.loading = false;
   }
 } 

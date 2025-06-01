@@ -391,10 +391,7 @@ export class TimelineComponent implements OnInit {
       this.currentUser.id,
       PreferenceKeys.ReportsTimelineColumnBy,
       column
-    ).subscribe({
-      next: () => console.log(`Menu state updated to ${column}`),
-      error: (err) => console.error('Error updating menu state:', err)
-    });
+    ).subscribe();
 
   }
 

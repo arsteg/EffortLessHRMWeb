@@ -1,9 +1,12 @@
-
-
 .workspace {
   .overflow-auto {
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
+
+    .col-12 {
+      scroll-snap-align: start;
+      padding-right: var(--size-16);
+    }
 
     &.no-scroll {
       &::scroll-button(left),
@@ -37,6 +40,14 @@
       border-radius: 50%;
       padding: var(--size-6);
       position: relative;
+      left: 40%;
+      top: 180px;
+    }
+
+    &::scroll-button(left):disabled,
+    &::scroll-button(right):disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 }

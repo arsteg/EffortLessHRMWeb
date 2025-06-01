@@ -30,6 +30,7 @@ export class PermissionsComponent implements OnInit {
   permissionsDataSource = new MatTableDataSource<Permission>([]);
   userRolesDataSource = new MatTableDataSource<UserRole>([]);
   rolePermissionsDataSource = new MatTableDataSource<RolePermission>([]);
+  groupedRolePermissions: { role: string, permissions: RolePermission[] }[] = [];
 
   // Displayed columns for each tab
   rolesColumns: string[] = ['name', 'description', 'actions'];
@@ -111,13 +112,36 @@ export class PermissionsComponent implements OnInit {
 
   loadRolePermissions() {
     this.authService.getRolePermissions().subscribe((res: any) => {
-      this.rolePermissionsDataSource.data = res.data.map((rp: any) => ({
+      const data = res.data.map((rp: any) => ({
         ...rp,
         role: this.getRoleName(rp.roleId._id),
         permission: this.getPermissionName(rp.permissionId._id),
       }));
+      const groupedMap = new Map<string, RolePermission[]>();
+      data.forEach((item) => {
+        const roleName = item.role;
+        if (!groupedMap.has(roleName)) {
+          groupedMap.set(roleName, []);
+        }
+        groupedMap.get(roleName)?.push(item);
+      });
+      this.groupedRolePermissions = Array.from(groupedMap.entries()).map(([role, permissions]) => ({
+        role,
+        permissions
+      }));
       this.totalRecords = res.total || res.data.length;
     });
+  }
+
+  applyAccordionFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+
+    this.groupedRolePermissions = this.groupedRolePermissions.map(group => ({
+      ...group,
+      permissions: group.permissions.filter(p => 
+        p.permissionId.permissionName.toLowerCase().includes(filterValue)
+      )
+    })).filter(group => group.permissions.length > 0);
   }
 
   loadUsers() {

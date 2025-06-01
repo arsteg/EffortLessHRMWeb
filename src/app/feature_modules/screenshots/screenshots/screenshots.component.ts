@@ -96,16 +96,8 @@ export class ScreenshotsComponent implements OnInit {
       currentUser.id,
       PreferenceKeys.ScreenshotSelectedMember,
       this.member ? JSON.stringify(this.member) : ''
-    ).subscribe({
-      next: () =>{ 
-        console.log('Member preference updated');
-        this.showScreenShots();
-      },
-      error: (err) =>{
-         console.error('Error updating member preference:', err);
-         this.showScreenShots();
-      }
-    });
+    ).subscribe();
+    this.showScreenShots();
 
   }
   populateMembers() {

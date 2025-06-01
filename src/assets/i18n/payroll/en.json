@@ -13,6 +13,133 @@
         "generated_on": "Generated On",
         "status": "Status",
         "actions": "Actions",
+        "_history": {
+            "title": "Payroll History",
+            "table": {
+                "period": "Payroll Period",
+                "date": "Date",
+                "details": "Payroll Details",
+                "status": "Status",
+                "processed": "Processed Employees: {{count}}",
+                "active": "Active Employees: {{count}}",
+                "onhold": "On-Hold Employees: {{count}}"
+            },
+            "status": {
+                "in_progress": "In Progress",
+                "complete_approval": "Complete Approval Pending",
+                "onhold": "On Hold",
+                "closed": "Closed",
+                "processed": "Processed",
+                "active": "Active",
+                "inactive": "Inactive"
+            },
+            "actions": {
+                "add_employee": "Add Employee"
+            },
+            "change_status": "Change Payroll Status to {{status}}",
+            "create_payroll": "Create Payroll",
+            "assign_employee": "Assign Payroll to Employees",
+            "form": {
+                "month": "Payroll Month",
+                "month_required": "Month is required",
+                "year": "Payroll Year",
+                "year_required": "Year is required",
+                "date": "Payroll Date",
+                "date_required": "Date is required",
+                "status": "Payroll Status",
+                "status_required": "Status is required",
+                "select_status": "Select payroll status",
+                "employee": "Employee Selection for Payroll",
+                "employee_required": "Please choose an employee to assign the payroll",
+                "no_salary": "Please add the salary details first to add the selected user in payroll",
+                "user_exists": "This employee is already added to the payroll",
+                "total_ctc": "Total CTC",
+                "enter_ctc": "Enter Total CTC",
+                "gross_salary": "Total Gross Salary",
+                "enter_gross_salary": "Enter Total Gross Salary",
+                "duplicate_error": "A payroll for the selected month and year already exists"
+            },
+            "toast": {
+                "status_updated": "Payroll status updated successfully",
+                "error_update_status": "Error updating payroll status",
+                "created": "Payroll created successfully",
+                "error_create": "Payroll cannot be created",
+                "employee_added": "Employee added to the payroll successfully",
+                "error_add_employee": "Error adding employee to payroll",
+                "error_fetch_users": "Error fetching payroll users",
+                "error_salary_fetch": "Error fetching salary details",
+                "deleted": "Payroll deleted successfully",
+                "error_delete": "This payroll cannot be deleted"
+            }
+        },
+        "_fnf": {
+            "title": "Full and Final Payroll",
+            "records_found": "Full and Final Records Found",
+            "add": "Add FnF Payroll",
+            "no_users_tooltip": "There is no user available to add in FnF payroll",
+            "add_title": "Add Full & Final Payroll",
+            "add_user_title": "Add Settled User for Full & Final Payroll",
+            "complete": "Complete",
+            "table": {
+                "period": "Full & Final Period",
+                "date": "Date",
+                "users": "Full & Final Users",
+                "status": "Status"
+            },
+            "status": {
+                "inprogress": "In Progress",
+                "complete approval pending": "Complete Approval Pending",
+                "onhold": "On Hold",
+                "processed": "Processed"
+            },
+            "steps": {
+                "attendance": "Attendance Summary",
+                "variable_pay": "Variable Pay",
+                "arrears": "Manual Arrears",
+                "compensation": "Termination/Resignation Compensation",
+                "loans": "Loan/Advances",
+                "statutory": "Statutory Benefits",
+                "overtime": "Overtime",
+                "income_tax": "Income Tax",
+                "generated": "Generated FnF Payroll"
+            },
+            "actions": {
+                "add_users": "Add Users"
+            },
+            "change_status": "Change Payroll Status to {{status}}",
+            "form": {
+                "date": "Date",
+                "date_required": "Date is required",
+                "month": "Full and Final Month",
+                "month_required": "Month is required",
+                "year": "Full and Final Year",
+                "year_required": "Year is required",
+                "user_required": "User is required",
+                "flexi_benefits": "Total Flexi Benefits",
+                "flexi_benefits_required": "Total Flexi Benefits is required",
+                "total_ctc": "Total CTC",
+                "total_ctc_required": "Total CTC is required",
+                "gross_salary": "Total Gross Salary",
+                "gross_salary_required": "Total Gross Salary is required",
+                "take_home": "Total Take Home",
+                "take_home_required": "Total Take Home is required"
+            },
+            "toast": {
+                "status_updated": "FnF Payroll status updated successfully",
+                "error_update_status": "Failed to update FnF Payroll status",
+                "created": "Full & Final Payroll created successfully",
+                "error_create": "Failed to create Full & Final Payroll",
+                "user_updated": "FnF User updated successfully",
+                "error_update_user": "Failed to update FnF User",
+                "error_fetch_payroll": "Failed to fetch Full & Final Payroll data",
+                "error_fetch_users": "Failed to fetch user data",
+                "error_fetch_salary": "Failed to fetch salary details",
+                "error_fetch_flexi": "Failed to fetch flexi benefits",
+                "deleted": "Full & Final Payroll deleted successfully",
+                "error_delete": "Failed to delete Full & Final Payroll",
+                "completed": "FnF Payroll completed successfully"
+            }
+        },
         "show_payslip": "Show Payslip",
         "refresh": "Refresh",
         "generated_salary_slip": "Generated Salary Slip",
@@ -60,7 +187,7 @@
         "save": "Save",
         "yes": "Yes",
         "no": "No",
-        "records_found": "{{count}} Records Found",
+        "records_found": "Records Found",
         "allowance_name": "Allowance Name",
         "pf": "PF",
         "esic": "ESIC",
@@ -370,6 +497,7 @@
             "title": "Fixed Deduction",
             "table": {
                 "deduction_name": "Deduction Name",
+                "deduction_eligilibity": "Deduction Eligibility",
                 "actions_aria": "More actions"
             },
             "modal": {
@@ -381,7 +509,8 @@
                 "label_placeholder": "Deduction Name",
                 "error": {
                     "label_required": "Label is required"
-                }
+                },
+                "isEffectAttendanceOnEligibility": "Does attendance determine eligibility"
             },
             "menu": {
                 "actions_aria": "More actions"
@@ -451,6 +580,19 @@
                 "error_update": "Flexi Benefits Category Can not be Updated",
                 "success_deleted": "Successfully Deleted!!!",
                 "error_delete": "Flexi Benefits Category Can not be deleted"
+            }
+        },
+        "_ctc_templates": {
+            "title": "CTC Templates",
+            "table": {
+                "name": "Template Name",
+                "fixed_allowances": "Fixed Allowances",
+                "fixed_deductions": "Fixed Deductions",
+                "other_allowances": "Other Allowances"
+            },
+            "toast": {
+                "success_deleted": "CTC Template deleted successfully",
+                "error_delete": "Failed to delete CTC Template"
             }
         }
     }

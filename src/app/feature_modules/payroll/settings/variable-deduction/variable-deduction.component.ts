@@ -1,41 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { TableService } from 'src/app/_services/table.service';
 
 @Component({
   selector: 'app-variable-deduction',
   templateUrl: './variable-deduction.component.html',
-  styleUrl: './variable-deduction.component.css'
+  styleUrls: ['./variable-deduction.component.css']
 })
-export class VariableDeductionComponent implements OnInit {
-  closeResult: string;
+export class VariableDeductionComponent implements OnInit, AfterViewInit {
   isEdit: boolean = false;
   selectedRecord: any;
-  variableDeduction: any;
   variableDeductionForm: FormGroup;
-  searchText: string = '';
-  totalRecords: number;
-  recordsPerPage: number = 10;
-  currentPage: number = 1;
+  dialogRef: MatDialogRef<any>;
   months: string[] = [];
   years: number[] = [];
   members: any[];
-  public sortOrder: string = '';
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
-    private modalService: NgbModal,
     private toast: ToastrService,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private payroll: PayrollService,
     private commonService: CommonService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    public tableService: TableService<any>
   ) {
     this.variableDeductionForm = this.fb.group({
       label: ['', Validators.required],
@@ -44,29 +41,61 @@ export class VariableDeductionComponent implements OnInit {
       deductionEffectiveFromMonth: ['', Validators.required],
       deductionEffectiveFromYear: ['', Validators.required],
       isEndingPeriod: [true, Validators.required],
-      deductionStopMonth: ['', Validators.required],
-      deductionStopYear: ['', Validators.required],
+      deductionStopMonth: [''],
+      deductionStopYear: [''],
       amountEnterForThisVariableDeduction: ['', Validators.required],
-      amount: [0, Validators.required],
-      percentage: [0, Validators.required],
+      amount: [0],
+      percentage: [0]
     });
+
     const currentYear = new Date().getFullYear();
     for (let year = currentYear - 2; year <= currentYear + 1; year++) {
       this.years.push(year);
     }
+
+    // Set custom filter predicate to search by label
+    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+      return data.label.toLowerCase().includes(filter);
+    });
+
+    // Add validator updates for conditional fields
+    this.variableDeductionForm.get('isEndingPeriod').valueChanges.subscribe(value => {
+      const stopMonthControl = this.variableDeductionForm.get('deductionStopMonth');
+      const stopYearControl = this.variableDeductionForm.get('deductionStopYear');
+      if (value === true) {
+        stopMonthControl.setValidators(Validators.required);
+        stopYearControl.setValidators(Validators.required);
+      } else {
+        stopMonthControl.clearValidators();
+        stopYearControl.clearValidators();
+        stopMonthControl.setValue('');
+        stopYearControl.setValue('');
+      }
+      stopMonthControl.updateValueAndValidity();
+      stopYearControl.updateValueAndValidity();
+    });
   }
 
   ngOnInit() {
-    // Load translated months
-    this.months = this.translate.instant('payroll.months');
+    this.translate.get('payroll._lwf.monthly_deduction.month').subscribe((translations) => {
+      this.months = Object.values(translations); // ['January', 'February', ...]
+      console.log('Months:', this.months);
+    });
+
     this.getVariableDeduction();
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
     });
   }
 
+  ngAfterViewInit() {
+    this.tableService.initializeDataSource([]);
+    this.tableService.paginator = this.paginator;
+    this.getVariableDeduction();
+  }
+
   clearForm() {
-    this.variableDeductionForm.patchValue({
+    this.variableDeductionForm.reset({
       label: '',
       isShowINCTCStructure: true,
       paidDeductionFrequently: '',
@@ -82,73 +111,64 @@ export class VariableDeductionComponent implements OnInit {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
-  }
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
+    });
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+    this.dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.getVariableDeduction();
+      }
+    });
   }
 
   closeModal() {
-    this.modalService.dismissAll();
+    this.clearForm();
+    this.dialogRef.close(true);
   }
 
   onSubmission() {
-    const formValue = this.variableDeductionForm.value;
-    const payload = {
-      ...formValue
-    };
-    // if (this.variableDeductionForm.valid) {
-    if (!this.isEdit) {
-      this.payroll.addVariableDeduction(payload).subscribe(
-        (res: any) => {
-          this.variableDeduction.push(res.data);
-          this.toast.success(
-            this.translate.instant('payroll.variable_deduction.toast.success_added'),
-            this.translate.instant('payroll.variable_deduction.toast.title')
-          );
-        },
-        (err) => {
-          this.toast.error(
-            this.translate.instant('payroll.variable_deduction.toast.error_add'),
-            this.translate.instant('payroll.variable_deduction.toast.title')
-          );
-        }
-      );
-    } else {
-      this.payroll.updateVariableDeduction(this.selectedRecord._id, payload).subscribe(
-        (res: any) => {
-          this.toast.success(
-            this.translate.instant('payroll.variable_deduction.toast.success_updated'),
-            this.translate.instant('payroll.variable_deduction.toast.title')
-          );
-          this.getVariableDeduction();
-        },
-        (err) => {
-          this.toast.error(
-            this.translate.instant('payroll.variable_deduction.toast.error_update'),
-            this.translate.instant('payroll.variable_deduction.toast.title')
-          );
-        }
-      );
-    }
-    // }
-    // else {
-    //   this.markFormGroupTouched(this.variableDeductionForm);
-    // }
+      const formValue = this.variableDeductionForm.value;
+      const payload = { ...formValue };
+      if (!this.isEdit) {
+        this.payroll.addVariableDeduction(payload).subscribe({
+          next: (res: any) => {
+            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+            this.closeModal();
+            this.toast.success(
+              this.translate.instant('payroll.variable_deduction.toast.success_added'),
+              this.translate.instant('payroll.variable_deduction.toast.title')
+            );
+          },
+          error: (err) => {
+            this.toast.error(
+              this.translate.instant('payroll.variable_deduction.toast.error_add'),
+              this.translate.instant('payroll.variable_deduction.toast.title')
+            );
+          }
+        });
+      } else if (this.isEdit) {
+        this.payroll.updateVariableDeduction(this.selectedRecord._id, payload).subscribe({
+          next: (res: any) => {
+            const updatedData = this.tableService.dataSource.data.map(item =>
+              item._id === res.data._id ? res.data : item
+            );
+            this.tableService.setData(updatedData);
+            this.closeModal();
+            this.toast.success(
+              this.translate.instant('payroll.variable_deduction.toast.success_updated'),
+              this.translate.instant('payroll.variable_deduction.toast.title')
+            );
+          },
+          error: (err) => {
+            this.toast.error(
+              this.translate.instant('payroll.variable_deduction.toast.error_update'),
+              this.translate.instant('payroll.variable_deduction.toast.title')
+            );
+          }
+        });
+      }
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
@@ -163,31 +183,46 @@ export class VariableDeductionComponent implements OnInit {
   isPercentageSelected(): boolean {
     const value = this.variableDeductionForm.get('amountEnterForThisVariableDeduction').value;
     return (
-      value === this.translate.instant('payroll.variable_deduction.amount_percentage_gross') ||
-      value === this.translate.instant('payroll.variable_deduction.amount_percentage_basic_da')
+      value === 'Percentage of gross salary paid' ||
+      value === 'Percentage of(Basic + DA) paid (or Basic if DA is not applicable)'
     );
   }
 
   editRecord() {
-    this.variableDeductionForm.patchValue(this.selectedRecord);
+    if (this.selectedRecord) {
+      this.variableDeductionForm.patchValue({
+        label: this.selectedRecord.label || '',
+        isShowINCTCStructure: this.selectedRecord.isShowINCTCStructure ?? this.selectedRecord.isShowInCTCStructure ?? true,
+        paidDeductionFrequently: this.selectedRecord.paidDeductionFrequently || '',
+        deductionEffectiveFromMonth: this.selectedRecord.deductionEffectiveFromMonth || '',
+        deductionEffectiveFromYear: Number(this.selectedRecord.deductionEffectiveFromYear),
+        isEndingPeriod: this.selectedRecord.isEndingPeriod ?? true,
+        deductionStopMonth: this.selectedRecord.isEndingPeriod ? this.selectedRecord.deductionStopMonth || '' : '',
+        deductionStopYear: this.selectedRecord.isEndingPeriod ? this.selectedRecord.deductionStopYear ? String(this.selectedRecord.deductionStopYear) : '' : '',
+        amountEnterForThisVariableDeduction: this.selectedRecord.amountEnterForThisVariableDeduction || '',
+        amount: this.selectedRecord.amount || 0,
+        percentage: this.selectedRecord.percentage || 0
+      });
+      this.variableDeductionForm.get('isEndingPeriod').updateValueAndValidity();
+    }
   }
 
   deleteRecord(_id: string) {
-    this.payroll.deleteVariableDeduction(_id).subscribe(
-      (res: any) => {
-        this.getVariableDeduction();
+    this.payroll.deleteVariableDeduction(_id).subscribe({
+      next: (res: any) => {
+        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
         this.toast.success(
           this.translate.instant('payroll.variable_deduction.toast.success_deleted'),
           this.translate.instant('payroll.variable_deduction.toast.title')
         );
       },
-      (err) => {
+      error: (err) => {
         this.toast.error(
           this.translate.instant('payroll.variable_deduction.toast.error_delete'),
           this.translate.instant('payroll.variable_deduction.toast.title')
         );
       }
-    );
+    });
   }
 
   deleteDialog(id: string): void {
@@ -201,24 +236,19 @@ export class VariableDeductionComponent implements OnInit {
     });
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
-    this.getVariableDeduction();
-  }
-
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
+  onPageChange(event: any) {
+    this.tableService.updatePagination(event);
     this.getVariableDeduction();
   }
 
   getVariableDeduction() {
     const pagination = {
-      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: this.recordsPerPage.toString()
+      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
+      next: this.tableService.recordsPerPage.toString()
     };
     this.payroll.getVariableDeduction(pagination).subscribe(res => {
-      this.variableDeduction = res.data;
-      this.totalRecords = res.total;
+      this.tableService.setData(res.data);
+      this.tableService.totalRecords = res.total;
     });
   }
 }

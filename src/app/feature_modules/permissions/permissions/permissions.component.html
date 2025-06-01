@@ -178,60 +178,60 @@
     </mat-tab>
   
     <mat-tab label="{{'permissions.assign_permissions' | translate}}">
-      <div class="py-3 tableContainer">
-        <div class="d-flex justify-content-between align-items-start mb-2 px-3">
-          <mat-form-field appearance="outline">
-            <mat-label>{{'permissions.search' | translate}}</mat-label>
-            <input matInput (keyup)="applyFilter($event, rolePermissionsDataSource)">
-            <mat-icon matSuffix>search</mat-icon>
-          </mat-form-field>
-          <div>
-            <button mat-raised-button color="accent" class="me-1" (click)="openAddEditDialog('rolePermission')">
-              <mat-icon>add</mat-icon>{{'permissions.add_role_permission' | translate}}
-            </button>
-            <button class="me-1" mat-stroked-button *ngIf="false">
-              <mat-icon>download</mat-icon>{{'download' | translate}}
-            </button>
-          </div>
+    <div class="py-3 tableContainer">
+      <div class="d-flex justify-content-between align-items-start mb-2 px-3">
+        <mat-form-field appearance="outline">
+          <mat-label>{{'permissions.search' | translate}}</mat-label>
+          <input matInput (keyup)="applyAccordionFilter($event)">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        <div>
+          <button mat-raised-button color="accent" class="me-1" (click)="openAddEditDialog('rolePermission')">
+            <mat-icon>add</mat-icon>{{'permissions.add_role_permission' | translate}}
+          </button>
         </div>
-  
-        <table mat-table [dataSource]="rolePermissionsDataSource">
-          <ng-container matColumnDef="role">
-            <th mat-header-cell *matHeaderCellDef>{{'permissions.role' | translate}}</th>
-            <td mat-cell *matCellDef="let rolePermission">{{rolePermission.role}}</td>
-          </ng-container>
-          <ng-container matColumnDef="permission">
-            <th mat-header-cell *matHeaderCellDef>{{'permissions.permission' | translate}}</th>
-            <td mat-cell *matCellDef="let rolePermission">{{rolePermission.permission}}</td>
-          </ng-container>
-          <ng-container matColumnDef="company">
-            <th mat-header-cell *matHeaderCellDef>{{'permissions.company' | translate}}</th>
-            <td mat-cell *matCellDef="let rolePermission">{{rolePermission.company?.companyName}}</td>
-          </ng-container>
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef class="text-center">{{'permissions.actions' | translate}}</th>
-            <td mat-cell *matCellDef="let rolePermission" class="text-center">
-              <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="openAddEditDialog('rolePermission', rolePermission)">
-                  <mat-icon>edit</mat-icon>
-                  <span>{{'permissions.edit' | translate}}</span>
-                </button>
-                <button mat-menu-item (click)="deleteItem('rolePermission', rolePermission._id)">
-                  <mat-icon>delete</mat-icon>
-                  <span>{{'permissions.delete' | translate}}</span>
-                </button>
-              </mat-menu>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="rolePermissionsColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: rolePermissionsColumns;"></tr>
-        </table>
-        <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]"
-          (page)="onPageChange($event, rolePermissionsDataSource)">
-        </mat-paginator>
       </div>
-    </mat-tab>
+
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let group of groupedRolePermissions">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ group.role }}
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <table mat-table [dataSource]="group.permissions" class="mat-elevation-z1 mb-3">
+            <!-- Permission Column -->
+            <ng-container matColumnDef="permission">
+              <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">{{ 'permissions.permission' | translate }}</th>
+              <td mat-cell *matCellDef="let element">{{ element.permission }}</td>
+            </ng-container>
+
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">{{ 'permissions.actions' | translate }}</th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="openAddEditDialog('rolePermission', element)">
+                    <mat-icon>edit</mat-icon>
+                    <span>{{'permissions.edit' | translate}}</span>
+                  </button>
+                  <button mat-menu-item (click)="deleteItem('rolePermission', element._id)">
+                    <mat-icon>delete</mat-icon>
+                    <span>{{'permissions.delete' | translate}}</span>
+                  </button>
+                </mat-menu>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['permission', 'actions']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['permission', 'actions']"></tr>
+          </table>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </mat-tab>
   </mat-tab-group>

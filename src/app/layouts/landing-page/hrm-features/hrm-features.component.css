@@ -1,9 +1,53 @@
 .hrm-features {
+  view-timeline-name: --hrm-features-timeline;
   padding-top: var(--size-42);
   padding-bottom: 110px;
   .card {
     border: 1px solid var(--orange-10);
     border-radius: var(--size-24);
     margin-top: var(--size-16);
+
+    p {
+      font-size: var(--size-16);
+      line-height: 1.2;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tracking-in-expand {
+    animation: tracking-in-expand 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation-timeline: --hrm-features-timeline;
+    animation-range: entry 0% entry 100%;
+  }
+
+  .fade-in {
+    animation: fade-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation-timeline: --hrm-features-timeline;
+    animation-range: entry 0% entry 100%;
+  }
+
+  @keyframes tracking-in-expand {
+    0% {
+      letter-spacing: -0.5em;
+      opacity: 0;
+    }
+    40% {
+      opacity: 0.6;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-in {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
 }

@@ -9,3 +9,8 @@
 .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline .mdc-notched-outline__trailing{
     --mdc-outlined-text-field-outline-color: var(--orange-20);
 }
+
+.mat-mdc-form-field .mat-icon{
+    font-size: var(--size-22);
+    color: var(--orange-60);
+}

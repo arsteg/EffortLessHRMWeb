@@ -2,216 +2,169 @@
     <div class="container">
         <div class="tableContainer bg-white py-2">
             <div class="d-flex align-items-center px-2 py-1">
-                <p class="mb-0 me-auto">{{ 'payroll.records_found' | translate:{count: variableDeduction?.length} }}</p>
+                <p class="mb-0 me-auto"> ({{tableService.totalRecords}}) {{ 'payroll.records_found' | translate}}</p>
                 <div class="d-flex align-items-center">
                     <span class="bi bi-search searchIcon"></span>
-                    <input class="form-control search" type="text" [placeholder]="'payroll.search_placeholder' | translate" [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                    <div class="d-flex align-items-center">
-                        <button class="addBtn mx-2" mat-raised-button
-                            (click)="isEdit= false; clearForm(); open(modal)">{{ 'payroll.add' | translate }}</button>
-                        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                            [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
-                            (pageChange)="onPageChange($event)" (recordsPerPageChange)="onRecordsPerPageChange($event)">
-                        </app-pagination>
-                    </div>
+                    <input class="form-control search" type="text"
+                        [placeholder]="'payroll.search_placeholder' | translate" [(ngModel)]="tableService.searchText"
+                        (input)="tableService.applyFilter()" name="searchText" aria-label="default input example">
+                    <button class="addBtn mx-2" mat-raised-button (click)="isEdit= false; clearForm(); open(modal)">
+                        {{ 'payroll.add' | translate }}
+                    </button>
                 </div>
             </div>
-            <table>
-                <thead>
-                    <th [appSort]="variableDeduction" data-name="label"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">{{ 'payroll.variable_deduction.name_header' | translate }}
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            <table mat-table [dataSource]="tableService.dataSource">
+                <ng-container matColumnDef="label">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{ 'payroll.variable_deduction.name_header' | translate }}
                     </th>
-                    <th>{{ 'payroll.actions' | translate }}</th>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let fixedContribution of variableDeduction | search:searchText">
-                        <td>{{fixedContribution?.label}}</td>
-                        <td>
-                            <button class="actions" mat-mini-fab [matTooltip]="'payroll.edit' | translate" matTooltipPosition="before"
-                                data-bs-toggle="modal" data-bs-target="#modal"
-                                (click)="open(modal); selectedRecord = fixedContribution; isEdit= true; editRecord();">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                            <button class="actions ms-2" mat-mini-fab [matTooltip]="'payroll.delete' | translate" matTooltipPosition="after"
-                                aria-label="Example icon button with a menu icon"
-                                (click)="deleteDialog(fixedContribution?._id)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
+                    <td mat-cell *matCellDef="let deduction"> {{ deduction?.label }} </td>
+                </ng-container>
+                <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>
+                        {{ 'payroll.actions' | translate }}
+                    </th>
+                    <td mat-cell *matCellDef="let deduction">
+                        <button class="actions" mat-mini-fab [matTooltip]="'payroll.edit' | translate"
+                            matTooltipPosition="before"
+                            (click)="selectedRecord = deduction; isEdit= true; editRecord(); open(modal);">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="actions ms-2" mat-mini-fab [matTooltip]="'payroll.delete' | translate"
+                            matTooltipPosition="after" aria-label="Delete variable deduction"
+                            (click)="deleteDialog(deduction?._id)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="['label', 'actions']"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['label', 'actions'];"></tr>
             </table>
+            <mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
+                [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
+            </mat-paginator>
         </div>
     </div>
 </div>
 
 <ng-template #modal let-modal>
-    <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{ isEdit ? ('payroll.variable_deduction.title_update' | translate) : ('payroll.variable_deduction.title_add' | translate) }}</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="closeModal()"></button>
-        </div>
-    </div>
+    <h1 mat-dialog-title>
+        {{ isEdit ? ('payroll.variable_deduction.title_update' | translate) : ('payroll.variable_deduction.title_add' | translate) }}
+    </h1>
     <form [formGroup]="variableDeductionForm" (ngSubmit)="onSubmission()">
-        <div class="row">
-            <div class="form-group">
-                <label for="">{{ 'payroll.variable_deduction.label_question' | translate }} <span class="text-danger">*</span></label>
-                <input type="text" class="form-control" formControlName="label" [placeholder]="'payroll.variable_deduction.label_placeholder' | translate" />
-                <div
-                    *ngIf="variableDeductionForm.get('label').invalid && (variableDeductionForm.get('label').dirty || variableDeductionForm.get('label').touched)">
-                    <small class="text-danger" *ngIf="variableDeductionForm.get('label')['errors']['required']">{{ 'payroll.field_required' | translate }}</small>
-                </div>
-            </div>
-
-            <div class="form-check mt-2 col-md-6">
-                <label for="">{{ 'payroll.variable_deduction.ctc_question' | translate }} <span
-                        class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="isShowINCTCStructure-yes"
-                            formControlName="isShowINCTCStructure" required [value]="true">
-                        <label class="form-check-label" for="isShowINCTCStructure-yes">
-                            {{ 'payroll.yes' | translate }}
-                        </label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="isShowINCTCStructure-no" required
-                            formControlName="isShowINCTCStructure" [value]="false">
-                        <label class="form-check-label" for="isShowINCTCStructure-no">
-                            {{ 'payroll.no' | translate }}
-                        </label>
+        <div mat-dialog-content>
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label>{{ 'payroll.variable_deduction.label_question' | translate }} <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" formControlName="label"
+                        [placeholder]="'payroll.variable_deduction.label_placeholder' | translate" />
+                    <div *ngIf="variableDeductionForm.get('label').invalid && (variableDeductionForm.get('label').dirty || variableDeductionForm.get('label').touched)">
+                        <small class="text-danger" *ngIf="variableDeductionForm.get('label')['errors']['required']">
+                            {{ 'payroll.field_required' | translate }}
+                        </small>
                     </div>
                 </div>
-                <div
-                    *ngIf="variableDeductionForm.get('isShowINCTCStructure').invalid && (variableDeductionForm.get('isShowINCTCStructure').dirty || variableDeductionForm.get('isShowINCTCStructure').touched)">
-                    <small class="text-danger"
-                        *ngIf="variableDeductionForm.get('isShowINCTCStructure')['errors']['required']">{{ 'payroll.field_required' | translate }}</small>
-                </div>
-            </div>
-
-            <div class="form-check mt-2 col-md-6">
-                <label for="">{{ 'payroll.variable_deduction.frequency_question' | translate }}</label>
-                <select name="" id="" formControlName="paidDeductionFrequently" class="form-select">
-                    <option value="Monthly">{{ 'payroll.variable_deduction.frequency.monthly' | translate }}</option>
-                    <option value="Quaterly">{{ 'payroll.variable_deduction.frequency.quarterly' | translate }}</option>
-                    <option value="Yearly">{{ 'payroll.variable_deduction.frequency.annually' | translate }}</option>
-                </select>
-                <div
-                    *ngIf="variableDeductionForm.get('paidDeductionFrequently').invalid && (variableDeductionForm.get('paidDeductionFrequently').dirty || variableDeductionForm.get('paidDeductionFrequently').touched)">
-                    <small class="text-danger"
-                        *ngIf="variableDeductionForm.get('paidDeductionFrequently')['errors']['required']">{{ 'payroll.field_required' | translate }}</small>
-                </div>
-            </div>
-
-            <div class="form-check mt-2 col-md-6">
-                <label for="">{{ 'payroll.variable_deduction.effective_period_question' | translate }}</label>
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <select id="" formControlName="deductionEffectiveFromMonth">
-                            <option value="" selected disabled>{{ 'payroll.variable_deduction.month_placeholder' | translate }}</option>
-                            <option value="m" *ngFor="let m of months">{{m}}</option>
-                        </select>
-                        <div
-                            *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth').invalid && (variableDeductionForm.get('deductionEffectiveFromMonth').dirty || variableDeductionForm.get('deductionEffectiveFromMonth').touched)">
-                            <small class="text-danger"
-                                *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth')['errors']['required']">{{ 'payroll.field_required' | translate }}</small>
-                        </div>
+                <div class="form-check mt-2 col-md-6">
+                    <label>{{ 'payroll.variable_deduction.ctc_question' | translate }} <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isShowINCTCStructure">
+                            <mat-radio-button [value]="true">{{ 'payroll.yes' | translate }}</mat-radio-button>
+                            <mat-radio-button [value]="false" class="ms-3">{{ 'payroll.no' | translate }}</mat-radio-button>
+                        </mat-radio-group>
                     </div>
-                    <div>
-                        <select id="" formControlName="deductionEffectiveFromYear">
-                            <option value="" selected [disabled]>{{ 'payroll.variable_deduction.year_placeholder' | translate }}</option>
-                            <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                        </select>
-                        <div
-                            *ngIf="variableDeductionForm.get('deductionEffectiveFromYear').invalid && (variableDeductionForm.get('deductionEffectiveFromYear').dirty || variableDeductionForm.get('deductionEffectiveFromYear').touched)">
-                            <small class="text-danger"
-                                *ngIf="variableDeductionForm.get('deductionEffectiveFromYear')['errors']['required']">{{ 'payroll.field_required' | translate }}</small>
-                        </div>
+                    <div *ngIf="variableDeductionForm.get('isShowINCTCStructure').invalid && (variableDeductionForm.get('isShowINCTCStructure').dirty || variableDeductionForm.get('isShowINCTCStructure').touched)">
+                        <small class="text-danger" *ngIf="variableDeductionForm.get('isShowINCTCStructure')['errors']['required']">
+                            {{ 'payroll.field_required' | translate }}
+                        </small>
                     </div>
                 </div>
-            </div>
-
-            <div class="form-check mt-2 col-md-6">
-                <label for="">{{ 'payroll.variable_deduction.ending_period_question' | translate }}</label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="isEndingPeriod-yes"
-                            formControlName="isEndingPeriod" required [value]="true">
-                        <label class="form-check-label" for="isEndingPeriod-yes">
-                            {{ 'payroll.variable_deduction.ending_period_yes' | translate }}
-                        </label>
+                <div class="form-check mt-2 col-md-6">
+                    <label>{{ 'payroll.variable_deduction.frequency_question' | translate }} <span class="text-danger">*</span></label>
+                    <mat-form-field appearance="fill" class="w-100">
+                        <mat-select formControlName="paidDeductionFrequently">
+                            <mat-option value="Monthly">{{ 'payroll.variable_deduction.frequency.monthly' | translate }}</mat-option>
+                            <mat-option value="Quaterly">{{ 'payroll.variable_deduction.frequency.quarterly' | translate }}</mat-option>
+                            <mat-option value="Yearly">{{ 'payroll.variable_deduction.frequency.annually' | translate }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="variableDeductionForm.get('paidDeductionFrequently').invalid && (variableDeductionForm.get('paidDeductionFrequently').dirty || variableDeductionForm.get('paidDeductionFrequently').touched)">
+                            {{ 'payroll.field_required' | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="form-check mt-2 col-md-12">
+                    <label>{{ 'payroll.variable_deduction.effective_period_question' | translate }} <span class="text-danger">*</span></label>
+                    <div class="d-flex justify-content-between">
+                        <mat-form-field appearance="fill" class="w-50 me-2">
+                            <mat-label>{{ 'payroll.variable_deduction.month_placeholder' | translate }}</mat-label>
+                            <mat-select formControlName="deductionEffectiveFromMonth">
+                                <mat-option value="" disabled>{{ 'payroll.variable_deduction.month_placeholder' | translate }}</mat-option>
+                                <mat-option *ngFor="let m of months" [value]="m">
+                                    {{ 'payroll._lwf.monthly_deduction.month.' + m.toLowerCase() | translate }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="variableDeductionForm.get('deductionEffectiveFromMonth').invalid && (variableDeductionForm.get('deductionEffectiveFromMonth').dirty || variableDeductionForm.get('deductionEffectiveFromMonth').touched)">
+                                {{ 'payroll.field_required' | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field appearance="fill" class="w-50">
+                            <mat-label>{{ 'payroll.variable_deduction.year_placeholder' | translate }}</mat-label>
+                            <mat-select formControlName="deductionEffectiveFromYear">
+                                <mat-option value="" disabled>{{ 'payroll.variable_deduction.year_placeholder' | translate }}</mat-option>
+                                <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="variableDeductionForm.get('deductionEffectiveFromYear').invalid && (variableDeductionForm.get('deductionEffectiveFromYear').dirty || variableDeductionForm.get('deductionEffectiveFromYear').touched)">
+                                {{ 'payroll.field_required' | translate }}
+                            </mat-error>
+                        </mat-form-field>
                     </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" id="isEndingPeriod-no" required
-                            formControlName="isEndingPeriod" [value]="false">
-                        <label class="form-check-label" for="isEndingPeriod-no">
-                            {{ 'payroll.variable_deduction.ending_period_no' | translate }}
-                        </label>
+                </div>
+                <div class="form-check mt-2 col-md-12">
+                    <label>{{ 'payroll.variable_deduction.ending_period_question' | translate }} <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isEndingPeriod">
+                            <mat-radio-button [value]="true">{{ 'payroll.variable_deduction.ending_period_yes' | translate }}</mat-radio-button>
+                            <mat-radio-button [value]="false" class="ms-3">{{ 'payroll.variable_deduction.ending_period_no' | translate }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div *ngIf="variableDeductionForm.get('isEndingPeriod').invalid && (variableDeductionForm.get('isEndingPeriod').dirty || variableDeductionForm.get('isEndingPeriod').touched)">
+                        <small class="text-danger" *ngIf="variableDeductionForm.get('isEndingPeriod')['errors']['required']">
+                            {{ 'payroll.field_required' | translate }}
+                        </small>
                     </div>
                 </div>
-                <div
-                    *ngIf="variableDeductionForm.get('isEndingPeriod').invalid && (variableDeductionForm.get('isEndingPeriod').dirty || variableDeductionForm.get('isEndingPeriod').touched)">
-                    <small class="text-danger"
-                        *ngIf="variableDeductionForm.get('isEndingPeriod')['errors']['required']">{{ 'payroll.field_required' | translate }}</small>
+                <div class="form-check mt-2 col-md-12" *ngIf="variableDeductionForm.get('isEndingPeriod').value === true">
+                    <label>{{ 'payroll.variable_deduction.effective_period_question' | translate }}</label>
+                    <div class="d-flex justify-content-between">
+                        <mat-form-field appearance="fill" class="w-50 me-2">
+                            <mat-label>{{ 'payroll.variable_deduction.month_placeholder' | translate }}</mat-label>
+                            <mat-select formControlName="deductionStopMonth">
+                                <mat-option value="" disabled>{{ 'payroll.variable_deduction.month_placeholder' | translate }}</mat-option>
+                                <mat-option *ngFor="let m of months" [value]="m">
+                                    {{ 'payroll._lwf.monthly_deduction.month.' + m.toLowerCase() | translate }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="variableDeductionForm.get('deductionStopMonth').invalid && (variableDeductionForm.get('deductionStopMonth').dirty || variableDeductionForm.get('deductionStopMonth').touched)">
+                                {{ 'payroll.field_required' | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field appearance="fill" class="w-50">
+                            <mat-label>{{ 'payroll.variable_deduction.year_placeholder' | translate }}</mat-label>
+                            <mat-select formControlName="deductionStopYear">
+                                <mat-option value="" disabled>{{ 'payroll.variable_deduction.year_placeholder' | translate }}</mat-option>
+                                <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="variableDeductionForm.get('deductionStopYear').invalid && (variableDeductionForm.get('deductionStopYear').dirty || variableDeductionForm.get('deductionStopYear').touched)">
+                                {{ 'payroll.field_required' | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
                 </div>
-            </div>
-
-            <div class="form-check mt-2 col-md-6" *ngIf="variableDeductionForm.get('isEndingPeriod').value== true">
-                <label for="">{{ 'payroll.variable_deduction.effective_period_question' | translate }}</label>
-                <div class="d-flex justify-content-between">
-                    <select id="" formControlName="deductionStopMonth">
-                        <option value="" selected disabled>{{ 'payroll.variable_deduction.month_placeholder' | translate }}</option>
-                        <option value="m" *ngFor="let m of months">{{m}}</option>
-                    </select>
-                    <select id="" formControlName="deductionStopYear">
-                        <option value="" selected [disabled]>{{ 'payroll.variable_deduction.year_placeholder' | translate }}</option>
-                        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
-                    </select>
-                </div>
-                <div
-                    *ngIf="variableDeductionForm.get('deductionStopMonth').invalid && (variableDeductionForm.get('deductionStopMonth').dirty || variableDeductionForm.get('deductionStopMonth').touched)">
-                    <small class="text-danger"
-                        *ngIf="variableDeductionForm.get('deductionStopMonth')['errors']['required']">{{ 'payroll.field_required' | translate }}</small>
-                </div>
-                <div
-                    *ngIf="variableDeductionForm.get('deductionStopYear').invalid && (variableDeductionForm.get('deductionStopYear').dirty || variableDeductionForm.get('deductionStopYear').touched)">
-                    <small class="text-danger"
-                        *ngIf="variableDeductionForm.get('deductionStopYear')['errors']['required']">{{ 'payroll.field_required' | translate }}</small>
-                </div>
-            </div>
-
-            <div class="form-check mt-2 d-none col-md-6">
-                <label for="">{{ 'payroll.variable_deduction.amount_question' | translate }}</label>
-                <select name="" id="" formControlName="amountEnterForThisVariableDeduction">
-                    <option value="Manually at the time of running Payroll">{{ 'payroll.variable_deduction.amount_manual' | translate }}</option>
-                    <option value="Fixed Amount">{{ 'payroll.variable_deduction.amount_fixed' | translate }}</option>
-                    <option value="Percentage of gross salary paid">{{ 'payroll.variable_deduction.amount_percentage_gross' | translate }}</option>
-                    <option value="Percentage of(Basic + DA) paid (or Basic if DA is not applicable)">{{ 'payroll.variable_deduction.amount_percentage_basic_da' | translate }}</option>
-                </select>
-                <div
-                    *ngIf="variableDeductionForm.get('amountEnterForThisVariableDeduction').invalid && (variableDeductionForm.get('amountEnterForThisVariableDeduction').dirty || variableDeductionForm.get('amountEnterForThisVariableDeduction').touched)">
-                    <small class="text-danger"
-                        *ngIf="variableDeductionForm.get('amountEnterForThisVariableDeduction')['errors']['required']">{{ 'payroll.field_required' | translate }}</small>
-                </div>
-            </div>
-
-            <div class="form-check mt-2 col-md-6"
-                *ngIf="variableDeductionForm.get('amountEnterForThisVariableDeduction').value=='Fixed Amount'">
-                <label for="">{{ 'payroll.variable_deduction.amount_label' | translate }}</label>
-                <input type="number" class="form-control" formControlName="amount">
-            </div>
-            <div class="form-check mt-2 col-md-6" *ngIf="isPercentageSelected()">
-                <label for="">{{ 'payroll.variable_deduction.percentage_label' | translate }}</label>
-                <input type="number" class="form-control" formControlName="percentage">
+                
+                
             </div>
         </div>
-
-        <div class="d-flex border-top mt-2 pb-2 pt-3 justify-content-between">
-            <button mat-raised-button type="button" (click)="clearForm()">{{ 'payroll.cancel' | translate }}</button>
+        <div mat-dialog-actions class="d-flex border-top mt-2 pb-2 pt-3 justify-content-between">
+            <button mat-raised-button type="button" (click)="closeModal()">{{ 'payroll.cancel' | translate }}</button>
             <button mat-raised-button type="submit" class="addBtn">{{ 'payroll.submit' | translate }}</button>
         </div>
     </form>

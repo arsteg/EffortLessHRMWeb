@@ -1,12 +1,14 @@
 /* Hero Section */
 .intro-container {
   .intro-text-container {
+    view-timeline-name: --hero-timeline;
     max-width: 685px;
     margin: 0 auto;
     padding: 46px 20px;
   }
 
   .intro-image {
+    isolation: isolate;
     position: relative;
 
     .hero-image {
@@ -20,5 +22,111 @@
       right: 20%;
       z-index: 0;
     }
+  }
+}
+
+.tracking-in-contract {
+  animation: tracking-in-contract 0.8s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+  animation-delay: 0.5s;
+}
+.text-focus-in {
+  animation: text-focus-in 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+  animation-delay: 0.5s;
+}
+.text-fade-out {
+  animation: text-fade-out linear;
+  animation-timeline: --hero-timeline;
+  animation-range: exit 0% exit 100%;
+}
+.slide-in-elliptic-top-fwd {
+  animation: slide-in-elliptic-top-fwd 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)
+    both;
+  animation-delay: 0.5s;
+}
+.bounce-in-fwd {
+  animation: bounce-in-fwd 1.1s 0.2s both;
+}
+
+/* Animation for text */
+@keyframes tracking-in-contract {
+  0% {
+    letter-spacing: 1em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    letter-spacing: normal;
+    opacity: 1;
+  }
+}
+
+@keyframes text-focus-in {
+  0% {
+    filter: blur(12px);
+    opacity: 0;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+}
+@keyframes text-fade-out {
+  0% {
+    scale: 1;
+    opacity: 1;
+  }
+  100% {
+    scale: 0.1;
+    opacity: 0;
+  }
+}
+@keyframes slide-in-elliptic-top-fwd {
+  0% {
+    transform: translateY(-600px) rotateX(-30deg) scale(0);
+    transform-origin: 50% 100%;
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) rotateX(0) scale(1);
+    transform-origin: 50% 1400px;
+    opacity: 1;
+  }
+}
+@keyframes bounce-in-fwd {
+  0% {
+    transform: scale(0);
+    animation-timing-function: ease-in;
+    opacity: 0;
+  }
+  38% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
+    opacity: 1;
+  }
+  55% {
+    transform: scale(0.7);
+    animation-timing-function: ease-in;
+  }
+  72% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
+  }
+  81% {
+    transform: scale(0.84);
+    animation-timing-function: ease-in;
+  }
+  89% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
+  }
+  95% {
+    transform: scale(0.95);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: scale(1);
+    animation-timing-function: ease-out;
   }
 }
