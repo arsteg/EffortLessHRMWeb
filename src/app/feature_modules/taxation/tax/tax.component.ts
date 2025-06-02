@@ -229,37 +229,24 @@ export class TaxComponent {
   }
 
   taxDeclaration() {
-    if (!this.taxCalculator) {
-      console.error('taxCalculator not available');
-      this.toastr.error('Tax calculator component not loaded');
-      return;
-    }
-
     const payload = {
       financialYear: this.taxDeclarationForm.value.financialYear,
       user: this.user.id,
-      employeeIncomeTaxDeclarationComponent: Object.keys(this.taxCalculator.componentControls).map(componentId => ({
-        incomeTaxComponent: componentId,
-        approvedAmount: this.taxCalculator.componentControls[componentId].value || 0
-      })),
-      employeeIncomeTaxDeclarationHRA: this.taxCalculator.hraControls.map((control, index) => ({
-        month: this.taxCalculator.getAllMonths()[index],
-        verifiedAmount: control.value || 0
-      }))
+      employeeIncomeTaxDeclarationComponent: [],
+      employeeIncomeTaxDeclarationHRA: []
     };  
     this.userService.getStatutoryByUserId(this.user.id).subscribe((res: any) => {
-      if (res.data[0].taxRegime === 'Old Regime') {
-        this.taxService.addIncomeTax(payload).subscribe({
-          next: (res: any) => {
-            this.taxList.push(res.data);
+      if (res.data?.taxRegime === 'Old Regime') {
+        this.taxService.addIncomeTax(payload).subscribe((res: any) => {
+            this.taxDeclarations.push(res.data);
             this.toastr.success('Tax Declaration Added Successfully');
             this.modalService.dismissAll();
           },
-          error: (err) => {
+          (err) => {
             console.error('Error saving tax declaration:', err);
             this.toastr.error('Something went wrong');
           }
-        });
+        );
       } else if (res.data[0].taxRegime === 'New Regime') {
         this.toastr.error('Tax Declaration is not allowed in New Regime');
         this.modalService.dismissAll();
