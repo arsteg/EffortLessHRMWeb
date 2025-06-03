@@ -25,6 +25,7 @@
   --bs-primary-rgb: 228, 113, 18;
   --bs-dark-rgb: 14, 35, 50;
   --bs-light-rgb: 245, 245, 245;
+  --card-border: rgba(213,213,213,0.65);
   /** Sizes**/
   --size-2: 2px;
   --size-4: 4px;
@@ -48,10 +49,8 @@
   --size-64: 64px;
 }
 
-.main-content {
-  /* padding: 30px 0px; */
-  background: #f5f7fb;
-  // min-height: calc(100vh - 60px);
+* {
+  scrollbar-color: var(--orange-10) var(--orange-30);
 }
 
 .float {
@@ -756,9 +755,6 @@ option:hover {
   font-size: large;
 }
 
-h2 {
-  color: #64728c;
-}
 
 .nav-link.activeTab {
   background-color: #ff7b1d !important;

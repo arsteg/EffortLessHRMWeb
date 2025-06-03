@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, inject, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
@@ -18,25 +18,29 @@ import { MatDialog } from '@angular/material/dialog';
 import { UpcomingPaymentModel } from 'src/app/models/dashboard/upcomingPaymentModel';
 import { LastInvoiceModel } from 'src/app/models/dashboard/lastInvoiceModel';
 import { SubscriptionService } from 'src/app/_services/subscription.service';
-import {LegendPosition, Color, ScaleType} from '@swimlane/ngx-charts';
+import { LegendPosition, Color, ScaleType } from '@swimlane/ngx-charts';
 import { PreferenceService } from 'src/app/_services/user-preference.service';
 import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+  styleUrls: ['./dashboard.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent extends StatefulComponent implements OnInit {
-
+  @ViewChild('timeSpentCard', { static: false }) timeSpentCard: ElementRef;
+  timeSpentCardHeight: number = 400;
 
   //region Event notification related code
   users$: Observable<User[]>;
   private usersOnlineSubscription: Subscription;
   userId: string;
-  projectwiseTimeSelectedMemberofAllTasks:string;
-  projectwiseTimeSelectedMember:string;
-  view: [number, number]=[300, 200];
+  projectwiseTimeSelectedMemberofAllTasks: string;
+  productivitySelectedMember: any;
+  taskSummarySelectedMember: any;
+  dailySelectedMember: any;
+  projectwiseTimeSelectedMember: string;
+  view: [number, number] = [300, 200];
 
   //end region
 
@@ -63,30 +67,32 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   dayWorkStatusByUser: any[];
   subscription: any;
   readonly dialog = inject(MatDialog);
-  upcomingPayment:UpcomingPaymentModel;
-  lastInvoice:LastInvoiceModel;
+  upcomingPayment: UpcomingPaymentModel;
+  lastInvoice: LastInvoiceModel;
   legendPosition: LegendPosition = LegendPosition.Right;
   colorScheme: Color = {
-    domain: ['#ff9800', '#46a35e', '#a8385d', '#7aa3e5'],
+    domain: [],
     group: ScaleType.Ordinal, // Required for correct type
     selectable: true,
     name: 'custom',
   };
   selectedTabIndex: number = 0;
+  selectedTimeSpent = 'Daily';
+  styles: any;
 
   constructor(
     private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
     private auth: AuthenticationService,
     private dashboardService: DashboardService,
-    private toastr: ToastrService,    
+    private toastr: ToastrService,
     protected override commonService: CommonService,
     activatedRoute: ActivatedRoute,
     private subscriptionService: SubscriptionService,
     router: Router,
     private preferenceService: PreferenceService
   ) {
-    super(commonService,activatedRoute,router);
+    super(commonService, activatedRoute, router);
   }
 
   onTabChange(index: number): void {
@@ -100,13 +106,26 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
 
   }
 
-    openPaymentsDialog() {
-      const dialogRef = this.dialog.open(PaymentsComponent, {
-        width: '500px',
-        data: { subscriptionId: this.subscription.razorpaySubscription.id }
-      });
-    }
-  
+  openPaymentsDialog() {
+    const dialogRef = this.dialog.open(PaymentsComponent, {
+      width: '500px',
+      data: { subscriptionId: this.subscription.razorpaySubscription.id }
+    });
+  }
+
+  ngAfterViewInit() {
+    const html = document.getElementsByTagName('html')[0];
+    this.styles = getComputedStyle(html);
+    this.colorScheme.domain = [
+      this.styles.getPropertyValue('--orange-10'),
+      this.styles.getPropertyValue('--orange-30'),
+      this.styles.getPropertyValue('--orange-60'),
+      this.styles.getPropertyValue('--green'),
+      this.styles.getPropertyValue('--red')
+    ]
+    this.timeSpentCardHeight = this.timeSpentCard?.nativeElement?.offsetHeight - 108;
+  }
+
   // selectedUser: any;
   override ngOnInit(): void {
     //region event notifications
@@ -143,18 +162,24 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     this.dashboardService.HoursWorked(this.currentUser.id, currentDate).subscribe(response => {
       this.hoursWorked = response.data;
       this.hoursWorked.increased = this.hoursWorked.today > this.hoursWorked.previousDay;
-      this.hoursWorked.chartData = [{name: 'Today', value: this.hoursWorked.today}, {name: 'Yesterday', value: this.hoursWorked.previousDay}];
-      this.hoursWorked.chartColors = [{name:'Today', value: '#ff9800'}, {name:'Yesterday', value: '#46a35e'}];
+      this.hoursWorked.chartData = [{ name: 'Today', value: this.hoursWorked.today }, { name: 'Yesterday', value: this.hoursWorked.previousDay }];
+      this.hoursWorked.chartColors = [{ name: 'Today', value: this.styles.getPropertyValue('--orange-60') }, { name: 'Yesterday', value: this.styles.getPropertyValue('--orange-30') }];
+      this.hoursWorked.changeColor = this.styles.getPropertyValue('--orange-60');
       if (this.hoursWorked.increased) {
         const change = this.hoursWorked.today - this.hoursWorked.previousDay;
-        this.hoursWorked.change = change * 100 / this.hoursWorked.previousDay;
-        this.hoursWorked.changeDisplay = isNaN(this.hoursWorked.change) ? '' :`+${this.hoursWorked.change.toFixed(2)}%`;
-        this.hoursWorked.changeColor = '#08ad08';
+        if (this.hoursWorked.previousDay == 0) {
+          this.hoursWorked.change = 100;
+        }
+        else {
+          this.hoursWorked.change = change * 100 / this.hoursWorked.previousDay;
+        }
+        this.hoursWorked.changeDisplay = isNaN(this.hoursWorked.change) ? '' : `+${this.hoursWorked.change.toFixed(2)}`;
+        this.hoursWorked.changeColor = this.styles.getPropertyValue('--green');
       }
       else {
         const change = this.hoursWorked.previousDay - this.hoursWorked.today;
         this.hoursWorked.change = change * 100 / this.hoursWorked.previousDay;
-        this.hoursWorked.changeDisplay = isNaN(this.hoursWorked.change) ? '' :`-${this.hoursWorked.change.toFixed(2)}%`;
+        this.hoursWorked.changeDisplay = isNaN(this.hoursWorked.change) ? '' : `-${this.hoursWorked.change.toFixed(2)}`;
       }
     },
       err => {
@@ -164,18 +189,19 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     this.dashboardService.weeklySummary(this.currentUser.id, currentDate).subscribe(response => {
       this.weeklySummary = response.data;
       this.weeklySummary.increased = this.weeklySummary.currentWeek > this.weeklySummary.previousWeek;
-      this.weeklySummary.chartData = [{name: 'This week', value: this.weeklySummary.currentWeek}, {name: 'Last week', value: this.weeklySummary.previousWeek}];
-      this.weeklySummary.chartColors = [{name:'This week', value: '#ff9800'}, {name:'Last week', value: '#46a35e'}];
+      this.weeklySummary.chartData = [{ name: 'This week', value: this.weeklySummary.currentWeek }, { name: 'Last week', value: this.weeklySummary.previousWeek }];
+      this.weeklySummary.chartColors = [{ name: 'This week', value: this.styles.getPropertyValue('--orange-60') }, { name: 'Last week', value: this.styles.getPropertyValue('--orange-30') }];
+      this.weeklySummary.changeColor = this.styles.getPropertyValue('--orange-60');
       if (this.weeklySummary.increased) {
         const change = this.weeklySummary.currentWeek - this.weeklySummary.previousWeek;
         this.weeklySummary.change = change * 100 / this.weeklySummary.previousWeek;
-        this.weeklySummary.changeDisplay = isNaN(this.weeklySummary.change) ? '' :`+${this.weeklySummary.change.toFixed(2)}%`;
-        this.weeklySummary.changeColor = '#08ad08';
+        this.weeklySummary.changeDisplay = isNaN(this.weeklySummary.change) ? '' : `+${this.weeklySummary.change.toFixed(2)}`;
+        this.weeklySummary.changeColor = this.styles.getPropertyValue('--green');
       }
       else {
         const change = this.weeklySummary.previousWeek - this.weeklySummary.currentWeek;
         this.weeklySummary.change = change * 100 / this.weeklySummary.previousWeek;
-        this.weeklySummary.changeDisplay = isNaN(this.monthlySummary.change) ? '' : `-${this.weeklySummary.change.toFixed(2)}%`;
+        this.weeklySummary.changeDisplay = isNaN(this.monthlySummary.change) ? '' : `-${this.weeklySummary.change.toFixed(2)}`;
       }
 
     },
@@ -186,18 +212,19 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     this.dashboardService.monthlySummary(this.currentUser.id, currentDate).subscribe(response => {
       this.monthlySummary = response.data;
       this.monthlySummary.increased = this.monthlySummary.currentMonth > this.monthlySummary.previousMonth;
-      this.monthlySummary.chartData = [{name: 'This month', value: this.monthlySummary.currentMonth}, {name: 'Last month', value: this.monthlySummary.previousMonth}];
-      this.monthlySummary.chartColors = [{name:'This month', value: '#ff9800'}, {name:'Last month', value: '#46a35e'}];
+      this.monthlySummary.chartData = [{ name: 'This month', value: this.monthlySummary.currentMonth }, { name: 'Last month', value: this.monthlySummary.previousMonth }];
+      this.monthlySummary.chartColors = [{ name: 'This month', value: this.styles.getPropertyValue('--orange-60') }, { name: 'Last month', value: this.styles.getPropertyValue('--orange-30') }];
+      this.monthlySummary.changeColor = this.styles.getPropertyValue('--orange-60');
       if (this.monthlySummary.increased) {
         const change = this.monthlySummary.currentMonth - this.monthlySummary.previousMonth;
         this.monthlySummary.change = change * 100 / this.monthlySummary.previousMonth;
-        this.monthlySummary.changeDisplay = isNaN(this.monthlySummary.change) ? '' : `+${this.monthlySummary.change.toFixed(2)}%`;
-        this.monthlySummary.changeColor = '#08ad08';
+        this.monthlySummary.changeDisplay = isNaN(this.monthlySummary.change) ? '' : `+${this.monthlySummary.change.toFixed(2)}`;
+        this.monthlySummary.changeColor = this.styles.getPropertyValue('--green');
       }
       else {
         const change = this.monthlySummary.previousMonth - this.monthlySummary.currentMonth;
         this.monthlySummary.change = change * 100 / this.monthlySummary.previousMonth;
-        this.monthlySummary.changeDisplay = isNaN(this.monthlySummary.change) ? '' : `-${this.monthlySummary.change.toFixed(2)}%`;
+        this.monthlySummary.changeDisplay = isNaN(this.monthlySummary.change) ? '' : `-${this.monthlySummary.change.toFixed(2)}`;
       }
     },
       err => {
@@ -306,7 +333,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   }
 
   onTaskTimeMemberSelectionChange(member: any) {
-    this.member = JSON.parse(member.value);
+    this.member = member;
     this.populateTaskwiseHours(this.member.id);
 
     this.preferenceService.createOrUpdatePreference(
@@ -317,16 +344,16 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
 
   }
   onProductivityMemberSelectionChange(member: any) {
-    this.member = JSON.parse(member.value);
+    this.member = member;
     this.getApplicationTimeSummary(this.member.id);
   }
 
   onTaskSummaryMemberSelectionChange(member: any) {
-    this.member = JSON.parse(member.value);
+    this.member = member;
     this.getTaskStatusCounts(this.member.id);
   }
   onDailyUpdateMemberSelectionChange(member: any) {
-    this.member = JSON.parse(member.value);
+    this.member = member;
     this.getDayWorkStatusByUser(this.member.id);
   }
 
@@ -410,7 +437,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
         const member = JSON.parse(state.projectwiseTimeSelectedMemberofAllTasks);
         this.populateTaskwiseHours(member.id);
       }
-      if(state.projectwiseTimeSelectedMember){
+      if (state.projectwiseTimeSelectedMember) {
         this.projectwiseTimeSelectedMember = state.projectwiseTimeSelectedMember;
         const member = JSON.parse(state.projectwiseTimeSelectedMember);
         this.getDayWorkStatusByUser(member.id);
@@ -418,33 +445,33 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
       if (state.projectTasks) {
         this.projectTasks = state.projectTasks;
       }
-      if(state.dayWorkStatusByUser){
+      if (state.dayWorkStatusByUser) {
         this.dayWorkStatusByUser = state.dayWorkStatusByUser;
       }
     }
   }
 
-  getAddonsAmount(){
+  getAddonsAmount() {
     return this.subscription?.addOns.reduce((acc, addon) => acc + addon.item.amount, 0) / 100;
   }
-  populateUpcomingPayment(){
+  populateUpcomingPayment() {
     this.subscriptionService.getUpcomingPayment().subscribe(response => {
       this.upcomingPayment = response.data;
     },
       err => {
-        console.log(err);        
+        console.log(err);
       });
   }
-  populateLastInvoice(){
+  populateLastInvoice() {
     this.subscriptionService.getLastInvoice().subscribe(response => {
       this.lastInvoice = response.data;
     },
       err => {
-        console.log(err);        
+        console.log(err);
       });
   }
 
-  getPreferences(){
+  getPreferences() {
     this.preferenceService.getPreferenceByKey(PreferenceKeys.DashboardTimeSpent, this.currentUser?.id)
       .subscribe({
         next: (response: any) => {
