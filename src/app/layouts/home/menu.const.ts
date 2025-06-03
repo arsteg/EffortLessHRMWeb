@@ -41,7 +41,7 @@ export const SideBarAdminMenu = [
   {
     id: '7',
     title: 'Attendance',
-    url: 'attendance/settings/general-settings',
+    url: 'attendance/settings/attendance-templates',
     svgIcon: 'attendance',
   },
   {

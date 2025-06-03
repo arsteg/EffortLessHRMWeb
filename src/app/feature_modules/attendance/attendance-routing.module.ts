@@ -34,8 +34,7 @@ const routes: Routes = [
           {
             path: 'settings', component: AttendanceManagementSettingsComponent,
             children: [
-              { path: '', redirectTo: 'general-settings', pathMatch: 'full' },
-              { path: 'general-settings', component: GeneralSettingsComponent },
+              { path: '', redirectTo: 'attendance-templates', pathMatch: 'full' },
               { path: 'attendance-templates', component: AttendanceTemplateComponent },
               { path: 'attendance-template-assignment', component: AttendanceTemplateAssignmentComponent },
               { path: 'overtime-records', component: OvertimeRecordsComponent },
