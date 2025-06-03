@@ -48,7 +48,7 @@ const routes: Routes = [
           { path: 'roster-records', component: RosterRecordsComponent },
           { path: 'overtime-records', component: OvertimeRecordsComponent },
           { path: 'on-duty-request', component: OnDutyRecordsComponent },
-          { path: 'attendance-audit', component: OnDutyRecordsComponent },
+          // { path: 'attendance-audit', component: OnDutyRecordsComponent },
           { path: 'attendance-process', component: AttendanceProcessComponent },
           { path: 'reconcilation', component: OnDutyRecordsComponent },
         ]
