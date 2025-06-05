@@ -35,5 +35,7 @@ export const ICONS = [
     "facebook",
     "linkedin",
     "youtube",
-    "instagram"
+    "instagram",
+    "upi",
+    "card"
 ];

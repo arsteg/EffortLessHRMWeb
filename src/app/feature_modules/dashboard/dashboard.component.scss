@@ -1,0 +1,33 @@
+@use '@angular/material' as mat;
+.densed-field {
+  @include mat.form-field-density(-5); 
+}
+
+.subscription-box {
+    div:not(:last-child){
+        border-right: 1px solid #ddd;
+    }
+}
+@media (max-width: 575px) {
+    .subscription-box {
+        div:not(:last-child){
+            border-right: 0;
+        }
+    }
+}
+
+.chart-badge {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  margin-right: var(--size-4);
+}
+
+.chart-legend{
+    span { font-size: var(--size-10);}
+    h3 { font-size: var(--size-14);}
+}
+
+.subscription-card { 
+    background-color: var(--neutral-grey);
+}

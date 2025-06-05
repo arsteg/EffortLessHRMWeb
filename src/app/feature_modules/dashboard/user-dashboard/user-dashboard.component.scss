@@ -1,0 +1,19 @@
+@use '@angular/material' as mat;
+.densed-field {
+  @include mat.form-field-density(-5); 
+}
+
+::ng-deep .chart-legend .legend-labels {
+  white-space: normal !important;
+}
+
+.chart-badge {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+}
+
+.chart-legend{
+    span { font-size: var(--size-10);}
+    h3 { font-size: var(--size-14);}
+}

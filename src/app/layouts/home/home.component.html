@@ -15,13 +15,13 @@
     </mat-drawer>
 
     <mat-drawer-content #contentArea>
-      <div id="page-content-wrapper" class="w-100">
-        <div class="container-fluid p-2">
+      <div id="page-content-wrapper" class="content-wrapper w-100">
+        
           <router-outlet></router-outlet>
           <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100" [extraDuration]="1000"
             [minDuration]="1000" [backdropBackgroundColor]="'#777777'" [spinner]="spinnerStyle.skThreeBounce">
           </ng-http-loader>
-        </div>
+        
       </div>
     </mat-drawer-content>
   </mat-drawer-container>
