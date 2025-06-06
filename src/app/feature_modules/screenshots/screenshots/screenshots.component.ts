@@ -217,7 +217,7 @@ export class ScreenshotsComponent implements OnInit {
       (this.screenshotRows[index].col4['isSelected'] || (!this.screenshotRows[index].col4['isSelected'] && !this.screenshotRows[index].col4.url)) &&
       (this.screenshotRows[index].col5['isSelected'] || (!this.screenshotRows[index].col5['isSelected'] && !this.screenshotRows[index].col5.url)) &&
       (this.screenshotRows[index].col6['isSelected'] || (!this.screenshotRows[index].col6['isSelected'] && !this.screenshotRows[index].col6.url));
-    if (event.target.checked) {
+    if (event) {
       this.selectedTimelog.push(id);
     } else {
       let index = this.selectedTimelog.indexOf(id)
@@ -384,7 +384,10 @@ export class ScreenshotsComponent implements OnInit {
   }
 
   getActivityColor(activityLevel: ActivityLevel) {
-    return activityLevel == ActivityLevel.low ? 'red' : activityLevel == ActivityLevel.medium ? '#F4C430' : activityLevel == ActivityLevel.high ? 'green' : 'black';
+    const html = document.getElementsByTagName('html')[0];
+    const styles = getComputedStyle(html);
+
+    return activityLevel == ActivityLevel.low ? styles.getPropertyValue('--red') : activityLevel == ActivityLevel.medium ? styles.getPropertyValue('--primary') : activityLevel == ActivityLevel.high ? styles.getPropertyValue('--green') : styles.getPropertyValue('--white');
   }
 
   geCellDetails(r: number, c: number, timeLogs: timeLog[]) {
@@ -435,136 +438,16 @@ export class ScreenshotsComponent implements OnInit {
   }
 
   SetPreviousScreen() {
-    for (let i = this.screenshotRows.length - 1; i >= 0; i--) {
-      if (this.screenshotRows[i].col1.timeLabel == this.currentTargetLabel) {
-        if (i >= 1) {
-          if (this.screenshotRows[i - 1].col6.url != null) {
-            this.currentTargetLabel = this.screenshotRows[i - 1].col6.timeLabel;
-            this.selectedScreenShot = `${this.screenshotRows[i - 1].col6.url}`;
-            return;
-          }
-          else {
-            this.currentTargetLabel = this.screenshotRows[i - 1].col6.timeLabel;
-          }
-        }
-      }
-      if (this.screenshotRows[i].col2.timeLabel == this.currentTargetLabel) {
-        if (this.screenshotRows[i].col1.url != null) {
-          this.currentTargetLabel = this.screenshotRows[i].col1.timeLabel;
-          this.selectedScreenShot = `${this.screenshotRows[i].col1.url}`;
-          return;
-        }
-        else {
-          this.currentTargetLabel = this.screenshotRows[i].col1.timeLabel;
-        }
-      }
-      if (this.screenshotRows[i].col3.timeLabel == this.currentTargetLabel) {
-        if (this.screenshotRows[i].col2.url != null) {
-          this.currentTargetLabel = this.screenshotRows[i].col2.timeLabel;
-          this.selectedScreenShot = `${this.screenshotRows[i].col2.url}`;
-          return;
-        }
-        else {
-          this.currentTargetLabel = this.screenshotRows[i].col2.timeLabel;
-        }
-      }
-      if (this.screenshotRows[i].col4.timeLabel == this.currentTargetLabel) {
-        if (this.screenshotRows[i].col3.url != null) {
-          this.currentTargetLabel = this.screenshotRows[i].col3.timeLabel;
-          this.selectedScreenShot = `${this.screenshotRows[i].col3.url}`;
-          return;
-        }
-        else {
-          this.currentTargetLabel = this.screenshotRows[i].col3.timeLabel;
-        }
-      }
-      if (this.screenshotRows[i].col5.timeLabel == this.currentTargetLabel) {
-        if (this.screenshotRows[i].col4.url != null) {
-          this.currentTargetLabel = this.screenshotRows[i].col4.timeLabel;
-          this.selectedScreenShot = `${this.screenshotRows[i].col4.url}`;
-          return;
-        }
-        else {
-          this.currentTargetLabel = this.screenshotRows[i].col4.timeLabel;
-        }
-      }
-      if (this.screenshotRows[i].col6.timeLabel == this.currentTargetLabel) {
-        if (this.screenshotRows[i].col5.url != null) {
-          this.currentTargetLabel = this.screenshotRows[i].col5.timeLabel;
-          this.selectedScreenShot = `${this.screenshotRows[i].col5.url}`;
-          return;
-        }
-        else {
-          this.currentTargetLabel = this.screenshotRows[i].col5.timeLabel;
-        }
-      }
+    const index = this.data.findIndex(data=> data.url === this.selectedScreenShot);
+    if(index > 0) {
+      this.selectedScreenShot = this.data[index - 1].url;
     }
   }
 
   SetNextScreen() {
-    for (let i = 0; i < this.screenshotRows.length; i++) {
-      if (this.screenshotRows[i].col1.timeLabel == this.currentTargetLabel) {
-        if (this.screenshotRows[i].col2.url != null) {
-          this.currentTargetLabel = this.screenshotRows[i].col2.timeLabel;
-          this.selectedScreenShot = `${this.screenshotRows[i].col2.url}`;
-          return;
-        }
-        else {
-          this.currentTargetLabel = this.screenshotRows[i].col2.timeLabel;
-        }
-      }
-      if (this.screenshotRows[i].col2.timeLabel == this.currentTargetLabel) {
-        if (this.screenshotRows[i].col3.url != null) {
-          this.currentTargetLabel = this.screenshotRows[i].col3.timeLabel;
-          this.selectedScreenShot = `${this.screenshotRows[i].col3.url}`;
-          return;
-        }
-        else {
-          this.currentTargetLabel = this.screenshotRows[i].col3.timeLabel;
-        }
-      }
-      if (this.screenshotRows[i].col3.timeLabel == this.currentTargetLabel) {
-        if (this.screenshotRows[i].col4.url != null) {
-          this.currentTargetLabel = this.screenshotRows[i].col4.timeLabel;
-          this.selectedScreenShot = `${this.screenshotRows[i].col4.url}`;
-          return;
-        }
-        else {
-          this.currentTargetLabel = this.screenshotRows[i].col4.timeLabel;
-        }
-      }
-      if (this.screenshotRows[i].col4.timeLabel == this.currentTargetLabel) {
-        if (this.screenshotRows[i].col5.url != null) {
-          this.currentTargetLabel = this.screenshotRows[i].col5.timeLabel;
-          this.selectedScreenShot = `${this.screenshotRows[i].col5.url}`;
-          return;
-        }
-        else {
-          this.currentTargetLabel = this.screenshotRows[i].col5.timeLabel;
-        }
-      }
-      if (this.screenshotRows[i].col5.timeLabel == this.currentTargetLabel) {
-        if (this.screenshotRows[i].col6.url != null) {
-          this.currentTargetLabel = this.screenshotRows[i].col6.timeLabel;
-          this.selectedScreenShot = `${this.screenshotRows[i].col6.url}`;
-          return;
-        }
-        else {
-          this.currentTargetLabel = this.screenshotRows[i].col6.timeLabel;
-        }
-      }
-      if (this.screenshotRows[i].col6.timeLabel == this.currentTargetLabel) {
-        if ((i + 1) < this.screenshotRows.length) {
-          if (this.screenshotRows[i + 1].col1.url != null) {
-            this.currentTargetLabel = this.screenshotRows[i + 1].col1.timeLabel;
-            this.selectedScreenShot = `${this.screenshotRows[i + 1].col1.url}`;
-            return;
-          }
-          else {
-            this.currentTargetLabel = this.screenshotRows[i + 1].col1.timeLabel;
-          }
-        }
-      }
+    const index = this.data.findIndex(data=> data.url === this.selectedScreenShot);
+    if(index + 1 < this.data.length) {
+      this.selectedScreenShot = this.data[index + 1].url;
     }
   }
   @HostListener('document:keydown', ['$event'])

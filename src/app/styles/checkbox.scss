@@ -1,0 +1,4 @@
+.mdc-checkbox .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate=true])~.mdc-checkbox__background{
+    background-color: var(--orange-10) !important;
+    border-color: var(--primary) !important;
+}

@@ -11,7 +11,7 @@ html{
     overflow: auto;
 }
 
-table{
+table:not(.mat-calendar-table){
     width: 100%;
     thead{
         tr{

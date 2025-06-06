@@ -50,7 +50,9 @@
     }
 
     &.rail-menu-item {
-      padding: 0;
+      padding: 5px;
+      width: 40px;
+      height: 40px;
       mat-icon {
         width: 30px;
         height: 30px;

@@ -15,3 +15,13 @@ html {
   // --mdc-outlined-button-container-height: var(--size-48);
   // --mdc-protected-button-container-height: var(--size-48);
 }
+
+.refresh-btn{
+  background-color: var(--light-green) !important;
+  color: var(--green) !important;
+}
+
+.delete-btn{
+  background-color: var(--light-red) !important;
+  color: var(--red) !important;
+}
