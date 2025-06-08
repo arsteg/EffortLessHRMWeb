@@ -1,0 +1,127 @@
+<div class="row m-0 mt-4 g-0">
+    <div *ngIf="showSearch" class="col-md-3 col-12">
+        <mat-form-field appearance="outline" *ngIf="showSearch">
+            <mat-icon matPrefix>search</mat-icon>
+            <input matInput placeholder="Search" (keyup)="onSearch($event.target)" [value]="searchText" />
+        </mat-form-field>
+    </div>
+
+    <div class="offset-md-4 col-12 col-md-5">
+        <div class="d-md-flex justify-content-end align-center">
+            <div *ngIf="showExport">
+                <button color="primary" class="btn btn-light d-flex align-items-center dropdown-toggle mb-4 me-2"
+                    [matMenuTriggerFor]="menu">
+                    <span>Export</span><mat-icon class="fs-5">ios_share</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="exportToCsv()">CSV</button>
+                    <button mat-menu-item (click)="exportToExcel()">XLS</button>
+                    <button mat-menu-item (click)="exportToPdf()">PDF</button>
+                </mat-menu>
+            </div>
+        
+            <div *ngIf="showUserfilter">
+                <mat-form-field appearance="outline">
+                    <mat-label>Select User</mat-label>
+                    <mat-select multiple (selectionChange)="onUserChange($event)">
+                        <mat-option *ngFor="let member of userFilterOptions" [value]="member.id">
+                            {{ member.name | titlecase }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div #table class="table-responsive">
+    <table mat-table [dataSource]="filteredData" matSort (matSortChange)="onSort($event)" class="table hrm-table">
+        @for(column of columns; track column){
+        <ng-container [matColumnDef]="column.key">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="{{ column.key }}"
+                [disabled]="column.sortable === false || column.isCheckbox || column.isAction">
+                @if (column.isCheckbox) {
+                <mat-checkbox (change)="toggleAllRows()" [checked]="isAllSelected()"
+                    [indeterminate]="isPartialSelected()" color="primary"></mat-checkbox>
+                } @else {
+                {{ column.name }}
+                }
+            </th>
+            <td mat-cell *matCellDef="let row">
+                <!-- Action column -->
+                @if(column.isAction){
+                <!-- Single Action -->
+                @if(column.options?.length === 1){
+                @if(!column.options[0].hideCondition(row)){
+                <button mat-stroked-button (click)="onAction(column.options[0], row)"
+                    [class]="column.options[0].cssClass">
+                    @switch(column.options[0].visibility){
+                    @case ('icon') { <mat-icon>{{column.options[0].icon}}</mat-icon> }
+                    @case ('label') { <span>{{ column.options[0].label }}</span> }
+                    @case ('both') {
+                    <ng-container>
+                        <span class="d-flex align-items-center">
+                            <mat-icon>{{column.options[0].icon}}</mat-icon>
+                            <span>{{ column.options[0].label }}</span>
+                        </span>
+                    </ng-container>
+                    }
+                    }
+                </button>
+                }
+                }
+
+                <!-- Multiple Actions: Show menu -->
+                @if(column.options?.length > 1){
+                <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+                    <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #actionMenu="matMenu">
+                    @for(opt of column.options; track opt){
+                    @if(!opt.hideCondition(row)){
+                    <button mat-menu-item (click)="onAction(opt, row)" [class]="opt.cssClass">
+                        @switch(opt.visibility){
+                        @case ('icon') { <mat-icon>{{opt.icon}}</mat-icon> }
+                        @case ('label') { <span>{{ opt.label }}</span> }
+                        @case ('both') {
+                        <span class="d-flex align-items-center">
+                            <mat-icon>{{opt.icon}}</mat-icon>
+                            <span>{{ opt.label }}</span>
+                        </span>
+                        }
+                        }
+                    </button>
+                    }
+                    }
+                </mat-menu>
+                }
+                } @else if(column.icons?.length) {
+                @for(icon of column.icons; track icon){
+                @if(row[column.key] === icon.value){
+                <mat-icon [class]="icon.class">{{icon.name}}</mat-icon>
+                }
+                }
+                } @else if(column.isCheckbox){
+
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="toggleRow(row)"
+                    [checked]="selection.isSelected(row)" color="primary"></mat-checkbox>
+
+                } @else {
+                {{ column.valueFn ? column.valueFn(row) : getValueByPath(row, column.key) }}
+                }
+            </td>
+
+        </ng-container>
+        }
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+
+<!-- Pagination -->
+@if(showPaginator){
+<mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+    (page)="onPageChange($event)">
+</mat-paginator>
+}

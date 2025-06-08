@@ -50,36 +50,6 @@ figure {
   padding: 0.675rem 2.5rem 0.675rem 0.5rem !important;
 }
 
-#date {
-  font-weight: 300;
-}
-
-.bottompmNav {
-  text-align: right;
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: #ff7b1d !important;
-  border-radius: 50%;
-  border: 2px solid white;
-}
-
-.carousel-control-prev {
-  justify-content: flex-start;
-  margin-left: 10px;
-}
-
-.carousel-control-next {
-  justify-content: flex-end;
-  margin-right: 10px;
-}
-
-.modal-body {
-  position: relative;
-  flex: 1 1 auto;
-  padding: 0.2rem;
-}
 
 .selectdate {
   width: 100%;
