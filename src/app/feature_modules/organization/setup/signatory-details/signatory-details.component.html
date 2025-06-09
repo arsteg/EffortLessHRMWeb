@@ -1,51 +1,11 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="tableContainer bg-white py-2">
-            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{signatoryDetails?.length}}) Records Found</p>
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                    <button mat-raised-button class="addBtn rounded-pill ms-3"
-                        (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
-                </div>
-            </div>
-            <table>
-                <thead>
-                    <th [appSort]="signatoryDetails" data-name="name"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Name
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="signatoryDetails" data-name="designation"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Designation
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th>Actions</th>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let signatory of signatoryDetails | search : searchText; let i = index">
-                        <td>{{signatory?.name}}</td>
-                        <td>{{signatory?.designation}}</td>
-                        <td>
-                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                                aria-label="Example icon button with a menu icon"
-                                (click)="selectedRecord = signatory; isEdit= true; edit(signatory); open(addModal)">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                                aria-label="Example icon button with a menu icon"
-                                (click)="deleteDialog(signatory?._id)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="position-relative">
+    <button mat-raised-button class="position-absolute end-0" color="primary"
+        (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
 </div>
+
+
+<hrm-table [data]="signatoryDetails" [columns]="columns" [showExport]="'none'" [showSearch]="true"
+    (actionClicked)="onActionClick($event)"></hrm-table>
 
 <!-- add company -->
 <ng-template #addModal let-modal>

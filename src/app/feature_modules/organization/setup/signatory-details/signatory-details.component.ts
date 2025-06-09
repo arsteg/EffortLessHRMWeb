@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -12,6 +13,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
   styleUrl: './signatory-details.component.css'
 })
 export class SignatoryDetailsComponent {
+  @ViewChild('addModal') addModal: ElementRef;
   signatoryDetails: any;
   signatoryDetailForm: FormGroup;
   closeResult: string;
@@ -19,6 +21,33 @@ export class SignatoryDetailsComponent {
   searchText: string = '';
   selectedRecord: any;
   public sortOrder: string = '';
+  columns: TableColumn[] = [
+      {
+        key: 'name',
+        name: 'Name'
+      }, {
+        key: 'designation',
+        name: 'Designation'
+      },
+      {
+        key: 'action',
+        name: 'Action',
+        options: [
+          {
+            label: 'Edit',
+            icon: 'edit',
+            visibility: ActionVisibility.BOTH, // label | icon | both 
+            cssClass: 'border-bottom',
+          }, {
+            label: 'Delete',
+            icon: 'delete',
+            visibility: ActionVisibility.BOTH,
+            cssClass: 'text-danger'
+          }
+        ],
+        isAction: true
+      }
+    ];
 
   constructor(private companyService: CompanyService,
     private modalService: NgbModal,
@@ -34,6 +63,21 @@ export class SignatoryDetailsComponent {
 
   ngOnInit() {
     this.getSignatoryDetails();
+  }
+
+  onActionClick(event) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedRecord = event.row;
+        this.isEdit = true;
+        this.edit(event.row);
+        this.open(this.addModal);
+        break;
+
+      case 'Delete':
+        this.deleteDialog(event.row?._id)
+        break;
+    }
   }
 
   getSignatoryDetails() {

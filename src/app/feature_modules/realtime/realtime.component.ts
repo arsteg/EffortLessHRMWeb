@@ -8,7 +8,7 @@ import { RealTime } from 'src/app/models/timeLog';
 import { Observable, switchMap, Subscription } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LiveScreenComponent } from './live-screen/live-screen.component';
-import { TableColumn } from 'src/app/models/table-column';
+import { TableColumn, ActionVisibility } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-realtime',
@@ -67,12 +67,12 @@ export class RealtimeComponent implements OnInit, OnDestroy {
         {
           label: 'Live Screen',
           icon: '',
-          visibility: 'label', // label | icon | both 
+          visibility: ActionVisibility.LABEL, // label | icon | both 
           cssClass: 'border-bottom',
           hideCondition: (row: any)=>{
             return !row.isOnline
           } 
-        },
+        }
       ],
       isAction: true
     }

@@ -1,87 +1,11 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="tableContainer bg-white py-2">
-            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{locations?.length}}) Records Found</p>
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                    <button mat-raised-button class="addBtn rounded-pill ms-3"
-                        (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
-                </div>
-            </div>
-            <table>
-                
-                <thead>
-                    <th [appSort]="locations" data-name="locationCode"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Location Code
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="locations" data-name="country"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Country
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="locations" data-name="state"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">State
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="locations" data-name="city"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">City
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="locations" data-name="organization"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Organization
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="locations" data-name="providentFundRegistrationCode"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">PF Registration Code
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="locations" data-name="esicRegistrationCode"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">ESIC Registration Code
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="locations" data-name="professionalTaxRegistrationCode"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Professional Tax Registration Code
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="locations" data-name="lwfRegistrationCode"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">LWF Registration Code
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th>Actions</th>
-                </thead>
-                
-                <tbody>
-                    <tr *ngFor="let location of locations | search : searchText; let i = index">
-                        <td>{{location?.locationCode}}</td>
-                        <td>{{location?.country}}</td>
-                        <td>{{location?.state}}</td>
-                        <td>{{location?.city}}</td>
-                        <td>{{location?.organization}}</td>
-                        <td>{{location?.providentFundRegistrationCode}}</td>
-                        <td>{{location?.esicRegistrationCode}}</td>
-                        <td>{{location?.professionalTaxRegistrationCode}}</td>
-                        <td>{{location?.lwfRegistrationCode}}</td>
-                        <td>
-                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                                aria-label="Example icon button with a menu icon"
-                                (click)="selectedZone = location; isEdit= true; edit(location); open(addModal)">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(location?._id)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="position-relative">
+    <button mat-raised-button color="primary" class="position-absolute end-0"
+        (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
 </div>
+
+
+<hrm-table [data]="locations" [columns]="columns" [showExport]="'none'" [showSearch]="true"
+    (actionClicked)="onActionClick($event)"></hrm-table>
 
 <!-- add location -->
 <ng-template #addModal let-modal>
@@ -97,50 +21,60 @@
     <form [formGroup]="locationForm" (ngSubmit)="onSubmission()">
         <div class="form-group mt-2">
             <label for="">Location Code <span class="text-danger">*</span></label>
-            <input class="form-control" formControlName="locationCode" [ngClass]="{'is-invalid': locationForm.get('locationCode').invalid && (locationForm.get('locationCode').dirty || locationForm.get('locationCode').touched)}">
-            <div *ngIf="locationForm.get('locationCode').invalid && (locationForm.get('locationCode').dirty || locationForm.get('locationCode').touched)" class="invalid-feedback">
+            <input class="form-control" formControlName="locationCode"
+                [ngClass]="{'is-invalid': locationForm.get('locationCode').invalid && (locationForm.get('locationCode').dirty || locationForm.get('locationCode').touched)}">
+            <div *ngIf="locationForm.get('locationCode').invalid && (locationForm.get('locationCode').dirty || locationForm.get('locationCode').touched)"
+                class="invalid-feedback">
                 <small class="text-danger">Location Code is required.</small>
             </div>
         </div>
         <div class="form-group mt-2">
             <label for="Select Country">Select Country <span class="text-danger">*</span></label>
-            <select formControlName="country" [ngClass]="{'is-invalid': locationForm.get('country').invalid && (locationForm.get('country').dirty || locationForm.get('country').touched)}">
+            <select formControlName="country"
+                [ngClass]="{'is-invalid': locationForm.get('country').invalid && (locationForm.get('country').dirty || locationForm.get('country').touched)}">
                 <option [ngValue]="null" disabled>Countries</option>
                 <option value="India">India</option>
             </select>
-            <div *ngIf="locationForm.get('country').invalid && (locationForm.get('country').dirty || locationForm.get('country').touched)" class="invalid-feedback">
+            <div *ngIf="locationForm.get('country').invalid && (locationForm.get('country').dirty || locationForm.get('country').touched)"
+                class="invalid-feedback">
                 <small class="text-danger">Country is required.</small>
             </div>
         </div>
-    
+
         <div class="form-group mt-2">
             <label for="Select State">Select State <span class="text-danger">*</span></label>
-            <select formControlName="state" [ngClass]="{'is-invalid': locationForm.get('state').invalid && (locationForm.get('state').dirty || locationForm.get('state').touched)}">
+            <select formControlName="state"
+                [ngClass]="{'is-invalid': locationForm.get('state').invalid && (locationForm.get('state').dirty || locationForm.get('state').touched)}">
                 <option [ngValue]="null" disabled>States</option>
                 <option *ngFor="let state of states" value="{{state}}">{{state}}</option>
             </select>
-            <div *ngIf="locationForm.get('state').invalid && (locationForm.get('state').dirty || locationForm.get('state').touched)" class="invalid-feedback">
+            <div *ngIf="locationForm.get('state').invalid && (locationForm.get('state').dirty || locationForm.get('state').touched)"
+                class="invalid-feedback">
                 <small class="text-danger">State is required.</small>
             </div>
         </div>
-    
+
         <div class="form-group mt-2">
             <label for="Select City">Select City <span class="text-danger">*</span></label>
-            <select formControlName="city" [ngClass]="{'is-invalid': locationForm.get('city').invalid && (locationForm.get('city').dirty || locationForm.get('city').touched)}">
+            <select formControlName="city"
+                [ngClass]="{'is-invalid': locationForm.get('city').invalid && (locationForm.get('city').dirty || locationForm.get('city').touched)}">
                 <option [ngValue]="null" disabled>Cities</option>
                 <option value="city-1">City-1</option>
             </select>
-            <div *ngIf="locationForm.get('city').invalid && (locationForm.get('city').dirty || locationForm.get('city').touched)" class="invalid-feedback">
+            <div *ngIf="locationForm.get('city').invalid && (locationForm.get('city').dirty || locationForm.get('city').touched)"
+                class="invalid-feedback">
                 <small class="text-danger">City is required.</small>
             </div>
         </div>
-    
+
         <div class="form-group mt-2">
             <label for="">Select Organization <span class="text-danger">*</span></label>
-            <select formControlName="organization" [ngClass]="{'is-invalid': locationForm.get('organization').invalid && (locationForm.get('organization').dirty || locationForm.get('organization').touched)}">
+            <select formControlName="organization"
+                [ngClass]="{'is-invalid': locationForm.get('organization').invalid && (locationForm.get('organization').dirty || locationForm.get('organization').touched)}">
                 <option value="Arsteg">Arsteg</option>
             </select>
-            <div *ngIf="locationForm.get('organization').invalid && (locationForm.get('organization').dirty || locationForm.get('organization').touched)" class="invalid-feedback">
+            <div *ngIf="locationForm.get('organization').invalid && (locationForm.get('organization').dirty || locationForm.get('organization').touched)"
+                class="invalid-feedback">
                 <small class="text-danger">Organization is required.</small>
             </div>
         </div>

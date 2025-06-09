@@ -18,7 +18,13 @@ export interface Icons {
 export interface ActionOption {
     label: string;
     icon: string;
-    visibility: string;
-    cssClass: string;
-    hideCondition: Function;
+    visibility: ActionVisibility;
+    cssClass?: string;
+    hideCondition?: Function;
+}
+
+export enum ActionVisibility {
+    BOTH = 'both',
+    LABEL = 'label',
+    ICON = 'icon'
 }

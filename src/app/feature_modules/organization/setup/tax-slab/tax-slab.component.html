@@ -1,80 +1,24 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="tableContainer bg-white py-2">
-            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{totalRecords}}) Records Found</p>
-                <div class="form-group d-flex align-items-center w-25">
-                    <label for="cycle" class="form-label">Year&nbsp;</label>
-                    <select id="cycle" [(ngModel)]="selectedCycle" (change)="onTaxSlabChange(selectedCycle)"
-                        class="form-select">
-                        <option *ngFor="let year of fiscalYears" [value]="year">{{ year }}</option>
-                    </select>
-                </div>
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
+<div class="position-relative">
+    <div class="position-absolute end-0" style="width: 320px;">
+        <div>
+            <mat-form-field>
+                <mat-label>Choose Year</mat-label>
+                <mat-select class="mx-2" [(ngModel)]="selectedCycle" (selectionChange)="onTaxSlabChange($event)">
+                    <mat-option *ngFor="let year of fiscalYears" [value]="year">Calendar year- {{ year }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
 
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-
-                    <button mat-raised-button class="addBtn rounded-pill w-100"
-                        (click)="setFormValues(); isEdit=false; open(addModal)">Add&nbsp;New</button>
-                </div>
-            </div>
-
-            <table>
-                <thead>
-                    <th [appSort]="taxSlabs" data-name="IncomeTaxSlabs"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Income Tax Slabs
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="taxSlabs" data-name="minAmount"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Minimum
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="taxSlabs" data-name="maxAmount"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Maximum
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="taxSlabs" data-name="taxPercentage"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Percentage
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="taxSlabs" data-name="cycle"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">cycle
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="taxSlabs" data-name="regime"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Regime
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th>Actions</th>
-                </thead>
-
-                <tbody>
-                    <tr *ngFor="let data of taxSlabs | search : searchText; let i = index">
-                        <td>{{data?.IncomeTaxSlabs}}</td>
-                        <td>{{data?.minAmount}}</td>
-                        <td>{{data?.maxAmount}}</td>
-                        <td>{{data?.taxPercentage}}</td>
-                        <td>{{data?.cycle}}</td>
-                        <td>{{data?.regime}}</td>
-                        <td>
-                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                                aria-label="Example icon button with a menu icon"
-                                (click)="selectedRecord = data; isEdit= true; setFormValues(); open(addModal)">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(data?._id)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <button mat-raised-button class="position-absolute end-0" color="primary"
+                (click)="setFormValues(); isEdit=false; open(addModal)">Add New</button>
         </div>
+
     </div>
 </div>
+
+
+<hrm-table [data]="taxSlabs" [columns]="columns" [showExport]="'none'" [showSearch]="true"
+    (actionClicked)="onActionClick($event)"></hrm-table>
 
 <!-- add company -->
 <ng-template #addModal let-modal>

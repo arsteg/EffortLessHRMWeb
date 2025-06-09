@@ -1,27 +1,28 @@
-<div class="d-flex flex-wrap justify-content-md-end">
-
-
-  <div class="d-flex align-items-start justify-content-end">
-    <button mat-icon-button class="mt-1" (click)="SetPreviousDay()">
-      <mat-icon>keyboard_arrow_left</mat-icon>
-    </button>
-    <mat-form-field>
-      <mat-label>Choose a date</mat-label>
-      <input matInput [matDatepicker]="datepicker" [(ngModel)]="selectedDate" (dateChange)="showScreenShots()">
-      <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
-      <mat-datepicker #datepicker>
-        <mat-datepicker-actions>
-          <button mat-button matDatepickerCancel>Cancel</button>
-          <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
-        </mat-datepicker-actions>
-      </mat-datepicker>
-    </mat-form-field>
-    <button mat-icon-button class="mt-1" (click)="SetNextDay()">
-      <mat-icon>keyboard_arrow_right</mat-icon>
-    </button>
+<div class="row">
+  <div class="col-lg-3 col-12">
+    <div class=" d-flex align-items-start">
+      <button mat-icon-button class="mt-1" (click)="SetPreviousDay()">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+      <mat-form-field>
+        <mat-label>Choose a date</mat-label>
+        <input matInput [matDatepicker]="datepicker" [(ngModel)]="selectedDate" (dateChange)="showScreenShots()">
+        <mat-hint>{{selectedDate | date:'MM/dd/yyyy'}}</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+        <mat-datepicker #datepicker>
+          <mat-datepicker-actions>
+            <button mat-button matDatepickerCancel>Cancel</button>
+            <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+          </mat-datepicker-actions>
+        </mat-datepicker>
+      </mat-form-field>
+      <button mat-icon-button class="mt-1" (click)="SetNextDay()">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+    </div>
   </div>
 
-  <mat-form-field>
+  <mat-form-field class="col-lg-2 col-12">
     <mat-label>Member</mat-label>
     <mat-select [ngModel]="selectedMember | json" (ngModelChange)="onMemberSelectionChange($event)">
       @for(m of members; track m) {
@@ -29,12 +30,9 @@
       }
     </mat-select>
   </mat-form-field>
-</div>
-
-
-<div class="row align-items-center">
-  <div class="col-md-8">
-    <h3>Total Time</h3>
+  
+  <div class="col-lg-5 col-12">
+    <h3 class="mb-1">Total time</h3>
     <span>Total time: {{padValue(totalHours)}} h {{padValue(totalMinutes)}} m</span>
     <span class="vr mx-2"></span>
     <span>This week: {{padValue(currentWeekTotalHours)}} h
@@ -44,7 +42,7 @@
       {{padValue(currentMonthTotalMinutes)}} m</span>
   </div>
 
-  <div class="col-md-4 text-end">
+  <div class="col-lg-2 col-12 text-end">
     <button mat-icon-button id="btnRefresh" class="refresh-btn ms-auto" (click)="showScreenShots()"
       [matTooltip]="'Refresh'">
       <mat-icon>sync</mat-icon>
@@ -133,8 +131,7 @@
     <div>
       <button *ngIf="isMaximized" mat-icon-button
         (click)="toggleImageSize()"><mat-icon>fullscreen_exit</mat-icon></button>
-      <button *ngIf="!isMaximized" mat-icon-button
-        (click)="toggleImageSize()"><mat-icon>fullscreen</mat-icon></button>
+      <button *ngIf="!isMaximized" mat-icon-button (click)="toggleImageSize()"><mat-icon>fullscreen</mat-icon></button>
       <button mat-icon-button mat-dialog-close>
         <mat-icon>close</mat-icon>
       </button>
@@ -142,7 +139,7 @@
   </div>
 
   <div>
-      <img class="modal-image" src="{{selectedScreenShot}}" #modalImage />
+    <img class="modal-image" src="{{selectedScreenShot}}" #modalImage />
   </div>
 
 </ng-template>

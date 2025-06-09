@@ -1,57 +1,12 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="tableContainer bg-white py-2">
-            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{departments?.length}}) Records Found</p>
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
+<div class="position-relative">
 
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                    <button mat-raised-button class="addBtn rounded-pill ms-3"
-                        (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
-                </div>
-            </div>
-            <table>
-                <thead>
-                    <th [appSort]="departments" data-name="departmentName"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Department Code
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th [appSort]="departments" data-name="departmentCode"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Department Name
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th>Actions</th>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let department of departments | search : searchText; let i = index">
-                        <td>{{department?.departmentName}}</td>
-                        <td>{{department?.departmentCode}}</td>
+        <button mat-raised-button class="position-absolute end-0" color="primary"
+            (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
 
-                        <td>
-                            <button class="actions" mat-mini-fab matTooltip="Assign Sub-Department"
-                                matTooltipPosition="before" aria-label="Example icon button with a menu icon"
-                                (click)="selectedRecord = department; isEdit= true; edit(department); open(subDepartment)">
-                                <i class="bi bi-box-arrow-in-right"></i>
-                            </button>
-                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before"
-                                aria-label="Example icon button with a menu icon"
-                                (click)="selectedRecord = department; isEdit= true; edit(department); open(addModal)">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                            <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                                aria-label="Example icon button with a menu icon"
-                                (click)="deleteDialog(department?._id)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>
+
+<hrm-table [data]="departments" [columns]="columns" [showExport]="'none'" [showSearch]="true"
+    (actionClicked)="onActionClick($event)"></hrm-table>
 
 <!-- add company -->
 <ng-template #addModal let-modal>

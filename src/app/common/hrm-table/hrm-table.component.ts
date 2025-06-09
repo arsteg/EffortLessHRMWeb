@@ -98,7 +98,7 @@ export class HrmTableComponent {
         const bVal = this.getValueByPath(b, sort.active);
         return sort.direction === 'asc' ? (aVal > bVal ? 1 : -1) : (aVal < bVal ? 1 : -1);
       });
-      this.data = sorted;
+      this.filteredData = sorted;
     }
   }
 
