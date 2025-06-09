@@ -8,6 +8,7 @@ import { RealTime } from 'src/app/models/timeLog';
 import { Observable, switchMap, Subscription } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LiveScreenComponent } from './live-screen/live-screen.component';
+import { TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-realtime',
@@ -31,6 +32,52 @@ export class RealtimeComponent implements OnInit, OnDestroy {
   teamUser: any;
   private wsSubscription: Subscription;
 
+  columns: TableColumn[] = [
+    {
+      key: 'isOnline',
+      sortable: false,
+      name: '',
+      icons: [
+        { name: 'circle', class: 'text-success fs-6 p-2', value: true },
+        { name: 'circle', class: 'text-danger fs-6 p-2', value: false },
+      ],
+    },
+    {
+      key: 'user',
+      name: 'User',
+      valueFn: (row: any) => {
+        return (this.currentUser && row?.user?.id === this.currentUser?.id ? 'Me' : `${row.user?.firstName ?? ''} ${row.user?.lastName ?? ''}`);
+      }
+    },
+    {
+      key: 'project',
+      name: 'Project'
+    }, {
+      key: 'task',
+      name: 'Task'
+    },
+    {
+      key: 'app',
+      name: 'App/Website'
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      options: [
+        {
+          label: 'Live Screen',
+          icon: '',
+          visibility: 'label', // label | icon | both 
+          cssClass: 'border-bottom',
+          hideCondition: (row: any)=>{
+            return !row.isOnline
+          } 
+        },
+      ],
+      isAction: true
+    }
+  ]
+
   constructor(
     private timelog: TimeLogService,
     public commonService: CommonService,
@@ -38,7 +85,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
     private exportService: ExportService,
     private dialog: MatDialog,
     private webSocketService: WebSocketService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     console.log('ngOnInit started');
@@ -67,6 +114,13 @@ export class RealtimeComponent implements OnInit, OnDestroy {
       this.wsSubscription.unsubscribe();
     }
     this.webSocketService.disconnect();
+  }
+
+  handleAction(event: any) {
+    console.log(event)
+    if (event.action.label === 'Live Screen') {
+      this.singleUserLiveScreen(event.row.user.id);
+    }
   }
 
   getCurrentUser() {
@@ -127,7 +181,8 @@ export class RealtimeComponent implements OnInit, OnDestroy {
     });
   }
 
-  filterData() {
+  filterData(event) {
+    this.selectedUser = event.value;
     console.log('filterData called with selectedUser:', this.selectedUser);
     if (this.selectedUser.length === 0) {
       // Show all members when no users are selected

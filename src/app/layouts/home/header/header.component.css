@@ -1,30 +1,38 @@
-.navbar{
+.navbar {
     background: var(--orange-10);
     border-bottom: 1px solid var(--orange-20);
     padding: var(--size-2) 0;
 }
 
-.profile-menu{
+.profile-menu {
     cursor: pointer;
     border-radius: var(--size-20);
-    &:hover{
+
+    &:hover {
         background: var(--bg-grey);
     }
 }
 
 .profile-img {
     max-height: 150px;
-    border: 2px solid white;
+    border: 2px solid var(--white);
     border-radius: 50%;
-    box-shadow: 0px 0px 20px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
+    object-fit: cover;
 }
 
-.edit-icon{
+.edit-icon {
     position: absolute;
-    top: 80%;
-    right: 10%;
+    bottom: -15%;
+    right: -30%;
+    border: 1px solid var(--light-grey);
+    border-top-width: 0;
+    border-left-width: 0;
 }
-.header-profile-img{
+
+.header-profile-img {
     border-radius: 50%;
-    max-height: 40px;
+    height: 40px;
+    width: 40px;
+    object-fit: cover;
 }

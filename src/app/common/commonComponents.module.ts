@@ -4,15 +4,17 @@ import { SubordinateSelectionComponent } from "./subordinateSelection/subordinat
 import { CRUDComponent } from './crud/crud.component';
 import { RouterModule } from "@angular/router";
 import { LanguageSelectorComponent } from "./language-selector/language-selector.component";
+import { HrmTableComponent } from "./hrm-table/hrm-table.component";
 
 @NgModule({
-    declarations:[SubordinateSelectionComponent, CRUDComponent, LanguageSelectorComponent],
+    declarations:[SubordinateSelectionComponent, CRUDComponent, LanguageSelectorComponent, HrmTableComponent],
     exports:[
       SharedModule,
       RouterModule,
       SubordinateSelectionComponent,
       CRUDComponent,
-      LanguageSelectorComponent
+      LanguageSelectorComponent,
+      HrmTableComponent
     ],
     imports:[
       SharedModule,

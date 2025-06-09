@@ -1,4 +1,4 @@
-html{
+html {
     --mat-table-background-color: white;
 }
 
@@ -11,22 +11,33 @@ html{
     overflow: auto;
 }
 
-table{
+table:not(.mat-calendar-table) {
     width: 100%;
-    thead{
-        tr{
+
+    thead {
+        tr {
             border-bottom: 1px solid #e0e0e0;
-            th{
+
+            th {
                 padding: 10px 0;
             }
         }
     }
-    tbody{
-        tr{
+
+    tbody {
+        tr {
             border-bottom: 1px solid #e0e0e0;
-            td{
+
+            td {
                 padding: 10px 0;
             }
         }
     }
+}
+
+table.hrm-table {
+    thead {
+        background-color: #f5f5f5;
+    }
+
 }
