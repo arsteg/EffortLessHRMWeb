@@ -1,45 +1,43 @@
 <div class="modal-body">
-    <div class=" d-flex justify-content-between">
-        <div class="">
-            <h3 class="px-3 pt-2 mb-0 text-muted"> Show Short Leave Details</h3>
+    <div class="d-flex justify-content-between">
+        <div>
+            <h3 class="px-3 pt-2 mb-0 text-muted">{{ 'leave.showShortLeaveDetailsTitle' | translate }}</h3>
         </div>
         <div mat-dialog-actions>
-            <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false"
-                    aria-label="Example close icon" fontIcon="close"></mat-icon></button>
+            <button mat-button mat-dialog-close (click)="closeModal()"
+                    [attr.aria-label]="'leave.closeModal' | translate">
+                <mat-icon aria-hidden="false" fontIcon="close"></mat-icon>
+            </button>
         </div>
     </div>
     <hr class="my-0">
     <div class="row pt-0" mat-dialog-content>
         <div class="tableContainer">
             <table>
-
                 <tr>
-                    <th class="w-50">Employee</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.employee}}</td>
+                    <th class="w-50">{{ 'leave.employeeName' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.employee | titlecase }}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">Status</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.status}}</td>
+                    <th class="w-50">{{ 'leave._status' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.status | translate: 'leave.status' }}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">Start Time</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.startTime}}</td>
+                    <th class="w-50">{{ 'leave.startTime' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.startTime }}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">End Time</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.endTime}}</td>
-                </tr>
-
-                <tr>
-                    <th class="w-50">Total Time (in minutes)</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.durationInMinutes}}</td>
+                    <th class="w-50">{{ 'leave.endTime' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.endTime }}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">Comments</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.comments}}</td>
+                    <th class="w-50">{{ 'leave.totalTimeLabel' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.durationInMinutes }}</td>
                 </tr>
-
-
+                <tr>
+                    <th class="w-50">{{ 'leave.commentLabel' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.comments }}</td>
+                </tr>
             </table>
         </div>
     </div>

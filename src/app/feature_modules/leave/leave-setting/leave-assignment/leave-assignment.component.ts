@@ -1,75 +1,91 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { TableService } from 'src/app/_services/table.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
-  selector: 'app-leave-Assignment',
+  selector: 'app-leave-assignment',
   templateUrl: './leave-assignment.component.html',
   styleUrls: ['./leave-assignment.component.css']
 })
-export class LeaveAssignmentComponent implements OnInit {
+export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
   closeResult: string = '';
   selectedLeaveAssignment: any;
   isEdit: boolean = false;
-  searchText: string = '';
-  p: number = 1;
   templateAssignmentForm: FormGroup;
   users: any[] = [];
-  templates: any;
-  templateAssignment: any;
-  public sortOrder: string = '';
-  defaultnext = "100000";
-  defaultskip = "0";
-  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
-  recordsPerPage: number = 10;
-  totalRecords: number = 0;
-  currentPage: number = 1;
-  skip: string = '0';
-  next = '10';
+  templates: any[] = [];
   showApprovers: boolean = false;
+  displayedColumns: string[] = ['user', 'leaveTemplate', 'primaryApprover', 'secondaryApprover', 'actions'];
+  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
 
-  constructor(private modalService: NgbModal,
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  constructor(
+    private modalService: NgbModal,
     private commonService: CommonService,
     private leaveService: LeaveService,
     private fb: FormBuilder,
     private toast: ToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private translate: TranslateService,
+    public tableService: TableService<any>
   ) {
     this.templateAssignmentForm = this.fb.group({
       user: ['', Validators.required],
       leaveTemplate: ['', Validators.required],
       primaryApprover: [''],
       secondaryApprover: ['']
-    })
+    });
   }
 
   ngOnInit(): void {
     this.getAllUsers();
-    this.getAlltemplates();
-    this.getTemplateAssignments();
+    this.getAllTemplates();
+    this.initializeFilterPredicate();
     this.templateAssignmentForm.get('leaveTemplate')?.valueChanges.subscribe(value => {
       this.onTemplateChange(value);
     });
   }
 
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      this.getTemplateAssignments();
+  ngAfterViewInit() {
+    this.tableService.dataSource.paginator = this.paginator;
+    this.getTemplateAssignments();
+  }
+
+  initializeFilterPredicate() {
+    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+      const searchString = filter.trim().toLowerCase();
+      const userName = this.getUser(data.user)?.toLowerCase() || '';
+      const templateLabel = this.getTemplateLabel(data.leaveTemplate)?.toLowerCase() || '';
+      const primaryApproverName = this.getUser(data.primaryApprover)?.toLowerCase() || '';
+      const secondaryApproverName = this.getUser(data.secondaryApprover)?.toLowerCase() || '';
+      return userName.includes(searchString) ||
+             templateLabel.includes(searchString) ||
+             primaryApproverName.includes(searchString) ||
+             secondaryApproverName.includes(searchString);
     });
   }
 
-  onClose(event) {
-    if (event) {
-      this.modalService.dismissAll();
-    }
+  open(content: any) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        this.resetForm();
+        this.getTemplateAssignments();
+      }
+    );
   }
 
   private getDismissReason(reason: any): string {
@@ -82,120 +98,158 @@ export class LeaveAssignmentComponent implements OnInit {
     }
   }
 
+  resetForm() {
+    this.isEdit = false;
+    this.showApprovers = false;
+    this.selectedLeaveAssignment = null;
+    this.templateAssignmentForm.reset({
+      user: '',
+      leaveTemplate: '',
+      primaryApprover: '',
+      secondaryApprover: ''
+    });
+  }
+
   onSubmission() {
-    let payload = {
+    if (this.templateAssignmentForm.invalid) {
+      this.templateAssignmentForm.markAllAsTouched();
+      return;
+    }
+
+    const payload = {
       user: this.templateAssignmentForm.value.user,
       leaveTemplate: this.templateAssignmentForm.value.leaveTemplate,
-      primaryApprover: this.templateAssignmentForm.value.primaryApprover || null,
-      secondaryApprover: this.templateAssignmentForm.value.secondaryApprover || null
-    }
-    if (this.templateAssignmentForm.valid) {
-      if (!this.isEdit) {
-        this.leaveService.addLeaveTemplateAssignment(payload).subscribe((res: any) => {
-          if (res.status == 'success') {
-            const templateAssignment = res.data;
-            this.templateAssignment.push(templateAssignment);
-            this.toast.success('Employee assigned to the Template', 'Successfully!!!');
-            this.templateAssignmentForm.reset();
+      primaryApprover: this.showApprovers ? this.templateAssignmentForm.value.primaryApprover || null : null,
+      secondaryApprover: this.showApprovers ? this.templateAssignmentForm.value.secondaryApprover || null : null
+    };
+
+    if (!this.isEdit) {
+      this.leaveService.addLeaveTemplateAssignment(payload).subscribe({
+        next: (res: any) => {
+          if (res.status === 'success') {
+            const currentData = this.tableService.dataSource.data;
+            this.tableService.setData([...currentData, res.data]);
+            this.toast.success(this.translate.instant('leave.successAssigned'), this.translate.instant('leave.title'));
+            this.resetForm();
             this.modalService.dismissAll();
           }
         },
-          err => {
-            this.toast.error('Employee cannot be assigned to the Template', 'Error')
-          })
-      }
-      else {
-        const id = this.selectedLeaveAssignment._id
-        this.leaveService.addLeaveTemplateAssignment(payload).subscribe((res: any) => {
-          if (res.status == 'success') {
-            const updatedLeaveAssignment = res.data;
-            const index = this.templateAssignment.findIndex(category => category._id === updatedLeaveAssignment._id);
-            if (index !== -1) {
-              this.templateAssignment[index] = updatedLeaveAssignment;
-            }
-            this.toast.success('Leave assignment Updated', 'Successfully!!!');
+        error: (err) => {
+          this.toast.error(this.translate.instant('leave.errorAssigned'), this.translate.instant('leave.title'));
+        }
+      });
+    } else {
+      const id = this.selectedLeaveAssignment._id;
+      this.leaveService.updateTemplateAssignment(id, payload).subscribe({
+        next: (res: any) => {
+          if (res.status === 'success') {
+            const updatedData = this.tableService.dataSource.data.map(item =>
+              item._id === res.data._id ? res.data : item
+            );
+            this.tableService.setData(updatedData);
+            this.toast.success(this.translate.instant('leave.successAssignmentUpdated'), this.translate.instant('leave.title'));
+            this.resetForm();
             this.modalService.dismissAll();
           }
         },
-          err => {
-            this.toast.error('Leave Assignment can not be updated', 'Error!!!')
-          })
-      }
-    }
-    else{
-      this.templateAssignmentForm.markAllAsTouched();
+        error: (err) => {
+          this.toast.error(this.translate.instant('leave.errorAssignmentUpdated'), this.translate.instant('leave.title'));
+        }
+      });
     }
   }
 
   getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    })
+    this.commonService.populateUsers().subscribe({
+      next: (res: any) => {
+        this.users = res.data.data || [];
+        this.initializeFilterPredicate();
+      },
+      error: (err) => {
+        console.error('Error fetching users:', err);
+      }
+    });
   }
 
-  getAlltemplates() {
-    const requestBody = { "skip": this.defaultskip, "next": this.defaultnext };
-    this.leaveService.getLeavetemplates(requestBody).subscribe((res: any) => {
-      this.templates = res.data;
-    })
+  getAllTemplates() {
+    const requestBody = { skip: '0', next: '100000' };
+    this.leaveService.getLeavetemplates(requestBody).subscribe({
+      next: (res: any) => {
+        this.templates = res.data || [];
+        this.initializeFilterPredicate();
+      },
+      error: (err) => {
+        console.error('Error fetching templates:', err);
+      }
+    });
   }
 
   getTemplateAssignments() {
-    const requestBody = { "skip": this.skip, "next": this.next };
-    this.leaveService.getLeaveTemplateAssignment(requestBody).subscribe((res: any) => {
-      if (res.status == "success") {
-        this.templateAssignment = res.data;
-        this.totalRecords = res.total;
-        this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+    const pagination = {
+      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
+      next: this.tableService.recordsPerPage.toString()
+    };
+    this.leaveService.getLeaveTemplateAssignment(pagination).subscribe({
+      next: (res: any) => {
+        if (res.status === 'success') {
+          this.tableService.setData(res.data || []);
+          this.tableService.totalRecords = res.total || 0;
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching template assignments:', err);
+        this.tableService.setData([]);
+        this.tableService.totalRecords = 0;
       }
-    })
+    });
   }
 
   getTemplateLabel(leaveTemplate: string): string {
-    const matchingCategory = this.templates?.find(template => template?._id === leaveTemplate);
-    return matchingCategory?.label;
+    const matchingCategory = this.templates.find(template => template?._id === leaveTemplate);
+    return matchingCategory?.label || '';
   }
 
   onTemplateChange(templateId: string): void {
     const selectedTemplate = this.templates.find(temp => temp._id === templateId);
-    if (selectedTemplate && selectedTemplate.approvalType === 'template-wise') {
+    if (selectedTemplate?.approvalType === 'template-wise') {
       this.showApprovers = false;
+      this.templateAssignmentForm.patchValue({
+        primaryApprover: '',
+        secondaryApprover: ''
+      });
     } else {
       this.showApprovers = true;
     }
-    this.templateAssignmentForm.patchValue({
-      primaryApprover: [''],
-      secondaryApprover: ['']
-    });
   }
 
-  getUser(employeeId: string) {
-    const matchingUser = this.users?.find(user => user._id === employeeId);
+  getUser(employeeId: string): string {
+    if (!employeeId) return '';
+    const matchingUser = this.users.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
 
-  editTemplateAssignment(templateAssignment) {
+  editTemplateAssignment(templateAssignment: any) {
     this.isEdit = true;
-    console.log(templateAssignment)
+    this.selectedLeaveAssignment = templateAssignment;
+    this.onTemplateChange(templateAssignment.leaveTemplate);
     this.templateAssignmentForm.patchValue({
-      user: templateAssignment.user,
-      leaveTemplate: templateAssignment.leaveTemplate,
-      primaryApprover: templateAssignment.primaryApprover,
-      secondaryApprover: templateAssignment.secondaryApprover
+      user: templateAssignment.user || '',
+      leaveTemplate: templateAssignment.leaveTemplate || '',
+      primaryApprover: templateAssignment.primaryApprover || '',
+      secondaryApprover: templateAssignment.secondaryApprover || ''
     });
   }
 
   deleteTemplateAssignment(_id: string) {
-    this.leaveService.deleteTemplateAssignment(_id).subscribe((res: any) => {
-      const index = this.templateAssignment.findIndex(temp => temp._id === _id);
-      if (index !== -1) {
-        this.templateAssignment.splice(index, 1);
+    this.leaveService.deleteTemplateAssignment(_id).subscribe({
+      next: (res: any) => {
+        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
+        this.toast.success(this.translate.instant('leave.successAssignmentDeleted'), this.translate.instant('leave.title'));
+      },
+      error: (err) => {
+        this.toast.error(this.translate.instant('leave.errorAssignmentDeleted'), this.translate.instant('leave.title'));
       }
-      this.toast.success('Successfully Deleted!!!', 'Leave Template Assignment')
-    },
-      (err) => {
-        this.toast.error('Leave Template Assignment', 'Can not be Deleted!')
-      })
+    });
   }
 
   deleteDialog(id: string): void {
@@ -209,58 +263,8 @@ export class LeaveAssignmentComponent implements OnInit {
     });
   }
 
-  // //Pagging related functions
-  nextPagination() {
-    if (!this.isNextButtonDisabled()) {
-      const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
-      this.skip = newSkip;
-      this.getTemplateAssignments();
-    }
-  }
-
-  previousPagination() {
-    if (!this.isPreviousButtonDisabled()) {
-      const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
-      this.skip = newSkip;
-      this.getTemplateAssignments();
-    }
-  }
-  firstPagePagination() {
-    if (this.currentPage !== 1) {
-      this.currentPage = 1;
-      this.skip = '0';
-      this.next = this.recordsPerPage.toString();
-      this.getTemplateAssignments();
-    }
-  }
-  lastPagePagination() {
-    const totalPages = this.getTotalPages();
-    if (this.currentPage !== totalPages) {
-      this.currentPage = totalPages;
-      this.updateSkip();
-      this.getTemplateAssignments();
-    }
-  }
-  updateSkip() {
-    const newSkip = (this.currentPage - 1) * this.recordsPerPage;
-    this.skip = newSkip.toString();
-  }
-
-  isNextButtonDisabled(): boolean {
-    return this.currentPage === this.getTotalPages();
-  }
-
-  isPreviousButtonDisabled(): boolean {
-    return this.skip === '0' || this.currentPage === 1;
-  }
-  updateRecordsPerPage() {
-    this.currentPage = 1;
-    this.skip = '0';
-    this.next = this.recordsPerPage.toString();
+  onPageChange(event: any) {
+    this.tableService.updatePagination(event);
     this.getTemplateAssignments();
-  }
-  getTotalPages(): number {
-    const totalCount = this.totalRecords;
-    return Math.ceil(totalCount / this.recordsPerPage);
   }
 }

@@ -1,98 +1,111 @@
-<div class="bg-white py-2 px-0  tableContainer">
+<div class="bg-white py-2 px-0 tableContainer">
     <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-        <p class="mb-0">({{this.totalRecords}}) Records Found</p>
-
-
+        <p class="mb-0">{{ 'leave.recordsFound' | translate: { count: totalRecords } }}</p>
 
         <div class="d-flex align-items-center">
-            <span class="bi bi-search searchIcon"></span>
+            <span class="bi bi-search searchIcon" [attr.aria-label]="'leave.searchIcon' | translate"></span>
 
-            <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                name="searchText" aria-label="default input example">
+            <input class="form-control search" type="text" [placeholder]="'leave.searchPlaceholder' | translate"
+                   [(ngModel)]="searchText" name="searchText" [attr.aria-label]="'leave.searchInput' | translate">
 
-            <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">Add
+            <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">
+                {{ 'leave.addButton' | translate }}
             </button>
 
-            <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> <i
-                    class="bi bi-download downloadBtn pe-2"></i>
-                Download</button>
+            <button class="submenuTab active rounded-pill" (click)="exportToCsv()">
+                <i class="bi bi-download downloadBtn pe-2"></i>
+                {{ 'leave.downloadButton' | translate }}
+            </button>
         </div>
     </div>
 
     <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-        (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                    [recordsPerPage]="recordsPerPage" [currentPage]="currentPage"
+                    (pageChange)="onPageChange($event)" (recordsPerPageChange)="onRecordsPerPageChange($event)">
     </app-pagination>
 
     <table class="mt-2">
         <thead>
-            <th  *ngIf="portalView == 'admin'|| portalView== 'user' && extractedUrl == 'team-short-leave'" [appSort]="shortLeave" data-name="employee"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
-                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            <th *ngIf="portalView === 'admin' || (portalView === 'user' && extractedUrl === 'team-short-leave')"
+                [appSort]="shortLeave" data-name="employee"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                {{ 'leave.employeeName' | translate }}
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"
+                   [attr.aria-label]="sortOrder === 'asc' ? ('leave.sortAscending' | translate) : ('leave.sortDescending' | translate)"></i>
             </th>
-            <th [appSort]="shortLeave" data-name="date" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                Date
-                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            <th [appSort]="shortLeave" data-name="date"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                {{ 'leave.date' | translate }}
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"
+                   [attr.aria-label]="sortOrder === 'asc' ? ('leave.sortAscending' | translate) : ('leave.sortDescending' | translate)"></i>
             </th>
             <th [appSort]="shortLeave" data-name="startTime"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Start Time
-                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                {{ 'leave.startTime' | translate }}
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"
+                   [attr.aria-label]="sortOrder === 'asc' ? ('leave.sortAscending' | translate) : ('leave.sortDescending' | translate)"></i>
             </th>
-            <th [appSort]="shortLeave" data-name="endTime" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                End Time
-                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+            <th [appSort]="shortLeave" data-name="endTime"
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                {{ 'leave.endTime' | translate }}
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"
+                   [attr.aria-label]="sortOrder === 'asc' ? ('leave.sortAscending' | translate) : ('leave.sortDescending' | translate)"></i>
             </th>
             <th [appSort]="shortLeave" data-name="durationInMinutes" class="text-center"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Total Duration(in minutes)
-                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+                {{ 'leave.totalDuration' | translate }}
+                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"
+                   [attr.aria-label]="sortOrder === 'asc' ? ('leave.sortAscending' | translate) : ('leave.sortDescending' | translate)"></i>
             </th>
-            <th>Reason</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th>{{ 'leave.reason' | translate }}</th>
+            <th>{{ 'leave._status' | translate }}</th>
+            <th>{{ 'leave.actions' | translate }}</th>
         </thead>
         <tbody>
-            <tr *ngFor="let leave of shortLeave  | search: searchText">
-                <td *ngIf="portalView == 'admin'|| portalView== 'user' && extractedUrl == 'team-short-leave'">{{
-                    leave?.employeeName | titlecase }}</td>
+            <tr *ngFor="let leave of shortLeave | search: searchText">
+                <td *ngIf="portalView === 'admin' || (portalView === 'user' && extractedUrl === 'team-short-leave')">
+                    {{ leave?.employeeName | titlecase }}
+                </td>
                 <td>{{ leave?.date }}</td>
                 <td>{{ leave?.startTime }}</td>
                 <td>{{ leave?.endTime }}</td>
                 <td class="text-center">{{ leave?.durationInMinutes }}</td>
                 <td>{{ leave?.comments }}</td>
                 <td>
-                    <mat-icon *ngIf="leave?.status === 'Approve'" matTooltip="Approved" matTooltipPosition="below"
-                        class="text-success">done_all</mat-icon>
-                    <mat-icon *ngIf="leave?.status === 'Reject'" matTooltip="Rejected" matTooltipPosition="below"
-                        class="text-danger">cancel</mat-icon>
-                    <mat-icon *ngIf="leave?.status === 'Pending'" matTooltip="Pending" matTooltipPosition="below"
-                        class="text-warning">hourglass_empty</mat-icon>
+                    <mat-icon *ngIf="leave?.status === 'Approve'" [matTooltip]="'leave.status.approved' | translate"
+                              matTooltipPosition="below" class="text-success">done_all</mat-icon>
+                    <mat-icon *ngIf="leave?.status === 'Reject'" [matTooltip]="'leave.status.rejected' | translate"
+                              matTooltipPosition="below" class="text-danger">cancel</mat-icon>
+                    <mat-icon *ngIf="leave?.status === 'Pending'" [matTooltip]="'leave.status.pending' | translate"
+                              matTooltipPosition="below" class="text-warning">hourglass_empty</mat-icon>
                 </td>
                 <td>
                     <div ngbDropdown class="dropdown-center d-inline-block">
                         <button class="actions ms-2" mat-mini-fab ngbDropdownToggle
-                            aria-label="Example icon button with a menu icon">
+                                [attr.aria-label]="'leave.actionsMenu' | translate">
                             <i class="bi bi-send"></i>
                         </button>
 
                         <ul ngbDropdownMenu class="dropdown-menu py-0">
                             <li class="d-flex border-bottom action-list" *ngIf="actionOptions.approve"
-                                (click)="selectedShortLeave= leave; selectedStatus = 'Approve'; open(statusUpdate);">
-                                <i class="fas fa-check-circle dropdown-item w-25"></i><span
-                                    class="pt-1 text-muted">Approve</span>
+                                (click)="selectedShortLeave = leave; selectedStatus = 'Approve'; open(statusUpdate)">
+                                <i class="fas fa-check-circle dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">{{ 'leave.approve' | translate }}</span>
                             </li>
                             <li class="d-flex border-bottom action-list" *ngIf="actionOptions.reject"
-                                (click)="selectedShortLeave= leave; selectedStatus = 'Reject';  open(statusUpdate);">
-                                <i class="bi bi-person-dash dropdown-item w-25"></i><span
-                                    class="pt-1 text-muted">Reject</span>
+                                (click)="selectedShortLeave = leave; selectedStatus = 'Reject'; open(statusUpdate)">
+                                <i class="bi bi-person-dash dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">{{ 'leave.reject' | translate }}</span>
                             </li>
                             <li class="d-flex border-bottom action-list" *ngIf="actionOptions.delete"
                                 (click)="deleteDialog(leave?._id)">
-                                <i class="bi bi-person-dash dropdown-item w-25"></i><span
-                                    class="pt-1 text-muted">Delete</span>
+                                <i class="bi bi-person-dash dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">{{ 'leave.delete' | translate }}</span>
                             </li>
                             <li class="d-flex border-bottom action-list" *ngIf="actionOptions.view"
                                 (click)="openSecondModal(leave)">
-                                <i class="fas fa-eye dropdown-item w-25"></i><span class="pt-1 text-muted">View</span>
+                                <i class="fas fa-eye dropdown-item w-25"></i>
+                                <span class="pt-1 text-muted">{{ 'leave.view' | translate }}</span>
                             </li>
                         </ul>
                     </div>
@@ -104,20 +117,21 @@
 
 <ng-template #addModal let-modal>
     <app-add-short-leave [tab]="tab" (close)="onClose($event)" [url]="extractedUrl"
-        (shortLeaveRefreshed)="refreshShortLeaveTable()"></app-add-short-leave>
+                         (shortLeaveRefreshed)="refreshShortLeaveTable()"></app-add-short-leave>
 </ng-template>
 
 <ng-template #statusUpdate let-modal>
     <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{selectedStatus}} Short Leave</h1>
+            <h1 class="modal-title text-muted mb-0">{{ selectedStatus | translate: 'leave.status' }}</h1>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
+        <div>
+            <button type="button" data-bs-dismiss="modal" class="btn-close text-end"
+                    (click)="modal.close('Escape clicked')" [attr.aria-label]="'leave.closeModal' | translate"></button>
         </div>
     </div>
     <app-update-short-leave [modalInstance]="modal" [selectedStatus]="selectedStatus"
-        (shortLeaveRefreshed)="refreshShortLeaveTable()" [selectedShortLeave]="selectedShortLeave">
+                            (shortLeaveRefreshed)="refreshShortLeaveTable()" [selectedShortLeave]="selectedShortLeave">
     </app-update-short-leave>
 </ng-template>
 

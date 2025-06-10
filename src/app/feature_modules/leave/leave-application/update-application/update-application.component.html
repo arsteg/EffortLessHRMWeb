@@ -1,42 +1,59 @@
 <div class="modal-content">
     <div class="modal-body">
-        <div class=" d-flex justify-content-between">
-            <div class="">
-                <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Rejected'">Are you
-                    sure you want to
-                    Reject this request?</h4>
-                <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Approved'">Are you
-                    sure you want to
-                    Approve this request?</h4>
-                <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Cancelled'">Are you
-                    sure you want to
-                    Cancel this request?</h4>
-
+        <div class="d-flex justify-content-between">
+            <div>
+                <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status === 'Rejected'">
+                    {{ 'leave.rejectRequestConfirmation' | translate }}
+                </h4>
+                <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status === 'Approved'">
+                    {{ 'leave.approveRequestConfirmation' | translate }}
+                </h4>
+                <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status === 'Cancelled'">
+                    {{ 'leave.cancelRequestConfirmation' | translate }}
+                </h4>
             </div>
             <div mat-dialog-actions>
-                <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false" aria-label="Example close icon"
-                        fontIcon="close"></mat-icon></button>
+                <button mat-button mat-dialog-close (click)="closeModal()"
+                        [attr.aria-label]="'leave.closeModal' | translate">
+                    <mat-icon aria-hidden="false" fontIcon="close"></mat-icon>
+                </button>
             </div>
         </div>
         <hr class="mt-0">
         <div class="row" mat-dialog-content>
             <form [formGroup]="updateLeaveReport" (ngSubmit)="updateApprovedReport()">
                 <div class="mt-3">
-                    <mat-label>Please add a Reason</mat-label>
-                    <textarea name="comment" placeholder="Leave a comment" formControlName="level1Reason" cols="5"
-                        rows="3"
-                        class="form-control form-control-width ng-pristine ng-invalid ng-touched">             </textarea>
+                    <mat-label>{{ 'leave.reasonLabel' | translate }}</mat-label>
+                    <textarea name="comment"
+                              [placeholder]="'leave.reasonPlaceholder' | translate"
+                              formControlName="level1Reason"
+                              cols="5"
+                              rows="3"
+                              class="form-control form-control-width"
+                              [attr.aria-label]="'leave.reasonInput' | translate"></textarea>
+                    <div *ngIf="updateLeaveReport.get('level1Reason')?.invalid && updateLeaveReport.get('level1Reason')?.touched"
+                         class="text-danger error">
+                        {{ 'leave.reasonRequiredError' | translate }}
+                    </div>
                 </div>
-
-
                 <div class="d-flex justify-content-between m-3">
                     <div>
-                        <button mat-raised-button type="button" class="mx-2" data-bs-dismiss="modal"
-                            type="button">No</button>
+                        <button mat-raised-button
+                                type="button"
+                                class="mx-2"
+                                (click)="closeModal()"
+                                [attr.aria-label]="'leave.noButton' | translate">
+                            {{ 'leave.noButton' | translate }}
+                        </button>
                     </div>
                     <div>
-                        <button mat-raised-button class="addBtn" type="submit" data-bs-dismiss="modal"
-                            type="submit">Yes</button>
+                        <button mat-raised-button
+                                class="addBtn"
+                                type="submit"
+                                [disabled]="updateLeaveReport.invalid"
+                                [attr.aria-label]="'leave.yesButton' | translate">
+                            {{ 'leave.yesButton' | translate }}
+                        </button>
                     </div>
                 </div>
             </form>

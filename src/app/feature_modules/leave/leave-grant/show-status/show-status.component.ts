@@ -8,13 +8,13 @@ import { ViewLeaveComponent } from '../view-leave/view-leave.component';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { ExportService } from 'src/app/_services/export.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-show-status',
   templateUrl: './show-status.component.html',
   styleUrl: './show-status.component.css'
 })
-
 export class ShowStatusComponent {
   closeResult: string = '';
   searchText: string = '';
@@ -26,16 +26,21 @@ export class ShowStatusComponent {
   portalView = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   public sortOrder: string = '';
-  totalRecords: number = 0
+  totalRecords: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
 
-  constructor(private modalService: NgbModal,
+  constructor(
+    private modalService: NgbModal,
     private leaveService: LeaveService,
     private dialog: MatDialog,
     private commonService: CommonService,
     private toast: ToastrService,
-    private exportService: ExportService) { }
+    private exportService: ExportService,
+    private translate: TranslateService
+  ) {
+    this.translate.setDefaultLang('en');
+  }
 
   ngOnInit() {
     this.commonService.populateUsers().subscribe(result => {
@@ -58,11 +63,12 @@ export class ShowStatusComponent {
     const requestBody = {
       "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
       "next": this.recordsPerPage.toString(),
-      "status": this.status };
+      "status": this.status
+    };
     if (this.portalView === 'admin') {
-      console.log(this.portalView)
+      console.log(this.portalView);
       this.leaveService.getLeaveGrant(requestBody).subscribe((res: any) => {
-        if(res.status == 'success') {
+        if (res.status == 'success') {
           this.totalRecords = res.total;
           this.leaveGrant = res.data;
         }
@@ -72,14 +78,14 @@ export class ShowStatusComponent {
       if (this.tab === 4) {
         this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
           this.leaveGrant = res.data.filter(leave => leave.status === this.status);
-        })
+        });
       } else if (this.tab === 7) {
         this.leaveService.getLeaveGrantByTeam(requestBody).subscribe((res: any) => {
-          if(res.status == 'success') {
+          if (res.status == 'success') {
             this.totalRecords = res.total;
             this.leaveGrant = res.data;
           }
-        })
+        });
       }
     }
   }
@@ -92,7 +98,7 @@ export class ShowStatusComponent {
 
   openStatusModal(report: any, status: string): void {
     report.status = status;
-    console.log(report)
+    console.log(report);
     this.leaveService.leave.next(report);
     const dialogRef = this.dialog.open(UpdateStatusComponent, {
       width: '50%',
@@ -108,11 +114,12 @@ export class ShowStatusComponent {
     const requestBody = {
       "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
       "next": this.recordsPerPage.toString(),
-      "status": this.status };
+      "status": this.status
+    };
     if (this.portalView === 'admin') {
       this.leaveService.getLeaveGrant(requestBody).subscribe(
         (res) => {
-          if(res.status == 'success') {
+          if (res.status == 'success') {
             this.totalRecords = res.total;
             this.leaveGrant = res.data;
           }
@@ -123,18 +130,18 @@ export class ShowStatusComponent {
       );
     }
     if (this.portalView === 'user') {
-      console.log(this.portalView, this.tab)
+      console.log(this.portalView, this.tab);
       if (this.tab === 4) {
         this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
           this.leaveGrant = res.data.filter(leave => leave.status === this.status);
-        })
+        });
       } else if (this.tab === 7) {
         this.leaveService.getLeaveGrantByTeam(requestBody).subscribe((res: any) => {
-          if(res.status == 'success') {
+          if (res.status == 'success') {
             this.totalRecords = res.total;
             this.leaveGrant = res.data;
           }
-        })
+        });
       }
     }
   }
@@ -146,25 +153,33 @@ export class ShowStatusComponent {
       Applied_For: leave.date,
       Used_On: leave.usedOn,
       Comment: leave.comment,
-      Status: leave.status
+      Status: this.translate.instant(`leave.status.${leave.status.toLowerCase()}`)
     }));
-    this.exportService.exportToCSV('Leave Grant', 'Leave Grant', dataToExport);
+    this.exportService.exportToCSV(
+      this.translate.instant('leave.csvTitle'),
+      this.translate.instant('leave.csvFileName'),
+      dataToExport
+    );
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      }
+    );
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
+      return this.translate.instant('leave.dismissByEsc');
     } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
+      return this.translate.instant('leave.dismissByBackdrop');
     } else {
-      return `with: ${reason}`;
+      return this.translate.instant('leave.dismissWith', { reason: reason });
     }
   }
 
@@ -176,27 +191,35 @@ export class ShowStatusComponent {
       width: '50%',
       data: { report: selectedReport }
     });
-    dialogRef.afterClosed().subscribe(result => {
-    });
+    dialogRef.afterClosed().subscribe(result => {});
   }
 
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Not Found';
+    return matchingUser
+      ? `${matchingUser.firstName} ${matchingUser.lastName}`
+      : this.translate.instant('leave.userNotFound');
   }
 
   deleteLeaveGrant(_id: string) {
-    this.leaveService.deleteLeaveGrant(_id).subscribe((res: any) => {
-      const index = this.leaveGrant.findIndex(temp => temp._id === _id);
-      if (index !== -1) {
-        this.leaveGrant.splice(index, 1);
-      }
-      this.toast.success('Successfully Deleted!!!', 'Leave Grant')
-    },
+    this.leaveService.deleteLeaveGrant(_id).subscribe(
+      (res: any) => {
+        const index = this.leaveGrant.findIndex(temp => temp._id === _id);
+        if (index !== -1) {
+          this.leaveGrant.splice(index, 1);
+        }
+        this.toast.success(
+          this.translate.instant('leave.deleteSuccess'),
+          this.translate.instant('leave.deleteTitle')
+        );
+      },
       (err) => {
-        this.toast.error('Leave Grant can not be deleted'
-          , 'Error')
-      })
+        this.toast.error(
+          this.translate.instant('leave.deleteError'),
+          this.translate.instant('leave.errorTitle')
+        );
+      }
+    );
   }
 
   deleteDialog(id: string): void {
@@ -209,5 +232,4 @@ export class ShowStatusComponent {
       }
     });
   }
-
 }

@@ -1,49 +1,52 @@
 <div class="modal-body">
-    <div class=" d-flex justify-content-between">
-        <div class="">
-            <h1  class="p-3"> Show Leave Application Details</h1>
+    <div class="d-flex justify-content-between">
+        <div>
+            <h1 class="p-3">{{ 'leave.showLeaveApplicationDetailsTitle' | translate }}</h1>
         </div>
         <div mat-dialog-actions>
-            <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false" aria-label="Example close icon"
-                    fontIcon="close"></mat-icon></button>
+            <button mat-button mat-dialog-close (click)="closeModal()"
+                    [attr.aria-label]="'leave.closeModal' | translate">
+                <mat-icon aria-hidden="false" fontIcon="close"></mat-icon>
+            </button>
         </div>
     </div>
     <hr class="mt-0">
     <div class="row" mat-dialog-content>
         <div class="tableContainer">
             <table>
-
                 <tr>
-                    <th class="w-50">Employee</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.employeeName}}</td>
-                </tr>
-                <tr>
-                    <th class="w-50">Status</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.status}}</td>
+                    <th class="w-50">{{ 'leave.employeeName' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.employeeName | titlecase }}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">Start Date</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.startDate| date: 'yyyy-MM-dd'}}</td>
+                    <th class="w-50">{{ 'leave._status' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.status | translate: 'leave.status' }}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">End Date</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.endDate| date: 'yyyy-MM-dd'}}</td>
-                </tr>
-                
-                <tr>
-                    <th class="w-50">Total Leave Days</th>
-                    <td>{{totalLeaveDays}}</td>
+                    <th class="w-50">{{ 'leave.startDateLabel' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.startDate | date: 'yyyy-MM-dd' }}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">Reason</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.comment}}</td>
+                    <th class="w-50">{{ 'leave.endDateLabel' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.endDate | date: 'yyyy-MM-dd' }}</td>
                 </tr>
-                <tr *ngIf="this.leaveService.leave.getValue()?.documentLink">
-                    <th class="w-50">Document</th>
-                    <td><a [href]="this.leaveService.leave.getValue()?.documentLink">Download document</a></td>
+                <tr>
+                    <th class="w-50">{{ 'leave.totalLeaveDaysLabel' | translate }}</th>
+                    <td>{{ totalLeaveDays }}</td>
                 </tr>
-
-               
+                <tr>
+                    <th class="w-50">{{ 'leave.reason' | translate }}</th>
+                    <td>{{ leaveService?.leave?.getValue()?.comment }}</td>
+                </tr>
+                <tr *ngIf="leaveService.leave.getValue()?.documentLink">
+                    <th class="w-50">{{ 'leave.documentLabel' | translate }}</th>
+                    <td>
+                        <a [href]="leaveService.leave.getValue()?.documentLink"
+                           [attr.aria-label]="'leave.downloadDocument' | translate">
+                            {{ 'leave.downloadDocument' | translate }}
+                        </a>
+                    </td>
+                </tr>
             </table>
         </div>
     </div>

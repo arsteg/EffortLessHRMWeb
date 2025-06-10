@@ -4,6 +4,7 @@ import { LeaveService } from 'src/app/_services/leave.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-leave-balance',
@@ -17,36 +18,41 @@ export class LeaveBalanceComponent {
   leaveCategories: any;
   selectedUser: any;
   allCategories: any;
-  member: any = JSON.parse(localStorage.getItem('currentUser')).id;
+  member: any = JSON.parse(localStorage.getItem('currentUser') || '{}').id;
   @Input() tab: number;
   portalView = localStorage.getItem('adminView');
-  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
   users: any = [];
   user: any;
   defaultCatSkip = "0";
   defaultCatNext = "100000";
-  years = []; months = [
-    'JANUARY',
-    'FEBRUARY',
-    'MARCH',
-    'APRIL',
-    'MAY',
-    'JUNE',
-    'JULY',
-    'AUGUST',
-    'SEPTEMBER',
-    'OCTOBER',
-    'NOVEMBER',
-    'DECEMBER'
+  years = [];
+  months = [
+    'leave.month.january',
+    'leave.month.february',
+    'leave.month.march',
+    'leave.month.april',
+    'leave.month.may',
+    'leave.month.june',
+    'leave.month.july',
+    'leave.month.august',
+    'leave.month.september',
+    'leave.month.october',
+    'leave.month.november',
+    'leave.month.december'
   ];
   extractedUrl: string = '';
-  error: string = ''
+  error: string = '';
 
-  constructor(private leaveService: LeaveService,
+  constructor(
+    private leaveService: LeaveService,
     private fb: FormBuilder,
     private timeLogService: TimeLogService,
     private router: Router,
-    private toast: ToastrService) {
+    private toast: ToastrService,
+    private translate: TranslateService
+  ) {
+    this.translate.setDefaultLang('en');
     this.leaveBalanceForm = this.fb.group({
       user: ['', Validators.required],
       cycle: ['', Validators.required],
@@ -61,30 +67,29 @@ export class LeaveBalanceComponent {
     const basePath = '/home/leave/';
     if (fullUrl.includes(basePath)) {
       this.extractedUrl = fullUrl.split(basePath)[1];
-      console.log(this.extractedUrl)
     }
-
 
     this.getAllLeaveCatgeories();
     this.populateMembers();
-    if (this.extractedUrl != 'my-team-balance' && this.extractedUrl != 'leave-balance') { this.getCategoriesByCurrentUser(); }
+    if (this.extractedUrl != 'my-team-balance' && this.extractedUrl != 'leave-balance') {
+      this.getCategoriesByCurrentUser();
+    }
 
     const currentYear = new Date().getFullYear();
     const previousYear = currentYear - 1;
     const nextYear = currentYear + 1;
-
     this.years = [
-      { label: `JANUARY_${previousYear}-DECEMBER_${previousYear}` },
-      { label: `JANUARY_${currentYear}-DECEMBER_${currentYear}` },
-      { label: `JANUARY_${nextYear}-DECEMBER_${nextYear}` },
+      { label: `${this.translate.instant('leave.month.january')} ${previousYear.toString()} - ${this.translate.instant('leave.month.december')} ${previousYear.toString()}` },
+      { label: `${this.translate.instant('leave.month.january')} ${currentYear.toString()} - ${this.translate.instant('leave.month.december')} ${currentYear.toString()}` },
+      { label: `${this.translate.instant('leave.month.january')} ${nextYear.toString()} - ${this.translate.instant('leave.month.december')} ${nextYear.toString()}` }
     ];
-
     this.leaveBalanceForm.valueChanges.subscribe(() => {
       if (this.leaveBalanceForm.valid) {
         this.getLeaveBalance();
       }
     });
   }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['leaveBalanceForm'] && this.leaveBalanceForm.valid) {
       this.getLeaveBalance();
@@ -92,13 +97,13 @@ export class LeaveBalanceComponent {
   }
 
   getMonthName(monthNumber: number): string {
-    return this.months[monthNumber - 1];
+    return this.translate.instant(this.months[monthNumber - 1]);
   }
 
   populateMembers() {
     this.users = [];
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.users.push({ id: currentUser.id, name: "Me", email: currentUser.email });
+    let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    this.users.push({ id: currentUser.id, name: this.translate.instant('leave.userMe'), email: currentUser.email });
     this.user = currentUser;
     this.timeLogService.getTeamMembers(this.user.id).subscribe({
       next: response => {
@@ -108,22 +113,22 @@ export class LeaveBalanceComponent {
               if (user.id != currentUser.id) {
                 this.users.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
-            })
+            });
           },
-          error: error => {
-            console.log('There was an error!', error);
+          error: () => {
+            this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
           }
         });
       },
-      error: error => {
-        console.log('There was an error!', error);
+      error: () => {
+        this.toast.error(this.translate.instant('leave.errorFetchingTeamMembers'));
       }
     });
   }
+
   onMemberSelectionChange(member: any) {
     this.member = JSON.parse(member.value);
   }
-
 
   getLeaveBalance() {
     if (this.leaveBalanceForm.valid) {
@@ -131,70 +136,83 @@ export class LeaveBalanceComponent {
         user: this.leaveBalanceForm.value.user,
         cycle: this.leaveBalanceForm.value.cycle,
         category: this.leaveBalanceForm.value.category
-      }
+      };
       if (this.portalView == 'user') {
         if (this.extractedUrl === 'my-leave-balance') {
           payload.user = this.currentUser?.id;
-
         } else if (this.extractedUrl === 'my-team-balance') {
           payload.user = this.member?.id;
         }
       }
-      console.log(payload)
-      this.leaveService.getLeaveBalance(payload).subscribe((res: any) => {
-        this.leaveBalance = res.data;
+      this.leaveService.getLeaveBalance(payload).subscribe({
+        next: (res: any) => {
+          this.leaveBalance = res.data;
+        },
+        error: () => {
+          this.toast.error(this.translate.instant('leave.errorFetchingBalance'));
+        }
       });
+    } else {
+      this.error = this.translate.instant('leave.formInvalidError');
     }
   }
 
   getAllLeaveCatgeories() {
     const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
-    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
-      this.allCategories = res.data;
-    })
+    this.leaveService.getAllLeaveCategories(requestBody).subscribe({
+      next: (res: any) => {
+        this.allCategories = res.data;
+      },
+      error: () => {
+        this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
+      }
+    });
   }
+
   selecteduser(userId: string) {
     this.member = userId;
 
     // Clear the error and form controls initially
     this.error = '';
-    this.leaveCategories = []; // Clear leave categories
-    this.leaveBalanceForm.patchValue({ category: '' }); // Reset the category field
+    this.leaveCategories = [];
+    this.leaveBalanceForm.patchValue({ category: '' });
 
     this.leaveService.getLeaveCategoriesByUserv1(userId).subscribe(
-      (res: any) => {
-        if (res.status === 'success') {
-          this.leaveCategories = res.data;
-          this.error = ''; // Clear any previous error message
-        } else if (res.status === 'failure') {
-          this.leaveCategories = []; // Clear categories as none are available
-          this.leaveBalanceForm.patchValue({ category: '' }); // Reset the category field
-          this.error =
-            'It seems that leave categories have not been assigned to this employee yet. Please contact your administrator to assign the appropriate leave categories.';
+      {
+        next: (res: any) => {
+          if (res.status === 'success') {
+            this.leaveCategories = res.data;
+            this.error = '';
+          } else if (res.status === 'failure') {
+            this.leaveCategories = [];
+            this.leaveBalanceForm.patchValue({ category: '' });
+            this.error = this.translate.instant('leave.noCategoriesAssigned');
+          }
+        },
+        error: () => {
+          this.leaveCategories = [];
+          this.leaveBalanceForm.patchValue({ category: '' });
+          this.error = this.translate.instant('leave.errorFetchingCategoriesGeneric');
         }
-      },
-      (err) => {
-        // Handle HTTP or server errors
-        this.leaveCategories = [];
-        this.leaveBalanceForm.patchValue({ category: '' }); // Reset the category field
-        this.error = 'An error occurred while fetching leave categories. Please try again later.';
       }
     );
   }
 
-
-
   getCategoriesByCurrentUser() {
     const user = this.currentUser?.id;
     this.member = user;
-    this.leaveService.getLeaveCategoriesByUserv1(user).subscribe((res: any) => {
-      if (res.status == 'success') {
-        this.leaveCategories = res.data;
+    this.leaveService.getLeaveCategoriesByUserv1(user).subscribe({
+      next: (res: any) => {
+        if (res.status == 'success') {
+          this.leaveCategories = res.data;
+        } else if (res.status == 'failure') {
+          this.toast.error(this.translate.instant('leave.noCategoriesAssigned'));
+        }
+      },
+      error: () => {
+        this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
       }
-      else if (res.status == 'failure') {
-        this.toast.error('It seems that leave categories have not been assigned to this employee yet. Please contact your administrator to assign the appropriate leave categories.')
-      }
-    })
+    });
   }
 
   getlaveCategoryLabel(categoryId: string) {
@@ -202,4 +220,5 @@ export class LeaveBalanceComponent {
     const category = this.allCategories.find(category => category._id === categoryId);
     return category ? category.label : '';
   }
+
 }

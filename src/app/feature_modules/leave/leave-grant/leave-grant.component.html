@@ -1,12 +1,9 @@
 <div class="main-content">
     <div class="container-fluid">
         <div class="tabs">
-            <button (click)="selectTab(1)" [class.active]="selectedTab === 1">Pending
-            </button>
-            <button (click)="selectTab(2)" [class.active]="selectedTab === 2">Approved
-            </button>
-            <button (click)="selectTab(3)" [class.active]="selectedTab === 3">Rejected
-            </button>
+            <button (click)="selectTab(1)" [class.active]="selectedTab === 1">{{ 'leave.status.pending' | translate }}</button>
+            <button (click)="selectTab(2)" [class.active]="selectedTab === 2">{{ 'leave.status.approved' | translate }}</button>
+            <button (click)="selectTab(3)" [class.active]="selectedTab === 3">{{ 'leave.status.rejected' | translate }}</button>
         </div>
 
         <div *ngIf="selectedTab === 1" class="tab-content">

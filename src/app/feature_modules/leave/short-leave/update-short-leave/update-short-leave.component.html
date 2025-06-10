@@ -1,34 +1,46 @@
 <div class="modal-body">
     <div class="">
-        <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Rejected'">Are you
-            sure you want to
-            Reject this request?</h4>
-        <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Approved'">Are you
-            sure you want to
-            Approve this request?</h4>
-        <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Cancelled'">Are you
-            sure you want to
-            Cancel this request?</h4>
-
+        <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Rejected'">
+            {{ 'leave.rejectRequestConfirmation' | translate }}
+        </h4>
+        <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Approved'">
+            {{ 'leave.approveRequestConfirmation' | translate }}
+        </h4>
+        <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Cancelled'">
+            {{ 'leave.cancelRequestConfirmation' | translate }}
+        </h4>
     </div>
     <hr class="mt-0">
     <div class="row">
         <form [formGroup]="updateLeaveReport" (ngSubmit)="updateApprovedReport()">
-            <div>
-                <mat-label>Please add a Reason</mat-label>
-                <textarea name="comment" placeholder="Leave a comment" formControlName="level1Reason" cols="5" rows="3"
-                    class="form-control form-control-width ng-pristine ng-invalid ng-touched">             </textarea>
+            <div class="mb-3">
+                <mat-label>{{ 'leave.reasonLabel' | translate }}</mat-label>
+                <textarea name="comment" 
+                          [placeholder]="'leave.reasonPlaceholder' | translate" 
+                          formControlName="level1Reason" 
+                          cols="5" 
+                          rows="3"
+                          class="form-control form-control-width ng-pristine ng-invalid ng-touched"
+                          [attr.aria-label]="'leave.reasonInput' | translate"></textarea>
             </div>
-
 
             <div class="d-flex justify-content-between m-3">
                 <div>
-                    <button mat-raised-button type="button" class="mx-2" data-bs-dismiss="modal"
-                        type="button">No</button>
+                    <button mat-raised-button 
+                            type="button" 
+                            class="mx-2" 
+                            data-bs-dismiss="modal"
+                            >
+                        {{ 'leave.noButton' | translate }}
+                    </button>
                 </div>
                 <div>
-                    <button mat-raised-button class="addBtn" type="submit" data-bs-dismiss="modal"
-                        type="submit">Yes</button>
+                    <button mat-raised-button 
+                            class="addBtn" 
+                            type="submit" 
+                            data-bs-dismiss="modal">
+                        {{ 'leave.yesButton' | translate }}
+                    </button>
                 </div>
             </div>
         </form>
