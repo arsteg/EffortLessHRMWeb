@@ -1,6 +1,6 @@
 <div class="main-content px-2">
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [selectedIndex]="selectedIndex"
-    (selectedTabChange)="onTabChange($event)">
+    (selectedTabChange)="onTabChange($event)" class="child-tabs">
     <mat-tab label="Current Plan">
       <ng-template matTabContent>
         <app-plans></app-plans>

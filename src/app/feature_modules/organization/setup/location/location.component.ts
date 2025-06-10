@@ -1,11 +1,13 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { Action } from 'rxjs/internal/scheduler/Action';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CompanyService } from 'src/app/_services/company.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -15,6 +17,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 })
 
 export class LocationComponent {
+  @ViewChild('addModal') addModal: ElementRef;
   locations: any;
   locationForm: FormGroup;
   closeResult: string;
@@ -55,6 +58,34 @@ export class LocationComponent {
   ];
   public sortOrder: string = '';
 
+  columns: TableColumn[] = [
+    { key: 'locationCode', name: 'Location Code' },
+    { key: 'country', name: 'Country' },
+    { key: 'state', name: 'State' },
+    { key: 'city', name: 'City' },
+    { key: 'organization', name: 'Organization' },
+    { key: 'providentFundRegistrationCode', name: 'PF Reg. Code' },
+    { key: 'esicRegistrationCode', name: 'ESIC Reg. Code' },
+    { key: 'professionalTaxRegistrationCode', name: 'Professional Tax Reg. Code' },
+    { key: 'lwfRegistrationCode', name: 'LWF Reg. Code' },
+    {
+      key: 'action', name: 'Action', isAction: true, options: [
+        {
+          label: 'Edit',
+          icon: 'edit',
+          visibility: ActionVisibility.BOTH,
+        },
+        {
+          label: 'Delete',
+          icon: 'delete',
+          visibility: ActionVisibility.BOTH,
+          cssClass: 'text-danger'
+        }
+      ]
+    },
+
+  ]
+
   constructor(private companyService: CompanyService,
     private modalService: NgbModal,
     private fb: FormBuilder,
@@ -77,6 +108,21 @@ export class LocationComponent {
 
   ngOnInit() {
     this.getLocations();
+  }
+
+  onActionClick(event) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedZone = event.row;
+        this.isEdit = true;
+        this.edit(event.row);
+        this.open(this.addModal);
+        break;
+
+      case 'Delete':
+        this.deleteDialog(event.row?._id)
+        break;
+    }
   }
 
   getLocations() {
@@ -148,7 +194,7 @@ export class LocationComponent {
 
   open(content: any) {
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;

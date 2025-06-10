@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CompanyService } from 'src/app/_services/company.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -13,6 +15,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
   styleUrl: './holidays.component.css'
 })
 export class HolidaysComponent {
+  @ViewChild('addModal') addModal: ElementRef;
   holidays: any;
   holidayForm: FormGroup;
   closeResult: string;
@@ -26,13 +29,42 @@ export class HolidaysComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   public sortOrder: string = '';
+  columns: TableColumn[] = [
+    { key: 'label', name: 'Holiday' },
+    { key: 'date', name: 'Date', valueFn: (row: any) => { return row.date ? this.datePipe.transform(row.date, 'mediumDate') : '' } },
+    { key: 'isMandatoryForFlexiHoliday',
+       name: 'Type',
+      valueFn: (row: any) => { return row.isMandatoryForFlexiHoliday ? 'Mandatory' : 'Flexi' }
+     },
+    { key: 'isHolidayOccurEveryYearOnSameDay', name: 'Re-occure Every Year', valueFn: (row: any) => { return row.isHolidayOccurEveryYearOnSameDay ? 'Yes' : 'No' } },
+    { key: 'holidaysAppliesFor', name: 'Applies To' },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        {
+          label: 'Edit',
+          icon: 'edit',
+          visibility: ActionVisibility.BOTH
+        },
+        {
+          label: 'Delete',
+          icon: 'delete',
+          visibility: ActionVisibility.BOTH,
+          cssClass: 'text-danger'
+        }
+      ]
+    }
+  ]
 
   constructor(private companyService: CompanyService,
     private modalService: NgbModal,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private toast: ToastrService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private datePipe: DatePipe
   ) {
     this.holidayForm = this.fb.group({
       label: ['', Validators.required],
@@ -40,7 +72,7 @@ export class HolidaysComponent {
       isHolidayOccurEveryYearOnSameDay: [true, Validators.required],
       isMandatoryForFlexiHoliday: [{ value: true, disabled: true }, Validators.required], // ✅ disabled
       holidaysAppliesFor: [{ value: 'All-Employees', disabled: true }, Validators.required], // ✅ disabled
-    year: [''],
+      year: [''],
       users: [[]]
     });
     this.currentYear = new Date().getFullYear();
@@ -54,6 +86,23 @@ export class HolidaysComponent {
     });
     this.holidayForm.reset(this.getDefaultFormValues());
   }
+
+  onActionClick(event) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedRecord = event.row;
+        this.isEdit = true;
+        this.edit(event.row);
+        this.open(this.addModal);
+        break;
+
+      case 'Delete':
+        this.deleteDialog(event.row?._id)
+        break;
+    }
+  }
+
+
   private getDefaultFormValues() {
     return {
       label: '',
@@ -65,14 +114,14 @@ export class HolidaysComponent {
       users: []
     };
   }
-  
+
   getYearOptions(): number[] {
     const currentYear = new Date().getFullYear();
     return [currentYear - 1, currentYear, currentYear + 1];
   }
 
   onYearChange(event: any) {
-    this.selectedYear = event.target.value;
+    this.selectedYear = event.value;
   }
 
   onPageChange(page: number) {
@@ -103,44 +152,44 @@ export class HolidaysComponent {
     const formData = this.holidayForm.getRawValue();
     if (formData.holidaysAppliesFor === 'specific-employees' &&
       (!formData.users || formData.users.length === 0)) {
-    this.holidayForm.get('users').setErrors({ required: true });  // Set 'required' error manually
-    return;
-  }
-  
-  if (formData.holidaysAppliesFor !== 'all-employees') {
-    const formattedUsers = (formData?.users || []).map(user => ({ user }));
-  
-    this.holidayForm.patchValue({ users: formattedUsers });
-  }
-  
+      this.holidayForm.get('users').setErrors({ required: true });  // Set 'required' error manually
+      return;
+    }
+
+    if (formData.holidaysAppliesFor !== 'all-employees') {
+      const formattedUsers = (formData?.users || []).map(user => ({ user }));
+
+      this.holidayForm.patchValue({ users: formattedUsers });
+    }
+
     formData.year = this.currentYear || this.selectedYear;
-   if(this.holidayForm.valid){
-    if (!this.isEdit) {
-      this.companyService.addHolidays(formData).subscribe(res => {
-        this.holidays.push(res.data);
-        this.toast.success('Holiday added successfully', 'Success');
-        this.holidayForm.reset(this.getDefaultFormValues());
-      },
-        err => { this.toast.error('Holiday Can not be Added', 'Error') }
-      );
+    if (this.holidayForm.valid) {
+      if (!this.isEdit) {
+        this.companyService.addHolidays(formData).subscribe(res => {
+          this.holidays.push(res.data);
+          this.toast.success('Holiday added successfully', 'Success');
+          this.holidayForm.reset(this.getDefaultFormValues());
+        },
+          err => { this.toast.error('Holiday Can not be Added', 'Error') }
+        );
+      }
+      else if (this.isEdit) {
+        this.companyService.updateHolidays(this.selectedRecord._id, formData).subscribe(res => {
+          this.toast.success('Holiday updated successfully', 'Success');
+          const index = this.holidays.findIndex((z) => z._id === this.selectedRecord._id);
+          if (index !== -1) {
+            this.holidays[index] = { ...res.data };
+          }
+          this.holidayForm.reset(this.getDefaultFormValues());
+          this.isEdit = false;
+        },
+          err => { this.toast.error('Holiday Can not be Updated', 'Error') }
+        );
+      }
     }
-    else if (this.isEdit) {
-      this.companyService.updateHolidays(this.selectedRecord._id, formData).subscribe(res => {
-        this.toast.success('Holiday updated successfully', 'Success');
-        const index = this.holidays.findIndex((z) => z._id === this.selectedRecord._id);
-        if (index !== -1) {
-          this.holidays[index] = { ...res.data };
-        }
-        this.holidayForm.reset(this.getDefaultFormValues());
-        this.isEdit = false;
-      },
-        err => { this.toast.error('Holiday Can not be Updated', 'Error') }
-      );
+    else {
+      this.holidayForm.markAllAsTouched();
     }
-  }
-  else{
-    this.holidayForm.markAllAsTouched();
-  }
   }
 
   edit(data: any) {

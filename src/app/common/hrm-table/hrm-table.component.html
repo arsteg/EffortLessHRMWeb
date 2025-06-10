@@ -8,7 +8,7 @@
 
     <div class="offset-md-4 col-12 col-md-5">
         <div class="d-md-flex justify-content-end align-center">
-            <div *ngIf="showExport">
+            <div *ngIf="showExport !== 'none'">
                 <button color="primary" class="btn btn-light d-flex align-items-center dropdown-toggle mb-4 me-2"
                     [matMenuTriggerFor]="menu">
                     <span>Export</span><mat-icon class="fs-5">ios_share</mat-icon>
@@ -52,23 +52,31 @@
                 @if(column.isAction){
                 <!-- Single Action -->
                 @if(column.options?.length === 1){
-                @if(!column.options[0].hideCondition(row)){
-                <button mat-stroked-button (click)="onAction(column.options[0], row)"
-                    [class]="column.options[0].cssClass">
-                    @switch(column.options[0].visibility){
-                    @case ('icon') { <mat-icon>{{column.options[0].icon}}</mat-icon> }
-                    @case ('label') { <span>{{ column.options[0].label }}</span> }
-                    @case ('both') {
-                    <ng-container>
-                        <span class="d-flex align-items-center">
-                            <mat-icon>{{column.options[0].icon}}</mat-icon>
-                            <span>{{ column.options[0].label }}</span>
-                        </span>
-                    </ng-container>
+                    @if(!(column.options[0]?.hideCondition && column.options[0]?.hideCondition(row))){
+                        @switch(column.options[0].visibility){
+                            @case ('icon') { 
+                                <button mat-icon-button (click)="onAction(column.options[0], row)"
+                                    [class]="column.options[0].cssClass">
+                                    <mat-icon>{{column.options[0].icon}}</mat-icon>
+                                </button>
+                            }
+                            @case ('label') { 
+                                <button mat-stroked-button (click)="onAction(column.options[0], row)"
+                                    [class]="column.options[0].cssClass">
+                                    {{column.options[0].label}}
+                                </button>
+                            }
+                            @case ('both') {
+                            <button mat-stroked-button (click)="onAction(column.options[0], row)"
+                                    [class]="column.options[0].cssClass">
+                                <span class="d-flex align-items-center">
+                                    <mat-icon>{{column.options[0].icon}}</mat-icon>
+                                    <span>{{ column.options[0].label }}</span>
+                                </span>
+                            </button>
+                            }
+                        }
                     }
-                    }
-                </button>
-                }
                 }
 
                 <!-- Multiple Actions: Show menu -->
@@ -78,14 +86,14 @@
                 </button>
                 <mat-menu #actionMenu="matMenu">
                     @for(opt of column.options; track opt){
-                    @if(!opt.hideCondition(row)){
+                    @if(!(opt?.hideCondition && opt.hideCondition(row))){
                     <button mat-menu-item (click)="onAction(opt, row)" [class]="opt.cssClass">
                         @switch(opt.visibility){
                         @case ('icon') { <mat-icon>{{opt.icon}}</mat-icon> }
                         @case ('label') { <span>{{ opt.label }}</span> }
                         @case ('both') {
                         <span class="d-flex align-items-center">
-                            <mat-icon>{{opt.icon}}</mat-icon>
+                            <mat-icon [class]="opt.cssClass">{{opt.icon}}</mat-icon>
                             <span>{{ opt.label }}</span>
                         </span>
                         }

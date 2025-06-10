@@ -1,0 +1,45 @@
+.child-tabs {
+    margin-top: var(--size-8);
+
+    .mat-mdc-tab-link.mdc-tab--active,
+    .mat-mdc-tab.mdc-tab--active {
+        background-color: var(--primary);
+    }
+
+    .mat-mdc-tab-link,
+    .mat-mdc-tab {
+        background-color: var(--neutral-grey);
+        margin: 0 var(--size-4);
+        border-top-left-radius: var(--size-8);
+        border-top-right-radius: var(--size-8);
+    }
+
+    .mat-mdc-tab-link:not(.mdc-tab--active):hover,
+    .mat-mdc-tab-link:not(.mdc-tab--active):focus,
+    .mat-mdc-tab:not(.mdc-tab--active):hover,
+    .mat-mdc-tab:not(.mdc-tab--active):focus {
+        background-color: var(--orange-10);
+    }
+
+    .mat-mdc-tab-link.mdc-tab--active,
+    .mat-mdc-tab-link.mdc-tab--active:focus,
+    .mat-mdc-tab-link.mdc-tab--active:hover,
+    .mat-mdc-tab.mdc-tab--active,
+    .mat-mdc-tab.mdc-tab--active:focus,
+    .mat-mdc-tab.mdc-tab--active:hover {
+        .mdc-tab__text-label {
+            color: var(--white);
+        }
+    }
+
+    .mat-mdc-tab-link,
+    .mat-mdc-tab-link.mdc-tab--active:focus,
+    .mat-mdc-tab-link.mdc-tab--active:hover,
+    .mat-mdc-tab,
+    .mat-mdc-tab.mdc-tab--active:focus,
+    .mat-mdc-tab.mdc-tab--active:hover {
+        .mdc-tab-indicator__content--underline {
+            border-color: var(--orange-30);
+        }
+    }
+}

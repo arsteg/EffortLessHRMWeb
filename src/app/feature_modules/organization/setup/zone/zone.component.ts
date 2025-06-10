@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -6,13 +6,15 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-
+import { TableColumn, ActionVisibility } from 'src/app/models/table-column';
+import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-zone',
   templateUrl: './zone.component.html',
   styleUrl: './zone.component.css'
 })
 export class ZoneComponent {
+    @ViewChild('addModal') addModal: ElementRef;
   zones = new MatTableDataSource([]);
   zoneForm: FormGroup;
   closeResult: string;
@@ -20,8 +22,48 @@ export class ZoneComponent {
   searchText: string = '';
   selectedZone: any;
   public sortOrder: string = '';
+  columns: TableColumn[] = [
+      {
+        key: 'startDate',
+        name: 'Start Date',
+        valueFn: (row: any)=> {return row.startDate ? this.datePipe.transform(row.startDate, 'mediumDate') : ''}
+      }, {
+        key: 'zoneCode',
+        name: 'Zone Code'
+      },
+      {
+        key: 'zoneName',
+        name: 'Zone Name'
+      },{
+        key: 'description',
+        name: 'Description'
+      },
+      {
+        key: 'status',
+        name: 'Status'
+      },
+      {
+        key: 'action',
+        name: 'Action',
+        options: [
+          {
+            label: 'Edit',
+            icon: 'edit',
+            visibility: ActionVisibility.BOTH, // label | icon | both 
+            cssClass: 'border-bottom',
+          }, {
+            label: 'Delete',
+            icon: 'delete',
+            visibility: ActionVisibility.BOTH,
+            cssClass: 'text-danger'
+          }
+        ],
+        isAction: true
+      }
+    ];
 
   constructor(private companyService: CompanyService,
+    private datePipe: DatePipe,
     private modalService: NgbModal,
     private fb: FormBuilder,
     private dialog: MatDialog,
@@ -37,6 +79,21 @@ export class ZoneComponent {
 
   ngOnInit() {
     this.getZones();
+  }
+
+  onActionClick(event){
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedZone = event.row; 
+        this.isEdit= true;
+        this.edit(event.row); 
+        this.open(this.addModal)
+        break;
+
+      case 'Delete':
+        this.deleteDialog(event.row?._id)
+        break;
+    }
   }
 
   getZones() {

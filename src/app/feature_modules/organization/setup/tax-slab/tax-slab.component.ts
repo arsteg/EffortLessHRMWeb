@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -12,6 +13,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
   styleUrl: './tax-slab.component.css'
 })
 export class TaxSlabComponent {
+  @ViewChild('addModal') addModal: ElementRef;
   taxSlabForm: FormGroup;
   taxSlabs: any;
   selectedRecord: any;
@@ -24,6 +26,18 @@ export class TaxSlabComponent {
   currentPage: number = 1;
   fiscalYears: string[] = [];
   selectedCycle: string;
+  columns: TableColumn[] = [
+    {key: 'IncomeTaxSlabs', name:'Income Tax Slabs'},
+    {key: 'minAmount', name:'Minimum'},
+    {key: 'maxAmount', name:'Maximum'},
+    {key: 'taxPercentage', name:'Percentage'},
+    {key: 'cycle', name:'Cycle'},
+    {key: 'regime', name:'Regime'},
+    {key: 'action', name: 'Action', isAction: true, options:[
+      {label: 'Edit', icon:'edit', visibility:ActionVisibility.BOTH},
+      {label: 'Delete', icon:'delete', visibility:ActionVisibility.BOTH, cssClass:'text-danger'},
+    ]}
+  ]
 
   constructor(
     private toast: ToastrService,
@@ -47,6 +61,21 @@ export class TaxSlabComponent {
     this.getTaxSlabs();
   }
 
+  onActionClick(event) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedRecord = event.row;
+        this.isEdit = true;
+        this.setFormValues();
+        this.open(this.addModal);
+        break;
+
+      case 'Delete':
+        this.deleteDialog(event.row?._id)
+        break;
+    }
+  }
+
   getTaxSlabs() {
     let payload = {
       skip: '',
@@ -60,9 +89,9 @@ export class TaxSlabComponent {
 
   onTaxSlabChange(event) {
     console.log(event)
-    if (!event) { this.getTaxSlabs() }
-    if (event) {
-      this.companyService.getTaxSlabByYear(event).subscribe((res: any) => {
+    if (!event.value) { this.getTaxSlabs() }
+    if (event.value) {
+      this.companyService.getTaxSlabByYear(event.value).subscribe((res: any) => {
         this.taxSlabs = res.data;
         this.totalRecords = res.total;
       })
@@ -75,6 +104,7 @@ export class TaxSlabComponent {
 
     const startYear = currentMonth > 2 ? currentYear : currentYear - 1;
     this.fiscalYears = [
+      `FY ${startYear - 1}-${startYear}`,
       `FY ${startYear}-${startYear + 1}`,
       `FY ${startYear + 1}-${startYear + 2}`,
     ];
