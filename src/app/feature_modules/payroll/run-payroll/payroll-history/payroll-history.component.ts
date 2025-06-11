@@ -8,7 +8,6 @@ import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { TableService } from 'src/app/_services/table.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -39,6 +38,12 @@ export class PayrollHistoryComponent implements AfterViewInit {
   selectedStatus: string = '';
   payrollPeriod: any;
   duplicatePayrollError = false;
+  dataSource = new MatTableDataSource<any>([]);
+  totalRecords = 0;
+  pageSize = 10;
+  currentPage = 1;
+  pageSizeOptions = [5, 10, 25, 50, 100];
+  searchText: string = '';
 
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -50,7 +55,6 @@ export class PayrollHistoryComponent implements AfterViewInit {
     private commonService: CommonService,
     private userService: UserService,
     private cdr: ChangeDetectorRef,
-    public tableService: TableService<any>,
     private translate: TranslateService
   ) {
     this.salaries = [];
@@ -70,13 +74,13 @@ export class PayrollHistoryComponent implements AfterViewInit {
     });
 
     // Set custom filter predicate to search by payroll period and status
-    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
       const searchString = filter.toLowerCase();
       return (
         `${data.month} ${data.year}`.toLowerCase().includes(searchString) ||
         data.status.toLowerCase().includes(searchString)
       );
-    });
+    };
   }
 
   ngOnInit() {
@@ -94,7 +98,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.tableService.initializeDataSource([]);
+    this.dataSource.paginator = this.paginator;
     this.getPayrollWithUserCounts();
   }
 
@@ -113,8 +117,8 @@ export class PayrollHistoryComponent implements AfterViewInit {
 
   getPayroll() {
     const pagination = {
-      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
-      next: this.tableService.recordsPerPage.toString()
+      skip: ((this.currentPage - 1) * this.pageSize).toString(),
+      next: this.pageSize.toString()
     };
     this.payrollService.getPayroll(pagination).subscribe((res: any) => {
       this.payrollPeriod = res.data;
@@ -257,13 +261,13 @@ export class PayrollHistoryComponent implements AfterViewInit {
 
   getPayrollWithUserCounts() {
     const pagination = {
-      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
-      next: this.tableService.recordsPerPage.toString()
+      skip: ((this.currentPage - 1) * this.pageSize).toString(),
+      next: this.pageSize.toString()
     };
     this.payrollService.getPayroll(pagination).subscribe((payrollRes: any) => {
       this.payroll = payrollRes.data;
 
-      const payrollData = this.payroll.map((payrollItem: any, index: number) => {
+      const payrollData = this.payroll.map((payrollItem: any) => {
         return new Promise(resolve => {
           const payrollUsersPayload = { skip: '', next: '', payroll: payrollItem._id };
           this.payrollService.getPayrollUsers(payrollUsersPayload).subscribe((payrollUsersRes: any) => {
@@ -285,8 +289,9 @@ export class PayrollHistoryComponent implements AfterViewInit {
       });
 
       Promise.all(payrollData).then(data => {
-        this.tableService.setData(data);
-        this.tableService.totalRecords = payrollRes.total;
+        this.dataSource.data = data;
+        this.totalRecords = payrollRes.total;
+        this.cdr.detectChanges();
       });
     });
   }
@@ -455,7 +460,9 @@ export class PayrollHistoryComponent implements AfterViewInit {
             translations['payroll._history.title']
           );
         });
-        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
+        this.dataSource.data = this.dataSource.data.filter(item => item._id !== _id);
+        this.totalRecords--;
+        this.cdr.detectChanges();
       },
       (err) => {
         this.translate.get('payroll._history.title').subscribe(title => {
@@ -480,7 +487,16 @@ export class PayrollHistoryComponent implements AfterViewInit {
   }
 
   onPageChange(event: any) {
-    this.tableService.updatePagination(event);
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
     this.getPayrollWithUserCounts();
+  }
+
+  applyFilter() {
+    this.dataSource.filter = this.searchText.trim().toLowerCase();
+    this.currentPage = 1;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 }

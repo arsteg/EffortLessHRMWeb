@@ -2,13 +2,12 @@
   <div class="container-fluid">
     <div class="bg-white mt-2">
       <div class="d-flex justify-content-between align-items-center px-2 py-1">
-        <p class="mb-0 me-auto"> ({{tableService.totalRecords}}) {{ 'payroll.records_found' | translate}}
-            </p>
+        <p class="mb-0 me-auto"> ({{totalRecords}}) {{ 'payroll.records_found' | translate}}</p>
         <div class="ms-auto d-flex align-items-center">
           <span class="bi bi-search searchIcon"></span>
           <input class="form-control search" type="text"
                  [placeholder]="'payroll.search_placeholder' | translate"
-                 [(ngModel)]="tableService.searchText" (input)="tableService.applyFilter()"
+                 [(ngModel)]="searchText" (input)="applyFilter()"
                  name="searchText" aria-label="Search FnF payroll history">
           <button class="ms-2 w-100" mat-raised-button color="primary"
                   [matTooltip]="settledUser.length === 0 ? ('payroll._fnf.no_users_tooltip' | translate) : ''"
@@ -18,7 +17,7 @@
           </button>
         </div>
       </div>
-      <mat-table [dataSource]="tableService.dataSource" class="shadow">
+      <mat-table [dataSource]="dataSource" class="shadow">
         <ng-container matColumnDef="period">
           <mat-header-cell *matHeaderCellDef> {{ 'payroll._fnf.table.period' | translate }} </mat-header-cell>
           <mat-cell *matCellDef="let element"> {{ element.month }} - {{ element.year }} </mat-cell>
@@ -74,7 +73,7 @@
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </mat-table>
-      <mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
+      <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage"
                      [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)"
                      aria-label="Select page of FnF payroll history">
       </mat-paginator>
@@ -82,6 +81,7 @@
   </div>
 </div>
 
+<!-- Rest of the template remains unchanged -->
 <ng-template #updateStatus>
   <h1 mat-dialog-title>{{ 'payroll._fnf.change_status' | translate: { status: ('payroll._fnf.status.' + selectedStatus.toLowerCase() | translate) } }}</h1>
   <div mat-dialog-content>
