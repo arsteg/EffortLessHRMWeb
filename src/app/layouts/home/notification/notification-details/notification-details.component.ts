@@ -48,6 +48,7 @@ export class NotificationDetailsComponent {
       next: (response: any) => {
         console.log('API Response:', response);
         let allNotifications = response.data || response;
+        allNotifications = allNotifications.filter((n: Notification) => n.status !== 'scheduled');
         allNotifications.sort((a: Notification, b: Notification) => new Date(b.date).getTime() - new Date(a.date).getTime());
         this.eventNotifications = [...allNotifications]; // Show all
         this.updateUnreadStatus();
@@ -75,7 +76,18 @@ export class NotificationDetailsComponent {
     this.eventNotifications.forEach(n => n.status = 'read');
     this.updateUnreadStatus();
     console.log('Marked all as read');
-    // Call API to update backend if needed
+
+    this.eventNotifications.forEach(n => {
+    n.status = 'read';
+    this.notificationService.updateNotificationStatus(this.userId, n._id, 'read').subscribe({
+        next: () => {
+          console.log(`Marked notification ${n._id} as read`);
+        },
+        error: (err) => {
+          console.error(`Failed to update notification ${n._id}`, err);
+        }
+      });
+    });
   }
 
   private subscribeToWebSocketNotifications() {
@@ -119,6 +131,7 @@ export class NotificationDetailsComponent {
       }
       notification.status = 'unread';
       this.eventNotifications = [notification, ...this.eventNotifications]
+        .filter((n: Notification) => n.status !== 'scheduled')
         .sort((a: Notification, b: Notification) => new Date(b.date).getTime() - new Date(a.date).getTime());
       this.updateUnreadStatus();
       this.cdr.detectChanges();

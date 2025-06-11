@@ -48,6 +48,8 @@ export class NotificationComponent implements OnInit, OnDestroy {
     this.notificationService.getEventNotificationsByUser(this.userId).subscribe({
       next: (response: any) => {
         let allNotifications = response.data || response;
+        // Filter out 'scheduled' notifications
+        allNotifications = allNotifications.filter((n: Notification) => n.status !== 'scheduled');
         allNotifications.sort((a: Notification, b: Notification) => new Date(b.date).getTime() - new Date(a.date).getTime());
         this.eventNotifications = seeAll ? [...allNotifications] : allNotifications.slice(0, 3);
         this.updateUnreadStatus();
@@ -69,6 +71,19 @@ export class NotificationComponent implements OnInit, OnDestroy {
   markAllAsRead() {
     this.eventNotifications.forEach(n => n.status = 'read');
     this.updateUnreadStatus();
+
+    this.eventNotifications.forEach(n => {
+    n.status = 'read';
+    this.notificationService.updateNotificationStatus(this.userId, n._id, 'read').subscribe({
+        next: () => {
+          console.log(`Marked notification ${n._id} as read`);
+        },
+        error: (err) => {
+          console.error(`Failed to update notification ${n._id}`, err);
+        }
+      });
+    });
+
   }
 
   getIcon(type: string): string {
@@ -118,6 +133,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
       }
       notification.status = 'unread';
       this.eventNotifications = [notification, ...this.eventNotifications]
+        .filter((n: Notification) => n.status !== 'scheduled')
         .sort((a: Notification, b: Notification) => new Date(b.date).getTime() - new Date(a.date).getTime())
         .slice(0, 3);
       this.updateUnreadStatus();
