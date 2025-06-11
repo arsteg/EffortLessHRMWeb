@@ -1,25 +1,25 @@
-<div class="asset-assignment-container">
-  <!-- Vendors Dropdown -->
-  <div class="vendor-selection">
-      <label for="vendorDropdown">Select Vendor:</label>
-      <select id="vendorDropdown" [(ngModel)]="selectedVendor">
-          <option *ngFor="let vendor of vendors" [ngValue]="vendor.id">{{ vendor.vendorName }}</option>
-      </select>
-  </div>
-
-  <!-- Assets List -->
-  <div class="assets-list">
-      <h5>Assets:</h5>
-      <ul>
-          <li *ngFor="let asset of assets">
-              <input type="checkbox" [(ngModel)]="asset.isSelected" id="{{asset._id}}">
-              <label for="asset_{{asset.id}}">{{ asset?.assetName }}</label>
-          </li>
-      </ul>
-  </div>
-
-  <!-- Assign Button -->
-  <div class="assign-button">
-      <button (click)="assignAssetsToVendor()">Assign Assets</button>
-  </div>
+<!-- Vendors Dropdown -->
+<div class="mt-4">
+    <mat-form-field>
+        <mat-label>Vendor</mat-label>
+        <mat-select [(ngModel)]="selectedVendor">
+            @for(vendor of vendors; track vendor){
+            <mat-option [value]="vendor">{{vendor.vendorName}}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
 </div>
+
+<!-- Assets List -->
+<h3>Assets:</h3>
+<ul class="list-unstyled">
+    <li *ngFor="let asset of assets">
+        <mat-checkbox color="primary" [(ngModel)]="asset.isSelected" id="{{asset._id}}">
+            {{ asset?.assetName }}
+        </mat-checkbox>
+    </li>
+</ul>
+
+
+<!-- Assign Button -->
+<button mat-flat-button color="primary" (click)="assignAssetsToVendor()">Assign Assets</button>

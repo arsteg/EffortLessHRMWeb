@@ -25,7 +25,7 @@ export class SubordinateSelectionComponent implements OnInit {
   }
 
   emitSelectedUsers(member): void {
-    const user = JSON.parse(member)
+    const user = member;
     this.selectedUsersChange.emit(user.id);
     this.selectedUserNameChange.emit(user?.name)
 

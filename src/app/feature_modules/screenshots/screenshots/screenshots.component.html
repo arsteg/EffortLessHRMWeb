@@ -1,5 +1,5 @@
-<div class="row">
-  <div class="col-lg-3 col-12">
+<div class="row pb-2 border-bottom">
+  <div class="col-lg-4 col-md-6 col-12">
     <div class=" d-flex align-items-start">
       <button mat-icon-button class="mt-1" (click)="SetPreviousDay()">
         <mat-icon>keyboard_arrow_left</mat-icon>
@@ -7,7 +7,7 @@
       <mat-form-field>
         <mat-label>Choose a date</mat-label>
         <input matInput [matDatepicker]="datepicker" [(ngModel)]="selectedDate" (dateChange)="showScreenShots()">
-        <mat-hint>{{selectedDate | date:'MM/dd/yyyy'}}</mat-hint>
+
         <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
         <mat-datepicker #datepicker>
           <mat-datepicker-actions>
@@ -22,7 +22,7 @@
     </div>
   </div>
 
-  <mat-form-field class="col-lg-2 col-12">
+  <mat-form-field class="col-lg-2 col-md-6 col-12">
     <mat-label>Member</mat-label>
     <mat-select [ngModel]="selectedMember | json" (ngModelChange)="onMemberSelectionChange($event)">
       @for(m of members; track m) {
@@ -31,18 +31,18 @@
     </mat-select>
   </mat-form-field>
   
-  <div class="col-lg-5 col-12">
+  <div class="col-lg-4 col-md-8 col-12">
     <h3 class="mb-1">Total time</h3>
-    <span>Total time: {{padValue(totalHours)}} h {{padValue(totalMinutes)}} m</span>
+    <span>Daily time: {{padValue(totalHours)}} h {{padValue(totalMinutes)}} m</span>
     <span class="vr mx-2"></span>
     <span>This week: {{padValue(currentWeekTotalHours)}} h
       {{padValue(currentWeekTotalMinutes)}} m</span>
-    <span class="vr mx-2"></span>
+    <br>
     <span>This month: {{padValue(currentMonthTotalHours)}} h
       {{padValue(currentMonthTotalMinutes)}} m</span>
   </div>
 
-  <div class="col-lg-2 col-12 text-end">
+  <div class="col-lg-2 col-md-4 col-12 text-end">
     <button mat-icon-button id="btnRefresh" class="refresh-btn ms-auto" (click)="showScreenShots()"
       [matTooltip]="'Refresh'">
       <mat-icon>sync</mat-icon>

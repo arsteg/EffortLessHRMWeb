@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { DocumentsService } from 'src/app/_services/documents.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 // You might need to import and inject a service that interacts with your backend API, similar to AssetManagementService
 
@@ -17,6 +18,17 @@ export class CompanyPolicyDocumentComponent implements OnInit {
     isEdit = false;
     selectedDocument: any;
     searchText: string = '';
+    columns: TableColumn[] = [
+        { key: 'name', name: 'Name' },
+        { key: 'description', name: 'Description' },
+        { key: 'url', name: 'URL' },
+        {
+            key: 'action', name: 'Action', isAction: true, options: [
+                { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+                { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: 'text-danger', hideCondition: (row: any) => { return !row.isDeletable } },
+            ]
+        }
+    ]
     constructor(private fb: FormBuilder,
         private toast: ToastrService,
         private documentService: DocumentsService,
@@ -26,17 +38,29 @@ export class CompanyPolicyDocumentComponent implements OnInit {
         this.initForm();
         this.getCompanyPolicyDocument();
     }
-// Custom URL validator function using a regular expression
-urlValidator() {
-    const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
-    return (control) => {
-        const value = control.value;
-        if (!value) {
-            return null;  // If empty, validation is successful
+
+    onActionClick(event) {
+        switch (event.action.label) {
+            case 'Edit':
+                this.editDocument(event.row)
+                break;
+            case 'Delete':
+                this.openDialog(event.row)
+                break;
         }
-        return urlPattern.test(value) ? null : { invalidUrl: true };  // Return validation result
-    };
-}
+    }
+
+    // Custom URL validator function using a regular expression
+    urlValidator() {
+        const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
+        return (control) => {
+            const value = control.value;
+            if (!value) {
+                return null;  // If empty, validation is successful
+            }
+            return urlPattern.test(value) ? null : { invalidUrl: true };  // Return validation result
+        };
+    }
     initForm() {
         this.documentForm = this.fb.group({
             name: ['', Validators.required],
@@ -78,7 +102,7 @@ urlValidator() {
     }
 
     deleteDocument(id: string) {
-        this.documentService.deleteCompanyPolicyDocument(id).subscribe((res: any)=>{
+        this.documentService.deleteCompanyPolicyDocument(id).subscribe((res: any) => {
             this.toast.success('Company Policy Document Deleted Successfully!');
             this.getCompanyPolicyDocument();
         })

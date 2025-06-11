@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 import { Vendor } from 'src/app/models/AssetsManagement/Asset';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -18,17 +19,41 @@ export class VendorComponent implements OnInit {
     isEdit = false;
     selectedVendor: Vendor;
     p = 1;
+    columns: TableColumn[] = [
+        { key: 'vendorId', name: 'ID' },
+        { key: 'vendorName', name: 'Name' },
+        { key: 'email', name: 'Email' },
+        { key: 'address', name: 'Address' },
+        { key: 'phone', name: 'Phone' },
+        {
+            key: 'action', name: 'Action', isAction: true, options: [
+                { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+                { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: 'text-danger' },
+            ]
+        }
+    ]
 
     constructor(
         private fb: FormBuilder,
         private toast: ToastrService,
         private assetManagementService: AssetManagementService,
         private dialog: MatDialog
-        ) { }
+    ) { }
 
     ngOnInit(): void {
         this.initVendorForm();
         this.getVendors();
+    }
+
+    onActionClick(event) {
+        switch (event.action.label) {
+            case 'Edit':
+                this.editVendor(event.row)
+                break;
+            case 'Delete':
+                this.openDialog(event.row)
+                break;
+        }
     }
 
     initVendorForm() {

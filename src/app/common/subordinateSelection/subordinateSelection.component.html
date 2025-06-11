@@ -1,7 +1,10 @@
-<div class="d-flex align-items-baseline">
-  <label for="member" class="pt-2 pe-2">Member </label>
-  <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-    aria-label=".form-select-sm example" #member (change)="emitSelectedUsers(member.value)">
-    <option *ngFor="let m of members;let i = index" value="{{m|json}}" [selected]="i === 0">{{m.name | titlecase}}</option>
-  </select>
-</div>
+<mat-form-field>
+  <mat-label>
+    Member
+  </mat-label>
+  <mat-select (selectionChange)="emitSelectedUsers($event.value)">
+    <mat-option *ngFor="let m of members;let i = index" [value]="m" [selected]="i === 0">
+      {{m.name | titlecase}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
