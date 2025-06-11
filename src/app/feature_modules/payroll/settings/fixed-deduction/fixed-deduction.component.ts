@@ -1,5 +1,5 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms'; // Import AbstractControl, ValidatorFn
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -31,7 +31,7 @@ export class FixedDeductionComponent implements AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.fixedContributionForm = this.fb.group({
-      label: ['', Validators.required],
+      label: ['', [Validators.required, this.noSpecialCharactersValidator()]], // Added custom validator
       isEffectAttendanceOnEligibility: [false]
     });
 
@@ -47,13 +47,16 @@ export class FixedDeductionComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.tableService.initializeDataSource([]);
+    this.tableService.paginator = this.paginator; // Initialize paginator here
     this.getFixedDeduction();
   }
 
   clearForm() {
     this.fixedContributionForm.reset({
       label: '',
+      isEffectAttendanceOnEligibility: false // Reset toggle as well
     });
+    this.fixedContributionForm.get('label').enable(); // Ensure label is enabled for new additions
   }
 
   open(content: any) {
@@ -74,48 +77,62 @@ export class FixedDeductionComponent implements AfterViewInit {
   }
 
   onSubmission() {
-    if (this.fixedContributionForm.valid) {
-      if (!this.isEdit) {
-        this.payroll.addFixedDeduction(this.fixedContributionForm.value).subscribe({
-          next: (res: any) => {
-            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
-            this.clearForm();
-            this.toast.success(
-              this.translate.instant('payroll.fixed_deduction.toast.success_added'),
-              this.translate.instant('payroll.fixed_deduction.title')
-            );
-            this.closeModal();
-          },
-          error: (err) => {
-            this.toast.error(
-              this.translate.instant('payroll.fixed_deduction.toast.error_add'),
-              this.translate.instant('payroll.fixed_deduction.title')
-            );
-          }
-        });
-      } else {
-        this.payroll.updateFixedDeduction(this.selectedRecord._id, this.fixedContributionForm.value).subscribe({
-          next: (res: any) => {
-            const updatedData = this.tableService.dataSource.data.map(item =>
-              item._id === res.data._id ? res.data : item
-            );
-            this.tableService.setData(updatedData);
-            this.toast.success(
-              this.translate.instant('payroll.fixed_deduction.toast.success_updated'),
-              this.translate.instant('payroll.fixed_deduction.title')
-            );
-            this.closeModal();
-          },
-          error: (err) => {
-            this.toast.error(
-              this.translate.instant('payroll.fixed_deduction.toast.error_update'),
-              this.translate.instant('payroll.fixed_deduction.title')
-            );
-          }
-        });
-      }
+    this.markFormGroupTouched(this.fixedContributionForm); // Mark all fields as touched
+
+    if (this.fixedContributionForm.invalid) {
+      return; // Stop submission if form is invalid
+    }
+
+    const newLabel = this.fixedContributionForm.get('label').value;
+
+    // Check for duplicate label
+    const isDuplicate = this.tableService.dataSource.data.some((deduction: any) =>
+      deduction.label.toLowerCase() === newLabel.toLowerCase() &&
+      (this.isEdit ? deduction._id !== this.selectedRecord._id : true) // Exclude current record if editing
+    );
+
+    if (isDuplicate) {
+      this.toast.error(
+        this.translate.instant('payroll.fixed_deduction.toast.duplicate_label_error'), // New translation key
+        this.translate.instant('payroll.fixed_deduction.title')
+      );
+      return; // Stop submission if duplicate is found
+    }
+
+    if (!this.isEdit) {
+      this.payroll.addFixedDeduction(this.fixedContributionForm.value).subscribe({
+        next: (res: any) => {
+          // No need to manually add to dataSource.data if getFixedDeduction() is called
+          this.toast.success(
+            this.translate.instant('payroll.fixed_deduction.toast.success_added'),
+            this.translate.instant('payroll.fixed_deduction.title')
+          );
+          this.closeModal();
+        },
+        error: (err) => {
+          this.toast.error(
+            this.translate.instant('payroll.fixed_deduction.toast.error_add'),
+            this.translate.instant('payroll.fixed_deduction.title')
+          );
+        }
+      });
     } else {
-      this.markFormGroupTouched(this.fixedContributionForm);
+      this.payroll.updateFixedDeduction(this.selectedRecord._id, this.fixedContributionForm.value).subscribe({
+        next: (res: any) => {
+          // No need to manually update dataSource.data if getFixedDeduction() is called
+          this.toast.success(
+            this.translate.instant('payroll.fixed_deduction.toast.success_updated'),
+            this.translate.instant('payroll.fixed_deduction.title')
+          );
+          this.closeModal();
+        },
+        error: (err) => {
+          this.toast.error(
+            this.translate.instant('payroll.fixed_deduction.toast.error_update'),
+            this.translate.instant('payroll.fixed_deduction.title')
+          );
+        }
+      });
     }
   }
 
@@ -130,6 +147,14 @@ export class FixedDeductionComponent implements AfterViewInit {
 
   editRecord() {
     this.fixedContributionForm.patchValue(this.selectedRecord);
+    // Disable label if isDelete is false, otherwise enable it
+    // Assuming 'isDelete' indicates if a record can be deleted/modified.
+    // If your logic is different (e.g., if a fixed deduction is "in use"), adjust this.
+    if (this.selectedRecord.isDelete === false) { // Assuming 'isDelete' flag determines if label can be edited
+        this.fixedContributionForm.get('label').disable();
+    } else {
+        this.fixedContributionForm.get('label').enable();
+    }
   }
 
   deleteRecord(_id: string) {
@@ -175,5 +200,20 @@ export class FixedDeductionComponent implements AfterViewInit {
       this.tableService.setData(res.data);
       this.tableService.totalRecords = res.total;
     });
+  }
+
+  /**
+   * Custom validator to prevent special characters in the label.
+   * Prohibits: #, *, ^, %, $, @, !, `, ~, <, >, ?, /, \, |, {, }, [, ], (, ), =, +, -, comma, period, semicolon, colon
+   */
+  noSpecialCharactersValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      // Regex to match any special character excluding space and underscore
+      const forbiddenChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/;
+      if (control.value && forbiddenChars.test(control.value)) {
+        return { 'specialCharacters': true };
+      }
+      return null;
+    };
   }
 }

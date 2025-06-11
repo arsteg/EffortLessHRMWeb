@@ -8,6 +8,8 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
+import { map, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-variable-deduction',
@@ -22,6 +24,8 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
   months: string[] = [];
   years: number[] = [];
   members: any[];
+  private unsubscribe$ = new Subject<void>();
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -78,8 +82,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.translate.get('payroll._lwf.monthly_deduction.month').subscribe((translations) => {
-      this.months = Object.values(translations); // ['January', 'February', ...]
-      console.log('Months:', this.months);
+      this.months = Object.values(translations);
     });
 
     this.getVariableDeduction();
@@ -92,6 +95,11 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
     this.tableService.initializeDataSource([]);
     this.tableService.paginator = this.paginator;
     this.getVariableDeduction();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   clearForm() {
@@ -129,46 +137,67 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
   }
 
   onSubmission() {
-      const formValue = this.variableDeductionForm.value;
-      const payload = { ...formValue };
-      if (!this.isEdit) {
-        this.payroll.addVariableDeduction(payload).subscribe({
-          next: (res: any) => {
-            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
-            this.closeModal();
-            this.toast.success(
-              this.translate.instant('payroll.variable_deduction.toast.success_added'),
-              this.translate.instant('payroll.variable_deduction.toast.title')
-            );
-          },
-          error: (err) => {
-            this.toast.error(
-              this.translate.instant('payroll.variable_deduction.toast.error_add'),
-              this.translate.instant('payroll.variable_deduction.toast.title')
-            );
-          }
-        });
-      } else if (this.isEdit) {
-        this.payroll.updateVariableDeduction(this.selectedRecord._id, payload).subscribe({
-          next: (res: any) => {
-            const updatedData = this.tableService.dataSource.data.map(item =>
-              item._id === res.data._id ? res.data : item
-            );
-            this.tableService.setData(updatedData);
-            this.closeModal();
-            this.toast.success(
-              this.translate.instant('payroll.variable_deduction.toast.success_updated'),
-              this.translate.instant('payroll.variable_deduction.toast.title')
-            );
-          },
-          error: (err) => {
-            this.toast.error(
-              this.translate.instant('payroll.variable_deduction.toast.error_update'),
-              this.translate.instant('payroll.variable_deduction.toast.title')
-            );
-          }
-        });
-      }
+    this.markFormGroupTouched(this.variableDeductionForm);
+    if (this.variableDeductionForm.invalid) {
+      return;
+    }
+
+    const formValue = this.variableDeductionForm.value;
+    const payload = { ...formValue };
+
+    // Check for duplicate label before submission
+    const isDuplicate = this.tableService.dataSource.data.some(
+      (deduction: any) =>
+        deduction.label.toLowerCase() === payload.label.toLowerCase() &&
+        (this.isEdit ? deduction._id !== this.selectedRecord._id : true)
+    );
+
+    if (isDuplicate) {
+      this.toast.error(
+        this.translate.instant('payroll.variable_deduction.toast.duplicate_label_error'),
+        this.translate.instant('payroll.variable_deduction.toast.title')
+      );
+      return;
+    }
+
+    if (!this.isEdit) {
+      this.payroll.addVariableDeduction(payload).pipe(takeUntil(this.unsubscribe$)).subscribe({
+        next: (res: any) => {
+          this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+          this.closeModal();
+          this.toast.success(
+            this.translate.instant('payroll.variable_deduction.toast.success_added'),
+            this.translate.instant('payroll.variable_deduction.toast.title')
+          );
+        },
+        error: (err) => {
+          this.toast.error(
+            this.translate.instant('payroll.variable_deduction.toast.error_add'),
+            this.translate.instant('payroll.variable_deduction.toast.title')
+          );
+        }
+      });
+    } else { // isEdit
+      this.payroll.updateVariableDeduction(this.selectedRecord._id, payload).pipe(takeUntil(this.unsubscribe$)).subscribe({
+        next: (res: any) => {
+          const updatedData = this.tableService.dataSource.data.map(item =>
+            item._id === res.data._id ? res.data : item
+          );
+          this.tableService.setData(updatedData);
+          this.closeModal();
+          this.toast.success(
+            this.translate.instant('payroll.variable_deduction.toast.success_updated'),
+            this.translate.instant('payroll.variable_deduction.toast.title')
+          );
+        },
+        error: (err) => {
+          this.toast.error(
+            this.translate.instant('payroll.variable_deduction.toast.error_update'),
+            this.translate.instant('payroll.variable_deduction.toast.title')
+          );
+        }
+      });
+    }
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
@@ -208,7 +237,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
   }
 
   deleteRecord(_id: string) {
-    this.payroll.deleteVariableDeduction(_id).subscribe({
+    this.payroll.deleteVariableDeduction(_id).pipe(takeUntil(this.unsubscribe$)).subscribe({
       next: (res: any) => {
         this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
         this.toast.success(
@@ -246,7 +275,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
       skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
       next: this.tableService.recordsPerPage.toString()
     };
-    this.payroll.getVariableDeduction(pagination).subscribe(res => {
+    this.payroll.getVariableDeduction(pagination).pipe(takeUntil(this.unsubscribe$)).subscribe(res => {
       this.tableService.setData(res.data);
       this.tableService.totalRecords = res.total;
     });
