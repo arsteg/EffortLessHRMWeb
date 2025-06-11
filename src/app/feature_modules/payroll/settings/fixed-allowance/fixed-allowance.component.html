@@ -8,9 +8,8 @@
                 <input class="form-control search" type="text" [placeholder]="'payroll.search_placeholder' | translate"
                     [(ngModel)]="tableService.searchText" (input)="tableService.applyFilter()" name="searchText"
                     aria-label="default input example">
-                <button class="addBtn mx-2" mat-raised-button (click)="isEdit= false; open(modal);">{{'payroll.add'|
-                    translate}}</button>
-            </div>
+                <button class="addBtn mx-2" mat-raised-button (click)="isEdit= false; open(modal); fixedAllowanceForm.get('label').enable();">{{'payroll.add'|
+                    translate}}</button> </div>
         </div>
         <table mat-table [dataSource]="tableService.dataSource">
             <ng-container matColumnDef="label">
@@ -134,9 +133,11 @@
                         <mat-label translate>payroll.fixed_allowance_label</mat-label>
                         <input matInput type="text" formControlName="label">
                         <mat-error
-                            *ngIf="fixedAllowanceForm.get('label').invalid && (fixedAllowanceForm.get('label').dirty || fixedAllowanceForm.get('label').touched)"
+                            *ngIf="fixedAllowanceForm.get('label').hasError('required') && (fixedAllowanceForm.get('label').dirty || fixedAllowanceForm.get('label').touched)"
                             translate>payroll.label_required</mat-error>
-                    </mat-form-field>
+                        <mat-error
+                            *ngIf="fixedAllowanceForm.get('label').hasError('specialCharacters') && (fixedAllowanceForm.get('label').dirty || fixedAllowanceForm.get('label').touched)">
+                            {{ 'payroll.label_no_special_characters' | translate }}</mat-error> </mat-form-field>
                 </div>
                 <div class="form-group my-2 col-md-6">
                     <label translate>payroll.is_tds_affected</label>
@@ -201,7 +202,7 @@
             </div>
             <div class="d-flex border-top mt-2 py-2 justify-content-between">
                 <button mat-raised-button type="button" (click)="closeModal()">{{'payroll.close' | translate}}</button>
-                <button mat-raised-button type="submit" class="addBtn">{{'payroll.submit' | translate}}</button>
+                <button mat-raised-button type="submit" class="addBtn">{{ (isEdit ? 'payroll.update' : 'payroll.add') | translate }}</button>
             </div>
         </div>
     </form>

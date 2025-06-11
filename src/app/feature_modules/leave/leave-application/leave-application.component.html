@@ -1,13 +1,17 @@
 <div class="main-content pt-2">
     <div class="container-fluid">
         <div class="tabs">
-            <button (click)="selectTab(1)" [class.active]="selectedTab === 1">Pending
+            <button (click)="selectTab(1)" [class.active]="selectedTab === 1">
+                {{ 'leave.status.pending' | translate }}
             </button>
-            <button (click)="selectTab(2)" [class.active]="selectedTab === 2">Approved
+            <button (click)="selectTab(2)" [class.active]="selectedTab === 2">
+                {{ 'leave.status.approved' | translate }}
             </button>
-            <button style="display: none;" (click)="selectTab(3)" [class.active]="selectedTab === 3">Cancelled
+            <button style="display: none;" (click)="selectTab(3)" [class.active]="selectedTab === 3">
+                {{ 'leave.status.cancelled' | translate }}
             </button>
-            <button (click)="selectTab(4)" [class.active]="selectedTab === 4">Rejected
+            <button (click)="selectTab(4)" [class.active]="selectedTab === 4">
+                {{ 'leave.status.rejected' | translate }}
             </button>
         </div>
 

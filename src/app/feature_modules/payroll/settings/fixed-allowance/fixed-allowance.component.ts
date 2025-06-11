@@ -1,5 +1,5 @@
 import { Component, inject, ViewChild, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
@@ -30,7 +30,7 @@ export class FixedAllowanceComponent implements AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.fixedAllowanceForm = this.fb.group({
-      label: ['', Validators.required],
+      label: ['', [Validators.required, this.noSpecialCharactersValidator()]],
       isProvidentFundAffected: [false],
       isESICAffected: [false],
       isGratuityFundAffected: [false],
@@ -39,7 +39,6 @@ export class FixedAllowanceComponent implements AfterViewInit {
       isTDSAffected: [false],
     });
 
-    // Set custom filter predicate for searching by label
     this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
       return data.label.toLowerCase().includes(filter);
     });
@@ -51,6 +50,7 @@ export class FixedAllowanceComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.tableService.initializeDataSource([]);
+    this.tableService.paginator = this.paginator;
     this.getFixedAllowance();
   }
 
@@ -85,46 +85,73 @@ export class FixedAllowanceComponent implements AfterViewInit {
 
   closeModal() {
     this.dialogRef.close(true);
+    // Explicitly set all boolean form controls to false and clear the label
+    this.fixedAllowanceForm.reset({
+      label: '',
+      isProvidentFundAffected: false,
+      isESICAffected: false,
+      isGratuityFundAffected: false,
+      isLWFAffected: false,
+      isProfessionalTaxAffected: false,
+      isTDSAffected: false,
+    });
+    this.fixedAllowanceForm.get('label').enable();
   }
 
   onSubmission() {
-    if (this.fixedAllowanceForm.valid) {
-      if (!this.isEdit) {
-        this.payroll.addAllowanceTemplate(this.fixedAllowanceForm.value).subscribe({
-          next: (res: any) => {
-            this.toast.success(
-              this.translate.instant('payroll.fixed_allowance_added'),
-              this.translate.instant('payroll.fixed_allowance_title')
-            );
-            this.closeModal();
-          },
-          error: (err) => {
-            this.toast.error(
-              this.translate.instant('payroll.fixed_allowance_add_error'),
-              this.translate.instant('payroll.fixed_allowance_title')
-            );
-          }
-        });
-      } else {
-        this.payroll.updateAllowanceTemplate(this.selectedRecord._id, this.fixedAllowanceForm.value).subscribe({
-          next: (res: any) => {
-            this.toast.success(
-              this.translate.instant('payroll.fixed_allowance_updated'),
-              this.translate.instant('payroll.fixed_allowance_title')
-            );
-            this.closeModal();
-          },
-          error: (err) => {
-            this.toast.error(
-              this.translate.instant('payroll.fixed_allowance_update_error'),
-              this.translate.instant('payroll.fixed_allowance_title')
-            );
-          }
-        });
-      }
-      this.fixedAllowanceForm.get('label').enable();
+    this.markFormGroupTouched(this.fixedAllowanceForm);
+
+    if (this.fixedAllowanceForm.invalid) {
+      return;
+    }
+
+    const newLabel = this.fixedAllowanceForm.get('label').value;
+
+    const isDuplicate = this.tableService.dataSource.data.some((allowance: any) =>
+      allowance.label.toLowerCase() === newLabel.toLowerCase() &&
+      (this.isEdit ? allowance._id !== this.selectedRecord._id : true)
+    );
+
+    if (isDuplicate) {
+      this.toast.error(
+        this.translate.instant('payroll.duplicate_allowance_label_error'),
+        this.translate.instant('payroll.fixed_allowance_title')
+      );
+      return;
+    }
+
+    if (!this.isEdit) {
+      this.payroll.addAllowanceTemplate(this.fixedAllowanceForm.value).subscribe({
+        next: (res: any) => {
+          this.toast.success(
+            this.translate.instant('payroll.fixed_allowance_added'),
+            this.translate.instant('payroll.fixed_allowance_title')
+          );
+          this.closeModal();
+        },
+        error: (err) => {
+          this.toast.error(
+            this.translate.instant('payroll.fixed_allowance_add_error'),
+            this.translate.instant('payroll.fixed_allowance_title')
+          );
+        }
+      });
     } else {
-      this.markFormGroupTouched(this.fixedAllowanceForm);
+      this.payroll.updateAllowanceTemplate(this.selectedRecord._id, this.fixedAllowanceForm.value).subscribe({
+        next: (res: any) => {
+          this.toast.success(
+            this.translate.instant('payroll.fixed_allowance_updated'),
+            this.translate.instant('payroll.fixed_allowance_title')
+          );
+          this.closeModal();
+        },
+        error: (err) => {
+          this.toast.error(
+            this.translate.instant('payroll.fixed_allowance_update_error'),
+            this.translate.instant('payroll.fixed_allowance_title')
+          );
+        }
+      });
     }
   }
 
@@ -181,5 +208,19 @@ export class FixedAllowanceComponent implements AfterViewInit {
         this.deleteRecord(id);
       }
     });
+  }
+
+  /**
+   * Custom validator to restrict special characters in the label.
+   * Allows alphanumeric characters, spaces, and hyphens.
+   */
+  noSpecialCharactersValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const forbiddenChars = /[^\p{L}\p{N}\s-]/u;
+      if (control.value && forbiddenChars.test(control.value)) {
+        return { 'specialCharacters': true };
+      }
+      return null;
+    };
   }
 }

@@ -1,132 +1,130 @@
 <div class="d-flex justify-content-between">
-    <h1 class="modal-title text-muted">Add Leave Application</h1>
+    <h1 class="modal-title text-muted">{{ 'leave.addTitle' | translate }}</h1>
     <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
 </div>
 <div mat-dialog-content>
     <form [formGroup]="leaveApplication" (ngSubmit)="onSubmission()">
         <div *ngIf="portalView != 'user'">
-            <label for="member">Select Employee <span class="text-danger">*</span></label>
+            <label for="member">{{ 'leave.selectEmployee' | translate }} <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-select formControlName="employee">
                     <mat-option *ngFor="let member of allAssignee" [value]="member.id">
-                        {{member?.firstName | titlecase}} {{member?.lastName}}
+                        {{ member?.firstName | titlecase }} {{ member?.lastName }}
                     </mat-option>
                 </mat-select>
 
                 <div *ngIf="leaveApplication.get('employee').invalid && leaveApplication.get('employee').touched"
                     class="text-danger error">
-                    Employee selection is required
+                    {{ 'leave.employeeRequired' | translate }}
                 </div>
             </mat-form-field>
         </div>
 
-        <div *ngIf=" tab === 5" class="mb-2">
-            <label for="member">Select an Employee for Leave Application <span class="text-danger">*</span></label>
+        <div *ngIf="tab === 5" class="mb-2">
+            <label for="member">{{ 'leave.selectEmployeeForLeave' | translate }} <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
-                <mat-label>Select Employee</mat-label>
+                <mat-label>{{ 'leave.selectEmployee' | translate }}</mat-label>
                 <mat-select name="users" formControlName="employee" required>
                     <mat-option *ngFor="let member of members" [value]="member.id">
-                        {{member?.name | titlecase}}
+                        {{ member?.name | titlecase }}
                     </mat-option>
                 </mat-select>
+                <div *ngIf="leaveApplication.get('employee').invalid && leaveApplication.get('employee').touched"
+                    class="text-danger error">
+                    {{ 'leave.employeeRequired' | translate }}
+                </div>
             </mat-form-field>
-            <div *ngIf="leaveApplication.get('employee').invalid && leaveApplication.get('employee').touched"
-                class="text-danger error">
-                Employee selection is required
-            </div>
         </div>
 
         <div>
-            <label for="member">Select Category <span class="text-danger">*</span></label>
+            <label for="member">{{ 'leave.selectCategory' | translate }} <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-select formControlName="leaveCategory" required>
-                    <mat-option *ngIf="checkStatus == 'failure'" disabled>Template Applicable Category not Assigned</mat-option>
+                    <mat-option *ngIf="checkStatus == 'failure'" disabled>{{ 'leave.noCategoryAssigned' | translate }}</mat-option>
                     <mat-option *ngFor="let category of leaveCategories" [value]="category?.leaveCategory?._id">
-                        {{category?.leaveCategory?.label | titlecase}}
+                        {{ category?.leaveCategory?.label | titlecase }}
                     </mat-option>
                 </mat-select>
                 <div *ngIf="leaveApplication.get('leaveCategory').invalid && leaveApplication.get('leaveCategory').touched"
                     class="text-danger error">
-                    Please Select Leave Category
+                    {{ 'leave.categoryRequired' | translate }}
                 </div>
             </mat-form-field>
         </div>
 
         <div class="row">
             <div class="col-6">
-              <label for="">Select Start Date <span class="text-danger">*</span></label>
+              <label for="">{{ 'leave.selectStartDate' | translate }} <span class="text-danger">*</span></label>
               <div class="col-12 form-group mb-3">
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today }" formControlName="startDate" required />
                 <div *ngIf="leaveApplication.get('startDate')?.hasError('pastDateError') && leaveApplication.get('startDate')?.touched" 
                      class="text-danger error">
-                  Start date cannot be earlier than today.
+                  {{ 'leave.pastDateError' | translate }}
                 </div>
                 <div *ngIf="leaveApplication.get('startDate')?.invalid && leaveApplication.get('startDate')?.touched && !leaveApplication.get('startDate')?.hasError('pastDateError')" 
                      class="text-danger error">
-                  Add a valid start date.
+                  {{ 'leave.invalidStartDate' | translate }}
                 </div>
               </div>
             </div>
             
             <div class="col-6">
-              <label for="">Select End Date <span class="text-danger">*</span></label>
+              <label for="">{{ 'leave.selectEndDate' | translate }} <span class="text-danger">*</span></label>
               <div class="col-12 form-group mb-3">
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today }"
                        formControlName="endDate" required 
                        [minDate]="leaveApplication.get('startDate')?.value ? leaveApplication.get('startDate')?.value : null" />
                 <div *ngIf="leaveApplication.get('endDate').touched && leaveApplication.get('endDate').invalid && !leaveApplication.get('endDate').hasError('dateRangeError')" 
                      class="text-danger error">
-                  Add a Valid End Date.
+                  {{ 'leave.invalidEndDate' | translate }}
                 </div>
                 
                 <div *ngIf="leaveApplication.get('endDate').hasError('dateRangeError')" class="text-danger">
-                  End date should not be less than start date.
+                  {{ 'leave.dateRangeError' | translate }}
                 </div>
               </div>
             </div>
         </div>
        
         <div *ngIf="leaveApplication.errors?.['duplicateLeave']" class="text-danger error pt-0">
-            A leave application with similar details has already been submitted. Please review your request and adjust
-            the dates as necessary.
+            {{ 'leave.duplicateLeaveError' | translate }}
         </div>
 
         <div class="mt-2" *ngIf="showHalfDayOption">
-            <label for="" class="">Do you want to provide a half-day option for this type of leave?<span
-                    class="text-danger">*</span></label>
+            <label for="" class="">{{ 'leave.halfDayOptionPrompt' | translate }} <span class="text-danger">*</span></label>
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" id="flexRadioDefault1"
                         formControlName="isHalfDayOption" required [value]="true">
                     <label class="form-check-label" for="flexRadioDefault1">
-                        Yes
+                        {{ 'leave.yesOption' | translate }}
                     </label>
                 </div>
                 <div class="form-check ms-2">
                     <input class="form-check-input" type="radio" id="canEmployeeApplyFalse"
                         formControlName="isHalfDayOption" required [value]="false">
                     <label class="form-check-label" for="canEmployeeApplyFalse">
-                        No
+                        {{ 'leave.noOption' | translate }}
                     </label>
                 </div>
             </div>
 
             <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value === true">
-                <button type="button" mat-raised-button class="addBtn" (click)="addHalfDayEntry()">Add Half Day</button>
+                <button type="button" mat-raised-button class="addBtn" (click)="addHalfDayEntry()">{{ 'leave.addHalfDayButton' | translate }}</button>
                 <div formArrayName="halfDays">
                     <div *ngFor="let halfDay of halfDays.controls; let i=index" [formGroupName]="i">
                         <div class="d-flex justify-content-between my-2">
                             <div>
-                                <label>Date:</label>
+                                <label>{{ 'leave.dateLabel' | translate }}:</label>
                                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
                                     [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today }" formControlName="date" />
                             </div>
                             
                             <div class="w-50">
-                                <label>Day Half:</label>
+                                <label>{{ 'leave.dayHalfLabel' | translate }}:</label>
                                 <select name="" id="" class="form-control" formControlName="dayHalf">
-                                    <option value="first half">First Half</option>
-                                    <option value="second half">Second Half</option>
+                                    <option value="first half">{{ 'leave.firstHalfOption' | translate }}</option>
+                                    <option value="second half">{{ 'leave.secondHalfOption' | translate }}</option>
                                 </select>
                             </div>
                         </div>
@@ -137,37 +135,32 @@
 
         <div class="my-3" *ngIf="leaveDocumentUpload">
             <label for="exampleFormControlUpload" class="form-label">
-                Upload document
+                {{ 'leave.uploadDocumentLabel' | translate }}
             </label>
             <label for="fileUpload6" class="file-upload btn btn-outline-primary btn-block rounded-pill shadow">
-                <i class="fa fa-paperclip me-2"></i>Upload document<input id="fileUpload6" type="file"
+                <i class="fa fa-paperclip me-2"></i>{{ 'leave.uploadDocumentButton' | translate }}<input id="fileUpload6" type="file"
                     (change)="onFileSelected($event)" multiple style="display: none;">
             </label>
             <ul type="none" class="d-flex ps-0">
                 <li class="contentHeading p-2" *ngFor="let files of selectedFiles; let i = index"
                     (click)="removeFile(i)">
-                    {{files.name}} <i class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
+                    {{ files.name }} <i class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
                 </li>
             </ul>
-
-            <!-- <label for="exampleFormControlUpload" class="form-label">
-                Upload document 
-            </label>
-            <input type="file" (change)="onFileSelected($event)" /> -->
         </div>
 
         <div class="my-3">
             <label for="exampleFormControlTextarea1" class="form-label">
-                Comment
+                {{ 'leave.commentLabel' | translate }}
             </label>
             <textarea class="form-control" id="exampleFormControlTextarea1" formControlName="comment"
                 rows="3"></textarea>
         </div>
 
         <div class="d-flex justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
+            <button mat-raised-button type="reset">{{ 'leave.cancelButton' | translate }}</button>
             <button mat-button class="addBtn" type="submit"
-                [disabled]="!leaveApplication.valid || leaveApplication.errors?.['duplicateLeave']">Submit</button>
+                [disabled]="!leaveApplication.valid || leaveApplication.errors?.['duckError']">{{ 'leave.submitButton' | translate }}</button>
         </div>
     </form>
 </div>

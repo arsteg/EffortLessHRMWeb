@@ -1,40 +1,41 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 import { ExportService } from 'src/app/_services/export.service';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { TableService } from 'src/app/_services/table.service';
 
 @Component({
-  selector: 'app-leave-Category',
+  selector: 'app-leave-category',
   templateUrl: './leave-category.component.html',
-  styleUrls: ['./leave-category.component.css'],
-  // encapsulation: ViewEncapsulation.None
+  styleUrls: ['./leave-category.component.css']
 })
-export class LeaveCategoryComponent implements OnInit {
-  searchText: string = '';
-  closeResult: string = '';
-  leaveCategory: any;
-  changeMode: 'Add' | 'Update' = 'Add';
+export class LeaveCategoryComponent implements OnInit, AfterViewInit {
   categoryForm: FormGroup;
   selectedLeaveCategory: any;
   isEdit: boolean = false;
-  public sortOrder: string = ''; // 'asc' or 'desc'
-  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
-  recordsPerPage: number = 10; // Default records per page
-  totalRecords: number = 0; // Total number of records
-  currentPage: number = 1;
-  skip: string = '0';
-  next = '10';
+  sortOrder: string = '';
+  displayedColumns: string[] = ['label', 'leaveType', 'leaveAccrualPeriod', 'actions'];
+  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
+  closeResult: string = '';
 
-  constructor(private modalService: NgbModal,
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  constructor(
+    private modalService: NgbModal,
     private leaveService: LeaveService,
     private fb: FormBuilder,
     private dialog: MatDialog,
     private toast: ToastrService,
-    private exportService: ExportService) {
+    private exportService: ExportService,
+    private translate: TranslateService,
+    public tableService: TableService<any>
+  ) {
     this.categoryForm = this.fb.group({
       leaveType: ['', Validators.required],
       label: ['', Validators.required],
@@ -62,12 +63,25 @@ export class LeaveCategoryComponent implements OnInit {
       dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth: [0],
       isPaidLeave: [true],
       isEmployeeAccrualLeaveInAdvance: [true]
-    })
+    });
+
+    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+      const searchString = filter.toLowerCase();
+      return data.label.toLowerCase().includes(searchString) ||
+             data.leaveType.toLowerCase().includes(searchString) ||
+             (data.leaveAccrualPeriod?.toLowerCase().includes(searchString) || false);
+    });
   }
 
   ngOnInit(): void {
     this.getAllLeaveCategories();
   }
+
+  ngAfterViewInit() {
+    this.tableService.initializeDataSource([]);
+    this.getAllLeaveCategories();
+  }
+
   reset() {
     this.isEdit = false;
     this.categoryForm.reset({
@@ -94,13 +108,18 @@ export class LeaveCategoryComponent implements OnInit {
       dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth: 0
     });
   }
+
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      }
+    );
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -112,105 +131,108 @@ export class LeaveCategoryComponent implements OnInit {
   }
 
   getAllLeaveCategories() {
-    const requestBody = { "skip": this.skip, "next": this.next };
-    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
-      this.leaveCategory = res.data;
-      this.totalRecords = res && res.total
-      this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-    })
+    const pagination = {
+      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
+      next: this.tableService.recordsPerPage.toString()
+    };
+    this.leaveService.getAllLeaveCategories(pagination).subscribe((res: any) => {
+      this.tableService.setData(res.data);
+      this.tableService.totalRecords = res.total;
+    });
   }
 
   onSubmission() {
     if (this.categoryForm.valid) {
       if (!this.isEdit) {
-        this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe((res: any) => {
-          const leaveCategory = res.data;
-          this.leaveCategory.push(leaveCategory);
-          this.toast.success('Leave Category Created', 'Successfully!!!');
-         this.reset();
-        },
-          err => {
-            this.toast.error('Leave Category Can not be Created', 'Error!!!')
-          });
-      }
-      else {
-        const id = this.selectedLeaveCategory._id
-        this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe((res: any) => {
-          const updatedLeaveCategory = res.data;
-          const index = this.leaveCategory.findIndex(category => category._id === updatedLeaveCategory._id);
-          if (index !== -1) {
-            this.leaveCategory[index] = updatedLeaveCategory;
-            this.toast.success('Leave Category Updated', 'Successfully!!!');
+        this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe(
+          (res: any) => {
+            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+            this.toast.success(this.translate.instant('leave.leaveSuccessfulAssigned'));
             this.reset();
+            this.modalService.dismissAll();
+          },
+          (err) => {
+            this.toast.error(this.translate.instant('leave.leaveErrorAssigned'));
           }
-        },
-          err => {
-            this.toast.error('Leave Category Can not be updated', 'Error!!!')
-          });
+        );
+      } else {
+        const id = this.selectedLeaveCategory._id;
+        this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe(
+          (res: any) => {
+            const updatedData = this.tableService.dataSource.data.map(item =>
+              item._id === res.data._id ? res.data : item
+            );
+            this.tableService.setData(updatedData);
+            this.toast.success(this.translate.instant('leave.leaveSuccessfulAssignmentUpdated'));
+            this.reset();
+            this.modalService.dismissAll();
+          },
+          (err) => {
+            this.toast.error(this.translate.instant('leave.leaveErrorAssignmentUpdated'));
+          }
+        );
       }
-    }
-    else {
-      this.categoryForm.markAllAsTouched();
+    } else {
+      this.markFormGroupTouched(this.categoryForm);
     }
   }
-  getLeaveCategoryById() {
-    if (this.isEdit) {
-      this.leaveService.getLeaveCategorById(this.selectedLeaveCategory._id).subscribe((res: any) => {
-        this.categoryForm.patchValue(res.data)
-      })
-    }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
   }
 
   editCategory() {
-    const leaveCategory = this.selectedLeaveCategory;
     this.isEdit = true;
     this.categoryForm.patchValue({
-      leaveType: leaveCategory.leaveType,
-      label: leaveCategory.label,
-      abbreviation: leaveCategory.abbreviation,
-      canEmployeeApply: leaveCategory.canEmployeeApply,
-      isHalfDayTypeOfLeave: leaveCategory.isHalfDayTypeOfLeave,
-      submitBefore: leaveCategory.submitBefore || 0,
-      displayLeaveBalanceInPayslip: leaveCategory.displayLeaveBalanceInPayslip,
-      leaveAccrualPeriod: leaveCategory.leaveAccrualPeriod,
-      isAnnualHolidayLeavePartOfNumberOfDaysTaken: leaveCategory.isAnnualHolidayLeavePartOfNumberOfDaysTaken,
-      isWeeklyOffLeavePartOfNumberOfDaysTaken: leaveCategory.isWeeklyOffLeavePartOfNumberOfDaysTaken,
-      isEligibleForLeaveEncashmentDuringRollover: leaveCategory.isEligibleForLeaveEncashmentDuringRollover,
-      isDocumentRequired: leaveCategory.isDocumentRequired,
-      isDocumentMandatory: leaveCategory.isDocumentMandatory,
-      isEligibleForEncashmentRecoveryDuringFNF: leaveCategory.isEligibleForEncashmentRecoveryDuringFNF,
-      isWeeklyOffHolidayPartHalfDayIncludedDaTaken: leaveCategory.isWeeklyOffHolidayPartHalfDayIncludedDaTaken,
-      policyWithRegardsToCarryoverLimits: leaveCategory.policyWithRegardsToCarryoverLimits,
-      isEmployeesAllowedToNegativeLeaveBalance: leaveCategory.isEmployeesAllowedToNegativeLeaveBalance,
-      isRoundOffLeaveAccrualNearestPointFiveUnit: leaveCategory.isRoundOffLeaveAccrualNearestPointFiveUnit,
-      isIntraCycleLapseApplicableForThisCategory: leaveCategory.isIntraCycleLapseApplicableForThisCategory,
-      minimumNumberOfDaysAllowed: leaveCategory.minimumNumberOfDaysAllowed,
-      isProRateFirstMonthAccrualForNewJoinees: leaveCategory.isProRateFirstMonthAccrualForNewJoinees,
-      maximumNumberConsecutiveLeaveDaysAllowed: leaveCategory.maximumNumberConsecutiveLeaveDaysAllowed,
-      dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth: leaveCategory.dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth,
-      dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth: leaveCategory.dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth,
-      isPaidLeave: leaveCategory.isPaidLeave,
-      isEmployeeAccrualLeaveInAdvance: leaveCategory.isEmployeeAccrualLeaveInAdvance
-    })
+      leaveType: this.selectedLeaveCategory.leaveType,
+      label: this.selectedLeaveCategory.label,
+      abbreviation: this.selectedLeaveCategory.abbreviation,
+      canEmployeeApply: this.selectedLeaveCategory.canEmployeeApply,
+      isHalfDayTypeOfLeave: this.selectedLeaveCategory.isHalfDayTypeOfLeave,
+      submitBefore: this.selectedLeaveCategory.submitBefore || 0,
+      displayLeaveBalanceInPayslip: this.selectedLeaveCategory.displayLeaveBalanceInPayslip,
+      leaveAccrualPeriod: this.selectedLeaveCategory.leaveAccrualPeriod,
+      isAnnualHolidayLeavePartOfNumberOfDaysTaken: this.selectedLeaveCategory.isAnnualHolidayLeavePartOfNumberOfDaysTaken,
+      isWeeklyOffLeavePartOfNumberOfDaysTaken: this.selectedLeaveCategory.isWeeklyOffLeavePartOfNumberOfDaysTaken,
+      isEligibleForLeaveEncashmentDuringRollover: this.selectedLeaveCategory.isEligibleForLeaveEncashmentDuringRollover,
+      isDocumentRequired: this.selectedLeaveCategory.isDocumentRequired,
+      isDocumentMandatory: this.selectedLeaveCategory.isDocumentMandatory,
+      isEligibleForEncashmentRecoveryDuringFNF: this.selectedLeaveCategory.isEligibleForEncashmentRecoveryDuringFNF,
+      isWeeklyOffHolidayPartHalfDayIncludedDaTaken: this.selectedLeaveCategory.isWeeklyOffHolidayPartHalfDayIncludedDaTaken,
+      policyWithRegardsToCarryoverLimits: this.selectedLeaveCategory.policyWithRegardsToCarryoverLimits,
+      isEmployeesAllowedToNegativeLeaveBalance: this.selectedLeaveCategory.isEmployeesAllowedToNegativeLeaveBalance,
+      isRoundOffLeaveAccrualNearestPointFiveUnit: this.selectedLeaveCategory.isRoundOffLeaveAccrualNearestPointFiveUnit,
+      isIntraCycleLapseApplicableForThisCategory: this.selectedLeaveCategory.isIntraCycleLapseApplicableForThisCategory,
+      minimumNumberOfDaysAllowed: this.selectedLeaveCategory.minimumNumberOfDaysAllowed,
+      isProRateFirstMonthAccrualForNewJoinees: this.selectedLeaveCategory.isProRateFirstMonthAccrualForNewJoinees,
+      maximumNumberConsecutiveLeaveDaysAllowed: this.selectedLeaveCategory.maximumNumberConsecutiveLeaveDaysAllowed,
+      dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth: this.selectedLeaveCategory.dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth,
+      dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth: this.selectedLeaveCategory.dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth,
+      isPaidLeave: this.selectedLeaveCategory.isPaidLeave,
+      isEmployeeAccrualLeaveInAdvance: this.selectedLeaveCategory.isEmployeeAccrualLeaveInAdvance
+    });
   }
 
   exportToCsv() {
-    const dataToExport = this.leaveCategory;
+    const dataToExport = this.tableService.dataSource.data;
     this.exportService.exportToCSV('Leave-Category', 'Leave-Category', dataToExport);
   }
 
   deleteTemplate(_id: string) {
-    this.leaveService.deleteLeaveCategory(_id).subscribe((res: any) => {
-      const index = this.leaveCategory.findIndex(temp => temp._id === _id);
-      if (index !== -1) {
-        this.leaveCategory.splice(index, 1);
-      }
-      this.toast.success('Successfully Deleted!!!', 'Leave Category')
-    },
+    this.leaveService.deleteLeaveCategory(_id).subscribe(
+      (res: any) => {
+        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
+        this.toast.success(this.translate.instant('leave.leaveSuccessfulAssignmentDeleted'));
+      },
       (err) => {
-        this.toast.error('This Category is already being used!'
-          , 'Leave Category, Can not be deleted!')
-      })
+        this.toast.error(this.translate.instant('leave.leaveErrorAssignmentDeleted'));
+      }
+    );
   }
 
   deleteDialog(id: string): void {
@@ -224,58 +246,8 @@ export class LeaveCategoryComponent implements OnInit {
     });
   }
 
-  //Pagging related functions
-  nextPagination() {
-    if (!this.isNextButtonDisabled()) {
-      const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
-      this.skip = newSkip;
-      this.getAllLeaveCategories();
-    }
-  }
-
-  previousPagination() {
-    if (!this.isPreviousButtonDisabled()) {
-      const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
-      this.skip = newSkip;
-      this.getAllLeaveCategories();
-    }
-  }
-  firstPagePagination() {
-    if (this.currentPage !== 1) {
-      this.currentPage = 1;
-      this.skip = '0';
-      this.next = this.recordsPerPage.toString();
-      this.getAllLeaveCategories();
-    }
-  }
-  lastPagePagination() {
-    const totalPages = this.getTotalPages();
-    if (this.currentPage !== totalPages) {
-      this.currentPage = totalPages;
-      this.updateSkip();
-      this.getAllLeaveCategories();
-    }
-  }
-  updateSkip() {
-    const newSkip = (this.currentPage - 1) * this.recordsPerPage;
-    this.skip = newSkip.toString();
-  }
-
-  isNextButtonDisabled(): boolean {
-    return this.currentPage === this.getTotalPages();
-  }
-
-  isPreviousButtonDisabled(): boolean {
-    return this.skip === '0' || this.currentPage === 1;
-  }
-  updateRecordsPerPage() {
-    this.currentPage = 1;
-    this.skip = '0';
-    this.next = this.recordsPerPage.toString();
+  onPageChange(event: any) {
+    this.tableService.updatePagination(event);
     this.getAllLeaveCategories();
-  }
-  getTotalPages(): number {
-    const totalCount = this.totalRecords;
-    return Math.ceil(totalCount / this.recordsPerPage);
   }
 }

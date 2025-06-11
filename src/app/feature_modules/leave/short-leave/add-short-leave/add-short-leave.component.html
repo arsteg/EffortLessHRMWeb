@@ -1,100 +1,102 @@
 <div class="d-flex justify-content-between">
-    <h1 class="modal-title text-muted">Add Short Leave Application</h1>
-    <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
+    <h1 class="modal-title text-muted">{{ 'leave.addShortLeaveTitle' | translate }}</h1>
+    <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"
+            [attr.aria-label]="'leave.closeModal' | translate"></button>
 </div>
 <div mat-dialog-content>
     <form [formGroup]="shortLeave" (ngSubmit)="onSubmission()">
-        <!-- all members -->
-        <div *ngIf="url == 'short-leave'" class="mb-2">
-            <label for="member">Select an Employee for Short Leave <span class="text-danger">*</span></label>
+        <!-- All members -->
+        <div *ngIf="url === 'short-leave'" class="mb-2">
+            <label for="employee">{{ 'leave.selectEmployeeLabel' | translate }} <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
-                <mat-label>Select Employee</mat-label>
-                <mat-select name="users" formControlName="employee" required>
+                <mat-label>{{ 'leave.selectEmployeePlaceholder' | translate }}</mat-label>
+                <mat-select name="users" formControlName="employee" required
+                            [attr.aria-label]="'leave.selectEmployeeInput' | translate">
                     <mat-option *ngFor="let member of members" [value]="member.id">
-                        {{member?.name | titlecase}}
+                        {{ member?.name | titlecase }}
                     </mat-option>
                 </mat-select>
-                <mat-error *ngIf="shortLeave.get('employee').invalid && shortLeave.get('employee').touched">
-                    Employee selection is required
+                <mat-error *ngIf="shortLeave.get('employee')?.invalid && shortLeave.get('employee')?.touched">
+                    {{ 'leave.employeeRequiredError' | translate }}
                 </mat-error>
             </mat-form-field>
-
         </div>
 
-        <!-- only team members -->
-        <div *ngIf="url == 'team-short-leave'">
-            <subordinateSelection (selectedUsersChange)="selectedUsersChanged($event)"></subordinateSelection>
+        <!-- Only team members -->
+        <div *ngIf="url === 'team-short-leave'">
+            <subordinate-selection (selectedUsersChange)="selectedUsersChanged($event)"></subordinate-selection>
         </div>
 
         <div class="mt-2">
-            <label for="">Select Date <span class="text-danger">*</span></label>
-            <div class=" col-12 form-group mb-3">
+            <label for="date">{{ 'leave.selectDateLabel' | translate }} <span class="text-danger">*</span></label>
+            <div class="col-12 form-group mb-3">
                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date"
-                    (bsValueChange)="onDateSelected($event)" />
-                <div *ngIf="shortLeave.get('date').invalid && shortLeave.get('date').touched" class="text-danger error">
-                    Please add a Valid Date!
+                       [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="date"
+                       (bsValueChange)="onDateSelected($event)"
+                       [attr.aria-label]="'leave.dateInput' | translate" />
+                <div *ngIf="shortLeave.get('date')?.invalid && shortLeave.get('date')?.touched" class="text-danger error">
+                    {{ 'leave.dateInvalidError' | translate }}
                 </div>
                 <div *ngIf="shortLeave.errors?.['duplicateLeave']" class="text-danger error pt-0">
-                    A leave application with identical details already exists in our records.
-                    To avoid duplication, please verify the information and resubmit the application if necessary.
+                    {{ 'leave.duplicateLeaveError' | translate }}
                 </div>
             </div>
         </div>
 
         <div class="mt-2">
-            <label for="">Select Start Time <span class="text-danger">*</span></label>
+            <label for="startTime">{{ 'leave.selectStartTimeLabel' | translate }} <span class="text-danger">*</span></label>
             <div class="form-group mb-3">
                 <input type="datetime-local" formControlName="startTime" class="w-100" id="meeting-time"
-                    name="meeting-time" value="" />
-                <div *ngIf="shortLeave.get('startTime').invalid && shortLeave.get('startTime').touched"
-                    class="text-danger error">
-                    Please add a valid Start Time!
+                       name="meeting-time" [attr.aria-label]="'leave.startTimeInput' | translate" />
+                <div *ngIf="shortLeave.get('startTime')?.invalid && shortLeave.get('startTime')?.touched"
+                     class="text-danger error">
+                    {{ 'leave.startTimeInvalidError' | translate }}
+                </div>
+                <div *ngIf="shortLeave.errors?.['invalidDuration']" class="text-danger error pt-0">
+                    {{ 'leave.invalidDurationError' | translate }}
                 </div>
             </div>
         </div>
 
         <div class="mt-2">
-            <label for="">Select End Time <span class="text-danger">*</span></label>
+            <label for="endTime">{{ 'leave.selectEndTimeLabel' | translate }} <span class="text-danger">*</span></label>
             <div class="form-group mb-3">
                 <input type="datetime-local" formControlName="endTime" class="w-100" id="meeting-time"
-                    name="meeting-time" value="" />
-                <div *ngIf="shortLeave.get('endTime').invalid && shortLeave.get('endTime').touched"
-                    class="text-danger error">
-                    Please add valid End Time!
+                       name="meeting-time" [attr.aria-label]="'leave.endTimeInput' | translate" />
+                <div *ngIf="shortLeave.get('endTime')?.invalid && shortLeave.get('endTime')?.touched"
+                     class="text-danger error">
+                    {{ 'leave.endTimeInvalidError' | translate }}
                 </div>
                 <div *ngIf="shortLeave.errors?.['isDuplicateShortLeave']" class="text-danger error pt-0">
-                    A Short leave application with identical details already exists in our records.
-                    To avoid duplication, please verify the information and resubmit the application if necessary.
+                    {{ 'leave.duplicateShortLeaveError' | translate }}
                 </div>
             </div>
         </div>
 
-
         <div class="mt-2">
-            <label for="">Total Time (in minutes)</label>
+            <label for="durationInMinutes">{{ 'leave.totalTimeLabel' | translate }}</label>
             <div class="form-group mb-3">
-                <input type="text" formControlName="durationInMinutes" class="w-100" [disabled] />
+                <input type="text" formControlName="durationInMinutes" class="w-100"
+                       [attr.aria-label]="'leave.totalTimeInput' | translate" />
             </div>
             <div *ngIf="shortLeave.errors?.['limitExceeded']" class="text-danger error pt-0">
-                You cannot apply for more than {{ leaveGeneralSettings?.maxDurationForShortLeaveApplicationInMin }}
-                minutes of short leave.
+                {{ 'leave.limitExceededError' | translate: { maxDuration: leaveGeneralSettings?.maxDurationForShortLeaveApplicationInMin } }}
             </div>
         </div>
-
 
         <div class="mb-3">
             <label for="exampleFormControlTextarea1" class="form-label">
-                Comment
+                {{ 'leave.commentLabel' | translate }}
             </label>
-            <textarea class="form-control" formControlName="comments" id="exampleFormControlTextarea1"
-                rows="3"></textarea>
+            <textarea class="form-control" formControlName="comments" id="exampleFormControlTextarea1" rows="3"
+                      [attr.aria-label]="'leave.commentInput' | translate"></textarea>
         </div>
 
-
         <div class="d-flex justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
-            <button mat-button class="addBtn" type="submit">Submit</button>
+            <button mat-raised-button type="button" (click)="closeModal()">{{ 'leave.cancelButton' | translate }}</button>
+            <button mat-button class="addBtn" type="submit" [disabled]="submitButtonDisabled">
+                {{ 'leave.submitButton' | translate }}
+            </button>
         </div>
     </form>
 </div>

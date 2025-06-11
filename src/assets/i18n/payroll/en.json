@@ -183,7 +183,7 @@
         "gratuity_components_calculation": "Components on which Gratuity is calculated",
         "is_allow_tds_from_effortless_hrm": "Do you wish to calculate your TDS from EffortlessHRM?",
         "edit": "Edit",
-        "cancel": "Cancel",
+        "cancel": "Close",
         "save": "Save",
         "yes": "Yes",
         "no": "No",
@@ -209,6 +209,7 @@
         "close": "Close",
         "submit": "Submit",
         "delete": "Delete",
+        "update": "Update",
         "fixed_allowance_added": "Successfully Added!",
         "fixed_allowance_updated": "Successfully Updated!",
         "fixed_allowance_deleted": "Successfully Deleted!",
@@ -387,6 +388,7 @@
         "allowance_rate_question": "What is the allowance rate per day?",
         "it": "IT",
         "frequency": "Frequency",
+        "duplicate_allowance_label_error": "A fixed allowance with this name already exists. Please choose a different name.",
         "_variable_allowance": {
             "title": "Variable Allowance",
             "table": {
@@ -445,7 +447,8 @@
                     "label_required": "Label is required",
                     "frequency_required": "This field is required",
                     "month_required": "Effective Month is required",
-                    "year_required": "Effective Year is required"
+                    "year_required": "Effective Year is required",
+                    "allowance_rate_negative": "Allowance rate cannot be negative"
                 }
             },
             "toast": {
@@ -454,7 +457,8 @@
                 "success_updated": "Successfully updated",
                 "error_update": "Variable allowance cannot be updated",
                 "success_deleted": "Successfully deleted",
-                "error_delete": "Variable allowance cannot be deleted"
+                "error_delete": "Variable allowance cannot be deleted",
+               "error_duplicate": "A variable allowance with this name already exists"
             }
         },
         "variable_deduction": {
@@ -490,7 +494,8 @@
                 "title": "Variable Deduction",
                 "error_add": "Variable Deduction Can not be added",
                 "error_update": "Variable Deduction Can not be Updated",
-                "error_delete": "Variable Deduction Can not be deleted"
+                "error_delete": "Variable Deduction Can not be deleted",
+                "duplicate_label_error": "A variable deduction with this name already exists. Please choose a different name."
             }
         },
         "fixed_deduction": {
@@ -508,7 +513,8 @@
                 "label": "What would you want to call this deduction?",
                 "label_placeholder": "Deduction Name",
                 "error": {
-                    "label_required": "Label is required"
+                    "label_required": "Label is required",
+                    "label_no_special_characters": "Label cannot contain special characters (e.g., #, *, ^, %, $, @)."
                 },
                 "isEffectAttendanceOnEligibility": "Does attendance determine eligibility"
             },
@@ -521,7 +527,8 @@
                 "success_updated": "Successfully Updated!!!",
                 "error_update": "Fixed Deduction Can not be Updated",
                 "success_deleted": "Successfully Deleted!!!",
-                "error_delete": "Fixed Deduction Can not be deleted"
+                "error_delete": "Fixed Deduction Can not be deleted",
+                "duplicate_label_error": "A fixed deduction with this name already exists. Please choose a different name."
             }
         },
         "loans_advances": {
@@ -579,7 +586,8 @@
                 "success_updated": "Successfully Updated!!!",
                 "error_update": "Flexi Benefits Category Can not be Updated",
                 "success_deleted": "Successfully Deleted!!!",
-                "error_delete": "Flexi Benefits Category Can not be deleted"
+                "error_delete": "Flexi Benefits Category Can not be deleted",
+                "duplicate_name_error": "A flexi benefit with this name already exists"
             }
         },
         "_ctc_templates": {

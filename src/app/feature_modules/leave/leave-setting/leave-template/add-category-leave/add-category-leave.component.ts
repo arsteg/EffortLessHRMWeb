@@ -1,143 +1,142 @@
-import { Component, EventEmitter, Input, Output, resolveForwardRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Location } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { Router } from '@angular/router';
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 
 @Component({
   selector: 'app-add-category-leave',
   templateUrl: './add-category-leave.component.html',
-  styleUrl: './add-category-leave.component.css'
+  styleUrl: './add-category-leave.component.css',
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: { showError: true },
+    },
+  ]
 })
 export class AddCategoryLeaveComponent {
-  @Output() close: any = new EventEmitter();
-  @Output() changeStep: any = new EventEmitter();
+  private readonly translate = inject(TranslateService);
+  @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter<number>();
   @Output() updateLeaveTemplateTable: EventEmitter<void> = new EventEmitter<void>();
-  step = 1;
+  @Input() selectedTemplate: any;
+  @Input() isEdit: boolean = false;
   firstForm: FormGroup;
-  categories: any;
-  steps: any;
-  template: any;
-  @Input() isEdit: boolean;
-  members: any = [];
-  leaveCategories: any;
-  allCategories: any;
-  categoryForm: FormGroup;
-  users: FormGroup;
-  defaultCatSkip="0";
-  defaultCatNext="100000";
+  allCategories: any[] = [];
+  leaveCategories: any[] = [];
+  members: any[] = [];
+  loader: boolean = true;
+  defaultCatSkip = "0";
+  defaultCatNext = "100000";
 
-  constructor(private leaveService: LeaveService,
-    private location : Location,
-    private router : Router,
+  constructor(
+    private leaveService: LeaveService,
     private _formBuilder: FormBuilder,
     private commonService: CommonService,
-    private toast: ToastrService) {
-  }
+    private toast: ToastrService
+  ) {}
 
   ngOnInit() {
-   this.leaveService.selectedTemplate.subscribe(res=>{
-      console.log(res);
-    })
+    this.firstForm = this._formBuilder.group({
+      leaveCategories: this._formBuilder.array([]),
+      leaveTemplate: [this.selectedTemplate?._id || this.leaveService.selectedTemplate.getValue()._id]
+    });
+
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
     });
 
-    // this.router.navigateByUrl('home/leave', { skipLocationChange: true }).then(() => {
-    //   this.router.navigate([this.router.url]);
-  // });
+    const requestBody = { skip: this.defaultCatSkip, next: this.defaultCatNext };
+    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
+      this.allCategories = res.data;
 
-    this.leaveService.selectedTemplate.subscribe((selectedTemplate) => {
-      this.firstForm = this._formBuilder.group({
-        leaveCategories: this._formBuilder.array([]),
-        leaveTemplate: [this.leaveService.selectedTemplate.getValue()._id]
-      });
+      this.leaveService.getLeaveTemplateCategoriesByTemplateId(this.firstForm.get('leaveTemplate').value).subscribe((res: any) => {
+        this.loader = false;
+        this.leaveCategories = res.data;
 
-      const leaveCategoriesArray = this.firstForm.get('leaveCategories') as FormArray;
-      const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
-      this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
-        this.allCategories = res.data;
+        const leaveCategoriesArray = this.firstForm.get('leaveCategories') as FormArray;
+        leaveCategoriesArray.clear();
 
-        this.leaveService.getLeaveTemplateCategoriesByTemplateId(selectedTemplate._id).subscribe((res: any) => {
-          this.leaveCategories = res.data;
-
-          this.steps = this.leaveCategories;
-
-          this.steps.forEach(step => {
-            const matchingCategory = this.allCategories.find(category => category?._id === step?.leaveCategory);
-
-            if (matchingCategory) {
-              const categoryId = matchingCategory._id;
-
+        this.leaveCategories.forEach(step => {
+          const matchingCategory = this.allCategories.find(category => category?._id === step?.leaveCategory?._id || category?._id === step?.leaveCategory);
+          if (matchingCategory) {
+            const categoryId = matchingCategory._id;
+            this.leaveService.getLeaveCategorById(categoryId).subscribe((categoryDetails: any) => {
               const leaveCategoryGroup = this._formBuilder.group({
                 leaveCategory: [categoryId, Validators.required],
-              limitNumberOfTimesApply: [true],
-              maximumNumbersEmployeeCanApply: [0, [Validators.min(0)]],
-              maximumNumbersEmployeeCanApplyType: [''],
-              dealWithNewlyJoinedEmployee: ['', Validators.required],
-              daysToCompleteToBecomeEligibleForLeave: [0, [Validators.min(0)]],
-              isEmployeeGetCreditedTheEntireAmount: [true],
-              extendLeaveCategory: [true],
-              extendMaximumDayNumber: [0, [Validators.min(0)]],
-              extendFromCategory: [''],
-              negativeBalanceCap: [0, [Validators.min(0)]],
-              accrualRatePerPeriod: [1, [Validators.required, Validators.min(1)]],  // Validation for accrual rate
-              categoryApplicable: ['all-employees'],
-              users: ['']
+                limitNumberOfTimesApply: [step.limitNumberOfTimesApply ?? true, Validators.required],
+                maximumNumbersEmployeeCanApply: [step.maximumNumbersEmployeeCanApply ?? 0, [Validators.min(0)]],
+                maximumNumbersEmployeeCanApplyType: [step.maximumNumbersEmployeeCanApplyType || ''],
+                dealWithNewlyJoinedEmployee: [step.dealWithNewlyJoinedEmployee ?? '1', Validators.required],
+                daysToCompleteToBecomeEligibleForLeave: [step.daysToCompleteToBecomeEligibleForLeave ?? 0, [Validators.min(0)]],
+                isEmployeeGetCreditedTheEntireAmount: [step.isEmployeeGetCreditedTheEntireAmount ?? true, Validators.required],
+                extendLeaveCategory: [step.extendLeaveCategory ?? true],
+                extendMaximumDayNumber: [step.extendMaximumDayNumber ?? 0, [Validators.min(0)]],
+                extendFromCategory: [step.extendFromCategory || ''],
+                negativeBalanceCap: [step.negativeBalanceCap ?? 0, [Validators.min(0)]],
+                accrualRatePerPeriod: [step.accrualRatePerPeriod ?? 1, [Validators.required, Validators.min(1)]],
+                categoryApplicable: [step.categoryApplicable || 'all-employees', Validators.required],
+                users: [step.templateApplicableCategoryEmployee?.map(user => user.user) || []]
               });
               leaveCategoriesArray.push(leaveCategoryGroup);
-            }
-            const formGroupIndex = leaveCategoriesArray.length - 1;
-            let users = step.templateApplicableCategoryEmployee.map(user => user.user);
-            leaveCategoriesArray.at(formGroupIndex).patchValue({
-              limitNumberOfTimesApply: step.limitNumberOfTimesApply,
-              maximumNumbersEmployeeCanApply: step.maximumNumbersEmployeeCanApply,
-              maximumNumbersEmployeeCanApplyType: step.maximumNumbersEmployeeCanApplyType,
-              dealWithNewlyJoinedEmployee: step.dealWithNewlyJoinedEmployee,
-              daysToCompleteToBecomeEligibleForLeave: step.daysToCompleteToBecomeEligibleForLeave,
-              isEmployeeGetCreditedTheEntireAmount: step.isEmployeeGetCreditedTheEntireAmount,
-              extendLeaveCategory: step.extendLeaveCategory,
-              extendMaximumDayNumber: step.extendMaximumDayNumber,
-              extendFromCategory: step.extendFromCategory,
-              negativeBalanceCap: step.negativeBalanceCap,
-              accrualRatePerPeriod: step.accrualRatePerPeriod,
-              categoryApplicable: step.categoryApplicable || 'all-employees',
-              users: users
+              this.toggleControl(leaveCategoryGroup, 'limitNumberOfTimesApply', 'maximumNumbersEmployeeCanApply');
+            }, err => {
+              this.toast.error(this.translate.instant('leave.templateCategories.errorLoadingCategoryDetails'));
             });
-          });
+          }
         });
+      }, err => {
+        this.loader = false;
+        this.toast.error(this.translate.instant('leave.templateCategories.errorLoadingCategories'));
       });
+    }, err => {
+      this.loader = false;
+      this.toast.error(this.translate.instant('leave.templateCategories.errorLoadingAllCategories'));
     });
+  }
+
+  toggleControl(formGroup: FormGroup, toggler: string, control: string) {
+    if (!formGroup.get(toggler).value) {
+      formGroup.get(control).disable();
+    }
+    formGroup.get(toggler).valueChanges.subscribe(value => {
+      if (value) {
+        formGroup.get(control).enable();
+      } else {
+        formGroup.get(control).disable();
+      }
+    });
+  }
+
+  getCategoryLabel(leaveCategoryId: string): string {
+    const matchingCategory = this.allCategories.find(category => category._id === leaveCategoryId);
+    return matchingCategory ? matchingCategory.label : 'Unknown Category';
   }
 
   getUserName(userId: string): string {
     const user = this.members.find(member => member.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : '';
+    return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+  }
+
+  onSubmit() {
+    const formData = { ...this.firstForm.value };
+    formData.leaveCategories.forEach(category => {
+      category.users = category.users.map(user => ({ user }));
+    });
+    this.leaveService.updateLeaveTemplateCategories(formData).subscribe((res: any) => {
+      this.toast.success(this.translate.instant('leave.templateCategories.successTemplateCategoriesUpdated'));
+      this.updateLeaveTemplateTable.emit();
+      this.closeModal();
+    }, err => {
+      this.toast.error(err?.message || this.translate.instant('leave.templateCategories.errorTemplateCategoriesUpdated'));
+    });
   }
 
   closeModal() {
     this.changeStep.emit(1);
-    this.firstForm.reset();
     this.close.emit(true);
-    this.updateLeaveTemplateTable.emit();
   }
-
-  getCategoryLabel(leaveCategoryId: string): string {
-    const matchingCategory = this.allCategories?.find(category => category._id === leaveCategoryId);
-    return matchingCategory.label;
-  }
-
-  onSubmit() {
-    this.firstForm.value.leaveCategories.forEach((category: any) => {
-      category.users = category.users.map((user: any) => ({ user }));
-    });
-    this.leaveService.updateLeaveTemplateCategories(this.firstForm.value).subscribe((res: any) => {
-      this.updateLeaveTemplateTable.emit();
-      this.toast.success('Leave Template Categories Updated', 'Successfully');
-      this.closeModal();
-    });
-  }
-
 }

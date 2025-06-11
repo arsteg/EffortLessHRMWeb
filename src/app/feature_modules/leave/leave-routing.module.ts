@@ -36,8 +36,9 @@ const routes: Routes = [
         path: 'settings', component: LeaveSettingComponent, canActivate: [AuthGuard],
         data: { permission: 'Leave' },
         children: [
-          { path: '', redirectTo: 'general-setting', pathMatch: 'full' },
-          { path: 'general-setting', component: GeneralSettingsComponent },
+          { path: '', redirectTo: 'leave-category', pathMatch: 'full' },
+          // it may require in future
+          // { path: 'general-setting', component: GeneralSettingsComponent },
           { path: 'leave-category', component: LeaveCategoryComponent },
           { path: 'leave-template', component: LeaveTemplateComponent },
           { path: 'leave-assignment', component: LeaveAssignmentComponent },

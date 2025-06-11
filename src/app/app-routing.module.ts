@@ -81,7 +81,8 @@ const routes: Routes = [
       {
         path: 'leave',
         loadChildren: () => import('./feature_modules/leave/leave.module').then(m => m.LeaveModule),
-        data: { permission: 'Leave' }
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'leave', permission: 'Leave' }
       },
       {
         path: 'expense',

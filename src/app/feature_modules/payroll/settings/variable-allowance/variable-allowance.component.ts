@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms'; // Import AbstractControl
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,8 +38,8 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.variableAllowanceForm = this.fb.group({
-      label: ['', Validators.required],
-      allowanceRatePerDay: [0],
+      label: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]*$/)]], // Added pattern validator
+      allowanceRatePerDay: [0, [Validators.required, Validators.min(0)]], // Added min(0) validator
       isPayrollEditable: [false],
       isProvidentFundAffected: [false],
       isESICAffected: [false],
@@ -47,7 +47,7 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
       isIncomeTaxAffected: [false],
       deductIncomeTaxAllowance: [''],
       taxRegime: [[]],
-      paidAllowanceFrequently: [''],
+      paidAllowanceFrequently: ['', Validators.required],
       allowanceEffectiveFromMonth: ['', Validators.required],
       allowanceEffectiveFromYear: ['', Validators.required],
       isEndingPeriod: [false],
@@ -133,6 +133,18 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
     if (this.variableAllowanceForm.valid) {
       const formValue = this.variableAllowanceForm.value;
       if (!this.isEdit) {
+        // Check for duplicate allowance before adding
+        const isDuplicate = this.tableService.dataSource.data.some(
+          (allowance) => allowance.label.toLowerCase() === formValue.label.toLowerCase()
+        );
+
+        if (isDuplicate) {
+          this.translate.get('payroll._variable_allowance.toast.error_duplicate').subscribe(errorMessage => {
+            this.toast.error(errorMessage, this.translate.instant('payroll._variable_allowance.title'));
+          });
+          return;
+        }
+
         this.payroll.addVariableAllowance(formValue).subscribe({
           next: (res: any) => {
             this.tableService.setData([...this.tableService.dataSource.data, res.data]);
@@ -155,6 +167,20 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
           }
         });
       } else {
+        // Check for duplicate allowance during edit, excluding the current record being edited
+        const isDuplicate = this.tableService.dataSource.data.some(
+          (allowance) =>
+            allowance.label.toLowerCase() === formValue.label.toLowerCase() &&
+            allowance._id !== this.selectedRecord._id
+        );
+
+        if (isDuplicate) {
+          this.translate.get('payroll._variable_allowance.toast.error_duplicate').subscribe(errorMessage => {
+            this.toast.error(errorMessage, this.translate.instant('payroll._variable_allowance.title'));
+          });
+          return;
+        }
+
         this.payroll.updateVariableAllowance(this.selectedRecord._id, formValue).subscribe({
           next: (res: any) => {
             const updatedData = this.tableService.dataSource.data.map(item =>

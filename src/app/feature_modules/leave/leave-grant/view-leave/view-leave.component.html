@@ -1,10 +1,10 @@
 <div class="modal-body">
-    <div class=" d-flex justify-content-between">
+    <div class="d-flex justify-content-between">
         <div class="">
-            <h1 mat-dialog-title> Show Grant Leave Details</h1>
+            <h1 mat-dialog-title>{{ 'leave.grantLeaveDetailsTitle' | translate }}</h1>
         </div>
         <div mat-dialog-actions>
-            <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="Example close icon"
+            <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="{{ 'leave.closeIconLabel' | translate }}"
                     fontIcon="close"></mat-icon></button>
         </div>
     </div>
@@ -13,23 +13,21 @@
         <div class="tableContainer">
             <table>
                 <tr>
-                    <th class="w-50">Status</th>
+                    <th class="w-50">{{ 'leave._status' | translate }}</th>
                     <td>{{this.leaveService?.leave?.getValue()?.status}}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">Applied On</th>
+                    <th class="w-50">{{ 'leave.appliedOn' | translate }}</th>
                     <td>{{this.leaveService?.leave?.getValue()?.appliedOn}}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">Applied For</th>
+                    <th class="w-50">{{ 'leave.appliedFor' | translate }}</th>
                     <td>{{this.leaveService?.leave?.getValue()?.usedOn}}</td>
                 </tr>
                 <tr>
-                    <th class="w-50">Comment</th>
+                    <th class="w-50">{{ 'leave.comment' | translate }}</th>
                     <td>{{this.leaveService?.leave?.getValue()?.comment}}</td>
                 </tr>
-
-               
             </table>
         </div>
     </div>
