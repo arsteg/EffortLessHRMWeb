@@ -23,9 +23,12 @@ export class CompanyPolicyDocumentComponent implements OnInit {
         { key: 'description', name: 'Description' },
         { key: 'url', name: 'URL' },
         {
-            key: 'action', name: 'Action', isAction: true, options: [
+            key: 'action',
+            name: 'Action',
+            isAction: true,
+            options: [
                 { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
-                { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: 'text-danger', hideCondition: (row: any) => { return !row.isDeletable } },
+                { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: 'text-danger' },
             ]
         }
     ]
@@ -45,7 +48,7 @@ export class CompanyPolicyDocumentComponent implements OnInit {
                 this.editDocument(event.row)
                 break;
             case 'Delete':
-                this.openDialog(event.row)
+                this.openDialog(event.row._id)
                 break;
         }
     }

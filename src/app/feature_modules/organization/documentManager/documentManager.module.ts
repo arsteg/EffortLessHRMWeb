@@ -15,6 +15,7 @@ import { DocumentComponent } from "./document/document.component";
 import { UserDocumentComponent } from "./document/userDocument/userDocument.component";
 import { DocumentTemplateComponent } from "./template/documentTemplate.component";
 import { QuillModule } from 'ngx-quill';
+import { CommonComponentsModule } from "src/app/common/commonComponents.module";
 
 @NgModule({
     declarations:[DocumentManagerComponent, CompanyPolicyDocumentComponent,
@@ -34,6 +35,7 @@ import { QuillModule } from 'ngx-quill';
       MatRippleModule,
       NgxChartsModule,
       FormsModule,
+      CommonComponentsModule,
       QuillModule.forRoot()
     ],
     schemas: [

@@ -3,13 +3,14 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { DocumentsService } from 'src/app/_services/documents.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 
 @Component({
-  selector: 'app-document',
-  templateUrl: './document.component.html',
-  styleUrls: ['./document.component.css']
+    selector: 'app-document',
+    templateUrl: './document.component.html',
+    styleUrls: ['./document.component.css']
 })
 export class DocumentComponent implements OnInit {
     documents = [];
@@ -17,14 +18,26 @@ export class DocumentComponent implements OnInit {
     documentForm: FormGroup;
     isEdit = false;
     selectedDocument: any;
-
+    columns: TableColumn[] = [
+        { key: 'category', name: 'Category', valueFn: (row:any)=> this.getCategoryName(row?.category) },
+        { key: 'description', name: 'Description' },
+        {
+            key: 'action',
+            name: 'Action',
+            isAction: true,
+            options: [
+                { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+                { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: 'text-danger' },
+            ]
+        }
+    ]
     // Sample categories. Ideally, fetch this from your backend.
     categories: any;
 
     constructor(private fb: FormBuilder,
-         private toast: ToastrService,
-         private documentService: DocumentsService,
-         private dialog: MatDialog) { }
+        private toast: ToastrService,
+        private documentService: DocumentsService,
+        private dialog: MatDialog) { }
 
     ngOnInit(): void {
         this.initForm();
@@ -32,10 +45,21 @@ export class DocumentComponent implements OnInit {
         this.getAllCategories();
     }
 
+    onActionClick(event) {
+        switch (event.action.label) {
+            case 'Edit':
+                this.editDocument(event.row)
+                break;
+            case 'Delete':
+                this.openDialog(event.row._id)
+                break;
+        }
+    }
+
     initForm() {
         this.documentForm = this.fb.group({
-          category: ['', Validators.required],
-          description: ['', Validators.required]
+            category: ['', Validators.required],
+            description: ['', Validators.required]
         });
     }
 
@@ -46,7 +70,7 @@ export class DocumentComponent implements OnInit {
         });
     }
 
-    getCategoryName(id: string){
+    getCategoryName(id: string) {
         const categoryName = this.categories?.find((category: any) => category?._id === id);
         return categoryName?.name;
     }
@@ -74,7 +98,7 @@ export class DocumentComponent implements OnInit {
             this.documentForm.reset();
         });
     }
-    onCancel(){
+    onCancel() {
         this.isEdit = false;
         this.documentForm.reset();
     }
@@ -95,24 +119,24 @@ export class DocumentComponent implements OnInit {
 
     deleteDocument(id: string) {
 
-            this.documentService.deleteDocument(id).subscribe(response => {
-                this.toast.success('Document deleted successfully!');
-                this.getAllDocuments();
-            });
+        this.documentService.deleteDocument(id).subscribe(response => {
+            this.toast.success('Document deleted successfully!');
+            this.getAllDocuments();
+        });
 
     }
     openDialog(id: string): void {
         const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-          width: '400px',
+            width: '400px',
 
         });
         dialogRef.afterClosed().subscribe(result => {
-          if (result === 'delete') {
-            this.deleteDocument(id);
-          }
-          err => {
-            this.toast.error('Can not be Deleted', 'Error!')
-          }
+            if (result === 'delete') {
+                this.deleteDocument(id);
+            }
+            err => {
+                this.toast.error('Can not be Deleted', 'Error!')
+            }
         });
-      }
+    }
 }

@@ -1,68 +1,35 @@
-<div class="documentContainer">
-  <div class="row bg-white submenuBody p-3">
-    <div class="col-md-8 tableContainer">
-      <div class="d-flex justify-content-between">
-      <h2 class="contentHeading ps-2">Document&nbsp;Categories:&nbsp;{{filteredCategories?.length}}</h2>
+<div class="row m-0">
+  <div class="col-md-8">
 
-      <!-- Search bar -->
-      <div class="d-flex align-items-center">
-      <span class="bi bi-search searchIcon"></span>
+    <hrm-table [data]="filteredCategories" [columns]="columns" [showExport]="'none'" [showSearch]="true"
+      (actionClicked)="onActionClick($event)"></hrm-table>
 
-      <input type="text" class="form-control search" placeholder="Search categories..."
-      #searchText (keyup)="searchCategories(searchText.value)">
+  </div>
+  <div class="col-md-4 border-start">
+    <!-- Pagination can be added here -->
+
+    <h2 class="contentHeading p-1">Add/Edit Category</h2>
+
+    <form [formGroup]="categoryForm"
+      (ngSubmit)="isEdit ? updateCategory(categoryForm.value): addCategory(categoryForm.value)"
+      class="p-3 bg-light border rounded">
+      <div class="row">
+        <div class="form-group">
+          <label for="categoryName" class="text-gray">Name</label>
+          <input type="text" id="categoryName" class="form-control" formControlName="name" required>
         </div>
       </div>
-      <!-- Table for listing categories -->
-      <table  class="p-2 rounded mt-2">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th class="text-right">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let category of this.filteredCategories">
-            <td>{{ category?.name }}</td>
-            <td class="text-right">
-                <button class="actions" mat-mini-fab title="Update User" (click)="editCategory(category)"
-                aria-label="Example icon button with a menu icon">
-                <i class="bi bi-pencil-fill"></i>
-            </button>
-            <button class="actions ms-2" title="Delete User" mat-mini-fab data-bs-toggle="modal"
-                data-bs-target="#deleteModal" (click)="openDialog(category._id)"
-                aria-label="Example icon button with a menu icon">
-                <i class="bi bi-trash"></i>
-            </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="col-md-4 border-start">
-      <!-- Pagination can be added here -->
-
-      <h2 class="contentHeading p-1">Add/Edit Category</h2>
-
-      <form [formGroup]="categoryForm"
-        (ngSubmit)="isEdit ? updateCategory(categoryForm.value): addCategory(categoryForm.value)"
-        class="p-3 bg-light border rounded">
-        <div class="row">
-          <div class="form-group">
-            <label for="categoryName" class="text-gray">Name</label>
-            <input type="text" id="categoryName" class="form-control" formControlName="name" required>
-          </div>
+      <div class="d-flex justify-content-between mt-3">
+        <div>
+          <button type="submit" mat-raised-button class="addBtn" [disabled]="categoryForm.invalid">{{ isEdit ?
+            'Update' :
+            'Add' }}</button>
         </div>
-        <div class="form-group row mt-3">
-          <div class="col-4">
-            <button type="submit" mat-raised-button class="addBtn" [disabled]="categoryForm.invalid">{{ isEdit ?
-              'Update' :
-              'Add' }}</button>
-          </div>
-          <div class="col-3">
-            <button type="button" mat-raised-button (click)="onCancel()">Cancel</button>
-          </div>
+        <div>
+          <button type="button" mat-raised-button (click)="onCancel()">Cancel</button>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
+
 </div>

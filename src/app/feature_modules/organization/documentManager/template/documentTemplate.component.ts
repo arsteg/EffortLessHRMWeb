@@ -6,6 +6,7 @@ import { template } from 'src/app/models/documents/documents';
 import { DocumentsService } from 'src/app/_services/documents.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 
 @Component({
@@ -25,6 +26,20 @@ export class DocumentTemplateComponent implements OnInit {
   editorContent: string = '';
   @ViewChild('editor') editor: any;
   isEditMode = false;
+  columns: TableColumn[] = [
+    { key: 'name', name: 'Name' },
+    { key: 'content', name: 'content' },
+    { key: 'active', name: 'active' },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: 'text-danger' },
+      ]
+    }
+  ]
 
   dropdownOptions = [
     { label: 'firstName', value: 'option1' },
@@ -45,7 +60,7 @@ export class DocumentTemplateComponent implements OnInit {
   isFormLoaded = false;
 
   constructor(private documentsService: DocumentsService, private fb: FormBuilder,
-    private toast: ToastrService,  private dialog: MatDialog) {
+    private toast: ToastrService, private dialog: MatDialog) {
     this.addDocumentTemplateForm = this.fb.group({
       name: ['', Validators.required],
       content: [''],
@@ -67,6 +82,16 @@ export class DocumentTemplateComponent implements OnInit {
       this.isFormLoaded = true;
     }, 1);
 
+  }
+  onActionClick(event) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.editTemplate(event.row)
+        break;
+      case 'Delete':
+        this.openDialog(event.row._id)
+        break;
+    }
   }
   ngOnDestroy(): void {
   }
@@ -127,19 +152,19 @@ export class DocumentTemplateComponent implements OnInit {
   }
 
   deleteTemplate(id: any) {
-   
-      this.documentsService.deleteTemplate(id).subscribe((response: any) => {
-        this.getTemplates();
-        this.toast.success('Document template deleted successfully!');
-      },
-        err => {
-          this.toast.error('Error deleting document template', 'Error!');
-        });
+
+    this.documentsService.deleteTemplate(id).subscribe((response: any) => {
+      this.getTemplates();
+      this.toast.success('Document template deleted successfully!');
+    },
+      err => {
+        this.toast.error('Error deleting document template', 'Error!');
+      });
   }
   openDialog(id: any): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
-     
+
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'delete') {

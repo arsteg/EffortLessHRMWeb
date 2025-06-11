@@ -1,98 +1,47 @@
-<div class="documentContainer">
-    <div class="row p-3 bg-white submenuBody">
-        <div class="col-md-8  tableContainer">
-            <div class="d-flex justify-content-between">
-                <h2 class="contentHeading ps-2">User Documents</h2>
-                <div class="d-flex align-items-center">
-                <span class="bi bi-search searchIcon"></span>
+<div class="row m-0">
+    <div class="col-md-8">
+        <hrm-table [data]="userDocuments" [columns]="columns" [showExport]="'none'" [showSearch]="true"
+            (actionClicked)="onActionClick($event)"></hrm-table>
+    </div>
+    <div class="col-md-4 border-start">
+        <h2 class="contentHeading p-1">Add/Edit Document</h2>
+        <form [formGroup]="userDocumentForm" (ngSubmit)="isEdit ? updateDocument() : addDocument()"
+            class="p-3 bg-light border rounded">
 
-                <input type="text" class="form-control search" placeholder="Search by name" (input)="searchDocuments($event)">
+            <div class="form-group">
+                <label for="user">User</label>
+                <select id="user" class="form-control" formControlName="user" required>
+                    <option *ngFor="let user of usersList" [value]="user">{{ user.firstName + ' ' + user.lastName }}
+                    </option>
+                </select>
             </div>
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" class="form-control" formControlName="name" required>
             </div>
-            <table  class="p-2 rounded mt-2">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Document</th>
-                        <th>Date</th>
-                        <th>URL</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let doc of userDocuments">
-                        <td>{{ getUserName(doc?.user) }}</td>
-                        <td>{{ getDocName(doc?.document) }}</td>
-                        <td></td>
-                        <td><a href="" target="_blank">Open</a></td>
-                        <td>
-                            <button class="actions" mat-mini-fab title="Update User" (click)="editDocument(doc)"
-                            aria-label="Example icon button with a menu icon">
-                            <i class="bi bi-pencil-fill"></i>
-                        </button>
-                        <button class="actions ms-2" title="Delete User" mat-mini-fab (click)="deleteDocument(doc)"
-                            aria-label="Example icon button with a menu icon">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
 
-            <!-- Pagination logic -->
-            <nav>
-                <ul class="pagination">
-                    <li class="page-item" [class.disabled]="currentPage === 1">
-                        <a class="page-link" href="#" (click)="changePage(-1)">Previous</a>
-                    </li>
-                    <li class="page-item" [class.active]="i === currentPage" *ngFor="let i of totalPageArray">
-                        <a class="page-link" href="#" (click)="changePageTo(i)">{{ i }}</a>
-                    </li>
-                    <li class="page-item" [class.disabled]="currentPage === totalPages">
-                        <a class="page-link" href="#" (click)="changePage(1)">Next</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        <div class="col-md-4 border-start">
-            <h2 class="contentHeading p-1">Add/Edit Document</h2>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="date" id="date" class="form-control" formControlName="date">
+            </div>
 
-            <form [formGroup]="userDocumentForm" (ngSubmit)="isEdit ? updateDocument() : addDocument()"
-                class="p-3 bg-light border rounded">
+            <div class="form-group">
+                <label for="URL">URL</label>
+                <input type="text" id="URL" class="form-control" formControlName="URL">
+            </div>
 
-                <div class="form-group">
-                    <label for="user">User</label>
-                    <select id="user" class="form-control" formControlName="user" required>
-                        <option *ngFor="let user of usersList" [value]="user">{{ user }}</option>
-                    </select>
+            <div class="form-group row mt-2">
+                <div class="col-sm-2">
+                    <button type="submit" mat-raised-button class="addBtn" [disabled]="userDocumentForm.invalid">{{
+                        isEdit ?
+                        'Update' : 'Add' }}</button>
                 </div>
-
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" class="form-control" formControlName="name" required>
+                <div class="col-sm-2">
+                    <button type="button" *ngIf="isEdit" (click)="isEdit = false"
+                        class="btn btn-secondary">Cancel</button>
                 </div>
-
-                <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date" class="form-control" formControlName="date">
-                </div>
-
-                <div class="form-group">
-                    <label for="URL">URL</label>
-                    <input type="text" id="URL" class="form-control" formControlName="URL">
-                </div>
-
-                <div class="form-group row mt-2">
-                    <div class="col-sm-2">
-                        <button type="submit" mat-raised-button class="addBtn" [disabled]="userDocumentForm.invalid">{{ isEdit ?
-                            'Update' : 'Add' }}</button>
-                    </div>
-                    <div class="col-sm-2">
-                        <button type="button" *ngIf="isEdit" (click)="isEdit = false"
-                            class="btn btn-secondary">Cancel</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>

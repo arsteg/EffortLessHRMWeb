@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { DocumentsService } from 'src/app/_services/documents.service';
 import { UserService } from 'src/app/_services/users.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
     selector: 'app-user-document',
@@ -20,7 +21,21 @@ export class UserDocumentComponent implements OnInit {
     itemsPerPage = 10;
     totalPages = 0;
     totalPageArray: number[] = [];
-
+    columns: TableColumn[] = [
+        { key: 'name', name: 'Name', valueFn: (row:any)=> this.getUserName(row?.user) },
+        { key: 'document', name: 'Document', valueFn: (row:any)=> this.getDocName(row?.document) },
+        { key: 'date', name: 'Date' },
+        { key: 'url', name: 'url' },
+        {
+            key: 'action',
+            name: 'Action',
+            isAction: true,
+            options: [
+                { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+                { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: 'text-danger' },
+            ]
+        }
+    ]
     constructor(private fb: FormBuilder,
         private toast: ToastrService,
         private documentService: DocumentsService,
@@ -31,6 +46,17 @@ export class UserDocumentComponent implements OnInit {
         this.getUserDocuments();
         this.getUsers();
         this.getDocument();
+    }
+
+    onActionClick(event) {
+        switch (event.action.label) {
+            case 'Edit':
+                this.editDocument(event.row)
+                break;
+            case 'Delete':
+                this.deleteDocument(event.row.id)
+                break;
+        }
     }
 
     initForm() {
@@ -49,7 +75,7 @@ export class UserDocumentComponent implements OnInit {
     }
     getUserName(id: string) {
         const users = this.usersList?.find((name: any) => name?._id === id)
-        return `${users?.firstName}  ${users?.lastName}`
+        return users ? `${users?.firstName}  ${users?.lastName}` : 'User not found'
     }
     getUsers() {
         this.userService.getUserList().subscribe(users => {
@@ -63,8 +89,8 @@ export class UserDocumentComponent implements OnInit {
         })
     }
 
-    getDocName(id: string){
-        const documentName = this.allDocuments?.find((name:any)=> name?._id === id )
+    getDocName(id: string) {
+        const documentName = this.allDocuments?.find((name: any) => name?._id === id)
         return documentName?.description;
     }
     addDocument() {
