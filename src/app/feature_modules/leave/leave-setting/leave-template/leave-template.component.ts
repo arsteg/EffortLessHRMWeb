@@ -1,50 +1,72 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, EventEmitter, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatPaginator } from '@angular/material/paginator';
+import { TableService } from 'src/app/_services/table.service';
 
 @Component({
-  selector: 'app-leave-Template',
+  selector: 'app-leave-template',
   templateUrl: './leave-template.component.html',
   styleUrls: ['./leave-template.component.css']
 })
-export class LeaveTemplateComponent implements OnInit {
+export class LeaveTemplateComponent implements OnInit, AfterViewInit {
   closeResult: string = '';
-  searchText: string = '';
   changeMode: 'Add' | 'Next' = 'Add';
   step: number = 1;
-  leaveTemplate: any[] = [];
-  templates: any;
-  @Output() LeaveTableRefreshed: EventEmitter<void> = new EventEmitter<void>();
-  selectedTemplateId: any;
+  selectedTemplate: any;
   isEdit: boolean = false;
-  public sortOrder: string = ''; // 'asc' or 'desc'
-  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100]; // Add the available options for records per page
-  recordsPerPage: number = 10; // Default records per page
-  totalRecords: number = 0; // Total number of records
-  currentPage: number = 1;
-  skip: string = '0';
-  next = '10';
+  displayedColumns: string[] = ['label', 'numberOfEmployeesCovered', 'numberOfLeaveCategories', 'actions'];
+  recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
+  @Output() LeaveTableRefreshed: EventEmitter<void> = new EventEmitter<void>();
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private modalService: NgbModal,
+  constructor(
+    private modalService: NgbModal,
     private leaveService: LeaveService,
     private dialog: MatDialog,
-    private toast: ToastrService) { }
+    private toast: ToastrService,
+    private translate: TranslateService,
+    public tableService: TableService<any>
+  ) {
+    this.initializeFilterPredicate();
+  }
 
   ngOnInit(): void {
     this.getLeaveTemplates();
   }
 
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      this.getLeaveTemplates();
+  ngAfterViewInit() {
+    this.tableService.dataSource.paginator = this.paginator;
+    this.getLeaveTemplates();
+  }
+
+  initializeFilterPredicate() {
+    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+      const searchString = filter.trim().toLowerCase();
+      const label = data.label?.toLowerCase() || '';
+      const employeesCovered = this.calculateTotalEmployees(data)?.toString().toLowerCase() || '';
+      const leaveCategories = (data.applicableCategories?.length || 0).toString();
+      return label.includes(searchString) ||
+             employeesCovered.includes(searchString) ||
+             leaveCategories.includes(searchString);
     });
+  }
+
+  open(content: any) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        this.getLeaveTemplates();
+      }
+    );
   }
 
   setFormValues(templateData: any) {
@@ -61,57 +83,58 @@ export class LeaveTemplateComponent implements OnInit {
     }
   }
 
-  onChangeStep(event) {
+  onChangeStep(event: number) {
     this.step = event;
   }
 
-  onClose(event) {
+  onClose(event: boolean) {
     if (event) {
       this.modalService.dismissAll();
-      // this.addTemplateForm.reset();
     }
   }
 
   refreshLeaveTemplateTable() {
-    const requestBody = { "skip": 0, "next": 100000 };
-    this.leaveService.getLeavetemplates(requestBody).subscribe(
-      (res) => {
-        this.templates = res.data;
+    const requestBody = { skip: '0', next: '100000' };
+    this.leaveService.getLeavetemplates(requestBody).subscribe({
+      next: (res: any) => {
         this.getLeaveTemplates();
-        //this.LeaveTableRefreshed.emit();
-
       },
-      (error) => {
+      error: (error) => {
         console.error('Error refreshing leave template table:', error);
       }
-    );
+    });
   }
 
   getLeaveTemplates() {
-    const requestBody = { "skip": this.skip, "next": this.next };
-    this.leaveService.getLeavetemplates(requestBody).subscribe((res: any) => {
-      if (res.status == "success") {
-        this.leaveTemplate = res.data;
-        this.totalRecords = res.total;
-        this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+    const pagination = {
+      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
+      next: this.tableService.recordsPerPage.toString()
+    };
+    this.leaveService.getLeavetemplates(pagination).subscribe({
+      next: (res: any) => {
+        if (res.status === 'success') {
+          this.tableService.setData(res.data || []);
+          this.tableService.totalRecords = res.total || 0;
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching leave templates:', err);
+        this.tableService.setData([]);
+        this.tableService.totalRecords = 0;
       }
-    })
+    });
   }
 
   deleteTemplate(_id: string) {
-    this.leaveService.deleteTemplate(_id).subscribe((res: any) => {
-      this.getLeaveTemplates();
-      if (res != null) {
-        const index = this.templates.findIndex(temp => temp._id === _id);
-        if (index !== -1) {
-          this.templates.splice(index, 1);
-        }
+    this.leaveService.deleteTemplate(_id).subscribe({
+      next: (res: any) => {
+        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
+        this.toast.success(this.translate.instant('leave.template.successDeleted'), this.translate.instant('leave.template.title'));
+      },
+      error: (err) => {
+        this.toast.error(this.translate.instant('leave.template.errorCannotDelete'), this.translate.instant('leave.template.title'));
       }
-      this.toast.success('Successfully Deleted!!!', 'Leave Template')
-    },
-      (err) => {
-        this.toast.error('This Leave is already being used! Leave template, Can not be deleted!')
-      })
+    });
   }
 
   deleteDialog(id: string): void {
@@ -126,73 +149,25 @@ export class LeaveTemplateComponent implements OnInit {
   }
 
   clearRequest() {
-    if (this.changeMode == 'Add') {
-      this.isEdit == true;
+    if (this.changeMode === 'Add') {
+      this.isEdit = true;
     }
   }
-  calculateTotalEmployees(leaveTemp: any) {
+
+ calculateTotalEmployees(leaveTemp: any) {
     let totalEmployees: any;
-    for (const category of leaveTemp.applicableCategories) {
-      if (category?.templateApplicableCategoryEmployee.length === 0) {
+    for (const category of leaveTemp?.applicableCategories) {
+      if (!category?.templateApplicableCategoryEmployee.length) {
         totalEmployees = 'All Employees';
+      } else {
+        totalEmployees = category?.templateApplicableCategoryEmployee.length;
       }
-      else { totalEmployees = category?.templateApplicableCategoryEmployee.length; }
     }
     return totalEmployees;
   }
 
-  // //Pagging related functions
-  nextPagination() {
-    if (!this.isNextButtonDisabled()) {
-      const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
-      this.skip = newSkip;
-      this.getLeaveTemplates();
-    }
-  }
-
-  previousPagination() {
-    if (!this.isPreviousButtonDisabled()) {
-      const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
-      this.skip = newSkip;
-      this.getLeaveTemplates();
-    }
-  }
-  firstPagePagination() {
-    if (this.currentPage !== 1) {
-      this.currentPage = 1;
-      this.skip = '0';
-      this.next = this.recordsPerPage.toString();
-      this.getLeaveTemplates();
-    }
-  }
-  lastPagePagination() {
-    const totalPages = this.getTotalPages();
-    if (this.currentPage !== totalPages) {
-      this.currentPage = totalPages;
-      this.updateSkip();
-      this.getLeaveTemplates();
-    }
-  }
-  updateSkip() {
-    const newSkip = (this.currentPage - 1) * this.recordsPerPage;
-    this.skip = newSkip.toString();
-  }
-
-  isNextButtonDisabled(): boolean {
-    return this.currentPage === this.getTotalPages();
-  }
-
-  isPreviousButtonDisabled(): boolean {
-    return this.skip === '0' || this.currentPage === 1;
-  }
-  updateRecordsPerPage() {
-    this.currentPage = 1;
-    this.skip = '0';
-    this.next = this.recordsPerPage.toString();
+  onPageChange(event: any) {
+    this.tableService.updatePagination(event);
     this.getLeaveTemplates();
-  }
-  getTotalPages(): number {
-    const totalCount = this.totalRecords;
-    return Math.ceil(totalCount / this.recordsPerPage);
   }
 }

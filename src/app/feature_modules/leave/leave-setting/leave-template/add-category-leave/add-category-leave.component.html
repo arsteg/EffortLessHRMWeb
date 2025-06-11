@@ -1,141 +1,217 @@
-<div class="d-flex justify-content-between">
-    <h1 class="modal-title text-muted">Leave Template Applicable Categories</h1>
-    <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
-</div>
+<h1 mat-dialog-title>{{'leave.templateCategories.title' | translate}} {{selectedTemplate.label}}</h1>
+<div mat-dialog-content>
+    @if(!loader){
+    <mat-vertical-stepper #stepper [formGroup]="firstForm" [linear]="true">
+        <ng-container formArrayName="leaveCategories">
+            <ng-container *ngFor="let categoryCtrl of firstForm?.get('leaveCategories')?.['controls']; let i = index">
+                <mat-step [stepControl]="categoryCtrl">
+                    <form [formGroup]="categoryCtrl">
+                        <ng-template matStepLabel>{{ getCategoryLabel(categoryCtrl.value.leaveCategory) }}
+                            <span [matTooltip]="getCategoryLabel(categoryCtrl.value.leaveCategory)"
+                                matTooltipPosition="below"></span>
+                        </ng-template>
 
+                        <div class="d-flex align-items-center">
+                            <mat-label class="w-50">{{'leave.templateCategories.limitApplyQuestion' |
+                                translate}}</mat-label>
+                            <div class="ms-auto">
+                                <mat-slide-toggle formControlName="limitNumberOfTimesApply"></mat-slide-toggle>
+                            </div>
+                            <mat-form-field class="ms-4">
+                                <input type="number" matInput formControlName="maximumNumbersEmployeeCanApply"
+                                    [attr.disabled]="!categoryCtrl.get('limitNumberOfTimesApply').value ? true : null"
+                                    [placeholder]="'leave.templateCategories.numberOfDaysPlaceholder' | translate">
+                                @if(categoryCtrl.get('maximumNumbersEmployeeCanApply').invalid &&
+                                categoryCtrl.get('maximumNumbersEmployeeCanApply').touched){
+                                <mat-error>
+                                    {{'leave.templateCategories.errorMaxApply' | translate}}
+                                </mat-error>
+                                }
+                            </mat-form-field>
+                        </div>
 
-<mat-stepper #stepper [formGroup]="firstForm">
-    <ng-container formArrayName="leaveCategories">
-        <mat-step *ngFor="let category of firstForm.get('leaveCategories')['controls']; let i = index">
-            <form [formGroup]="category">
-                <ng-template matStepLabel>
-                    {{ getCategoryLabel(category?.value?.leaveCategory) }}
-                </ng-template>
-                <div class="form-group">
-                    <label for="">
-                        Do you want to limit number of times an employee can apply for this leave?
-                    </label>
-                    <div class="d-flex">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" id="level" [value]="true"
-                                formControlName="limitNumberOfTimesApply" required>
-                            <label class="form-check-label" for="level">
-                                Yes
-                            </label>
+                        <div class="d-flex align-items-center mt-2">
+                            <mat-label class="w-50">{{'leave.templateCategories.newlyJoinedQuestion' |
+                                translate}}</mat-label>
+                            <mat-form-field class="ms-auto">
+                                <mat-select formControlName="dealWithNewlyJoinedEmployee" required>
+                                    <mat-option value="1">{{'leave.templateCategories.eligibleImmediately' |
+                                        translate}}</mat-option>
+                                    <mat-option value="2">{{'leave.templateCategories.eligibleAfterTenure' |
+                                        translate}}</mat-option>
+                                    <mat-option value="3">{{'leave.templateCategories.eligibleAfterConfirmation' |
+                                        translate}}</mat-option>
+                                </mat-select>
+                                @if(categoryCtrl.get('dealWithNewlyJoinedEmployee').invalid &&
+                                categoryCtrl.get('dealWithNewlyJoinedEmployee').touched){
+                                <mat-error>
+                                    {{'leave.templateCategories.errorNewlyJoined' | translate}}
+                                </mat-error>
+                                }
+                            </mat-form-field>
                         </div>
-                        <div class="form-check ms-4">
-                            <input class="form-check-input" type="radio" id="level2" required
-                                formControlName="limitNumberOfTimesApply" [value]="false">
-                            <label class="form-check-label" for="level2">
-                                No
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group mt-2" *ngIf="category.get('limitNumberOfTimesApply').value === true">
-                        <label for="">An employee can apply maximum</label>
-                        <input type="number" formControlName="maximumNumbersEmployeeCanApply" min="0"
-                            class="form-control" placeholder="Number of Days">
-                    </div>
-                </div>
 
-                <div class="form-group mt-2">
-                    <label for="">
-                        How would you like to deal with newly joined employees?
-                    </label>
+                        @if(categoryCtrl.get('dealWithNewlyJoinedEmployee').value === '2'){
+                        <div class="d-flex align-items-center mt-2">
+                            <mat-label class="w-50">{{'leave.templateCategories.daysToBecomeEligible' |
+                                translate}}</mat-label>
+                            <mat-form-field class="ms-auto">
+                                <input type="number" matInput formControlName="daysToCompleteToBecomeEligibleForLeave"
+                                    [placeholder]="'leave.templateCategories.numberOfDaysPlaceholder' | translate">
+                                @if(categoryCtrl.get('daysToCompleteToBecomeEligibleForLeave').invalid &&
+                                categoryCtrl.get('daysToCompleteToBecomeEligibleForLeave').touched){
+                                <mat-error>
+                                    {{'leave.templateCategories.errorDaysEligible' | translate}}
+                                </mat-error>
+                                }
+                            </mat-form-field>
+                        </div>
+                        }
 
-                    <select name="" id="primaryApprover" required class="ms-2 form-control"
-                        formControlName="dealWithNewlyJoinedEmployee">
-                        <option value="1">Make the employee eligible for leave immediately</option>
-                        <option value="2">Make the employee eligible for leave after completing <a href=""></a> certain
-                            tenure</option>
-                        <option value="3">Make the employee eligible for leave after getting confirmed</option>
-                    </select>
-                </div>
-                <div class="form-group mt-2" *ngIf="category.get('dealWithNewlyJoinedEmployee').value == '2'">
-                    <label for="">How many days does the employee need to complete to become eligible for leave?</label>
-                    <input type="number" formControlName="daysToCompleteToBecomeEligibleForLeave" min="0"
-                        class="form-control" placeholder="Number of Days">
-                </div>
-                <div class="form-group mt-2" *ngIf="category.get('dealWithNewlyJoinedEmployee').value == '2' || '3'">
-                    <label for="">
-                        Upon becoming eligible, does the employee get credited the entire amount of leave that he/she
-                        earned during the period of ineligibility?
-                    </label>
-                    <div class="d-flex">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" id="level"
-                                formControlName="isEmployeeGetCreditedTheEntireAmount" [value]="true" required>
-                            <label class="form-check-label" for="level">
-                                Yes
-                            </label>
+                        @if(categoryCtrl.get('dealWithNewlyJoinedEmployee').value === '2' ||
+                        categoryCtrl.get('dealWithNewlyJoinedEmployee').value === '3'){
+                        <div class="d-flex align-items-center mt-2">
+                            <mat-label class="w-50">{{'leave.templateCategories.creditEntireAmountQuestion' |
+                                translate}}</mat-label>
+                            <div class="ms-auto">
+                                <mat-slide-toggle
+                                    formControlName="isEmployeeGetCreditedTheEntireAmount"></mat-slide-toggle>
+                            </div>
                         </div>
-                        <div class="form-check ms-4">
-                            <input class="form-check-input" type="radio" id="level2"
-                                formControlName="isEmployeeGetCreditedTheEntireAmount" required [value]="false">
-                            <label class="form-check-label" for="level2">
-                                No
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group mt-2">
-                    <label for="">
-                        Please provide the accrual rate per period?(Annually)
-                    </label>
-                    <input type="number" min="0" class="form-control" formControlName="accrualRatePerPeriod">
-                    
-                    <div *ngIf="category.get('accrualRatePerPeriod').invalid && category.get('accrualRatePerPeriod').touched" class="text-danger">
-                        <div *ngIf="category.get('accrualRatePerPeriod').hasError('required')">Accrual rate is required.</div>
-                        <div *ngIf="category.get('accrualRatePerPeriod').hasError('min')">Accrual rate must be greater than 0.</div>
-                    </div>
-                </div>
-                <div class="form-group mt-2">
-                    <label for="">Who is this category applicable to?</label>
-                    <div class="d-flex">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" id="all-employees" value="all-employees"
-                                required formControlName="categoryApplicable">
-                            <label class="form-check-label" for="all-employees">
-                                All Employees
-                            </label>
-                        </div>
-                        <div class="form-check ms-4">
-                            <input class="form-check-input" type="radio" id="specific-employees" required
-                                value="specific-employees" formControlName="categoryApplicable">
-                            <label class="form-check-label" for="specific-employees">
-                                Specific Employees
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group mt-2" *ngIf="category.get('categoryApplicable').value === 'specific-employees'">
-                    <mat-form-field appearance="outline" class="w-100 mx-1">
-                        <mat-label>Select Employee</mat-label>
-                        <mat-select name="users" multiple formControlName="users">
-                            <mat-option *ngFor="let member of members" [value]="member.id">
-                                {{member?.firstName | titlecase}}&nbsp;{{member?.lastName}}
-                            </mat-option>
-                        </mat-select>
-                        
-                          
-                    </mat-form-field>
+                        }
 
-                </div>
+                        <div class="d-flex align-items-center mt-2">
+                            <mat-label class="w-50">{{'leave.templateCategories.accrualRateQuestion' |
+                                translate}}</mat-label>
+                            <mat-form-field class="ms-auto">
+                                <input type="number" matInput formControlName="accrualRatePerPeriod" min="1">
+                                @if(categoryCtrl.get('accrualRatePerPeriod').invalid &&
+                                categoryCtrl.get('accrualRatePerPeriod').touched){
+                                <mat-error>
+                                    {{'leave.templateCategories.errorAccrualRequired' | translate}}
+                                </mat-error>
+                                }
+                                @if(categoryCtrl.get('accrualRatePerPeriod').hasError('min') &&
+                                categoryCtrl.get('accrualRatePerPeriod').touched){
+                                <mat-error>
+                                    {{'leave.templateCategories.errorAccrualMin' | translate}}
+                                </mat-error>
+                                }
+                            </mat-form-field>
+                        </div>
 
-                <div class="">
-                    <button mat-button matStepperNext class="addBtn">Next</button>
-                </div>
-            </form>
+                        <div class="d-flex align-items-center mt-2">
+                            <mat-label class="w-50">{{'leave.templateCategories.applicableToQuestion' |
+                                translate}}</mat-label>
+                            <div class="ms-auto">
+                                <mat-radio-group formControlName="categoryApplicable" class="d-flex">
+                                    <mat-radio-button value="all-employees"
+                                        class="me-4">{{'leave.templateCategories.allEmployees' |
+                                        translate}}</mat-radio-button>
+                                    <mat-radio-button
+                                        value="specific-employees">{{'leave.templateCategories.specificEmployees' |
+                                        translate}}</mat-radio-button>
+                                </mat-radio-group>
+                            </div>
+                        </div>
+
+                        @if(categoryCtrl.get('categoryApplicable').value === 'specific-employees'){
+                        <div class="d-flex align-items-center mt-2">
+                            <mat-label class="w-50">{{'leave.templateCategories.selectEmployee' |
+                                translate}}</mat-label>
+                            <mat-form-field class="ms-auto">
+                                <mat-select multiple formControlName="users">
+                                    <mat-option *ngFor="let member of members" [value]="member.id">
+                                        {{member?.firstName | titlecase}} {{member?.lastName}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        }
+
+                        <div class="mt-3">
+                            @if(i > 0){
+                            <button mat-button matStepperPrevious color="primary">{{'leave.templateCategories.back' |
+                                translate}}</button>
+                            }
+                            <button mat-stroked-button matStepperNext color="accent">{{'leave.templateCategories.next' |
+                                translate}}</button>
+                        </div>
+                    </form>
+                </mat-step>
+            </ng-container>
+        </ng-container>
+        <mat-step>
+            <ng-template matStepLabel>{{'leave.templateCategories.review' | translate}}</ng-template>
+            @for(categoryCtrl of firstForm?.get('leaveCategories')?.['controls']; track categoryCtrl; let i = $index){
+            <div class="mb-2">
+                <h4 class="mb-1 fw-bold text-dark">{{ getCategoryLabel(categoryCtrl.value.leaveCategory) }}</h4>
+                <ul class="list-group border border-warning">
+                    @if(categoryCtrl.get('limitNumberOfTimesApply').value){
+                    <li class="list-group-item p-1 d-flex justify-content-between">
+                        {{'leave.templateCategories.limitApplyQuestion' | translate}}
+                        <b>{{categoryCtrl.value.maximumNumbersEmployeeCanApply}}</b>
+                    </li>
+                    }
+                    <li class="list-group-item p-1 d-flex justify-content-between">
+                        {{'leave.templateCategories.newlyJoinedQuestion' | translate}}
+                        <b>
+                            @if(categoryCtrl.value.dealWithNewlyJoinedEmployee === '1') {
+                            {{'leave.templateCategories.eligibleImmediately' | translate}}
+                            } @else if(categoryCtrl.value.dealWithNewlyJoinedEmployee === '2') {
+                            {{'leave.templateCategories.eligibleAfterTenure' | translate}}
+                            } @else {
+                            {{'leave.templateCategories.eligibleAfterConfirmation' | translate}}
+                            }
+                        </b>
+                    </li>
+                    @if(categoryCtrl.value.dealWithNewlyJoinedEmployee === '2'){
+                    <li class="list-group-item p-1 d-flex justify-content-between">
+                        {{'leave.templateCategories.daysToBecomeEligible' | translate}}
+                        <b>{{categoryCtrl.value.daysToCompleteToBecomeEligibleForLeave}}</b>
+                    </li>
+                    }
+                    @if(categoryCtrl.value.dealWithNewlyJoinedEmployee === '2' ||
+                    categoryCtrl.value.dealWithNewlyJoinedEmployee === '3'){
+                    <li class="list-group-item p-1 d-flex justify-content-between">
+                        {{'leave.templateCategories.creditEntireAmountQuestion' | translate}}
+                        <b>{{categoryCtrl.value.isEmployeeGetCreditedTheEntireAmount ? ('leave.templateCategories.yes' |
+                            translate) : ('leave.templateCategories.no' | translate)}}</b>
+                    </li>
+                    }
+                    <li class="list-group-item p-1 d-flex justify-content-between">
+                        {{'leave.templateCategories.accrualRateQuestion' | translate}}
+                        <b>{{categoryCtrl.value.accrualRatePerPeriod}}</b>
+                    </li>
+                    <li class="list-group-item p-1 d-flex justify-content-between">
+                        {{'leave.templateCategories.applicableToQuestion' | translate}}
+                        <b>{{categoryCtrl.value.categoryApplicable === 'all-employees' ?
+                            ('leave.templateCategories.allEmployees' | translate) :
+                            ('leave.templateCategories.specificEmployees' | translate)}}</b>
+                    </li>
+                    @if(categoryCtrl.value.categoryApplicable === 'specific-employees' &&
+                    categoryCtrl.value.users.length){
+                    <li class="list-group-item p-1 d-flex justify-content-between">
+                        {{'leave.templateCategories.selectEmployee' | translate}}
+                    </li>
+                    }
+                </ul>
+            </div>
+            }
+            <div class="mt-3">
+                <button mat-button matStepperPrevious color="primary">{{'leave.templateCategories.back' |
+                    translate}}</button>
+            </div>
         </mat-step>
-    </ng-container>
-    <mat-step>
-        <ng-template matStepLabel>Done</ng-template>
-
-        <p>You are now done.</p>
-        <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button (click)="stepper.reset()">Reset</button>
-            <button mat-button (click)="onSubmit()" class="addBtn">Submit</button>
-        </div>
-    </mat-step>
-</mat-stepper>
+    </mat-vertical-stepper>
+    } @else {
+    <h2>{{'leave.templateCategories.loading' | translate}}</h2>
+    <p>{{'leave.templateCategories.loadingMessage' | translate}}</p>
+    }
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button type="button" (click)="closeModal()">{{'leave.createTemplate.cancel' |
+        translate}}</button>
+    <button mat-raised-button class="ms-auto" color="accent" (click)="onSubmit()">{{'leave.templateCategories.submit' |
+        translate}}</button>
+</div>

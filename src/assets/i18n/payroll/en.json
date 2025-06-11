@@ -183,7 +183,7 @@
         "gratuity_components_calculation": "Components on which Gratuity is calculated",
         "is_allow_tds_from_effortless_hrm": "Do you wish to calculate your TDS from EffortlessHRM?",
         "edit": "Edit",
-        "cancel": "Cancel",
+        "cancel": "Close",
         "save": "Save",
         "yes": "Yes",
         "no": "No",
@@ -579,7 +579,8 @@
                 "success_updated": "Successfully Updated!!!",
                 "error_update": "Flexi Benefits Category Can not be Updated",
                 "success_deleted": "Successfully Deleted!!!",
-                "error_delete": "Flexi Benefits Category Can not be deleted"
+                "error_delete": "Flexi Benefits Category Can not be deleted",
+                "duplicate_name_error": "A flexi benefit with this name already exists"
             }
         },
         "_ctc_templates": {

@@ -72,9 +72,26 @@ export class FlexiBenefitsComponent implements AfterViewInit {
   closeModal() {
     this.dialogRef.close(true);
   }
-
+  isDuplicate: boolean = false;
   onSubmission() {
     if (this.flexiBenefitsForm.valid) {
+      const newBenefitName = this.flexiBenefitsForm.value.name.toLowerCase();
+
+      // Check for duplicate name if not in edit mode
+      if (!this.isEdit) {
+        this.isDuplicate = this.tableService.dataSource.data.some(
+          (benefit: any) => benefit.name.toLowerCase() === newBenefitName
+        );
+      
+        if (this.isDuplicate) {
+          this.toast.error(
+            this.translate.instant('payroll.flexi_benefits.toast.duplicate_name_error'),
+            this.translate.instant('payroll.flexi_benefits.title')
+          );
+          return; // Stop submission if duplicate is found
+        }
+      }
+
       if (!this.isEdit) {
         this.payroll.addFlexiBenefits(this.flexiBenefitsForm.value).subscribe({
           next: (res: any) => {
@@ -94,6 +111,21 @@ export class FlexiBenefitsComponent implements AfterViewInit {
           }
         });
       } else {
+        // In edit mode, check for duplicate only if the name has changed and it conflicts with another existing benefit
+        const originalName = this.selectedRecord.name.toLowerCase();
+        if (newBenefitName !== originalName) {
+          this.isDuplicate = this.tableService.dataSource.data.some(
+            (benefit: any) => benefit.name.toLowerCase() === newBenefitName && benefit._id !== this.selectedRecord._id
+          );
+          if (this.isDuplicate) {
+            this.toast.error(
+              this.translate.instant('payroll.flexi_benefits.toast.duplicate_name_error'),
+              this.translate.instant('payroll.flexi_benefits.title')
+            );
+            return;
+          }
+        }
+
         this.payroll.updateFlexiBenefits(this.selectedRecord._id, this.flexiBenefitsForm.value).subscribe({
           next: (res: any) => {
             const updatedData = this.tableService.dataSource.data.map(item =>

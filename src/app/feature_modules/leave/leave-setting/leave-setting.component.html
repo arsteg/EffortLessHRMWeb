@@ -1,17 +1,18 @@
 <div class="main-content pt-2">
     <div class="container-fluid">
         <div class="tabs">
-            <button class="btn" routerLink="general-setting" routerLinkActive="active">
-                General Settings
-            </button>
+            <!-- it may require in future -->
+            <!-- <button class="btn" routerLink="general-setting" routerLinkActive="active">
+                {{ 'leave.generalSettings' | translate }}
+            </button> -->
             <button class="btn" routerLink="leave-category" routerLinkActive="active">
-                Leave Categories
+                {{ 'leave.leaveCategories' | translate }}
             </button>
             <button class="btn" routerLink="leave-template" routerLinkActive="active">
-                Leave Templates
+                {{ 'leave.leaveTemplates' | translate }}
             </button>
             <button class="btn" routerLink="leave-assignment" routerLinkActive="active">
-                Leave Assignment
+                {{ 'leave.leaveAssignment' | translate }}
             </button>
         </div>
         <router-outlet></router-outlet>

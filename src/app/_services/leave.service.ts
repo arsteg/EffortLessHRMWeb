@@ -18,6 +18,7 @@ export class LeaveService extends baseService {
   };
   leave: any = new BehaviorSubject('')
   selectedTemplate: any = new BehaviorSubject('');
+  categories: any = new BehaviorSubject('');
 
   constructor(private http: HttpClient) {
     super();

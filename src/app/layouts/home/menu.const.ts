@@ -53,7 +53,7 @@ export const SideBarAdminMenu = [
   {
     id: '9',
     title: 'Leave',
-    url: 'leave/settings/general-setting',
+    url: 'leave/settings/leave-category',
     svgIcon: 'leave',
   },
   {

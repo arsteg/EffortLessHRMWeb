@@ -10,7 +10,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserService } from 'src/app/_services/users.service';
 import { forkJoin, map } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
-import { TableService } from 'src/app/_services/table.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -43,6 +42,13 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   selectedStatus: string = '';
   closeResult: string = '';
 
+  // Local properties to replace TableService
+  dataSource: MatTableDataSource<any> = new MatTableDataSource([]);
+  totalRecords: number = 0;
+  currentPage: number = 1;
+  recordsPerPage: number = 10;
+  searchText: string = '';
+
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
@@ -50,7 +56,6 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
     private toast: ToastrService,
     private dialog: MatDialog,
     private userService: UserService,
-    public tableService: TableService<any>,
     private translate: TranslateService
   ) {
     const currentMonthIndex = new Date().getMonth();
@@ -72,14 +77,14 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
     });
 
     // Set custom filter predicate to search by period and status
-    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
       const searchString = filter.toLowerCase();
       return (
         `${data.month} ${data.year}`.toLowerCase().includes(searchString) ||
         data.status.toLowerCase().includes(searchString) ||
         data.details.toLowerCase().includes(searchString)
       );
-    });
+    };
   }
 
   ngOnInit() {
@@ -89,7 +94,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.tableService.initializeDataSource([]);
+    this.dataSource.paginator = this.paginator;
     this.fetchFnFPayroll();
   }
 
@@ -227,14 +232,14 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
 
   fetchFnFPayroll() {
     const payload = {
-      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
-      next: this.tableService.recordsPerPage.toString()
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
     };
 
     this.payrollService.getFnF(payload).subscribe(
       (res: any) => {
         const fnfData = res.data;
-        this.tableService.totalRecords = res.total;
+        this.totalRecords = res.total;
 
         const userRequests = fnfData.map((fnf: any) =>
           this.payrollService.getFnFUsers({ skip: '', next: '', payrollFNF: fnf?._id }).pipe(
@@ -262,7 +267,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
                 details: userNames.length > 0 ? userNames.join(', ') : 'No Users'
               };
             });
-            this.tableService.setData(updatedFnfData);
+            this.dataSource.data = updatedFnfData;
           },
           (error: any) => {
             this.translate.get('payroll._fnf.title').subscribe(title => {
@@ -283,6 +288,14 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
         });
       }
     );
+  }
+
+  applyFilter() {
+    this.dataSource.filter = this.searchText.trim().toLowerCase();
+    this.currentPage = 1; // Reset to first page on filter
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   open(content: any) {
@@ -478,7 +491,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
             translations['payroll._fnf.title']
           );
         });
-        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
+        this.dataSource.data = this.dataSource.data.filter(item => item._id !== _id);
       },
       (error) => {
         this.translate.get('payroll._fnf.title').subscribe(title => {
@@ -501,7 +514,6 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   }
 
   completeFnF() {
-    // Implement the logic to complete the FnF process
     this.translate.get([
       'payroll._fnf.toast.completed',
       'payroll._fnf.title'
@@ -529,7 +541,8 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   }
 
   onPageChange(event: any) {
-    this.tableService.updatePagination(event);
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.fetchFnFPayroll();
   }
 }

@@ -91,7 +91,7 @@ import { LeaveRoutingModule } from './leave-routing.module';
     NgxChartsModule,
     CommonComponentsModule,
     NgbModule,
-    LeaveRoutingModule
+    LeaveRoutingModule,
   ],
   schemas: [NO_ERRORS_SCHEMA]
 })

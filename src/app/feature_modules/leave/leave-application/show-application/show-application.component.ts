@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { forkJoin, map, of } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-show-application',
@@ -29,8 +30,8 @@ export class ShowApplicationComponent {
   dateControl = new FormControl();
   @Input() tab: number;
   portalView = localStorage.getItem('adminView');
-  totalLeaveDays;
-  currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  totalLeaveDays: number;
+  currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
   public sortOrder: string = '';
   defaultCatSkip = "0";
   defaultCatNext = "100000";
@@ -39,22 +40,31 @@ export class ShowApplicationComponent {
   currentPage: number = 1;
   displayedColumns: string[] = ['employeeName', 'leaveCategory', 'startDate', 'endDate', 'totalLeaveDays', 'status', 'actions'];
 
-  constructor(private modalService: NgbModal,
+  constructor(
+    private modalService: NgbModal,
     private leaveService: LeaveService,
     private dialog: MatDialog,
     private exportService: ExportService,
     private commonService: CommonService,
     private toast: ToastrService,
     private cdr: ChangeDetectorRef,
-    private datePipe: DatePipe
-  ) { }
+    private datePipe: DatePipe,
+    private translate: TranslateService
+  ) {
+    this.translate.setDefaultLang('en');
+  }
 
   ngOnInit() {
     forkJoin({
       users: this.commonService.populateUsers(),
       leaveApplications: this.getLeaveApplication()
-    }).subscribe(({ users, leaveApplications }) => {
-      this.allAssignee = users && users.data && users.data.data;
+    }).subscribe({
+      next: ({ users, leaveApplications }) => {
+        this.allAssignee = users?.data?.data || [];
+      },
+      error: () => {
+        this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
+      }
     });
     this.getleaveCatgeories();
   }
@@ -69,7 +79,7 @@ export class ShowApplicationComponent {
     this.getLeaveApplication();
   }
 
-  onClose(event) {
+  onClose(event: any) {
     if (event) {
       this.modalService.dismissAll();
     }
@@ -95,7 +105,11 @@ export class ShowApplicationComponent {
 
   exportToCsv() {
     const dataToExport = this.leaveApplication.data;
-    this.exportService.exportToCSV('Leave Application', 'Leave Application', dataToExport);
+    this.exportService.exportToCSV(
+      this.translate.instant('leave.exportTitle'),
+      this.translate.instant('leave.exportFilename'),
+      dataToExport
+    );
   }
 
   open(content: any) {
@@ -122,8 +136,13 @@ export class ShowApplicationComponent {
 
   getleaveCatgeories() {
     const requestBody = { "skip": this.defaultCatSkip, "next": this.defaultCatNext };
-    this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
-      this.leaveCategories = res.data;
+    this.leaveService.getAllLeaveCategories(requestBody).subscribe({
+      next: (res: any) => {
+        this.leaveCategories = res.data;
+      },
+      error: () => {
+        this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
+      }
     });
   }
 
@@ -141,7 +160,7 @@ export class ShowApplicationComponent {
     return leave._id;
   }
 
-  calculateTotalLeaveDays(leave) {
+  calculateTotalLeaveDays(leave: any) {
     const startDate = new Date(leave.startDate);
     const endDate = new Date(leave.endDate);
     const timeDifference = endDate.getTime() - startDate.getTime();
@@ -208,15 +227,18 @@ export class ShowApplicationComponent {
   }
 
   deleteLeaveApplication(_id: string) {
-    this.leaveService.deleteLeaveApplication(_id).subscribe((res: any) => {
-      const index = this.leaveApplication.data.findIndex(temp => temp._id === _id);
-      if (index !== -1) {
-        this.leaveApplication.data.splice(index, 1);
-        this.leaveApplication._updateChangeSubscription();
+    this.leaveService.deleteLeaveApplication(_id).subscribe({
+      next: (res: any) => {
+        const index = this.leaveApplication.data.findIndex(temp => temp._id === _id);
+        if (index !== -1) {
+          this.leaveApplication.data.splice(index, 1);
+          this.leaveApplication._updateChangeSubscription();
+        }
+        this.toast.success(this.translate.instant('leave.successDelete'));
+      },
+      error: () => {
+        this.toast.error(this.translate.instant('leave.errorDelete'));
       }
-      this.toast.success('Successfully Deleted!!!', 'Leave Application');
-    }, (err) => {
-      this.toast.error('Leave Application can not be deleted', 'Error');
     });
   }
 
