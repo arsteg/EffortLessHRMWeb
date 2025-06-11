@@ -1,5 +1,5 @@
-<div class="py-3 tableContainer">
-  <div class="d-flex align-items-start mb-2 px-3">
+<div class="py-3">
+  <div class="d-flex align-items-start mb-2">
     <mat-form-field appearance="outline">
       <mat-label>{{'expenses.search' | translate}}</mat-label>
       <input matInput (keyup)="applyFilter($event)">
@@ -16,10 +16,10 @@
     </mat-form-field>
 
     <div class="ms-auto">
-      <button mat-raised-button color="accent" class="me-1" (click)="changeMode='Add'; open(addModal)">
+      <button mat-flat-button color="primary" class="me-1" (click)="changeMode='Add'; open(addModal)">
         <mat-icon>add</mat-icon>{{'expenses.add_advance' | translate}}
       </button>
-      <button class="me-1" mat-stroked-button (click)="exportToCsv()">
+      <button class="me-1 border" mat-flat-button (click)="exportToCsv()">
         <mat-icon>download</mat-icon> {{'download' | translate}}
       </button>
     </div>

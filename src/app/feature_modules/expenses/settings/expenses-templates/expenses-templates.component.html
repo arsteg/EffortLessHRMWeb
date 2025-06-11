@@ -1,16 +1,16 @@
 <div class="mainContent">
-    <div class="py-3 bg-white tableContainer">
-        <div class="d-flex justify-content-between align-items-start mb-2 px-3">
+    <div class="py-3">
+        <div class="d-flex justify-content-between align-items-start mb-2">
             <mat-form-field appearance="outline">
                 <mat-label>{{'expenses.search' | translate}}</mat-label>
                 <input matInput (input)="applyFilter($event)">
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
-            <button mat-raised-button color="accent" class="me-1" (click)="changeMode='Add'; open(addModal);">
+            <button mat-flat-button color="primary" class="me-1" (click)="changeMode='Add'; open(addModal);">
                 <mat-icon>add</mat-icon>{{'expenses.add_new' | translate}}
             </button>
         </div>
-        <table mat-table [dataSource]="dataSource" >
+        <table mat-table [dataSource]="dataSource" class="hrm-table">
             <ng-container matColumnDef="policyLabel">
                 <th mat-header-cell *matHeaderCellDef> {{'expenses.expense_template_name' | translate}} </th>
                 <td mat-cell *matCellDef="let template"> {{template?.policyLabel}} </td>
