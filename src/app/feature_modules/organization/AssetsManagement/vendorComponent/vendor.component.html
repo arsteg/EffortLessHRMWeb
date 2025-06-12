@@ -1,84 +1,39 @@
-<div class="assetContainer" style="background-color: white;">
-    <div class="row">
-        <div class="col-8 tableContainer">
-            <div class="d-flex justify-content-between">
-                <h2 class="contentHeading p-2">Vendor List</h2>
-                <div class="d-flex align-items-center"> <span class="mb-4 bi bi-search searchIcon"></span>
-                    <input type="text" placeholder="Search vendors..." (input)="filterVendors($event)"
-                        class="form-control search mb-3">
-                </div>
-            </div>
-            <table class="p-2">
-                <thead class="p-2 mt-2">
-                    <tr>
-                        <th>Vendor ID</th>
-                        <th>Vendor Name</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Phone</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let vendor of filteredVendors">
-                        <td>{{ vendor.vendorId }}</td>
-                        <td>{{ vendor.vendorName }}</td>
-                        <td>{{ vendor.email }}</td>
-                        <td>{{ vendor.address }}</td>
-                        <td>{{ vendor.phone }}</td>
-                        <td>
-                          <button class="actions" mat-mini-fab title="Update User" (click)="editVendor(vendor)"
-                            aria-label="Example icon button with a menu icon">
-                            <i class="bi bi-pencil-fill"></i>
-                          </button>
-                          <button class="actions ms-2" mat-mini-fab title="Delete User" (click)="openDialog(vendor)"
-                            aria-label="Example icon button with a menu icon">
-                            <i class="bi bi-trash"></i>
-                          </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="d-flex justify-content-center mt-3">
-               
-            </div>
-        </div>
-
-        <div class="col-4 border-start">
-            <h2 class="contentHeading p-2">Add/Edit Vendor</h2>
-            <form [formGroup]="vendorForm" (ngSubmit)="isEdit ? updateVendor() : addVendor()"
-                class="mt-4 p-3 me-3 bg-light border rounded" style="background-color: gray;">
-                <div class="form-group">
-                    <label for="vendorId">Vendor ID</label>
-                    <input type="text" id="vendorId" class="form-control" formControlName="vendorId" required>
-                </div>
-                <div class="form-group mt-1">
-                    <label for="vendorName">Vendor Name</label>
-                    <input type="text" id="vendorName" class="form-control" formControlName="vendorName" required>
-                </div>
-                <div class="form-group mt-1">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" class="form-control" formControlName="email" required>
-                </div>
-                <div class="form-group mt-1">
-                    <label for="address">Address</label>
-                    <input type="text" id="address" class="form-control" formControlName="address">
-                </div>
-                <div class="form-group mt-1">
-                    <label for="phone">Phone</label>
-                    <input type="tel" id="phone" class="form-control" formControlName="phone">
-                </div>
-                <div class="form-group mt-2 d-flex justify-content-between">
-                    <button type="submit" mat-raised-button color="primary" [disabled]="vendorForm.invalid">{{ isEdit ?
-                        'Update' : 'Add' }}</button>
-                    <button type="reset" *ngIf="isEdit" mat-raised-button (click)="isEdit = false"
-                        class="ms-2">Cancel</button>
-                </div>
-            </form>
-        </div>
+<div class="row m-0">
+    <div class="col-lg-8">
+        <hrm-table [data]="filteredVendors" [columns]="columns" [showExport]="'none'" [showSearch]="false"
+            (actionClicked)="onActionClick($event)"></hrm-table>
     </div>
 
-
-
+    <div class="col-lg-4 border-start">
+        <h2 class="contentHeading p-2">Add/Edit Vendor</h2>
+        <form [formGroup]="vendorForm" (ngSubmit)="isEdit ? updateVendor() : addVendor()"
+            class="mt-4 p-3 me-3 bg-light border rounded" style="background-color: gray;">
+            <div class="form-group">
+                <label for="vendorId">Vendor ID</label>
+                <input type="text" id="vendorId" class="form-control" formControlName="vendorId" required>
+            </div>
+            <div class="form-group mt-1">
+                <label for="vendorName">Vendor Name</label>
+                <input type="text" id="vendorName" class="form-control" formControlName="vendorName" required>
+            </div>
+            <div class="form-group mt-1">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="form-control" formControlName="email" required>
+            </div>
+            <div class="form-group mt-1">
+                <label for="address">Address</label>
+                <input type="text" id="address" class="form-control" formControlName="address">
+            </div>
+            <div class="form-group mt-1">
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" class="form-control" formControlName="phone">
+            </div>
+            <div class="form-group mt-2 d-flex justify-content-between">
+                <button type="submit" mat-raised-button color="primary" [disabled]="vendorForm.invalid">{{ isEdit ?
+                    'Update' : 'Add' }}</button>
+                <button type="reset" *ngIf="isEdit" mat-raised-button (click)="isEdit = false"
+                    class="ms-2">Cancel</button>
+            </div>
+        </form>
+    </div>
 </div>

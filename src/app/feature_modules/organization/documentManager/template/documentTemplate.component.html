@@ -1,159 +1,114 @@
-<div class="documentContainer">
-  <div class="row p-3 submenuBody bg-white">
-    <div class="col-md-7 tableContainer">
-      <div class="d-flex justify-content-between">
+<div class="row m-0">
+  <div class="col-md-7">
+    <hrm-table [data]="templatesList" [columns]="columns" [showExport]="'none'" [showSearch]="true"
+      (actionClicked)="onActionClick($event)"></hrm-table>
+  </div>
+  <div class="col-md-5 border-start">
 
-        <h2 class="contentHeading ps-2">Document&nbsp;Templates:&nbsp;{{templatesList?.length}}</h2>
-        <div class="d-flex  align-items-center">
-          <span class="bi bi-search searchIcon"></span>
-
-          <input type="text" placeholder="Search ..." class="search form-control" [(ngModel)]="searchText"
-            name="searchText">
-        </div>
-      </div>
-      <table class="p-2 rounded mt-2">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Contents</th>
-            <th scope="col">Is&nbsp;Active</th>
-            <th scope="col" class="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let data of templatesList  | search: searchText">
-            <td class="col-2">{{data?.name}}</td>
-            <td class="col-6" [innerHTML]="data?.content"></td>
-            <td class="col-1">{{data?.active}}</td>
-            <td class="">
-              <div class="d-flex">
-               
-                  <button class="actions" mat-mini-fab title="Update User" (click)="editTemplate(data)"
-                  aria-label="Example icon button with a menu icon">
-                  <i class="bi bi-pencil-fill"></i>
-              </button>
-              <button class="actions ms-2" title="Delete User" mat-mini-fab (click)="openDialog(data._id)"
-                  aria-label="Example icon button with a menu icon">
-                  <i class="bi bi-trash"></i>
-              </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="d-flex justify-content-center">
-        
-      </div>
-    </div>
-    <div class="col-md-5 border-start">
       <div>
-        <div>
-          <h2 class="contentHeading p-1">{{ isEditMode ? 'Update Document Template' : 'Add Document Template' }}</h2>
-        </div>
-        <form class="p-3 bg-light border rounded" [formGroup]="addDocumentTemplateForm"
-          (ngSubmit)="isEditMode ? updateTemplate(addDocumentTemplateForm.value) : addDocumentTemplate(addDocumentTemplateForm.value)">
-          <div class="form-group row">
-            <div class="col-sm-2">
-              Name:
-            </div>
-            <div class="col-sm-10">
-              <input type="text" placeholder="Add template Name..." formControlName="name" class="form-control">
-            </div> <br>
-            <div class="col-sm-2 mt-3">
-              Is&nbsp;Active:
-            </div>
-            <div class="col-sm-10  mt-3">
-              <input type="checkbox" formControlName="isActive">
-            </div><br>
-
-            <div class="col-sm-2 mt-3">
-              Content&nbsp;Data:
-            </div>
-            <div class="col-sm-8 ms-2">
-              <select (change)="onDropdownChange($event)" class="mt-3 py-2 w-50">
-                <option selected>- Select -</option>
-                <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
-              </select>
-            </div>
-
-            <div class="col-sm-0" style="margin-top: 12px;">
-              Template:
-            </div>
-            <div class="col-sm-12">
-              <quill-editor #editor [styles]="{height: 'auto'}" formControlName="content"></quill-editor>
-            </div><br>
-            <br>
-            <div class="d-flex justify-content-between" style="margin-top: 12px;">
-              <button mat-raised-button  type="submit" class="ml-5 addBtn" style="min-width: 100px;"
-                [disabled]="!addDocumentTemplateForm.valid">{{ isEditMode ? 'Update' : 'Add' }}</button>
-              <button mat-raised-button (click)="onCancel()" type="button">Cancel</button>
-
-            </div>
-          </div>
-        </form>
+        <h2 class="contentHeading p-1">{{ isEditMode ? 'Update Document Template' : 'Add Document Template' }}</h2>
       </div>
+      <form class="p-3 bg-light border rounded" [formGroup]="addDocumentTemplateForm"
+        (ngSubmit)="isEditMode ? updateTemplate(addDocumentTemplateForm.value) : addDocumentTemplate(addDocumentTemplateForm.value)">
+        <div class="form-group row">
+          <div class="col-sm-2">
+            Name:
+          </div>
+          <div class="col-sm-10">
+            <input type="text" placeholder="Add template Name..." formControlName="name" class="form-control">
+          </div> <br>
+          <div class="col-sm-2 mt-3">
+            Is&nbsp;Active:
+          </div>
+          <div class="col-sm-10  mt-3">
+            <input type="checkbox" formControlName="isActive">
+          </div><br>
+
+          <div class="col-sm-2 mt-3">
+            Content&nbsp;Data:
+          </div>
+          <div class="col-sm-8 ms-2">
+            <select (change)="onDropdownChange($event)" class="mt-3 py-2 w-50">
+              <option selected>- Select -</option>
+              <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
+            </select>
+          </div>
+
+          <div class="col-sm-0" style="margin-top: 12px;">
+            Template:
+          </div>
+          <div class="col-sm-12">
+            <quill-editor #editor [styles]="{height: 'auto'}" formControlName="content"></quill-editor>
+          </div><br>
+          <br>
+          <div class="d-flex justify-content-between" style="margin-top: 12px;">
+            <button mat-raised-button type="submit" class="ml-5 addBtn" style="min-width: 100px;"
+              [disabled]="!addDocumentTemplateForm.valid">{{ isEditMode ? 'Update' : 'Add' }}</button>
+            <button mat-raised-button (click)="onCancel()" type="button">Cancel</button>
+
+          </div>
+        </div>
+      </form>
     </div>
-  </div>
+
+</div>
 
 
-  <div class="modal" id="updateModal">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-body">
-          <div class="d-flex justify-content-between">
-            <div class="">
-              <h4 class="modal-title text-start">Update Document Template<b style="color: #76bc21"></b></h4>
-            </div>
-            <div class="">
-              <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-            </div>
+<div class="modal" id="updateModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="d-flex justify-content-between">
+          <div class="">
+            <h4 class="modal-title text-start">Update Document Template<b style="color: #76bc21"></b></h4>
           </div>
-          <div class="row" *ngIf="selectedTemplate">
-            <form class="row" [formGroup]="updateForm" (ngSubmit)="addDocumentTemplate(updateForm.value)">
-              <div class="row d-flex justify-content-center">
-                <div class="form-group row">
-                  <div class="col-sm-0">
-                    Name:
-                  </div>
-                  <div class="col-sm-6">
-                    <input type="text" formControlName="name" class="form-control">
-                  </div> <br>
-                  <div class="col-sm-0" style="margin-top: 12px;">
-                    Is Active
-                  </div>
-                  <div class="col-sm-6">
-                    <input type="checkbox" formControlName="isActive">
-                  </div><br>
-                  <div class="col-sm-0" style="margin-top: 12px;">
-                    Content Data:
-                  </div>
-                  <select (change)="onDropdownChange($event)" class="my-2 w-50">
-                    <option selected>- Select -</option>
-                    <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
-                  </select>
-
-                  <div class="col-sm-0" style="margin-top: 12px;">
-                    Template:
-                  </div>
-                  <div class="col-sm-12">
-                    <textarea [style.width]="'100%'" name="content" formControlName="content"></textarea>
-                  </div><br>
-                </div>
-              </div>
-              <div class="d-flex justify-content-between m-3">
-                <div class="">
-                  <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
-                </div>
-                <div>
-                  <button mat-raised-button color="primary" class="" data-bs-dismiss="modal"
-                    type="submit">Update</button>
-                </div>
-              </div>
-            </form>
+          <div class="">
+            <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
           </div>
+        </div>
+        <div class="row" *ngIf="selectedTemplate">
+          <form class="row" [formGroup]="updateForm" (ngSubmit)="addDocumentTemplate(updateForm.value)">
+            <div class="row d-flex justify-content-center">
+              <div class="form-group row">
+                <div class="col-sm-0">
+                  Name:
+                </div>
+                <div class="col-sm-6">
+                  <input type="text" formControlName="name" class="form-control">
+                </div> <br>
+                <div class="col-sm-0" style="margin-top: 12px;">
+                  Is Active
+                </div>
+                <div class="col-sm-6">
+                  <input type="checkbox" formControlName="isActive">
+                </div><br>
+                <div class="col-sm-0" style="margin-top: 12px;">
+                  Content Data:
+                </div>
+                <select (change)="onDropdownChange($event)" class="my-2 w-50">
+                  <option selected>- Select -</option>
+                  <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
+                </select>
+
+                <div class="col-sm-0" style="margin-top: 12px;">
+                  Template:
+                </div>
+                <div class="col-sm-12">
+                  <textarea [style.width]="'100%'" name="content" formControlName="content"></textarea>
+                </div><br>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between m-3">
+              <div class="">
+                <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+              </div>
+              <div>
+                <button mat-raised-button color="primary" class="" data-bs-dismiss="modal" type="submit">Update</button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
   </div>
-
 </div>

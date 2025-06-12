@@ -17,6 +17,7 @@ import {
   AssetType,
   CustomAttribute,
 } from 'src/app/models/AssetsManagement/Asset';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -52,7 +53,7 @@ export class AssetComponent implements OnInit {
     this.loadAssetTypes();
     this.initAssetForm();
     this.getAssetStatusList();
-    this.assetForm.statusChanges.subscribe((f)=>{
+    this.assetForm.statusChanges.subscribe((f) => {
     });
   }
   editable: boolean = false;
@@ -87,7 +88,7 @@ export class AssetComponent implements OnInit {
       control.setErrors(null);
     }
   }
-  
+
   addCustomAttribute(): void {
     const customAttribute = this.fb.group({
       attributeName: ['', Validators.required],
@@ -115,7 +116,7 @@ export class AssetComponent implements OnInit {
   addAsset() {
     this.assetService.addAsset(this.assetForm.value).subscribe(
       (response: any) => {
-      this.updateCustomAttributes(response.data._id);
+        this.updateCustomAttributes(response.data._id);
         this.loadAssets(this.selectedAssetType);
         this.toast.success('Asset added successfully!');
       },
@@ -124,7 +125,7 @@ export class AssetComponent implements OnInit {
       }
     );
   }
- 
+
 
   editAsset(asset: Asset) {
     this.isEdit = true;
@@ -132,7 +133,7 @@ export class AssetComponent implements OnInit {
     this.selectedCustomAttributes = this.selectedAsset.customAttributes;
     this.assetForm.patchValue(asset);
     this.selectedAssetTypeName = this.getAssetTypeName(asset.assetType);
-  
+
     if (asset.customAttributes && asset.customAttributes.length > 0) {
       (<FormArray>this.assetForm.get('customAttributes')).clear();
       asset.customAttributes.forEach((attribute) => {
@@ -148,7 +149,7 @@ export class AssetComponent implements OnInit {
       });
     }
   }
-  
+
 
   trackByIndex(index: number, customAttribute: CustomAttribute): any {
     return index;
@@ -179,12 +180,12 @@ export class AssetComponent implements OnInit {
   }
 
   loadAssetTypes() {
-    this.assetService.getAllAssetTypes(0,0).subscribe(
+    this.assetService.getAllAssetTypes(0, 0).subscribe(
       (response) => {
         this.assetTypes = response.data;
         if (this.assetTypes && this.assetTypes.length > 0) {
           this.selectedAssetType = this.assetTypes[0]._id;
-          this.assetForm.patchValue({assetType: this.selectedAssetType});
+          this.assetForm.patchValue({ assetType: this.selectedAssetType });
           this.selectedAssetTypeName = this.assetTypes[0].typeName;
           this.getCustomAttributesByAssetType(this.selectedAssetType)
             .then(() => {
@@ -234,7 +235,7 @@ export class AssetComponent implements OnInit {
         this.loadAssets(asset.assetType);
         this.toast.success('Asset deleted successfully!');
       });
-    },(err)=>{
+    }, (err) => {
       this.toast.error(err.error.data);
     });
   }
@@ -244,7 +245,7 @@ export class AssetComponent implements OnInit {
   }
 
   loadAssets(assetTypeId) {
-    this.assetForm.patchValue({assetType: assetTypeId});
+    this.assetForm.patchValue({ assetType: assetTypeId });
     this.selectedAssetTypeName = this.assetTypes.filter(
       (at) => at._id === assetTypeId
     )[0]?.typeName;
@@ -288,18 +289,18 @@ export class AssetComponent implements OnInit {
   }
 
   populateCustomFieldsForNewAsset() {
-      (<FormArray>this.assetForm.get('customAttributes')).clear();
-      this.selectedCustomAttributes.forEach((attribute) => {
-        const attributeFormGroup = new FormGroup({
-          id: new FormControl(attribute._id),
-          attributeName:new FormControl(attribute.attributeName),
-          description: new FormControl(attribute.description),
-          isRequired : new FormControl(attribute.isRequired),
-          dataType : new FormControl(attribute.dataType),
-          value: new FormControl(attribute.value, Validators.required),
-        });
-        (<FormArray>this.assetForm.get('customAttributes')).push(attributeFormGroup);
+    (<FormArray>this.assetForm.get('customAttributes')).clear();
+    this.selectedCustomAttributes.forEach((attribute) => {
+      const attributeFormGroup = new FormGroup({
+        id: new FormControl(attribute._id),
+        attributeName: new FormControl(attribute.attributeName),
+        description: new FormControl(attribute.description),
+        isRequired: new FormControl(attribute.isRequired),
+        dataType: new FormControl(attribute.dataType),
+        value: new FormControl(attribute.value, Validators.required),
       });
+      (<FormArray>this.assetForm.get('customAttributes')).push(attributeFormGroup);
+    });
   }
 
   getCustomAttributesByAssetType(assetTypeId): Promise<void> {
@@ -325,7 +326,7 @@ export class AssetComponent implements OnInit {
       );
     });
   }
-  updateCustomAttributes(assetId:string){
+  updateCustomAttributes(assetId: string) {
     this.assetForm.value.customAttributes.forEach((ca) => {
       const assetAttributeValue: AssetAttributeValue = {
         assetId: assetId,
@@ -334,11 +335,11 @@ export class AssetComponent implements OnInit {
       };
       this.assetService
         .upsertCustomAttribute(assetAttributeValue)
-        .subscribe((response: any) => {});
+        .subscribe((response: any) => { });
     });
   }
 
-  validateOption(dataType:string, fieldValue:string ): boolean {
+  validateOption(dataType: string, fieldValue: string): boolean {
     if (dataType?.toLowerCase() === 'string' || dataType?.toLowerCase() === 'number') {
       // Implement your validation logic here
       // Example: Return false if the value is empty

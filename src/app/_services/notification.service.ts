@@ -49,7 +49,13 @@ export class NotificationService {
     return this.http.delete<any>(
         `${environment.apiUrlDotNet}/eventNotifications/user/notification`, { ...this.httpOptions,body: body}
     );
-}
+  }
+
+  updateNotificationStatus(userId: string, notificationId: string, status: string): Observable<any> {
+    const body = { userId, notificationId, status };
+    return this.http.patch<any>(
+      `${environment.apiUrlDotNet}/eventNotifications/user/notification/updatestatus`, body, this.httpOptions);
+  }
 
   // ----------------
   showSuccess(message, title){

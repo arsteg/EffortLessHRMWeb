@@ -78,7 +78,7 @@
                 {{ 'payroll.cancel' | translate }}
             </button>
             <button mat-raised-button type="submit" class="addBtn" [disabled]="!loansAdvancesForm.valid">
-                {{ 'payroll.submit' | translate }}
+                  {{ (isEdit ? 'payroll.update' : 'payroll.add') | translate }}
             </button>
         </div>
     </form>
