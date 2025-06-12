@@ -1,53 +1,192 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+import { CompanyService } from 'src/app/_services/company.service';
+import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css'
+  styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   searchText: string = '';
   companyForm: FormGroup;
   isEdit: boolean = false;
-  closeResult: string;
+  company: any;
+  dataSource = new MatTableDataSource<any>();
+  dialogRef: MatDialogRef<any>;
+  selectedFile: File | null = null;
+  imagePreview: string | null = null;
+  fileError: string | null = null;
+  logoPayload: any = null;
 
-  constructor(private fb: FormBuilder,
-    private modalService: NgbModal,
+  @ViewChild('addEditCompanyDialog') addEditCompanyDialog: TemplateRef<any>;
+  @ViewChild('uploadLogoDialog') uploadLogoDialog: TemplateRef<any>;
+
+  constructor(
+    private fb: FormBuilder,
+    private dialog: MatDialog,
+    private companyService: CompanyService,
+    private toast: ToastrService,
+    private translate: TranslateService
   ) {
     this.companyForm = this.fb.group({
-
-    })
-  }
-
-  ngOnInit() {
-  }
-
-  onSubmission() {
-    console.log(this.companyForm.value);
-  }
-  clearselectedRequest() {
-    this.isEdit = false;
-    this.companyForm.reset();
-  }
-  
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-  open(content: any) {
-
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title',  backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      companyName: ['', Validators.required],
+      contactPerson: ['', Validators.required],
+      address: [''],
+      city: [''],
+      state: [''],
+      country: [''],
+      pincode: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]]
     });
   }
 
+  ngOnInit() {
+    this.getCompany();
+  }
+
+  getCompany() {
+    this.companyService.getCompany().subscribe((res: any) => {
+      this.company = res.data?.company;
+      this.dataSource.data = this.company ? [this.company] : [];
+      console.log(this.dataSource.data);
+      if (this.company) {
+        this.companyForm.patchValue(this.company);
+      }
+    });
+  }
+
+  onSubmission() {
+    if (this.companyForm.valid) {
+      console.log(this.companyForm.value);
+      const serviceCall = this.companyService.updateCompany({ ...this.companyForm.value, id: this.company?.id })
+       
+      serviceCall.subscribe(() => {
+        this.translate.get(this.isEdit ? 'organization.setup.company_updated' : 'organization.setup.company_added').subscribe((message: string) => {
+          this.toast.success(message);
+        });
+        this.getCompany();
+        this.dialogRef.close();
+      }, (error) => {
+        this.translate.get('organization.setup.company_update_failed').subscribe((message: string) => {
+          this.toast.error(message);
+        });
+        console.error(error);
+      });
+    } else {
+      this.markFormGroupTouched(this.companyForm);
+    }
+  }
+
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+
+  openAddEditCompanyModal(company?: any) {
+    this.isEdit = !!company;
+    if (this.isEdit) {
+      this.companyForm.patchValue(company);
+    } else {
+      this.companyForm.reset();
+    }
+    this.dialogRef = this.dialog.open(this.addEditCompanyDialog, {
+      width: '600px',
+      disableClose: true
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog closed:', result);
+      this.clearSelectedRequest();
+    });
+  }
+
+  openUploadLogoDialog(company: any) {
+    this.selectedFile = null;
+    this.imagePreview = null;
+    this.fileError = null;
+    this.logoPayload = null;
+    this.dialogRef = this.dialog.open(this.uploadLogoDialog, {
+      width: '400px',
+      data: { company }
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      console.log('Upload dialog closed:', result);
+    });
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      if (file.type.startsWith('image/')) {
+        this.selectedFile = file;
+        this.fileError = null;
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64String = (reader.result as string).split(',')[1]; // Get base64 without prefix
+          const extension = file.name.split('.').pop()?.toLowerCase();
+
+          this.logoPayload = {
+            companyLogo: [
+              {
+                attachmentSize: file.size,
+                extention: extension, // Keeping 'extention' as per provided format
+                file: base64String
+              }
+            ]
+          };
+          this.imagePreview = reader.result as string; // Set preview
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.selectedFile = null;
+        this.imagePreview = null;
+        this.logoPayload = null;
+        this.fileError = 'invalid_image_file';
+      }
+    } else {
+      this.selectedFile = null;
+      this.imagePreview = null;
+      this.logoPayload = null;
+      this.fileError = 'no_file_selected';
+    }
+  }
+
+  uploadLogo() {
+    if (this.logoPayload) {
+      this.companyService.updateCompanyLogo( this.logoPayload).subscribe(
+        () => {
+          this.translate.get('organization.setup.logo_uploaded').subscribe((message: string) => {
+            this.toast.success(message);
+          });
+          this.getCompany();
+          this.dialogRef.close();
+        },
+        (error) => {
+          this.translate.get('organization.setup.logo_upload_failed').subscribe((message: string) => {
+            this.toast.error(message);
+          });
+          console.error(error);
+        }
+      );
+    } else {
+      this.fileError = 'no_file_selected';
+    }
+  }
+
+  clearSelectedRequest() {
+    this.isEdit = false;
+    this.companyForm.reset();
+  }
 }

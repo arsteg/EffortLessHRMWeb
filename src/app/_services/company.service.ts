@@ -71,6 +71,15 @@ export class CompanyService {
   getCompany(): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/company`, this.httpOptions);
   }
+
+  updateCompany(payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company`, payload, this.httpOptions);
+  }
+
+  updateCompanyLogo(payload: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrlDotNet}/company/update-company-logo`, payload, this.httpOptions);
+  }
+
   // departments Crud
   addDepartments(payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/company/departments`, payload, this.httpOptions);

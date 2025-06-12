@@ -1,49 +1,213 @@
 <div class="tableContainer py-2">
-    <!--USE MAT TABLE instead of following table-->
-    <table>
-        <thead>
-            <th>Company Logo</th>
-            <th>Registered Company Name</th>
-            <th>Head Office Address</th>
-            <th>Contact Number</th>
-            <th>Parent Company</th>
-            <th>Actions</th>
-        </thead>
-        <tbody>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
+  <div class="d-flex align-items-center px-2">
+    <p class="mb-0 me-auto" translate>organization.setup.company_details</p>
+    <div class="d-flex align-items-center">
+      <span class="bi bi-search searchIcon"></span>
+      <input class="form-control search" type="text" [placeholder]="'organization.setup.search_company' | translate"
+        [(ngModel)]="searchText" aria-label="Search input" />
+    </div>
+  </div>
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
+    <ng-container matColumnDef="companyLogo">
+      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.company_logo' | translate}}</th>
+      <td mat-cell *matCellDef="let company">
+        <img [src]="company?.logo || 'assets/default-logo.png'" alt="Company Logo" class="company-logo"
+          style="height: 50px;" />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="companyName">
+      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.registered_company_name' | translate}}</th>
+      <td mat-cell *matCellDef="let company">{{ company?.companyName }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="contactPerson">
+      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.contact_person' | translate}}</th>
+      <td mat-cell *matCellDef="let company">{{ company?.contactPerson }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.email' | translate}}</th>
+      <td mat-cell *matCellDef="let company">{{ company?.email }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.phone' | translate}}</th>
+      <td mat-cell *matCellDef="let company">{{ company?.phone }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="address">
+      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.address' | translate}}</th>
+      <td mat-cell *matCellDef="let company">{{ company?.address }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.actions' | translate}}</th>
+      <td mat-cell *matCellDef="let company">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="openAddEditCompanyModal(company)">
+            <mat-icon>edit</mat-icon>
+            <span>{{'organization.setup.edit' | translate}}</span>
+          </button>
+          <button mat-menu-item (click)="openUploadLogoDialog(company)">
+            <mat-icon>upload</mat-icon>
+            <span>{{'organization.setup.upload_company_logo' | translate}}</span>
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row
+      *matHeaderRowDef="['companyLogo', 'companyName', 'contactPerson', 'email', 'phone', 'address', 'actions']"></tr>
+    <tr mat-row
+      *matRowDef="let row; columns: ['companyLogo', 'companyName', 'contactPerson', 'email', 'phone', 'address', 'actions']">
+    </tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="7" translate>organization.setup.no_company_data</td>
+    </tr>
+  </table>
 </div>
 
-<!-- add company -->
-<!-- Use mat dialog instead of bootstrap-->
-<ng-template #addModal let-modal>
-    <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Company</h1>
+<ng-template #addEditCompanyDialog>
+  <h1 mat-dialog-title>{{ (isEdit ? 'organization.setup.update_company' : 'organization.setup.add_company') | translate
+    }}</h1>
+  <hr class="mt-0" />
+  <form [formGroup]="companyForm" (ngSubmit)="onSubmission()">
+    <div mat-dialog-content>
+      <div class="row">
+        <div class="form-group col-md-12">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label translate>organization.setup.company_name</mat-label>
+            <input matInput type="text" formControlName="companyName"
+              [placeholder]="'organization.setup.enter_company_name' | translate" />
+            <mat-error
+              *ngIf="companyForm.get('companyName')?.hasError('required') && (companyForm.get('companyName')?.dirty || companyForm.get('companyName')?.touched)"
+              translate>organization.setup.company_name_required</mat-error>
+          </mat-form-field>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-12">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label translate>organization.setup.contact_person</mat-label>
+            <input matInput type="text" formControlName="contactPerson"
+              [placeholder]="'organization.setup.enter_contact_person' | translate" />
+            <mat-error
+              *ngIf="companyForm.get('contactPerson')?.hasError('required') && (companyForm.get('contactPerson')?.dirty || companyForm.get('contactPerson')?.touched)"
+              translate>organization.setup.contact_person_required</mat-error>
+          </mat-form-field>
         </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-12">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label translate>organization.setup.address</mat-label>
+            <input matInput type="text" formControlName="address"
+              [placeholder]="'organization.setup.enter_address' | translate" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-6">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label translate>organization.setup.city</mat-label>
+            <input matInput type="text" formControlName="city"
+              [placeholder]="'organization.setup.enter_city' | translate" />
+          </mat-form-field>
+        </div>
+        <div class="form-group col-md-6">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label translate>organization.setup.state</mat-label>
+            <input matInput type="text" formControlName="state"
+              [placeholder]="'organization.setup.enter_state' | translate" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-6">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label translate>organization.setup.country</mat-label>
+            <input matInput type="text" formControlName="country"
+              [placeholder]="'organization.setup.enter_country' | translate" />
+          </mat-form-field>
+        </div>
+        <div class="form-group col-md-6">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label translate>organization.setup.pincode</mat-label>
+            <input matInput type="text" formControlName="pincode"
+              [placeholder]="'organization.setup.enter_pincode' | translate" />
+            <mat-error
+              *ngIf="companyForm.get('pincode')?.hasError('required') && (companyForm.get('pincode')?.dirty || companyForm.get('pincode')?.touched)"
+              translate>organization.setup.pincode_required</mat-error>
+            <mat-error
+              *ngIf="companyForm.get('pincode')?.hasError('pattern') && (companyForm.get('pincode')?.dirty || companyForm.get('pincode')?.touched)"
+              translate>organization.setup.pincode_invalid</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-6">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label translate>organization.setup.email</mat-label>
+            <input matInput type="email" formControlName="email"
+              [placeholder]="'organization.setup.enter_email' | translate" />
+            <mat-error
+              *ngIf="companyForm.get('email')?.hasError('required') && (companyForm.get('email')?.dirty || companyForm.get('email')?.touched)"
+              translate>organization.setup.email_required</mat-error>
+            <mat-error
+              *ngIf="companyForm.get('email')?.hasError('email') && (companyForm.get('email')?.dirty || companyForm.get('email')?.touched)"
+              translate>organization.setup.email_invalid</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-group col-md-6">
+          <mat-form-field appearance="fill" class="w-100">
+            <mat-label translate>organization.setup.phone</mat-label>
+            <input matInput type="text" formControlName="phone"
+              [placeholder]="'organization.setup.enter_phone' | translate" />
+            <mat-error
+              *ngIf="companyForm.get('phone')?.hasError('required') && (companyForm.get('phone')?.dirty || companyForm.get('phone')?.touched)"
+              translate>organization.setup.phone_required</mat-error>
+            <mat-error
+              *ngIf="companyForm.get('phone')?.hasError('pattern') && (companyForm.get('phone')?.dirty || companyForm.get('phone')?.touched)"
+              translate>organization.setup.phone_invalid</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
     </div>
+    <div mat-dialog-actions class="d-flex justify-content-between border-top mt-2 py-2">
+      <button mat-raised-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' |
+        translate}}</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="!companyForm.valid">{{
+        'organization.setup.update'| translate }}</button>
+    </div>
+  </form>
+</ng-template>
 
-    <form [formGroup]="companyForm" (ngSubmit)="onSubmission()">
-        <div class="form-group">
-            <label for="">Company Name</label>
-            <input type="text" class="form-control" formControlName="companyName" placeholder="Enter Company Name">
+<ng-template #uploadLogoDialog>
+  <h1 mat-dialog-title translate>organization.setup.upload_company_logo</h1>
+  <hr class="mt-0" />
+  <div mat-dialog-content>
+    <div class="row">
+      <div class="form-group col-md-12">
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" #fileInput />
+        <div *ngIf="selectedFile" class="mt-2">
+          <p translate>organization.setup.selected_file {{ selectedFile.name }}</p>
+          <img [src]="imagePreview" alt="Logo Preview" style="max-width: 200px; max-height: 200px;"
+            *ngIf="imagePreview" />
         </div>
-
-        <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
-            <button mat-raised-button class="addBtn" type="submit" [disabled]="!companyForm.valid">Submit</button>
-        </div>
-    </form>
-
+        <mat-error *ngIf="fileError" translate>organization.setup.{{ fileError }}</mat-error>
+      </div>
+    </div>
+  </div>
+  <div mat-dialog-actions class="d-flex justify-content-between border-top mt-2 py-2">
+    <button mat-raised-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' |
+      translate}}</button>
+    <button mat-raised-button color="primary" (click)="uploadLogo()"
+      [disabled]="!selectedFile">{{'organization.setup.update' | translate}}</button>
+  </div>
 </ng-template>

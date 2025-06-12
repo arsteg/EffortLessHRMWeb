@@ -53,7 +53,8 @@ const routes: Routes = [
       {
         path: 'organization',
         loadChildren: () => import('./feature_modules/organization/organization.module').then(m => m.OragnizationModule),
-        data: { permission: 'Organization' }
+        resolve: { translation: TranslationResolver },
+        data: {moduleKey: 'organization', permission: 'Organization' }
       },
       {
         path: 'manage',
