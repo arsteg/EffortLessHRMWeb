@@ -65,8 +65,12 @@
                         <small class="text-danger" *ngIf="variableDeductionForm.get('label')['errors']['required']">
                             {{ 'payroll.field_required' | translate }}
                         </small>
+                        <small class="text-danger" *ngIf="variableDeductionForm.get('label')['errors']['invalidLabel']">
+                            {{ 'payroll.variable_deduction.invalid_label' | translate }}
+                        </small>
                     </div>
                 </div>
+
                 <div class="form-check mt-2 col-md-6">
                     <label>{{ 'payroll.variable_deduction.ctc_question' | translate }} <span
                             class="text-danger">*</span></label>
@@ -185,14 +189,19 @@
                             </mat-error>
                         </mat-form-field>
                     </div>
+                    <div
+                        *ngIf="variableDeductionForm.errors?.['invalidPeriod'] && (variableDeductionForm.get('deductionStopMonth').touched || variableDeductionForm.get('deductionStopYear').touched)">
+                        <small class="text-danger">
+                            {{ 'payroll.variable_deduction.invalid_period' | translate }}
+                        </small>
+                    </div>
                 </div>
-
 
             </div>
         </div>
         <div mat-dialog-actions class="d-flex border-top mt-2 pb-2 pt-3 justify-content-between">
             <button mat-raised-button type="button" (click)="closeModal()">{{ 'payroll.cancel' | translate }}</button>
-            <button mat-raised-button type="submit" class="addBtn">
+            <button mat-raised-button type="submit" class="addBtn" [disabled]="variableDeductionForm.errors?.['invalidPeriod']">
                 {{ (isEdit ? 'payroll.update' : 'payroll.add') | translate }}
             </button>
         </div>
