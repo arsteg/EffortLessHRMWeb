@@ -181,7 +181,7 @@
         <mat-form-field class="densed-field">
           <mat-label>Member</mat-label>
           <mat-select [(ngModel)]="projectwiseTimeSelectedMemberofAllTasks"
-            (selectionChange)="onTaskTimeMemberSelectionChange(member)">
+            (selectionChange)="onTaskTimeMemberSelectionChange(projectwiseTimeSelectedMemberofAllTasks)">
             @for(m of members; track m) {
             <mat-option [value]="m">{{m.name | titlecase}}</mat-option>
             }
