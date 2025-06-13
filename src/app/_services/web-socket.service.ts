@@ -37,6 +37,8 @@ export class WebSocketService implements OnDestroy {
   private messagesSubject = new BehaviorSubject<WebSocketMessage | null>(null);
   private readonly SOCKET_URL = environment.webSocketUrl;
   private userId: string | null = null;
+  private reconnectAttempts = 0;
+  private readonly MAX_RECONNECT_ATTEMPTS = 100;
 
   constructor() {
     window.addEventListener('beforeunload', () => this.disconnect());
@@ -45,6 +47,7 @@ export class WebSocketService implements OnDestroy {
   connect(userId: string): void {
     if (this.isConnected()) {
       if (this.userId === userId) {
+        this.startClientHeartbeat();
         return;
       }
       this.disconnect();
@@ -54,12 +57,13 @@ export class WebSocketService implements OnDestroy {
     this.socket$ = webSocket<WebSocketMessage>(this.SOCKET_URL);
 
     this.socket$.next({ type: 'auth', userId } as any);
-
+    this.startClientHeartbeat();
     this.socket$.subscribe({
       next: (message) => {
         this.messagesSubject.next(message);
       },
-      error: (err) => console.error(`WebSocket error for user ${userId}:`, err),
+      //error: (err) => console.error(`WebSocket error for user ${userId}:`, err),
+      error: (err) => this.handleSocketError(err),
       complete: () => console.log(`WebSocket connection closed for user ${userId}`)
     });
   }
@@ -98,5 +102,39 @@ export class WebSocketService implements OnDestroy {
 
   ngOnDestroy(): void {
     this.disconnect();
+  }
+
+  private handleSocketError(err: any) {
+    console.error(`WebSocket error for user ${this.userId}:`, err);
+
+    this.socket$?.complete();
+    this.socket$ = null;
+
+    if (this.reconnectAttempts < this.MAX_RECONNECT_ATTEMPTS) {
+      this.reconnectAttempts++;
+      const retryDelay = 1000 * this.reconnectAttempts; // exponential backoff
+      setTimeout(() => {
+        //console.log(`Reconnecting... Attempt ${this.reconnectAttempts}`);
+        if (this.userId) {
+          this.reconnectAttempts = 1;
+          this.connect(this.userId);
+        }
+      }, retryDelay);
+    } else {
+      console.error('Max reconnection attempts reached');
+    }
+  }
+
+  startClientHeartbeat() {
+    setInterval(() => {
+      if (this.isConnected()) {
+        this.sendMessage({
+          notificationType: WebSocketNotificationType.NOTIFICATION,
+          contentType: WebSocketContentType.TEXT,
+          content: 'ping',
+          timestamp: new Date().toISOString()
+        });
+      }
+    }, 10000); // every 30 seconds
   }
 }
