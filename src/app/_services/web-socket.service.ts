@@ -38,7 +38,7 @@ export class WebSocketService implements OnDestroy {
   private readonly SOCKET_URL = environment.webSocketUrl;
   private userId: string | null = null;
   private reconnectAttempts = 0;
-  private MAX_RECONNECT_ATTEMPTS = 100;
+  private readonly MAX_RECONNECT_ATTEMPTS = 100;
 
   constructor() {
     window.addEventListener('beforeunload', () => this.disconnect());
@@ -56,6 +56,7 @@ export class WebSocketService implements OnDestroy {
     this.socket$ = webSocket<WebSocketMessage>(this.SOCKET_URL);
 
     const nativeSocket = (this.socket$ as any)._socket as WebSocket;
+    console.log(`nativeSocket: ${nativeSocket}`);
     if (nativeSocket) {
       nativeSocket.onclose = (event: CloseEvent) => {
         console.warn('WebSocket closed', {
@@ -131,7 +132,7 @@ export class WebSocketService implements OnDestroy {
       setTimeout(() => {
         //console.log(`Reconnecting... Attempt ${this.reconnectAttempts}`);
         if (this.userId) {
-          this.MAX_RECONNECT_ATTEMPTS = 0;
+          this.reconnectAttempts = 0;
           this.connect(this.userId);
         }
       }, retryDelay);
