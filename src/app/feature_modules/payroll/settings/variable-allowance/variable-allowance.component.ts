@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms'; // Import AbstractControl
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms'; // Import AbstractControl
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,14 +38,14 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.variableAllowanceForm = this.fb.group({
-      label: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]*$/)]], // Added pattern validator
-      allowanceRatePerDay: [0, [Validators.required, Validators.min(0)]], // Added min(0) validator
+      label: ['', [Validators.required, Validators.pattern(/^[a-zA-Z\s]*$/)]],
+      allowanceRatePerDay: [0, [Validators.required, Validators.min(0)]],
       isPayrollEditable: [false],
       isProvidentFundAffected: [false],
       isESICAffected: [false],
       isLWFAffected: [false],
       isIncomeTaxAffected: [false],
-      deductIncomeTaxAllowance: [''],
+      deductIncomeTaxAllowance: [null],
       taxRegime: [[]],
       paidAllowanceFrequently: ['', Validators.required],
       allowanceEffectiveFromMonth: ['', Validators.required],
@@ -53,12 +53,37 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
       isEndingPeriod: [false],
       allowanceStopMonth: [''],
       allowanceStopYear: [''],
-      isProfessionalTaxAffected: [false],
+      isProfessionalTaxAffected: [false]
+    }, { validators: this.periodValidator() });
+
+    // Update validators dynamically based on isEndingPeriod
+    this.variableAllowanceForm.get('isEndingPeriod')?.valueChanges.subscribe(value => {
+      const stopMonthControl = this.variableAllowanceForm.get('allowanceStopMonth');
+      const stopYearControl = this.variableAllowanceForm.get('allowanceStopYear');
+      if (value) {
+        stopMonthControl?.setValidators(Validators.required);
+        stopYearControl?.setValidators(Validators.required);
+      } else {
+        stopMonthControl?.clearValidators();
+        stopYearControl?.clearValidators();
+        stopMonthControl?.setValue('');
+        stopYearControl?.setValue('');
+      }
+      stopMonthControl?.updateValueAndValidity({ emitEvent: false });
+      stopYearControl?.updateValueAndValidity({ emitEvent: false });
+      this.variableAllowanceForm.updateValueAndValidity();
+    });
+
+    // Subscribe to period fields to trigger validation
+    ['allowanceEffectiveFromMonth', 'allowanceEffectiveFromYear', 'allowanceStopMonth', 'allowanceStopYear'].forEach(field => {
+      this.variableAllowanceForm.get(field)?.valueChanges.subscribe(() => {
+        this.variableAllowanceForm.updateValueAndValidity();
+      });
     });
 
     // Set custom filter predicate to search by label
     this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
-      return data.label.toLowerCase().includes(filter);
+      return data.label?.toLowerCase().trim().includes(filter.toLowerCase().trim());
     });
   }
 
@@ -76,6 +101,46 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.tableService.initializeDataSource([]);
     this.getVariableAllowances();
+  }
+
+  periodValidator(): ValidatorFn {
+    return (formGroup: FormGroup): ValidationErrors | null => {
+      const isEndingPeriod = formGroup.get('isEndingPeriod')?.value;
+      if (!isEndingPeriod) {
+        return null;
+      }
+
+      const startMonth = formGroup.get('allowanceEffectiveFromMonth')?.value;
+      const startYear = formGroup.get('allowanceEffectiveFromYear')?.value;
+      const endMonth = formGroup.get('allowanceStopMonth')?.value;
+      const endYear = formGroup.get('allowanceStopYear')?.value;
+
+      if (!startMonth || !startYear || !endMonth || !endYear) {
+        return null; // Handled by required validators
+      }
+
+      const monthIndex = (month: string) => {
+        const index = (this as any).months.findIndex((m: string) => m.toLowerCase() === month.toLowerCase());
+        return index !== -1 ? index : null;
+      };
+
+      const startMonthIndex = monthIndex(startMonth);
+      const endMonthIndex = monthIndex(endMonth);
+
+      if (startMonthIndex === null || endMonthIndex === null) {
+        return null; // Invalid month values
+      }
+
+      const startDate = new Date(Number(startYear), startMonthIndex);
+      const endDate = new Date(Number(endYear), endMonthIndex);
+
+      if (endDate < startDate) {
+        // You are already setting the error on the formGroup, which is correct
+        // this.toast.error(this.translate.instant('payroll._variable_allowance.form.error.period_invalid_end')); // Toast is good for immediate feedback, but not for form validation display
+        return { periodInvalid: true };
+      }
+      return null;
+    };
   }
 
   onPageChange(event: any) {
@@ -209,6 +274,11 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
       }
     } else {
       this.markFormGroupTouched(this.variableAllowanceForm);
+      if (this.variableAllowanceForm.get('isEndingPeriod').value === true) {
+        this.translate.get('payroll._variable_allowance.form.error.period_invalid_end').subscribe(errorMessage => {
+          this.toast.error(errorMessage, this.translate.instant('payroll._variable_allowance.title'));
+        });
+      }
     }
   }
 

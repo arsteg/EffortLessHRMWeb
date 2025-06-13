@@ -448,7 +448,10 @@
                     "frequency_required": "This field is required",
                     "month_required": "Effective Month is required",
                     "year_required": "Effective Year is required",
-                    "allowance_rate_negative": "Allowance rate cannot be negative"
+                    "allowance_rate_negative": "Allowance rate cannot be negative",
+                    "allowance_rate_required": "Allowance rate is required",
+                    "label_invalid": "Label cannot contain digits and special characters (e.g., #, *, ^, %, $, @).",
+                    "period_invalid_end": "End period must be greater than or equal to start period."
                 }
             },
             "toast": {
