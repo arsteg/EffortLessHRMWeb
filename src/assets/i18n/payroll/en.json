@@ -465,6 +465,8 @@
             }
         },
         "variable_deduction": {
+            "invalid_label": "Label can only contain letters and spaces.",
+            "invalid_period": "End period must be greater than or equal to start period.",
             "title_add": "Add Variable Deduction",
             "title_update": "Update Variable Deduction",
             "name_header": "Deduction Name",

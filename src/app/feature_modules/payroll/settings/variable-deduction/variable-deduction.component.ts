@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -10,6 +10,41 @@ import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+
+const labelValidator: ValidatorFn = (control: AbstractControl) => {
+  const valid = /^[a-zA-Z\s(),/]*$/.test(control.value);
+  return valid ? null : { invalidLabel: true };
+};
+
+const periodValidator: ValidatorFn = (formGroup: FormGroup) => {
+  const isEndingPeriod = formGroup.get('isEndingPeriod').value;
+  if (!isEndingPeriod) {
+    return null; // No validation needed if there's no end period
+  }
+
+  const startMonth = formGroup.get('deductionEffectiveFromMonth').value;
+  const startYear = formGroup.get('deductionEffectiveFromYear').value;
+  const endMonth = formGroup.get('deductionStopMonth').value;
+  const endYear = formGroup.get('deductionStopYear').value;
+
+  // If any required fields are missing, skip validation (let individual validators handle it)
+  if (!startMonth || !startYear || !endMonth || !endYear) {
+    return null;
+  }
+
+  // Convert month names to numbers for comparison
+  const monthMap: { [key: string]: number } = {
+    January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
+    July: 7, August: 8, September: 9, October: 10, November: 11, December: 12
+  };
+
+  const startMonthNum = monthMap[startMonth];
+  const endMonthNum = monthMap[endMonth];
+  const startDate = new Date(Number(startYear), startMonthNum - 1);
+  const endDate = new Date(Number(endYear), endMonthNum - 1);
+
+  return endDate > startDate ? null : { invalidPeriod: true };
+};
 
 @Component({
   selector: 'app-variable-deduction',
@@ -26,7 +61,6 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
   members: any[];
   private unsubscribe$ = new Subject<void>();
 
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
@@ -39,7 +73,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.variableDeductionForm = this.fb.group({
-      label: ['', Validators.required],
+      label: ['', [Validators.required, labelValidator]],
       isShowINCTCStructure: [true, Validators.required],
       paidDeductionFrequently: ['', Validators.required],
       deductionEffectiveFromMonth: ['', Validators.required],
@@ -50,7 +84,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
       amountEnterForThisVariableDeduction: ['', Validators.required],
       amount: [0],
       percentage: [0]
-    });
+    }, { validators: periodValidator }); // Add period validator to the form group
 
     const currentYear = new Date().getFullYear();
     for (let year = currentYear - 2; year <= currentYear + 1; year++) {
@@ -138,17 +172,14 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
 
   onSubmission() {
     this.markFormGroupTouched(this.variableDeductionForm);
-    if (this.variableDeductionForm.invalid) {
-      return;
-    }
 
     const formValue = this.variableDeductionForm.value;
     const payload = { ...formValue };
-
+    console.log(this.variableDeductionForm.value);
     // Check for duplicate label before submission
     const isDuplicate = this.tableService.dataSource.data.some(
       (deduction: any) =>
-        deduction.label.toLowerCase() === payload.label.toLowerCase() &&
+        deduction.label.toLowerCase().trim() === payload.label.toLowerCase().trim() &&
         (this.isEdit ? deduction._id !== this.selectedRecord._id : true)
     );
 
@@ -177,7 +208,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
           );
         }
       });
-    } else { // isEdit
+    } else {
       this.payroll.updateVariableDeduction(this.selectedRecord._id, payload).pipe(takeUntil(this.unsubscribe$)).subscribe({
         next: (res: any) => {
           const updatedData = this.tableService.dataSource.data.map(item =>
