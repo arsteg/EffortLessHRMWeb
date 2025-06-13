@@ -1,11 +1,21 @@
-<!--Greetings & date picker-->
+<!--Greetings & Date Picker-->
 <div class="row align-items-center">
-  <div class="col-lg-9 col-md-8 col-12">
+  <div class="col-lg-6 col-md-4 col-12">
     <h1 class="mb-0">{{'dashboard.greeting' | translate}} <span class="text-primary">{{currentProfile?.firstName}}
         {{currentProfile?.lastName}}</span>!</h1>
     <p translate>dashboard.welcome</p>
   </div>
-
+  <div class="col-lg-3 col-md-4 col-12 ms-md-auto pe-3">
+    <mat-form-field class="densed-field">
+      <mat-label>Member</mat-label>
+      <mat-select [(ngModel)]="projectwiseTimeSelectedMemberofAllTasks"
+        (selectionChange)="onMemberSelectionChange(projectwiseTimeSelectedMemberofAllTasks)">
+        @for(m of members; track m) {
+        <mat-option [value]="m">{{m.name | titlecase}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
   <div class="col-lg-3 col-md-4 col-12 ms-md-auto pe-3">
     <mat-form-field appearance="outline" class="w-100">
       <mat-label class="">Select Date</mat-label>
@@ -15,6 +25,7 @@
     </mat-form-field>
   </div>
 </div>
+
 <!--Subscription Info-->
 <div class="card subscription-card mt-2" *ngIf="subscription">
   <div class="row">
@@ -46,8 +57,9 @@
           <h3 class="m-0">Amount: {{(lastInvoice?.amount | currency: 'INR') || ''}}</h3>
           <h3 class="m-0">Method:
             {{lastInvoice?.payment_method | titlecase}}
-            <mat-icon svgIcon="upi"  *ngIf="lastInvoice?.payment_method === 'upi'" style="line-height: 0.2;"></mat-icon>
-            <mat-icon svgIcon="card"  *ngIf="lastInvoice?.payment_method === 'card'" style="line-height: 0.2;"></mat-icon>
+            <mat-icon svgIcon="upi" *ngIf="lastInvoice?.payment_method === 'upi'" style="line-height: 0.2;"></mat-icon>
+            <mat-icon svgIcon="card" *ngIf="lastInvoice?.payment_method === 'card'"
+              style="line-height: 0.2;"></mat-icon>
           </h3>
         </div>
       </div>
@@ -58,11 +70,11 @@
 <div class="row mt-4">
   <!--Work Hours Log-->
   <div class="col-md-4 mb-4">
-    <div class="card p-2 " #timeSpentCard>
+    <div class="card p-2" #timeSpentCard>
       <div class="d-flex align-items-center justify-content-between">
         <h2>Time Spent</h2>
         <mat-form-field class="densed-field w-50">
-          <mat-select [(ngModel)]="selectedTimeSpent" (selectionChange)="selectedTimeSpent = ($event.value)">
+          <mat-select [(ngModel)]="selectedTimeSpent" (selectionChange)="onTimeSpentChange($event.value)">
             <mat-option value="Daily">Daily</mat-option>
             <mat-option value="Weekly">Weekly</mat-option>
             <mat-option value="Monthly">Monthly</mat-option>
@@ -94,15 +106,12 @@
             <h2>{{ formatMillisecondsToTime(hoursWorked?.today)}}</h2>
           </div>
         </div>
-
         <div class="col-5">
           <div class="p-2">
             <h2>{{formatMillisecondsToTime(hoursWorked?.previousDay)}}</h2>
           </div>
         </div>
       </div>
-
-
       }
       @if(selectedTimeSpent === 'Weekly') {
       <p class="text-center mt-2">
@@ -111,7 +120,7 @@
         </span>
         <br>
         <span class="d-flex align-items-center justify-content-center">
-          <span class="text-dark"> last week </span>
+          <span class="text-dark"> Last week </span>
           <mat-icon *ngIf="weeklySummary?.increased" class="text-success">arrow_upward</mat-icon>
           <mat-icon *ngIf="!weeklySummary?.increased" class="text-danger">arrow_downward</mat-icon>
         </span>
@@ -128,7 +137,6 @@
             <h2>{{ formatHoursAndMinutes(weeklySummary?.currentWeek)}}</h2>
           </div>
         </div>
-
         <div class="col-5">
           <div class="p-2">
             <h2>{{formatHoursAndMinutes(weeklySummary?.previousWeek)}}</h2>
@@ -143,7 +151,7 @@
         </span>
         <br>
         <span class="d-flex align-items-center justify-content-center">
-          <span class="text-dark"> a week before </span>
+          <span class="text-dark"> A month ago </span>
           <mat-icon *ngIf="monthlySummary?.increased" class="text-success">arrow_upward</mat-icon>
           <mat-icon *ngIf="!monthlySummary?.increased" class="text-danger">arrow_downward</mat-icon>
         </span>
@@ -160,35 +168,22 @@
             <h2>{{ convertMinutesToHoursAndMinutes(monthlySummary?.currentMonth)}}</h2>
           </div>
         </div>
-
         <div class="col-5">
           <div class="p-2">
             <h2>{{convertMinutesToHoursAndMinutes(monthlySummary?.previousMonth)}}</h2>
           </div>
         </div>
       </div>
-
-
       }
     </div>
   </div>
 
-  <!--Project-wise time spent on all task-->
+  <!--Project-wise Time Spent on All Tasks-->
   <div class="col-md-8 mb-4">
-    <div class="card  p-2">
+    <div class="card p-2">
       <div class="d-flex justify-content-between align-items-center flex-wrap">
-        <h2 class="d-flex align-items-center">Project-wise time spent on all tasks</h2>
-        <mat-form-field class="densed-field">
-          <mat-label>Member</mat-label>
-          <mat-select [(ngModel)]="projectwiseTimeSelectedMemberofAllTasks"
-            (selectionChange)="onTaskTimeMemberSelectionChange(projectwiseTimeSelectedMemberofAllTasks)">
-            @for(m of members; track m) {
-            <mat-option [value]="m">{{m.name | titlecase}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <h2 class="d-flex align-items-center">Project-wise Time Spent on All Tasks</h2>
       </div>
-
       <div style="overflow-y: auto;" [style.max-height.px]="timeSpentCardHeight">
         <table class="table">
           <thead>
@@ -204,7 +199,7 @@
                   <span class="fw-bold">{{projectTask?.projectName}}</span>
                 </td>
               </tr>
-              <tr *ngFor="let task of projectTask.tasks;let i = index ">
+              <tr *ngFor="let task of projectTask.tasks; let i = index">
                 <td class="py-2">{{task?.taskName}}</td>
                 <td>
                   <span> {{ task?.totalTime | milliSecondsToTime }} </span>
@@ -217,20 +212,11 @@
     </div>
   </div>
 
-  <!--Project wise time spent on each task-->
+  <!--Project-wise Time Spent on Each Task-->
   <div class="col-md-6 mb-4">
     <div class="card h-100 p-2" style="min-height: 290px">
       <div class="d-flex justify-content-between align-items-center flex-wrap">
-        <h2 class="d-flex align-items-center">Project wise time on each task</h2>
-        <mat-form-field class="densed-field">
-          <mat-label>Member</mat-label>
-          <mat-select [(ngModel)]="dailySelectedMember"
-            (selectionChange)="onDailyUpdateMemberSelectionChange(dailySelectedMember)">
-            @for(m of members; track m) {
-            <mat-option [value]="m">{{m.name | titlecase}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <h2 class="d-flex align-items-center">Project-wise Time on Each Task</h2>
       </div>
       @for(projectTask of dayWorkStatusByUser; track projectTask; let i = $index) {
       <div class="sticky-top">
@@ -240,10 +226,11 @@
       <div class="my-3">
         <div class="d-flex justify-content-between">
           <div>{{ task.taskName }}</div>
-          <div><strong>{{ ((task?.count*10)*60*1000) | milliSecondsToTime  }} Hours</strong></div>
+          <div><strong>{{ ((task?.count*10)*60*1000) | milliSecondsToTime }} Hours</strong></div>
         </div>
         <div class="progress custom-progress mt-1">
-          <div class="progress-bar bg-primary" [style.width.%]="(task.count * 10) / (24 * 60) * 100" role="progressbar"></div>
+          <div class="progress-bar bg-primary" [style.width.%]="(task.count * 10) / (24 * 60) * 100" role="progressbar">
+          </div>
         </div>
       </div>
       }
@@ -256,17 +243,7 @@
     <div class="card h-100 p-2">
       <div class="d-flex justify-content-between align-items-center flex-wrap">
         <h2 class="d-flex align-items-center">Productivity</h2>
-        <mat-form-field class="densed-field">
-          <mat-label>Member</mat-label>
-          <mat-select [(ngModel)]="productivitySelectedMember"
-            (selectionChange)="onProductivityMemberSelectionChange(productivitySelectedMember)">
-            @for(m of members; track m) {
-            <mat-option [value]="m">{{m.name | titlecase}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
       </div>
-
       <div class="w-100 mx-auto">
         <ngx-charts-pie-chart [results]="productivityData" [legend]="false" [labels]="false" [doughnut]="true"
           [explodeSlices]="false" [arcWidth]="0.25" [legendTitle]="''" [scheme]="colorScheme"></ngx-charts-pie-chart>
@@ -289,22 +266,11 @@
     <div class="card h-100 p-2">
       <div class="d-flex justify-content-between align-items-center flex-wrap">
         <h2 class="d-flex align-items-center">Task Summary</h2>
-        <mat-form-field class="densed-field">
-          <mat-label>Member</mat-label>
-          <mat-select [(ngModel)]="taskSummarySelectedMember"
-            (selectionChange)="onTaskSummaryMemberSelectionChange(taskSummarySelectedMember)">
-            @for(m of members; track m) {
-            <mat-option [value]="m">{{m.name | titlecase}}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
       </div>
-
       <div class="w-100">
         <ngx-charts-pie-chart [results]="taskSummary" [legend]="false" [doughnut]="false" [labels]="false"
           [explodeSlices]="false" [gradient]="false" [scheme]="colorScheme">
         </ngx-charts-pie-chart>
-
         <div class="d-flex flex-wrap gap-1 chart-legend justify-content-center">
           @for(task of taskSummary; track task; let i = $index) {
           <div class="text-center">
@@ -318,5 +284,4 @@
       </div>
     </div>
   </div>
-
 </div>
