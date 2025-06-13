@@ -77,7 +77,7 @@ export class ShowShortLeaveComponent {
       next: this.recordsPerPage.toString(),
       status: this.status
     };
-
+console.log(this.status)
     if (this.extractedUrl !== 'my-short-leave') {
       this.leaveService.getShortLeave(requestBody).subscribe({
         next: (leaves: any) => {
