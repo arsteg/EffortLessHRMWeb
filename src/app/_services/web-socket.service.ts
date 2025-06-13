@@ -47,6 +47,7 @@ export class WebSocketService implements OnDestroy {
   connect(userId: string): void {
     if (this.isConnected()) {
       if (this.userId === userId) {
+        this.startClientHeartbeat();
         return;
       }
       this.disconnect();
@@ -55,25 +56,8 @@ export class WebSocketService implements OnDestroy {
     this.userId = userId;
     this.socket$ = webSocket<WebSocketMessage>(this.SOCKET_URL);
 
-    const nativeSocket = (this.socket$ as any)._socket as WebSocket;
-    console.log(`nativeSocket: ${nativeSocket}`);
-    if (nativeSocket) {
-      nativeSocket.onclose = (event: CloseEvent) => {
-        console.warn('WebSocket closed', {
-          code: event.code,
-          reason: event.reason,
-          wasClean: event.wasClean,
-          time: new Date().toISOString()
-        });
-      };
-
-      nativeSocket.onerror = (event: Event) => {
-        console.error('WebSocket error event:', event);
-      };
-    }
-
     this.socket$.next({ type: 'auth', userId } as any);
-
+    this.startClientHeartbeat();
     this.socket$.subscribe({
       next: (message) => {
         this.messagesSubject.next(message);
@@ -128,16 +112,29 @@ export class WebSocketService implements OnDestroy {
 
     if (this.reconnectAttempts < this.MAX_RECONNECT_ATTEMPTS) {
       this.reconnectAttempts++;
-      const retryDelay = 100 * this.reconnectAttempts; // exponential backoff
+      const retryDelay = 1000 * this.reconnectAttempts; // exponential backoff
       setTimeout(() => {
         //console.log(`Reconnecting... Attempt ${this.reconnectAttempts}`);
         if (this.userId) {
-          this.reconnectAttempts = 0;
+          this.reconnectAttempts = 1;
           this.connect(this.userId);
         }
       }, retryDelay);
     } else {
       console.error('Max reconnection attempts reached');
     }
+  }
+
+  startClientHeartbeat() {
+    setInterval(() => {
+      if (this.isConnected()) {
+        this.sendMessage({
+          notificationType: WebSocketNotificationType.NOTIFICATION,
+          contentType: WebSocketContentType.TEXT,
+          content: 'ping',
+          timestamp: new Date().toISOString()
+        });
+      }
+    }, 10000); // every 30 seconds
   }
 }
