@@ -39,6 +39,9 @@ export class HrmTableComponent {
   selection = new SelectionModel<any>(true, []); // multiple selection allowed
   searchText = '';
   filteredData: any[] = [];
+  currentPageIndex = 0;
+  currentPageSize = this.pageSize;
+
 
   ngOnInit() {
     this.displayedColumns = this.columns.map(column => column.key);
@@ -103,12 +106,22 @@ export class HrmTableComponent {
   }
 
   onPageChange(event: PageEvent) {
-    if (this.isServerSide) {
-      this.pageChanged.emit({ pageIndex: event.pageIndex, pageSize: event.pageSize });
-    } else {
-      // Client-side pagination is handled automatically by mat-paginator + dataSource
-    }
+  this.currentPageIndex = event.pageIndex;
+  this.currentPageSize = event.pageSize;
+
+  if (this.isServerSide) {
+    this.pageChanged.emit({ pageIndex: event.pageIndex, pageSize: event.pageSize });
   }
+}
+
+
+  get pagedData(): any[] {
+    if (this.isServerSide) return this.filteredData;
+    const start = this.currentPageIndex * this.currentPageSize;
+    const end = start + this.currentPageSize;
+    return this.filteredData?.slice(start, end);
+  }
+
 
   onSearch(element: any) {
     const value = element.value;

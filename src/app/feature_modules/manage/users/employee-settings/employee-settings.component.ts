@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/_services/users.service';
-
+import { Location } from '@angular/common';
 @Component({
   selector: 'app-employee-settings',
   templateUrl: './employee-settings.component.html',
@@ -15,10 +15,16 @@ export class EmployeeSettingsComponent {
   employeeForm: FormGroup;
   selectedTab: string;
   isProfileView = false;
+  empName = '';
 
   constructor(private userService: UserService,
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private location: Location
+  ) {
+    const data = this.location.getState()['data'];
+    this.empName = data?.['empName'];
+  }
 
   ngOnInit() {
     const urlPath = this.router.url;
@@ -58,16 +64,7 @@ export class EmployeeSettingsComponent {
   }
 
   toggleToEmployees() {
-    const urlPath = this.router.url;
-    const segments = urlPath.split('/').filter(segment => segment);
-    const newSegments = segments.slice(0, -3);
-    const newPath = newSegments.join('/');
-    if (this.selectedTab) {
-      this.userService.toggleEmployeesDetails.next(false);
-    }
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() =>
-      this.router.navigate(['/' + newPath], { relativeTo: this.route })
-    );
+    this.router.navigate(['/home/manage/employees'])
   }
 
   onTabChange(event: any) {

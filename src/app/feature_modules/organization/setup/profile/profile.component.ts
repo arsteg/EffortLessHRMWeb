@@ -5,6 +5,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { CompanyService } from 'src/app/_services/company.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-profile',
@@ -25,7 +26,37 @@ export class ProfileComponent implements OnInit {
 
   @ViewChild('addEditCompanyDialog') addEditCompanyDialog: TemplateRef<any>;
   @ViewChild('uploadLogoDialog') uploadLogoDialog: TemplateRef<any>;
-
+  columns: TableColumn[] = [
+    {
+      key: 'logo',
+      name: 'Logo',
+      isImage: true
+    },
+    {
+      key: 'companyName',
+      name: 'Company Name'
+    },
+    {
+      key: 'contactPerson',
+      name: 'Contact Person'
+    },
+    {
+      key: 'email',
+      name: 'Email'
+    }, {
+      key: 'phone',
+      name: 'Phone'
+    },
+    {
+      key: 'action',
+      name: 'Actions',
+      isAction: true,
+      options: [
+        {label: 'Edit', icon:'edit', visibility: ActionVisibility.BOTH},
+        {label: 'Upload Logo', icon:'upload', visibility: ActionVisibility.BOTH},
+      ]
+    }
+  ]
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
@@ -50,11 +81,22 @@ export class ProfileComponent implements OnInit {
     this.getCompany();
   }
 
+  onActionClick(event) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.openAddEditCompanyModal(event.row)
+        break;
+
+      case 'Upload Logo':
+        this.openUploadLogoDialog(event.row)
+        break;
+    }
+  }
+
   getCompany() {
     this.companyService.getCompany().subscribe((res: any) => {
       this.company = res.data?.company;
       this.dataSource.data = this.company ? [this.company] : [];
-      console.log(this.dataSource.data);
       if (this.company) {
         this.companyForm.patchValue(this.company);
       }
@@ -65,7 +107,7 @@ export class ProfileComponent implements OnInit {
     if (this.companyForm.valid) {
       console.log(this.companyForm.value);
       const serviceCall = this.companyService.updateCompany({ ...this.companyForm.value, id: this.company?.id })
-       
+
       serviceCall.subscribe(() => {
         this.translate.get(this.isEdit ? 'organization.setup.company_updated' : 'organization.setup.company_added').subscribe((message: string) => {
           this.toast.success(message);
@@ -165,7 +207,7 @@ export class ProfileComponent implements OnInit {
 
   uploadLogo() {
     if (this.logoPayload) {
-      this.companyService.updateCompanyLogo( this.logoPayload).subscribe(
+      this.companyService.updateCompanyLogo(this.logoPayload).subscribe(
         () => {
           this.translate.get('organization.setup.logo_uploaded').subscribe((message: string) => {
             this.toast.success(message);

@@ -1,20 +1,4 @@
-.mat-expansion-panel-header {
-    background: #fc880d !important;
-}
-
-.mat-expansion-panel-header-title {
-    color: white !important;
-}
-
-.mat-expansion-indicator::after {
-    color: white !important
-}
-
-.panelTable {
-    background: none;
-}
-
-.mat-expansion-panel-header {
+/* .mat-expansion-panel-header {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
@@ -40,4 +24,4 @@
 
 .panelHeading {
     width: 60%;
-}
+} */

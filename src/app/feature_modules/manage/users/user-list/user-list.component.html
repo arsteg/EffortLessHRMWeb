@@ -1,115 +1,12 @@
 <router-outlet></router-outlet>
 <div class="main-content" *ngIf="!showEmployeeDetails">
-    <div class="container-fluid pt-3">
-        <div class="py-2 px-0 bg-white">
-            <div class="d-md-flex d-block justify-content-between align-items-center mb-2 px-2">
 
-
-                <div class="d-flex align-items-center w-100">
-                    <p class="mb-0">({{totalRecords}}) Records Found</p>
-
-                    <div class="col-lg-2 ms-auto d-flex align-items-center justify-content-start  mb-md-0 mb-3">
-                        <span class="bi bi-search searchIcon" style="z-index: 999;"></span>
-
-                        <input class="form-control" type="text" placeholder="search here.."
-                            (input)="applyFilter($event)" aria-label="default input example"
-                            style="border: none !important; position: relative; padding-left: 40px !important;">
-                    </div>
-                    <button mat-raised-button class="addBtn rounded-pill ms-3" data-bs-toggle="offcanvas"
-                        data-bs-target="#addUser">Add New</button>
-                </div>
-            </div>
-
-            <div class="table-responsive px-2">
-                <table mat-table [dataSource]="usersList">
-                    <ng-container matColumnDef="empCode">
-                        <th mat-header-cell *matHeaderCellDef> Emp&nbsp;Code </th>
-                        <td mat-cell *matCellDef="let data"> {{ data.appointment[0]?.empCode }} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="name">
-                        <th mat-header-cell *matHeaderCellDef> Members </th>
-                        <td mat-cell *matCellDef="let data">
-                            <span class="letter ms-2 d-lg-inline-block d-none"
-                                [style.background-color]="commonservice.getRandomColor(data.lastName)">
-                                {{data.firstName.slice(0,1) | uppercase}}{{data.lastName.slice(0,1) | uppercase}}
-                            </span>
-                            &nbsp;{{ data.firstName | titlecase }} {{data.lastName | titlecase}}
-                        </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="email">
-                        <th mat-header-cell *matHeaderCellDef> Email </th>
-                        <td mat-cell *matCellDef="let data"> {{ data.email }} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="jobTitle">
-                        <th mat-header-cell *matHeaderCellDef> Position </th>
-                        <td mat-cell *matCellDef="let data"> {{data.jobTitle}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="role">
-                        <th mat-header-cell *matHeaderCellDef> Member Type </th>
-                        <td mat-cell *matCellDef="let data">
-                            <span class="badge rounded-pill table-button text-dark px-4 py-2">
-                                {{data.role?.name}}
-                            </span>
-                        </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="createdOn">
-                        <th mat-header-cell *matHeaderCellDef> Member Since </th>
-                        <td mat-cell *matCellDef="let data"> {{ data.createdOn | date:'mediumDate'}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="status">
-                        <th mat-header-cell *matHeaderCellDef> Status </th>
-                        <td mat-cell *matCellDef="let data">
-                            <!-- <span class="badge rounded-pill table-button bg-success text-light px-4 py-2"
-                               >
-                                {{data.status}}</span> -->
-                            @if(data.status === 'Active') {
-                            <span class="badge rounded-pill table-button bg-success text-light px-4 py-2">
-                                {{data.status}}
-                            </span>
-                            }
-                             @else if (data.status === 'Settled') {
-                            <span class="badge rounded-pill table-button bg-danger text-light px-4 py-2">
-                                {{data.status}}
-                            </span>
-                            }
-                        </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef class="text-center"> Actions </th>
-                        <td mat-cell *matCellDef="let data">
-                            <button mat-icon-button [matMenuTriggerFor]="menu">
-                                <mat-icon>more_vert</mat-icon>
-                            </button>
-                            <mat-menu #menu="matMenu">
-                                <button mat-menu-item (click)="toggleView(data)">
-                                    <mat-icon>settings</mat-icon>
-                                    <span>Settings</span>
-                                </button>
-                                <button mat-menu-item (click)="deleteEmployee(data?._id)">
-                                    <mat-icon>delete</mat-icon>
-                                    <span>Delete</span>
-                                </button>
-                            </mat-menu>
-                        </td>
-                    </ng-container>
-
-                    <tr mat-header-row
-                        *matHeaderRowDef="['empCode', 'name', 'email', 'jobTitle', 'role', 'createdOn', 'status', 'actions']">
-                    </tr>
-                    <tr mat-row
-                        *matRowDef="let row; columns: ['empCode', 'name', 'email', 'jobTitle', 'role', 'createdOn', 'status', 'actions'];">
-                    </tr>
-                </table>
-            </div>
+        <div class="position-relative">
+            <button mat-flat-button class="position-absolute end-0" color="primary" data-bs-toggle="offcanvas" data-bs-target="#addUser">Add New</button>
         </div>
-    </div>
+        <hrm-table [data]="usersList?.data" [columns]="columns" (actionClicked)="onActionClick($event)"
+            [showSearch]="true"></hrm-table>
+
 </div>
 
 <div class="offcanvas offcanvas-end w-75" id="addUser" data-bs-backdrop="static">

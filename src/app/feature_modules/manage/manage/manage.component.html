@@ -1,15 +1,32 @@
-<div class="main-content">
-    <div class="container-fluid px-0">
-        <div class="d-flex align-items-center  pb-2 ps-lg-4 ps-2 bg-white w-100 manage_panel">
-            <button class="btn rounded-pill submenuTab manage_btn" routerLink="./employees" routerLinkActive="active">Employees</button>
-            <button class="btn rounded-pill submenuTab manage_btn" routerLink="./projects" routerLinkActive="active">Projects</button>
-            <button class="btn rounded-pill submenuTab manage_btn" routerLink="./tasks" routerLinkActive="active">Tasks</button>
-            <button class="btn rounded-pill submenuTab manage_btn" routerLink="./manual-time-requests" routerLinkActive="active">Manual Time</button>
-            <button class="btn rounded-pill submenuTab manage_btn" routerLink="./team-members" routerLinkActive="active">Team Members</button>
-            <button class="btn rounded-pill submenuTab manage_btn" routerLink="./tags" routerLinkActive="active">Tags</button>
-            <button class="btn rounded-pill submenuTab manage_btn" routerLink="./email-templates" routerLinkActive="active">E-Mail Template</button>
-        </div>
 
-        <div><router-outlet></router-outlet></div>
+<div class="main-content px-2">
+    <div>
+        <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+            <a mat-tab-link routerLink="employees" routerLinkActive #rla1="routerLinkActive"
+                [active]="rla1.isActive">Employees</a>
+
+            <a mat-tab-link routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive" routerLink="projects">
+                Projects
+            </a>
+            <a mat-tab-link routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive" routerLink="tasks">
+                Tasks
+            </a>
+            <a mat-tab-link routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive" routerLink="manual-time-requests">
+                Manual Time
+            </a>
+            <a mat-tab-link routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive"
+                routerLink="team-members">
+                Team Members
+            </a>
+            <a mat-tab-link routerLinkActive #rla6="routerLinkActive" [active]="rla6.isActive" routerLink="tags">
+                Tags
+            </a>
+            <a mat-tab-link routerLinkActive #rla7="routerLinkActive" [active]="rla7.isActive" routerLink="email-templates">
+                Email Template
+            </a>
+        </nav>
+        <mat-tab-nav-panel #tabPanel>
+            <router-outlet></router-outlet>
+        </mat-tab-nav-panel>
     </div>
 </div>

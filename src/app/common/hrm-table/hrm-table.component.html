@@ -35,7 +35,7 @@
 
 </div>
 <div #table class="table-responsive">
-    <table mat-table [dataSource]="filteredData" matSort (matSortChange)="onSort($event)" class="table hrm-table">
+    <table mat-table [dataSource]="pagedData" matSort (matSortChange)="onSort($event)" class="table hrm-table">
         @for(column of columns; track column){
         <ng-container [matColumnDef]="column.key">
             <th mat-header-cell *matHeaderCellDef mat-sort-header="{{ column.key }}"
@@ -114,8 +114,16 @@
                 <mat-checkbox (click)="$event.stopPropagation()" (change)="toggleRow(row)"
                     [checked]="selection.isSelected(row)" color="primary"></mat-checkbox>
 
+                } @else if(column.isImage){
+                    <img [src]="row[column.key]" class="img-fluid" width="140"/>
+                } @else if(column.isLink){
+                    <a [href]="column.linkUrl" target="_blank">{{column.linkText ? column.linkText : row[column.key]}}</a>
+                }@else if(column.isHtml){
+                    <div [innerHTML]="row[column.key]"></div>
                 } @else {
-                {{ column.valueFn ? column.valueFn(row) : getValueByPath(row, column.key) }}
+                    <span [ngClass]="column.cssClassFn ? column.cssClassFn(row) : column.cssClass">
+                        {{ column.valueFn ? column.valueFn(row) : getValueByPath(row, column.key) }}
+                    </span>
                 }
             </td>
 
@@ -129,7 +137,7 @@
 
 <!-- Pagination -->
 @if(showPaginator){
-<mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+<mat-paginator class="d-flex justify-content-start" [length]="filteredData.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
     (page)="onPageChange($event)">
 </mat-paginator>
 }
