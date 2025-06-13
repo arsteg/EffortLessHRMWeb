@@ -53,7 +53,7 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="isTDSAffected">
+        <ng-container matColumnDef="isLWFAffected">
           <th mat-header-cell *matHeaderCellDef>
             {{ 'payroll._variable_allowance.table.lwf' | translate }}
           </th>
@@ -131,10 +131,10 @@
         </ng-container>
 
         <tr mat-header-row
-          *matHeaderRowDef="['label', 'isProvidentFundAffected', 'isESICAffected', 'isTDSAffected', 'isProfessionalTaxAffected', 'isIncomeTaxAffected', 'paidAllowanceFrequently', 'actions']">
+          *matHeaderRowDef="['label', 'isProvidentFundAffected', 'isESICAffected', 'isLWFAffected', 'isProfessionalTaxAffected', 'isIncomeTaxAffected', 'paidAllowanceFrequently', 'actions']">
         </tr>
         <tr mat-row
-          *matRowDef="let row; columns: ['label', 'isProvidentFundAffected', 'isESICAffected', 'isTDSAffected', 'isProfessionalTaxAffected', 'isIncomeTaxAffected', 'paidAllowanceFrequently', 'actions'];">
+          *matRowDef="let row; columns: ['label', 'isProvidentFundAffected', 'isESICAffected', 'isLWFAffected', 'isProfessionalTaxAffected', 'isIncomeTaxAffected', 'paidAllowanceFrequently', 'actions'];">
         </tr>
       </table>
       <mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
@@ -152,15 +152,28 @@
       <div mat-dialog-content>
         <div class="row">
           <div class="form-group col-md-6">
+            <!-- <mat-form-field appearance="fill" class="w-100">
+              <mat-label>{{ 'payroll._variable_allowance.form.label' | translate }}</mat-label>
+              <input matInput type="text" formControlName="label">
+              <mat-error
+                *ngIf="variableAllowanceForm.get('label')?.invalid && (variableAllowanceForm.get('label')?.touched || variableAllowanceForm.get('label')?.dirty)">
+                <span *ngIf="variableAllowanceForm.get('label')?.errors?.['required']">
+                  {{ 'payroll._variable_allowance.form.error.label_required' | translate }}
+                </span>
+                <span *ngIf="variableAllowanceForm.get('label')?.errors?.['pattern']">
+                  {{ 'payroll._variable_allowance.form.error.label_invalid' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field> -->
             <mat-form-field appearance="fill" class="w-100">
               <mat-label>{{ 'payroll._variable_allowance.form.label' | translate }}</mat-label>
               <input matInput type="text" formControlName="label">
               <mat-error
-                *ngIf="variableAllowanceForm.get('label').invalid || variableAllowanceForm.get('label').touched">
-                <span *ngIf="variableAllowanceForm.get('label').errors?.['required']">
+                *ngIf="variableAllowanceForm.get('label')?.invalid && (variableAllowanceForm.get('label')?.touched || variableAllowanceForm.get('label')?.dirty)">
+                <span *ngIf="variableAllowanceForm.get('label')?.errors?.['required']">
                   {{ 'payroll._variable_allowance.form.error.label_required' | translate }}
                 </span>
-                <span *ngIf="variableAllowanceForm.get('label').errors?.['pattern']">
+                <span *ngIf="variableAllowanceForm.get('label')?.errors?.['invalidLabel']">
                   {{ 'payroll._variable_allowance.form.error.label_invalid' | translate }}
                 </span>
               </mat-error>
@@ -172,11 +185,11 @@
               <mat-label>{{ 'payroll._variable_allowance.form.allowance_rate' | translate }}</mat-label>
               <input matInput type="number" formControlName="allowanceRatePerDay">
               <mat-error
-                *ngIf="variableAllowanceForm.get('allowanceRatePerDay').invalid && (variableAllowanceForm.get('allowanceRatePerDay').dirty || variableAllowanceForm.get('allowanceRatePerDay').touched)">
-                <span *ngIf="variableAllowanceForm.get('allowanceRatePerDay').errors?.['required']">
+                *ngIf="variableAllowanceForm.get('allowanceRatePerDay')?.invalid && (variableAllowanceForm.get('allowanceRatePerDay')?.dirty || variableAllowanceForm.get('allowanceRatePerDay')?.touched)">
+                <span *ngIf="variableAllowanceForm.get('allowanceRatePerDay')?.errors?.['required']">
                   {{ 'payroll._variable_allowance.form.error.allowance_rate_required' | translate }}
                 </span>
-                <span *ngIf="variableAllowanceForm.get('allowanceRatePerDay').errors?.['min']">
+                <span *ngIf="variableAllowanceForm.get('allowanceRatePerDay')?.errors?.['min']">
                   {{ 'payroll._variable_allowance.form.error.allowance_rate_negative' | translate }}
                 </span>
               </mat-error>
@@ -295,7 +308,7 @@
             <mat-form-field appearance="fill" class="w-100">
               <mat-label>{{ 'payroll._variable_allowance.form.frequency' | translate }}</mat-label>
               <mat-select formControlName="paidAllowanceFrequently">
-                <mat-option value="monthly" [selected]>
+                <mat-option value="monthly">
                   {{ 'payroll._variable_allowance.frequency.monthly' | translate }}
                 </mat-option>
                 <mat-option value="quaterly">
@@ -309,7 +322,7 @@
                 </mat-option>
               </mat-select>
               <mat-error
-                *ngIf="variableAllowanceForm.get('paidAllowanceFrequently').invalid && (variableAllowanceForm.get('paidAllowanceFrequently').dirty || variableAllowanceForm.get('paidAllowanceFrequently').touched)">
+                *ngIf="variableAllowanceForm.get('paidAllowanceFrequently')?.invalid && (variableAllowanceForm.get('paidAllowanceFrequently')?.dirty || variableAllowanceForm.get('paidAllowanceFrequently')?.touched)">
                 {{ 'payroll._variable_allowance.form.error.frequency_required' | translate }}
               </mat-error>
             </mat-form-field>
@@ -330,12 +343,8 @@
                 </mat-option>
               </mat-select>
               <mat-error
-                *ngIf="variableAllowanceForm.get('allowanceEffectiveFromMonth').invalid && (variableAllowanceForm.get('allowanceEffectiveFromMonth').dirty || variableAllowanceForm.get('allowanceEffectiveFromMonth').touched)">
+                *ngIf="variableAllowanceForm.get('allowanceEffectiveFromMonth')?.invalid && (variableAllowanceForm.get('allowanceEffectiveFromMonth')?.dirty || variableAllowanceForm.get('allowanceEffectiveFromMonth')?.touched)">
                 {{ 'payroll._variable_allowance.form.error.month_required' | translate }}
-              </mat-error>
-              <mat-error
-                *ngIf="variableAllowanceForm.hasError('periodInvalid') && (variableAllowanceForm.get('allowanceEffectiveFromMonth').dirty || variableAllowanceForm.get('allowanceEffectiveFromMonth').touched)">
-                {{ 'payroll._variable_allowance.form.error.period_invalid_start' | translate }}
               </mat-error>
             </mat-form-field>
           </div>
@@ -349,11 +358,8 @@
                 <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
               </mat-select>
               <mat-error
-                *ngIf="variableAllowanceForm.get('allowanceEffectiveFromYear').invalid && (variableAllowanceForm.get('allowanceEffectiveFromYear').dirty || variableAllowanceForm.get('allowanceEffectiveFromYear').touched)">
+                *ngIf="variableAllowanceForm.get('allowanceEffectiveFromYear')?.invalid && (variableAllowanceForm.get('allowanceEffectiveFromYear')?.dirty || variableAllowanceForm.get('allowanceEffectiveFromYear')?.touched)">
                 {{ 'payroll._variable_allowance.form.error.year_required' | translate }}
-              </mat-error>
-              <mat-error *ngIf="variableAllowanceForm.hasError('periodInvalid')">
-                {{ 'payroll._variable_allowance.form.error.period_invalid_end' | translate }}
               </mat-error>
             </mat-form-field>
           </div>
@@ -404,20 +410,22 @@
                 *ngIf="variableAllowanceForm.get('allowanceStopYear')?.errors?.['required'] && (variableAllowanceForm.get('allowanceStopYear')?.dirty || variableAllowanceForm.get('allowanceStopYear')?.touched)">
                 {{ 'payroll._variable_allowance.form.error.year_required' | translate }}
               </mat-error>
-              <mat-error
-                *ngIf="variableAllowanceForm.hasError('periodInvalid') && (variableAllowanceForm.get('allowanceStopYear')?.dirty || variableAllowanceForm.get('allowanceStopYear')?.touched)">
-                {{ 'payroll._variable_allowance.form.error.period_invalid_end' | translate }}
-              </mat-error>
             </mat-form-field>
           </div>
         </div>
+        <div
+          *ngIf="variableAllowanceForm.errors?.['invalidPeriod'] && (variableAllowanceForm.get('allowanceStopMonth').touched || variableAllowanceForm.get('allowanceStopYear').touched)">
+          <small class="text-danger">
+            {{ 'payroll.variable_deduction.invalid_period' | translate }}
+          </small>
+        </div>
+
       </div>
       <div mat-dialog-actions align="end">
         <button mat-button class="close-button" (click)="closeModal()">
           {{ 'payroll.cancel' | translate }}
         </button>
-        <!-- [disabled]="!variableAllowanceForm.valid" -->
-        <button mat-raised-button color="primary" type="submit" >
+        <button mat-raised-button color="primary" type="submit" [disabled]="!variableAllowanceForm.valid">
           {{ (isEdit ? 'payroll.update' : 'payroll.save') | translate }}
         </button>
       </div>
