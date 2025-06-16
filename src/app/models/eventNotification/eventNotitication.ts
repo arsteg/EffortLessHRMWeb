@@ -11,7 +11,8 @@ eventNotificationType:string,
 date:Date,
 isRecurring:boolean
 recurringFrequency:string,
-leadTime:number
+leadTime:number,
+status: string
 }
 
 export interface UserNotification {
