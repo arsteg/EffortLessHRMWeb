@@ -47,120 +47,11 @@ export class Step2Component {
     });
 
     this.getAttendanceSummaryByPayroll();
-  }
-
-  onUserSelectedFromChild(userId: any) {
-    this.selectedUserId = userId.value.user;
-    this.selectedPayrollUser = userId.value._id;
-    if (this.changeMode === 'View') { this.getAttendanceSummary(userId?.value._id); }
-    if (this.changeMode === 'Add') { this.getProcessAttendanceLOPForPayrollUser(); }
-  }
-
-  openDialog() {
-    if (this.changeMode == 'View') {
-      this.attendanceSummaryForm.patchValue({
-        totalDays: this.selectedRecord?.totalDays,
-        lopDays: this.selectedRecord?.lopDays,
-        payableDays: this.selectedRecord?.payableDays
-      });
-      this.attendanceSummaryForm.get('payrollUser').disable();
-    } else {
-      this.attendanceSummaryForm.reset({
-        payrollUser: '',
-        totalDays: 0,
-        lopDays: 0,
-        payableDays: 0
-      });
-      this.attendanceSummaryForm.get('payrollUser').enable();
-    }
-    this.dialog.open(this.dialogTemplate, {
-      width: '600px',
-      disableClose: true
-    });
-  }
-
-  closeDialog() {
-    this.dialog.closeAll();
-  }
+  } 
 
   getUser(employeeId: string) {
     const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
-  }
-
-  getAttendanceSummary(userId: string) {
-    this.payrollService.getAttendanceSummary(userId).subscribe(
-      (res: any) => {
-        this.attendanceSummary = res.data;
-        const userRequests = this.attendanceSummary.map((item: any) => {
-          const payrollUser = this.payrollUsers.find((user: any) => user._id === item.payrollUser);
-          return {
-            ...item,
-            payrollUserDetails: this.getUser(payrollUser?.user)
-          };
-        });
-
-        this.attendanceSummary = userRequests;
-      },
-      (error) => {
-        console.error("Error fetching attendance summary:", error);
-      }
-    );
-  }
-
-
-  onSubmission() {
-    if (this.attendanceSummaryForm.invalid) {
-      this.attendanceSummaryForm.markAllAsTouched();
-      return;
-    }
-    this.attendanceSummaryForm.patchValue({
-      payrollUser: this.selectedPayrollUser
-    });
-    const formData = this.attendanceSummaryForm.value;
-
-    const existingRecord = this.attendanceSummary.find(
-      (record: any) =>
-        record.payrollUser === this.selectedPayrollUser &&
-        record.month === formData.month &&
-        record.year === formData.year
-    );
-
-    if (existingRecord) {
-      this.toast.warning(
-        'Attendance summary for the selected payroll user, month, and year already exists.',
-        'Duplicate Record!'
-      );
-      return;
-    }
-
-    if (this.changeMode === 'Add') {
-      this.payrollService.addAttendanceSummary(formData).subscribe(
-        (res: any) => {
-          this.getAttendanceSummaryByPayroll();
-          this.attendanceSummaryForm.enable();
-          this.changeMode = 'View';
-          this.attendanceSummaryForm.patchValue({
-            payrollUser: '',
-            totalDays: 0,
-            lopDays: 0,
-            payableDays: 0,
-          });
-
-          this.toast.success(
-            'Attendance summary for payroll user created successfully!',
-            'Success!'
-          );
-          this.closeDialog();
-        },
-        (err) => {
-          this.toast.error(
-            'Attendance summary for payroll user could not be created.',
-            'Error!'
-          );
-        }
-      );
-    }
   }
 
   getMonthNumber(monthName: string): number {
@@ -171,31 +62,7 @@ export class Step2Component {
   getTotalDaysInMonth(year: number, month: number): number {
     return new Date(year, month, 0).getDate();
   }
-
-  getProcessAttendanceLOPForPayrollUser() {
-    let payload = {
-      skip: '',
-      next: '',
-      month: this.getMonthNumber(this.selectedPayroll.month) || this.selectedPayroll.month,
-      year: this.selectedPayroll.year
-    };
-
-    this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((res: any) => {
-      this.attendanceLOPUser = res.data;
-      console.log(this.selectedUserId)
-      const matchingUsers = this.attendanceLOPUser.filter((lop: any) => lop.user === this.selectedUserId);
-      console.log(matchingUsers)
-      const lopUserLength = matchingUsers.length;
-      const payableDays = this.getTotalDaysInMonth(payload.year, payload.month) - lopUserLength;
-
-      this.attendanceSummaryForm.patchValue({
-        lopDays: lopUserLength,
-        payableDays: payableDays,
-        totalDays: this.getTotalDaysInMonth(payload.year, payload.month)
-      });
-      this.attendanceSummaryForm.disable();
-    });
-  }
+ 
 
   getAttendanceSummaryByPayroll() {
     this.payrollService.getAttendanceSummaryBypayroll(this.selectedPayroll?._id).subscribe((res: any) => {

@@ -13,7 +13,7 @@ import { UserService } from 'src/app/_services/users.service';
   styleUrls: ['./step8.component.css']
 })
 export class FNFStep8Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'taxCalculatedMethod', 'taxCalculated', 'tdsCalculated', 'actions'];
+  displayedColumns: string[] = ['userName', 'taxCalculatedMethod', 'taxCalculated', 'tdsCalculated'];
   incomeTax = new MatTableDataSource<any>();
   incomeTaxForm: FormGroup;
   selectedIncomeTax: any;
@@ -70,68 +70,6 @@ export class FNFStep8Component implements OnInit {
         });
       });
     }
-  }
-
-  openDialog(isEdit: boolean): void {
-    this.isEdit = isEdit;
-    this.dialog.open(this.dialogTemplate, {
-      width: '50%',
-      panelClass: 'custom-dialog-container',
-      disableClose: true
-    });
-  }
-  onSubmit(): void {
-    let payload = {
-      PayrollFNFUser: this.selectedFNFUser,
-      TaxCalculatedMethod: this.incomeTaxForm.value.TaxCalculatedMethod,
-      TaxCalculated: this.incomeTaxForm.value.TaxCalculated,
-      TDSCalculated: this.incomeTaxForm.value.TDSCalculated
-    }
-    this.payrollService.addFnFIncomeTax(payload).subscribe(
-      (res: any) => {
-        this.toast.success('Income Tax added successfully', 'Success');
-        this.fetchIncomeTax(this.selectedFnF);
-        this.incomeTaxForm.reset({
-          PayrollFNFUser: '',
-          TaxCalculatedMethod: '',
-          TaxCalculated: 0,
-          TDSCalculated: 0
-        });
-        this.dialog.closeAll();
-      },
-      (error: any) => {
-        this.toast.error('Failed to add Income Tax', 'Error');
-      });
-
-  }
-
-  onCancel(): void {
-    if (this.isEdit && this.selectedIncomeTax) {
-      this.incomeTaxForm.patchValue({
-        PayrollFNFUser: this.selectedIncomeTax.PayrollFNFUser,
-        TaxCalculatedMethod: this.selectedIncomeTax.TaxCalculatedMethod,
-        TaxCalculated: this.selectedIncomeTax.TaxCalculated,
-        TDSCalculated: this.selectedIncomeTax.TDSCalculated
-      });
-    } else {
-      this.incomeTaxForm.reset();
-    }
-  }
-
-  deleteIncomeTax(_id: string) {
-    this.payrollService.deleteFnFIncomeTax(_id).subscribe((res: any) => {
-      this.toast.success('Income Tax Deleted', 'Success');
-      this.fetchIncomeTax(this.selectedFnF);
-    }, error => {
-      this.toast.error('Failed to delete Income Tax', 'Error');
-    });
-  }
-
-  deleteFnF(id: string): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { width: '400px', });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'delete') { this.deleteIncomeTax(id); }
-    });
   }
 
   getMatchedSettledUser(userId: string) {

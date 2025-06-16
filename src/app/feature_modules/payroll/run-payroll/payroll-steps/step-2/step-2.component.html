@@ -5,12 +5,7 @@
             <span class="bi bi-search searchIcon"></span>
             <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                 name="searchText" aria-label="default input example">
-        </div>
-        <div class="d-flex align-items-baseine mt-1">
-            <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-                [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-            <button mat-raised-button class="ms-2 addBtn" (click)="changeMode = 'Add'; openDialog();">Add</button>
-        </div>
+        </div>      
     </div>
 
     <table mat-table [dataSource]="attendanceSummary">
@@ -38,39 +33,3 @@
         <tr mat-row *matRowDef="let row; columns: ['payrollUserDetails', 'totalDays', 'lopDays', 'payableDays'];"></tr>
     </table>
 </div>
-
-<ng-template #dialogTemplate>
-    <h1 mat-dialog-title>{{changeMode}} Attendance Summary</h1>
-    <div mat-dialog-content>
-        <form [formGroup]="attendanceSummaryForm" (ngSubmit)="onSubmission()">
-            <div class="row">
-                <ng-container class="col-md-6" *ngIf="changeMode != 'View'">
-                    <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
-                        [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-                </ng-container>
-
-                <mat-form-field appearance="outline" class="my-2 col-md-6">
-                    <mat-label>Total Days</mat-label>
-                    <input matInput type="number" formControlName="totalDays">
-                    <mat-error *ngIf="attendanceSummaryForm.get('totalDays').hasError('required')">Total Days is required</mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="my-2 col-md-6">
-                    <mat-label>LOP Days</mat-label>
-                    <input matInput type="number" formControlName="lopDays">
-                    <mat-error *ngIf="attendanceSummaryForm.get('lopDays').hasError('required')">LOP Days is required</mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="my-2 col-md-6">
-                    <mat-label>Payable Days</mat-label>
-                    <input matInput type="number" formControlName="payableDays">
-                    <mat-error *ngIf="attendanceSummaryForm.get('payableDays').hasError('required')">Payable Days is required</mat-error>
-                </mat-form-field>
-            </div>
-        </form>
-    </div>
-    <div mat-dialog-actions class="d-flex justify-content-between">
-        <button mat-button (click)="closeDialog()">Cancel</button>
-        <button mat-raised-button color="primary" (click)="onSubmission()"  *ngIf="changeMode == 'Add'">Save</button>
-    </div>
-</ng-template>
