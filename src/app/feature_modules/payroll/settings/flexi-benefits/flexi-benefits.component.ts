@@ -1,5 +1,5 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,17 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
+
+const labelValidator: ValidatorFn = (control: AbstractControl) => {
+  const value = control.value as string;
+  // Check if the value is empty or only whitespace
+  if (!value || /^\s*$/.test(value)) {
+    return { required: true }; // Treat empty or only whitespace as required error
+  }
+  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
+  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
+  return valid ? null : { invalidLabel: true };
+};
 
 @Component({
   selector: 'app-flexi-benefits',
@@ -32,7 +43,7 @@ export class FlexiBenefitsComponent implements AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.flexiBenefitsForm = this.fb.group({
-      name: ['', Validators.required]
+      name: ['', [Validators.required, labelValidator]]
     });
 
     // Set custom filter predicate to search by name

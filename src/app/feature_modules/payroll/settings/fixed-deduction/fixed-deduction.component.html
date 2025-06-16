@@ -79,7 +79,7 @@
                         {{ 'payroll.fixed_deduction.form.error.label_required' | translate }}
                     </mat-error>
                     <mat-error
-                        *ngIf="fixedContributionForm.get('label').hasError('specialCharacters') && (fixedContributionForm.get('label').dirty || fixedContributionForm.get('label').touched)">
+                        *ngIf="fixedContributionForm.get('label')?.errors?.['invalidLabel']">
                         {{ 'payroll.fixed_deduction.form.error.label_no_special_characters' | translate }}
                     </mat-error>
                 </mat-form-field>

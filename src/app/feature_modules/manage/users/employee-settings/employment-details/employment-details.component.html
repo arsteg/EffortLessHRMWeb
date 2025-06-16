@@ -1,4 +1,4 @@
-<div class="px-2">
+<div>
   <mat-accordion class="example-headers-align">
     <mat-expansion-panel [expanded]="true">
       <mat-expansion-panel-header>
@@ -13,7 +13,7 @@
 
       <form [formGroup]="appointmentForm" (ngSubmit)="onAppointmentSubmission()">
         <div class="d-flex justify-content-end mb-2">
-          <button mat-raised-button class="addBtn" type="submit">Save</button>
+          <button mat-flat-button  color="primary" type="submit">Save</button>
         </div>
         <div class="row">
           <mat-form-field appearance="outline" class="col-md-6">
@@ -72,7 +72,7 @@
 
       <form [formGroup]="jobInformationForm" (ngSubmit)="onSubmissionJobInformation()">
         <div class="d-flex justify-content-end mb-2">
-          <button mat-raised-button color="primary">Save</button>
+          <button mat-flat-button color="primary">Save</button>
         </div>
         <div class="row">
           <mat-form-field appearance="outline" class="col-md-6">

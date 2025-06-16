@@ -1,77 +1,7 @@
-<div class="tableContainer py-2">
-  <div class="d-flex align-items-center px-2">
-    <p class="mb-0 me-auto" translate>organization.setup.company_details</p>
-    <div class="d-flex align-items-center">
-      <span class="bi bi-search searchIcon"></span>
-      <input class="form-control search" type="text" [placeholder]="'organization.setup.search_company' | translate"
-        [(ngModel)]="searchText" aria-label="Search input" />
-    </div>
-  </div>
 
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z2">
-    <ng-container matColumnDef="companyLogo">
-      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.company_logo' | translate}}</th>
-      <td mat-cell *matCellDef="let company">
-        <img [src]="company?.logo || 'assets/default-logo.png'" alt="Company Logo" class="company-logo"
-          style="height: 50px;" />
-      </td>
-    </ng-container>
+<hrm-table [data]="dataSource.data" [columns]="columns" [showExport]="'none'" [showSearch]="true"
+    (actionClicked)="onActionClick($event)"></hrm-table>
 
-    <ng-container matColumnDef="companyName">
-      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.registered_company_name' | translate}}</th>
-      <td mat-cell *matCellDef="let company">{{ company?.companyName }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="contactPerson">
-      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.contact_person' | translate}}</th>
-      <td mat-cell *matCellDef="let company">{{ company?.contactPerson }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.email' | translate}}</th>
-      <td mat-cell *matCellDef="let company">{{ company?.email }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="phone">
-      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.phone' | translate}}</th>
-      <td mat-cell *matCellDef="let company">{{ company?.phone }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="address">
-      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.address' | translate}}</th>
-      <td mat-cell *matCellDef="let company">{{ company?.address }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>{{'organization.setup.actions' | translate}}</th>
-      <td mat-cell *matCellDef="let company">
-        <button mat-icon-button [matMenuTriggerFor]="menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="openAddEditCompanyModal(company)">
-            <mat-icon>edit</mat-icon>
-            <span>{{'organization.setup.edit' | translate}}</span>
-          </button>
-          <button mat-menu-item (click)="openUploadLogoDialog(company)">
-            <mat-icon>upload</mat-icon>
-            <span>{{'organization.setup.upload_company_logo' | translate}}</span>
-          </button>
-        </mat-menu>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row
-      *matHeaderRowDef="['companyLogo', 'companyName', 'contactPerson', 'email', 'phone', 'address', 'actions']"></tr>
-    <tr mat-row
-      *matRowDef="let row; columns: ['companyLogo', 'companyName', 'contactPerson', 'email', 'phone', 'address', 'actions']">
-    </tr>
-
-    <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="7" translate>organization.setup.no_company_data</td>
-    </tr>
-  </table>
-</div>
 
 <ng-template #addEditCompanyDialog>
   <h1 mat-dialog-title>{{ (isEdit ? 'organization.setup.update_company' : 'organization.setup.add_company') | translate

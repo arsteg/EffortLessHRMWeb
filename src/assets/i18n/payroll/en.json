@@ -13,6 +13,7 @@
         "generated_on": "Generated On",
         "status": "Status",
         "actions": "Actions",
+        "select_approver": "Select Payroll Approver",
         "_history": {
             "title": "Payroll History",
             "table": {

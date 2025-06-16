@@ -1,15 +1,18 @@
-import { Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, inject, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { signup, User } from 'src/app/models/user';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { RoleService } from 'src/app/_services/role.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { TableColumn, ActionVisibility } from 'src/app/models/table-column';
+import { DatePipe } from '@angular/common';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-user-list',
@@ -17,6 +20,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./user-list.component.css'],
 })
 export class UserListComponent implements OnInit {
+  private datePipe = inject(DatePipe);
   usersList: MatTableDataSource<any>;
   inviteUser: signup[] = [];
   searchText = '';
@@ -37,6 +41,21 @@ export class UserListComponent implements OnInit {
   totalRecords: number;
   showOffcanvas: boolean;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
+  columns: TableColumn[] = [
+    { key: 'empCode', name: 'Emp Code', valueFn: (row: any) => row.appointment[0]?.empCode },
+    { key: 'name', name: 'Member', valueFn: (row: any) => `${row.firstName} ${row.lastName}` },
+    { key: 'email', name: 'Email' },
+    { key: 'jobTitle', name: 'Position' },
+    { key: 'role.name', name: 'Role' },
+    { key: 'createdOn', name: 'Created On', valueFn: (row: any) => row.createdOn ? this.datePipe.transform(row.createdOn, 'mediumDate') : '' },
+    { key: 'status', name: 'Status', cssClassFn: (row: any) => row.status === 'Active' ? 'text-success' : 'text-danger' },
+    {
+      key: 'actions', name: 'Actions', isAction: true, options: [
+        { label: 'Settings', icon: 'settings', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH },
+      ]
+    }
+  ]
 
   constructor(
     private router: Router,
@@ -62,6 +81,22 @@ export class UserListComponent implements OnInit {
       },
       { validator: this.passwordMatchValidator }
     );
+
+    if (this.router.url === '/home/manage/employees') {
+      this.showEmployeeDetails = false;
+    } else {
+      this.showEmployeeDetails = true;
+    }
+    this.router.events
+      .pipe(filter((event: any) => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        console.log('Navigation ended:', event.url);
+        if (event.url === '/home/manage/employees') {
+          this.showEmployeeDetails = false;
+        } else {
+          this.showEmployeeDetails = true;
+        }
+      });
   }
 
   ngOnInit() {
@@ -71,6 +106,17 @@ export class UserListComponent implements OnInit {
       this.usersList = new MatTableDataSource(result && result.data && result.data.data);
     });
     this.firstLetter = this.commonservice.firstletter;
+  }
+
+  onActionClick(event: any) {
+    switch (event.action.label) {
+      case 'Settings':
+        this.toggleView(event.row)
+        break;
+      case 'Delete':
+        this.deleteEmployee(event.row?._id)
+        break;
+    }
   }
 
   passwordMatchValidator(group: FormGroup) {
@@ -129,11 +175,11 @@ export class UserListComponent implements OnInit {
 
     const empCode = data.appointment[0]?.empCode;
     if (empCode) {
-      this.router.navigate([empCode, 'employee-settings', 'employee-profile'], { relativeTo: this.route });
+      this.router.navigate([empCode, 'employee-settings', 'employee-profile'], { relativeTo: this.route, state: {data: {empName: data.firstName+ ' ' +data.lastName}} });
     } else {
       console.error('empCode is not defined');
     }
-    this.showEmployeeDetails = !this.showEmployeeDetails;
+    // this.showEmployeeDetails = !this.showEmployeeDetails;
   }
 
 

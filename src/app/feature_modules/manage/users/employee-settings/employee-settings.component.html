@@ -1,15 +1,15 @@
 <div class="main-content">
     <div class="container-fluid">
-        @if(!isProfileView){
-            <div class="breadcrumb mt-2">
-                <span class="breadcrumb-item active" (click)="toggleToEmployees()" style="cursor: pointer;">
-                    Employees
-                </span>
-                <span class="breadcrumb-item text-muted">{{ selectedTab }}</span>
-            </div>
-        }
-        <div class="d-flex align-items-center w-100">
-            <mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="onTabChange($event)">
+        <div class="d-flex align-items-center flex-wrap">
+            @if(!isProfileView){
+                <div class="d-flex align-items-center me-2">
+                    <button mat-icon-button (click)="toggleToEmployees()">
+                        <mat-icon>keyboard_arrow_left</mat-icon>
+                    </button>
+                    <span class="text-muted">{{ empName || selectedTab }}</span>
+                </div>
+            }
+            <mat-tab-group [selectedIndex]="selectedIndex" (selectedTabChange)="onTabChange($event)" class="child-tabs">
                 <mat-tab label="Employee Profile"></mat-tab>
                 <mat-tab label="Employment Details"></mat-tab>
                 <mat-tab label="Salary Details"></mat-tab>

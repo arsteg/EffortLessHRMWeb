@@ -12,7 +12,13 @@ import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const valid = /^[a-zA-Z\s(),/]*$/.test(control.value);
+  const value = control.value as string;
+  // Check if the value is empty or only whitespace
+  if (!value || /^\s*$/.test(value)) {
+    return { required: true }; // Treat empty or only whitespace as required error
+  }
+  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
+  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
   return valid ? null : { invalidLabel: true };
 };
 
@@ -84,7 +90,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
       amountEnterForThisVariableDeduction: ['', Validators.required],
       amount: [0],
       percentage: [0]
-    }, { validators: periodValidator }); // Add period validator to the form group
+    }, { validators: periodValidator });
 
     const currentYear = new Date().getFullYear();
     for (let year = currentYear - 2; year <= currentYear + 1; year++) {

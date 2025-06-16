@@ -12,7 +12,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
   styleUrls: ['./step7.component.css']
 })
 export class FNFStep7Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'LateComing', 'EarlyGoing', 'FinalOvertime', 'actions'];
+  displayedColumns: string[] = ['userName', 'LateComing', 'EarlyGoing', 'FinalOvertime'];
   overtime = new MatTableDataSource<any>();
   overtimeForm: FormGroup;
   selectedOvertime: any;
@@ -63,110 +63,6 @@ export class FNFStep7Component implements OnInit {
       width: '50%',
       panelClass: 'custom-dialog-container',
       disableClose: true
-    });
-  }
-
-  editOvertime(overtime: any): void {
-    this.isEdit = true;
-    this.selectedOvertime = overtime;
-    this.overtimeForm.patchValue({
-      PayrollFNFUser: overtime.userName,
-      LateComing: overtime.LateComing,
-      EarlyGoing: overtime.EarlyGoing,
-      FinalOvertime: overtime.FinalOvertime
-    });
-    this.overtimeForm.get('PayrollFNFUser').disable();
-    this.openDialog(true);
-  }
-
-  onSubmit(): void {
-    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
-    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
-
-    this.overtimeForm.patchValue({
-      PayrollFNFUser: payrollFNFUserId
-    });
-    if (this.overtimeForm.valid) {
-      this.overtimeForm.get('PayrollFNFUser').enable();
-
-      if (this.isEdit) {
-        this.overtimeForm.patchValue({
-          PayrollFNFUser: this.selectedOvertime.PayrollFNFUser,
-        });
-        this.payrollService.updateFnFOvertime(this.selectedOvertime._id, this.overtimeForm.value).subscribe(
-          (res: any) => {
-            this.toast.success('Overtime updated successfully', 'Success');
-            this.fetchOvertime(this.selectedFnF);
-            this.overtimeForm.reset({
-              PayrollFNFUser: '',
-              LateComing: '',
-              EarlyGoing: '',
-              FinalOvertime: ''
-            })
-            this.isEdit = false;
-            this.dialog.closeAll();
-          },
-          (error: any) => {
-            this.toast.error('Failed to update Overtime', 'Error');
-          }
-        );
-      } else {
-        const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
-        const payrollFNFUserId = matchedUser ? matchedUser._id : null;
-
-        this.overtimeForm.patchValue({
-          PayrollFNFUser: payrollFNFUserId
-        });
-        this.payrollService.addFnFOvertime(this.overtimeForm.value).subscribe(
-          (res: any) => {
-            this.toast.success('Overtime added successfully', 'Success');
-            this.fetchOvertime(this.selectedFnF);
-            this.overtimeForm.reset({
-              PayrollFNFUser: '',
-              LateComing: '',
-              EarlyGoing: '',
-              FinalOvertime: ''
-            })
-            this.dialog.closeAll();
-          },
-          (error: any) => {
-            this.toast.error('Failed to add Overtime', 'Error');
-          }
-        );
-      }
-    } else {
-      this.overtimeForm.markAllAsTouched();
-    }
-    this.overtimeForm.get('PayrollFNFUser').disable();
-
-  }
-
-  onCancel(): void {
-    if (this.isEdit && this.selectedOvertime) {
-      this.overtimeForm.patchValue({
-        PayrollFNFUser: this.selectedOvertime.PayrollFNFUser,
-        lateComing: this.selectedOvertime.lateComing,
-        earlyGoing: this.selectedOvertime.earlyGoing,
-        finalOvertime: this.selectedOvertime.finalOvertime
-      });
-    } else {
-      this.overtimeForm.reset();
-    }
-  }
-
-  deleteOvertime(_id: string) {
-    this.payrollService.deleteFnFOvertime(_id).subscribe((res: any) => {
-      this.toast.success('Overtime Deleted', 'Success');
-      this.fetchOvertime(this.selectedFnF);
-    }, error => {
-      this.toast.error('Failed to delete Overtime', 'Error');
-    });
-  }
-
-  deleteFnF(id: string): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { width: '400px', });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'delete') { this.deleteOvertime(id); }
     });
   }
 

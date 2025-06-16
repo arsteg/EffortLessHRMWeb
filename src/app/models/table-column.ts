@@ -4,9 +4,15 @@ export interface TableColumn {
     isAction?: boolean;
     isCheckbox?: boolean;
     sortable?: boolean;
+    isImage?: boolean;
+    isLink?:boolean;
+    linkText?:string;
+    isHtml?:boolean;
     icons?: Icons[];
     valueFn?: Function;
     options?: ActionOption[];
+    cssClass?: string;
+    cssClassFn?: Function;
 }
 
 export interface Icons {

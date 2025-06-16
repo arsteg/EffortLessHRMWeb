@@ -28,7 +28,7 @@ export class DocumentTemplateComponent implements OnInit {
   isEditMode = false;
   columns: TableColumn[] = [
     { key: 'name', name: 'Name' },
-    { key: 'content', name: 'content' },
+    { key: 'content', name: 'content', isHtml: true },
     { key: 'active', name: 'active' },
     {
       key: 'action',

@@ -69,7 +69,7 @@
     @for(col of timeLog|keyvalue; track col.key){
     @if(col.key === 'col1' || col.key === 'col2' || col.key === 'col3' ||col.key === 'col4' ||col.key === 'col5'
     ||col.key === 'col6'){
-    <div class="col-lg-2 col-md-4 col-sm-6 py-2">
+    <div class="col-lg-2 col-md-4 col-sm-6 py-2 px-1">
       @if(timeLog[col.key]?.url || timeLog[col.key]?.url) {
 
       <figure
@@ -95,7 +95,7 @@
         <p class="text-center m-0">User inactive at this time</p>
       </div>
       }
-      <p class="d-flex align-center justify-content-between mt-2">
+      <p class="d-flex align-center justify-content-between mt-2 px-1">
         <span class="d-flex align-items-center gap-1">
           <span class="px-2" style="height: 16px;"
             [style.background-color]="getActivityColor(timeLog[col.key].GetActivityLevel)"></span>
