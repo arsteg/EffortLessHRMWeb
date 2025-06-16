@@ -8,6 +8,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 
+const labelValidator: ValidatorFn = (control: AbstractControl) => {
+  const value = control.value as string;
+  // Check if the value is empty or only whitespace
+  if (!value || /^\s*$/.test(value)) {
+    return { required: true }; // Treat empty or only whitespace as required error
+  }
+  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
+  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
+  return valid ? null : { invalidLabel: true };
+};
+
 @Component({
   selector: 'app-fixed-allowance',
   templateUrl: './fixed-allowance.component.html',
@@ -30,7 +41,7 @@ export class FixedAllowanceComponent implements AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.fixedAllowanceForm = this.fb.group({
-      label: ['', [Validators.required, this.noSpecialCharactersValidator()]],
+      label: ['', [Validators.required, labelValidator]],
       isProvidentFundAffected: [false],
       isESICAffected: [false],
       isGratuityFundAffected: [false],
@@ -208,19 +219,5 @@ export class FixedAllowanceComponent implements AfterViewInit {
         this.deleteRecord(id);
       }
     });
-  }
-
-  /**
-   * Custom validator to restrict special characters in the label.
-   * Allows alphanumeric characters, spaces, and hyphens.
-   */
-  noSpecialCharactersValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const forbiddenChars = /[^\p{L}\p{N}\s-]/u;
-      if (control.value && forbiddenChars.test(control.value)) {
-        return { 'specialCharacters': true };
-      }
-      return null;
-    };
   }
 }

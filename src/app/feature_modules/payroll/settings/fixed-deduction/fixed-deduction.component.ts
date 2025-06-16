@@ -8,6 +8,17 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 
+const labelValidator: ValidatorFn = (control: AbstractControl) => {
+  const value = control.value as string;
+  // Check if the value is empty or only whitespace
+  if (!value || /^\s*$/.test(value)) {
+    return { required: true }; // Treat empty or only whitespace as required error
+  }
+  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
+  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
+  return valid ? null : { invalidLabel: true };
+};
+
 @Component({
   selector: 'app-fixed-deduction',
   templateUrl: './fixed-deduction.component.html',
@@ -31,7 +42,7 @@ export class FixedDeductionComponent implements AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.fixedContributionForm = this.fb.group({
-      label: ['', [Validators.required, this.noSpecialCharactersValidator()]], // Added custom validator
+      label: ['', [Validators.required, labelValidator]], // Added custom validator
       isEffectAttendanceOnEligibility: [false]
     });
 
@@ -200,20 +211,5 @@ export class FixedDeductionComponent implements AfterViewInit {
       this.tableService.setData(res.data);
       this.tableService.totalRecords = res.total;
     });
-  }
-
-  /**
-   * Custom validator to prevent special characters in the label.
-   * Prohibits: #, *, ^, %, $, @, !, `, ~, <, >, ?, /, \, |, {, }, [, ], (, ), =, +, -, comma, period, semicolon, colon
-   */
-  noSpecialCharactersValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      // Regex to match any special character excluding space and underscore
-      const forbiddenChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/;
-      if (control.value && forbiddenChars.test(control.value)) {
-        return { 'specialCharacters': true };
-      }
-      return null;
-    };
   }
 }
