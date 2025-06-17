@@ -47,6 +47,7 @@ export class ProjectListComponent implements OnInit {
   @ViewChild('manageUsersModal') manageUsersModal !: ElementRef;
   @ViewChild('updateModal') updateModal !: ElementRef;
   @ViewChild('deleteModal') deleteModal !: ElementRef;
+  allData = [];
   columns: TableColumn[] = [
     {
       key: 'projectName',
@@ -187,12 +188,18 @@ export class ProjectListComponent implements OnInit {
 
   onPageChange(page: any) {
     this.currentPage = page.pageIndex + 1;
+    this.recordsPerPage = page.pageSize;
     this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
   }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
+  onSearchChange(event) {
+    this.projectList = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    }
+    );
   }
 
   getProjectList() {
@@ -202,6 +209,7 @@ export class ProjectListComponent implements OnInit {
     };
     this.projectService.getprojects(pagination.skip, pagination.next).subscribe(((response: any) => {
       this.projectList = response && response.data && response.data['projectList'];
+      this.allData = structuredClone(this.projectList);
       this.totalRecords = response.data.projectCount;
     }));
   }
@@ -222,10 +230,12 @@ export class ProjectListComponent implements OnInit {
   getProjectsByUser() {
     this.projectService.getProjectByUserId(this.userId).subscribe(response => {
       this.projectList = response && response.data && response.data['projectList'];
+      this.allData = structuredClone(this.projectList);
     });
   }
 
   onMemberSelectionChange(user) {
+    console.log(user)
     if (this.userId == '') {
       this.getProjectList();
     }

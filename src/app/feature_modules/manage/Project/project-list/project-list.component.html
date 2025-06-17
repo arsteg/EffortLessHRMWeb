@@ -1,53 +1,43 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="container-fluid mt-3 py-2 px-0 bg-white tableContainer">
-            <div class="d-md-flex d-block justify-content-between align-items-baseline mb-2 ms-1 px-2">
-                <div class="col-lg-3 pt-1 d-flex align-items-baseline text-center mb-md-0 mb-3">
-                    <label for="member" class="pt-1 pe-3">Members: </label>
-                    <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-                        aria-label=".form-select-sm example" [(ngModel)]="userId"
-                        (change)="onMemberSelectionChange(userId)">
-                        <option value="" [selected] [disabled]>All Members</option>
-                        <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                            {{assignee.firstName |titlecase}} {{assignee.lastName | titlecase}}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="d-md-flex d-block align-items-baseline ms-auto">
-                    <div class="d-flex align-items-center justify-content-end me-md-3 me-0 mb-md-0 mb-3">
-                        <span class="bi bi-search searchIcon"></span>
-                        <input class="form-control" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                            name="searchText" aria-label="default input example">
-                    </div>
-
-                    <div class="d-flex align-items-baseline justify-content-end">
-                        <p class="mb-0 me-3">({{projectList?.length}}) Records Found</p>
-
-                        <button mat-raised-button class="addBtn rounded-pill"
-                            (click)="clearForm(); openModal(addModal)">
-                            Add New
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-                (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
-
-            <hrm-table 
-            [data]="projectList" 
-            [columns]="columns" 
-            (actionClicked)="onActionClick($event)" 
-            [isServerSide]="true"
-            [totalItems]="totalRecords"
-            (pageChanged)="onPageChange($event)"
-            ></hrm-table>
-        </div>
+<div class="position-relative d-none d-md-block">
+    <div class="d-flex justify-content-end position-absolute end-0">
+        <ng-container *ngTemplateOutlet="header"></ng-container>
     </div>
 </div>
+
+<div class="d-block d-md-none pt-2">
+    <div class="d-flex justify-content-start">
+        <ng-container *ngTemplateOutlet="header"></ng-container>
+    </div>
+</div>
+
+<ng-template #header>
+    <div class="">
+            <mat-form-field>
+                <mat-label>Members</mat-label>
+                <mat-select id="member" name="member" 
+                    [(ngModel)]="userId" (selectionChange)="onMemberSelectionChange(userId)">
+                    <mat-option value="" [selected] [disabled]>All Members</mat-option>
+                    <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee.firstName |titlecase}} {{assignee.lastName | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="ms-2 text-end">
+            <button mat-flat-button color="primary" (click)="clearForm(); openModal(addModal)">
+                Add New
+            </button>
+        </div>
+</ng-template>
+
+
+
+<div>
+    <hrm-table [data]="projectList" [columns]="columns" (actionClicked)="onActionClick($event)" [isServerSide]="true"
+        [showSearch]="true" [totalItems]="totalRecords" [pageSize]="recordsPerPage" (pageChanged)="onPageChange($event)"
+        (searchChanged)="onSearchChange($event)"></hrm-table>
+</div>
+
 
 
 <!-- Manage user modal -->
