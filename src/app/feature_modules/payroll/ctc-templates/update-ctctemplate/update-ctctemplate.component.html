@@ -1,8 +1,6 @@
 
 @if(showAssignedTemplates) {
-
-
-<form [formGroup]="ctcTemplateForm" class="row container px-3">
+<form [formGroup]="ctcTemplateForm" class="row container mt-3 px-3">
   <div class="form-group col-md-6">
     <mat-form-field appearance="outline" class="w-100">
       <mat-label>Enter the Label for CTC Template</mat-label>
@@ -39,28 +37,6 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <div class="form-group mt-2 col-md-6">
-    <mat-form-field appearance="outline" class="w-100 mx-1">
-      <mat-label>Employer Contributions</mat-label>
-      <mat-select multiple formControlName="ctcTemplateEmployerContribution"
-        (selectionChange)="onDropdownChange($event, 'fixedContribution')">
-        <mat-option *ngFor="let fa of fixedContribution" [value]="fa._id">
-          {{fa?.label}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-  <div class="form-group mt-2 col-md-6">
-    <mat-form-field appearance="outline" class="w-100 mx-1">
-      <mat-label>Employee Deductions</mat-label>
-      <mat-select multiple formControlName="ctcTemplateEmployeeDeduction"
-        (selectionChange)="onDropdownChange($event, 'employeeDeduction')">
-        <mat-option *ngFor="let fa of fixedContribution" [value]="fa._id">
-          {{fa?.label}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
 
   <div class="form-group mt-2 col-md-6">
     <mat-form-field appearance="outline" class="w-100 mx-1">
@@ -87,8 +63,8 @@
   </div>
 
   <div class="d-flex border-top mt-2 py-2 justify-content-between">
-    <button mat-raised-button type="button" (click)="goBack()">Back</button>
-    <button mat-raised-button type="button" class="addBtn"
+    <button mat-flat-button type="button" (click)="goBack()">Back</button>
+    <button mat-flat-button type="button" class="addBtn"
       (click)="showAssignedTemplates = false; getAssignedTemplates()">Proceed</button>
   </div>
 </form>
