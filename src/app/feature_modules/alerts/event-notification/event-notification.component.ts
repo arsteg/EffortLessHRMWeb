@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { EventNotificationService } from 'src/app/_services/eventNotification.Service';
 import { eventNotification, eventNotificationType } from 'src/app/models/eventNotification/eventNotitication';
+import { Role } from 'src/app/models/role.model';
 import { SharedModule } from 'src/app/shared/shared.Module';
 
 @Component({
@@ -21,9 +22,13 @@ export class EventNotificationComponent implements OnInit {
   selectedEventNotification: eventNotification;
   p = 1;
   searchText: string = '';
+  view: Role | null = null;
+  currentUser = JSON.parse(localStorage.getItem('currentUser'));
   constructor(private fb: FormBuilder, private eventNotificationService: EventNotificationService, private toast: ToastrService) { }
 
   ngOnInit(): void {
+    const storedRole = localStorage.getItem('adminView') as Role;
+    this.view = storedRole;
     this.initForm();
     this.getNotificationTypeList();
   }
@@ -79,7 +84,10 @@ export class EventNotificationComponent implements OnInit {
 
       const formData = {
         ...formValue,
-        status: 'scheduled'
+        status: 'scheduled',
+        createdBy: this.currentUser?.id,
+        isCreatedFromUI: true,
+        view: this.view
       };
       await this.eventNotificationService.addEventNotification(formData).toPromise();
       this.toast.success('Event notification added successfully!');
@@ -116,6 +124,7 @@ export class EventNotificationComponent implements OnInit {
       updatedEventNotification.recurringFrequency = this.eventNotificationForm.value.recurringFrequency;
       updatedEventNotification.leadTime = this.eventNotificationForm.value.leadTime;
       updatedEventNotification.status = "scheduled";
+      updatedEventNotification.updatedBy = this.currentUser?.id;
 
       const response = await this.eventNotificationService.updateEventNotification(updatedEventNotification,this.selectedEventNotification._id).toPromise();
       this.toast.success('Event notification updated successfully!');
