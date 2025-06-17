@@ -1,70 +1,119 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatPaginator } from '@angular/material/paginator';
-import { TableService } from 'src/app/_services/table.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-ctc-templates',
   templateUrl: './ctc-templates.component.html',
   styleUrls: ['./ctc-templates.component.css']
 })
-export class CtcTemplatesComponent implements OnInit, AfterViewInit {
-  isEdit: boolean = false;
-  selectedRecord: any;
-  showAssignedTemplates: boolean = false;
+export class CtcTemplatesComponent implements OnInit {
+  showTable = true;
+  dataSource = new MatTableDataSource<any>();
+  columns: TableColumn[] = [
+    { key: 'templateName', name: 'Template Name' },
+    { key: 'fixedAllowances', name: 'Fixed Allowances' },
+    { key: 'fixedDeductions', name: 'Fixed Deductions' },
+    { key: 'variableAllowances', name: 'Variable Allowances' },
+    { key: 'variableDeductions', name: 'Variable Deductions' },
+    {
+      key: 'action',
+      name: 'Actions',
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH }
+      ]
+    }
+  ];
+  paginator: any = {
+    pageIndex: 0,
+    pageSize: 10
+  };
   totalRecords: number = 0;
-  recordsPerPage: number = 10;
-  currentPage: number = 1;
-  showTable: boolean = true;
-  displayedColumns: string[] = ['name', 'fixedAllowances', 'fixedDeductions', 'otherAllowances', 'actions'];
-
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  allData = [];
+  isEdit: boolean = false;
 
   constructor(
-    private payroll: PayrollService,
+    private payrollService: PayrollService,
     private toast: ToastrService,
     private dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    public tableService: TableService<any>,
     private translate: TranslateService
-  ) {
-    // Set custom filter predicate to search by name
-    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
-      return data.name.toLowerCase().includes(filter.toLowerCase());
-    });
-  }
+  ) { }
 
   ngOnInit() {
-    this.getCTCTemplate();
+    this.loadCTCTemplates();
   }
 
-  ngAfterViewInit() {
-    this.tableService.initializeDataSource([]);
-    this.getCTCTemplate();
-  }
-
-  getCTCTemplate() {
+  loadCTCTemplates() {
     const pagination = {
-      skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
-      next: this.tableService.recordsPerPage.toString()
+      skip: ((this.paginator?.pageIndex || 0) * (this.paginator?.pageSize || 10)).toString(),
+      next: (this.paginator?.pageSize || 10).toString()
     };
-    this.payroll.getCTCTemplate(pagination).subscribe(data => {
-      this.tableService.setData(data.data);
-      this.tableService.totalRecords = data.total;
+
+    this.payrollService.getCTCTemplate(pagination).subscribe({
+      next: (res: any) => {
+        if (res?.data) {
+          // Ensure data matches column keys
+          this.dataSource.data = res.data.map((item: any) => ({
+            ...item,
+            templateName: item.name || 'Not Available',
+            fixedAllowances: item.ctcTemplateFixedAllowances?.length || '--',
+            fixedDeductions: item.ctcTemplateFixedDeductions?.length || '--',
+            variableAllowances: item.ctcTemplateVariableAllowances?.length || '--',
+            variableDeductions: item.ctcTemplateVariableDeductions?.length || '--'
+          }));
+          this.totalRecords = res.total;
+          this.allData = structuredClone(this.dataSource.data);
+        } else {
+          this.dataSource.data = [];
+          this.toast.warning('No data received from server');
+        }
+      },
+      error: () => {
+        this.dataSource.data = [];
+        this.toast.error('Failed to load CTC templates');
+      }
     });
   }
 
-  deleteRecord(_id: string) {
-    this.payroll.deleteCTCTemplate(_id).subscribe({
-      next: (res: any) => {
-        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
+  handleAction(event: any) {
+    if (event.action.label === 'Edit') {
+      this.editTemplate(event.row);
+    } else if (event.action === 'Delete') {
+      this.deleteDialog(event.data._id);
+    }
+  }
+
+  editTemplate(data: any) {
+    this.payrollService.isEdit.next(true);
+    this.payrollService.selectedCTCTemplate.next(data);
+    this.payrollService.showTable.next(false);
+    this.showTable = false;
+    this.router.navigate([data._id], { relativeTo: this.route });
+  }
+
+  deleteDialog(id: string) {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, { width: '400px' });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteRecord(id);
+      }
+    });
+  }
+
+  deleteRecord(id: string) {
+    this.payrollService.deleteCTCTemplate(id).subscribe({
+      next: () => {
+        this.dataSource.data = this.dataSource.data.filter(item => item._id !== id);
         this.translate.get([
           'payroll._ctc_templates.toast.success_deleted',
           'payroll._ctc_templates.title'
@@ -74,6 +123,7 @@ export class CtcTemplatesComponent implements OnInit, AfterViewInit {
             translations['payroll._ctc_templates.title']
           );
         });
+        this.loadCTCTemplates(); // Refresh data after deletion
       },
       error: (err) => {
         this.translate.get('payroll._ctc_templates.title').subscribe(title => {
@@ -86,37 +136,33 @@ export class CtcTemplatesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  deleteDialog(id: string): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      width: '400px',
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'delete') {
-        this.deleteRecord(id);
-      }
-    });
-  }
-
-  getComponentsDetail(data: any) {
-    this.isEdit = true;
-    this.payroll.isEdit.next(true);
-    this.payroll.selectedCTCTemplate.next(data);
-    this.payroll.showTable.next(false);
-    this.payroll.showAssignedTemplate.next(true);
+  navigateToCreateTemplate() {
+    this.payrollService.isEdit.next(false);
+    this.payrollService.showTable.next(false);
     this.showTable = false;
-    this.router.navigate([`update-ctc-template`, data._id], { relativeTo: this.route });
-  }
-
-  navigateToUpdateCTCTemplate() {
-    this.payroll.isEdit.next(false);
-    this.payroll.showTable.next(false);
-    this.payroll.showAssignedTemplate.next(true);
-    this.showTable = false;
-    this.router.navigate(['home/payroll/ctc-template/create-ctc-template']);
+    this.router.navigate(['create-ctc-template'], { relativeTo: this.route });
   }
 
   onPageChange(event: any) {
-    this.tableService.updatePagination(event);
-    this.getCTCTemplate();
+    this.paginator.pageIndex = event.pageIndex;
+    this.paginator.pageSize = event.pageSize;
+    this.loadCTCTemplates();
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.dataSource.data.slice().sort((a, b) => {
+      return event.direction === 'asc' ? (a > b ? 1 : -1) : (a < b ? 1 : -1);
+    });
+    this.dataSource.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.dataSource.data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    }
+    );
   }
 }

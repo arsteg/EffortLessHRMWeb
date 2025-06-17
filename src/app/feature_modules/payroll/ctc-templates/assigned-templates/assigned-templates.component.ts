@@ -36,18 +36,8 @@ export class AssignedTemplatesComponent {
     this.selectedRecord = this.payroll.selectedCTCTemplate.getValue();
   }
 
-  goToCTC() {
-    this.router.navigate(['home/payroll/ctc-template'])
-  }
-
-  goBackToUpdateCTC() {
-    const id = this.selectedRecord?._id || this.route.snapshot.paramMap.get('id');
-    this.payroll.showAssignedTemplate.next(true);
-    if (id) {
-      this.router.navigate([`home/payroll/ctc-template/update-ctc-template/${id}`]);
-    } else {
-      this.router.navigate([`home/payroll/ctc-template/create-ctc-template`],);
-    }
+  goBack() {
+    this.router.navigate(['home/payroll/ctc-template']);
   }
 
   updateForm() {

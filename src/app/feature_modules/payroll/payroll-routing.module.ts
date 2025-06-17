@@ -61,7 +61,7 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'ctc-template/update-ctc-template/:id',
+        path: 'ctc-template/:id',
         component: UpdateCTCTemplateComponent,
         children: [
           {

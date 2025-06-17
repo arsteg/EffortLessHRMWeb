@@ -520,7 +520,7 @@
                 "label_placeholder": "Deduction Name",
                 "error": {
                     "label_required": "Label is required",
-                    "label_no_special_characters": "Label cannot contain special characters (e.g., #, *, ^, %, $, @)."
+                    "label_no_special_characters": "Label cannot contain digits & special characters (e.g., #, *, ^, %, $, @)."
                 },
                 "isEffectAttendanceOnEligibility": "Does attendance determine eligibility"
             },

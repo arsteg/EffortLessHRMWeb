@@ -137,7 +137,7 @@
 
 <!-- Pagination -->
 @if(showPaginator){
-<mat-paginator class="d-flex justify-content-start" [length]="filteredData.length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+<mat-paginator class="d-flex justify-content-start" [length]="isServerSide ? totalItems : filteredData.length " [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
     (page)="onPageChange($event)">
 </mat-paginator>
 }

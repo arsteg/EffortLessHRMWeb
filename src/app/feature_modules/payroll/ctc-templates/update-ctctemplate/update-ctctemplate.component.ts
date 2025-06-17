@@ -1,8 +1,18 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 
+const labelValidator: ValidatorFn = (control: AbstractControl) => {
+  const value = control.value as string;
+  // Check if the value is empty or only whitespace
+  if (!value || /^\s*$/.test(value)) {
+    return { required: true }; // Treat empty or only whitespace as required error
+  }
+  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
+  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
+  return valid ? null : { invalidLabel: true };
+};
 @Component({
   selector: 'app-update-ctctemplate',
   templateUrl: './update-ctctemplate.component.html',
@@ -10,7 +20,7 @@ import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 })
 export class UpdateCTCTemplateComponent {
   isEdit: boolean;
-  @Input() selectedRecord: any = null;
+  selectedRecord: any = null;
   @Output() recordUpdatedFromAssigned: EventEmitter<any> = new EventEmitter<any>();
   fixedAllowances: any;
   fixedDeduction: any;
@@ -27,7 +37,7 @@ export class UpdateCTCTemplateComponent {
     private router: Router
   ) {
     this.ctcTemplateForm = this.fb.group({
-      name: [''],
+      name: ['',[ Validators.required, labelValidator]],
       ctcTemplateFixedAllowance: [[]],
       ctcTemplateFixedDeduction: [[]],
       ctcTemplateEmployerContribution: [[]],
@@ -50,7 +60,7 @@ export class UpdateCTCTemplateComponent {
     });
     this.getDataOfAllPayrollSettings();
     this.selectedRecord = this.payroll.selectedCTCTemplate.getValue();
-    if (this.selectedRecord) {
+    if (this.isEdit) {
       this.ctcTemplateForm.patchValue({
         name: this.selectedRecord.name,
         ctcTemplateFixedAllowance: Array.isArray(this.selectedRecord.ctcTemplateFixedAllowances) ? this.selectedRecord.ctcTemplateFixedAllowances.map(item => (item.fixedAllowance?._id)) : [],
@@ -62,24 +72,33 @@ export class UpdateCTCTemplateComponent {
         ctcTemplateEmployeeDeduction: Array.isArray(this.selectedRecord.ctcTemplateEmployeeDeductions) ? this.selectedRecord.ctcTemplateEmployeeDeductions.map(item => (item.employeeDeduction?._id)) : []
       });
     }
-  }
-
-  goBack() {
-    this.router.navigate(['home/payroll/ctc-template']);
+    else {
+      this.ctcTemplateForm.reset();
+    }
   }
 
   getAssignedTemplates() {
-    const id = this.selectedRecord?._id || this.route.snapshot.paramMap.get('id');
+   const payroll = this.payroll.selectedCTCTemplate.subscribe((data: any) => {
+      this.selectedRecord = data;
+      this.fixedAllowances = data.ctcTemplateFixedAllowances;
+      this.fixedDeduction = data.ctcTemplateFixedDeductions;
+      this.fixedContribution = data.ctcTemplateEmployerContributions;
+      this.variableAllowance = data.ctcTemplateVariableAllowances;
+      this.variableDeduction = data.ctcTemplateVariableDeductions;
+    });
+    console.log(payroll)
+    const id = this.selectedRecord?._id;
+    console.log(id);
     if (id) {
       this.payroll.isEdit.next(true);
       this.payroll.selectedCTCTemplate.next(this.selectedRecord);
       this.payroll.getFormValues.next(this.ctcTemplateForm.value);
-      this.router.navigate([`assigned-templates`], { relativeTo: this.route });
+    //   this.router.navigate([`assigned-templates`], { relativeTo: this.route });
     } else {
       this.payroll.getFormValues.next(this.ctcTemplateForm.value);
-      this.router.navigate(['assigned-templates'], { relativeTo: this.route });
+      // this.router.navigate(['assigned-templates'], { relativeTo: this.route });
     }
-    this.showAssignedTemplates = false;
+    // this.showAssignedTemplates = false;
   }
 
   getRecordById(id: string) {
@@ -226,5 +245,9 @@ export class UpdateCTCTemplateComponent {
       this.variableDeduction = res.data.filter((item: any) => item.isShowINCTCStructure === true);
       this.payroll.variableDeductions.next(this.fixedAllowances); // Note: Likely should be this.variableDeduction
     });
+  }
+
+  goBack(){
+    this.router.navigate(['home/payroll/ctc-template']);
   }
 }
