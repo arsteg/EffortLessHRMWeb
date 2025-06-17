@@ -24,7 +24,6 @@ export class UpdateCTCTemplateComponent {
   @Output() recordUpdatedFromAssigned: EventEmitter<any> = new EventEmitter<any>();
   fixedAllowances: any;
   fixedDeduction: any;
-  fixedContribution: any;
   variableAllowance: any;
   variableDeduction: any;
   showAssignedTemplates = true;
@@ -40,9 +39,6 @@ export class UpdateCTCTemplateComponent {
       name: ['',[ Validators.required, labelValidator]],
       ctcTemplateFixedAllowance: [[]],
       ctcTemplateFixedDeduction: [[]],
-      ctcTemplateEmployerContribution: [[]],
-      ctcTemplateOtherBenefitAllowance: [[]],
-      ctcTemplateEmployeeDeduction: [[]],
       ctcTemplateVariableAllowance: [[]],
       ctcTemplateVariableDeduction: [[]],
     });
@@ -67,9 +63,6 @@ export class UpdateCTCTemplateComponent {
         ctcTemplateFixedDeduction: Array.isArray(this.selectedRecord.ctcTemplateFixedDeductions) ? this.selectedRecord.ctcTemplateFixedDeductions.map(item => (item.fixedDeduction?._id)) : [],
         ctcTemplateVariableAllowance: Array.isArray(this.selectedRecord.ctcTemplateVariableAllowances) ? this.selectedRecord.ctcTemplateVariableAllowances.map(item => (item.variableAllowance?._id)) : [],
         ctcTemplateVariableDeduction: Array.isArray(this.selectedRecord.ctcTemplateVariableDeductions) ? this.selectedRecord.ctcTemplateVariableDeductions.map(item => (item.variableDeduction?._id)) : [],
-        ctcTemplateEmployerContribution: Array.isArray(this.selectedRecord.ctcTemplateEmployerContributions) ? this.selectedRecord.ctcTemplateEmployerContributions.map(item => (item.fixedContribution?._id)) : [],
-        ctcTemplateOtherBenefitAllowance: Array.isArray(this.selectedRecord.ctcTemplateOtherBenefitAllowances) ? this.selectedRecord.ctcTemplateOtherBenefitAllowances.map(item => (item.otherBenefit?._id)) : [],
-        ctcTemplateEmployeeDeduction: Array.isArray(this.selectedRecord.ctcTemplateEmployeeDeductions) ? this.selectedRecord.ctcTemplateEmployeeDeductions.map(item => (item.employeeDeduction?._id)) : []
       });
     }
     else {
@@ -82,23 +75,17 @@ export class UpdateCTCTemplateComponent {
       this.selectedRecord = data;
       this.fixedAllowances = data.ctcTemplateFixedAllowances;
       this.fixedDeduction = data.ctcTemplateFixedDeductions;
-      this.fixedContribution = data.ctcTemplateEmployerContributions;
       this.variableAllowance = data.ctcTemplateVariableAllowances;
       this.variableDeduction = data.ctcTemplateVariableDeductions;
     });
-    console.log(payroll)
     const id = this.selectedRecord?._id;
-    console.log(id);
     if (id) {
       this.payroll.isEdit.next(true);
       this.payroll.selectedCTCTemplate.next(this.selectedRecord);
       this.payroll.getFormValues.next(this.ctcTemplateForm.value);
-    //   this.router.navigate([`assigned-templates`], { relativeTo: this.route });
     } else {
       this.payroll.getFormValues.next(this.ctcTemplateForm.value);
-      // this.router.navigate(['assigned-templates'], { relativeTo: this.route });
     }
-    // this.showAssignedTemplates = false;
   }
 
   getRecordById(id: string) {
@@ -111,9 +98,6 @@ export class UpdateCTCTemplateComponent {
         ctcTemplateFixedDeduction: Array.isArray(result.ctcTemplateFixedDeductions) ? result.ctcTemplateFixedDeductions.map(item => (item.fixedDeduction?._id)) : [],
         ctcTemplateVariableAllowance: Array.isArray(result.ctcTemplateVariableAllowances) ? result.ctcTemplateVariableAllowances.map(item => (item.variableAllowance?._id)) : [],
         ctcTemplateVariableDeduction: Array.isArray(result.ctcTemplateVariableDeductions) ? result.ctcTemplateVariableDeductions.map(item => (item.variableDeduction?._id)) : [],
-        ctcTemplateEmployerContribution: Array.isArray(result.ctcTemplateEmployerContributions) ? result.ctcTemplateEmployerContributions.map(item => (item.fixedContribution?._id)) : [],
-        ctcTemplateOtherBenefitAllowance: Array.isArray(result.ctcTemplateOtherBenefitAllowances) ? result.ctcTemplateOtherBenefitAllowances.map(item => (item.otherBenefit?._id)) : [],
-        ctcTemplateEmployeeDeduction: Array.isArray(result.ctcTemplateEmployeeDeductions) ? result.ctcTemplateEmployeeDeductions.map(item => (item.employeeDeduction?._id)) : []
       });
     });
   }
@@ -125,9 +109,7 @@ export class UpdateCTCTemplateComponent {
       this.selectedRecord = {
         ctcTemplateFixedAllowances: [],
         ctcTemplateFixedDeductions: [],
-        ctcTemplateEmployerContributions: [],
         ctcTemplateOtherBenefitAllowances: [],
-        ctcTemplateEmployeeDeductions: [],
         ctcTemplateVariableAllowances: [],
         ctcTemplateVariableDeductions: []
       };
@@ -144,16 +126,6 @@ export class UpdateCTCTemplateComponent {
         property: 'ctcTemplateFixedDeductions',
         dataSource: this.fixedDeduction,
         subject: this.payroll.fixedDeductions
-      },
-      fixedContribution: {
-        property: 'ctcTemplateEmployerContributions',
-        dataSource: this.fixedContribution,
-        subject: this.payroll.fixedContributions
-      },     
-      employeeDeduction: {
-        property: 'ctcTemplateEmployeeDeductions',
-        dataSource: this.fixedContribution, // Double-check this
-        subject: this.payroll.employeeDeduction
       },
       variableAllowance: {
         property: 'ctcTemplateVariableAllowances',
@@ -230,10 +202,6 @@ export class UpdateCTCTemplateComponent {
     this.payroll.getFixedDeduction(payload).subscribe((res: any) => {
       this.fixedDeduction = res.data;
       this.payroll.fixedDeductions.next(this.fixedAllowances); // Note: Likely should be this.fixedDeduction
-    });
-    this.payroll.getFixedContribution(payload).subscribe((res: any) => {
-      this.fixedContribution = res.data;
-      this.payroll.fixedContributions.next(this.fixedAllowances); // Note: Likely should be this.fixedContribution
     });
 
     this.payroll.getVariableAllowance(payload).subscribe((res: any) => {

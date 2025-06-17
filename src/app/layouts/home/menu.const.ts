@@ -165,6 +165,7 @@ export const SideBarUserMenu = [
   {
     id: '4',
     title: 'Alerts',
+    url: 'alerts',
     svgIcon: 'alert',
   },
   {

@@ -40,7 +40,7 @@ export class AssignedFixedAllowanceComponent {
         fixedAllowanceLabel: [fa.fixedAllowance?.label || ''],
         criteria: ['Amount'],
         value: ['', [Validators.min(0)]],
-        valueType: [0],
+        valueType: ['0'],
         minimumAmount: [0, [Validators.min(0)]]
       }));
     });
@@ -68,7 +68,7 @@ export class AssignedFixedAllowanceComponent {
           fixedAllowanceLabel: [item.fixedAllowance?.label || ''],
           criteria: [item.criteria || 'Amount'],
           value: [item.value || '', [Validators.min(0)]],
-          valueType: [item.valueType || 0],
+          valueType: [item.valueType || '0'],
           minimumAmount: [item.minimumAmount || 0, [Validators.min(0)]]
         }));
       });
@@ -80,7 +80,7 @@ export class AssignedFixedAllowanceComponent {
           fixedAllowanceLabel: [item.fixedAllowance?.label || ''],
           criteria: [item.criteria || 'Amount'],
           value: [item.value || '', [Validators.min(0)]],
-          valueType: [item.valueType || 0],
+          valueType: [item.valueType || '0'],
           minimumAmount: [item.minimumAmount || 0, [Validators.min(0)]]
         }));
       });

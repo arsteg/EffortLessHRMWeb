@@ -12,7 +12,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
   styleUrls: ['./step7.component.css']
 })
 export class FNFStep7Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'LateComing', 'EarlyGoing', 'FinalOvertime'];
+  displayedColumns: string[] = ['userName', 'LateComing', 'EarlyGoing', 'FinalOvertime','OvertimeAmount'];
   overtime = new MatTableDataSource<any>();
   overtimeForm: FormGroup;
   selectedOvertime: any;

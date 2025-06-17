@@ -48,7 +48,6 @@ import { DatePipe } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 import { QuillModule } from 'ngx-quill';
 import { CommonComponentsModule } from './common/commonComponents.module';
-import { FullCalendarModule } from '@fullcalendar/angular';
 import { FormsModule } from '@angular/forms';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { NotificationComponent } from './layouts/home/notification/notification.component';
@@ -128,7 +127,6 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     MatDialogModule,
     CommonComponentsModule,
     QuillModule.forRoot(),
-    FullCalendarModule,
     FormsModule,
     EffortlessTranslateModule,
     SocketIoModule.forRoot(config),

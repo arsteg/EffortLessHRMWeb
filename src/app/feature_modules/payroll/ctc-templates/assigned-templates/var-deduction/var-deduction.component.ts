@@ -42,7 +42,7 @@ export class VarDeductionComponent {
         variableDeductionLabel: [fa.variableDeduction?.label || ''],
         criteria: ['Amount'],
         value: ['', [Validators.min(0)]],
-        valueType: [0],
+        valueType: ['0'],
         minimumAmount: [0, [Validators.min(0)]]
       }));
     });
@@ -70,7 +70,7 @@ export class VarDeductionComponent {
           variableDeductionLabel: [item.variableDeduction?.label || ''],
           criteria: [item.criteria || 'Amount'],
           value: [item.value || '', [Validators.min(0)]],
-          valueType: [item.valueType || ''],
+          valueType: [item.valueType || '0'],
           minimumAmount: [item.minimumAmount || 0, [Validators.min(0)]]
         }));
       });
@@ -82,7 +82,7 @@ export class VarDeductionComponent {
           variableDeductionLabel: [item.variableDeduction?.label || ''],
           criteria: [item.criteria || 'Amount'],
           value: [item.value || '', [Validators.min(0)]],
-          valueType: [item.valueType || ''],
+          valueType: [item.valueType || '0'],
           minimumAmount: [item.minimumAmount || 0, [Validators.min(0)]]
         }));
       });

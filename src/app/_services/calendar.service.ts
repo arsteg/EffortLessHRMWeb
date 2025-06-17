@@ -46,4 +46,8 @@ export class CalendarService {
    return response;
   }
 
+  getUserEvents(): Observable<response<any>> {
+    var response  = this.http.get<response<any>>(`${environment.apiUrlDotNet}/eventNotifications/userevents`, this.httpOptions);
+   return response;
+  }
 }
