@@ -50,14 +50,13 @@ export class FNFStep3Component implements OnInit {
       });
     
   }
-   getSalaryDetails(userId: string): void {       
-        this.userService.getSalaryByUserId(userId).subscribe(
-          (res: any) => {
-            
-            this.salaryPerDay = res.data[0].BasicSalary / 30;
+  getDailySalaryByUserId(userId: string): void {       
+        this.userService.getDailySalaryByUserId(userId).subscribe(
+          (res: any) => {            
+            this.salaryPerDay = res.data;           
           },
           (error: any) => {
-            this.toast.error('Failed to add Manual Arrear', 'Error');
+            this.toast.error('Failed to Load Daily Salary', 'Error');
           })
     }
   recalculateFields(): void {
@@ -70,8 +69,8 @@ export class FNFStep3Component implements OnInit {
     const totalArrears = manualArrears + ((arrearDays + salaryRevisionDays) * this.salaryPerDay) + lopReversalArrears;
   
     this.manualArrearForm.patchValue({
-      lopReversalArrears: lopReversalArrears,
-      totalArrears: totalArrears
+      lopReversalArrears: lopReversalArrears.toFixed(0),
+      totalArrears: totalArrears.toFixed(0)
     }, { emitEvent: false }); // Prevent recursive loop
   }
   
@@ -82,7 +81,7 @@ export class FNFStep3Component implements OnInit {
 
     if (payrollFNFUserId) {
       this.payrollService.getFnFUserById(payrollFNFUserId).subscribe((res: any) => {
-         this.getSalaryDetails(res.data.user);
+         this.getDailySalaryByUserId(res.data.user);
         });
     }
   }
@@ -97,7 +96,7 @@ export class FNFStep3Component implements OnInit {
         this.manualArrears.data.forEach((arrear: any) => {
           const user = this.settledUsers.find(user => user?._id === fnfUserId);
           arrear.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
-          this.getSalaryDetails(user._id);
+          this.getDailySalaryByUserId(user._id);
         });
       });
     }
