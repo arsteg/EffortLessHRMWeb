@@ -124,7 +124,7 @@
                 isEdit ? 'Update' : 'Add' }}</button>
             </div>
             <div class="">
-              <button type="button" *ngIf="isEdit" (click)="isEdit = false;" mat-raised-button
+              <button type="button" *ngIf="isEdit" (click)="cancelEdit()" mat-raised-button
                 style="min-width: 100px;">Cancel</button>
             </div>
           </div>

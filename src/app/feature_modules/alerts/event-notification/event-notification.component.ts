@@ -38,6 +38,16 @@ export class EventNotificationComponent implements OnInit {
       recurringFrequency: [''],
       leadTime: [0, Validators.required]
     });
+
+    this.eventNotificationForm.get('isRecurring')?.valueChanges.subscribe((isRecurring) => {
+      const recurringFrequency = this.eventNotificationForm.get('recurringFrequency');
+      if (isRecurring) {
+        recurringFrequency?.setValidators([Validators.required]);
+      } else {
+        recurringFrequency?.clearValidators();
+      }
+      recurringFrequency?.updateValueAndValidity();
+    });
   }
   getNotificationTypeList() {
     this.notificationTypeList = [];
@@ -55,14 +65,26 @@ export class EventNotificationComponent implements OnInit {
     ];
     this.eventNotificationService.getAllEventNotifications().subscribe((response: any) => {
       this.eventNotificationList = response && response.data;
-      this.filteredList = this.eventNotificationList;
+      //this.filteredList = this.eventNotificationList;
+      this.filteredList = this.eventNotificationList.filter(item => (item.status === 'scheduled' || item.status === 'sent'));
     })
   }
 
   async addEventNotification() {
     try {
-      await this.eventNotificationService.addEventNotification(this.eventNotificationForm.value).toPromise();
+     const formValue = this.eventNotificationForm.value;
+      if (!formValue.isRecurring || !formValue.recurringFrequency) {
+        delete formValue.recurringFrequency;
+      }
+
+      const formData = {
+        ...formValue,
+        status: 'scheduled'
+      };
+      await this.eventNotificationService.addEventNotification(formData).toPromise();
       this.toast.success('Event notification added successfully!');
+      this.resetNotificationForm();
+      this.isEdit = false;
       this.getEventNotificationList();
     } catch (err) {
       this.toast.error('Error adding event notification', 'Error!');
@@ -86,15 +108,18 @@ export class EventNotificationComponent implements OnInit {
   async updateEventNotification() {
     try {
       const updatedEventNotification = this.eventNotificationList.find(eventNotification => eventNotification._id === this.selectedEventNotification._id);
+      if (!updatedEventNotification) return;
       updatedEventNotification.description = this.eventNotificationForm.value.description;
       updatedEventNotification.eventNotificationType = this.eventNotificationForm.value.eventNotificationType;
       updatedEventNotification.isRecurring = this.eventNotificationForm.value.isRecurring;
       updatedEventNotification.date = this.eventNotificationForm.value.date;
       updatedEventNotification.recurringFrequency = this.eventNotificationForm.value.recurringFrequency;
       updatedEventNotification.leadTime = this.eventNotificationForm.value.leadTime;
+      updatedEventNotification.status = "scheduled";
 
       const response = await this.eventNotificationService.updateEventNotification(updatedEventNotification,this.selectedEventNotification._id).toPromise();
       this.toast.success('Event notification updated successfully!');
+      this.resetNotificationForm();
       this.getEventNotificationList();
       this.isEdit = false;
     } catch (err) {
@@ -122,10 +147,28 @@ export class EventNotificationComponent implements OnInit {
 
   filteredEventNotificationList(searchControl) {
     const searchQuery = searchControl.value?.toLowerCase();
-    this.filteredList = this.eventNotificationList.filter(item => item .name?.toLowerCase().includes(searchQuery));
+    this.filteredList = this.eventNotificationList.filter(item => (item.status === 'scheduled' || item.status === 'sent') && item .name?.toLowerCase().includes(searchQuery));
   }
   onEditFocus(event: FocusEvent) {
     const input = event.target as HTMLInputElement;
     input.select();
+  }
+
+  cancelEdit() {
+    this.resetNotificationForm();
+    this.isEdit = false;
+  }
+
+  resetNotificationForm()
+  {
+    this.eventNotificationForm.reset({
+      name: '',
+      description: '',
+      eventNotificationType: '',
+      date: '',
+      isRecurring: false,
+      recurringFrequency: '',
+      leadTime: 0
+    });
   }
 }

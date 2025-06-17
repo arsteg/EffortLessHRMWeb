@@ -57,7 +57,7 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
   populateEventNotifications(): void {
     this.eventNotificationService.getAllEventNotifications().subscribe({
       next: result => {
-        this.eventNotifications = result.data;
+        this.eventNotifications = result.data.filter(item => item.status === 'scheduled');
       },
       error: () => {
         this.toastr.error('Failed to load event notifications');

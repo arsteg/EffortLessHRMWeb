@@ -14,7 +14,7 @@ import { SeparationService } from 'src/app/_services/separation.service';
   styleUrls: ['./step1.component.css']
 })
 export class FNFStep1Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'totalDays', 'lopDays', 'payableDays', 'leaveEncashmentDays', 'leaveBalance', 'adjustedPayableDays', 'overtimeHours'];
+  displayedColumns: string[] = ['userName', 'totalDays', 'lopDays', 'payableDays', 'leaveEncashmentDays', 'leaveBalance', 'adjustedPayableDays', 'overtimeHours', 'actions'];
   attendanceSummary = new MatTableDataSource<any>();
   attendanceSummaryForm: FormGroup;
   selectedAttendanceSummary: any;
@@ -79,6 +79,168 @@ export class FNFStep1Component implements OnInit {
   removeAdjustmentDetail(index: number): void {
     this.adjustmentDetails.removeAt(index);
   }
+  openDialog(isEdit: boolean): void {
+    this.isEdit = isEdit;
+    if (!isEdit) {
+      this.attendanceSummaryForm.reset({
+        payrollFNFUser: '',
+        totalDays: 0,
+        lopDays: 0,
+        payableDays: 0,
+        leaveEncashmentDays: 0,
+        leaveBalance: 0,
+        adjustedPayableDays: 0,
+        adjustmentReason: 0,
+        overtimeHours: 0,
+      });
+    }
+    this.action = true;
+    this.dialog.open(this.dialogTemplate, {
+      width: '50%',
+      panelClass: 'custom-dialog-container',
+      disableClose: true
+    });
+  }
+
+  editAttendanceSummary(attendanceSummary: any): void {
+    this.isEdit = true;
+    this.action = true;
+    this.selectedAttendanceSummary = attendanceSummary;
+
+    this.attendanceSummaryForm.patchValue({
+      payrollFNFUser: attendanceSummary.userName,
+      totalDays: attendanceSummary.totalDays,
+      lopDays: attendanceSummary.lopDays,
+      payableDays: attendanceSummary.payableDays,
+      leaveEncashmentDays: attendanceSummary.leaveEncashmentDays,
+      leaveBalance: attendanceSummary.leaveBalance,
+      adjustedPayableDays: attendanceSummary.adjustedPayableDays,
+      adjustmentReason: attendanceSummary.adjustmentReason,
+      overtimeHours: attendanceSummary.overtimeHours
+    });
+
+    this.attendanceSummaryForm.get('payrollFNFUser').disable();
+
+    this.adjustmentDetails.clear();
+    attendanceSummary.adjustmentDetails.forEach((detail: any) => {
+      const detailGroup = this.createAdjustmentDetail();
+      detailGroup.patchValue(detail);
+      this.adjustmentDetails.push(detailGroup);
+    });
+    this.openDialog(true);
+  }
+
+  onSubmit(): void {       
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedUserId);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+
+    this.attendanceSummaryForm.patchValue({
+      payrollFNFUser: payrollFNFUserId,
+      payrollFnf: this.selectedFnF?._id,
+    });
+
+    if (this.attendanceSummaryForm.valid) {
+      this.attendanceSummaryForm.get('payrollFNFUser').enable();
+
+      if (this.isEdit) {
+        this.attendanceSummaryForm.patchValue({
+          payrollFNFUser: this.selectedAttendanceSummary.payrollFNFUser
+        });
+        this.payrollService.updateFnFAttendanceSummary(this.selectedAttendanceSummary._id, this.attendanceSummaryForm.value).subscribe(
+          (res: any) => {
+            this.toast.success('Attendance Summary updated successfully', 'Success');
+            this.fetchAttendanceSummary(this.selectedFnF);
+            this.attendanceSummaryForm.reset({
+              payrollFNFUser: '',
+              totalDays: 0,
+              lopDays: 0,
+              payableDays: 0,
+              leaveEncashmentDays: 0,
+              leaveBalance: 0,
+              adjustedPayableDays: 0,
+              adjustmentReason: 0,
+              overtimeHours: 0,
+            });
+            this.isEdit = false;
+            this.dialog.closeAll();
+          },
+          (error: any) => {
+            this.toast.error('Failed to update Attendance Summary', 'Error');
+          }
+        );
+      } else {
+        this.payrollService.addFnFAttendanceSummary(this.attendanceSummaryForm.value).subscribe(
+          (res: any) => {
+            this.toast.success('Attendance Summary added successfully', 'Success');
+            this.fetchAttendanceSummary(this.selectedFnF);
+            this.attendanceSummaryForm.reset({
+              payrollFNFUser: '',
+              totalDays: 0,
+              lopDays: 0,
+              payableDays: 0,
+              leaveEncashmentDays: 0,
+              leaveBalance: 0,
+              adjustedPayableDays: 0,
+              adjustmentReason: 0,
+              overtimeHours: 0,
+            });
+            this.dialog.closeAll();
+          },
+          (error: any) => {
+            this.toast.error('Failed to add Attendance Summary', 'Error');
+          }
+        );
+      }
+    } else {
+      this.attendanceSummaryForm.markAllAsTouched();
+    }
+  }
+
+  onCancel(): void {
+    if (this.isEdit && this.selectedAttendanceSummary) {
+      this.attendanceSummaryForm.patchValue({
+        payrollFNFUser: this.selectedAttendanceSummary.payrollFNFUser,
+        totalDays: this.selectedAttendanceSummary.totalDays,
+        lopDays: this.selectedAttendanceSummary.lopDays,
+        payableDays: this.selectedAttendanceSummary.payableDays,
+        leaveEncashmentDays: this.selectedAttendanceSummary.leaveEncashmentDays,
+        leaveBalance: this.selectedAttendanceSummary.leaveBalance,
+        adjustedPayableDays: this.selectedAttendanceSummary.adjustedPayableDays,
+        adjustmentReason: this.selectedAttendanceSummary.adjustmentReason,
+        overtimeHours: this.selectedAttendanceSummary.overtimeHours
+      });
+
+      this.adjustmentDetails.clear();
+      this.selectedAttendanceSummary.adjustmentDetails.forEach((detail: any) => {
+        const detailGroup = this.createAdjustmentDetail();
+        detailGroup.patchValue(detail);
+        this.adjustmentDetails.push(detailGroup);
+      });
+    } else {
+      this.attendanceSummaryForm.reset();
+    }
+  }
+
+  deleteRecord(_id: string) {
+    this.payrollService.deleteFnFAttendanceSummary(_id).subscribe((res: any) => {
+      this.fetchAttendanceSummary(this.selectedFnF);
+      this.toast.success('Attendance Summary Deleted', 'Success');
+    }, error => {
+      this.toast.error('Failed to delete Attendance Summary', 'Error');
+    });
+  }
+
+  deleteDialog(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result === 'delete') {
+        this.deleteRecord(id);
+      }
+    });
+  }
+  
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find(user => user?._id == userId)
     return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
