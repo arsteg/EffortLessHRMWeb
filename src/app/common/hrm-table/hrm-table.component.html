@@ -119,7 +119,7 @@
                 } @else if(column.isLink){
                     <a [href]="column.linkUrl" target="_blank">{{column.linkText ? column.linkText : row[column.key]}}</a>
                 }@else if(column.isHtml){
-                    <div [innerHTML]="row[column.key]"></div>
+                    <div [innerHTML]="column.valueFn ? column.valueFn(row) : row[column.key]"></div>
                 } @else {
                     <span [ngClass]="column.cssClassFn ? column.cssClassFn(row) : column.cssClass">
                         {{ column.valueFn ? column.valueFn(row) : getValueByPath(row, column.key) }}
@@ -137,7 +137,7 @@
 
 <!-- Pagination -->
 @if(showPaginator){
-<mat-paginator class="d-flex justify-content-start" [length]="isServerSide ? totalItems : filteredData.length " [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+<mat-paginator class="d-flex justify-content-start" [length]="isServerSide ? totalItems : filteredData?.length " [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
     (page)="onPageChange($event)">
 </mat-paginator>
 }
