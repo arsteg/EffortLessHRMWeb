@@ -34,14 +34,26 @@ export class FNFStep1Component implements OnInit {
     private toast: ToastrService,
     private attendanceService: AttendanceService,
   ) {
-   
+    this.attendanceSummaryForm = this.fb.group({
+      payrollFNFUser: ['', Validators.required],
+      payrollFnf: [''],
+      totalDays: [0, Validators.required],
+      lopDays: [0, Validators.required],
+      payableDays: [0, Validators.required],
+      leaveEncashmentDays: [0, Validators.required],
+      leaveBalance: [0, Validators.required],
+      adjustedPayableDays: [0, Validators.required],
+      adjustmentReason: ['', Validators.required],
+      overtimeHours: [0, Validators.required],
+      adjustmentDetails: this.fb.array([this.createAdjustmentDetail()])
+    });
   }
 
   ngOnInit(): void {
     this.fetchAttendanceSummary(this.selectedFnF);
   }
 
-  
+
   onUserChange(fnfUserId: string): void {
     this.selectedUserId = fnfUserId;
 
@@ -55,7 +67,7 @@ export class FNFStep1Component implements OnInit {
         totalDays: res.data.TotalDays,
         lopDays: res.data.lopDays,
         payableDays: res.data.payableDays,
-        leaveBalance:res.data.leaveBalance
+        leaveBalance: res.data.leaveBalance
       })
     });
   }
@@ -130,7 +142,7 @@ export class FNFStep1Component implements OnInit {
     this.openDialog(true);
   }
 
-  onSubmit(): void {       
+  onSubmit(): void {
     const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedUserId);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
@@ -240,7 +252,7 @@ export class FNFStep1Component implements OnInit {
       }
     });
   }
-  
+
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find(user => user?._id == userId)
     return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
