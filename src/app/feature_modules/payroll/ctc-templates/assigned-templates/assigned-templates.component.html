@@ -1,35 +1,34 @@
-<div class="d-flex justify-content-between border-bottom">
-  <div class="breadcrumb py-2">
-    <span class="breadcrumb-item active" (click)="goToCTC()" style="cursor: pointer;">
-      CTC Template
-    </span>
-    <span class="breadcrumb-item active" (click)="goBackToUpdateCTC()">Update CTC Template</span>
-    <span class="breadcrumb-item text-muted">Assigned CTC Template</span>
-  </div>
-  <button mat-raised-button class="addBtn" (click)="onSubmission()">Save</button>
-</div>
+<mat-tab-group class="child-tabs" [(selectedIndex)]="activeTabIndex">
 
-<mat-tab-group [(selectedIndex)]="activeTabIndex">
   <mat-tab label="Fixed Allowances">
     <app-assigned-fixed-allowance (formDataChange)="onFixedAllowanceDataChange($event)"
-      [selectedRecord]="selectedRecord" [ctcTemplateFixedAllowance]="fixedAllowanceData" [isEdit]="isEdit"></app-assigned-fixed-allowance>
+      [selectedRecord]="selectedRecord" [ctcTemplateFixedAllowance]="fixedAllowanceData"
+      [isEdit]="isEdit"></app-assigned-fixed-allowance>
   </mat-tab>
+
   <mat-tab label="Fixed Deductions">
     <app-assigned-fixed-deduction [isEdit]="isEdit" [selectedRecord]="selectedRecord"
-      (formDataChange)="onFixedDeductionDataChange($event)" [ctcTemplateFixedDeduction]="fixedDeductionData"></app-assigned-fixed-deduction>
+      (formDataChange)="onFixedDeductionDataChange($event)"
+      [ctcTemplateFixedDeduction]="fixedDeductionData"></app-assigned-fixed-deduction>
   </mat-tab>
-  <mat-tab label="Employer Contribution">
-    <app-assigned-fixed-contribution [selectedRecord]="selectedRecord" [ctcTemplateEmployeeDeduction]="employerContributionsData"></app-assigned-fixed-contribution>
-  </mat-tab>
-  <mat-tab label="Employee Deduction">
-    <app-employee-deduction [selectedRecord]="selectedRecord" [ctcTemplateEmployeeDeduction]="employeeDeductionsData"></app-employee-deduction>
-  </mat-tab>
+
   <mat-tab label="Variable Allowance">
-    <app-var-allowance (formDataChange)="onVariableAllowanceDataChange($event)"
-      [selectedRecord]="selectedRecord" [ctcTemplateVariableAllowance]="variableAllowanceData" [isEdit]="isEdit"></app-var-allowance>
+    <app-var-allowance (formDataChange)="onVariableAllowanceDataChange($event)" [selectedRecord]="selectedRecord"
+      [ctcTemplateVariableAllowance]="variableAllowanceData" [isEdit]="isEdit"></app-var-allowance>
   </mat-tab>
+
   <mat-tab label="Variable Deduction">
-    <app-var-deduction (formDataChange)="onVariableDeductionDataChange($event)"
-      [selectedRecord]="selectedRecord" [ctcTemplateVariableDeduction]="variableDeductionData" [isEdit]="isEdit"></app-var-deduction>
+    <app-var-deduction (formDataChange)="onVariableDeductionDataChange($event)" [selectedRecord]="selectedRecord"
+      [ctcTemplateVariableDeduction]="variableDeductionData" [isEdit]="isEdit"></app-var-deduction>
   </mat-tab>
+
 </mat-tab-group>
+
+<div class="d-flex justify-content-between">
+  <div class="d-flex align-items-center py-2">
+    <button mat-flat-button (click)="goBack()">
+      Back
+    </button>
+    <button mat-flat-button color="primary" (click)="onSubmission()">Save</button>
+  </div>
+</div>

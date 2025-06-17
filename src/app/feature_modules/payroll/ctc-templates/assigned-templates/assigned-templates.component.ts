@@ -36,18 +36,8 @@ export class AssignedTemplatesComponent {
     this.selectedRecord = this.payroll.selectedCTCTemplate.getValue();
   }
 
-  goToCTC() {
-    this.router.navigate(['home/payroll/ctc-template'])
-  }
-
-  goBackToUpdateCTC() {
-    const id = this.selectedRecord?._id || this.route.snapshot.paramMap.get('id');
-    this.payroll.showAssignedTemplate.next(true);
-    if (id) {
-      this.router.navigate([`home/payroll/ctc-template/update-ctc-template/${id}`]);
-    } else {
-      this.router.navigate([`home/payroll/ctc-template/create-ctc-template`],);
-    }
+  goBack() {
+    this.router.navigate(['home/payroll/ctc-template']);
   }
 
   updateForm() {
@@ -72,12 +62,6 @@ export class AssignedTemplatesComponent {
       });
       this.payroll.variableDeductions.subscribe(res => {
         this.variableDeductionData = res;
-      });
-      this.payroll.employeeDeduction.subscribe(res => {
-        this.employeeDeductionsData = res;
-      });
-      this.payroll.fixedContributions.subscribe(res => {
-        this.employerContributionsData = res;
       });
     }
   }
@@ -105,9 +89,7 @@ export class AssignedTemplatesComponent {
       ctcTemplateFixedAllowance: this.fixedAllowanceData || [],
       ctcTemplateFixedDeduction: this.fixedDeductionData || [],
       ctcTemplateVariableAllowance: this.variableAllowanceData || [],
-      ctcTemplateVariableDeduction: this.variableDeductionData || [],
-      ctcTemplateEmployerContribution:  this.employerContributionsData || [],
-      ctcTemplateEmployeeDeduction: this.employeeDeductionsData || [],
+      ctcTemplateVariableDeduction: this.variableDeductionData || []
     };
     if (this.isEdit) {
       const id = this.payroll.selectedCTCTemplate.getValue()._id;

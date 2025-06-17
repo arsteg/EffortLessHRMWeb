@@ -25,6 +25,8 @@
     "@babel/runtime": "^7.25.0",
     "@fullcalendar/angular": "^6.1.9",
     "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/interaction": "^6.1.17",
     "@ng-bootstrap/ng-bootstrap": "^12.1.2",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",

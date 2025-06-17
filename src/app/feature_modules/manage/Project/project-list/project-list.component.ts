@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProjectService } from 'src/app/_services/project.service';
 import { addUser, project } from '../model/project';
@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { DatePipe } from '@angular/common';
 import { PreferenceService } from 'src/app/_services/user-preference.service';
 import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
@@ -43,6 +44,64 @@ export class ProjectListComponent implements OnInit {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   dialogRef: MatDialogRef<any>;
+  @ViewChild('manageUsersModal') manageUsersModal !: ElementRef;
+  @ViewChild('updateModal') updateModal !: ElementRef;
+  @ViewChild('deleteModal') deleteModal !: ElementRef;
+  columns: TableColumn[] = [
+    {
+      key: 'projectName',
+      name: 'Project Name',
+    },
+    {
+      key: 'startDate',
+      name: 'Start Date',
+      valueFn: (row: any) => row.startDate ? this.datePipe.transform(row.startDate, 'mediumDate') : row.startDate
+    },
+    {
+      key: 'endDate',
+      name: 'End Date',
+      valueFn: (row: any) => row.startDate ? this.datePipe.transform(row.startDate, 'mediumDate') : row.startDate
+    },
+    {
+      key: 'estimatedTime',
+      name: 'Estimated Time'
+    },
+    {
+      key: 'notes',
+      name: 'Notes'
+    },
+    {
+      key: 'status',
+      name: 'Status'
+    },
+    {
+      key: 'ProjectUser',
+      name: 'Members',
+      isHtml: true,
+      valueFn: (row: any) => {
+        return !this.userId ? ('<div class="d-flex">' +
+          row.ProjectUser
+            ?.map((item) => {
+              const firstChar = item.user?.firstName?.charAt(0)?.toUpperCase() || '';
+              const photo = this.allAssignee.find((user) => item.user?._id === user?._id)?.photo || '';
+              return photo ?
+                `<img src="${photo}" class="img-fluid rounded-circle avatar" />`
+                : firstChar ? `<span class="rounded-circle bg-primary text-white fs-5 avatar">${firstChar}</span>` : '';
+            })
+            .join('') + '</div>') : '';
+      }
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { label: 'Manage User', visibility: ActionVisibility.LABEL, icon: '' },
+        { label: 'Edit Project', visibility: ActionVisibility.LABEL, icon: '' },
+        { label: 'Delete Project', visibility: ActionVisibility.LABEL, icon: '' }
+      ]
+    }
+  ]
 
   constructor(
     private projectService: ProjectService,
@@ -78,6 +137,21 @@ export class ProjectListComponent implements OnInit {
     });
   }
 
+  onActionClick(event) {
+    switch (event.action.label) {
+      case 'Manage User':
+        this.getProjectUser(event.row?.id);
+        this.openModal(this.manageUsersModal, event.row);
+        break;
+      case 'Edit Project':
+        this.openModal(this.updateModal, event.row);
+        break;
+      case 'Delete Project':
+        this.openModal(this.deleteModal, event.row, '300px');
+        break;
+    }
+  }
+
   ngOnInit(): void {
     this.isChecked = true;
 
@@ -90,29 +164,29 @@ export class ProjectListComponent implements OnInit {
     this.preferenceService.getPreferenceByKey(
       PreferenceKeys.ManageProjectsSelectedMember,
       currentUser?.id
-      ).subscribe({
-        next: (response: any) => {
-          const preferences = response?.data?.preferences || [];
-          const match = preferences.find((pref: any) =>
-            pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ManageProjectsSelectedMember
-          );
-          const value = match?.preferenceOptionId?.preferenceValue;
-          this.userId = (value === 0 || value === '0') ? '' : value;
-          this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
-        },
-        error: (err) => {
-          console.error('Failed to load preference', err);
-          this.userId = '';
-          this.getProjectList();
-        }
+    ).subscribe({
+      next: (response: any) => {
+        const preferences = response?.data?.preferences || [];
+        const match = preferences.find((pref: any) =>
+          pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ManageProjectsSelectedMember
+        );
+        const value = match?.preferenceOptionId?.preferenceValue;
+        this.userId = (value === 0 || value === '0') ? '' : value;
+        this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
+      },
+      error: (err) => {
+        console.error('Failed to load preference', err);
+        this.userId = '';
+        this.getProjectList();
+      }
     });
 
     this.manageUsersForm = this.fb.group({});
     // this.getProjectUser(this.selectedProject.id);
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(page: any) {
+    this.currentPage = page.pageIndex + 1;
     this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
   }
 
@@ -234,14 +308,14 @@ export class ProjectListComponent implements OnInit {
     }
   }
 
-  openModal(template, selectedProject?, width="50%") {
+  openModal(template, selectedProject?, width = "50%") {
     this.selectedProject = selectedProject;
     this.dialogRef = this.dialog.open(template, {
       width: width,
       disableClose: true
     })
     this.dialogRef.afterClosed().subscribe((result) => {
-      
+
     });
   }
 
