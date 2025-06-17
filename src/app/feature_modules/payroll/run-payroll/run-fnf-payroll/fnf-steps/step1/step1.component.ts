@@ -14,7 +14,7 @@ import { SeparationService } from 'src/app/_services/separation.service';
   styleUrls: ['./step1.component.css']
 })
 export class FNFStep1Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'totalDays', 'lopDays', 'payableDays', 'leaveEncashmentDays', 'leaveBalance', 'adjustedPayableDays', 'overtimeHours', 'actions'];
+  displayedColumns: string[] = ['userName', 'totalDays', 'lopDays', 'payableDays', 'leaveEncashmentDays', 'leaveBalance', 'adjustedPayableDays', 'actions'];
   attendanceSummary = new MatTableDataSource<any>();
   attendanceSummaryForm: FormGroup;
   selectedAttendanceSummary: any;
@@ -37,14 +37,13 @@ export class FNFStep1Component implements OnInit {
     this.attendanceSummaryForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
       payrollFnf: [''],
-      totalDays: [0, Validators.required],
-      lopDays: [0, Validators.required],
-      payableDays: [0, Validators.required],
+      totalDays: [{ value: 0, disabled: true }, Validators.required],
+      lopDays:   [{ value: 0, disabled: true }, Validators.required],
+      payableDays: [{ value: 0, disabled: true }, Validators.required],
       leaveEncashmentDays: [0, Validators.required],
       leaveBalance: [0, Validators.required],
       adjustedPayableDays: [0, Validators.required],
       adjustmentReason: ['', Validators.required],
-      overtimeHours: [0, Validators.required],
       adjustmentDetails: this.fb.array([this.createAdjustmentDetail()])
     });
   }
@@ -63,7 +62,6 @@ export class FNFStep1Component implements OnInit {
     this.payrollService.getAttendanceRecordsByUserAndPayroll({ payrollFNFUser: payrollFNFUserId, payrollFNF: this.selectedFnF?._id }).subscribe((res: any) => {
       console.log(res.data);
       this.attendanceSummaryForm.patchValue({
-        overtimeHours: res.data.OvertimeHours,
         totalDays: res.data.TotalDays,
         lopDays: res.data.lopDays,
         payableDays: res.data.payableDays,
@@ -103,7 +101,6 @@ export class FNFStep1Component implements OnInit {
         leaveBalance: 0,
         adjustedPayableDays: 0,
         adjustmentReason: 0,
-        overtimeHours: 0,
       });
     }
     this.action = true;
@@ -127,8 +124,7 @@ export class FNFStep1Component implements OnInit {
       leaveEncashmentDays: attendanceSummary.leaveEncashmentDays,
       leaveBalance: attendanceSummary.leaveBalance,
       adjustedPayableDays: attendanceSummary.adjustedPayableDays,
-      adjustmentReason: attendanceSummary.adjustmentReason,
-      overtimeHours: attendanceSummary.overtimeHours
+      adjustmentReason: attendanceSummary.adjustmentReason
     });
 
     this.attendanceSummaryForm.get('payrollFNFUser').disable();
@@ -170,8 +166,7 @@ export class FNFStep1Component implements OnInit {
               leaveEncashmentDays: 0,
               leaveBalance: 0,
               adjustedPayableDays: 0,
-              adjustmentReason: 0,
-              overtimeHours: 0,
+              adjustmentReason: 0
             });
             this.isEdit = false;
             this.dialog.closeAll();
@@ -193,8 +188,7 @@ export class FNFStep1Component implements OnInit {
               leaveEncashmentDays: 0,
               leaveBalance: 0,
               adjustedPayableDays: 0,
-              adjustmentReason: 0,
-              overtimeHours: 0,
+              adjustmentReason: 0
             });
             this.dialog.closeAll();
           },
@@ -218,8 +212,7 @@ export class FNFStep1Component implements OnInit {
         leaveEncashmentDays: this.selectedAttendanceSummary.leaveEncashmentDays,
         leaveBalance: this.selectedAttendanceSummary.leaveBalance,
         adjustedPayableDays: this.selectedAttendanceSummary.adjustedPayableDays,
-        adjustmentReason: this.selectedAttendanceSummary.adjustmentReason,
-        overtimeHours: this.selectedAttendanceSummary.overtimeHours
+        adjustmentReason: this.selectedAttendanceSummary.adjustmentReason
       });
 
       this.adjustmentDetails.clear();
@@ -231,26 +224,6 @@ export class FNFStep1Component implements OnInit {
     } else {
       this.attendanceSummaryForm.reset();
     }
-  }
-
-  deleteRecord(_id: string) {
-    this.payrollService.deleteFnFAttendanceSummary(_id).subscribe((res: any) => {
-      this.fetchAttendanceSummary(this.selectedFnF);
-      this.toast.success('Attendance Summary Deleted', 'Success');
-    }, error => {
-      this.toast.error('Failed to delete Attendance Summary', 'Error');
-    });
-  }
-
-  deleteDialog(id: string): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      width: '400px',
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result === 'delete') {
-        this.deleteRecord(id);
-      }
-    });
   }
 
   getMatchedSettledUser(userId: string) {
