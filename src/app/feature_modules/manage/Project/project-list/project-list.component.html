@@ -37,93 +37,14 @@
                 (recordsPerPageChange)="onRecordsPerPageChange($event)">
             </app-pagination>
 
-            <div class="tableContainer p-2">
-                <table class="p-2">
-                    <thead>
-                        <tr>
-                            <th class="ps-2 pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
-                                data-name="projectName" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                Project&nbsp;Name&nbsp;<i
-                                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                            </th>
-
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
-                                data-name="startDate" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                Start&nbsp;Date&nbsp;<i
-                                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                            </th>
-
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
-                                data-name="endDate" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                End&nbsp;Date&nbsp;<i
-                                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                            </th>
-
-                            <th class="pe-4 text-center" scope="col" [appSort]="projectList"
-                                data-order="{{ sortOrder }}" data-name="estimatedTime"
-                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                Estimated&nbsp;Time&nbsp;<i
-                                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                            </th>
-
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
-                                data-name="notes" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                Notes&nbsp;<i
-                                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                            </th>
-                            <th class="pe-4" scope="col" data-order="desc" data-name="status">Status</th>
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="desc"
-                                data-name="users?.user?.firstName" *ngIf="!userId">Members</th>
-                            <th class="pe-2" scope="col" class=" text-center">Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr *ngFor="let data of projectList | search: searchText ">
-                            <td class="ps-2 pe-4">
-                                {{ data?.projectName}}
-                            </td>
-                            <td class="pe-4" *ngIf="data !== null">{{data?.startDate | date:'mediumDate'}}</td>
-                            <td class="pe-4" *ngIf="data !== null">{{data?.endDate | date:'mediumDate'}}</td>
-                            <td class="pe-4 text-center" *ngIf="data !== null">{{data?.estimatedTime}}</td>
-                            <td class="pe-4" *ngIf="data !== null">{{data?.notes }}</td>
-                            <td class="pe-4" *ngIf="data !== null"> <span
-                                    class="badge rounded-pill table-button bg-success text-light px-3 py-2"
-                                    *ngIf="data?.status=='Active'">{{data?.status}}</span> </td>
-                            <td class="pe-1" *ngIf="!userId && data !== null">
-                                <ng-container *ngFor="let users of data.ProjectUser">
-                                    <span *ngIf="users?.user" class="letter text-light"
-                                        [tooltip]="(users?.user?.firstName | titlecase) + (' ') + (users?.user?.lastName | titlecase)"
-                                        [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
-                                        {{ users?.user?.firstName.charAt(0) | uppercase }}
-                                    </span>
-                                </ng-container>
-                            </td>
-                            <td class="action text-center pe-2" *ngIf="data !== null">
-
-                                <!-- <button  data-bs-toggle="modal" data-bs-target="#manageUsersModal"
-                                 (click)="selectedProject= data; getProjectUser(data.id)">Manage user</button> -->
-                                <button mat-icon-button [matMenuTriggerFor]="menu">
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                                <mat-menu #menu="matMenu">
-                                    <button mat-menu-item
-                                        (click)="getProjectUser(data.id); openModal(manageUsersModal, data)">
-                                        <span>Manage User</span>
-                                    </button>
-                                    <button mat-menu-item (click)="openModal(updateModal, data)">
-                                        <span>Edit Project</span>
-                                    </button>
-                                    <button mat-menu-item (click)="openModal(deleteModal, data, '300px')">
-                                        <span>Delete Project</span>
-                                    </button>
-                                </mat-menu>
-
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <hrm-table 
+            [data]="projectList" 
+            [columns]="columns" 
+            (actionClicked)="onActionClick($event)" 
+            [isServerSide]="true"
+            [totalItems]="totalRecords"
+            (pageChanged)="onPageChange($event)"
+            ></hrm-table>
         </div>
     </div>
 </div>
@@ -131,7 +52,7 @@
 
 <!-- Manage user modal -->
 <ng-template #manageUsersModal>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between p-1">
         <h4 mat-dialog-title>Manage Members</h4>
         <button type="button" mat-dialog-close mat-icon-button><mat-icon>close</mat-icon></button>
     </div>
@@ -240,7 +161,7 @@
 
 <!-- Add -->
 <ng-template #addModal>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between p-1">
         <h4 mat-dialog-title>Add New Project</h4>
         <button type="button" mat-dialog-close mat-icon-button><mat-icon>close</mat-icon></button>
     </div>
@@ -345,7 +266,7 @@
 <!-- Update -->
 <ng-template #updateModal>
 
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between p-1">
         <h4 mat-dialog-title>Update Project <b style="color: #76bc21">{{selectedProject.projectName | titlecase}}</b>
         </h4>
         <button type="button" mat-icon-button mat-dialog-close><mat-icon>close</mat-icon></button>
@@ -443,8 +364,7 @@
 <!-- Delete -->
 <ng-template #deleteModal>
 
-    <div class="d-flex justify-content-between">
-
+    <div class="d-flex justify-content-between p-1">
         <h4 mat-dialog-title>Delete Project</h4>
         <button type="button" mat-icon-button mat-dialog-close><mat-icon>close</mat-icon></button>
     </div>
