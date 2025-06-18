@@ -67,10 +67,10 @@ export class ProfileComponent implements OnInit {
     this.companyForm = this.fb.group({
       companyName: ['', Validators.required],
       contactPerson: ['', Validators.required],
-      address: [''],
-      city: [''],
-      state: [''],
-      country: [''],
+      address: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      country: ['', Validators.required],
       pincode: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]]
