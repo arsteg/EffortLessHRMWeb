@@ -9,7 +9,7 @@
                 <input class="form-control search" type="text" placeholder="search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example">
 
-                <button mat-raised-button class="ms-5 addBtn rounded-pill"  data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
+                <button mat-flat-button class="ms-5 addBtn rounded-pill"  data-bs-toggle="modal" data-bs-target="#addModal">Add New</button>
             </div>
         </div>
         <table class=" mt-2">
@@ -96,11 +96,11 @@
                         <div class="d-flex justify-content-between m-3">
 
                             <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                <button mat-flat-button class="mx-2" data-bs-dismiss="modal"
                                     type="button">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button class="addBtn" data-bs-dismiss="modal"
+                                <button mat-flat-button class="addBtn" data-bs-dismiss="modal"
                                     type="submit">Add</button>
                             </div>
 
@@ -145,11 +145,11 @@
                         <div class="d-flex justify-content-between m-3">
 
                             <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                <button mat-flat-button class="mx-2" data-bs-dismiss="modal"
                                     type="button">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button class="addBtn" data-bs-dismiss="modal"
+                                <button mat-flat-button class="addBtn" data-bs-dismiss="modal"
                                     type="submit">Update</button>
                             </div>
 
@@ -184,11 +184,11 @@
                 <div class="d-flex justify-content-between m-3">
                     <div>
 
-                        <button type="button" mat-raised-button 
+                        <button type="button" mat-flat-button 
                             data-bs-dismiss="modal">Cancel</button>
                     </div>
                     <div>
-                        <button type="button"mat-raised-button color="primary" data-bs-dismiss="modal"
+                        <button type="button"mat-flat-button color="primary" data-bs-dismiss="modal"
                             (click)="deleteRole()">Delete</button>
                     </div>
                 </div>

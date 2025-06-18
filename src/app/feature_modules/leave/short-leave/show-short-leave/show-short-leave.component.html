@@ -8,7 +8,7 @@
             <input class="form-control search" type="text" [placeholder]="'leave.searchPlaceholder' | translate"
                 [(ngModel)]="searchText" name="searchText" [attr.aria-label]="'leave.searchInput' | translate">
 
-            <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">
+            <button mat-flat-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">
                 {{ 'leave.addButton' | translate }}
             </button>
 

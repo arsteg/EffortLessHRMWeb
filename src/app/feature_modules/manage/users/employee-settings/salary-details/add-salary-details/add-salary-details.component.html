@@ -4,7 +4,7 @@
             <button class="btn rounded-pill submenuTab active mb-2" type="button" (click)="backToSalaryDetails.emit()">
                 <i class="bi bi-arrow-left"></i> Salary Details
             </button>
-            <button *ngIf="!edit" class="addBtn mb-2 ms-auto" mat-raised-button type="submit">Save</button>
+            <button *ngIf="!edit" class="addBtn mb-2 ms-auto" mat-flat-button type="submit">Save</button>
         </div>
         <!-- Display validation error -->
         <div *ngIf="salaryDetailsForm.errors?.['exceedsGrossSalary']" class="alert alert-danger">
@@ -184,7 +184,7 @@
                             </button>
                         </div>
                     </div>
-                    <button mat-raised-button color="primary" (click)="addFixedAllowance()" type="button" *ngIf="!edit && addButtons">Add Fixed Allowance</button>
+                    <button mat-flat-button color="primary" (click)="addFixedAllowance()" type="button" *ngIf="!edit && addButtons">Add Fixed Allowance</button>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -240,7 +240,7 @@
                             </button>
                         </div>
                     </div>
-                    <button mat-raised-button color="primary" (click)="addFixedDeduction()" type="button" *ngIf="!edit && addButtons">Add Fixed Deduction</button>
+                    <button mat-flat-button color="primary" (click)="addFixedDeduction()" type="button" *ngIf="!edit && addButtons">Add Fixed Deduction</button>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -297,7 +297,7 @@
                             </button>
                         </div>
                     </div>
-                    <button mat-raised-button color="primary" (click)="addVariableAllowance()" type="button" *ngIf="!edit && addButtons">Add Variable Allowance</button>
+                    <button mat-flat-button color="primary" (click)="addVariableAllowance()" type="button" *ngIf="!edit && addButtons">Add Variable Allowance</button>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -354,7 +354,7 @@
                             </button>
                         </div>
                     </div>
-                    <button mat-raised-button color="primary" (click)="addVariableDeduction()" type="button" *ngIf="!edit && addButtons">Add Variable Deduction</button>
+                    <button mat-flat-button color="primary" (click)="addVariableDeduction()" type="button" *ngIf="!edit && addButtons">Add Variable Deduction</button>
                 </div>
                 <div *ngIf="edit">
                     <table>

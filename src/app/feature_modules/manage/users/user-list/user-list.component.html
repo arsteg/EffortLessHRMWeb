@@ -125,8 +125,8 @@
 
                 <hr>
                 <div class="d-flex justify-content-between mt-2">
-                    <button type="reset" class="" mat-raised-button>Cancel</button>
-                    <button type="submit" class="addBtn" [disabled]="!userForm.valid" mat-raised-button>Submit</button>
+                    <button type="reset" class="" mat-flat-button>Cancel</button>
+                    <button type="submit" class="addBtn" [disabled]="!userForm.valid" mat-flat-button>Submit</button>
                 </div>
             </form>
         </div>
@@ -155,10 +155,10 @@
                 </div>
                 <div class="d-flex justify-content-between m-3">
                     <div>
-                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
+                        <button mat-flat-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
                     </div>
                     <div>
-                        <button mat-raised-button class="addBtn" data-bs-dismiss="modal"
+                        <button mat-flat-button class="addBtn" data-bs-dismiss="modal"
                             (click)="deleteUser()">Delete</button>
                     </div>
                 </div>

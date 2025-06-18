@@ -40,10 +40,10 @@ import { ChangeDetectorRef } from '@angular/core';
         <label for="isRequired" class="form-check-label">Is Required</label>
       </div>
       <div class="form-group d-flex justify-content-between mt-2">
-        <button type="submit" mat-raised-button color="primary" [disabled]="fieldForm.invalid">
+        <button type="submit" mat-flat-button color="primary" [disabled]="fieldForm.invalid">
           {{ isEdit ? 'Update' : 'Add' }}
         </button>
-        <button *ngIf="isEdit" type="button" mat-raised-button (click)="onCancel()">Cancel</button>
+        <button *ngIf="isEdit" type="button" mat-flat-button (click)="onCancel()">Cancel</button>
       </div>
     </form>
   `,

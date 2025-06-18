@@ -30,7 +30,7 @@
         <fieldset style="border: 2px solid #ccc; padding: 10px; border-radius: 8px; margin-top: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <legend style="font-size: 1.2em; font-weight: bold; color: #333; padding: 0 5px;">Fields</legend>
-            <button mat-raised-button color="primary" class="add-attribute-button" (click)="addNewCustomAttribute()">
+            <button mat-flat-button color="primary" class="add-attribute-button" (click)="addNewCustomAttribute()">
               <mat-icon>add</mat-icon>
             </button>
           </div>
@@ -91,19 +91,19 @@
           </table>
         </fieldset>
         <!-- <div class="d-flex justify-content-between">                
-            <button mat-raised-button type="submit" class="addBtn" [disabled]="!assetTypeForm.valid">Add</button>
-            <button mat-raised-button type="button" *ngIf="isEdit" (click)="isEdit = false">Cancel</button>
+            <button mat-flat-button type="submit" class="addBtn" [disabled]="!assetTypeForm.valid">Add</button>
+            <button mat-flat-button type="button" *ngIf="isEdit" (click)="isEdit = false">Cancel</button>
           </div> -->
 
         <div class="d-flex justify-content-between mt-3">
-          <!-- <button mat-raised-button type="submit" [ngClass]="{'addBtn': true, 'addBtn-disabled': !assetTypeForm.valid}" [disabled]="!assetTypeForm.valid">
+          <!-- <button mat-flat-button type="submit" [ngClass]="{'addBtn': true, 'addBtn-disabled': !assetTypeForm.valid}" [disabled]="!assetTypeForm.valid">
             {{isEdit ? 'Save Asset Type' : 'Add Asset Type'}} </button> -->
 
-          <button type="submit" mat-raised-button color="primary" class="ml-5" [disabled]="!assetTypeForm.valid">
+          <button type="submit" mat-flat-button color="primary" class="ml-5" [disabled]="!assetTypeForm.valid">
             {{ isEdit ? 'Update' : 'Add' }}
           </button>
 
-          <button mat-raised-button type="button" (click)="resetAsset()">Cancel</button>
+          <button mat-flat-button type="button" (click)="resetAsset()">Cancel</button>
         </div>
       </div>
     </form>

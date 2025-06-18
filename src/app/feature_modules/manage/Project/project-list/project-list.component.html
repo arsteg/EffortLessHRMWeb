@@ -56,8 +56,8 @@
                 </mat-checkbox>
             </div>
             <div mat-dialog-actions class="d-flex justify-content-between mt-3">
-                <button mat-raised-button class="mx-2" mat-dialog-close type="button">Cancel</button>
-                <button mat-raised-button color="primary" type="submit">Save</button>
+                <button mat-flat-button class="mx-2" mat-dialog-close type="button">Cancel</button>
+                <button mat-flat-button color="primary" type="submit">Save</button>
             </div>
         </form>
         }
@@ -98,11 +98,11 @@
 
                         <div class="d-flex justify-content-between m-3">
                             <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                <button mat-flat-button class="mx-2" data-bs-dismiss="modal"
                                     type="button">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button class="addBtn" data-bs-dismiss="modal"
+                                <button mat-flat-button class="addBtn" data-bs-dismiss="modal"
                                     type="submit">Add</button>
                             </div>
                         </div>
@@ -246,8 +246,8 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-3">
-                <button mat-raised-button mat-dialog-close>Cancel</button>
-                <button mat-raised-button color="primary" type="submit">Add</button>
+                <button mat-flat-button mat-dialog-close>Cancel</button>
+                <button mat-flat-button color="primary" type="submit">Add</button>
             </div>
         </form>
     </mat-dialog-content>
@@ -342,8 +342,8 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-3" mat-dialog-actions>
-                <button mat-raised-button mat-dialog-close>Cancel</button>
-                <button mat-raised-button color="primary" type="submit">Update</button>
+                <button mat-flat-button mat-dialog-close>Cancel</button>
+                <button mat-flat-button color="primary" type="submit">Update</button>
             </div>
         </form>
         }
@@ -362,8 +362,8 @@
 
         <p>Are you sure you want to delete <b>{{selectedProject.projectName | titlecase}}</b>?</p>
         <div class="d-flex justify-content-between mt-3" mat-dialog-actions>
-            <button mat-raised-button mat-dialog-close type="button">Cancel</button>
-            <button mat-raised-button color="warn" (click)="deleteProject()" mat-dialog-close
+            <button mat-flat-button mat-dialog-close type="button">Cancel</button>
+            <button mat-flat-button color="warn" (click)="deleteProject()" mat-dialog-close
                 type="submit">Delete</button>
         </div>
     </mat-dialog-content>

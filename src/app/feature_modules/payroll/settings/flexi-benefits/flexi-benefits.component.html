@@ -9,7 +9,7 @@
                     <input class="form-control search" type="text"
                         [placeholder]="'payroll.search_placeholder' | translate" [(ngModel)]="tableService.searchText"
                         (input)="tableService.applyFilter()" name="searchText" aria-label="default input example">
-                    <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false; clearForm()">
+                    <button class="addBtn mx-2" mat-flat-button (click)="open(modal); isEdit= false; clearForm()">
                         {{ 'payroll.add' | translate }}
                     </button>
                 </div>
@@ -76,10 +76,10 @@
             </div>
         </div>
         <div mat-dialog-actions class="d-flex border-top mt-2 py-2 justify-content-between">
-            <button mat-raised-button type="button" (click)="clearForm(); closeModal()">
+            <button mat-flat-button type="button" (click)="clearForm(); closeModal()">
                 {{ 'payroll.cancel' | translate }}
             </button>
-            <button mat-raised-button type="submit" class="addBtn" [disabled]="!flexiBenefitsForm.valid">
+            <button mat-flat-button type="submit" class="addBtn" [disabled]="!flexiBenefitsForm.valid">
                 {{ 'payroll.submit' | translate }}
             </button>
         </div>

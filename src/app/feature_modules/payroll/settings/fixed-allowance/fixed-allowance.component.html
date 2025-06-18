@@ -8,7 +8,7 @@
                 <input class="form-control search" type="text" [placeholder]="'payroll.search_placeholder' | translate"
                     [(ngModel)]="tableService.searchText" (input)="tableService.applyFilter()" name="searchText"
                     aria-label="default input example">
-                <button class="addBtn mx-2" mat-raised-button
+                <button class="addBtn mx-2" mat-flat-button
                     (click)="isEdit= false; open(modal); fixedAllowanceForm.get('label').enable();">{{'payroll.add'|
                     translate}}</button>
             </div>
@@ -202,8 +202,8 @@
                 </div>
             </div>
             <div class="d-flex border-top mt-2 py-2 justify-content-between">
-                <button mat-raised-button type="button" (click)="closeModal()">{{'payroll.close' | translate}}</button>
-                <button mat-raised-button type="submit" class="addBtn">{{ (isEdit ? 'payroll.update' : 'payroll.add') |
+                <button mat-flat-button type="button" (click)="closeModal()">{{'payroll.close' | translate}}</button>
+                <button mat-flat-button type="submit" class="addBtn">{{ (isEdit ? 'payroll.update' : 'payroll.add') |
                     translate }}</button>
             </div>
         </div>

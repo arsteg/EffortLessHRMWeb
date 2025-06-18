@@ -14,7 +14,7 @@
         {{ 'payroll._lwf.slab.form.error.state_required' | translate }}
       </div>
     </div>
-    <button mat-raised-button class="addBtn" (click)="handleAdd(modal); isEdit = false; clearForm()">
+    <button mat-flat-button class="addBtn" (click)="handleAdd(modal); isEdit = false; clearForm()">
       {{ 'payroll.add' | translate }}
     </button>
   </div>
@@ -160,8 +160,8 @@
       </div>
     </div>
     <div class="d-flex border-top mt-2 py-2 justify-content-between">
-      <button mat-raised-button type="reset" (click)="clearForm()">{{ 'payroll.cancel' | translate }}</button>
-      <button mat-raised-button type="submit" class="addBtn">{{ 'payroll.submit' | translate }}</button>
+      <button mat-flat-button type="reset" (click)="clearForm()">{{ 'payroll.cancel' | translate }}</button>
+      <button mat-flat-button type="submit" class="addBtn">{{ 'payroll.submit' | translate }}</button>
     </div>
   </form>
 </ng-template>

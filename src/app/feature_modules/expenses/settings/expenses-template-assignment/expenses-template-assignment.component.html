@@ -146,13 +146,13 @@
 
             <div class="d-flex border-top mt-2 py-2 justify-content-between" *ngIf="changeMode == 'Add' || 'Update'">
                 <div>
-                    <button mat-raised-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
+                    <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
                     @if(changeMode === 'Update' || changeMode === 'Add'){
                         <button mat-stroked-button type="button" (click)="clearSelection()">{{'expenses.reset' | translate}}</button>
                     }
                 </div>
                 @if(changeMode === 'Update' || changeMode === 'Add'){
-                    <button mat-raised-button type="submit" color="accent">{{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}</button>
+                    <button mat-flat-button type="submit" color="accent">{{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}</button>
                 }
             </div>
         </form>

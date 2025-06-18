@@ -85,12 +85,12 @@
 
             <div class="d-flex justify-content-between mt-2">
               <div class="">
-                <button type="submit" mat-raised-button class="addBtn ml-5" [disabled]="dataFieldForm.invalid"
+                <button type="submit" mat-flat-button class="addBtn ml-5" [disabled]="dataFieldForm.invalid"
                   style="min-width: 100px;">{{
                   isEditing ? 'Update' : 'Add' }}</button>
               </div>
               <div class="">
-                <button type="button" *ngIf="isEditing" (click)="isEditing = false"mat-raised-button
+                <button type="button" *ngIf="isEditing" (click)="isEditing = false"mat-flat-button
                   style="min-width: 100px;">Cancel</button>
               </div>
             </div>

@@ -10,7 +10,7 @@
           <span class="bi bi-search searchIcon"></span>
           <input class="form-control" type="text" placeholder="Search..." [(ngModel)]="searchText" name="searchText" aria-label="default input example">
         </div>
-        <button class="addBtn ms-2" mat-raised-button (click)="isEdit = false; openDialog()">Add</button>
+        <button class="addBtn ms-2" mat-flat-button (click)="isEdit = false; openDialog()">Add</button>
       </div>
     </div>
   
@@ -124,8 +124,8 @@
         </mat-form-field>
   
         <div class="d-flex justify-content-between mt-3 pt-2 border-top">
-          <button mat-raised-button type="reset" (click)="dialogRef.close()">Cancel</button>
-          <button mat-raised-button class="addBtn" type="submit">Save</button>
+          <button mat-flat-button type="reset" (click)="dialogRef.close()">Cancel</button>
+          <button mat-flat-button class="addBtn" type="submit">Save</button>
         </div>
       </form>
     </div>

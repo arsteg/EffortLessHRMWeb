@@ -22,7 +22,7 @@
                                 border-radius: 5px;
                                 box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12)">
 
-                        <button mat-raised-button color="primary" class=" ms-3" (click)="toggleMilestoneView($event)"><span
+                        <button mat-flat-button color="primary" class=" ms-3" (click)="toggleMilestoneView($event)"><span
                                 class="bi bi-plus border rounded"></span>
                             Milestone</button>
                         </div>
@@ -55,7 +55,7 @@
                      (ngSubmit)="addMilestone()">
                         <div class="d-flex justify-content-between border-bottom">
                             <div class="d-flex align-items-center">
-                                <button mat-raised-button (click)="toggleMilestoneView($event)"
+                                <button mat-flat-button (click)="toggleMilestoneView($event)"
                                     style="height: 25px; min-width: 0px !important; line-height: 0px;">
                                     <i class="fas fa-chevron-left"></i>
                                 </button>
@@ -68,8 +68,8 @@
                                 </div>
                             </div>
                             <div class="">
-                                <button mat-raised-button (click)="toggleMilestoneView($event)" type="button">Cancel</button>
-                                <button mat-raised-button color="primary" type="submit" class="ms-3">
+                                <button mat-flat-button (click)="toggleMilestoneView($event)" type="button">Cancel</button>
+                                <button mat-flat-button color="primary" type="submit" class="ms-3">
                                     {{ isEdit ? 'Update' :'Add' }}</button>
                             </div>
                         </div>

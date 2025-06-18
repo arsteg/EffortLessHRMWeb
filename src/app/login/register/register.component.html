@@ -75,12 +75,12 @@
 
             <!-- Generate/Resend OTP button -->
             <div class="col-md-4">
-              <button *ngIf="!otpGenerated" type="button" mat-raised-button (click)="onGenerateOTP()">
+              <button *ngIf="!otpGenerated" type="button" mat-flat-button (click)="onGenerateOTP()">
                 <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                 {{'login.generate_otp' | translate }}
               </button>
 
-              <button *ngIf="otpGenerated && loading == false" type="button" mat-raised-button
+              <button *ngIf="otpGenerated && loading == false" type="button" mat-flat-button
                 (click)="onReGenerateOTP()">
                 {{ 'login.resend_otp' | translate }}
               </button>
@@ -103,7 +103,7 @@
             </div>
             <!-- Verify and Cancel OTP Buttons -->
             <div class="col-md-4">
-              <button type="button" mat-raised-button class="addBtn verifyBtn me-2" (click)="onVerifyOTP()"
+              <button type="button" mat-flat-button class="addBtn verifyBtn me-2" (click)="onVerifyOTP()"
                 [disabled]="registerNewUser.get('otp').value.length < 4">
                 {{'login.verify_otp' | translate }}
               </button>

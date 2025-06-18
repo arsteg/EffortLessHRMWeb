@@ -6,7 +6,7 @@
             <span class="bi bi-search searchIcon"></span>
             <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
               name="searchText" aria-label="default input example">
-            <button mat-raised-button color="accent" class="rounded-pill" (click)="openDialog()">Add</button>
+            <button mat-flat-button color="accent" class="rounded-pill" (click)="openDialog()">Add</button>
           </div>
         </div>
         <table mat-table [dataSource]="pfCharges">

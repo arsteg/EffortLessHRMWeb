@@ -153,10 +153,10 @@
       <div class="mt-2" *ngIf="changeMode == 'Add' || 'Update'">
         <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
           <div>
-            <button mat-raised-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
+            <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
             <button mat-stroked-button type="button" (click)="setFormValues()">{{'expenses.reset' | translate}}</button>
           </div>
-          <button mat-raised-button class="addBtn" type="submit">{{'expenses.submit' | translate}}</button>
+          <button mat-flat-button class="addBtn" type="submit">{{'expenses.submit' | translate}}</button>
         </div>
       </div>
     </form>

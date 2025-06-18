@@ -4,13 +4,13 @@
             <div class="d-flex justify-content-between m-2">
                 <h2><u translate>payroll.settings</u></h2>
                 <div>
-                    <button mat-raised-button *ngIf="!isEdit" class="addBtn" type="button" (click)="toggleEdit()">
+                    <button mat-flat-button *ngIf="!isEdit" class="addBtn" type="button" (click)="toggleEdit()">
                         {{'payroll.edit' | translate}}
                     </button>
-                    <button mat-raised-button *ngIf="isEdit" (click)="resetSettings()" type="button" class="me-3">
+                    <button mat-flat-button *ngIf="isEdit" (click)="resetSettings()" type="button" class="me-3">
                         {{'payroll.cancel' | translate}}
                     </button>
-                    <button mat-raised-button class="addBtn" type="submit" *ngIf="isEdit">
+                    <button mat-flat-button class="addBtn" type="submit" *ngIf="isEdit">
                         {{'payroll.save' | translate}}
                     </button>
                 </div>

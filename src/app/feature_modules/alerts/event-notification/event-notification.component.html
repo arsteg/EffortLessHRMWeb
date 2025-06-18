@@ -119,12 +119,12 @@
           </div>
           <div class="d-flex justify-content-between mt-2">
             <div class="">
-              <button type="submit" mat-raised-button class="addBtn ml-5" [disabled]="eventNotificationForm.invalid"
+              <button type="submit" mat-flat-button class="addBtn ml-5" [disabled]="eventNotificationForm.invalid"
                 style="min-width: 100px;">{{
                 isEdit ? 'Update' : 'Add' }}</button>
             </div>
             <div class="">
-              <button type="button" *ngIf="isEdit" (click)="cancelEdit()" mat-raised-button
+              <button type="button" *ngIf="isEdit" (click)="cancelEdit()" mat-flat-button
                 style="min-width: 100px;">Cancel</button>
             </div>
           </div>

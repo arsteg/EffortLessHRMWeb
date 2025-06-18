@@ -31,13 +31,13 @@
         </div>
 
         <div>
-          <button mat-raised-button color="primary" matTooltip="Download this Excel sheet to Upload the attendance"
+          <button mat-flat-button color="primary" matTooltip="Download this Excel sheet to Upload the attendance"
             matTooltipPosition="below" class="me-2" (click)="downloadAttendance()">
             Download Attendance Format
           </button>
 
           <input type="file" #fileInput style="display: none;" (change)="uploadAttendance($event)" accept=".csv" />
-          <button mat-raised-button color="accent" (click)="fileInput.click()">
+          <button mat-flat-button color="accent" (click)="fileInput.click()">
             Upload Attendance
           </button>
         </div>
@@ -101,7 +101,7 @@
                     <mat-icon class="holidayIcon">accessibility_new</mat-icon>
                   </span>
 
-                  <button *ngSwitchCase="'weeklyOff'" class="rounded weekly-off" mat-raised-button type="button">
+                  <button *ngSwitchCase="'weeklyOff'" class="rounded weekly-off" mat-flat-button type="button">
                     Weekly Off
                   </button>
 
@@ -113,7 +113,7 @@
                     <mat-icon class="text-danger">clear</mat-icon>
                   </span>
 
-                  <button *ngSwitchCase="'notApplicable'" class="rounded not-applicable" mat-raised-button
+                  <button *ngSwitchCase="'notApplicable'" class="rounded not-applicable" mat-flat-button
                     type="button">
                     N/A
                   </button>
@@ -122,7 +122,7 @@
                     <mat-icon class="incompleteIcon">update</mat-icon>
                   </span>
 
-                  <span *ngSwitchDefault mat-raised-button>
+                  <span *ngSwitchDefault mat-flat-button>
                     <mat-icon class="text-danger">clear</mat-icon>
                   </span>
                 </ng-container>

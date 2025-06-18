@@ -8,7 +8,7 @@
           <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
             (input)="filterRecords()" name="searchText" aria-label="default input example">
 
-          <button mat-raised-button class="addBtn rounded-pill ms-3"
+          <button mat-flat-button class="addBtn rounded-pill ms-3"
             (click)="clearselectedRequest();changeMode='Add'; isEdit = false;openModal(requestModal)">New
             Request</button>
         </div>
@@ -212,11 +212,11 @@
         Start Date and End Date should be Similar!
       </div>
       <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
-        <button mat-raised-button class="mx-2" type="button" *ngIf="changeMode == 'Add'"
+        <button mat-flat-button class="mx-2" type="button" *ngIf="changeMode == 'Add'"
           (click)="clearselectedRequest()">Cancel</button>
-        <button mat-raised-button class="mx-2" type="button" *ngIf="changeMode == 'Update'"
+        <button mat-flat-button class="mx-2" type="button" *ngIf="changeMode == 'Update'"
           (click)="getManualById()">Cancel</button>
-        <button mat-raised-button color="primary" type="submit">{{changeMode}} Request</button>
+        <button mat-flat-button color="primary" type="submit">{{changeMode}} Request</button>
       </div>
     </form>
   </mat-dialog-content>
@@ -235,7 +235,7 @@
     <p>Are you sure to delete the request?</p>
   </mat-dialog-content>
   <div class="d-flex justify-content-between mt-3" mat-dialog-actions>
-    <button mat-raised-button class="mx-2" mat-dialog-close>No</button>
-    <button mat-raised-button color="warn" (click)="deleteRequest()">Yes</button>
+    <button mat-flat-button class="mx-2" mat-dialog-close>No</button>
+    <button mat-flat-button color="warn" (click)="deleteRequest()">Yes</button>
   </div>
 </ng-template>

@@ -9,7 +9,7 @@
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
 
-                    <button mat-raised-button (click)="open(addModal); changeMode = 'Update'; isEdit= false;"
+                    <button mat-flat-button (click)="open(addModal); changeMode = 'Update'; isEdit= false;"
                         class="addBtn rounded-pill mx-3">Assign
                         Template</button>
 
@@ -176,8 +176,8 @@
             </div>
         </div>
         <div class="d-flex border-top mt-2 py-2 justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn"
+            <button mat-flat-button type="reset">Cancel</button>
+            <button mat-flat-button type="submit" class="addBtn"
                 [disabled]="userHasTemplateError && !attendanceTemplateAssignmentForm.valid">Add</button>
         </div>
     </form>
@@ -276,8 +276,8 @@
         </div>
 
         <div class="d-flex border-top mt-2 py-2 justify-content-between">
-            <button mat-raised-button type="reset">Cancel</button>
-            <button mat-raised-button type="submit" class="addBtn">Update</button>
+            <button mat-flat-button type="reset">Cancel</button>
+            <button mat-flat-button type="submit" class="addBtn">Update</button>
         </div>
     </form>
 </ng-template>

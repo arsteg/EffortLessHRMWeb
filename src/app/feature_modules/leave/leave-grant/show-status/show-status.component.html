@@ -5,7 +5,7 @@
             <span class="bi bi-search searchIcon"></span>
             <input class="form-control search" type="text" [placeholder]="('leave.searchPlaceholder' | translate)" [(ngModel)]="searchText"
                 name="searchText" aria-label="{{ 'leave.searchAriaLabel' | translate }}">
-            <button mat-raised-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">{{ 'leave.addButton' | translate }}</button>
+            <button mat-flat-button class="addBtn rounded-pill mx-3" (click)="open(addModal)">{{ 'leave.addButton' | translate }}</button>
             <button class="submenuTab active rounded-pill" (click)="exportToCsv()"> 
                 <i class="bi bi-download downloadBtn pe-2"></i>{{ 'leave.download' | translate }}
             </button>

@@ -6,7 +6,7 @@
                 <span class="bi bi-search searchIcon"></span>
                 <input class="form-control search" type="text" [placeholder]="'payroll.search_placeholder' | translate"
                     [(ngModel)]="searchText" name="searchText" aria-label="default input example">
-                <button class="addBtn ms-2" mat-raised-button (click)="refreshData()">{{'payroll.refresh' |
+                <button class="addBtn ms-2" mat-flat-button (click)="refreshData()">{{'payroll.refresh' |
                     translate}}</button>
             </div>
         </div>
@@ -34,7 +34,7 @@
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef translate>payroll.actions</th>
                 <td mat-cell *matCellDef="let element">
-                    <button mat-raised-button class="addBtn"
+                    <button mat-flat-button class="addBtn"
                         (click)="selectedRecord = element; viewPayslip()">{{'payroll.show_payslip' |
                         translate}}</button>
                 </td>

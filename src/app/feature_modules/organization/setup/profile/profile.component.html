@@ -122,8 +122,8 @@
       </div>
     </div>
     <div mat-dialog-actions class="d-flex justify-content-between border-top mt-2 py-2">
-      <button mat-raised-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' | translate}}</button>
-      <button mat-raised-button color="primary" type="submit">{{'organization.setup.update' | translate}}</button>
+      <button mat-flat-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' | translate}}</button>
+      <button mat-flat-button color="primary" type="submit">{{'organization.setup.update' | translate}}</button>
     </div>
 </form>
 </ng-template>
@@ -145,9 +145,9 @@
     </div>
   </div>
   <div mat-dialog-actions class="d-flex justify-content-between border-top mt-2 py-2">
-    <button mat-raised-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' |
+    <button mat-flat-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' |
       translate}}</button>
-    <button mat-raised-button color="primary" (click)="uploadLogo()"
+    <button mat-flat-button color="primary" (click)="uploadLogo()"
       [disabled]="!selectedFile">{{'organization.setup.update' | translate}}</button>
   </div>
 </ng-template>

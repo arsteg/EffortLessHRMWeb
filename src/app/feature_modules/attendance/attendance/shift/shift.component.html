@@ -9,7 +9,7 @@
                     <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                         name="searchText" aria-label="default input example">
 
-                    <button mat-raised-button (click)="clearForm(); changeMode == 'Add'; isEdit= false; open(addModal);"
+                    <button mat-flat-button (click)="clearForm(); changeMode == 'Add'; isEdit= false; open(addModal);"
                         class="addBtn rounded-pill mx-3">Add
                     </button>
 
@@ -378,8 +378,8 @@
 
 
         <div class="d-flex justify-content-between mt-2">
-            <button type="reset" mat-raised-button>Cancel</button>
-            <button type="submit" mat-raised-button class="addBtn">{{isEdit == true ? 'Update': 'Add'}}</button>
+            <button type="reset" mat-flat-button>Cancel</button>
+            <button type="submit" mat-flat-button class="addBtn">{{isEdit == true ? 'Update': 'Add'}}</button>
         </div>
     </form>
 

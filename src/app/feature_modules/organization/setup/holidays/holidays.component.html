@@ -9,7 +9,7 @@
                 </mat-select>
             </mat-form-field>
 
-            <button mat-raised-button class="position-absolute end-0" color="primary"
+            <button mat-flat-button class="position-absolute end-0" color="primary"
                 (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
         </div>
 
@@ -143,8 +143,8 @@
         </mat-form-field>
 
         <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-            <button mat-raised-button type="button" (click)="clearselectedRequest()">Cancel</button>
-            <button mat-raised-button class="addBtn" type="submit">Submit</button>
+            <button mat-flat-button type="button" (click)="clearselectedRequest()">Cancel</button>
+            <button mat-flat-button class="addBtn" type="submit">Submit</button>
         </div>
     </form>
 

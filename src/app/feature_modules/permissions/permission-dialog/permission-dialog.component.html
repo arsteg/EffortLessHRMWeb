@@ -43,7 +43,7 @@
 </div>
 <mat-dialog-actions>
   <button mat-button (click)="onCancel()">{{'cancel' | translate}}</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="permissionForm.invalid">
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="permissionForm.invalid">
     {{isEdit ? ('update' | translate) : ('add' | translate)}}
   </button>
 </mat-dialog-actions>
