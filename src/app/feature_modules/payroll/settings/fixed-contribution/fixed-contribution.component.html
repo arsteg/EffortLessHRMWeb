@@ -1,49 +1,26 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="tableContainer">
-            
-            <table>
-                <thead>
-                    <th [appSort]="fixedContribution" data-name="label"
-                    >Label Name
-                        <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                    </th>
-                    <th translate>payroll.actions</th>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let fc of fixedContribution | search:searchText">
-                        <td>{{fc?.label}} ({{fc?.shortName}})</td>
-                        <td>
-                            <button class="actions" mat-mini-fab [matTooltip]="'payroll.edit' | translate" matTooltipPosition="before"
-                                data-bs-toggle="offcanvas" data-bs-target="#contribution"
-                                (click)="selectedRecord = fc; isEdit = true; openOffcanvas('contribution')">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-<div class="offcanvas offcanvas-end w-75" id="contribution" data-bs-backdrop="false" data-bs-scroll="false">
-    <span class="text-reset" data-bs-dismiss="offcanvas" aria-label="Close" (click)="closeOffcanvas()">
-        <i class="bi bi-arrow-left text-white"></i></span>
-    <div class="offcanvas-body">
-        <div class="container p-0">
-            <ng-container *ngIf="selectedRecord?.shortName === 'LWF'; else esicTemplate">
-                <app-lwf [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-lwf>
-            </ng-container>
-            <ng-template #esicTemplate>
-                <ng-container *ngIf="selectedRecord?.shortName === 'ESIC'; else ptTemplate">
-                    <app-esic [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-esic>
-                </ng-container>
-            </ng-template>
-            <ng-template #ptTemplate>
-                <ng-container *ngIf="ptTemplate">
-                    <app-pt [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-pt>
-                </ng-container>
-            </ng-template>
-        </div>
-    </div>
-</div>
+@if(!selectedRecord){
+    <hrm-table [data]="fixedContribution" [columns]="columns" [showSearch]="true"
+        (actionClicked)="onActionClick($event)"></hrm-table>
+} @else {
+
+    
+                    <button mat-flat-button (click)="selectedRecord = null">
+                        <mat-icon>keyboard_arrow_left</mat-icon> Back
+                    </button>
+                    <div class="card">
+                        <ng-container *ngIf="selectedRecord?.shortName === 'LWF'; else esicTemplate">
+                            <app-lwf [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-lwf>
+                        </ng-container>
+                        <ng-template #esicTemplate>
+                            <ng-container *ngIf="selectedRecord?.shortName === 'ESIC'; else ptTemplate">
+                                <app-esic [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-esic>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #ptTemplate>
+                            <ng-container *ngIf="ptTemplate">
+                                <app-pt [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-pt>
+                            </ng-container>
+                        </ng-template>
+                    </div>
+                
+}

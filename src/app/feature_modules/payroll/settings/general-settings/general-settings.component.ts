@@ -46,7 +46,7 @@ export class GeneralSettingsComponent implements OnInit {
             isAllowNcpDaysApplicableInPF: [true],
             isAllowToCalculateOvertime: [true]
         });
-        this.generalSettingForm.disable();
+        // this.generalSettingForm.disable();
     }
 
     ngOnInit() {

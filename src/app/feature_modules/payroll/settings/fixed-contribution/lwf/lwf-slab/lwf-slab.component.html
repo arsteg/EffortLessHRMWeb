@@ -1,25 +1,24 @@
-<div class="tableContainer bg-white py-2">
-  <div class="d-flex justify-content-end mb-2">
-    <div class="align-items-center d-flex justify-content-end">
-      <label for="selectedState">{{ 'payroll._lwf.slab.form.state' | translate }}</label>
-      <select class="w-auto mx-1" [(ngModel)]="selectedState" name="selectedState" (change)="getLwfSlab()"
-        (blur)="stateTouched = true" [disabled]="true" required
-        [attr.aria-label]="'payroll._lwf.slab.form.state_aria' | translate">
-        <option value="" disabled selected>{{ 'payroll._lwf.slab.form.state_placeholder' | translate }}</option>
-        <option *ngFor="let state of eligibleStates" [value]="state">
-          {{ state | translate }}
-        </option>
-      </select>
-      <div *ngIf="stateTouched && !selectedState" class="text-danger ms-2">
+
+  <div class="d-flex justify-content-end gap-2 mb-2">
+    <mat-form-field>
+      <mat-label for="selectedState">{{ 'payroll._lwf.slab.form.state' | translate }}</mat-label>
+      <mat-select [(ngModel)]="selectedState" name="selectedState" (change)="getLwfSlab()" (blur)="stateTouched = true"
+        required [attr.aria-label]="'payroll._lwf.slab.form.state_aria' | translate">
+        <mat-option value="" disabled selected>{{ 'payroll._lwf.slab.form.state_placeholder' | translate }}</mat-option>
+        <mat-option *ngFor="let state of eligibleStates" [value]="state">
+          {{ state }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="stateTouched && !selectedState">
         {{ 'payroll._lwf.slab.form.error.state_required' | translate }}
-      </div>
-    </div>
-    <button mat-flat-button class="addBtn" (click)="handleAdd(modal); isEdit = false; clearForm()">
+      </mat-error>
+    </mat-form-field>
+    <button mat-flat-button color="primary" (click)="handleAdd(modal); isEdit = false; clearForm()">
       {{ 'payroll.add' | translate }}
     </button>
   </div>
 
-  <table>
+  <table class="hrm-table">
     <thead>
       <th>{{ 'payroll._lwf.slab.table.employee_amount' | translate }}</th>
       <th>{{ 'payroll._lwf.slab.table.employer_amount' | translate }}</th>
@@ -59,7 +58,6 @@
       </tr>
     </tbody>
   </table>
-</div>
 
 <ng-template #modal let-modal>
   <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
