@@ -8,7 +8,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 @Injectable({
   providedIn: 'root'
 })
-export class AttendanceService  {
+export class AttendanceService {
   private readonly token = this.getToken();
   private readonly apiUrl = environment.apiUrlDotNet;
   private readonly httpOptions = {
@@ -120,6 +120,11 @@ export class AttendanceService  {
 
   getAttendanceTemplateById(id: string): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-templates/${id}`, this.httpOptions);
+    return response;
+  }
+
+  getAttendanceTemplateByUserId(userId: string): Observable<response<any>> {
+    var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-templates-by-user/${userId}`, this.httpOptions);
     return response;
   }
 
