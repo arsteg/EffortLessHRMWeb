@@ -189,6 +189,8 @@
         "applicable_category_added_error":"Error while adding Expense Template Applicable Category",
         "status_updated_success":"Status updated successfully",
         "advance_category_not_assigned":"Advance category not assigned to the selected employee",
-        "advance_category_not_fetched":"Failed to fetch advance category. Please try again later."
+        "advance_category_not_fetched":"Failed to fetch advance category. Please try again later.",
+        "add_success": "Advance report added successfully",
+        "update_success": "Advance report updated successfully"
     }
 }
