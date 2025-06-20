@@ -77,7 +77,6 @@ export class ShowShortLeaveComponent {
       next: this.recordsPerPage.toString(),
       status: this.status
     };
-console.log(this.status)
     if (this.extractedUrl !== 'my-short-leave') {
       this.leaveService.getShortLeave(requestBody).subscribe({
         next: (leaves: any) => {
@@ -122,7 +121,6 @@ console.log(this.status)
   onClose(event: any) {
     if (event) {
       this.modalService.dismissAll();
-      this.toast.info(this.translate.instant('leave.modalClosed'));
     }
   }
 
@@ -208,7 +206,6 @@ console.log(this.status)
       data: { report: selectedReport }
     });
     dialogRef.afterClosed().subscribe(() => {
-      this.toast.info(this.translate.instant('leave.viewModalClosed'));
     });
   }
 

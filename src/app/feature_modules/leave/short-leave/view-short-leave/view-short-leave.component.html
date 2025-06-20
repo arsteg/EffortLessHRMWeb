@@ -4,9 +4,9 @@
             <h3 class="px-3 pt-2 mb-0 text-muted">{{ 'leave.showShortLeaveDetailsTitle' | translate }}</h3>
         </div>
         <div mat-dialog-actions>
-            <button mat-button mat-dialog-close (click)="closeModal()"
-                    [attr.aria-label]="'leave.closeModal' | translate">
-                <mat-icon aria-hidden="false" fontIcon="close"></mat-icon>
+            <button mat-button mat-dialog-close (click)="closeModal()">
+                   
+                <mat-icon>close</mat-icon>
             </button>
         </div>
     </div>
@@ -20,7 +20,7 @@
                 </tr>
                 <tr>
                     <th class="w-50">{{ 'leave._status' | translate }}</th>
-                    <td>{{ leaveService?.leave?.getValue()?.status | translate: 'leave.status' }}</td>
+                    <td>{{ leaveService?.leave?.getValue()?.status }}</td>
                 </tr>
                 <tr>
                     <th class="w-50">{{ 'leave.startTime' | translate }}</th>

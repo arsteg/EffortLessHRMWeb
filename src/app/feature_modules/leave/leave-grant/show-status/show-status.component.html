@@ -45,7 +45,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let leave of leaveGrant | search: searchText">
-                <td>{{getUser(leave?.employee)}}</td>
+                <td>{{leave?.employee?.firstName}} {{leave?.employee?.lastName}}</td>
                 <td>{{leave?.appliedOn | date: 'mediumDate'}}</td>
                 <td>{{leave?.date | date: 'mediumDate'}}</td>
                 <td>{{leave?.usedOn | date: 'mediumDate'}}</td>

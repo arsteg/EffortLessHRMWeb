@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
 import { LeaveService } from 'src/app/_services/leave.service';
 
 @Component({
@@ -15,7 +16,8 @@ export class UpdateStatusComponent {
 
   constructor(public leaveService: LeaveService,
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<UpdateStatusComponent>) {
+    private dialogRef: MatDialogRef<UpdateStatusComponent>,
+    private toast: ToastrService) {
     this.updateLeaveReport = this.fb.group({
       user: [''],
       status: [''],
@@ -40,9 +42,12 @@ export class UpdateStatusComponent {
       comment: this.leaveUpdateStatus.comment
     }
     this.leaveService.updateLeaveGrant(id, payload).subscribe((res: any) => {
+      this.toast.success('Leave Grant Updated Successfully');
       this.leaveGrantRefreshed.emit();
       this.dialogRef.close();
-    });
+
+    },
+    (err: any) => this.toast.error('A leave grant can not be updated') );
     this.leaveGrantRefreshed.emit();
   }
 
