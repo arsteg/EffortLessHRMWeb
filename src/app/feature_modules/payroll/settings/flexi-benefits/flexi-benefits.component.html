@@ -1,67 +1,33 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="bg-white">
-            <div class="d-flex align-items-center px-2 py-1">
-                <p class="mb-0 me-auto"> ({{tableService.totalRecords}}) {{ 'payroll.records_found' | translate}}
-                </p>
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-                    <input class="form-control search" type="text"
-                        [placeholder]="'payroll.search_placeholder' | translate" [(ngModel)]="tableService.searchText"
-                        (input)="tableService.applyFilter()" name="searchText" aria-label="default input example">
-                    <button class="addBtn mx-2" mat-flat-button (click)="open(modal); isEdit= false; clearForm()">
-                        {{ 'payroll.add' | translate }}
-                    </button>
-                </div>
-            </div>
-            <table mat-table [dataSource]="tableService.dataSource">
-                <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef>
-                        {{ 'payroll.flexi_benefits.table.category_name' | translate }}
-                    </th>
-                    <td mat-cell *matCellDef="let benefit"> {{ benefit?.name }} </td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>
-                        {{ 'payroll.actions' | translate }}
-                    </th>
-                    <td mat-cell *matCellDef="let benefit">
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item
-                                (click)="open(modal); selectedRecord = benefit; isEdit= true; editRecord();">
-                                {{ 'payroll.edit' | translate }}
-                            </button>
-                            <button mat-menu-item (click)="deleteDialog(benefit?._id)">
-                                {{ 'payroll.delete' | translate }}
-                            </button>
-                        </mat-menu>
-                        <button mat-icon-button [matMenuTriggerFor]="menu"
-                            [attr.aria-label]="'payroll.flexi_benefits.menu.actions_aria' | translate">
-                            <mat-icon>more_vert</mat-icon>
-                        </button>
-                    </td>
-                </ng-container>
-
-                <tr mat-header-row *matHeaderRowDef="['name', 'actions']"></tr>
-                <tr mat-row *matRowDef="let row; columns: ['name', 'actions'];"></tr>
-            </table>
-            <mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
-                [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
-            </mat-paginator>
-        </div>
+<div class="position-relative">
+    <div class="position-absolute end-0">
+        <button color="primary" mat-flat-button (click)="open(modal); isEdit= false; clearForm()">
+            {{ 'payroll.add' | translate }}
+        </button>
     </div>
 </div>
 
+
+<hrm-table [data]="tableService.dataSource.data" [columns]="columns" [showSearch]="true"
+    [totalItems]="tableService.totalRecords" (searchChanged)="onSearch($event)"
+    (actionClicked)="onAction($event, modal)" [isServerSide]="true" (pageChanged)="onPageChange($event)"></hrm-table>
+
+
+
 <ng-template #modal let-modal>
-    <h1 mat-dialog-title>
-        {{ (isEdit ? 'payroll.flexi_benefits.modal.update_title' : 'payroll.flexi_benefits.modal.add_title') | translate
-        }}
-    </h1>
+    <div class="d-flex align-items-center justify-content-between">
+        <h1 mat-dialog-title>
+            {{ (isEdit ? 'payroll.flexi_benefits.modal.update_title' : 'payroll.flexi_benefits.modal.add_title') |
+            translate
+            }}
+        </h1>
+        <button mat-icon-button class="me-2" mat-dialog-close="">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
     <form [formGroup]="flexiBenefitsForm" (ngSubmit)="onSubmission()">
         <div mat-dialog-content>
             <div class="form-group">
-                <mat-form-field appearance="fill" class="w-100">
+                <mat-form-field class="w-100">
                     <mat-label>{{ 'payroll.flexi_benefits.form.name' | translate }}</mat-label>
                     <input matInput type="text" formControlName="name"
                         [placeholder]="'payroll.flexi_benefits.form.name_placeholder' | translate">
@@ -79,7 +45,7 @@
             <button mat-flat-button type="button" (click)="clearForm(); closeModal()">
                 {{ 'payroll.cancel' | translate }}
             </button>
-            <button mat-flat-button type="submit" class="addBtn" [disabled]="!flexiBenefitsForm.valid">
+            <button mat-flat-button type="submit" color="primary" [disabled]="!flexiBenefitsForm.valid">
                 {{ 'payroll.submit' | translate }}
             </button>
         </div>

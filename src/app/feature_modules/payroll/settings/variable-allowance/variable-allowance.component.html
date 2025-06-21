@@ -1,158 +1,32 @@
-<div class="main-content">
-  <div class="container-fluid">
-    <div class="bg-white">
-      <div class="d-flex align-items-center px-2 py-1">
-        <p class="mb-0 me-auto"> ({{tableService.totalRecords}}) {{ 'payroll.records_found' | translate}}
-        </p>
-        <div class="d-flex align-items-center">
-          <span class="bi bi-search searchIcon"></span>
-          <input class="form-control search" type="text" [placeholder]="'payroll.search_placeholder' | translate"
-            [(ngModel)]="tableService.searchText" (input)="tableService.applyFilter()" name="searchText">
-          <button class="addBtn mx-2" mat-flat-button (click)="isEdit= false; open(modal)">
-            {{ 'payroll.add' | translate }}
-          </button>
-        </div>
-      </div>
-      <table mat-table [dataSource]="tableService.dataSource">
-        <ng-container matColumnDef="label">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'payroll._variable_allowance.table.allowance_name' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let va"> {{ va?.label }} </td>
-        </ng-container>
+<div class="position-relative">
 
-        <ng-container matColumnDef="isProvidentFundAffected">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'payroll._variable_allowance.table.pf' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let va">
-            <span *ngIf="va?.isProvidentFundAffected else fixed">
-              <mat-icon style="color: green;"
-                [attr.aria-label]="'payroll._variable_allowance.table.affected_aria' | translate">check</mat-icon>
-            </span>
-            <ng-template #fixed>
-              <mat-icon style="color: red;"
-                [attr.aria-label]="'payroll._variable_allowance.table.not_affected_aria' | translate">close</mat-icon>
-            </ng-template>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="isESICAffected">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'payroll._variable_allowance.table.esic' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let va">
-            <span *ngIf="va?.isESICAffected else fixed">
-              <mat-icon style="color: green;"
-                [attr.aria-label]="'payroll._variable_allowance.table.affected_aria' | translate">check</mat-icon>
-            </span>
-            <ng-template #fixed>
-              <mat-icon style="color: red;"
-                [attr.aria-label]="'payroll._variable_allowance.table.not_affected_aria' | translate">close</mat-icon>
-            </ng-template>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="isLWFAffected">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'payroll._variable_allowance.table.lwf' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let va">
-            <span *ngIf="va?.isLWFAffected else fixed">
-              <mat-icon style="color: green;"
-                [attr.aria-label]="'payroll._variable_allowance.table.affected_aria' | translate">check</mat-icon>
-            </span>
-            <ng-template #fixed>
-              <mat-icon style="color: red;"
-                [attr.aria-label]="'payroll._variable_allowance.table.not_affected_aria' | translate">close</mat-icon>
-            </ng-template>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="isProfessionalTaxAffected">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'payroll._variable_allowance.table.pt' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let va">
-            <span *ngIf="va?.isProfessionalTaxAffected else fixed">
-              <mat-icon style="color: green;"
-                [attr.aria-label]="'payroll._variable_allowance.table.affected_aria' | translate">check</mat-icon>
-            </span>
-            <ng-template #fixed>
-              <mat-icon style="color: red;"
-                [attr.aria-label]="'payroll._variable_allowance.table.not_affected_aria' | translate">close</mat-icon>
-            </ng-template>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="isIncomeTaxAffected">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'payroll._variable_allowance.table.it' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let va">
-            <span *ngIf="va?.isIncomeTaxAffected else fixed">
-              <mat-icon style="color: green;"
-                [attr.aria-label]="'payroll._variable_allowance.table.affected_aria' | translate">check</mat-icon>
-            </span>
-            <ng-template #fixed>
-              <mat-icon style="color: red;"
-                [attr.aria-label]="'payroll._variable_allowance.table.not_affected_aria' | translate">close</mat-icon>
-            </ng-template>
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="paidAllowanceFrequently">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'payroll._variable_allowance.table.frequency' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let va">
-            {{ va?.paidAllowanceFrequently | titlecase }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'payroll.actions' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let va">
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="selectedRecord = va; isEdit= true; editRecord(); open(modal);">
-                {{ 'payroll.edit' | translate }}
-              </button>
-              <button mat-menu-item (click)="deleteDialog(va?._id)">
-                {{ 'payroll.delete' | translate }}
-              </button>
-            </mat-menu>
-            <button mat-icon-button [matMenuTriggerFor]="menu"
-              [attr.aria-label]="'payroll._variable_allowance.menu.actions_aria' | translate">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row
-          *matHeaderRowDef="['label', 'isProvidentFundAffected', 'isESICAffected', 'isLWFAffected', 'isProfessionalTaxAffected', 'isIncomeTaxAffected', 'paidAllowanceFrequently', 'actions']">
-        </tr>
-        <tr mat-row
-          *matRowDef="let row; columns: ['label', 'isProvidentFundAffected', 'isESICAffected', 'isLWFAffected', 'isProfessionalTaxAffected', 'isIncomeTaxAffected', 'paidAllowanceFrequently', 'actions'];">
-        </tr>
-      </table>
-      <mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
-        [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
-      </mat-paginator>
-    </div>
+  <div class="position-absolute end-0">
+    <button color="primary" mat-flat-button (click)="isEdit= false; open(modal)">
+      {{ 'payroll.add' | translate }}
+    </button>
   </div>
+</div>
 
-  <ng-template #modal let-modal>
+<hrm-table [data]="tableService.dataSource.data" [columns]="columns" [showSearch]="true"
+  [totalItems]="tableService.totalRecords" (searchChanged)="onSearch($event)" (actionClicked)="onAction($event, modal)"
+  [isServerSide]="true" (pageChanged)="onPageChange($event)"></hrm-table>
+
+<ng-template #modal let-modal>
+  <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>
       {{ (isEdit ? 'payroll._variable_allowance.modal.update_title' :
       'payroll._variable_allowance.modal.add_title') | translate }}
     </h1>
+    <button mat-icon-button mat-dialog-close="" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
     <form [formGroup]="variableAllowanceForm" (ngSubmit)="onSubmission()">
       <div mat-dialog-content>
-        <div class="row">
+        <div class="row m-0">
           <div class="form-group col-md-6">
-            <mat-form-field appearance="fill" class="w-100">
+            <mat-form-field class="w-100">
               <mat-label>{{ 'payroll._variable_allowance.form.label' | translate }}</mat-label>
               <input matInput type="text" formControlName="label">
               <mat-error
@@ -168,7 +42,7 @@
           </div>
 
           <div class="form-group col-md-6">
-            <mat-form-field appearance="fill" class="w-100">
+            <mat-form-field class="w-100">
               <mat-label>{{ 'payroll._variable_allowance.form.allowance_rate' | translate }}</mat-label>
               <input matInput type="number" formControlName="allowanceRatePerDay">
               <mat-error
@@ -182,9 +56,7 @@
               </mat-error>
             </mat-form-field>
           </div>
-        </div>
 
-        <div class="row">
           <div class="form-group my-2 col-md-6">
             <label>{{ 'payroll._variable_allowance.form.pf_affected' | translate }}</label>
             <div class="d-flex">
@@ -212,9 +84,7 @@
               </mat-radio-group>
             </div>
           </div>
-        </div>
 
-        <div class="row">
           <div class="form-group my-2 col-md-6">
             <label>{{ 'payroll._variable_allowance.form.payroll_editable' | translate }}</label>
             <div class="d-flex">
@@ -242,9 +112,7 @@
               </mat-radio-group>
             </div>
           </div>
-        </div>
 
-        <div class="row">
           <div class="form-group my-2 col-md-6">
             <label>{{ 'payroll._variable_allowance.form.pt_affected' | translate }}</label>
             <div class="d-flex">
@@ -272,10 +140,8 @@
               </mat-radio-group>
             </div>
           </div>
-        </div>
-
-        <div class="row" *ngIf="variableAllowanceForm.get('isIncomeTaxAffected').value === true">
-          <div class="form-check mt-2 col-md-6">
+          @if(variableAllowanceForm.get('isIncomeTaxAffected').value === true){
+          <div class="form-group mt-2 col-md-12">
             <mat-form-field appearance="outline" class="w-100 mx-1">
               <mat-label>{{ 'payroll._variable_allowance.form.tax_regime' | translate }}</mat-label>
               <mat-select multiple formControlName="taxRegime">
@@ -288,11 +154,10 @@
               </mat-select>
             </mat-form-field>
           </div>
-        </div>
+          }
 
-        <div class="row">
-          <div class="form-check mt-2 col-md-6">
-            <mat-form-field appearance="fill" class="w-100">
+          <div class="form-group mt-2 col-md-12">
+            <mat-form-field class="w-100">
               <mat-label>{{ 'payroll._variable_allowance.form.frequency' | translate }}</mat-label>
               <mat-select formControlName="paidAllowanceFrequently">
                 <mat-option value="monthly">
@@ -314,12 +179,16 @@
               </mat-error>
             </mat-form-field>
           </div>
+
         </div>
 
-        <div class="row">
-          <label>{{ 'payroll._variable_allowance.form.effective_period' | translate }}</label>
+
+
+
+        <div class="row m-0">
+          <label class="mb-2">{{ 'payroll._variable_allowance.form.effective_period' | translate }}</label>
           <div class="col-md-6">
-            <mat-form-field appearance="fill">
+            <mat-form-field>
               <mat-label>{{ 'payroll._variable_allowance.form.month' | translate }}</mat-label>
               <mat-select formControlName="allowanceEffectiveFromMonth">
                 <mat-option value="" disabled>
@@ -336,7 +205,7 @@
             </mat-form-field>
           </div>
           <div class="col-md-6">
-            <mat-form-field appearance="fill">
+            <mat-form-field>
               <mat-label>{{ 'payroll._variable_allowance.form.year' | translate }}</mat-label>
               <mat-select formControlName="allowanceEffectiveFromYear">
                 <mat-option value="" disabled>
@@ -352,23 +221,25 @@
           </div>
         </div>
 
-        <div class="form-group my-2">
-          <label>{{ 'payroll._variable_allowance.form.ending_period' | translate }}</label>
-          <div class="d-flex">
-            <mat-radio-group formControlName="isEndingPeriod">
-              <mat-radio-button [value]="true">
-                {{ 'payroll._variable_allowance.form.ending_period_yes' | translate }}
-              </mat-radio-button>
-              <mat-radio-button [value]="false" class="ms-3">
-                {{ 'payroll._variable_allowance.form.ending_period_no' | translate }}
-              </mat-radio-button>
-            </mat-radio-group>
+        <div class="row m-0">
+          <div class="form-group col-12 my-2">
+            <label>{{ 'payroll._variable_allowance.form.ending_period' | translate }}</label>
+            <div class="d-flex">
+              <mat-radio-group formControlName="isEndingPeriod">
+                <mat-radio-button [value]="true">
+                  {{ 'payroll._variable_allowance.form.ending_period_yes' | translate }}
+                </mat-radio-button>
+                <mat-radio-button [value]="false" class="ms-3">
+                  {{ 'payroll._variable_allowance.form.ending_period_no' | translate }}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
           </div>
         </div>
 
-        <div class="row" *ngIf="variableAllowanceForm.get('isEndingPeriod')?.value === true">
+        <div class="row m-0" *ngIf="variableAllowanceForm.get('isEndingPeriod')?.value === true">
           <div class="mt-2 col-md-6">
-            <mat-form-field appearance="fill">
+            <mat-form-field>
               <mat-label>{{ 'payroll._variable_allowance.form.month' | translate }}</mat-label>
               <mat-select formControlName="allowanceStopMonth">
                 <mat-option value="" disabled>
@@ -385,7 +256,7 @@
             </mat-form-field>
           </div>
           <div class="col-md-6">
-            <mat-form-field appearance="fill">
+            <mat-form-field>
               <mat-label>{{ 'payroll._variable_allowance.form.year' | translate }}</mat-label>
               <mat-select formControlName="allowanceStopYear">
                 <mat-option value="" disabled>
@@ -408,8 +279,8 @@
         </div>
 
       </div>
-      <div mat-dialog-actions align="end">
-        <button mat-button class="close-button" (click)="closeModal()">
+      <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+        <button mat-flat-button (click)="closeModal()">
           {{ 'payroll.cancel' | translate }}
         </button>
         <button mat-flat-button color="primary" type="submit" [disabled]="!variableAllowanceForm.valid">
@@ -417,5 +288,5 @@
         </button>
       </div>
     </form>
-  </ng-template>
-</div>
+
+</ng-template>

@@ -1,6 +1,6 @@
 <div class="main-content contentData">
     <div class="container-fluid px-0">
-        <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="selectTab($event)">
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="selectTab($event)" class="child-tabs">
             <mat-tab label="Run Payroll">
                 <ng-template matTabContent>
                     <app-payroll-history (changeView)="toggleView()"></app-payroll-history>

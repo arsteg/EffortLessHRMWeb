@@ -1,26 +1,26 @@
 @if(!selectedRecord){
-    <hrm-table [data]="fixedContribution" [columns]="columns" [showSearch]="true"
-        (actionClicked)="onActionClick($event)"></hrm-table>
+<hrm-table [data]="fixedContribution" [columns]="columns" [showSearch]="true"
+    (actionClicked)="onActionClick($event)"></hrm-table>
 } @else {
 
-    
-                    <button mat-flat-button (click)="selectedRecord = null">
-                        <mat-icon>keyboard_arrow_left</mat-icon> Back
-                    </button>
-                    <div class="card">
-                        <ng-container *ngIf="selectedRecord?.shortName === 'LWF'; else esicTemplate">
-                            <app-lwf [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-lwf>
-                        </ng-container>
-                        <ng-template #esicTemplate>
-                            <ng-container *ngIf="selectedRecord?.shortName === 'ESIC'; else ptTemplate">
-                                <app-esic [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-esic>
-                            </ng-container>
-                        </ng-template>
-                        <ng-template #ptTemplate>
-                            <ng-container *ngIf="ptTemplate">
-                                <app-pt [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-pt>
-                            </ng-container>
-                        </ng-template>
-                    </div>
-                
+
+<button mat-flat-button (click)="selectedRecord = null">
+    <mat-icon>keyboard_arrow_left</mat-icon> Back
+</button>
+<div class="card">
+    <ng-container *ngIf="selectedRecord?.shortName === 'LWF'; else esicTemplate">
+        <app-lwf [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-lwf>
+    </ng-container>
+    <ng-template #esicTemplate>
+        <ng-container *ngIf="selectedRecord?.shortName === 'ESIC'; else ptTemplate">
+            <app-esic [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-esic>
+        </ng-container>
+    </ng-template>
+    <ng-template #ptTemplate>
+        <ng-container *ngIf="ptTemplate">
+            <app-pt [selectedRecord]="selectedRecord" [isEdit]="isEdit"></app-pt>
+        </ng-container>
+    </ng-template>
+</div>
+
 }

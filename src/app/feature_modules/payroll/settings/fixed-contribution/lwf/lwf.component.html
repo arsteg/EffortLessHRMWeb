@@ -1,24 +1,21 @@
 <h2>{{ 'payroll.lwf_title' | translate }}</h2>
 <hr>
+<nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel" class="child-tabs">
+    <a mat-tab-link
+      (click)="selectTab('tablwfSlab')"
+      [active]="activeTab === 'tablwfSlab'"> {{ 'payroll.lwf_slab' | translate }} </a>
+  
+  <a mat-tab-link
+      (click)="selectTab('tabDeductionMon')"
+      [active]="activeTab === 'tabDeductionMon'"> {{ 'payroll.deduction_month' | translate }} </a>
+</nav>
 
-<ul class="nav nav-tabs">
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tablwfSlab'}" (click)="selectTab('tablwfSlab')">
-            {{ 'payroll.lwf_slab' | translate }}
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabDeductionMon'}" (click)="selectTab('tabDeductionMon')">
-            {{ 'payroll.deduction_month' | translate }}
-        </a>
-    </li>
-</ul>
-
-<div class="tab-content pt-0">
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tablwfSlab'}" id="tablwfSlab">
+<mat-tab-nav-panel #tabPanel>
+    @if(activeTab === 'tablwfSlab'){
         <app-lwf-slab [selectedRecord]="selectedRecord"></app-lwf-slab>
-    </div>
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabDeductionMon'}" id="tabDeductionMon">
+    }
+    @if(activeTab === 'tabDeductionMon'){
         <app-deduction></app-deduction>
-    </div>
-</div>
+
+    }
+</mat-tab-nav-panel>

@@ -1,22 +1,20 @@
 <h2>{{'payroll.esic_fullname' | translate}}</h2>
 <hr>
 
-<ul class="nav nav-tabs">
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabCeilingAmount'}"
-            (click)="selectTab('tabCeilingAmount')" translate>payroll.ceiling_amount</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabContribution'}"
-            (click)="selectTab('tabContribution')" translate>payroll.contribution</a>
-    </li>
-</ul>
+<nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel" class="child-tabs">
+    <a mat-tab-link
+      (click)="selectTab('tabCeilingAmount')"
+      [active]="activeTab === 'tabCeilingAmount'"> {{ 'payroll.ceiling_amount' | translate }} </a>
+    <a mat-tab-link
+      (click)="selectTab('tabContribution')"
+      [active]="activeTab === 'tabContribution'"> {{ 'payroll.contribution' | translate }} </a>
+</nav>
 
-<div class="tab-content pt-0">
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabCeilingAmount'}" id="tabCeilingAmount">
+<mat-tab-nav-panel #tabPanel>
+    @if(activeTab === 'tabCeilingAmount'){
         <app-ceiling-amount [selectedReport]="selectedRecord"></app-ceiling-amount>
-    </div>
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabContribution'}" id="tabContribution">
+    }
+    @if(activeTab === 'tabContribution'){
         <app-contribution></app-contribution>
-    </div>
-</div>
+    }
+</mat-tab-nav-panel>

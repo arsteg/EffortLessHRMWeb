@@ -7,6 +7,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-loans-advances',
@@ -22,6 +23,19 @@ export class LoansAdvancesComponent implements AfterViewInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  columns: TableColumn[] = [
+    { key: 'name', name: this.translate.instant('payroll.loans_advances.table.category_name') },
+    {
+      key: 'action',
+      name: this.translate.instant('payroll.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn" },
+      ]
+    },
+  ];
+  allData: any = []
 
   constructor(
     private toast: ToastrService,
@@ -48,6 +62,29 @@ export class LoansAdvancesComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.tableService.initializeDataSource([]);
     this.getLoanAdvances();
+  }
+
+  onSearch(search: any) {
+    const data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+      return found;
+    });
+    this.tableService.setData(data);
+  }
+
+
+   onAction(event: any, modal: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedRecord = event.row;
+        this.open(modal);
+        this.isEdit = true;
+        this.editRecord();
+        break;
+      case 'Delete': this.deleteDialog(event.row?._id); break;
+    }
   }
 
   clearForm() {
@@ -174,6 +211,7 @@ export class LoansAdvancesComponent implements AfterViewInit {
     };
     this.payroll.getLoans(pagination).subscribe((res: any) => {
       this.tableService.setData(res.data);
+      this.allData = res.data;
       this.tableService.totalRecords = res.total;
     });
   }

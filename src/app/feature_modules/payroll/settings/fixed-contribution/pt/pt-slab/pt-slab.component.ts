@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core'; // Import TranslateService
 import { CompanyService } from 'src/app/_services/company.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-pt-slab',
@@ -15,6 +16,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 })
 export class PtSlabComponent {
   ptSlab: any;
+  allData: any;
   selectedRecord: any;
   isEdit: boolean = false;
   ptSlabForm: FormGroup;
@@ -26,6 +28,25 @@ export class PtSlabComponent {
   searchText: string = '';
   states: any;
   frequency: string[] = []; // Initialize as empty, to be populated with translated values
+  dialogRef!: MatDialogRef<any>;
+  eligibleStates = [];
+  columns: TableColumn[] = [
+    { key: 'state', name: this.translate.instant('payroll.professional-tax.table.state') },
+    { key: 'fromAmount', name: this.translate.instant('payroll.professional-tax.table.from') },
+    { key: 'toAmount', name: this.translate.instant('payroll.professional-tax.table.to') },
+    { key: 'employeeAmount', name: this.translate.instant('payroll.professional-tax.table.pt_amount') },
+    { key: 'twelfthMonthAmount', name: this.translate.instant('payroll.professional-tax.table.twelfth_month_amount') },
+    { key: 'frequency', name: this.translate.instant('payroll.professional-tax.table.frequency') },
+    {
+      key: 'action',
+      name: this.translate.instant('payroll.professional-tax.table.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn" },
+      ]
+    },
+  ]
 
   constructor(
     private fb: FormBuilder,
@@ -66,20 +87,49 @@ export class PtSlabComponent {
   }
 
   ngOnInit() {
+    this.getStates();
     this.getCompanyState();
     this.getPtSlab();
+  }
+
+  onAction(event: any, modal: any) {
+    switch (event.action.label) {
+      case 'Edit': this.selectedRecord = event.row; this.open(modal); break;
+      case 'Delete': this.deleteDialog(event.row?._id); break;
+    }
   }
 
   getCompanyState() {
     this.companyService.getCompany().subscribe((res: any) => {
       const companyState = res?.data?.company?.state;
-      this.ptSlabForm.patchValue({ state: companyState });
+      if (companyState) {
+        this.ptSlabForm.patchValue({ state: companyState });
+        this.ptSlabForm.get('state').disable();
+      }
     });
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  getStates() {
+    this.payrollService.getAllStates().subscribe((res: any) => {
+      this.eligibleStates = res.data;
+    });
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+
     this.getPtSlab();
+  }
+
+  onSearch(search) {
+    this.ptSlab = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+      return found;
+    }
+    );
   }
 
   clearForm() {
@@ -106,6 +156,7 @@ export class PtSlabComponent {
     };
     this.payrollService.getPTSlab(pagination).subscribe((res: any) => {
       this.ptSlab = res.data;
+      this.allData = res.data;
       this.totalRecords = res.total;
     });
   }
@@ -131,10 +182,12 @@ export class PtSlabComponent {
           this.translate.get(['payroll.professional-tax.toast.success_added', 'payroll.professional-tax.title']).subscribe(translations => {
             this.toast.success(translations['payroll.professional-tax.toast.success_added'], translations['payroll.professional-tax.title']);
           });
+          this.dialogRef.close();
         },
         (err) => {
           this.translate.get(['payroll.professional-tax.toast.error_add', 'payroll.professional-tax.title']).subscribe(translations => {
             this.toast.error(translations['payroll.professional-tax.toast.error_add'], translations['payroll.professional-tax.title']);
+            this.dialogRef.close();
           });
         }
       );
@@ -187,23 +240,9 @@ export class PtSlabComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
+    this.dialogRef = this.dialog.open(content, {
+      maxWidth: '600px'
+    });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
 }

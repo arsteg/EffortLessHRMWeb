@@ -8,6 +8,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 const labelValidator: ValidatorFn = (control: AbstractControl) => {
   const value = control.value as string;
@@ -64,8 +65,93 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
   months: string[] = [];
   years: number[] = [];
   dialogRef: MatDialogRef<any>;
+  columns: TableColumn[] = [
+    { key: 'label', name: this.translate.instant('payroll._variable_allowance.table.allowance_name') },
+    {
+      key: 'isProvidentFundAffected', name: this.translate.instant('payroll._variable_allowance.table.pf'), icons: [
+        {
+          name: 'check',
+          value: true,
+          class: 'text-success'
+        },
+        {
+          name: 'close',
+          value: false,
+          class: 'text-danger'
+        }
+      ]
+    },
+    {
+      key: 'isESICAffected', name: this.translate.instant('payroll._variable_allowance.table.esic'), icons: [
+        {
+          name: 'check',
+          value: true,
+          class: 'text-success'
+        },
+        {
+          name: 'close',
+          value: false,
+          class: 'text-danger'
+        }
+      ]
+    },
+    {
+      key: 'isLWFAffected', name: this.translate.instant('payroll._variable_allowance.table.lwf'), icons: [
+        {
+          name: 'check',
+          value: true,
+          class: 'text-success'
+        },
+        {
+          name: 'close',
+          value: false,
+          class: 'text-danger'
+        }
+      ]
+    },
+    {
+      key: 'isProfessionalTaxAffected', name: this.translate.instant('payroll._variable_allowance.table.pt'), icons: [
+        {
+          name: 'check',
+          value: true,
+          class: 'text-success'
+        },
+        {
+          name: 'close',
+          value: false,
+          class: 'text-danger'
+        }
+      ]
+    },
+    {
+      key: 'isIncomeTaxAffected', name: this.translate.instant('payroll._variable_allowance.table.it'), icons: [
+        {
+          name: 'check',
+          value: true,
+          class: 'text-success'
+        },
+        {
+          name: 'close',
+          value: false,
+          class: 'text-danger'
+        }
+      ]
+    },
+    { key: 'paidAllowanceFrequently', name: this.translate.instant('payroll._variable_allowance.table.frequency') },
+    {
+      key: 'action',
+      name: this.translate.instant('payroll.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn" },
+      ]
+    },
+  ];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  allowances = []
+  allData = []
 
   constructor(
     private payroll: PayrollService,
@@ -145,6 +231,29 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
     this.getVariableAllowances();
   }
 
+  onSearch(search: any) {
+    const data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+      return found;
+    });
+    this.tableService.setData(data);
+  }
+
+
+   onAction(event: any, modal: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedRecord = event.row;
+        this.open(modal);
+        this.isEdit = true;
+        this.editRecord();
+        break;
+      case 'Delete': this.deleteDialog(event.row?._id); break;
+    }
+  }
+
   onPageChange(event: any) {
     this.tableService.updatePagination(event);
     this.getVariableAllowances();
@@ -157,6 +266,7 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
     };
     this.payroll.getVariableAllowance(pagination).subscribe(res => {
       this.tableService.setData(res.data);
+      this.allData = res.data;
       this.tableService.totalRecords = res.total;
     });
   }

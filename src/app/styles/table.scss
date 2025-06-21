@@ -36,7 +36,7 @@ table:not(.mat-calendar-table) {
 }
 
 table.hrm-table {
-
+    border: 1px solid var(--neutral-grey);
     thead,
     th {
         background-color: #f5f5f5;

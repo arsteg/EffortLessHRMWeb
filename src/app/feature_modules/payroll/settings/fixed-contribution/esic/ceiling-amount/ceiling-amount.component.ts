@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-ceiling-amount',
@@ -13,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./ceiling-amount.component.css']
 })
 export class CeilingAmountComponent {
+  allData: any;
   searchText: string = '';
   totalRecords: number;
   recordsPerPage: number = 10;
@@ -22,6 +24,20 @@ export class CeilingAmountComponent {
   ceilingAmount: any;
   ceilingAmountForm: FormGroup;
   selectedRecord: any;
+  dialogRef: MatDialogRef<any>;
+  columns: TableColumn[] = [
+    { key: 'employeeCount', name: this.translate.instant('payroll.minimum_employee_count') },
+    { key: 'maxGrossAmount', name: this.translate.instant('payroll.gross_monthly_salary_limit') },
+    {
+      key: 'action',
+      name: this.translate.instant('payroll.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn" },
+      ]
+    },
+  ];
 
   constructor(
     private payroll: PayrollService,
@@ -41,8 +57,30 @@ export class CeilingAmountComponent {
     this.getCeilingAmount();
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onSearch(search: any) {
+    this.ceilingAmount = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+      return found;
+    });
+  }
+
+  onAction(event: any, modal: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedRecord = event.row;
+        this.open(modal);
+        this.isEdit = true;
+        this.editRecord();
+        break;
+      case 'Delete': this.deleteDialog(event.row?._id); break;
+    }
+  }
+
+  onPageChange(page: any) {
+    this.currentPage = page.pageIndex;
+    this.recordsPerPage = page.pageSize;
     this.getCeilingAmount();
   }
 
@@ -58,19 +96,13 @@ export class CeilingAmountComponent {
     };
     this.payroll.getESICCeiling(pagination).subscribe((res: any) => {
       this.ceilingAmount = res.data;
+      this.allData = res.data;
       this.totalRecords = res.total;
     });
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
+    this.dialogRef = this.dialog.open(content, {width: '500px'});
 
     // Delay DOM access to ensure modal is rendered
     setTimeout(() => {
@@ -105,12 +137,14 @@ export class CeilingAmountComponent {
             this.translate.instant('payroll.esic_ceiling_amount_title')
           );
           this.ceilingAmountForm.patchValue({ employeeCount: 0, maxGrossAmount: 0 });
+          this.dialogRef.close();
         },
         error: () => {
           this.toast.error(
             this.translate.instant('payroll.esic_ceiling_amount_add_error'),
             this.translate.instant('payroll.esic_ceiling_amount_title')
           );
+          this.dialogRef.close();
         }
       });
     } else {

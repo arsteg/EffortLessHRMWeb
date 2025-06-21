@@ -59,7 +59,7 @@
 
 
 
-<ng-template #modal let-modal>
+<ng-template #modal>
     <h1 mat-dialog-title>
         {{ (isEdit ? 'payroll.fixed_deduction.modal.update_title' : 'payroll.fixed_deduction.modal.add_title') |
         translate }}
@@ -67,7 +67,7 @@
     <form [formGroup]="fixedContributionForm" (ngSubmit)="onSubmission()">
         <div mat-dialog-content>
             <div class="form-group">
-                <mat-form-field appearance="fill" class="w-100">
+                <mat-form-field class="w-100">
                     <mat-label>{{ 'payroll.fixed_deduction.form.label' | translate }}</mat-label>
                     <input matInput type="text" formControlName="label"
                         [placeholder]="'payroll.fixed_deduction.form.label_placeholder' | translate">
@@ -91,7 +91,7 @@
             <button mat-flat-button type="button" (click)="clearForm(); closeModal()">
                 {{ 'payroll.cancel' | translate }}
             </button>
-            <button mat-flat-button type="submit" class="addBtn">
+            <button mat-flat-button type="submit" color="primary">
                 {{ (isEdit ? 'payroll.update' : 'payroll.add') | translate }}
             </button>
         </div>

@@ -20,7 +20,7 @@ export class FixedContributionComponent {
   columns: TableColumn[] = [
     {
       key: 'shortName',
-      name: 'Laber Name',
+      name: 'Label Name',
     },
     {
       key: 'action',
@@ -41,7 +41,7 @@ export class FixedContributionComponent {
   onActionClick(event: any) {
     this.selectedRecord = event.row; 
     this.isEdit = true; 
-    this.openOffcanvas('contribution')
+    // this.openOffcanvas('contribution')
   }
 
   getFixedContribution() {
