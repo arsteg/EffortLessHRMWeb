@@ -135,10 +135,10 @@
             <div class="mt-2">
                 <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
                     <div>
-                        <button mat-raised-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
+                        <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
                         <button mat-stroked-button type="button" (click)="editadvanceCategory()">{{'expenses.reset' | translate}}</button>
                     </div>
-                    <button mat-raised-button color="accent" type="submit"
+                    <button mat-flat-button color="accent" type="submit"
                         [disabled]="!addAdvanceTempForm.valid">
                         {{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}}
                     </button>

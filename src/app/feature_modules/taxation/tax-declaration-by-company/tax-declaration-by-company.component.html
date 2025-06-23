@@ -117,10 +117,10 @@
                             </mat-icon>
                         </div>
                         <div class="section-content" *ngIf="expandedHRA === element" [@detailExpand]="'expanded'">
-                            <button mat-raised-button color="accent"
+                            <button mat-flat-button color="accent"
                                 (click)="onBulkHRAupdate(element.incomeTaxDeclarationHRA, 'Approved')">Approve All
                                 HRA</button>
-                            <button mat-raised-button color="Primary"
+                            <button mat-flat-button color="Primary"
                                 (click)="onBulkHRAupdate(element.incomeTaxDeclarationHRA, 'Rejected')">Reject All
                                 HRA</button>
                             <table class="nested-table">

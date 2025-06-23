@@ -7,6 +7,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { TranslateService } from '@ngx-translate/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
+import { MatSort } from '@angular/material/sort';
 
 const labelValidator: ValidatorFn = (control: AbstractControl) => {
   const value = control.value as string;
@@ -32,6 +33,7 @@ export class FixedAllowanceComponent implements AfterViewInit {
   dialogRef: MatDialogRef<any>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     private payroll: PayrollService,
@@ -62,6 +64,7 @@ export class FixedAllowanceComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.tableService.initializeDataSource([]);
     this.tableService.paginator = this.paginator;
+    this.tableService.dataSource.sort = this.sort;
     this.getFixedAllowance();
   }
 

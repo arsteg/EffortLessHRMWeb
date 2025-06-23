@@ -11,7 +11,7 @@
         <div class="d-flex align-items-baseine mt-1">
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                 [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-            <button mat-raised-button class="addBtn ms-2" type="button"
+            <button mat-flat-button class="addBtn ms-2" type="button"
                 (click)="changeMode = 'Add'; openDialog();">Add</button>
         </div>
     </div>
@@ -123,8 +123,8 @@
             </div>
         </div>
             <div class="mt-4 d-flex justify-content-between">
-                <button type="button" (click)="closeDialog()" mat-raised-button>Cancel</button>
-                <button type="submit" class="addBtn" mat-raised-button>Submit</button>
+                <button type="button" (click)="closeDialog()" mat-flat-button>Cancel</button>
+                <button type="submit" class="addBtn" mat-flat-button>Submit</button>
             </div>
         </form>
     </div>

@@ -40,16 +40,15 @@ export class AdminTimesheetComponent implements OnInit {
 
   toDateControl = new FormControl('', [
     Validators.required,
-    this.dateValidator.bind(this),
+    this.dateValidator.bind(this)
   ]);
-
 
   constructor(private datePipe: DatePipe,
     private timeLogService: TimeLogService,
     private projectService: ProjectService,
     private exportService: ExportService,
-    public commonService: CommonService,
-   ) { }
+    public commonService: CommonService
+  ) { }
 
   ngOnInit(): void {
     this.getAllProjects();
@@ -89,8 +88,6 @@ export class AdminTimesheetComponent implements OnInit {
           this.timesheetAllTotals[user] = userTotals;
         });
       })
-
-
       .catch(error => {
         console.log('Something went wrong, Please try again.', 'Error!');
       });
@@ -98,12 +95,13 @@ export class AdminTimesheetComponent implements OnInit {
 
 
   filterData() {
-    // Remove 'all' from selectedUser array, if present
     if (this.selectedUser.includes('all')) {
       this.selectedUser.splice(this.selectedUser.indexOf('all'), 1);
+      this.selectAll = false;
     }
     this.populateTimesheet();
   }
+
   exportToCsv() {
     const csvContent = this.generateTableContent('csv');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -290,9 +288,8 @@ export class AdminTimesheetComponent implements OnInit {
     } else {
       this.selectedUser = [];
     }
-    this.selectAll = !this.selectAll;
+    // this.selectAll = !this.selectAll;
+    this.selectAll = false;
     this.filterData();
   }
-
-
 }

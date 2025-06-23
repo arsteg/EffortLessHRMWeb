@@ -21,12 +21,12 @@
       </div>
       <div class="form-group d-flex justify-content-between mt-2">
         <div class="">
-          <button type="submit" mat-raised-button color="primary" class="ml-5" [disabled]="assetStatusForm.invalid">
+          <button type="submit" mat-flat-button color="primary" class="ml-5" [disabled]="assetStatusForm.invalid">
             {{ isEdit ? 'Update' : 'Add' }}
           </button>
         </div>
         <div class="">
-          <button type="button" *ngIf="isEdit" mat-raised-button (click)="clearForm()">Cancel</button>
+          <button type="button" *ngIf="isEdit" mat-flat-button (click)="clearForm()">Cancel</button>
         </div>
       </div>
     </form>

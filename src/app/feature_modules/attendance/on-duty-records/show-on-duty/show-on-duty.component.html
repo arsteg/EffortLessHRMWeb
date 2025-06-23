@@ -9,7 +9,7 @@
                         name="searchText" aria-label="default input example">
                     <div class="dropdown mx-2" *ngIf="portalView === 'user'">
                         <button class="mt-2 dropdown-toggle " type="button" id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown" aria-expanded="false" mat-raised-button style="color: #647299;">
+                            data-bs-toggle="dropdown" aria-expanded="false" mat-flat-button style="color: #647299;">
                             <i class="fa fa-eye"></i> Status
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
@@ -32,7 +32,7 @@
                     <button class="submenuTab active mx-2 rounded-pill" (click)="exportToCsv()"> <i
                             class="bi bi-download downloadBtn pe-2"></i>
                         Download</button>
-                    <button class="addBtn" (click)="openAddModal()" mat-raised-button type="button">Add Request</button>
+                    <button class="addBtn" (click)="openAddModal()" mat-flat-button type="button">Add Request</button>
                 </div>
 
             </div>

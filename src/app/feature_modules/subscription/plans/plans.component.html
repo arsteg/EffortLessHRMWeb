@@ -80,7 +80,7 @@
                     <p>Your subscription will be charged on {{subscription.start_at*1000 | date}}.</p>
                 }
                 <p>Your subscription is created and waiting for payment authentication.</p>
-                <button mat-raised-button color="accent" class="btn btn-block" (click)="payNow()">Authenticate Payment</button>
+                <button mat-flat-button color="accent" class="btn btn-block" (click)="payNow()">Authenticate Payment</button>
             </div>
         </div>
     } @else {
@@ -128,7 +128,7 @@
                      <div class="text-center mt-3">
                         <span>Click on a plan to select and then click on Pay button to continue</span>
                         <br>
-                        <button mat-raised-button color="accent" class="btn btn-block" (click)="payNow()" [disabled]="loading || !selectedPlan">
+                        <button mat-flat-button color="accent" class="btn btn-block" (click)="payNow()" [disabled]="loading || !selectedPlan">
                             @if(loading){
                                 <span class="spinner-border spinner-border-sm" role="status"></span>
                             }
@@ -170,9 +170,9 @@
             <div class="d-flex justify-content-between">
                 <button mat-stroked-button type="button" (click)="dialog.closeAll()">Cancel</button>
                 @if(confirmPayment){
-                    <button mat-raised-button type="submit" color="primary">Confirm</button>
+                    <button mat-flat-button type="submit" color="primary">Confirm</button>
                 } @else {
-                    <button mat-raised-button type="button" [disabled]="changePlanForm.invalid" color="primary" (click)="confirmChangePlan()">Next</button>
+                    <button mat-flat-button type="button" [disabled]="changePlanForm.invalid" color="primary" (click)="confirmChangePlan()">Next</button>
                 }
             </div>
         </form>

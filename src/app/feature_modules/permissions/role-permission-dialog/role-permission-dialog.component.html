@@ -27,7 +27,7 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">{{'cancel' | translate}}</button>
-  <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="rolePermissionForm.invalid">
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="rolePermissionForm.invalid">
     {{isEdit ? ('update' | translate) : ('add' | translate)}}
   </button>
 </mat-dialog-actions>

@@ -1,12 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core'; // Import TranslateService
 import { CompanyService } from 'src/app/_services/company.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-lwf-slab',
@@ -16,6 +17,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 export class LwfSlabComponent {
   states: any;
   lwfSlabs: any;
+  allData: any;
   selectedData: any;
   isEdit: boolean = false;
   lwfSLabForm: FormGroup;
@@ -29,6 +31,27 @@ export class LwfSlabComponent {
   @Input() selectedRecord: any;
   eligibleStates: any;
   route: any;
+  dialogRef: MatDialogRef<any>;
+  columns: TableColumn[] = [
+    { key: 'employeeAmount', name: this.translate.instant('payroll._lwf.slab.table.employee_amount') },
+    { key: 'employerAmount', name: this.translate.instant('payroll._lwf.slab.table.employer_amount') },
+    { key: 'employeePercentage', name: this.translate.instant('payroll._lwf.slab.table.employee_percentage') },
+    { key: 'employerPercentage', name: this.translate.instant('payroll._lwf.slab.table.employer_percentage') },
+    { key: 'maxContribution', name: this.translate.instant('payroll._lwf.slab.table.max_contribution') },
+    { key: 'minAmount', name: this.translate.instant('payroll._lwf.slab.table.min_amount') },
+    { key: 'maxAmount', name: this.translate.instant('payroll._lwf.slab.table.max_amount') },
+    { key: 'frequency', name: this.translate.instant('payroll._lwf.slab.table.frequency') },
+    { key: 'isActive', name: this.translate.instant('payroll._lwf.slab.table.active') },
+    {
+      key: 'action',
+      name: this.translate.instant('payroll._lwf.slab.table.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn" },
+      ]
+    },
+  ]
 
   constructor(
     private payrollService: PayrollService,
@@ -54,12 +77,36 @@ export class LwfSlabComponent {
   ngOnInit() {
     this.payrollService.getAllStates().subscribe((res: any) => {
       this.eligibleStates = res.data;
-    }); 
+    });
     this.getCompanyState();
+    this.getLwfSlab();
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onSearch(search: any) {
+    this.lwfSlabs = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+      return found;
+    });
+  }
+
+  onAction(event: any, modal: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedData = event.row;
+        this.open(modal);
+        this.isEdit = true;
+        this.editRecord();
+        break;
+      case 'Delete': this.deleteDialog(event.row?._id); break;
+    }
+  }
+
+
+  onPageChange(page: any) {
+    this.currentPage = page.pageIndex;
+    this.recordsPerPage = page.pageSize;
     this.getLwfSlab();
   }
 
@@ -90,6 +137,7 @@ export class LwfSlabComponent {
     };
     this.payrollService.getLWFByState(pagination).subscribe((res: any) => {
       this.lwfSlabs = res.data;
+      this.allData = res.data;
       this.totalRecords = res.total;
     });
   }
@@ -115,14 +163,15 @@ export class LwfSlabComponent {
       ...this.lwfSLabForm.value,
       state: this.selectedState
     };
-  
+
     if (!this.isEdit) {
       this.payrollService.addLWF(payload).subscribe(
-        (res) => {  
-          this.getLwfSlab();     
+        (res) => {
+          this.getLwfSlab();
           this.translate.get(['payroll._lwf.slab.success_added', 'payroll.lwf_title']).subscribe(translations => {
             this.toast.success(translations['payroll._lwf.slab.success_added'], translations['payroll.lwf_title']);
           });
+          this.dialogRef.close();
         },
         (err) => {
           const errorMessage = err?.error?.message || err?.message || this.translate.instant('payroll._lwf.slab.error_add');
@@ -133,12 +182,13 @@ export class LwfSlabComponent {
       );
     } else {
       this.payrollService.updateLWF(this.selectedData._id, payload).subscribe(
-        (res) => {      
-          this.getLwfSlab();   
+        (res) => {
+          this.getLwfSlab();
           this.lwfSLabForm.reset();
           this.translate.get(['payroll._lwf.slab.success_updated', 'payroll.lwf_title']).subscribe(translations => {
             this.toast.success(translations['payroll._lwf.slab.success_updated'], translations['payroll.lwf_title']);
           });
+          this.dialogRef.close();
         },
         (err) => {
           const errorMessage = err?.error?.message || err?.message || this.translate.instant('payroll._lwf.slab.error_update');
@@ -147,9 +197,9 @@ export class LwfSlabComponent {
           });
         }
       );
-    }  
+    }
     this.closeModal();
-  }  
+  }
 
   deleteRecord(_id: string) {
     this.payrollService.deleteLWF(_id).subscribe(
@@ -190,30 +240,15 @@ export class LwfSlabComponent {
       });
       return;
     }
-  
+
     this.isEdit = false;
     this.clearForm();
     this.open(modal);
   }
-  
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
-  }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+  open(content: any) {
+    this.dialogRef = this.dialog.open(content, {
+      width: '500px'
+    })
   }
 }

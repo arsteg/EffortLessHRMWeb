@@ -18,6 +18,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
 import { PreferenceService } from '../_services/user-preference.service';
 import { PreferenceKeys } from '../constants/preference-keys.constant';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-tasks',
@@ -47,9 +48,9 @@ export class TasksComponent implements OnInit {
   selectedUsers = [];
   public sortOrder: string = ''; // 'asc' or 'desc'
   public allOption: string = "ALL";
-  priorityList: priority[] = [{ name: 'Urgent', url: "assets/images/icon-urgent.svg" },
-  { name: 'High', url: "assets/images/icon-high.svg" },
-  { name: 'Normal', url: "assets/images/icon-normal.svg" }];
+  priorityList: priority[] = [{ name: 'Urgent', url: "assets/images/icon-urgent.svg", class: "delete-btn" },
+  { name: 'High', url: "assets/images/icon-high.svg", class: "warning-btn" },
+  { name: 'Normal', url: "assets/images/icon-normal.svg", class: "success-btn" }];
 
   statusList: status[] = [
     { name: 'ToDo', faclass: "fa-tasks", isChecked: true },
@@ -150,6 +151,10 @@ export class TasksComponent implements OnInit {
       timeTaken: [0],
     });
     this.status = new FormControl(this.statusList.filter(item => item.isChecked).map(item => item.name));
+  }
+
+  getPriorityClass(name:string) {
+    return this.priorityList.find(p=>p.name === name)?.class;
   }
 
   ngOnInit(): void {
@@ -319,8 +324,12 @@ export class TasksComponent implements OnInit {
     });
   }
 
-  async paginateTasks() {
-    this.currentPage = 1;
+  async paginateTasks(event?: PageEvent) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+    this.next = this.recordsPerPage.toString();
+    this.skip = ((this.currentPage - 1) * this.recordsPerPage).toString();
+
     if ((!this.userId || !this.currentProfile.id) && !this.projectId) {
       if ((this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
         this.listAllTasks();
@@ -341,67 +350,6 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  nextPagination() {
-    if (!this.isNextButtonDisabled()) {
-      const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
-      this.skip = newSkip;
-      this.paginateTasks();
-    }
-  }
-
-  previousPagination() {
-    if (!this.isPreviousButtonDisabled()) {
-      const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
-      this.skip = newSkip;
-      this.paginateTasks();
-    }
-  }
-
-  firstPagePagination() {
-    if (this.currentPage !== 1) {
-      this.currentPage = 1;
-      this.skip = '0';
-      this.next = this.recordsPerPage.toString();
-      this.paginateTasks();
-    }
-  }
-
-  lastPagePagination() {
-    const totalPages = this.getTotalPages();
-    if (this.currentPage !== totalPages) {
-      this.currentPage = totalPages;
-      this.updateSkip();
-      this.paginateTasks();
-    }
-  }
-
-  updateSkip() {
-    const newSkip = (this.currentPage - 1) * this.recordsPerPage;
-    this.skip = newSkip.toString();
-  }
-
-  isNextButtonDisabled(): boolean {
-    return this.currentPage === this.getTotalPages();
-  }
-
-  isPreviousButtonDisabled(): boolean {
-    return this.skip === '0' || this.currentPage === 1;
-  }
-
-  updateRecordsPerPage() {
-    this.currentPage = 1;
-    this.skip = '0';
-    this.next = this.recordsPerPage.toString();
-    this.paginateTasks();
-  }
-
-  getTotalPages(): number {
-    if (this.totalRecords && this.totalRecords.taskCount) {
-      const totalCount = this.totalRecords.taskCount;
-      return Math.ceil(totalCount / this.recordsPerPage);
-    }
-    return 0;
-  }
 
   async getTasksByProject() {
     const selectedUserId = this.userId && this.currentProfile.id;
@@ -991,7 +939,8 @@ export class TasksComponent implements OnInit {
 }
 interface priority {
   name: string,
-  url: string
+  url: string,
+  class: string
 }
 interface status {
   name: string,

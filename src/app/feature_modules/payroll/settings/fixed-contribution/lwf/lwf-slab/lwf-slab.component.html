@@ -1,167 +1,113 @@
-<div class="tableContainer bg-white py-2">
-  <div class="d-flex justify-content-end mb-2">
-    <div class="align-items-center d-flex justify-content-end">
-      <label for="selectedState">{{ 'payroll._lwf.slab.form.state' | translate }}</label>
-      <select class="w-auto mx-1" [(ngModel)]="selectedState" name="selectedState" (change)="getLwfSlab()"
-        (blur)="stateTouched = true" [disabled]="true" required
-        [attr.aria-label]="'payroll._lwf.slab.form.state_aria' | translate">
-        <option value="" disabled selected>{{ 'payroll._lwf.slab.form.state_placeholder' | translate }}</option>
-        <option *ngFor="let state of eligibleStates" [value]="state">
-          {{ state | translate }}
-        </option>
-      </select>
-      <div *ngIf="stateTouched && !selectedState" class="text-danger ms-2">
-        {{ 'payroll._lwf.slab.form.error.state_required' | translate }}
-      </div>
-    </div>
-    <button mat-raised-button class="addBtn" (click)="handleAdd(modal); isEdit = false; clearForm()">
-      {{ 'payroll.add' | translate }}
-    </button>
-  </div>
-
-  <table>
-    <thead>
-      <th>{{ 'payroll._lwf.slab.table.employee_amount' | translate }}</th>
-      <th>{{ 'payroll._lwf.slab.table.employer_amount' | translate }}</th>
-      <th>{{ 'payroll._lwf.slab.table.employee_percentage' | translate }}</th>
-      <th>{{ 'payroll._lwf.slab.table.employer_percentage' | translate }}</th>
-      <th>{{ 'payroll._lwf.slab.table.max_contribution' | translate }}</th>
-      <th>{{ 'payroll._lwf.slab.table.min_amount' | translate }}</th>
-      <th>{{ 'payroll._lwf.slab.table.max_amount' | translate }}</th>
-      <th>{{ 'payroll._lwf.slab.table.frequency' | translate }}</th>
-      <th>{{ 'payroll._lwf.slab.table.active' | translate }}</th>
-      <th class="text-center">{{ 'payroll._lwf.slab.table.actions' | translate }}</th>
-    </thead>
-    <tbody>
-      <tr *ngFor="let data of lwfSlabs">
-        <td>{{ data?.employeeAmount }}</td>
-        <td>{{ data?.employerAmount }}</td>
-        <td>{{ data?.employeePercentage }}</td>
-        <td>{{ data?.employerPercentage }}</td>
-        <td>{{ data?.maxContribution }}</td>
-        <td>{{ data?.minAmount }}</td>
-        <td>{{ data?.maxAmount }}</td>
-        <td>{{ data?.frequency }}</td>
-        <td>{{ data?.isActive }}</td>
-        <td>
-          <button class="actions" mat-mini-fab matTooltip="{{ 'payroll.edit' | translate }}" matTooltipPosition="before"
-            data-bs-toggle="modal" data-bs-target="#modal"
-            (click)="open(modal); selectedData = data; isEdit = true; editRecord();"
-            [attr.aria-label]="'payroll._lwf.slab.aria_label.edit' | translate">
-            <i class="bi bi-pencil-fill"></i>
-          </button>
-          <button class="actions ms-2" mat-mini-fab matTooltip="{{ 'payroll.delete' | translate }}"
-            matTooltipPosition="after" [attr.aria-label]="'payroll._lwf.slab.aria_label.delete' | translate"
-            (click)="deleteDialog(data?._id)">
-            <i class="bi bi-trash"></i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<div class="d-flex justify-content-end gap-2 mb-2">
+  <mat-form-field>
+    <mat-label for="selectedState">{{ 'payroll._lwf.slab.form.state' | translate }}</mat-label>
+    <mat-select [(ngModel)]="selectedState" name="selectedState" (selectionChange)="getLwfSlab()"
+      (blur)="stateTouched = true" required [attr.aria-label]="'payroll._lwf.slab.form.state_aria' | translate">
+      <mat-option value="" disabled selected>{{ 'payroll._lwf.slab.form.state_placeholder' | translate }}</mat-option>
+      <mat-option *ngFor="let state of eligibleStates" [value]="state">
+        {{ state }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="stateTouched && !selectedState">
+      {{ 'payroll._lwf.slab.form.error.state_required' | translate }}
+    </mat-error>
+  </mat-form-field>
+  <button mat-flat-button color="primary" (click)="handleAdd(modal); isEdit = false; clearForm()">
+    {{ 'payroll.add' | translate }}
+  </button>
 </div>
 
-<ng-template #modal let-modal>
-  <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-    <div>
-      <h1 class="modal-title text-muted mb-0">
-        {{ (isEdit ? 'payroll._lwf.slab.modal.update_title' : 'payroll._lwf.slab.modal.add_title') | translate }}
-      </h1>
-    </div>
-    <div>
-      <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"
-        [attr.aria-label]="'payroll._lwf.slab.button.close_aria_label' | translate"></button>
-    </div>
+<hrm-table [data]="lwfSlabs" [columns]="columns" [showSearch]="true" [totalItems]="totalRecords"
+  (searchChanged)="onSearch($event)" (actionClicked)="onAction($event, modal)" [isServerSide]="true"
+  (pageChanged)="onPageChange($event)"></hrm-table>
+
+<ng-template #modal>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      {{ (isEdit ? 'payroll._lwf.slab.modal.update_title' : 'payroll._lwf.slab.modal.add_title') | translate }}
+    </h1>
+    <button mat-icon-button mat-dialog-close class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
-  <form [formGroup]="lwfSLabForm" (ngSubmit)="onSubmission()">
-    <div class="row">
-      <div class="form-group col-md-6 mt-2">
-        <label for="employeeAmount">{{ 'payroll._lwf.slab.form.employee_amount' | translate }} <span
-            class="text-danger">*</span></label>
-        <input type="number" class="form-control" formControlName="employeeAmount">
-        <div
-          *ngIf="lwfSLabForm.get('employeeAmount').invalid && (lwfSLabForm.get('employeeAmount').dirty || lwfSLabForm.get('employeeAmount').touched)">
-          <small class="text-danger" *ngIf="lwfSLabForm.get('employeeAmount')['errors']['required']">
-            {{ 'payroll._lwf.slab.form.error.required' | translate }}
-          </small>
+  <mat-dialog-content>
+    <form [formGroup]="lwfSLabForm" (ngSubmit)="onSubmission()">
+      <div class="row">
+        <div class="col-md-6 mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'payroll._lwf.slab.form.employee_amount' | translate }}</mat-label>
+            <input matInput type="number" formControlName="employeeAmount" required>
+            <mat-error *ngIf="lwfSLabForm.get('employeeAmount').hasError('required')">
+              {{ 'payroll._lwf.slab.form.error.required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'payroll._lwf.slab.form.employer_amount' | translate }}</mat-label>
+            <input matInput type="number" formControlName="employerAmount" required>
+            <mat-error *ngIf="lwfSLabForm.get('employerAmount').hasError('required')">
+              {{ 'payroll._lwf.slab.form.error.required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
       </div>
-      <div class="form-group col-md-6 mt-2">
-        <label for="employerAmount">{{ 'payroll._lwf.slab.form.employer_amount' | translate }} <span
-            class="text-danger">*</span></label>
-        <input type="number" class="form-control" formControlName="employerAmount">
-        <div
-          *ngIf="lwfSLabForm.get('employerAmount').invalid && (lwfSLabForm.get('employerAmount').dirty || lwfSLabForm.get('employerAmount').touched)">
-          <small class="text-danger" *ngIf="lwfSLabForm.get('employerAmount')['errors']['required']">
-            {{ 'payroll._lwf.slab.form.error.required' | translate }}
-          </small>
+      <div class="row">
+        <div class="col-md-6 mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'payroll._lwf.slab.form.employee_percentage' | translate }}</mat-label>
+            <input matInput type="number" formControlName="employeePercentage" required>
+            <mat-error *ngIf="lwfSLabForm.get('employeePercentage').hasError('required')">
+              {{ 'payroll._lwf.slab.form.error.required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'payroll._lwf.slab.form.employer_percentage' | translate }}</mat-label>
+            <input matInput type="number" formControlName="employerPercentage" required>
+            <mat-error *ngIf="lwfSLabForm.get('employerPercentage').hasError('required')">
+              {{ 'payroll._lwf.slab.form.error.required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="form-group col-md-6 mt-2">
-        <label for="employeePercentage">{{ 'payroll._lwf.slab.form.employee_percentage' | translate }} <span
-            class="text-danger">*</span></label>
-        <input type="number" class="form-control" formControlName="employeePercentage">
-        <div
-          *ngIf="lwfSLabForm.get('employeePercentage').invalid && (lwfSLabForm.get('employeePercentage').dirty || lwfSLabForm.get('employeePercentage').touched)">
-          <small class="text-danger" *ngIf="lwfSLabForm.get('employeePercentage')['errors']['required']">
-            {{ 'payroll._lwf.slab.form.error.required' | translate }}
-          </small>
+      <div class="row">
+        <div class="col-md-6 mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'payroll._lwf.slab.form.max_contribution' | translate }}</mat-label>
+            <input matInput type="number" formControlName="maxContribution" required>
+            <mat-error *ngIf="lwfSLabForm.get('maxContribution').hasError('required')">
+              {{ 'payroll._lwf.slab.form.error.required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6 mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'payroll._lwf.slab.form.min_amount' | translate }}</mat-label>
+            <input matInput type="number" formControlName="minAmount" required>
+            <mat-error *ngIf="lwfSLabForm.get('minAmount').hasError('required')">
+              {{ 'payroll._lwf.slab.form.error.required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
       </div>
-      <div class="form-group col-md-6 mt-2">
-        <label for="employerPercentage">{{ 'payroll._lwf.slab.form.employer_percentage' | translate }} <span
-            class="text-danger">*</span></label>
-        <input type="number" class="form-control" formControlName="employerPercentage">
-        <div
-          *ngIf="lwfSLabForm.get('employerPercentage').invalid && (lwfSLabForm.get('employerPercentage').dirty || lwfSLabForm.get('employerPercentage').touched)">
-          <small class="text-danger" *ngIf="lwfSLabForm.get('employerPercentage')['errors']['required']">
-            {{ 'payroll._lwf.slab.form.error.required' | translate }}
-          </small>
+      <div class="row">
+        <div class="col-md-6 mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'payroll._lwf.slab.form.max_amount' | translate }}</mat-label>
+            <input matInput type="number" formControlName="maxAmount">
+            <mat-error *ngIf="lwfSLabForm.get('maxAmount').hasError('required')">
+              {{ 'payroll._lwf.slab.form.error.required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="form-group col-md-6 mt-2">
-        <label for="maxContribution">{{ 'payroll._lwf.slab.form.max_contribution' | translate }} <span
-            class="text-danger">*</span></label>
-        <input type="number" class="form-control" formControlName="maxContribution">
-        <div
-          *ngIf="lwfSLabForm.get('maxContribution').invalid && (lwfSLabForm.get('maxContribution').dirty || lwfSLabForm.get('maxContribution').touched)">
-          <small class="text-danger" *ngIf="lwfSLabForm.get('maxContribution')['errors']['required']">
-            {{ 'payroll._lwf.slab.form.error.required' | translate }}
-          </small>
-        </div>
-      </div>
-      <div class="form-group col-md-6 mt-2">
-        <label for="minAmount">{{ 'payroll._lwf.slab.form.min_amount' | translate }} <span
-            class="text-danger">*</span></label>
-        <input type="number" class="form-control" formControlName="minAmount">
-        <div
-          *ngIf="lwfSLabForm.get('minAmount').invalid && (lwfSLabForm.get('minAmount').dirty || lwfSLabForm.get('minAmount').touched)">
-          <small class="text-danger" *ngIf="lwfSLabForm.get('minAmount')['errors']['required']">
-            {{ 'payroll._lwf.slab.form.error.required' | translate }}
-          </small>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="form-group col-md-6 mt-2">
-        <label for="maxAmount">{{ 'payroll._lwf.slab.form.max_amount' | translate }} <span
-            class="text-danger">*</span></label>
-        <input type="number" class="form-control" formControlName="maxAmount">
-        <div
-          *ngIf="lwfSLabForm.get('maxAmount').invalid && (lwfSLabForm.get('maxAmount').dirty || lwfSLabForm.get('maxAmount').touched)">
-          <small class="text-danger" *ngIf="lwfSLabForm.get('maxAmount')['errors']['required']">
-            {{ 'payroll._lwf.slab.form.error.required' | translate }}
-          </small>
-        </div>
-      </div>
-    </div>
-    <div class="d-flex border-top mt-2 py-2 justify-content-between">
-      <button mat-raised-button type="reset" (click)="clearForm()">{{ 'payroll.cancel' | translate }}</button>
-      <button mat-raised-button type="submit" class="addBtn">{{ 'payroll.submit' | translate }}</button>
-    </div>
-  </form>
+      <mat-dialog-actions align="end" class="d-flex justify-content-between mt-3">
+        <button mat-flat-button mat-dialog-close="">{{ 'payroll.cancel' | translate }}</button>
+        <button mat-flat-button color="primary" type="submit" color="primary">{{ 'payroll.submit' | translate
+          }}</button>
+      </mat-dialog-actions>
+    </form>
+  </mat-dialog-content>
 </ng-template>

@@ -10,6 +10,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 const labelValidator: ValidatorFn = (control: AbstractControl) => {
   const value = control.value as string;
@@ -68,6 +69,19 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
   private unsubscribe$ = new Subject<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  columns: TableColumn[] = [
+    { key: 'label', name: this.translate.instant('payroll.variable_deduction.name_header') },
+    {
+      key: 'action',
+      name: this.translate.instant('payroll.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn" },
+      ]
+    },
+  ];
+  allData: any = []
 
   constructor(
     private toast: ToastrService,
@@ -129,6 +143,29 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
     });
+  }
+
+  onSearch(search: any) {
+    const data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+      return found;
+    });
+    this.tableService.setData(data);
+  }
+
+
+   onAction(event: any, modal: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedRecord = event.row;
+        this.open(modal);
+        this.isEdit = true;
+        this.editRecord();
+        break;
+      case 'Delete': this.deleteDialog(event.row?._id); break;
+    }
   }
 
   ngAfterViewInit() {
@@ -314,6 +351,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
     };
     this.payroll.getVariableDeduction(pagination).pipe(takeUntil(this.unsubscribe$)).subscribe(res => {
       this.tableService.setData(res.data);
+      this.allData = res.data;
       this.tableService.totalRecords = res.total;
     });
   }

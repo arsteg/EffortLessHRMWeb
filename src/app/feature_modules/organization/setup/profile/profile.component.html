@@ -1,5 +1,5 @@
 
-<hrm-table [data]="dataSource.data" [columns]="columns" [showExport]="'none'" [showSearch]="true"
+<hrm-table [data]="dataSource.data" [columns]="columns" [showExport]="'none'"
     (actionClicked)="onActionClick($event)"></hrm-table>
 
 
@@ -39,6 +39,9 @@
             <mat-label translate>organization.setup.address</mat-label>
             <input matInput type="text" formControlName="address"
               [placeholder]="'organization.setup.enter_address' | translate" />
+            <mat-error
+              *ngIf="companyForm.get('address')?.hasError('required') && (companyForm.get('address')?.dirty || companyForm.get('address')?.touched)"
+              translate>organization.setup.address_required</mat-error>
           </mat-form-field>
         </div>
       </div>
@@ -48,6 +51,9 @@
             <mat-label translate>organization.setup.city</mat-label>
             <input matInput type="text" formControlName="city"
               [placeholder]="'organization.setup.enter_city' | translate" />
+            <mat-error
+              *ngIf="companyForm.get('city')?.hasError('required') && (companyForm.get('city')?.dirty || companyForm.get('city')?.touched)"
+              translate>organization.setup.city_required</mat-error>
           </mat-form-field>
         </div>
         <div class="form-group col-md-6">
@@ -55,6 +61,9 @@
             <mat-label translate>organization.setup.state</mat-label>
             <input matInput type="text" formControlName="state"
               [placeholder]="'organization.setup.enter_state' | translate" />
+            <mat-error
+              *ngIf="companyForm.get('state')?.hasError('required') && (companyForm.get('state')?.dirty || companyForm.get('state')?.touched)"
+              translate>organization.setup.state_required</mat-error>
           </mat-form-field>
         </div>
       </div>
@@ -64,6 +73,9 @@
             <mat-label translate>organization.setup.country</mat-label>
             <input matInput type="text" formControlName="country"
               [placeholder]="'organization.setup.enter_country' | translate" />
+            <mat-error
+              *ngIf="companyForm.get('country')?.hasError('required') && (companyForm.get('country')?.dirty || companyForm.get('country')?.touched)"
+              translate>organization.setup.country_required</mat-error>
           </mat-form-field>
         </div>
         <div class="form-group col-md-6">
@@ -110,12 +122,10 @@
       </div>
     </div>
     <div mat-dialog-actions class="d-flex justify-content-between border-top mt-2 py-2">
-      <button mat-raised-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' |
-        translate}}</button>
-      <button mat-raised-button color="primary" type="submit" [disabled]="!companyForm.valid">{{
-        'organization.setup.update'| translate }}</button>
+      <button mat-flat-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' | translate}}</button>
+      <button mat-flat-button color="primary" type="submit">{{'organization.setup.update' | translate}}</button>
     </div>
-  </form>
+</form>
 </ng-template>
 
 <ng-template #uploadLogoDialog>
@@ -135,9 +145,9 @@
     </div>
   </div>
   <div mat-dialog-actions class="d-flex justify-content-between border-top mt-2 py-2">
-    <button mat-raised-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' |
+    <button mat-flat-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' |
       translate}}</button>
-    <button mat-raised-button color="primary" (click)="uploadLogo()"
+    <button mat-flat-button color="primary" (click)="uploadLogo()"
       [disabled]="!selectedFile">{{'organization.setup.update' | translate}}</button>
   </div>
 </ng-template>

@@ -29,9 +29,9 @@
                 <input type="tel" id="phone" class="form-control" formControlName="phone">
             </div>
             <div class="form-group mt-2 d-flex justify-content-between">
-                <button type="submit" mat-raised-button color="primary" [disabled]="vendorForm.invalid">{{ isEdit ?
+                <button type="submit" mat-flat-button color="primary" [disabled]="vendorForm.invalid">{{ isEdit ?
                     'Update' : 'Add' }}</button>
-                <button type="reset" *ngIf="isEdit" mat-raised-button (click)="isEdit = false"
+                <button type="reset" *ngIf="isEdit" mat-flat-button (click)="isEdit = false"
                     class="ms-2">Cancel</button>
             </div>
         </form>

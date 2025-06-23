@@ -14,8 +14,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
         </mat-form-field>
       </form>
       <mat-dialog-actions class="d-flex justify-content-between px-0">
-        <button mat-raised-button (click)="onCancel()">{{'expenses.cancel' | translate}}</button>
-        <button mat-raised-button (click)="onApprove()" color="accent">{{'expenses.approve' | translate}}</button>
+        <button mat-flat-button (click)="onCancel()">{{'expenses.cancel' | translate}}</button>
+        <button mat-flat-button (click)="onApprove()" color="accent">{{'expenses.approve' | translate}}</button>
       </mat-dialog-actions>
     </mat-dialog-content>
   `

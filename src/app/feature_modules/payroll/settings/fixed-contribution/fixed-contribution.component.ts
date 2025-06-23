@@ -1,6 +1,7 @@
 import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { Offcanvas } from 'bootstrap';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-fixed-contribution',
   templateUrl: './fixed-contribution.component.html',
@@ -16,13 +17,33 @@ export class FixedContributionComponent {
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
   offcanvasInstance: any;
   public sortOrder: string = '';
-
+  columns: TableColumn[] = [
+    {
+      key: 'shortName',
+      name: 'Label Name',
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { label: 'Edit', visibility: ActionVisibility.LABEL, icon: '' },
+      ]
+    }
+  ]
 
   constructor(private payroll: PayrollService) { }
 
   ngOnInit() {
     this.getFixedContribution();
   }
+
+  onActionClick(event: any) {
+    this.selectedRecord = event.row; 
+    this.isEdit = true; 
+    // this.openOffcanvas('contribution')
+  }
+
   getFixedContribution() {
     let payload = {
       skip: '',
@@ -41,7 +62,7 @@ export class FixedContributionComponent {
     }
     this.offcanvasInstance.show();
   }
-  
+
   closeOffcanvas() {
     const offcanvas = document.getElementById('contribution');
     if (offcanvas) {

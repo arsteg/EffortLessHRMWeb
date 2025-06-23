@@ -19,6 +19,7 @@ export class AddAdvanceReportComponent {
   @Input() changeMode: string;
   @Input() selectedRecord: any;
   allAdvanceCategories: any;
+  commentLength = 0;
 
   constructor(private fb: FormBuilder,
     private expenseService: ExpensesService,
@@ -29,7 +30,7 @@ export class AddAdvanceReportComponent {
       category: ['', Validators.required],
       status: ['Level 1 Approval Pending', Validators.required],
       comment: [''],
-      amount: ['', Validators.required]
+      amount: ['', [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -49,6 +50,10 @@ export class AddAdvanceReportComponent {
     }
     this.commonService.populateUsers().subscribe(result => {this.allAssignee = result.data.data || [];});
     this.getAllAdvanceCategories();
+    
+    this.addAdvanceReport.get('comment')?.valueChanges.subscribe(value => {
+      this.commentLength = value?.length || 0;
+    });
   }
 
   getAllAdvanceCategories() {
@@ -64,6 +69,7 @@ export class AddAdvanceReportComponent {
     if (this.addAdvanceReport.valid) {
       if (this.changeMode == 'Add') {
         this.expenseService.addAdvanceReport(this.addAdvanceReport.value).subscribe((res: any) => {
+          this.toast.success(this.translate.instant('expenses.add_success'));
           this.advanceReportRefreshed.emit();
           this.expenseService.advanceReport.next(res.data);
           this.closeModal();
@@ -71,6 +77,7 @@ export class AddAdvanceReportComponent {
       }
       if (this.changeMode == 'Update') {
         this.expenseService.updateAdvanceReport(this.selectedRecord._id, this.addAdvanceReport.value).subscribe((res: any) => {
+          this.toast.success(this.translate.instant('expenses.update_success'));
           this.advanceReportRefreshed.emit();
           this.expenseService.advanceReport.next(res.data);
           this.closeModal();
@@ -118,4 +125,8 @@ export class AddAdvanceReportComponent {
     this.close.emit(true);
   }
 
+  onCommentChange() {
+    const comment = this.addAdvanceReport.get('comment')?.value || '';
+    this.commentLength = comment.length;
+  }
 }

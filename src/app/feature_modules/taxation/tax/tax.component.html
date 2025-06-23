@@ -8,8 +8,8 @@
                 <input class="form-control" type="text" placeholder="Search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example">
             </div>
-            <button type="button" mat-raised-button [disabled]="userTaxRegime != 'Old Regime' && userStatutoryDetails === null" (click)="isEdit= false; open(addModal)">Add&nbsp;Tax&nbsp;Declaration</button>
-            <button type="button" class="ms-2 " mat-raised-button [disabled]="userStatutoryDetails === null" (click)="getTaxDeclaration(); taxEditView= false; taxView = true;">Tax&nbsp;Calculator</button>
+            <button type="button" mat-flat-button [disabled]="userTaxRegime != 'Old Regime' && userStatutoryDetails === null" (click)="isEdit= false; open(addModal)">Add&nbsp;Tax&nbsp;Declaration</button>
+            <button type="button" class="ms-2 " mat-flat-button [disabled]="userStatutoryDetails === null" (click)="getTaxDeclaration(); taxEditView= false; taxView = true;">Tax&nbsp;Calculator</button>
         </div>
     </div>
 
@@ -97,8 +97,8 @@
         </div>
 
         <div class="d-flex justify-content-between mt-3">
-            <button type="reset" mat-raised-button>Cancel</button>
-            <button type="submit" class="addBtn" mat-raised-button>Submit</button>
+            <button type="reset" mat-flat-button>Cancel</button>
+            <button type="submit" class="addBtn" mat-flat-button>Submit</button>
         </div>
     </form>
 </ng-template>

@@ -11,17 +11,27 @@ html .mat-mdc-mini-fab.mat-accent {
 
 html {
   // --mdc-text-button-container-height: var(--size-48);
-  --mdc-filled-button-container-height: var(--size-48);
-  --mdc-outlined-button-container-height: var(--size-48);
+  --mdc-filled-button-container-height: var(--size-40);
+  --mdc-outlined-button-container-height: var(--size-40);
   // --mdc-protected-button-container-height: var(--size-48);
 }
 
-.refresh-btn{
+.refresh-btn,
+.success-btn {
   background-color: var(--light-green) !important;
   color: var(--green) !important;
 }
 
-.delete-btn{
+.warning-btn {
+  background-color: var(--bs-warning-bg-subtle) !important;
+  color: var(--orange-70) !important;
+}
+
+.delete-btn {
   background-color: var(--light-red) !important;
   color: var(--red) !important;
+
+  mat-icon {
+    color: var(--red) !important;
+  }
 }

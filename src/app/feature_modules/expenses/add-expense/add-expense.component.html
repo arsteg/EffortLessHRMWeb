@@ -120,8 +120,8 @@
         </div>
         }
         <div mat-dialog-actions class="d-flex justify-content-between px-0">
-            <button mat-raised-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-            <button mat-raised-button type="submit" color="accent"
+            <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
+            <button mat-flat-button type="submit" color="accent"
                 [disabled]="addExpenseForm.invalid">
                 {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
             </button>

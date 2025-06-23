@@ -26,11 +26,11 @@
       </div>
       <div class="form-group d-flex mt-3 justify-content-between">
         <div class="">
-          <button type="submit" class="addBtn" mat-raised-button [disabled]="!documentForm.valid">{{ isEdit ? 'Update' :
+          <button type="submit" class="addBtn" mat-flat-button [disabled]="!documentForm.valid">{{ isEdit ? 'Update' :
             'Add' }}</button>
         </div>
         <div class="">
-          <button type="button" mat-raised-button (click)="onCancel()">Cancel</button>
+          <button type="button" mat-flat-button (click)="onCancel()">Cancel</button>
         </div>
       </div>
     </form>

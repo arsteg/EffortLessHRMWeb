@@ -42,9 +42,9 @@
           </div><br>
           <br>
           <div class="d-flex justify-content-between" style="margin-top: 12px;">
-            <button mat-raised-button type="submit" class="ml-5 addBtn" style="min-width: 100px;"
+            <button mat-flat-button type="submit" class="ml-5 addBtn" style="min-width: 100px;"
               [disabled]="!addDocumentTemplateForm.valid">{{ isEditMode ? 'Update' : 'Add' }}</button>
-            <button mat-raised-button (click)="onCancel()" type="button">Cancel</button>
+            <button mat-flat-button (click)="onCancel()" type="button">Cancel</button>
 
           </div>
         </div>
@@ -100,10 +100,10 @@
             </div>
             <div class="d-flex justify-content-between m-3">
               <div class="">
-                <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                <button mat-flat-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
               </div>
               <div>
-                <button mat-raised-button color="primary" class="" data-bs-dismiss="modal" type="submit">Update</button>
+                <button mat-flat-button color="primary" class="" data-bs-dismiss="modal" type="submit">Update</button>
               </div>
             </div>
           </form>

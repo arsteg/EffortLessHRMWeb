@@ -5,14 +5,19 @@
 
 <div mat-dialog-content>
     <form [formGroup]="updateExpenseReport" (ngSubmit)="updateApprovedReport()">
-        <mat-form-field class="w-100">
+        <mat-form-field class="w-100 mt-1">
             <mat-label>{{'comment' | translate}}</mat-label>
-            <textarea matInput formControlName="primaryApprovalReason" rows="3"></textarea>
+            <textarea matInput formControlName="primaryApprovalReason" rows="3" maxlength="200" 
+                (input)="onCommentChange()"></textarea>
+            <mat-hint align="end">{{commentLength}} / 200</mat-hint>
+            <mat-error *ngIf="updateExpenseReport.get('primaryApprovalReason')?.hasError('required') && updateExpenseReport.get('primaryApprovalReason')?.touched">
+                {{ 'expenses.comment_required' | translate }}
+            </mat-error>
         </mat-form-field>
 
         <div class="d-flex justify-content-between">
-            <button mat-raised-button type="button" mat-dialog-close>{{'expenses.no' | translate}}</button>
-            <button mat-raised-button type="submit" [color]="data.status==='Rejected'?'warn':'accent'">
+            <button mat-flat-button type="button" mat-dialog-close>{{'expenses.no' | translate}}</button>
+            <button mat-flat-button type="submit" [disabled]="updateExpenseReport.invalid" [color]="data.status==='Rejected'?'warn':'accent'">
                 @switch(data.status){
                 @case('Rejected'){
                     {{'expenses.reject' | translate}}

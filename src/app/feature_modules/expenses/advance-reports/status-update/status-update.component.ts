@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
@@ -15,6 +15,7 @@ export class StatusUpdateComponent {
   updateReport: any;
   @Output() advanceReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
   data = inject(MAT_DIALOG_DATA);
+  commentLength = 0;
 
   constructor(
     public expenseService: ExpensesService,
@@ -27,9 +28,15 @@ export class StatusUpdateComponent {
       amount: [],
       comment: [''],
       status: [''],
-      primaryApprovalReason: [''],
+      primaryApprovalReason: ['', Validators.required],
       secondaryApprovalReason: ['']
     })
+  }
+
+  ngOnInit() {
+    this.updateExpenseReport.get('primaryApprovalReason')?.valueChanges.subscribe(value => {
+      this.commentLength = value?.length || 0;
+    });
   }
 
   updateApprovedReport() {
@@ -60,5 +67,9 @@ export class StatusUpdateComponent {
     this.advanceReportRefreshed.emit();
   }
 
+  onCommentChange() {
+    const comment = this.updateExpenseReport.get('primaryApprovalReason')?.value || '';
+    this.commentLength = comment.length;
+  }
 
 }

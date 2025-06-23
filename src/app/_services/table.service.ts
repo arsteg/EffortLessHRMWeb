@@ -1,6 +1,7 @@
 import { Injectable, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class TableService<T> {
   currentPage: number = 1;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
 initializeDataSource(data: T[], paginator?: MatPaginator) {
   this.dataSource = new MatTableDataSource<T>(data);

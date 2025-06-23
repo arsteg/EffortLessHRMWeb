@@ -106,8 +106,8 @@
     </div>
 
     <div class="d-flex border-top py-2 justify-content-between">
-        <button mat-raised-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-        <button mat-raised-button color="accent" type="submit"
+        <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
+        <button mat-flat-button color="accent" type="submit"
             [disabled]="!addTemplateForm.valid">{{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.next' | translate)}}</button>
     </div>
 </form>

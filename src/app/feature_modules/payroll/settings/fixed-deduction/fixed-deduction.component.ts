@@ -7,6 +7,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
+import { MatSort } from '@angular/material/sort';
 
 const labelValidator: ValidatorFn = (control: AbstractControl) => {
   const value = control.value as string;
@@ -32,6 +33,7 @@ export class FixedDeductionComponent implements AfterViewInit {
   sortOrder: string = '';
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     private toast: ToastrService,
@@ -59,6 +61,7 @@ export class FixedDeductionComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.tableService.initializeDataSource([]);
     this.tableService.paginator = this.paginator; // Initialize paginator here
+    this.tableService.dataSource.sort = this.sort;
     this.getFixedDeduction();
   }
 

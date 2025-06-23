@@ -7,11 +7,11 @@
             <div class="child-issue col-md-9 border-end">
                 <form [formGroup]="updateForm" (ngSubmit)="updateTask()">
                     <div class="d-flex border-end">
-                        <button mat-raised-button class="me-3 addBtn" type="submit" *ngIf="formDirty"> Save
+                        <button mat-flat-button class="me-3 addBtn" type="submit" *ngIf="formDirty"> Save
                         </button>
                         <button class="btn btn-outline-primary rounded btn-sm" type="button" *ngIf="formDirty"> Cancel
                         </button>
-                        <button mat-raised-button class="ms-auto addBtn" type="button" data-bs-toggle="modal"
+                        <button mat-flat-button class="ms-auto addBtn" type="button" data-bs-toggle="modal"
                             data-bs-target="#deleteModal"> Delete </button>
                     </div>
 
@@ -544,10 +544,10 @@
                 <div class="d-flex justify-content-between m-3">
                     <div>
 
-                        <button mat-raised-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                        <button mat-flat-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
                     </div>
                     <div>
-                        <button mat-raised-button class=" addBtn" (click)="deleteTask()" data-bs-dismiss="modal"
+                        <button mat-flat-button class=" addBtn" (click)="deleteTask()" data-bs-dismiss="modal"
                             type="submit">Delete</button>
                     </div>
                 </div>

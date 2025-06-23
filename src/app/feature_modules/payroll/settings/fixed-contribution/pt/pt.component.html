@@ -1,16 +1,14 @@
 <h2>{{ 'payroll.professional-tax.title' | translate }}</h2>
 <hr>
 
-<ul class="nav nav-tabs">
-    <li class="nav-item">
-        <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabPTSlab'}" (click)="selectTab('tabPTSlab')">
-            {{ 'payroll.professional-tax.tab.pt_slab' | translate }}
-        </a>
-    </li>
-</ul>
+<nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel" class="child-tabs">
+    <a mat-tab-link
+      (click)="selectTab('tabPTSlab')"
+      [active]="activeTab === 'tabPTSlab'"> {{ 'payroll.professional-tax.tab.pt_slab' | translate }} </a>
+</nav>
 
-<div class="tab-content pt-0">
-    <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabPTSlab'}" id="tabPTSlab">
+<mat-tab-nav-panel #tabPanel>
+    @if(activeTab === 'tabPTSlab'){
         <app-pt-slab></app-pt-slab>
-    </div>
-</div>
+    }
+</mat-tab-nav-panel>

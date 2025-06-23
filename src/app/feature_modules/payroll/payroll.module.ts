@@ -32,9 +32,7 @@ import { UpdateStateComponent } from './settings/fixed-contribution/pt/eligible-
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UpdateCTCTemplateComponent } from './ctc-templates/update-ctctemplate/update-ctctemplate.component';
 import { AssignedTemplatesComponent } from './ctc-templates/assigned-templates/assigned-templates.component';
-import { EmployeeDeductionComponent } from './ctc-templates/assigned-templates/employee-deduction/employee-deduction.component';
 import { AssignedFixedAllowanceComponent } from './ctc-templates/assigned-templates/fixed-allowance/fixed-allowance.component';
-import { AssignedFixedContributionComponent } from './ctc-templates/assigned-templates/fixed-contribution/fixed-contribution.component';
 import { AssignedFixedDeductionComponent } from './ctc-templates/assigned-templates/fixed-deduction/fixed-deduction.component';
 import { PayrollHistoryComponent } from './run-payroll/payroll-history/payroll-history.component';
 import { RunFnfPayrollComponent } from './run-payroll/run-fnf-payroll/run-fnf-payroll.component';
@@ -100,9 +98,7 @@ import { TranslateModule } from '@ngx-translate/core';
     UpdateStateComponent,
     UpdateCTCTemplateComponent,
     AssignedTemplatesComponent,
-    EmployeeDeductionComponent,
     AssignedFixedAllowanceComponent,
-    AssignedFixedContributionComponent,
     AssignedFixedDeductionComponent,
     PayrollHistoryComponent,
     RunFnfPayrollComponent,

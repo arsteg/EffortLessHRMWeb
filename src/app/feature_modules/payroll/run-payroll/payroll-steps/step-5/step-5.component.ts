@@ -6,7 +6,7 @@ import { forkJoin, map } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-
+import { UserService } from 'src/app/_services/users.service';
 @Component({
   selector: 'app-step-5',
   templateUrl: './step-5.component.html',
@@ -17,6 +17,7 @@ export class Step5Component {
   arrearForm: FormGroup;
   changeMode: 'Add' | 'Update' = 'Update';
   @Input() selectedPayroll: any;
+  salaryPerDay : any; // or fetch dynamically if needed
   selectedUserId: any;
   arrears: any;
   allUsers: any;
@@ -31,6 +32,7 @@ export class Step5Component {
     private fb: FormBuilder,
     private payrollService: PayrollService,
     private commonService: CommonService,
+    private userService: UserService,
     private toast: ToastrService,
     private dialog: MatDialog
   ) {
@@ -52,9 +54,36 @@ export class Step5Component {
     this.payrollService.payrollUsers.subscribe(res => {
       this.payrollUsers = res;
     });
+    this.arrearForm.valueChanges.subscribe(() => {
+      this.recalculateFields();
+    });
     this.getArrearsByPayroll();
   }
-
+  recalculateFields(): void {
+    const manualArrears = this.arrearForm.get('manualArrears')?.value || 0;
+    const arrearDays = this.arrearForm.get('arrearDays')?.value || 0;
+    const lopReversalDays = this.arrearForm.get('lopReversalDays')?.value || 0;
+    const salaryRevisionDays = this.arrearForm.get('salaryRevisionDays')?.value || 0;
+  
+    const lopReversalArrears = lopReversalDays * this.salaryPerDay;
+    const totalArrears = manualArrears + ((arrearDays + salaryRevisionDays) * this.salaryPerDay) + lopReversalArrears;
+  
+    this.arrearForm.patchValue({
+      lopReversalArrears: lopReversalArrears.toFixed(0),
+      totalArrears: totalArrears.toFixed(0)
+    }, { emitEvent: false }); // Prevent recursive loop
+  }
+  getDailySalaryByUserId(userId: string): void {       
+    this.userService.getDailySalaryByUserId(userId).subscribe(
+      (res: any) => {
+        
+        this.salaryPerDay = res.data;
+        console.log(this.salaryPerDay);
+      },
+      (error: any) => {
+        this.toast.error('Failed to load Salary Per Day', 'Error');
+      })
+}
   selectTab(tabId: string) {
     this.activeTab = tabId;
   }
@@ -92,6 +121,11 @@ export class Step5Component {
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user?.value?._id;
+   console.log(this.selectedUserId);
+   console.log(this.selectedPayrollUser);
+         this.getDailySalaryByUserId( this.selectedUserId);
+      
+   
     if (this.changeMode != 'Add') { this.getArrears(); }
   }
 

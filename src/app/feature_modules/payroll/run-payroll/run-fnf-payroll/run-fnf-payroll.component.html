@@ -9,7 +9,7 @@
                  [placeholder]="'payroll.search_placeholder' | translate"
                  [(ngModel)]="searchText" (input)="applyFilter()"
                  name="searchText" aria-label="Search FnF payroll history">
-          <button class="ms-2 w-100" mat-raised-button color="primary"
+          <button class="ms-2 w-100" mat-flat-button color="primary"
                   [matTooltip]="settledUser.length === 0 ? ('payroll._fnf.no_users_tooltip' | translate) : ''"
                   [matTooltipDisabled]="settledUser.length > 0"
                   (click)="settledUser.length > 0 ? open(modal) : null">
@@ -86,8 +86,8 @@
   <h1 mat-dialog-title>{{ 'payroll._fnf.change_status' | translate: { status: ('payroll._fnf.status.' + selectedStatus.toLowerCase() | translate) } }}</h1>
   <div mat-dialog-content>
     <div class="d-flex justify-content-between">
-      <button mat-raised-button type="button" (click)="closeAddDialog()">{{ 'payroll.close' | translate }}</button>
-      <button mat-raised-button type="submit" color="primary" (click)="updatePayrollStatus()">
+      <button mat-flat-button type="button" (click)="closeAddDialog()">{{ 'payroll.close' | translate }}</button>
+      <button mat-flat-button type="submit" color="primary" (click)="updatePayrollStatus()">
         {{ 'payroll._fnf.status.' + selectedStatus.toLowerCase() | translate }}
       </button>
     </div>
@@ -95,7 +95,7 @@
 </ng-template>
 
 <div *ngIf="!showFnFPayroll">
-  <button mat-raised-button (click)="goBack()">{{ 'payroll.back' | translate }}</button>
+  <button mat-flat-button (click)="goBack()">{{ 'payroll.back' | translate }}</button>
   <mat-horizontal-stepper orientation="vertical" [linear]="false" #stepper>
     <mat-step>
       <ng-template matStepLabel>{{ 'payroll._fnf.steps.attendance' | translate }}</ng-template>
@@ -233,8 +233,8 @@
         </mat-form-field>
       </div>
       <div class="d-flex justify-content-between mt-3">
-        <button mat-raised-button type="button" (click)="resetForm()">{{ 'payroll.cancel' | translate }}</button>
-        <button mat-raised-button class="addBtn" type="submit">{{ 'payroll.submit' | translate }}</button>
+        <button mat-flat-button type="button" (click)="resetForm()">{{ 'payroll.cancel' | translate }}</button>
+        <button mat-flat-button class="addBtn" type="submit">{{ 'payroll.submit' | translate }}</button>
       </div>
     </form>
   </div>
@@ -296,8 +296,8 @@
         </mat-form-field>
       </div>
       <div class="d-flex justify-content-between mt-3">
-        <button mat-raised-button type="button" (click)="modal.close()">{{ 'payroll.cancel' | translate }}</button>
-        <button mat-raised-button class="addBtn" type="submit">{{ 'payroll.submit' | translate }}</button>
+        <button mat-flat-button type="button" (click)="modal.close()">{{ 'payroll.cancel' | translate }}</button>
+        <button mat-flat-button class="addBtn" type="submit">{{ 'payroll.submit' | translate }}</button>
       </div>
     </form>
   </div>

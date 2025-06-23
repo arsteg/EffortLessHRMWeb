@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
@@ -30,7 +30,7 @@ export class VarDeductionComponent {
   ngOnInit() {
     this.initForm();
     this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
-      this.patchFormValues();
+    this.patchFormValues();
   }
 
   initForm() {
@@ -41,9 +41,9 @@ export class VarDeductionComponent {
         variableDeduction: [fa.variableDeduction?._id || ''],
         variableDeductionLabel: [fa.variableDeduction?.label || ''],
         criteria: ['Amount'],
-        value: [''],
-        valueType: [0],
-        minimumAmount: [0]
+        value: ['', [Validators.min(0)]],
+        valueType: ['0'],
+        minimumAmount: [0, [Validators.min(0)]]
       }));
     });
 
@@ -69,9 +69,9 @@ export class VarDeductionComponent {
           variableDeduction: [item.variableDeduction?._id || ''],
           variableDeductionLabel: [item.variableDeduction?.label || ''],
           criteria: [item.criteria || 'Amount'],
-          value: [item.value || ''],
-          valueType: item.valueType || '',
-          minimumAmount: [item.minimumAmount || 0]
+          value: [item.value || '', [Validators.min(0)]],
+          valueType: [item.valueType || '0'],
+          minimumAmount: [item.minimumAmount || 0, [Validators.min(0)]]
         }));
       });
     }
@@ -81,11 +81,11 @@ export class VarDeductionComponent {
           variableDeduction: [item.variableDeduction?._id || ''],
           variableDeductionLabel: [item.variableDeduction?.label || ''],
           criteria: [item.criteria || 'Amount'],
-          value: [item.value || ''],
-          valueType: item.valueType || '',
-          minimumAmount: [item.minimumAmount || 0]
+          value: [item.value || '', [Validators.min(0)]],
+          valueType: [item.valueType || '0'],
+          minimumAmount: [item.minimumAmount || 0, [Validators.min(0)]]
         }));
-      })
+      });
     }
   }
 

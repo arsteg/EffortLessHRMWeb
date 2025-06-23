@@ -13,3 +13,20 @@
   font-size: var(--size-20) !important;
   line-height: 1.2 !important;
 }
+
+.section-title{
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-weight: 300;
+  position: relative;
+  color: var(--light-grey);
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #ccc;
+    margin: 0 1rem;
+  }
+}

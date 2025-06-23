@@ -7,7 +7,7 @@
                 <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example">
             </div>
-            <button class="addBtn ms-2" type="button" mat-raised-button (click)="open(addModal);">Add</button>
+            <button class="addBtn ms-2" type="button" mat-flat-button (click)="open(addModal);">Add</button>
         </div>
         <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
             [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
@@ -96,8 +96,8 @@
         </div>
 
         <div class="d-flex justify-content-between mt-2 border-top pt-2">
-            <button type="reset" mat-raised-button>Cancel</button>
-            <button type="submit" class="addBtn" mat-raised-button>Save</button>
+            <button type="reset" mat-flat-button>Cancel</button>
+            <button type="submit" class="addBtn" mat-flat-button>Save</button>
         </div>
     </form>
 </ng-template>

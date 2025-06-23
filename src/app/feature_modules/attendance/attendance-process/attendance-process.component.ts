@@ -1,12 +1,12 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { forkJoin, map, Observable } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SeparationService } from 'src/app/_services/separation.service';
 
@@ -54,6 +54,7 @@ export class AttendanceProcessComponent {
 
   bsValue = new Date();
   selectedMonth: string = (new Date().getMonth() + 1).toString();
+  attendanceTemplateAssignment: any;
 
   months = [
     { name: 'January', value: '1' },
@@ -69,6 +70,8 @@ export class AttendanceProcessComponent {
     { name: 'November', value: '11' },
     { name: 'December', value: '12' }
   ];
+  setlledUsers: any;
+
 
   @ViewChild('LopFormDialog') dialogTemplate: TemplateRef<any>;
 
@@ -86,7 +89,7 @@ export class AttendanceProcessComponent {
     this.lopForm = this.fb.group({
       month: ['', Validators.required],
       year: ['', Validators.required],
-      user: [[], Validators.required]
+      user: [[], [Validators.required, this.attendanceTemplateValidator()]]
     });
 
     this.attendanceProcessForm = this.fb.group({
@@ -112,10 +115,12 @@ export class AttendanceProcessComponent {
 
       });
   }
-  setlledUsers: any;
+
+  
+
   ngOnInit() {
     this.generateYearList();
-    this.userService.getUsersByStatus('Settled').subscribe((res: any)=>{
+    this.userService.getUsersByStatus('Settled').subscribe((res: any) => {
       this.setlledUsers = res.data['users'];
     })
     this.route.queryParams.subscribe(params => {
@@ -145,8 +150,73 @@ export class AttendanceProcessComponent {
         year: this.selectedYear
       });
     });
+    this.attendanceTemplateAssignment = [];
   }
+attendanceTemplateValidator(): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const selectedUserIds: string[] = control.value;
+    if (!selectedUserIds || selectedUserIds.length === 0) {
+      return null; // Let Validators.required handle empty selection
+    }
+    const hasTemplateAssigned = selectedUserIds.every(userId =>
+      this.attendanceTemplateAssignment?.find(template => template.employee === userId)
+    );
+    return hasTemplateAssigned ? null : { 'noAttendanceTemplate': true };
+  };
+}
 
+ async onUserSelectionChange(event: any) {
+    const selectedUserIds: string[] = event.value;
+    this.attendanceTemplateAssignment = [];
+
+    if (selectedUserIds && selectedUserIds.length > 0) {
+      try {
+        // Map API calls to promises
+        const apiPromises = selectedUserIds.map(userId =>
+          this.attendanceService.getAttendanceTemplateByUserId(userId).toPromise()
+        );
+
+        // Wait for all API calls to complete
+        const results = await Promise.all(
+          apiPromises.map(p => p.catch(e => ({ data: [] }))) // Handle individual API errors
+        );
+
+        // Process each result
+        results.forEach((res, index) => {
+          const userId = selectedUserIds[index];
+          if (res && res.data && res.data.length > 0) {
+            this.attendanceTemplateAssignment.push(...res.data);
+          } 
+        });
+
+        // Mark as touched and update validity to trigger mat-error
+        this.lopForm.controls['user'].markAsTouched();
+        this.lopForm.controls['user'].updateValueAndValidity();
+
+        // Check for users without templates
+        const usersWithoutTemplate = selectedUserIds.filter(userId =>
+          !this.attendanceTemplateAssignment.some(template => template.employee === userId)
+        );
+
+        if (usersWithoutTemplate.length > 0) {
+          const userNames = usersWithoutTemplate.map(userId => {
+            const user = this.allAssignee.find(assignee => assignee.id === userId);
+            return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+          }).join(', ');
+          this.toast.error(`No Attendance Template assigned for: ${userNames}`);
+        }
+      } catch (error) {
+        console.error('Error fetching attendance templates:', error);
+        this.toast.error('Error fetching attendance templates.');
+        this.lopForm.controls['user'].markAsTouched();
+        this.lopForm.controls['user'].setErrors({ apiError: true });
+      }
+    } else {
+      // No users selected
+      this.lopForm.controls['user'].markAsTouched();
+      this.lopForm.controls['user'].updateValueAndValidity();
+    }
+  }
   runDateValidator(control: AbstractControl): ValidationErrors | null {
     const runDate = new Date(control.value);
     const year = this.attendanceProcessForm?.value?.attendanceProcessPeriodYear;
@@ -182,24 +252,24 @@ export class AttendanceProcessComponent {
   }
 
   open(content: TemplateRef<any>) {
-      this.getUsersByStatus();
-      this.attendanceProcessForm.reset({
-        exportToPayroll: 'false',
-        status: 'Pending',
-      });
+    this.getUsersByStatus();
+    this.attendanceProcessForm.reset({
+      exportToPayroll: 'false',
+      status: 'Pending',
+    });
 
-      this.attendanceProcessForm.get('status').disable();
-      this.attendanceProcessForm.get('exportToPayroll').disable();
-      const usersFormArray = this.attendanceProcessForm.get('users') as FormArray;
-      while (usersFormArray.length) {
-        usersFormArray.removeAt(0);
-      }
+    this.attendanceProcessForm.get('status').disable();
+    this.attendanceProcessForm.get('exportToPayroll').disable();
+    const usersFormArray = this.attendanceProcessForm.get('users') as FormArray;
+    while (usersFormArray.length) {
+      usersFormArray.removeAt(0);
+    }
 
-      const fnfUsersFormArray = this.fnfAttendanceProcessForm.get('users') as FormArray;
+    const fnfUsersFormArray = this.fnfAttendanceProcessForm.get('users') as FormArray;
 
-      while (fnfUsersFormArray.length) {
-        fnfUsersFormArray.removeAt(0);
-      }
+    while (fnfUsersFormArray.length) {
+      fnfUsersFormArray.removeAt(0);
+    }
 
     const dialogRef = this.dialog.open(content, {
       width: '600px',
@@ -422,14 +492,14 @@ export class AttendanceProcessComponent {
       this.userService.getUsersByStatus('FNF Attendance Processed'),
     ]).pipe(
       map((results: any[]) => {
-        const [resignedUsers, terminatedUsers, settledUsers,  fnfAttendanceProcessed] = results;
+        const [resignedUsers, terminatedUsers, settledUsers, fnfAttendanceProcessed] = results;
         this.usersForFNF = [
           ...resignedUsers.data['users'],
           ...terminatedUsers.data['users'],
           ...(this.changeMode === 'Add' ? settledUsers.data['users'] : []),
           ...fnfAttendanceProcessed.data['users']
         ];
-console.log(this.usersForFNF)
+        console.log(this.usersForFNF)
         return this.usersForFNF;
       })
     );
@@ -488,7 +558,7 @@ console.log(this.usersForFNF)
       return null;
     }
 
-    const selectedDate = new Date(year, month - 1); 
+    const selectedDate = new Date(year, month - 1);
     const terminationDate = this.terminationMonth
       ? new Date(this.terminationYear, this.terminationMonth - 1)
       : null;

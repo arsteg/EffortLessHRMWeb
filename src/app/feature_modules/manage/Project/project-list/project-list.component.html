@@ -1,137 +1,48 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <div class="container-fluid mt-3 py-2 px-0 bg-white tableContainer">
-            <div class="d-md-flex d-block justify-content-between align-items-baseline mb-2 ms-1 px-2">
-                <div class="col-lg-3 pt-1 d-flex align-items-baseline text-center mb-md-0 mb-3">
-                    <label for="member" class="pt-1 pe-3">Members: </label>
-                    <select id="member" name="member" class="form-control" class="form-select form-select-sm"
-                        aria-label=".form-select-sm example" [(ngModel)]="userId"
-                        (change)="onMemberSelectionChange(userId)">
-                        <option value="" [selected] [disabled]>All Members</option>
-                        <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                            {{assignee.firstName |titlecase}} {{assignee.lastName | titlecase}}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="d-md-flex d-block align-items-baseline ms-auto">
-                    <div class="d-flex align-items-center justify-content-end me-md-3 me-0 mb-md-0 mb-3">
-                        <span class="bi bi-search searchIcon"></span>
-                        <input class="form-control" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                            name="searchText" aria-label="default input example">
-                    </div>
-
-                    <div class="d-flex align-items-baseline justify-content-end">
-                        <p class="mb-0 me-3">({{projectList?.length}}) Records Found</p>
-
-                        <button mat-raised-button class="addBtn rounded-pill"
-                            (click)="clearForm(); openModal(addModal)">
-                            Add New
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-                (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
-
-            <div class="tableContainer p-2">
-                <table class="p-2">
-                    <thead>
-                        <tr>
-                            <th class="ps-2 pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
-                                data-name="projectName" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                Project&nbsp;Name&nbsp;<i
-                                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                            </th>
-
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
-                                data-name="startDate" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                Start&nbsp;Date&nbsp;<i
-                                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                            </th>
-
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
-                                data-name="endDate" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                End&nbsp;Date&nbsp;<i
-                                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                            </th>
-
-                            <th class="pe-4 text-center" scope="col" [appSort]="projectList"
-                                data-order="{{ sortOrder }}" data-name="estimatedTime"
-                                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                Estimated&nbsp;Time&nbsp;<i
-                                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                            </th>
-
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="{{ sortOrder }}"
-                                data-name="notes" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-                                Notes&nbsp;<i
-                                    [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                            </th>
-                            <th class="pe-4" scope="col" data-order="desc" data-name="status">Status</th>
-                            <th class="pe-4" scope="col" [appSort]="projectList" data-order="desc"
-                                data-name="users?.user?.firstName" *ngIf="!userId">Members</th>
-                            <th class="pe-2" scope="col" class=" text-center">Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr *ngFor="let data of projectList | search: searchText ">
-                            <td class="ps-2 pe-4">
-                                {{ data?.projectName}}
-                            </td>
-                            <td class="pe-4" *ngIf="data !== null">{{data?.startDate | date:'mediumDate'}}</td>
-                            <td class="pe-4" *ngIf="data !== null">{{data?.endDate | date:'mediumDate'}}</td>
-                            <td class="pe-4 text-center" *ngIf="data !== null">{{data?.estimatedTime}}</td>
-                            <td class="pe-4" *ngIf="data !== null">{{data?.notes }}</td>
-                            <td class="pe-4" *ngIf="data !== null"> <span
-                                    class="badge rounded-pill table-button bg-success text-light px-3 py-2"
-                                    *ngIf="data?.status=='Active'">{{data?.status}}</span> </td>
-                            <td class="pe-1" *ngIf="!userId && data !== null">
-                                <ng-container *ngFor="let users of data.ProjectUser">
-                                    <span *ngIf="users?.user" class="letter text-light"
-                                        [tooltip]="(users?.user?.firstName | titlecase) + (' ') + (users?.user?.lastName | titlecase)"
-                                        [style.background-color]="commonservice.getRandomColor(users?.user?.firstName)">
-                                        {{ users?.user?.firstName.charAt(0) | uppercase }}
-                                    </span>
-                                </ng-container>
-                            </td>
-                            <td class="action text-center pe-2" *ngIf="data !== null">
-
-                                <!-- <button  data-bs-toggle="modal" data-bs-target="#manageUsersModal"
-                                 (click)="selectedProject= data; getProjectUser(data.id)">Manage user</button> -->
-                                <button mat-icon-button [matMenuTriggerFor]="menu">
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                                <mat-menu #menu="matMenu">
-                                    <button mat-menu-item
-                                        (click)="getProjectUser(data.id); openModal(manageUsersModal, data)">
-                                        <span>Manage User</span>
-                                    </button>
-                                    <button mat-menu-item (click)="openModal(updateModal, data)">
-                                        <span>Edit Project</span>
-                                    </button>
-                                    <button mat-menu-item (click)="openModal(deleteModal, data, '300px')">
-                                        <span>Delete Project</span>
-                                    </button>
-                                </mat-menu>
-
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="position-relative d-none d-md-block">
+    <div class="d-flex justify-content-end position-absolute end-0">
+        <ng-container *ngTemplateOutlet="header"></ng-container>
     </div>
 </div>
+
+<div class="d-block d-md-none pt-2">
+    <div class="d-flex justify-content-start">
+        <ng-container *ngTemplateOutlet="header"></ng-container>
+    </div>
+</div>
+
+<ng-template #header>
+    <div class="">
+            <mat-form-field>
+                <mat-label>Members</mat-label>
+                <mat-select id="member" name="member" 
+                    [(ngModel)]="userId" (selectionChange)="onMemberSelectionChange(userId)">
+                    <mat-option value="" [selected] [disabled]>All Members</mat-option>
+                    <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                        {{assignee.firstName |titlecase}} {{assignee.lastName | titlecase}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="ms-2 text-end">
+            <button mat-flat-button color="primary" (click)="clearForm(); openModal(addModal)">
+                Add New
+            </button>
+        </div>
+</ng-template>
+
+
+
+<div>
+    <hrm-table [data]="projectList" [columns]="columns" (actionClicked)="onActionClick($event)" [isServerSide]="true"
+        [showSearch]="true" [totalItems]="totalRecords" [pageSize]="recordsPerPage" (pageChanged)="onPageChange($event)"
+        (searchChanged)="onSearchChange($event)"></hrm-table>
+</div>
+
 
 
 <!-- Manage user modal -->
 <ng-template #manageUsersModal>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between p-1">
         <h4 mat-dialog-title>Manage Members</h4>
         <button type="button" mat-dialog-close mat-icon-button><mat-icon>close</mat-icon></button>
     </div>
@@ -145,8 +56,8 @@
                 </mat-checkbox>
             </div>
             <div mat-dialog-actions class="d-flex justify-content-between mt-3">
-                <button mat-raised-button class="mx-2" mat-dialog-close type="button">Cancel</button>
-                <button mat-raised-button color="primary" type="submit">Save</button>
+                <button mat-flat-button class="mx-2" mat-dialog-close type="button">Cancel</button>
+                <button mat-flat-button color="primary" type="submit">Save</button>
             </div>
         </form>
         }
@@ -187,11 +98,11 @@
 
                         <div class="d-flex justify-content-between m-3">
                             <div>
-                                <button mat-raised-button class="mx-2" data-bs-dismiss="modal"
+                                <button mat-flat-button class="mx-2" data-bs-dismiss="modal"
                                     type="button">Cancel</button>
                             </div>
                             <div>
-                                <button mat-raised-button class="addBtn" data-bs-dismiss="modal"
+                                <button mat-flat-button class="addBtn" data-bs-dismiss="modal"
                                     type="submit">Add</button>
                             </div>
                         </div>
@@ -240,7 +151,7 @@
 
 <!-- Add -->
 <ng-template #addModal>
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between p-1">
         <h4 mat-dialog-title>Add New Project</h4>
         <button type="button" mat-dialog-close mat-icon-button><mat-icon>close</mat-icon></button>
     </div>
@@ -335,8 +246,8 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-3">
-                <button mat-raised-button mat-dialog-close>Cancel</button>
-                <button mat-raised-button color="primary" type="submit">Add</button>
+                <button mat-flat-button mat-dialog-close>Cancel</button>
+                <button mat-flat-button color="primary" type="submit">Add</button>
             </div>
         </form>
     </mat-dialog-content>
@@ -345,7 +256,7 @@
 <!-- Update -->
 <ng-template #updateModal>
 
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between p-1">
         <h4 mat-dialog-title>Update Project <b style="color: #76bc21">{{selectedProject.projectName | titlecase}}</b>
         </h4>
         <button type="button" mat-icon-button mat-dialog-close><mat-icon>close</mat-icon></button>
@@ -431,8 +342,8 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-3" mat-dialog-actions>
-                <button mat-raised-button mat-dialog-close>Cancel</button>
-                <button mat-raised-button color="primary" type="submit">Update</button>
+                <button mat-flat-button mat-dialog-close>Cancel</button>
+                <button mat-flat-button color="primary" type="submit">Update</button>
             </div>
         </form>
         }
@@ -443,8 +354,7 @@
 <!-- Delete -->
 <ng-template #deleteModal>
 
-    <div class="d-flex justify-content-between">
-
+    <div class="d-flex justify-content-between p-1">
         <h4 mat-dialog-title>Delete Project</h4>
         <button type="button" mat-icon-button mat-dialog-close><mat-icon>close</mat-icon></button>
     </div>
@@ -452,8 +362,8 @@
 
         <p>Are you sure you want to delete <b>{{selectedProject.projectName | titlecase}}</b>?</p>
         <div class="d-flex justify-content-between mt-3" mat-dialog-actions>
-            <button mat-raised-button mat-dialog-close type="button">Cancel</button>
-            <button mat-raised-button color="warn" (click)="deleteProject()" mat-dialog-close
+            <button mat-flat-button mat-dialog-close type="button">Cancel</button>
+            <button mat-flat-button color="warn" (click)="deleteProject()" mat-dialog-close
                 type="submit">Delete</button>
         </div>
     </mat-dialog-content>

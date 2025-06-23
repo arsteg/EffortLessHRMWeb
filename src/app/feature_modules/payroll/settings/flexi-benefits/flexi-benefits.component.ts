@@ -7,6 +7,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 const labelValidator: ValidatorFn = (control: AbstractControl) => {
   const value = control.value as string;
@@ -33,6 +34,19 @@ export class FlexiBenefitsComponent implements AfterViewInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  columns: TableColumn[] = [
+    { key: 'name', name: this.translate.instant('payroll.flexi_benefits.table.category_name') },
+    {
+      key: 'action',
+      name: this.translate.instant('payroll.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn" },
+      ]
+    },
+  ];
+  allData: any = [];
 
   constructor(
     private toast: ToastrService,
@@ -59,6 +73,30 @@ export class FlexiBenefitsComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.tableService.initializeDataSource([]);
     this.getFlexiBenefits();
+  }
+
+
+  onSearch(search: any) {
+    const data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+      return found;
+    });
+    this.tableService.setData(data);
+  }
+
+
+  onAction(event: any, modal: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedRecord = event.row;
+        this.open(modal);
+        this.isEdit = true;
+        this.editRecord();
+        break;
+      case 'Delete': this.deleteDialog(event.row?._id); break;
+    }
   }
 
   clearForm() {
@@ -93,7 +131,7 @@ export class FlexiBenefitsComponent implements AfterViewInit {
         this.isDuplicate = this.tableService.dataSource.data.some(
           (benefit: any) => benefit.name.toLowerCase() === newBenefitName
         );
-      
+
         if (this.isDuplicate) {
           this.toast.error(
             this.translate.instant('payroll.flexi_benefits.toast.duplicate_name_error'),
@@ -216,6 +254,7 @@ export class FlexiBenefitsComponent implements AfterViewInit {
     };
     this.payroll.getFlexiBenefits(pagination).subscribe((res: any) => {
       this.tableService.setData(res.data);
+      this.allData = res.data;
       this.tableService.totalRecords = res.total;
     });
   }

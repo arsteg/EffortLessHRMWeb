@@ -391,7 +391,7 @@
         "confirmReject": "Are you sure you want to reject this request?",
         "confirmApprove": "Are you sure you want to approve this request?",
         "confirmCancel": "Are you sure you want to cancel this request?",
-        "commentPlaceholder": "Leave a comment",
+        "commentPlaceholder": "Leave a reason",
         "grantLeaveDetailsTitle": "Show Grant Leave Details",
         "appliedOn": "Applied On",
         "appliedFor": "Applied For",

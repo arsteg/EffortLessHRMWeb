@@ -9,7 +9,7 @@
                  [placeholder]="'payroll.search_placeholder' | translate"
                  [(ngModel)]="searchText" (input)="applyFilter()"
                  name="searchText" aria-label="Search payroll history">
-          <button class="addBtn ms-2" mat-raised-button (click)="openAddDialog()">
+          <button class="addBtn ms-2" mat-flat-button (click)="openAddDialog()">
             {{ 'payroll.add' | translate }}
           </button>
         </div>
@@ -96,8 +96,8 @@
   <h1 mat-dialog-title>{{ 'payroll._history.change_status' | translate: { status: selectedStatus } }}</h1>
   <div mat-dialog-content>
     <div class="d-flex justify-content-between">
-      <button mat-raised-button type="button" (click)="closeAddDialog()">{{ 'payroll.close' | translate }}</button>
-      <button mat-raised-button type="submit" color="primary" (click)="updatePayrollStatus()">
+      <button mat-flat-button type="button" (click)="closeAddDialog()">{{ 'payroll.close' | translate }}</button>
+      <button mat-flat-button type="submit" color="primary" (click)="updatePayrollStatus()">
         {{ 'payroll._history.status.' + selectedStatus.toLowerCase() | translate }}
       </button>
     </div>
@@ -157,7 +157,7 @@
   </div>
   <div mat-dialog-actions>
     <button mat-button (click)="closeAddDialog()">{{ 'payroll.close' | translate }}</button>
-    <button mat-raised-button color="primary" [disabled]="duplicatePayrollError" (click)="onSubmission()">
+    <button mat-flat-button color="primary" [disabled]="duplicatePayrollError" (click)="onSubmission()">
       {{ 'payroll.save' | translate }}
     </button>
   </div>
@@ -207,13 +207,13 @@
   </div>
   <div mat-dialog-actions>
     <button mat-button (click)="closeAddUserDialog()" type="button">{{ 'payroll.close' | translate }}</button>
-    <button mat-raised-button color="primary" (click)="updatePayrollUser()" [disabled]="payrollUserForm.invalid" type="submit">
+    <button mat-flat-button color="primary" (click)="updatePayrollUser()" [disabled]="payrollUserForm.invalid" type="submit">
       {{ 'payroll.save' | translate }}
     </button>
   </div>
 </ng-template>
 
 <div *ngIf="!isAllEmployees">
-  <button mat-raised-button class="bi bi-arrow-left addBtn" (click)="goBack()">{{ 'payroll.back' | translate }}</button>
+  <button mat-flat-button class="bi bi-arrow-left addBtn" (click)="goBack()">{{ 'payroll.back' | translate }}</button>
   <app-payroll-steps [selectedPayroll]="selectedPayroll"></app-payroll-steps>
 </div>

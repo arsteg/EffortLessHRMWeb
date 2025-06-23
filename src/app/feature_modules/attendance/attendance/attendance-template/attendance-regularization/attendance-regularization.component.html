@@ -307,7 +307,7 @@
             <div class="d-flex justify-content-between pb-2">
                 <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
                     name="searchText" aria-label="default input example">
-                <button class="addBtn" type="button" mat-raised-button (click)="open(addModal);">Add Location</button>
+                <button class="addBtn" type="button" mat-flat-button (click)="open(addModal);">Add Location</button>
             </div>
             <table>
                 <thead>
@@ -346,8 +346,8 @@
     </div> -->
 
     <div class="d-flex justify-content-between mt-2">
-        <button type="button" (click)="setFormValues()" mat-raised-button>Cancel</button>
-        <button type="submit" mat-raised-button class="addBtn">Submit</button>
+        <button type="button" (click)="setFormValues()" mat-flat-button>Cancel</button>
+        <button type="submit" mat-flat-button class="addBtn">Submit</button>
     </div>
 
 </form>
@@ -430,8 +430,8 @@
             </div>
 
             <div class="d-flex my-2">
-                <button type="reset" mat-raised-button>Cancel</button>
-                <button type="submit" class="addBtn" mat-raised-button>Submit</button>
+                <button type="reset" mat-flat-button>Cancel</button>
+                <button type="submit" class="addBtn" mat-flat-button>Submit</button>
             </div>
         </form>
     </div>

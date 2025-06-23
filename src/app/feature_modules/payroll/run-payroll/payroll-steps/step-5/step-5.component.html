@@ -11,7 +11,7 @@
             <div class="d-flex align-items-baseine mt-1">
                 <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                     [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-                <button mat-raised-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; openDialog();">Add</button>
+                <button mat-flat-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; openDialog();">Add</button>
             </div>
         </div>
 
@@ -43,14 +43,12 @@
 
             <ng-container matColumnDef="lopReversalArrears">
                 <th mat-header-cell *matHeaderCellDef> LOP Reversal Arrears </th>
-                <td mat-cell *matCellDef="let data"> {{data?.lopReversalArrears}} </td>
+                <td mat-cell *matCellDef="let element"> {{element.lopReversalArrears}} </td>
             </ng-container>
-
             <ng-container matColumnDef="totalArrears">
                 <th mat-header-cell *matHeaderCellDef> Total Arrears </th>
-                <td mat-cell *matCellDef="let data"> {{data?.totalArrears}} </td>
+                <td mat-cell *matCellDef="let element"> {{element.totalArrears}} </td>
             </ng-container>
-
             <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
                 <td mat-cell *matCellDef="let data">
@@ -136,8 +134,8 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-3">
-                <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-                <button mat-raised-button class="addBtn" type="submit">Save</button>
+                <button mat-flat-button type="button" (click)="closeDialog()">Cancel</button>
+                <button mat-flat-button class="addBtn" type="submit">Save</button>
             </div>
         </form>
     </div>
@@ -153,8 +151,8 @@
         </div>
     </div>
     <div class="d-flex justify-content-between">
-        <button mat-raised-button type="button">No</button>
-        <button mat-raised-button type="submit" class="addBtn">Yes</button>
+        <button mat-flat-button type="button">No</button>
+        <button mat-flat-button type="submit" class="addBtn">Yes</button>
     </div>
 </ng-template>
 
@@ -168,7 +166,7 @@
         </div>
     </div>
     <div class="d-flex justify-content-between">
-        <button mat-raised-button type="button">No</button>
-        <button mat-raised-button type="submit" class="addBtn">Yes</button>
+        <button mat-flat-button type="button">No</button>
+        <button mat-flat-button type="submit" class="addBtn">Yes</button>
     </div>
 </ng-template>

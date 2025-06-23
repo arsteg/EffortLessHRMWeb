@@ -1,77 +1,63 @@
-<div class="tableContainer bg-white py-2">
-    <div class="d-flex align-items-center justify-content-between">
-        <span class="bi bi-search searchIcon"></span>
-        <input class="form-control search" type="text" [placeholder]="'payroll.search_placeholder' | translate"
-            [(ngModel)]="searchText" name="searchText" aria-label="Search input">
-        <div class="d-flex align-items-center">
-            <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false; clearForm()"
-                >{{'payroll.add' | translate}}</button>
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-                (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
-        </div>
+<div class="position-relative">
+
+    <div class="position-absolute end-0">
+        <button mat-flat-button (click)="open(modal); isEdit= false; clearForm()" color="primary">{{'payroll.add' |
+            translate}}</button>
     </div>
-    <table>
-        <thead>
-            <th translate>payroll.minimum_employee_count</th>
-            <th translate>payroll.gross_monthly_salary_limit</th>
-            <th translate>payroll.actions</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let data of ceilingAmount | search:searchText">
-                <td>{{data?.employeeCount}}</td>
-                <td>{{data?.maxGrossAmount}}</td>
-                <td>
-                    <button class="actions" mat-mini-fab [matTooltip]="'payroll.edit' | translate"
-                        matTooltipPosition="before" data-bs-toggle="modal" data-bs-target="#modal"
-                        (click)="open(modal); selectedRecord = data; isEdit= true; editRecord();">
-                        <i class="bi bi-pencil-fill"></i>
-                    </button>
-                    <button class="actions ms-2" mat-mini-fab [matTooltip]="'payroll.delete' | translate"
-                        matTooltipPosition="after" aria-label="Delete button" (click)="deleteDialog(data?._id)">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
 </div>
 
+
+<hrm-table [data]="ceilingAmount" [columns]="columns" [showSearch]="true" [totalItems]="totalRecords"
+    (searchChanged)="onSearch($event)" (actionClicked)="onAction($event, modal)" [isServerSide]="true"
+    (pageChanged)="onPageChange($event)"></hrm-table>
+
+
+
 <ng-template #modal let-modal>
-    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{(isEdit ? 'payroll.update_esic_ceiling_amount' :
-                'payroll.add_esic_ceiling_amount') | translate}}</h1>
-        </div>
-        <div>
-            <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
-        </div>
+
+    <div class="d-flex align-items-center justify-content-between">
+        <h1 mat-dialog-title>
+            {{(isEdit ? 'payroll.update_esic_ceiling_amount' : 'payroll.add_esic_ceiling_amount') | translate}}
+        </h1>
+        <button mat-icon-button mat-dialog-close="" class="me-4">
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
-    <form [formGroup]="ceilingAmountForm" (ngSubmit)="onSubmission()">
-        <div class="form-group">
-            <label translate>payroll.minimum_employee_count <span class="text-danger">*</span></label>
-            <input type="number" class="form-control" formControlName="employeeCount">
-            <div
-                *ngIf="ceilingAmountForm.get('employeeCount').invalid && (ceilingAmountForm.get('employeeCount').dirty || ceilingAmountForm.get('employeeCount').touched)">
-                <small class="text-danger" *ngIf="ceilingAmountForm.get('employeeCount')['errors']['required']"
-                    translate>payroll.field_required</small>
-            </div>
-        </div>
 
-        <div class="form-group">
-            <label translate>payroll.gross_monthly_salary_limit <span class="text-danger">*</span></label>
-            <input type="number" class="form-control" formControlName="maxGrossAmount">
-            <div
-                *ngIf="ceilingAmountForm.get('maxGrossAmount').invalid && (ceilingAmountForm.get('maxGrossAmount').dirty || ceilingAmountForm.get('maxGrossAmount').touched)">
-                <small class="text-danger" *ngIf="ceilingAmountForm.get('maxGrossAmount')['errors']['required']"
-                    translate>payroll.field_required</small>
-            </div>
-        </div>
+    <mat-dialog-content>
 
-        <div class="d-flex border-top mt-2 py-2 justify-content-between">
-            <button mat-raised-button type="button">{{'payroll.cancel' | translate}}</button>
-            <button mat-raised-button type="submit" class="addBtn">{{'payroll.submit' | translate}}</button>
-        </div>
-    </form>
+        <form [formGroup]="ceilingAmountForm" (ngSubmit)="onSubmission()">
+            <div class="form-group">
+                <mat-form-field class="w-100">
+                    <mat-label>{{'payroll.minimum_employee_count' | translate}}</mat-label>
+                    <input type="number" matInput required formControlName="employeeCount">
+                    @if(ceilingAmountForm.get('employeeCount').invalid &&
+                    ceilingAmountForm.get('employeeCount').touched){
+                    <mat-error>
+                        {{'payroll.field_required' | translate}}
+                    </mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            <div class="form-group">
+                <mat-form-field class="w-100">
+                    <mat-label>{{'payroll.gross_monthly_salary_limit' | translate}}</mat-label>
+                    <input type="number" matInput required formControlName="maxGrossAmount">
+                    @if(ceilingAmountForm.get('maxGrossAmount').invalid &&
+                    ceilingAmountForm.get('maxGrossAmount').touched){
+                    <mat-error>
+                        {{'payroll.field_required' | translate}}
+                    </mat-error>
+                    }
+                </mat-form-field>
+            </div>
+
+            <div class="d-flex mt-2 justify-content-between" mat-dialog-actions>
+                <button mat-flat-button type="button" mat-dialog-close="">{{'payroll.cancel' | translate}}</button>
+                <button mat-flat-button type="submit" color="primary">{{'payroll.submit' | translate}}</button>
+            </div>
+        </form>
+    </mat-dialog-content>
+
 </ng-template>

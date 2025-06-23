@@ -1,89 +1,62 @@
-<div class="tableContainer bg-white py-2">
-    <div class="d-flex align-items-center justify-content-between">
-        <span class="bi bi-search searchIcon"></span>
-        <input class="form-control search" type="text" placeholder="{{ 'payroll.search_placeholder' | translate }}"
-            [(ngModel)]="searchText" name="searchText">
-        <div class="d-flex align-items-center">
-            <button class="addBtn mx-2" mat-raised-button (click)="open(modal); isEdit= false; clearForm()">
-                {{ 'payroll.add' | translate }}
-            </button>
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-                (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
-        </div>
+<div class="position-relative">
+    <div class="position-absolute end-0">
+        <button color="primary" mat-flat-button (click)="open(modal); isEdit= false; clearForm()">
+            {{ 'payroll.add' | translate }}
+        </button>
     </div>
-    <table>
-        <thead>
-            <th>{{ 'payroll.employee_percentage' | translate }}</th>
-            <th>{{ 'payroll.employer_percentage' | translate }}</th>
-            <th>{{ 'payroll.actions' | translate }}</th>
-        </thead>
-        <tbody>
-            <tr *ngFor="let data of contribution | search:searchText">
-                <td>{{data?.employeePercentage}}</td>
-                <td>{{data?.employerPercentage}}</td>
-                <td>
-                    <button class="actions" mat-mini-fab matTooltip="{{ 'payroll.edit' | translate }}"
-                        matTooltipPosition="before" data-bs-toggle="modal" data-bs-target="#modal"
-                        (click)="open(modal); selectedRecord = data; isEdit= true; editRecord();">
-                        <i class="bi bi-pencil-fill"></i>
-                    </button>
-                    <button class="actions ms-2" mat-mini-fab matTooltip="{{ 'payroll.delete' | translate }}"
-                        matTooltipPosition="after"
-                        (click)="deleteDialog(data?._id)">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
 </div>
 
+
+<hrm-table [data]="contribution" [columns]="columns" [showSearch]="true" [totalItems]="totalRecords"
+    (searchChanged)="onSearch($event)" (actionClicked)="onAction($event, modal)" [isServerSide]="true"
+    (pageChanged)="onPageChange($event)"></hrm-table>
+
+
+
 <ng-template #modal let-modal>
-    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-        <div>
-            <h1 class="modal-title text-muted mb-0">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 mat-dialog-title>
                 {{ (isEdit ? 'payroll.modal.update_title' : 'payroll.modal.add_title') | translate }}
             </h1>
+            <button mat-dialog-close="" mat-icon-button class="me-4">
+                <mat-icon>close</mat-icon>
+            </button>
         </div>
-        <div>
-            <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"
-                ></button>
-        </div>
-    </div>
-    <div class="modal-body">
+
+    <mat-dialog-content>
         <form [formGroup]="contributionForm" (ngSubmit)="onSubmission()">
             <div class="form-group">
-                <label for="employeePercentage">{{ 'payroll.form.employee_percentage' | translate }}
-                    <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="employeePercentage">
-                <div
-                    *ngIf="contributionForm.get('employeePercentage').invalid && (contributionForm.get('employeePercentage').dirty || contributionForm.get('employeePercentage').touched)">
-                    <small class="text-danger"
-                        *ngIf="contributionForm.get('employeePercentage')['errors']['required']">
-                        {{ 'payroll.form.error.required' | translate }}
-                    </small>
-                </div>
+                <mat-form-field class="w-100">
+                    <mat-label>{{'payroll.form.employee_percentage' | translate}}</mat-label>
+                    <input type="number" matInput required formControlName="employeePercentage">
+                    @if(contributionForm.get('employeePercentage').invalid &&
+                    contributionForm.get('employeePercentage').touched){
+                    <mat-error>
+                        {{'payroll.field_required' | translate}}
+                    </mat-error>
+                    }
+                </mat-form-field>
+                
             </div>
             <div class="form-group">
-                <label for="employerPercentage">{{ 'payroll.form.employer_percentage' | translate }}
-                    <span class="text-danger">*</span></label>
-                <input type="number" class="form-control" formControlName="employerPercentage">
-                <div
-                    *ngIf="contributionForm.get('employerPercentage').invalid && (contributionForm.get('employerPercentage').dirty || contributionForm.get('employerPercentage').touched)">
-                    <small class="text-danger"
-                        *ngIf="contributionForm.get('employerPercentage')['errors']['required']">
-                        {{ 'payroll.form.error.required' | translate }}
-                    </small>
-                </div>
+                 <mat-form-field class="w-100">
+                    <mat-label>{{'payroll.form.employer_percentage' | translate}}</mat-label>
+                    <input type="number" matInput required formControlName="employerPercentage">
+                    @if(contributionForm.get('employerPercentage').invalid &&
+                    contributionForm.get('employerPercentage').touched){
+                    <mat-error>
+                        {{'payroll.field_required' | translate}}
+                    </mat-error>
+                    }
+                </mat-form-field>
             </div>
-            <div class="d-flex border-top mt-2 py-2 justify-content-between">
-                <button mat-raised-button type="reset">{{ 'payroll.cancel' | translate }}</button>
-                <button mat-raised-button type="submit" class="addBtn" [disabled]="!contributionForm.valid">
+            <div class="d-flex mt-2 justify-content-between" mat-dialog-actions>
+                <button mat-flat-button mat-dialog-close="">{{ 'payroll.cancel' | translate }}</button>
+                <button mat-flat-button type="submit"  color=primary [disabled]="!contributionForm.valid">
                     {{ 'payroll.submit' | translate }}
                 </button>
             </div>
         </form>
-    </div>
+    </mat-dialog-content>
 </ng-template>

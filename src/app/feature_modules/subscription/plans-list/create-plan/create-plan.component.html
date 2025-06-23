@@ -135,11 +135,11 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-raised-button class="addBtn" (click)="createPlan()" [disabled]="loading()">
+  <button mat-flat-button class="addBtn" (click)="createPlan()" [disabled]="loading()">
     @if(loading()){
     <span class="spinner-border spinner-border-sm mr-1"></span>
     }
     Create Plan
   </button>
-  <button mat-raised-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button mat-dialog-close>Cancel</button>
 </mat-dialog-actions>

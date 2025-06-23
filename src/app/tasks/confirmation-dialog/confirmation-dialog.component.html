@@ -8,10 +8,10 @@
   <p translate>deletion_warning_msg</p>
 </div>
 <mat-dialog-actions class="d-flex justify-content-between">
-  <button mat-button (click)="onNoClick()">
+  <button mat-flat-button (click)="onNoClick()">
     {{'cancel' | translate}}
   </button>
-  <button mat-stroked-button cdkFocusInitial color="warn" [mat-dialog-close]="'delete'">
+  <button mat-flat-button cdkFocusInitial color="warn" [mat-dialog-close]="'delete'">
     {{'delete' | translate}}
   </button>
 </mat-dialog-actions>
