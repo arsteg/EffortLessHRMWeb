@@ -8,7 +8,7 @@ import { SharedModule } from 'src/app/shared/shared.Module';
 
 
 @NgModule({
-  declarations: [AdminTimesheetComponent, UserTimesheetComponent],
+  declarations: [],//[AdminTimesheetComponent, UserTimesheetComponent],
   imports: [
     TimesheetsRoutingModule,
     SharedModule

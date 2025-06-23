@@ -16,6 +16,8 @@ import { MatOptionModule } from '@angular/material/core';
 import { TimelineComponent } from './timeline/timeline.component';
 import { ReportsRoutingModule } from './reports-routing.module';
 import { AiReportsComponent } from './AI-Reporting/ai-reports/ai-reports.component';
+import { UserTimesheetComponent } from '../timesheets/user-timesheet/user-timesheet.component';
+import { AdminTimesheetComponent } from '../timesheets/admin-timesheet/admin-timesheet.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { AiReportsComponent } from './AI-Reporting/ai-reports/ai-reports.compone
     LeaveReportComponent,
     AppAndWebsiteUsageComponent,
     ActivityDescriptionComponent,
-    AiReportsComponent
+    AiReportsComponent,
+    UserTimesheetComponent,
+    AdminTimesheetComponent
   ],
   imports: [
     CommonModule,
