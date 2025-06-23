@@ -1,7 +1,11 @@
 <div class="mainContent mt-5 pt-4 container-fluid">
   <div class="row tableContainer bg-white pt-3">
     <div class="col-md-6">
-      <p id="example-radio-group-label" class="contentHeading">Notifications</p>
+      <p id="example-radio-group-label" class="contentHeading">Notifications
+        <a (click)="triggerNotificationTab()" class="add-notification-link ms-2">
+          + Add event notification
+        </a>
+      </p>
       <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label"
         class="example-radio-group managers bg-white common" [(ngModel)]="selectedManager">
         <mat-radio-button color="primary" class="manager example-radio-button"
