@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { SharedModule } from 'src/app/shared/shared.Module';
 import { eventNotification, notificationUser } from 'src/app/models/eventNotification/eventNotitication';
 import { FormBuilder } from '@angular/forms';
@@ -17,6 +17,7 @@ import { TimeLogService } from 'src/app/_services/timeLogService';
   styleUrls: ['./event-notification-viewer.component.css']
 })
 export class EventNotificationViewerComponent implements OnInit, OnDestroy {
+  @Output() addNotification = new EventEmitter<void>();
   private subscription: Subscription = new Subscription();
   teamOfUsers: notificationUser[] = [];
   eventNotifications: eventNotification[] = [];
@@ -126,5 +127,9 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
 
   private updateAllCheckboxState(): void {
     this.allChecked = this.teamOfUsers.every(user => user.isSelected);
+  }
+
+  triggerNotificationTab(): void {
+    this.addNotification.emit();
   }
 }

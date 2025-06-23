@@ -22,7 +22,9 @@
           <app-event-notification></app-event-notification>
           </div>
           <div *ngIf="selectedTab === 5 && view === Role.Admin.toLowerCase()" class="tab-content">
-            <app-event-notification-viewer></app-event-notification-viewer>
+            <app-event-notification-viewer
+              (addNotification)="goToNotificationTabFromChild()">
+            </app-event-notification-viewer>
             </div>
     </div>
 </div>

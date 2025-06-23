@@ -24,4 +24,8 @@ export class AlertsComponent implements OnInit {
     this.selectedTab = tabIndex;
   }
 
+  goToNotificationTabFromChild() {
+    this.selectTab(4);
+  }
+
 }

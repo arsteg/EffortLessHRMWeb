@@ -19,6 +19,9 @@
                     <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(6)"
                         [class.active]="selectedTab === 6">
                         AI</button>
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(7)"
+                        [class.active]="selectedTab === 7">
+                        Timesheets</button>
                 </div>
 
                 <div *ngIf="selectedTab === 1"><app-timeline></app-timeline></div>
@@ -32,6 +35,9 @@
                 </div>
                 <div *ngIf="selectedTab === 6" class="tab-content">
                     <app-ai-reports></app-ai-reports>
+                </div>
+                <div *ngIf="selectedTab === 7" class="tab-content">
+                    <app-admin-timesheet></app-admin-timesheet>
                 </div>
             </div>
 
@@ -61,6 +67,9 @@
                     <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(9)"
                         [class.active]="selectedTab === 9">
                         Leave</button>
+                    <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(10)"
+                        [class.active]="selectedTab === 10">
+                        Timesheets</button>
                 </div>
 
                 <div *ngIf="selectedTab === 1" class="tab-content"></div>
@@ -81,6 +90,9 @@
                 </div>
                 <div *ngIf="selectedTab === 9" class="tab-content">
                     <app-leave-report></app-leave-report>
+                </div>
+                <div *ngIf="selectedTab === 10" class="tab-content">
+                    <app-user-timesheet></app-user-timesheet>
                 </div>
             </div>
         </ng-container>
