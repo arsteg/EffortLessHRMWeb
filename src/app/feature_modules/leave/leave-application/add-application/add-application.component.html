@@ -1,6 +1,5 @@
 <div class="d-flex justify-content-between">
     <h1 class="modal-title text-muted">{{ 'leave.addTitle' | translate }}</h1>
-    <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()"></button>
 </div>
 <div mat-dialog-content>
     <form [formGroup]="leaveApplication" (ngSubmit)="onSubmission()">
@@ -12,7 +11,6 @@
                         {{ member?.firstName | titlecase }} {{ member?.lastName }}
                     </mat-option>
                 </mat-select>
-
                 <div *ngIf="leaveApplication.get('employee').invalid && leaveApplication.get('employee').touched"
                     class="text-danger error">
                     {{ 'leave.employeeRequired' | translate }}
@@ -21,7 +19,8 @@
         </div>
 
         <div *ngIf="tab === 5" class="mb-2">
-            <label for="member">{{ 'leave.selectEmployeeForLeave' | translate }} <span class="text-danger">*</span></label>
+            <label for="member">{{ 'leave.selectEmployeeForLeave' | translate }} <span
+                    class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
                 <mat-label>{{ 'leave.selectEmployee' | translate }}</mat-label>
                 <mat-select name="users" formControlName="employee" required>
@@ -39,8 +38,10 @@
         <div>
             <label for="member">{{ 'leave.selectCategory' | translate }} <span class="text-danger">*</span></label>
             <mat-form-field appearance="outline" class="w-100 mx-1">
-                <mat-select formControlName="leaveCategory" required>
-                    <mat-option *ngIf="checkStatus == 'failure'" disabled>{{ 'leave.noCategoryAssigned' | translate }}</mat-option>
+                <mat-select formControlName="leaveCategory" required
+                    (selectionChange)="getLeaveCategoryDetails($event)">
+                    <mat-option *ngIf="checkStatus == 'failure'" disabled>{{ 'leave.noCategoryAssigned' | translate
+                        }}</mat-option>
                     <mat-option *ngFor="let category of leaveCategories" [value]="category?.leaveCategory?._id">
                         {{ category?.leaveCategory?.label | titlecase }}
                     </mat-option>
@@ -54,44 +55,45 @@
 
         <div class="row">
             <div class="col-6">
-              <label for="">{{ 'leave.selectStartDate' | translate }} <span class="text-danger">*</span></label>
-              <div class="col-12 form-group mb-3">
-                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today }" formControlName="startDate" required />
-                <div *ngIf="leaveApplication.get('startDate')?.hasError('pastDateError') && leaveApplication.get('startDate')?.touched" 
-                     class="text-danger error">
-                  {{ 'leave.pastDateError' | translate }}
+                <label for="">{{ 'leave.selectStartDate' | translate }} <span class="text-danger">*</span></label>
+                <div class="col-12 form-group mb-3">
+                    <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsConfig]="bsConfig"
+                        formControlName="startDate" required />
+                    <div *ngIf="leaveApplication.get('startDate')?.invalid && leaveApplication.get('startDate')?.touched && !leaveApplication.get('startDate')?.hasError('submitBeforeError')"
+                        class="text-danger error">
+                        {{ 'leave.invalidStartDate' | translate }}
+                    </div>
                 </div>
-                <div *ngIf="leaveApplication.get('startDate')?.invalid && leaveApplication.get('startDate')?.touched && !leaveApplication.get('startDate')?.hasError('pastDateError')" 
-                     class="text-danger error">
-                  {{ 'leave.invalidStartDate' | translate }}
-                </div>
-              </div>
             </div>
-            
+
             <div class="col-6">
-              <label for="">{{ 'leave.selectEndDate' | translate }} <span class="text-danger">*</span></label>
-              <div class="col-12 form-group mb-3">
-                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today }"
-                       formControlName="endDate" required 
-                       [minDate]="leaveApplication.get('startDate')?.value ? leaveApplication.get('startDate')?.value : null" />
-                <div *ngIf="leaveApplication.get('endDate').touched && leaveApplication.get('endDate').invalid && !leaveApplication.get('endDate').hasError('dateRangeError')" 
-                     class="text-danger error">
-                  {{ 'leave.invalidEndDate' | translate }}
+                <label for="">{{ 'leave.selectEndDate' | translate }} <span class="text-danger">*</span></label>
+                <div class="col-12 form-group mb-3">
+                    <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsConfig]="bsConfig"
+                        formControlName="endDate" required
+                        [minDate]="leaveApplication.get('startDate')?.value ? leaveApplication.get('startDate')?.value : null" />
+                    <div *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError') && leaveApplication.get('endDate')?.touched"
+                        class="text-danger error">
+                        {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
+                    </div>
+                    <div *ngIf="leaveApplication.get('endDate')?.touched && leaveApplication.get('endDate')?.invalid && !leaveApplication.get('endDate')?.hasError('dateRangeError') && !leaveApplication.get('endDate')?.hasError('submitBeforeError')"
+                        class="text-danger error">
+                        {{ 'leave.invalidEndDate' | translate }}
+                    </div>
+                    <div *ngIf="leaveApplication.get('endDate')?.hasError('dateRangeError')" class="text-danger">
+                        {{ 'leave.dateRangeError' | translate }}
+                    </div>
                 </div>
-                
-                <div *ngIf="leaveApplication.get('endDate').hasError('dateRangeError')" class="text-danger">
-                  {{ 'leave.dateRangeError' | translate }}
-                </div>
-              </div>
             </div>
         </div>
-       
+
         <div *ngIf="leaveApplication.errors?.['duplicateLeave']" class="text-danger error pt-0">
             {{ 'leave.duplicateLeaveError' | translate }}
         </div>
 
         <div class="mt-2" *ngIf="showHalfDayOption">
-            <label for="" class="">{{ 'leave.halfDayOptionPrompt' | translate }} <span class="text-danger">*</span></label>
+            <label for="" class="">{{ 'leave.halfDayOptionPrompt' | translate }} <span
+                    class="text-danger">*</span></label>
             <div class="d-flex">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" id="flexRadioDefault1"
@@ -110,16 +112,16 @@
             </div>
 
             <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value === true">
-                <button type="button" mat-flat-button class="addBtn" (click)="addHalfDayEntry()">{{ 'leave.addHalfDayButton' | translate }}</button>
+                <button type="button" mat-flat-button class="addBtn" (click)="addHalfDayEntry()">{{
+                    'leave.addHalfDayButton' | translate }}</button>
                 <div formArrayName="halfDays">
                     <div *ngFor="let halfDay of halfDays.controls; let i=index" [formGroupName]="i">
                         <div class="d-flex justify-content-between my-2">
                             <div>
                                 <label>{{ 'leave.dateLabel' | translate }}:</label>
                                 <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                                    [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', minDate: today }" formControlName="date" />
+                                    [bsConfig]="bsConfig" formControlName="date" />
                             </div>
-                            
                             <div class="w-50">
                                 <label>{{ 'leave.dayHalfLabel' | translate }}:</label>
                                 <select name="" id="" class="form-control" formControlName="dayHalf">
@@ -138,8 +140,8 @@
                 {{ 'leave.uploadDocumentLabel' | translate }}
             </label>
             <label for="fileUpload6" class="file-upload btn btn-outline-primary btn-block rounded-pill shadow">
-                <i class="fa fa-paperclip me-2"></i>{{ 'leave.uploadDocumentButton' | translate }}<input id="fileUpload6" type="file"
-                    (change)="onFileSelected($event)" multiple style="display: none;">
+                <i class="fa fa-paperclip me-2"></i>{{ 'leave.uploadDocumentButton' | translate }}<input
+                    id="fileUpload6" type="file" (change)="onFileSelected($event)" multiple style="display: none;">
             </label>
             <ul type="none" class="d-flex ps-0">
                 <li class="contentHeading p-2" *ngFor="let files of selectedFiles; let i = index"
@@ -158,9 +160,10 @@
         </div>
 
         <div class="d-flex justify-content-between">
-            <button mat-flat-button type="reset">{{ 'leave.cancelButton' | translate }}</button>
+            <button mat-flat-button type="button" mat-dialog-close>{{ 'leave.cancelButton' | translate }}</button>
             <button mat-button class="addBtn" type="submit"
-                [disabled]="!leaveApplication.valid || leaveApplication.errors?.['duckError']">{{ 'leave.submitButton' | translate }}</button>
+                [disabled]="!leaveApplication.valid || leaveApplication.errors?.['duplicateLeave']">{{
+                'leave.submitButton' | translate }}</button>
         </div>
     </form>
 </div>

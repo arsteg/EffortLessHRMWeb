@@ -40,14 +40,16 @@ export class AddApplicationComponent {
   holidayCount: number;
   leaveDocumentUpload: boolean = false;
   selectedFiles: File[] = [];
-  bsConfig = {
+  bsConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD-MM-YYYY',
-    showWeekNumbers: false
+    showWeekNumbers: false,
+    minDate: new Date() // Default to today
   };
   today: Date = new Date();
   showHalfDayOption: boolean = true;
   checkStatus: any;
   existingLeaves: any[] = [];
+  minSelectableDate: Date; // New property for minimum selectable date
 
   constructor(
     private fb: FormBuilder,
@@ -102,8 +104,9 @@ export class AddApplicationComponent {
 
     this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
-      this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory;
+      this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory?.documentRequired || false;
       this.handleLeaveCategoryChange();
+      this.updateMinDate(); // Update minimum date when leave category changes
     });
 
     this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
@@ -140,6 +143,50 @@ export class AddApplicationComponent {
 
   ngOnChanges() {
     this.handleLeaveCategoryChange();
+  }
+
+  getLeaveCategoryDetails(category: any) {
+    this.leaveService.getLeaveCategorById(this.leaveApplication.get('leaveCategory')?.value).subscribe((res: any) => {
+      console.log('Leave Category Details:', res?.data?.submitBefore);
+      this.tempLeaveCategory = res?.data;
+      this.updateMinDate(); // Update minDate when category details are fetched
+    });
+  }
+
+  updateMinDate() {
+    if (this.tempLeaveCategory?.submitBefore) {
+      const submitBeforeDays = parseInt(this.tempLeaveCategory.submitBefore, 10);
+      if (!isNaN(submitBeforeDays)) {
+        const minDate = new Date();
+        minDate.setDate(minDate.getDate() + submitBeforeDays);
+        this.minSelectableDate = minDate;
+        this.bsConfig = {
+          ...this.bsConfig,
+          minDate: this.minSelectableDate
+        };
+        // Validate existing dates
+        this.validateDates();
+      }
+    } else {
+      // Reset to default (today) if no submitBefore
+      this.minSelectableDate = new Date();
+      this.bsConfig = {
+        ...this.bsConfig,
+        minDate: this.minSelectableDate
+      };
+    }
+  }
+
+  validateDates() {
+    const startDate = this.leaveApplication.get('startDate')?.value;
+    const endDate = this.leaveApplication.get('endDate')?.value;
+
+    if (startDate && this.minSelectableDate && moment(startDate).isBefore(moment(this.minSelectableDate))) {
+      this.leaveApplication.get('startDate')?.setErrors({ submitBeforeError: true });
+    }
+    if (endDate && this.minSelectableDate && moment(endDate).isBefore(moment(this.minSelectableDate))) {
+      this.leaveApplication.get('endDate')?.setErrors({ submitBeforeError: true });
+    }
   }
 
   checkForDuplicateLeave() {
@@ -199,7 +246,10 @@ export class AddApplicationComponent {
   }
 
   addHalfDayEntry() {
-    this.halfDays.push(this.fb.group({ date: [''], dayHalf: [''] }));
+    this.halfDays.push(this.fb.group({ 
+      date: ['', Validators.required], 
+      dayHalf: ['', Validators.required] 
+    }));
   }
 
   get halfDays() {
@@ -280,9 +330,12 @@ export class AddApplicationComponent {
       startDate: startDate,
       endDate: endDate,
       status: 'Level 1 Approval Pending',
-      level1Reason: 'string',
-      level2Reason: 'string',
-      leaveApplicationAttachments: []
+      level1Reason: this.leaveApplication.get('level1Reason')?.value || 'string',
+      level2Reason: this.leaveApplication.get('level2Reason')?.value || 'string',
+      leaveApplicationAttachments: [],
+      isHalfDayOption: this.leaveApplication.get('isHalfDayOption')?.value,
+      halfDays: this.leaveApplication.get('halfDays')?.value,
+      comment: this.leaveApplication.get('comment')?.value
     };
 
     // Check for duplicate leave applications
@@ -319,11 +372,9 @@ export class AddApplicationComponent {
     });
   }
 
-  // Function to process selected files and return attachments
   async processFiles(files: File[]): Promise<any[]> {
     const attachments: any[] = [];
 
-    // Read each file and convert to base64
     for (const file of files) {
       const base64String = await this.readFileAsBase64(file);
       const fileNameParts = file.name.split('.');
@@ -341,7 +392,6 @@ export class AddApplicationComponent {
     return attachments;
   }
 
-  // Function to read a file as base64
   readFileAsBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -354,7 +404,6 @@ export class AddApplicationComponent {
     });
   }
 
-  // Function to submit the leave application
   submitLeaveApplication(payload: any) {
     this.leaveService.addLeaveApplication(payload).subscribe({
       next: (res: any) => {
@@ -412,9 +461,9 @@ export class AddApplicationComponent {
 }
 
 interface attachments {
-  attachmentName: string,
-  attachmentType: string,
-  attachmentSize: number,
-  extention: string,
-  file: string
+  attachmentName: string;
+  attachmentType: string;
+  attachmentSize: number;
+  extention: string;
+  file: string;
 }
