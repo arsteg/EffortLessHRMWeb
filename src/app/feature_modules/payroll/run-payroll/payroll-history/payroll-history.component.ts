@@ -9,6 +9,8 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-payroll-history',
@@ -44,7 +46,25 @@ export class PayrollHistoryComponent implements AfterViewInit {
   currentPage = 1;
   pageSizeOptions = [5, 10, 25, 50, 100];
   searchText: string = '';
-
+  columns: TableColumn[] = [
+    { key: 'month', name: this.translate.instant('payroll._history.table.period'), valueFn: (row)=> row.month +'-'+ row.year },
+    { key: 'date', name: this.translate.instant('payroll._history.table.date'),valueFn: (row)=> this.datePipe.transform(row.date, 'mediumDate') },
+    { key: 'processedCount', name: this.translate.instant('payroll._history.table.processed') },
+    { key: 'activeCount', name: this.translate.instant('payroll._history.table.active') },
+    { key: 'onHoldCount', name: this.translate.instant('payroll._history.table.onhold') },
+    { key: 'status', name: this.translate.instant('payroll._history.table.status') },
+    {
+      key: 'action',
+      name: this.translate.instant('payroll.actions'),
+      isAction: true,
+      options: [
+        { label: 'Add Employee', icon: 'add', visibility: ActionVisibility.BOTH },
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn" },
+      ]
+    },
+  ];
+  allData: any = []
   months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   constructor(
@@ -55,7 +75,8 @@ export class PayrollHistoryComponent implements AfterViewInit {
     private commonService: CommonService,
     private userService: UserService,
     private cdr: ChangeDetectorRef,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private datePipe: DatePipe
   ) {
     this.salaries = [];
     this.addedUserIds = [];
@@ -87,7 +108,6 @@ export class PayrollHistoryComponent implements AfterViewInit {
     this.getPayrollStatus();
     this.generateYearList();
     this.getAllUsers();
-    this.getPayrollWithUserCounts();
     this.getPayroll();
     this.payrollForm.get('month').valueChanges.subscribe(() => {
       this.checkForDuplicatePayrollPeriod();
@@ -100,6 +120,37 @@ export class PayrollHistoryComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.getPayrollWithUserCounts();
+  }
+
+  onSearch(search: any) {
+    const data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+      return found;
+    });
+    this.dataSource.data = data;
+  }
+
+
+  onAction(event: any) {
+    switch (event.action.label) {
+      case 'Add Employee':
+        this.selectedPayroll = event.row?._id; this.openAddUserDialog()
+        break;
+      case 'Edit':
+        this.selectedPayroll = event.row; this.openSteps();
+        break;
+      case 'Delete': this.deleteDialog(event.row?._id); break;
+      default:
+        this.payrollStatusArray.forEach(status => {
+          if(status === event.action.label){
+            this.selectedPayroll = event.row;
+            this.openUpdateStatusDialog(event.action.label);
+          }
+        })
+        break;
+    }
   }
 
   checkForDuplicatePayrollPeriod() {
@@ -129,6 +180,17 @@ export class PayrollHistoryComponent implements AfterViewInit {
     this.payrollService.getPayrollStatus().subscribe((res: any) => {
       this.payrollStatus = res.data;
       this.payrollStatusArray = Object.values(this.payrollStatus).filter(status => status);
+      const actionColumn = this.columns.find((col) => col.key === 'action');
+      this.payrollStatusArray.forEach((value: any) => {
+        actionColumn.options.push({
+          label: value,
+          icon: '',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row) => {
+            return row.status === value
+          }
+        })
+      });
     });
   }
 
@@ -290,6 +352,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
 
       Promise.all(payrollData).then(data => {
         this.dataSource.data = data;
+        this.allData = data;
         this.totalRecords = payrollRes.total;
         this.cdr.detectChanges();
       });

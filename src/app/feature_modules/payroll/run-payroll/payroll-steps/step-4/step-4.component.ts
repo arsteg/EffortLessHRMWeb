@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -27,6 +28,17 @@ export class Step4Component {
   matchedLoanAdvances: any;
   selectedPayrollUser: string;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  columns: TableColumn[] = [
+    { key: 'payrollUserDetails', name: 'Employee Name' },
+    { key: 'loanAndAdvance', name: 'Loan Category', valueFn: (row) => row.loanAndAdvance?.loanAdvancesCategory?.name },
+    { key: 'amount', name: 'Repayment Amount'},
+    { key: 'disbursementAmount', name: 'Disbursed Amount' },
+    {
+      key: 'action', name: 'Action', isAction: true, options: [
+        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
+      ]
+    }
+  ]
 
   constructor(
     private payrollService: PayrollService,
@@ -61,6 +73,17 @@ export class Step4Component {
       this.payrollUsers = res;
     });
     this.getLoanAdvanceByPayroll();
+  }
+
+  onActionClick(event: any) {
+    switch (event.action.label) {
+      case 'Delete':
+        this.selectedRecord = event.row;
+        this.deleteDialog(this.selectedRecord._id);
+        break;
+      default:
+        break;
+    }
   }
 
   openDialog() {
@@ -166,9 +189,9 @@ export class Step4Component {
           this.toast.success('Loan/Advance created', 'Successfully!');
           this.closeDialog();
         },
-        (err) => {        
-          const errorMessage = err?.error?.message || err?.message || err 
-          || 'Something went wrong.';
+        (err) => {
+          const errorMessage = err?.error?.message || err?.message || err
+            || 'Something went wrong.';
           this.toast.error(errorMessage, 'Error!');
         }
       );
@@ -227,9 +250,9 @@ export class Step4Component {
         this.toast.success('Successfully Deleted!!!', 'Loan/Advance');
       },
       (err) => {
-        const errorMessage = err?.error?.message || err?.message || err 
+        const errorMessage = err?.error?.message || err?.message || err
           || 'Something went wrong.';
-          this.toast.error(errorMessage, 'Error!');
+        this.toast.error(errorMessage, 'Error!');
       }
     );
   }

@@ -7,6 +7,7 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -30,7 +31,13 @@ export class Step7Component {
   overtimeRecords: any;
   selectedPayrollUser: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
-
+  columns: TableColumn[] = [
+    { key: 'payrollUserDetails', name: 'Employee Name' },
+    { key: 'LateComing', name: 'Late Coming' },
+    { key: 'EarlyGoing', name: 'Early Going' },
+    { key: 'FinalOvertime', name: 'Final Over Time(HH:MM)', valueFn: (row) => (row.FinalOvertime / 60).toFixed(2) },
+    { key: 'OvertimePayableSalary', name: 'Over Time Amount-(INR)', valueFn: (row) => row.OvertimeAmount ? row.OvertimeAmount.toFixed(2) : '0.00' },
+  ]
   constructor(
     private payrollService: PayrollService,
     private fb: FormBuilder
@@ -52,7 +59,7 @@ export class Step7Component {
       this.payrollUsers = res;
     });
     this.getOvertimeByPayroll();
-  } 
+  }
   getUser(employeeId: string) {
     const matchingUser = this.allUsers?.find(user => user._id === employeeId);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';

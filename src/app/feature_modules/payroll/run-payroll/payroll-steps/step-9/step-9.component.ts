@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { receiveMessageOnPort } from 'worker_threads';
 
 interface PayrollStatus {
@@ -60,6 +61,28 @@ export class Step9Component {
     'actions'
   ];
 
+  columns: TableColumn[] = [
+    { key: 'PayrollUsers', name: 'Employee Name', valueFn: (row) => row?.PayrollUser?.user?.firstName + ' ' + row?.PayrollUser?.user?.lastName },
+    { key: 'totalOvertime', name: 'Total Overtime' },
+    { key: 'totalFixedAllowance', name: 'Total Fixed Allowances' },
+    { key: 'totalFixedDeduction', name: 'Total Fixed Deductions', },
+    { key: 'totalLoanRepayment', name: 'Total Loan Repayment', },
+    { key: 'totalLoanDisbursed', name: 'Total Loan Disbursed', },
+    { key: 'totalFlexiBenefits', name: 'Total Flexi Benefits', },
+    { key: 'totalIncomeTax', name: 'Total TDS', },
+    { key: 'yearlySalary', name: 'Total CTC', },
+    { key: 'monthlySalary', name: 'Total Gross Salary', },
+    { key: 'totalEmployerStatutoryContribution', name: 'Total Employer Statutory Contribution', },
+    { key: 'totalEmployeeStatutoryDeduction', name: 'Total Employee Statutory Deduction', },
+    { key: 'payroll_status', name: 'Payroll Status', valueFn: (row) => row?.PayrollUser?.status },
+    { key: 'totalTakeHome', name: 'Total Take Home', },
+    {
+      key: 'actions', name: 'Actions', isAction: true, options: [
+        { label: 'View', visibility: ActionVisibility.BOTH, icon: 'remove_red_eye' }
+      ]
+    },
+  ]
+
   constructor(
     private dialog: MatDialog,
     private payrollService: PayrollService,
@@ -77,10 +100,42 @@ export class Step9Component {
     this.getGeneratedPayroll();
   }
 
+  onAction(event: any) {
+    switch (event.action.label) {
+      case 'View':
+        this.selectedStatus = event.row?._id;
+        this.selectedRecord = event.row;
+        this.openDialog()
+        break;
+      default:
+        this.payrollStatusArray.forEach(status => {
+
+            if (status === event.row?.PayrollUser?.status) {
+              this.selectedPayrollUser = event.row;
+              this.openUpdateStatusDialog(status)
+            }
+
+        })
+        break;
+    }
+  }
+
   getPayrollStatus() {
     this.payrollService.getPayrollUserStatus().subscribe((res: any) => {
       this.payrollStatus = res.data;
       this.payrollStatusArray = Object.values(this.payrollStatus).filter(status => status);
+
+      const actionColumn = this.columns.find((col) => col.key === 'actions');
+      this.payrollStatusArray.forEach((value: any) => {
+        actionColumn.options.push({
+          label: value,
+          icon: '',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row) => {
+            return row.status === value
+          }
+        })
+      });
     });
   }
 
@@ -127,13 +182,13 @@ export class Step9Component {
             totalFixedAllowance: parseFloat(record?.totalFixedAllowance || 0).toFixed(2),
             totalFixedDeduction: parseFloat(record?.totalFixedDeduction || 0).toFixed(2),
             totalLoanRepayment: record?.totalLoanRepayment,
-            totalLoanDisbursed:record.totalLoanDisbursed,
+            totalLoanDisbursed: record.totalLoanDisbursed,
             totalFlexiBenefits: parseFloat(record?.totalFlexiBenefits || 0).toFixed(2),
             totalIncomeTax: parseFloat(record?.totalIncomeTax || 0).toFixed(2),
             yearlySalary: parseFloat(record?.yearlySalary || 0).toFixed(2),
             monthlySalary: parseFloat(record?.monthlySalary || 0).toFixed(2),
             totalTakeHome: parseFloat(record?.totalTakeHome || 0).toFixed(2),
-            
+
             payroll_status: record?.payroll_status || 'Pending'
           };
         });
