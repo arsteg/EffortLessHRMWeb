@@ -79,7 +79,11 @@
                     <div class="row">
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Date of Birth</mat-label>
-                            <input matInput type="date" formControlName="DOB">
+                            <!-- <input matInput type="date" formControlName="DOB"> -->
+                                <input matInput type="date" 
+                                    class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                    formControlName="DOB" />
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-6">
@@ -95,7 +99,11 @@
                     <div class="row">
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Marriage Anniversary</mat-label>
-                            <input matInput type="date" formControlName="MarraigeAniversary">
+                            <!-- <input matInput type="date" formControlName="MarraigeAniversary"> -->
+                            <input matInput type="date" 
+                                    class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
+                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                    formControlName="MarraigeAniversary" />
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-6">

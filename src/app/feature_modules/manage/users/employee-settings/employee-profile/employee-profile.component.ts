@@ -18,6 +18,7 @@ export class EmployeeProfileComponent {
   roles: any;
   selectedUser: any;
   isEdit = this.userService.getIsEdit();
+  bsValue = new Date();
 
   constructor(
     private fb: FormBuilder,
