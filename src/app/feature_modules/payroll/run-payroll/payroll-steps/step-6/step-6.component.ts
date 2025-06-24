@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -26,7 +27,16 @@ export class Step6Component {
   professionalTaxSlabs: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   noSalaryRecordFound: boolean = false;
-
+  columns: TableColumn[] = [
+    { key: 'payrollUserDetails', name: 'Employee Name' },
+    { key: 'TotalFlexiBenefitAmount', name: 'Total Flexi Benefit' },
+    {
+      key: 'action', name: 'Action', isAction: true, options: [
+        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit' },
+        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
+      ]
+    }
+  ]
 
   constructor(
     private payrollService: PayrollService,
@@ -50,6 +60,22 @@ export class Step6Component {
       this.payrollUsers = res;
     });
     this.getFlexiBenefitsByPayroll();
+  }
+
+  onActionClick(event: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.changeMode = 'Update';
+        this.selectedRecord = event.row;
+        this.openDialog();
+        break;
+      case 'Delete':
+        this.selectedRecord = event.row;
+        this.deleteDialog(this.selectedRecord._id);
+        break;
+      default:
+        break;
+    }
   }
 
   getProfessionalTaxSlabs(callback?: Function) {
@@ -87,13 +113,13 @@ export class Step6Component {
     // const stateSlab = this.professionalTaxSlabs?.states.find(
     //   (slab: any) => slab.name.toLowerCase() === userState?.state.toLowerCase()
     // );
-  
+
     // if (!stateSlab || !stateSlab.slabs) {
     //   this.noSalaryRecordFound = true;
     //   this.toast.error('No professional tax slabs found for the state.', 'Error');
     //   return;
     // }
-  
+
     // // Fetch salary details for the user
     // this.userService.getSalaryByUserId(this.selectedUserId).subscribe((res: any) => {
     //   if (!res.data || res.data.length === 0) {
@@ -101,10 +127,10 @@ export class Step6Component {
     //     this.toast.error('No salary records found for the user.', 'Error');
     //     return;
     //   }
-  
+
     //   const lastSalaryRecord = res.data[res.data.length - 1];
     //   let ctc;
-  
+
     //   // Determine CTC based on enteringAmount
     //   if (lastSalaryRecord?.enteringAmount === 'Monthly') {
     //     ctc = lastSalaryRecord.Amount * 12; // Convert to yearly CTC
@@ -115,11 +141,11 @@ export class Step6Component {
     //     this.toast.error('Invalid salary amount type.', 'Error');
     //     return;
     //   }
-  
+
     //   // Calculate basic salary (40% of CTC)
     //   const basicSalaryAnnual = ctc * 0.4;
     //   const basicSalaryMonthly = basicSalaryAnnual / 12;
-  
+
     //   // Calculate total variable allowances where isProfessionalTaxAffected = true
     //   let totalVariableAllowances = 0;
     //   const variableAllowances = lastSalaryRecord.variableAllowanceList || [];
@@ -128,30 +154,30 @@ export class Step6Component {
     //       totalVariableAllowances += allowance.monthlyAmount;
     //     }
     //   });
-  
+
     //   // Calculate gross monthly salary for professional tax
     //   const grossMonthlySalary = basicSalaryMonthly + totalVariableAllowances;
-  
+
     //   // Find matching professional tax slab
     //   const matchingSlab = stateSlab.slabs.find(
     //     (slab: any) => grossMonthlySalary >= slab.fromAmount && grossMonthlySalary <= (slab.toAmount || 999999999999)
     //   );
-  
+
     //   let professionalTaxAmount = matchingSlab ? matchingSlab.employeeAmount : 0;
-  
+
     //   // Handle exemptions (e.g., Maharashtra women <= ₹25,000)
     //   if (userState?.state === 'Maharashtra' && userState?.Gender === 'female' && grossMonthlySalary <= 25000) {
     //     professionalTaxAmount = 0;
     //   }
-  
+
     //   // Handle special case for Maharashtra (February: ₹300 for salaries > ₹10,000)
     //   const currentMonth = new Date().getMonth() + 1; // 1 = January, 2 = February, etc.
     //   if (userState?.state === 'Maharashtra' && currentMonth === 2 && grossMonthlySalary > 10000) {
     //     professionalTaxAmount = 300;
     //   }
-  
+
     //   // Update form with calculated professional tax
-     
+
     // });
   }
 

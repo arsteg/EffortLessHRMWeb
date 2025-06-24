@@ -140,6 +140,8 @@
 </ng-template>
 
 <div *ngIf="!isAllEmployees">
-  <button mat-flat-button class="bi bi-arrow-left addBtn" (click)="goBack()">{{ 'payroll.back' | translate }}</button>
+  <button mat-flat-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>{{ 'payroll.back' | translate }}
+  </button>
   <app-payroll-steps [selectedPayroll]="selectedPayroll"></app-payroll-steps>
 </div>

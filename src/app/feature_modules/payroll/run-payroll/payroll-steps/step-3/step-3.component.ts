@@ -6,6 +6,7 @@ import { forkJoin, map } from 'rxjs';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -30,6 +31,19 @@ export class Step3Component {
   allUsers: any;
   payrollUsers: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  columns: TableColumn[] = [
+    { key: 'payrollUserDetails', name: 'Employee Name' },
+    { key: 'variableAllowance', name: 'Variable Allowance', valueFn: (row) => row.variableAllowance?.label },
+    { key: 'variableDeduction', name: 'Variable Deduction', valueFn: (row) => row.variableDeduction?.label },
+    { key: 'amount', name: 'Amount', },
+    { key: 'period', name: 'Period', valueFn: (row) => `${row.month}-${row.year}` },
+    {
+      key: 'action', name: 'Action', isAction: true, options: [
+        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit' },
+        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
+      ]
+    }
+  ]
 
   months = [
     { name: 'January', value: 1 },
@@ -75,6 +89,22 @@ export class Step3Component {
     });
     this.getVariableDeductionAndAllowance();
     this.getVariablePayByPayroll();
+  }
+
+  onActionClick(event: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.changeMode = 'Update';
+        this.selectedRecord = event.row;
+        this.openDialog();
+        break;
+      case 'Delete':
+        this.selectedRecord = event.row;
+        this.deleteDialog(this.selectedRecord._id);
+        break;
+      default:
+        break;
+    }
   }
 
   generateYearList() {
