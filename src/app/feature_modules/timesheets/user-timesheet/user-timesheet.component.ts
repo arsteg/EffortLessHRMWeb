@@ -57,7 +57,7 @@ export class UserTimesheetComponent implements OnInit {
     }, {validator: this.dateRangeValidator});
 
   }
-a
+
    onSubmit() {
   }
 

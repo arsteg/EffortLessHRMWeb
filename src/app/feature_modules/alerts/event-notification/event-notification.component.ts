@@ -37,7 +37,7 @@ export class EventNotificationComponent implements OnInit {
     this.eventNotificationForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
-      eventNotificationType: ['', Validators.required],
+      eventNotificationType: [null],
       date: ['', Validators.required],
       isRecurring: [false, Validators.required],
       recurringFrequency: [''],

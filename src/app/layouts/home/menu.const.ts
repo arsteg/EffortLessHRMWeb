@@ -44,12 +44,12 @@ export const SideBarAdminMenu = [
     url: 'attendance/settings/attendance-templates',
     svgIcon: 'attendance',
   },
-  {
-    id: '8',
-    title: 'Timesheets',
-    url: 'timesheets/admin',
-    svgIcon: 'timesheet',
-  },
+  // {
+  //   id: '8',
+  //   title: 'Timesheets',
+  //   url: 'timesheets/admin',
+  //   svgIcon: 'timesheet',
+  // },
   {
     id: '9',
     title: 'Leave',
@@ -192,12 +192,12 @@ export const SideBarUserMenu = [
     url: 'attendance/my-attendance-records',
     svgIcon: 'attendance',
   },
-  {
-    id: '9',
-    title: 'Timesheets',
-    url: 'timesheets/user',
-    svgIcon: 'timesheet',
-  },
+  // {
+  //   id: '9',
+  //   title: 'Timesheets',
+  //   url: 'timesheets/user',
+  //   svgIcon: 'timesheet',
+  // },
   {
     id: '10',
     title: 'Taxation',
