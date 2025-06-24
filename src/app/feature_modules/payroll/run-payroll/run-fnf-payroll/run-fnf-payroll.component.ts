@@ -11,6 +11,8 @@ import { UserService } from 'src/app/_services/users.service';
 import { forkJoin, map } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-run-fnf-payroll',
@@ -48,6 +50,19 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   currentPage: number = 1;
   recordsPerPage: number = 10;
   searchText: string = '';
+  columns: TableColumn[] = [
+    { key: 'month', name: this.translate.instant('payroll._fnf.table.period'), valueFn: (row)=> row.month +'-'+ row.year },
+    { key: 'date', name: this.translate.instant('payroll._fnf.table.date'), valueFn: (row)=> this.datePipe.transform(row.date, 'mediumDate') },
+    { key: 'details', name: this.translate.instant('payroll._fnf.table.users'), },
+    { key: 'status', name: this.translate.instant('payroll._fnf.table.status'), },
+    {
+      key: 'action',
+      name: this.translate.instant('payroll.actions'),
+      isAction: true,
+      options: []
+    }
+  ];
+  allData: any = [];
 
   constructor(
     private modalService: NgbModal,
@@ -56,7 +71,8 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
     private toast: ToastrService,
     private dialog: MatDialog,
     private userService: UserService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private datePipe: DatePipe
   ) {
     const currentMonthIndex = new Date().getMonth();
     this.selectedMonth = this.fnfMonths[currentMonthIndex];
@@ -98,6 +114,32 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
     this.fetchFnFPayroll();
   }
 
+  onSearch(search: any) {
+    const data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+      return found;
+    });
+    console.log(data)
+    this.dataSource.data = data;
+  }
+
+
+  onAction(event: any) {
+    switch (event.action.label) {
+      default:
+        this.payrollStatusArray.forEach(status => {
+          if(status === event.action.label){
+            this.selectedFnF = event.row;
+            this.openUpdateStatusDialog(event.action.label);
+          }
+        })
+        break;
+    }
+  }
+
+
   openUpdateStatusDialog(status: string) {
     this.selectedStatus = status;
     const dialogRef = this.dialog.open(this.updateStatus, {
@@ -119,6 +161,17 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
     this.payrollService.getFNFPayrollStatus().subscribe((res: any) => {
       this.payrollStatus = res.data;
       this.payrollStatusArray = Object.values(this.payrollStatus).filter(status => status);
+      const actionColumn = this.columns.find((col) => col.key === 'action');
+      this.payrollStatusArray.forEach((value: any) => {
+        actionColumn.options.push({
+          label: value,
+          icon: '',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row) => {
+            return row.status === value
+          }
+        })
+      });
     });
   }
 
@@ -268,6 +321,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
               };
             });
             this.dataSource.data = updatedFnfData;
+            this.allData = updatedFnfData;
           },
           (error: any) => {
             this.translate.get('payroll._fnf.title').subscribe(title => {

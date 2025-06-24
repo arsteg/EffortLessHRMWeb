@@ -1,98 +1,45 @@
 <div class="container-fluid">
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabActiveEmployees'}"
-                (click)="selectTab('tabActiveEmployees')">Active Employees</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabEmployeesOnHold'}"
-                (click)="selectTab('tabEmployeesOnHold')">Employees On-Hold</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" [ngClass]="{'activeTab': activeTab === 'tabProcessedEmployees'}"
-                (click)="selectTab('tabProcessedEmployees')">Processed Employees</a>
-        </li>
-    </ul>
-    <div class="tab-content pt-0">
-        <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabActiveEmployees'}" id="tabActiveEmployees">
-            <div class="mt-2 bg-white">
-                <table>
-                    <thead>
-                        <th>Employee Name</th>
-                        <th>Joining Date</th>
-                        <th>Action</th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let data of activeUsers">
-                            <td>{{getUser(data?.user)}}</td>
-                            <td>{{selectedPayroll?.date | date: 'mediumDate'}}</td>
-                            <td>
-                                <button class="actions" mat-mini-fab matTooltip="Place Selected Employees On Hold"
-                                    matTooltipPosition="before"
-                                    (click)="status= 'OnHold'; selectedRecord = data; openDialog()">
-                                    <i class="bi bi-arrow-right-circle" style="font-size: x-large"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabEmployeesOnHold'}" id="tabEmployeesOnHold">
-            <div class="mt-2 bg-white">
-                <table>
-                    <thead>
-                        <th>Employee Name</th>
-                        <th>Joining Date</th>
-                        <th>Action</th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let data of onHoldUsers">
-                            <td>{{getUser(data?.user)}}</td>
-                            <td>{{selectedPayroll?.date | date: 'mediumDate'}}</td>
-                            <td>
-                                <button class="actions" mat-mini-fab matTooltip="UnHold Selected Employees"
-                                    matTooltipPosition="before"
-                                    (click)="status= 'Processed'; selectedRecord = data; openDialog()">
-                                    <i class="bi bi-arrow-right-circle" style="font-size: x-large"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="tab-pane" [ngClass]="{'active': activeTab === 'tabProcessedEmployees'}" id="tabProcessedEmployees">
-            <div class="mt-2 bg-white">
-                <table>
-                    <thead>
-                        <th>Employee Name</th>
-                        <th>Joining Date</th>
-                        <th>Action</th>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let data of processedUsers">
-                            <td>{{getUser(data?.user)}}</td>
-                            <td>{{selectedPayroll?.date | date: 'mediumDate'}}</td>
-                            <td>
-                                <button class="actions" mat-mini-fab matTooltip="Re-Run Selected Employee"
-                                    matTooltipPosition="before"
-                                    (click)="status= 'Active';  selectedRecord = data; openDialog()">
-                                    <i class="bi bi-arrow-right-circle" style="font-size: x-large"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+
+    <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel" class="child-tabs">
+        <a mat-tab-link (click)="selectTab('tabActiveEmployees')" [active]="activeTab === 'tabActiveEmployees'">
+            Active Employees
+        </a>
+
+        <a mat-tab-link (click)="selectTab('tabEmployeesOnHold')" [active]="activeTab === 'tabEmployeesOnHold'">
+            Employees On-Hold
+        </a>
+
+        <a mat-tab-link (click)="selectTab('tabProcessedEmployees')" [active]="activeTab === 'tabProcessedEmployees'">
+            Processed Employees
+        </a>
+    </nav>
+
+    <mat-tab-nav-panel #tabPanel>
+        @if(activeTab === 'tabActiveEmployees'){
+            <hrm-table [data]="activeUsers" [columns]="columns" [showSearch]="true" (actionClicked)="onAction($event)"></hrm-table>
+        }
+        @if(activeTab === 'tabEmployeesOnHold'){        
+            <hrm-table [data]="onHoldUsers" [columns]="columns" [showSearch]="true" (actionClicked)="onAction($event)"></hrm-table>
+        }
+        @if(activeTab === 'tabProcessedEmployees'){
+            <hrm-table [data]="processedUsers" [columns]="columns" [showSearch]="true" (actionClicked)="onAction($event)"></hrm-table>
+        }
+    </mat-tab-nav-panel>
+
 </div>
 
 <ng-template #modalTemplate>
-    <h1 mat-dialog-title>Do you want to put Selected Employee {{status}}?</h1>
+    @if(status === 'OnHold'){
+    <h1 mat-dialog-title>Do you want to put selected employee on hold?</h1>
+    }
+    @if(status === 'Processed'){
+    <h1 mat-dialog-title>Do you want to process the payroll for this employee?</h1>
+    }
+    @if(status === 'Active'){
+    <h1 mat-dialog-title>Do you want to re-run the payroll for this employee?</h1>
+    }
     <div mat-dialog-actions class="d-flex justify-content-between">
-        <button mat-button (click)="closeDialog()">No</button>
+        <button mat-flat-button (click)="closeDialog()">No</button>
         <button mat-flat-button color="primary" (click)="onSubmission()">Yes</button>
     </div>
 </ng-template>

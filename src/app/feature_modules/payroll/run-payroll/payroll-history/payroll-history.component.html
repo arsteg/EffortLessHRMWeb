@@ -1,95 +1,15 @@
 <div class="main-content" *ngIf="isAllEmployees">
-  <div class="container-fluid">
-    <div class="bg-white mt-2">
-      <div class="d-flex align-items-center px-2 py-1">
-        <p class="mb-0 me-auto"> ({{totalRecords}}) {{ 'payroll.records_found' | translate}}</p>
-        <div class="d-flex align-items-center">
-          <span class="bi bi-search searchIcon"></span>
-          <input class="form-control search" type="text"
-                 [placeholder]="'payroll.search_placeholder' | translate"
-                 [(ngModel)]="searchText" (input)="applyFilter()"
-                 name="searchText" aria-label="Search payroll history">
-          <button class="addBtn ms-2" mat-flat-button (click)="openAddDialog()">
-            {{ 'payroll.add' | translate }}
-          </button>
-        </div>
-      </div>
-      <mat-table [dataSource]="dataSource">
-        <ng-container matColumnDef="payrollPeriod">
-          <mat-header-cell *matHeaderCellDef> {{ 'payroll._history.table.period' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let data"> {{ data?.month }} - {{ data?.year }} </mat-cell>
-        </ng-container>
+  <div class="position-relative">
 
-        <ng-container matColumnDef="date">
-          <mat-header-cell *matHeaderCellDef> {{ 'payroll._history.table.date' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let data"> {{ data?.date | date:'mediumDate' }} </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="payrollDetails">
-          <mat-header-cell *matHeaderCellDef> {{ 'payroll._history.table.details' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let data">
-            <div class="d-flex align-items-center">
-              <mat-icon matTooltipPosition="before" [matTooltip]="'payroll._history.table.processed' | translate: { count: data?.processedCount }"
-                aria-label="Processed Employees">check_circle</mat-icon>
-              <mat-icon matTooltipPosition="below" [matTooltip]="'payroll._history.table.active' | translate: { count: data?.activeCount }"
-                aria-label="Active Employees">person</mat-icon>
-              <mat-icon matTooltipPosition="after" [matTooltip]="'payroll._history.table.onhold' | translate: { count: data?.onHoldCount }"
-                aria-label="On-Hold Employees">pause_circle</mat-icon>
-            </div>
-          </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <mat-header-cell *matHeaderCellDef> {{ 'payroll._history.table.status' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let data">
-            <mat-icon *ngIf="data?.status === 'InProgress'" [matTooltip]="'payroll._history.status.in_progress' | translate"
-              aria-label="In Progress">hourglass_empty</mat-icon>
-            <mat-icon *ngIf="data?.status === 'Complete Approval Pending'" [matTooltip]="'payroll._history.status.complete_approval' | translate"
-              aria-label="Complete Approval Pending">hourglass_full</mat-icon>
-            <mat-icon *ngIf="data?.status === 'OnHold'" [matTooltip]="'payroll._history.status.on_hold' | translate"
-              aria-label="On Hold">pause_circle</mat-icon>
-            <mat-icon *ngIf="data?.status === 'Processed'" [matTooltip]="'payroll._history.status.processed' | translate"
-              aria-label="Processed">check_circle</mat-icon>
-          </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-          <mat-header-cell *matHeaderCellDef> {{ 'payroll.actions' | translate }} </mat-header-cell>
-          <mat-cell *matCellDef="let data">
-            <button mat-icon-button [matMenuTriggerFor]="menu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="selectedPayroll = data?._id; openAddUserDialog()">
-                <mat-icon>person_add</mat-icon>
-                <span>{{ 'payroll._history.actions.add_employee' | translate }}</span>
-              </button>
-              <button mat-menu-item (click)="selectedPayroll = data; openSteps();">
-                <mat-icon>edit</mat-icon>
-                <span>{{ 'payroll.edit' | translate }}</span>
-              </button>
-              <button mat-menu-item (click)="deleteDialog(data._id)">
-                <mat-icon>delete</mat-icon>
-                <span>{{ 'payroll.delete' | translate }}</span>
-              </button>
-              <ng-container *ngFor="let status of payrollStatusArray">
-                <button mat-menu-item *ngIf="status.toLowerCase() !== data?.status?.toLowerCase()" (click)="selectedPayroll = data; openUpdateStatusDialog(status)">
-                  <span>{{ 'payroll._history.status.' + status.toLowerCase() | translate }}</span>
-                </button>
-              </ng-container>
-            </mat-menu>
-          </mat-cell>
-        </ng-container>
-
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-      </mat-table>
-      <mat-paginator [length]="totalRecords" [pageSize]="pageSize"
-                     [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)"
-                     aria-label="Select page of payroll history">
-      </mat-paginator>
-    </div>
+    <button color="primary" mat-flat-button class="position-absolute end-0" (click)="openAddDialog()">
+      {{ 'payroll.add' | translate }}
+    </button>
   </div>
+
+  <hrm-table [data]="dataSource.data" [columns]="columns" [showSearch]="true" [totalItems]="totalRecords"
+    (searchChanged)="onSearch($event)" (actionClicked)="onAction($event)" [isServerSide]="true"
+    (pageChanged)="onPageChange($event)"></hrm-table>
+
 </div>
 
 <ng-template #updateStatus>
@@ -144,7 +64,8 @@
           <mat-select formControlName="status">
             <mat-option value="" disabled>{{ 'payroll._history.form.select_status' | translate }}</mat-option>
             <mat-option value="InProgress">{{ 'payroll._history.status.in_progress' | translate }}</mat-option>
-            <mat-option value="Complete Approval Pending">{{ 'payroll._history.status.complete_approval' | translate }}</mat-option>
+            <mat-option value="Complete Approval Pending">{{ 'payroll._history.status.complete_approval' | translate
+              }}</mat-option>
             <mat-option value="OnHold">{{ 'payroll._history.status.on_hold' | translate }}</mat-option>
             <mat-option value="Processed">{{ 'payroll._history.status.processed' | translate }}</mat-option>
           </mat-select>
@@ -155,8 +76,8 @@
       </div>
     </form>
   </div>
-  <div mat-dialog-actions>
-    <button mat-button (click)="closeAddDialog()">{{ 'payroll.close' | translate }}</button>
+  <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+    <button mat-flat-button (click)="closeAddDialog()">{{ 'payroll.close' | translate }}</button>
     <button mat-flat-button color="primary" [disabled]="duplicatePayrollError" (click)="onSubmission()">
       {{ 'payroll.save' | translate }}
     </button>
@@ -165,52 +86,57 @@
 
 <ng-template #addUserModal let-addUserModal>
   <h1 mat-dialog-title>{{ 'payroll._history.assign_employee' | translate }}</h1>
-  <div mat-dialog-content>
-    <form [formGroup]="payrollUserForm">
-      <div class="row">
-        <mat-form-field appearance="outline" class="col-md-6 my-2">
-          <mat-label>{{ 'payroll._history.form.employee' | translate }}</mat-label>
-          <mat-select formControlName="user" (selectionChange)="getGrossSalaryBySalaryStructure()">
-            <mat-option *ngFor="let user of users" [value]="user?.id">{{ user?.firstName | titlecase }} {{ user.lastName | titlecase }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="payrollUserForm.get('user').touched && payrollUserForm.get('user').hasError('required')">
-            {{ 'payroll._history.form.employee_required' | translate }}
-          </mat-error>
-          <mat-error *ngIf="payrollUserForm.get('user').valid && payrollUserForm.get('user').hasError('noSalary')">
-            {{ 'payroll._history.form.no_salary' | translate }}
-          </mat-error>
-          <mat-error *ngIf="payrollUserForm.get('user').hasError('userExists')">
-            {{ 'payroll._history.form.user_exists' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="row">
-        <mat-form-field appearance="outline" class="col-md-6 my-2">
-          <mat-label>{{ 'payroll._history.form.total_ctc' | translate }}</mat-label>
-          <input matInput type="number" formControlName="totalCTC" [placeholder]="'payroll._history.form.enter_ctc' | translate">
-        </mat-form-field>
-      </div>
-      <div class="row">
-        <mat-form-field appearance="outline" class="col-md-6 my-2">
-          <mat-label>{{ 'payroll._history.form.gross_salary' | translate }}</mat-label>
-          <input matInput type="number" formControlName="totalGrossSalary" [placeholder]="'payroll._history.form.enter_gross_salary' | translate">
-        </mat-form-field>
-      </div>
-      <mat-form-field appearance="outline" class="col-md-6 my-2">
+  <form [formGroup]="payrollUserForm">
+    <div mat-dialog-content>
+
+      <mat-form-field class="w-100 my-2">
+        <mat-label>{{ 'payroll._history.form.employee' | translate }}</mat-label>
+        <mat-select formControlName="user" (selectionChange)="getGrossSalaryBySalaryStructure()">
+          <mat-option *ngFor="let user of users" [value]="user?.id">{{ user?.firstName | titlecase }} {{ user.lastName
+            | titlecase }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="payrollUserForm.get('user').touched && payrollUserForm.get('user').hasError('required')">
+          {{ 'payroll._history.form.employee_required' | translate }}
+        </mat-error>
+        <mat-error *ngIf="payrollUserForm.get('user').hasError('noSalary')">
+          {{ 'payroll._history.form.no_salary' | translate }}
+        </mat-error>
+        <mat-error *ngIf="payrollUserForm.get('user').hasError('userExists')">
+          {{ 'payroll._history.form.user_exists' | translate }}
+        </mat-error>
+      </mat-form-field>
+
+
+      <mat-form-field  class="w-100 my-2">
+        <mat-label>{{ 'payroll._history.form.total_ctc' | translate }}</mat-label>
+        <input matInput type="number" formControlName="totalCTC"
+          [placeholder]="'payroll._history.form.enter_ctc' | translate">
+      </mat-form-field>
+
+
+      <mat-form-field  class="w-100 my-2">
+        <mat-label>{{ 'payroll._history.form.gross_salary' | translate }}</mat-label>
+        <input matInput type="number" formControlName="totalGrossSalary"
+          [placeholder]="'payroll._history.form.enter_gross_salary' | translate">
+      </mat-form-field>
+
+      <mat-form-field class="my-2">
         <mat-label>{{ 'payroll._history.form.status' | translate }}</mat-label>
         <mat-select formControlName="status">
           <mat-option value="Active">{{ 'payroll._history.status.active' | translate }}</mat-option>
           <mat-option value="Inactive">{{ 'payroll._history.status.inactive' | translate }}</mat-option>
         </mat-select>
       </mat-form-field>
-    </form>
-  </div>
-  <div mat-dialog-actions>
-    <button mat-button (click)="closeAddUserDialog()" type="button">{{ 'payroll.close' | translate }}</button>
-    <button mat-flat-button color="primary" (click)="updatePayrollUser()" [disabled]="payrollUserForm.invalid" type="submit">
-      {{ 'payroll.save' | translate }}
-    </button>
-  </div>
+
+      <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+        <button mat-flat-button (click)="closeAddUserDialog()" type="button">{{ 'payroll.close' | translate }}</button>
+        <button mat-flat-button color="primary" (click)="updatePayrollUser()" [disabled]="payrollUserForm.invalid"
+          type="submit">
+          {{ 'payroll.save' | translate }}
+        </button>
+      </div>
+    </div>
+  </form>
 </ng-template>
 
 <div *ngIf="!isAllEmployees">

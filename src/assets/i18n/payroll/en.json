@@ -21,14 +21,15 @@
                 "date": "Date",
                 "details": "Payroll Details",
                 "status": "Status",
-                "processed": "Processed Employees: {{count}}",
-                "active": "Active Employees: {{count}}",
-                "onhold": "On-Hold Employees: {{count}}"
+                "processed": "Processed",
+                "active": "Active",
+                "onhold": "On-Hold"
             },
             "status": {
                 "in_progress": "In Progress",
                 "complete_approval": "Complete Approval Pending",
                 "onhold": "On Hold",
+                "on_hold": "On Hold",
                 "closed": "Closed",
                 "processed": "Processed",
                 "active": "Active",

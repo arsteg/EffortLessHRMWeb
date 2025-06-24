@@ -1,9 +1,11 @@
+import { DatePipe } from '@angular/common';
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-step-1',
@@ -22,13 +24,34 @@ export class Step1Component {
   processedUsers: any[] = [];
   status: 'Active' | 'OnHold' | 'Processed' = 'Active';
   @ViewChild('modalTemplate') modalTemplate: TemplateRef<any>;
-
+  columns: TableColumn[] = [
+    {
+      key: 'user',
+      name: 'Employee Name',
+      valueFn: (row) => this.getUser(row.user)
+    },
+    {
+      key: 'date',
+      name: 'Joining Date',
+      valueFn: (row) => this.datePipe.transform(this.selectedPayroll.date, 'mediumDate')
+    }, {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { label: 'Hold', visibility: ActionVisibility.BOTH, icon: 'pause', hideCondition: (row) => row.status !== 'Active'  },
+        { label: 'Unhold', visibility: ActionVisibility.BOTH, icon: 'check', hideCondition: (row) => row.status !== 'OnHold'  },
+        { label: 'Re-Run', visibility: ActionVisibility.BOTH, icon: 'refresh', hideCondition: (row) => row.status !== 'Processed'  }
+      ]
+    }
+  ]
   constructor(
     private payrollService: PayrollService,
     private commonService: CommonService,
     private fb: FormBuilder,
     private toast: ToastrService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private datePipe: DatePipe
   ) {
     this.payrollUserForm = this.fb.group({
       payroll: [''],
@@ -52,6 +75,28 @@ export class Step1Component {
   ngOnInit() {
     this.getAllUsers();
     this.getPayrollById();
+  }
+
+  onAction(event:any){
+    switch(event.action.label){
+      case 'Hold':
+        this.status = 'OnHold';
+        this.selectedRecord = event.row;
+        this.openDialog();
+        break;
+      case 'Unhold':
+        this.status = 'Processed';
+        this.selectedRecord = event.row;
+        this.openDialog();
+        break;
+      case 'Re-Run':
+        this.status = 'Active';
+        this.selectedRecord = event.row;
+        this.openDialog();
+        break;
+      default:
+        break;
+    }
   }
 
   getAllUsers() {
