@@ -8,7 +8,8 @@
         </div>
         <!-- Display validation error -->
         <div *ngIf="salaryDetailsForm.errors?.['exceedsGrossSalary']" class="alert alert-danger">
-            The total yearly amount of salary components exceeds the yearly gross salary ({{ salaryDetailsForm.get('Amount').value | number }}).
+            The total yearly amount of salary components exceeds the yearly gross salary ({{
+            salaryDetailsForm.get('Amount').value | number }}).
         </div>
         <div class="row">
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
@@ -16,7 +17,7 @@
                 <input matInput [matDatepicker]="joiningDatePicker1" (focus)="joiningDatePicker1.open()"
                     formControlName="payrollEffectiveFrom">
                 <mat-datepicker #joiningDatePicker1></mat-datepicker>
-            </mat-form-field>          
+            </mat-form-field>
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>For what frequency would you like to enter the CTC amount?</mat-label>
                 <input matInput type="text" value="Yearly" formControlName="frequencyToEnterCTC" readonly>
@@ -33,7 +34,7 @@
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>Enter Yearly Gross Amount</mat-label>
                 <input matInput type="number" formControlName="Amount" readonly>
-            </mat-form-field>      
+            </mat-form-field>
             <div class="col-md-6 my-2 border-bottom">
                 <mat-label>Is employer part inclusive in salary structure</mat-label>
                 <mat-radio-group formControlName="isEmployerPartInclusiveInSalaryStructure">
@@ -153,18 +154,23 @@
                     <mat-panel-title>Salary Component Fixed Allowance</mat-panel-title>
                 </mat-expansion-panel-header>
                 <div formArrayName="salaryComponentFixedAllowance">
-                    <div *ngFor="let allowance of salaryDetailsForm.get('salaryComponentFixedAllowance')['controls']; let i = index" [formGroupName]="i" class="row align-items-center">
-                        <ng-container *ngIf="salaryDetailsForm.get('CTCTemplate').value === 'manual' || allowance.get('isNew')?.value">
+                    <div *ngFor="let allowance of salaryDetailsForm.get('salaryComponentFixedAllowance')['controls']; let i = index"
+                        [formGroupName]="i" class="row align-items-center">
+                        <ng-container
+                            *ngIf="salaryDetailsForm.get('CTCTemplate').value === 'manual' || allowance.get('isNew')?.value">
                             <mat-form-field appearance="outline" class="col-md-3 my-2">
                                 <mat-label>Fixed Allowance</mat-label>
-                                <mat-select formControlName="fixedAllowance" (selectionChange)="updateLabel(i, $event.value, 'fixedAllowance')">
-                                    <mat-option *ngFor="let item of fixedAllowance" [value]="item._id">
+                                <mat-select formControlName="fixedAllowance"
+                                    (selectionChange)="updateLabel(i, $event.value, 'fixedAllowance')">
+                                    <mat-option *ngFor="let item of fixedAllowance" [value]="item._id"
+                                        [disabled]="isOptionDisabled(item._id, i, fixedAllowances, 'fixedAllowance')">
                                         {{item.label}}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>
                         </ng-container>
-                        <ng-container *ngIf="salaryDetailsForm.get('CTCTemplate').value !== 'manual' && !allowance.get('isNew')?.value">
+                        <ng-container
+                            *ngIf="salaryDetailsForm.get('CTCTemplate').value !== 'manual' && !allowance.get('isNew')?.value">
                             <mat-form-field appearance="outline" class="col-md-3 my-2">
                                 <mat-label>Fixed Allowance</mat-label>
                                 <input matInput type="text" formControlName="fixedAllowanceLabel" readonly>
@@ -172,19 +178,22 @@
                         </ng-container>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Monthly Amount</mat-label>
-                            <input matInput type="number" formControlName="monthlyAmount" (input)="updateYearlyAmount(i, 'salaryComponentFixedAllowance')">
+                            <input matInput type="number" formControlName="monthlyAmount"
+                                (input)="updateYearlyAmount(i, 'salaryComponentFixedAllowance')">
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
                             <input matInput type="number" formControlName="yearlyAmount">
                         </mat-form-field>
                         <div class="col-md-1 my-2">
-                            <button mat-icon-button color="warn" (click)="removeFixedAllowance(i)" type="button" *ngIf="!edit">
+                            <button mat-icon-button color="warn" (click)="removeFixedAllowance(i)" type="button"
+                                *ngIf="!edit">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </div>
                     </div>
-                    <button mat-flat-button color="primary" (click)="addFixedAllowance()" type="button" *ngIf="!edit && addButtons">Add Fixed Allowance</button>
+                    <button mat-flat-button color="primary" (click)="addFixedAllowance()" type="button"
+                        *ngIf="!edit && addButtons">Add Fixed Allowance</button>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -202,45 +211,44 @@
                         </tbody>
                     </table>
                 </div>
-            </mat-expansion-panel>         
+            </mat-expansion-panel>
             <!-- Fixed Deduction -->
             <mat-expansion-panel [expanded]="true">
                 <mat-expansion-panel-header class="header">
                     <mat-panel-title>Salary Component Fixed Deduction</mat-panel-title>
                 </mat-expansion-panel-header>
                 <div formArrayName="salaryComponentFixedDeduction">
-                    <div *ngFor="let deduction of salaryDetailsForm.get('salaryComponentFixedDeduction')['controls']; let i = index" [formGroupName]="i" class="row align-items-center">
-                        <ng-container *ngIf="salaryDetailsForm.get('CTCTemplate').value === 'manual' || deduction.get('isNew')?.value">
-                            <mat-form-field appearance="outline" class="col-md-3 my-2">
-                                <mat-label>Fixed Deduction</mat-label>
-                                <mat-select formControlName="fixedDeduction" (selectionChange)="updateLabel(i, $event.value, 'fixedDeduction')">
-                                    <mat-option *ngFor="let item of fixedDeduction" [value]="item._id">
-                                        {{item.label}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </ng-container>
-                        <ng-container *ngIf="salaryDetailsForm.get('CTCTemplate').value !== 'manual' && !deduction.get('isNew')?.value">
-                            <mat-form-field appearance="outline" class="col-md-3 my-2">
-                                <mat-label>Fixed Deduction</mat-label>
-                                <input matInput type="text" formControlName="fixedDeductionLabel" readonly>
-                            </mat-form-field>
-                        </ng-container>
+                    <h3>Fixed Deductions</h3>
+                    <div *ngFor="let deduction of salaryDetailsForm.get('salaryComponentFixedDeduction')['controls']; let i = index"
+                        [formGroupName]="i" class="row align-items-center">
+                        <mat-form-field appearance="outline" class="col-md-3 my-2">
+                            <mat-label>Fixed Deduction</mat-label>
+                            <mat-select formControlName="fixedDeduction"
+                                (selectionChange)="updateLabel(i, $event.value, 'fixedDeduction')">
+                                <mat-option *ngFor="let item of fixedDeduction" [value]="item._id"
+                                    [disabled]="isOptionDisabled(item._id, i, fixedDeductionArray, 'fixedDeduction')">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Monthly Amount</mat-label>
-                            <input matInput type="number" formControlName="monthlyAmount" (input)="updateYearlyAmount(i, 'salaryComponentFixedDeduction')">
+                            <input matInput type="number" formControlName="monthlyAmount"
+                                (input)="updateYearlyAmount(i, 'salaryComponentFixedDeduction')">
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
                             <input matInput type="number" formControlName="yearlyAmount">
                         </mat-form-field>
                         <div class="col-md-1 my-2">
-                            <button mat-icon-button color="warn" (click)="removeFixedDeduction(i)" type="button" *ngIf="!edit">
+                            <button mat-icon-button color="warn" (click)="removeFixedDeduction(i)" type="button"
+                                *ngIf="!edit">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </div>
                     </div>
-                    <button mat-flat-button color="primary" (click)="addFixedDeduction()" type="button" *ngIf="!edit && addButtons">Add Fixed Deduction</button>
+                    <button mat-flat-button color="primary" (click)="addFixedDeduction()" type="button"
+                        *ngIf="!edit && addButtons">Add Fixed Deduction</button>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -266,38 +274,37 @@
                     <mat-panel-title>Salary Component Variable Allowance</mat-panel-title>
                 </mat-expansion-panel-header>
                 <div formArrayName="salaryComponentVariableAllowance">
-                    <div *ngFor="let allowance of salaryDetailsForm.get('salaryComponentVariableAllowance')['controls']; let i = index" [formGroupName]="i" class="row align-items-center">
-                        <ng-container *ngIf="salaryDetailsForm.get('CTCTemplate').value === 'manual' || allowance.get('isNew')?.value">
-                            <mat-form-field appearance="outline" class="col-md-3 my-2">
-                                <mat-label>Variable Allowance</mat-label>
-                                <mat-select formControlName="variableAllowance" (selectionChange)="updateLabel(i, $event.value, 'variableAllowance')">
-                                    <mat-option *ngFor="let item of variableAllowance" [value]="item._id">
-                                        {{item.label}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </ng-container>
-                        <ng-container *ngIf="salaryDetailsForm.get('CTCTemplate').value !== 'manual' && !allowance.get('isNew')?.value">
-                            <mat-form-field appearance="outline" class="col-md-3 my-2">
-                                <mat-label>Variable Allowance</mat-label>
-                                <input matInput type="text" formControlName="variableAllowanceLabel" readonly>
-                            </mat-form-field>
-                        </ng-container>
+                    <h3>Variable Allowances</h3>
+                    <div *ngFor="let allowance of salaryDetailsForm.get('salaryComponentVariableAllowance')['controls']; let i = index"
+                        [formGroupName]="i" class="row align-items-center">
+                        <mat-form-field appearance="outline" class="col-md-3 my-2">
+                            <mat-label>Variable Allowance</mat-label>
+                            <mat-select formControlName="variableAllowance"
+                                (selectionChange)="updateLabel(i, $event.value, 'variableAllowance')">
+                                <mat-option *ngFor="let item of variableAllowance" [value]="item._id"
+                                    [disabled]="isOptionDisabled(item._id, i, variableAllowanceArray, 'variableAllowance')">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Monthly Amount</mat-label>
-                            <input matInput type="number" formControlName="monthlyAmount" (input)="updateYearlyAmount(i, 'salaryComponentVariableAllowance')">
+                            <input matInput type="number" formControlName="monthlyAmount"
+                                (input)="updateYearlyAmount(i, 'salaryComponentVariableAllowance')">
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
                             <input matInput type="number" formControlName="yearlyAmount">
                         </mat-form-field>
                         <div class="col-md-1 my-2">
-                            <button mat-icon-button color="warn" (click)="removeVariableAllowance(i)" type="button" *ngIf="!edit">
+                            <button mat-icon-button color="warn" (click)="removeVariableAllowance(i)" type="button"
+                                *ngIf="!edit">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </div>
                     </div>
-                    <button mat-flat-button color="primary" (click)="addVariableAllowance()" type="button" *ngIf="!edit && addButtons">Add Variable Allowance</button>
+                    <button mat-flat-button color="primary" (click)="addVariableAllowance()" type="button"
+                        *ngIf="!edit && addButtons">Add Variable Allowance</button>
                 </div>
                 <div *ngIf="edit">
                     <table>
@@ -323,38 +330,37 @@
                     <mat-panel-title>Salary Component Variable Deduction</mat-panel-title>
                 </mat-expansion-panel-header>
                 <div formArrayName="salaryComponentVariableDeduction">
-                    <div *ngFor="let deduction of salaryDetailsForm.get('salaryComponentVariableDeduction')['controls']; let i = index" [formGroupName]="i" class="row align-items-center">
-                        <ng-container *ngIf="salaryDetailsForm.get('CTCTemplate').value === 'manual' || deduction.get('isNew')?.value">
-                            <mat-form-field appearance="outline" class="col-md-3 my-2">
-                                <mat-label>Variable Deduction</mat-label>
-                                <mat-select formControlName="variableDeduction" (selectionChange)="updateLabel(i, $event.value, 'variableDeduction')">
-                                    <mat-option *ngFor="let item of variableDeduction" [value]="item._id">
-                                        {{item.label}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </ng-container>
-                        <ng-container *ngIf="salaryDetailsForm.get('CTCTemplate').value !== 'manual' && !deduction.get('isNew')?.value">
-                            <mat-form-field appearance="outline" class="col-md-3 my-2">
-                                <mat-label>Variable Deduction</mat-label>
-                                <input matInput type="text" formControlName="variableDeductionLabel" readonly>
-                            </mat-form-field>
-                        </ng-container>
+                    <h3>Variable Deductions</h3>
+                    <div *ngFor="let deduction of salaryDetailsForm.get('salaryComponentVariableDeduction')['controls']; let i = index"
+                        [formGroupName]="i" class="row align-items-center">
+                        <mat-form-field appearance="outline" class="col-md-3 my-2">
+                            <mat-label>Variable Deduction</mat-label>
+                            <mat-select formControlName="variableDeduction"
+                                (selectionChange)="updateLabel(i, $event.value, 'variableDeduction')">
+                                <mat-option *ngFor="let item of variableDeduction" [value]="item._id"
+                                    [disabled]="isOptionDisabled(item._id, i, variableDeductionArray, 'variableDeduction')">
+                                    {{item.label}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Monthly Amount</mat-label>
-                            <input matInput type="number" formControlName="monthlyAmount" (input)="updateYearlyAmount(i, 'salaryComponentVariableDeduction')">
+                            <input matInput type="number" formControlName="monthlyAmount"
+                                (input)="updateYearlyAmount(i, 'salaryComponentVariableDeduction')">
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
                             <input matInput type="number" formControlName="yearlyAmount">
                         </mat-form-field>
                         <div class="col-md-1 my-2">
-                            <button mat-icon-button color="warn" (click)="removeVariableDeduction(i)" type="button" *ngIf="!edit">
+                            <button mat-icon-button color="warn" (click)="removeVariableDeduction(i)" type="button"
+                                *ngIf="!edit">
                                 <mat-icon>delete</mat-icon>
                             </button>
                         </div>
                     </div>
-                    <button mat-flat-button color="primary" (click)="addVariableDeduction()" type="button" *ngIf="!edit && addButtons">Add Variable Deduction</button>
+                    <button mat-flat-button color="primary" (click)="addVariableDeduction()" type="button"
+                        *ngIf="!edit && addButtons">Add Variable Deduction</button>
                 </div>
                 <div *ngIf="edit">
                     <table>

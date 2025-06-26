@@ -28,8 +28,6 @@ export class UserListComponent implements OnInit {
   public users: Array<User> = [];
   date = new Date('MMM d, y, h:mm:ss a');
   selectedUser: any;
-  addForm: FormGroup;
-  updateForm: FormGroup;
   firstLetter: string;
   color: string;
   public sortOrder: string = '';
@@ -91,8 +89,10 @@ export class UserListComponent implements OnInit {
       .pipe(filter((event: any) => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
         console.log('Navigation ended:', event.url);
+
         if (event.url === '/home/manage/employees') {
           this.showEmployeeDetails = false;
+          this.fetchUsers();
         } else {
           this.showEmployeeDetails = true;
         }
@@ -101,11 +101,14 @@ export class UserListComponent implements OnInit {
 
   ngOnInit() {
     this.getRoles();
-    this.commonservice.populateUsers().subscribe(result => {
+    this.fetchUsers();
+    this.firstLetter = this.commonservice.firstletter;
+  }
+  fetchUsers() {
+    this.UserService.getUserList().subscribe((result: any) => {
       this.totalRecords = result.results;
       this.usersList = new MatTableDataSource(result && result.data && result.data.data);
-    });
-    this.firstLetter = this.commonservice.firstletter;
+    })
   }
 
   onActionClick(event: any) {
@@ -124,6 +127,7 @@ export class UserListComponent implements OnInit {
     const confirmPassword = group.get('passwordConfirm')?.value;
     return password === confirmPassword ? null : { notMatching: true };
   }
+
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.usersList.data, event.previousIndex, event.currentIndex);
     this.usersList.data = [...this.usersList.data];
@@ -143,16 +147,19 @@ export class UserListComponent implements OnInit {
   }
 
   addUser() {
-    // if (this.addForm.valid) {
-    this.UserService.addUser(this.userForm.value).subscribe(result => {
-      const users = result['data'].User;
-      this.usersList.data = [...this.usersList.data, users];
-      this.toastrrr.success('New User Added', 'Successfully Added!');
-    }, err => {
-      this.toastrrr.error('User with this Email already Exists', 'Duplicate Email!')
-    });
-    this.userForm.reset();
-
+    if (this.userForm.valid) {
+      this.UserService.addUser(this.userForm.value).subscribe(result => {
+        const users = result['data'].User;
+        this.usersList.data = [...this.usersList.data, users];
+        this.toastrrr.success('New User Added', 'Successfully Added!');
+      }, err => {
+        this.toastrrr.error('User with this Email already Exists', 'Duplicate Email!')
+      });
+      this.userForm.reset();
+    }
+    else {
+      this.userForm.markAllAsTouched();
+    }
   }
 
   deleteUser() {
@@ -165,17 +172,13 @@ export class UserListComponent implements OnInit {
       })
   }
 
-  clearForm() {
-    this.addForm.reset();
-  }
-
   toggleView(data: any) {
     this.isEdit = true;
     this.UserService.setData(data, this.isEdit);
 
     const empCode = data.appointment[0]?.empCode;
     if (empCode) {
-      this.router.navigate([empCode, 'employee-settings', 'employee-profile'], { relativeTo: this.route, state: {data: {empName: data.firstName+ ' ' +data.lastName}} });
+      this.router.navigate([empCode, 'employee-settings', 'employee-profile'], { relativeTo: this.route, state: { data: { empName: data.firstName + ' ' + data.lastName } } });
     } else {
       console.error('empCode is not defined');
     }
