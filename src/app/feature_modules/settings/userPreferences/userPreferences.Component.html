@@ -8,7 +8,7 @@
       <form class="border p-4 rounded bg-white" (ngSubmit)="onSubmit()" *ngIf="explicitPreferences | async as explicitPreferences; else noPreferences">
         <div class="row">
             <div *ngIf="view === 'admin'">
-                <mat-form-field appearance="fill" class="w-100">
+                <mat-form-field class="w-100">
                     <mat-label>Select Users</mat-label>
                     <mat-select 
                         [(ngModel)]="selectedUsersByAdmin"

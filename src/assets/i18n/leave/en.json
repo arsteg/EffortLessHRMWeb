@@ -212,6 +212,7 @@
             "rejected": "Rejected",
             "cancelled": "Cancelled"
         },
+        "status_pending": "Level 1 Approval Pending",
         "employeeName": "Employee Name",
         "date": "Date",
         "startTime": "Start Time",

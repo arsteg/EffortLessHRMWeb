@@ -315,32 +315,32 @@ export class AttendanceRecordsComponent {
       };
     });
 
-    // this.attendanceService.getShiftByUser(user.name).subscribe((res: any) => {
-    //   const fullHours = parseInt(res.data.minHoursPerDayToGetCreditForFullDay.split(":")[0], 10);
-    //   const halfHours = parseInt(res.data.minHoursPerDayToGetCreditforHalfDay.split(":")[0], 10);
-    //   this.fullDayDuration = fullHours * 60;
-    //   this.halfDayDuration = halfHours * 60;
+    this.attendanceService.getShiftByUser(user.name).subscribe((res: any) => {
+      const fullHours = parseInt(res.data.minHoursPerDayToGetCreditForFullDay.split(":")[0], 10);
+      const halfHours = parseInt(res.data.minHoursPerDayToGetCreditforHalfDay.split(":")[0], 10);
+      this.fullDayDuration = fullHours * 60;
+      this.halfDayDuration = halfHours * 60;
 
-    //   // Format the full day time based on your desired format
-    //   const fullDayTime = this.formatFullDayTime(fullHours, 0);  // Example format: 08:00:00
-    //   const halfDayTime = this.formatFullDayTime(halfHours, 0);
-    //   const daysInMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
-    //   // Create the selectedAttendanceRecord object
-    //   this.selectedAttendanceRecord = {
-    //     user: user.name,
-    //     month: this.selectedMonth,
-    //     year: this.selectedYear,
-    //     records: attendanceRecords,
-    //     name: this.getUser(user.name),
-    //     shiftFullDayTime: fullDayTime,
-    //     shiftHalfDayTime: halfDayTime,
-    //     monthDays: daysInMonth
-    //   };
+      // Format the full day time based on your desired format
+      const fullDayTime = this.formatFullDayTime(fullHours, 0);  // Example format: 08:00:00
+      const halfDayTime = this.formatFullDayTime(halfHours, 0);
+      const daysInMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
+      // Create the selectedAttendanceRecord object
+      this.selectedAttendanceRecord = {
+        user: user.name,
+        month: this.selectedMonth,
+        year: this.selectedYear,
+        records: attendanceRecords,
+        name: this.getUser(user.name),
+        shiftFullDayTime: fullDayTime,
+        shiftHalfDayTime: halfDayTime,
+        monthDays: daysInMonth
+      };
 
-    //   this.dialog.open(EmployeeAttendanceHistoryComponent, {
-    //     data: this.selectedAttendanceRecord
-    //   });
-    // });
+      this.dialog.open(EmployeeAttendanceHistoryComponent, {
+        data: this.selectedAttendanceRecord
+      });
+    });
   }
 
   // Helper function to format full day time (optional, customize as needed)

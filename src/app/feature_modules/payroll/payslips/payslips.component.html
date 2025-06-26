@@ -1,47 +1,7 @@
-<div class="main-content" *ngIf="!showPayslipDetail">
-  <div class="container-fluid">
-    <div class="d-flex align-items-center px-2 py-1">
-      <p class="mb-0 me-auto" translate>payroll.title</p>
-      <div class="d-flex align-items-center">
-        <span class="bi bi-search searchIcon"></span>
-        <input class="form-control search" type="text" [placeholder]="'payroll.search_placeholder' | translate"
-          [(ngModel)]="searchText" name="searchText" aria-label="default input example">
-        <button class="addBtn ms-2" mat-flat-button (click)="refreshData()">{{'payroll.refresh' | translate}}</button>
-      </div>
-    </div>
-    <table mat-table [dataSource]="payslips" class="mat-elevation-z8">
-      <ng-container matColumnDef="PayrollUser">
-        <th mat-header-cell *matHeaderCellDef translate>payroll.employee</th>
-        <td mat-cell *matCellDef="let element"> {{element?.PayrollUser?.user?.firstName}}&nbsp;{{element?.PayrollUser?.user?.lastName}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="period">
-        <th mat-header-cell *matHeaderCellDef translate>payroll.period</th>
-        <td mat-cell *matCellDef="let element"> {{element?.PayrollUser?.payroll?.month}} - {{element?.PayrollUser?.payroll?.year}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="payroll">
-        <th mat-header-cell *matHeaderCellDef translate>payroll.generated_on</th>
-        <td mat-cell *matCellDef="let element"> {{element?.PayrollUser?.payroll?.date | date: 'mediumDate'}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef translate>payroll.status</th>
-        <td mat-cell *matCellDef="let data"> {{data?.PayrollUser?.payroll?.status}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef translate>payroll.actions</th>
-        <td mat-cell *matCellDef="let element">
-          <button mat-flat-button class="addBtn" (click)="selectedRecord = element; viewPayslip()"
-            translate>{{'payroll.show_payslip' | translate}}</button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: ['PayrollUser', 'period', 'payroll', 'status', 'actions'];"></tr>
-    </table>
-  </div>
+<div class="" *ngIf="!showPayslipDetail">
+  <hrm-table [data]="payslips" [columns]="columns" [showSearch]="true"
+    (actionClicked)="onActionClick($event)"></hrm-table>
 </div>
 
-<app-generate-payslips *ngIf="showPayslipDetail" [payslip]="selectedRecord" (close)="closePayslipDetail()"></app-generate-payslips>
+<app-generate-payslips *ngIf="showPayslipDetail" [payslip]="selectedRecord"
+  (close)="closePayslipDetail()"></app-generate-payslips>
