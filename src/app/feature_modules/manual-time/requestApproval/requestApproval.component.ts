@@ -10,12 +10,14 @@ import { NotificationService } from 'src/app/_services/notification.service';
 import { ManualTimeRequestService } from 'src/app/_services/manualTimeRequest.Service';
 import { FormsModule } from '@angular/forms';
 import { CommonService } from 'src/app/_services/common.Service';
-
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-request-manual-time',
   templateUrl: './requestApproval.component.html',
-  styleUrls: ['./requestApproval.component.css']
+  styleUrls: ['./requestApproval.component.css'],
+  providers: [DatePipe]
 })
 export class RequestApprovalComponent implements OnInit {
   manualTimeRequests: manualTimeRequest[] = [];
@@ -33,12 +35,67 @@ export class RequestApprovalComponent implements OnInit {
   public sortOrder: string = '';
   sortColumn: string = '';
   selectedMember: any = null;
+  recordsPerPage: number = 10;
+  totalRecords: number = 0;
+  currentPage: number = 1;
+
+  columns: TableColumn[] = [
+    {
+      key: 'date',
+      name: 'Date',
+      valueFn: (row: any) => row.date ? this.datePipe.transform(row.date, 'mediumDate') : row.date
+    },
+    {
+      key: 'user',
+      name: 'Requested By',
+      valueFn: (row: any) => row.user?.firstName ? `${row.user.firstName} ${row.user.lastName}` : 'N/A'
+    },
+    {
+      key: 'project',
+      name: 'Project',
+      valueFn: (row: any) => row.project?.projectName?.toUpperCase()
+    },
+    {
+      key: 'fromDate',
+      name: 'From Date',
+      valueFn: (row: any) => row.fromDate ? this.datePipe.transform(row.fromDate, 'mediumDate') : row.fromDate
+    },
+    {
+      key: 'toDate',
+      name: 'To Date',
+      valueFn: (row: any) => row.toDate ? this.datePipe.transform(row.toDate, 'mediumDate') : row.toDate
+    },
+    {
+      key: 'reason',
+      name: 'Reason'
+    },
+    {
+      key: 'status',
+      name: 'Status',
+      isHtml: true,
+      icons: [
+        { value: 'approved', name: 'check', class: 'text-success' },
+        { value: 'rejected', name: 'close', class: 'text-danger' },
+        { value: 'pending', name: 'schedule', class: 'text-primary' }
+      ]
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { label: 'Approve', visibility: ActionVisibility.LABEL, icon: '', hideCondition: (row: any) => row.status !== 'pending'  },
+        { label: 'Reject', visibility: ActionVisibility.LABEL, icon: '', hideCondition: (row: any) => row.status !== 'pending' }
+      ]
+    }
+  ];
 
   constructor(private modalService: NgbModal, private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
     private timeLogService: TimeLogService,
     private notifyService: NotificationService,
     private manualTimeRequestService: ManualTimeRequestService,
+    public datePipe: DatePipe,
     public commonservice: CommonService) {
   }
 
@@ -55,7 +112,7 @@ export class RequestApprovalComponent implements OnInit {
       this.selectedMember = null;
       this.manualTimeRequestFiltered = this.manualTimeRequests;
     } else {
-      this.selectedMember = JSON.parse(member.value);
+      this.selectedMember = member?.value;
       this.filterManualTimeRequests();
     }
   }
@@ -64,6 +121,7 @@ export class RequestApprovalComponent implements OnInit {
     this.manualTimeRequestService.getManualTimeRequestsForApprovalByUser(this.id).pipe(first())
       .subscribe((res: any) => {
         this.manualTimeRequests.length = 0;
+        this.totalRecords = res.totalRecords;
         res.data.forEach(r => {
           this.manualTimeRequests.push(r);
         });
@@ -76,10 +134,14 @@ export class RequestApprovalComponent implements OnInit {
 
   filterManualTimeRequests() {
     if (this.selectedMember) {
-      this.manualTimeRequestFiltered = this.manualTimeRequests.filter(req => req.user.email === this.selectedMember.email);
+      //this.manualTimeRequestFiltered = this.manualTimeRequests.filter(req => req.user.email === this.selectedMember.email);
+      this.manualTimeRequestFiltered = this.manualTimeRequests.filter(
+        req => req.user && req.user._id === this.selectedMember
+      );
     } else {
       this.manualTimeRequestFiltered = this.manualTimeRequests;
     }
+    this.totalRecords = this.manualTimeRequestFiltered.length;
   }
 
 
@@ -190,5 +252,33 @@ export class RequestApprovalComponent implements OnInit {
       : '';
   }
 
+  onActionClick(event: any) {
+    this.selectedRequest = event.row;
+    switch (event.action.label) {
+      case 'Approve':
+        this.selectedRequest=event.row;
+        this.approveRequest();
+        break;
+      case 'Reject':
+        this.selectedRequest=event.row;
+        this.rejectRequest();
+        break;
+    }
+  }
+
+  onPageChange(page: any) {
+    this.currentPage = page.pageIndex + 1;
+    this.recordsPerPage = page.pageSize;
+    this.fetchManualTimeRequests();
+  }
+
+  onSearchChange(searchText: string) {
+    this.manualTimeRequestFiltered = this.manualTimeRequests.filter(row => {
+      return this.columns.some(col => {
+        const value = col.valueFn ? col.valueFn(row) : row[col.key];
+        return value?.toString().toLowerCase().includes(searchText.toLowerCase());
+      });
+    });
+  }
 
 }

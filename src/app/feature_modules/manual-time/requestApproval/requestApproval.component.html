@@ -1,101 +1,43 @@
 <div class="main-content">
     <div class="container-fluid">
-        <div class="tableContainer bg-white py-2 mx-2">
-            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <p class="mb-0">({{manualTimeRequestFiltered?.length}}) Records Found</p>
-                <div>
-                    <span class="d-flex">
-                        <label for="member" class="pt-2 pe-3">Member:</label>
-                        <select id="member" name="member" class="form-control" aria-label=".form-select-sm example"
-                            #member (change)="onMemberSelectionChange(member)">
-                            <option value="">All Members</option>
-                            <option *ngFor="let m of members" value="{{m|json}}">{{m.name | titlecase}}</option>
-                        </select>
-                    </span>
+        <div class="py-2 mx-2">
+            <div>
+                <div class="position-relative d-none d-md-block">
+                    <div class="d-flex justify-content-end position-absolute end-0">
+                        <ng-container *ngTemplateOutlet="header"></ng-container>
+                    </div>
                 </div>
-                <div class="me-2">
 
-                    <button mat-flat-button id="btnRefresh" (click)="fetchManualTimeRequests()"
-                        class="bi bi-arrow-repeat header-icons contentHeading"></button>
-                </div>
-                <div class="d-flex align-items-center h-25">
-                    <span class="bi bi-search searchIcon"></span>
-
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-                </div>
+                <ng-template #header>
+                    <div class="">
+                        <mat-form-field>
+                            <mat-label>Members</mat-label>
+                            <mat-select id="member" name="member" (selectionChange)="onMemberSelectionChange($event)">
+                                <mat-option value="">All Members</mat-option>
+                                <mat-option *ngFor="let member of members" [value]="member.id">
+                                    {{member.name | titlecase}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="ms-2 text-end">
+                        <button mat-icon-button id="btnRefresh" (click)="fetchManualTimeRequests()" matTooltip="Refresh">
+                            <mat-icon>refresh</mat-icon>
+                        </button>
+                    </div>
+                </ng-template>
+                <hrm-table 
+                    [data]="manualTimeRequestFiltered" 
+                    [columns]="columns" 
+                    (actionClicked)="onActionClick($event)" 
+                    [isServerSide]="false"
+                    [showSearch]="true" 
+                    [totalItems]="totalRecords" 
+                    [pageSize]="recordsPerPage" 
+                    (pageChanged)="onPageChange($event)"
+                    (searchChanged)="onSearchChange($event)">
+                </hrm-table>
             </div>
-            <table class=" mt-2">
-                <thead>
-                    <tr>
-                        <th class="ps-2" [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}"
-                            data-name="date" (click)="sortData('date')">Date&nbsp;
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th class="text-center" [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}" data-name="user"
-                            (click)="sortData('user')">Requested by&nbsp;
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}" data-name="project"
-                            (click)="sortData('project')">Project&nbsp;
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}" data-name="fromDate"
-                            (click)="sortData('fromDate')">From Date&nbsp;
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="manualTimeRequestFiltered" data-order="{{ sortOrder }}" data-name="toDate"
-                            (click)="sortData('toDate')">To Date&nbsp;
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th>Reason</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let record of manualTimeRequestFiltered | search: searchText ">
-                        <td>{{record.date | date: 'short'}}</td>
-                        <td class="text-center">
-                            <span *ngIf="record?.user?.firstName == null">N/A</span>
-                            <span *ngIf="record?.user?.firstName != null" class="letter text-light d-lg-inline-block"
-                                [tooltip]="(record?.user?.firstName| titlecase) + (' ') +( record?.user?.lastName | titlecase)"
-                                [style.background-color]="commonservice.getRandomColor(record?.user?.firstName)">
-                                {{record?.user?.firstName.charAt(0) | uppercase}}
-                            </span>
-                        </td>
-                        <td><span>{{record?.project?.projectName | uppercase}}</span> </td>
-                        <td>{{ record.fromDate | date: 'short'}}</td>
-                        <td>{{ record.toDate | date: 'short'}}</td>
-                        <td class="w-25">{{ record.reason}}</td>
-                        <td> <span>
-                                <i *ngIf="record.status=='approved'" class="bi bi-hand-thumbs-up-fill"
-                                    style="color:green" [title]="record.status"></i>
-                                <i *ngIf="record.status=='rejected'" class="bi bi-hand-thumbs-down-fill"
-                                    style="color:red" [title]="record.status"></i>
-                                <i *ngIf="record.status=='pending'" class="fa fa-clock-o" style="color:blue"
-                                    [title]="record.status"></i>
-                            </span></td>
-                        <td>
-                            <div class="d-flex">
-                                <label title="Approve"><i *ngIf="record.status=='pending'"
-                                        class="bi bi-hand-thumbs-up-fill" style="color:green;margin:5px;"
-                                        (click)="selectedRequest = record;approveRequest()"></i></label>
-                                <span title="Reject"><i *ngIf="record.status=='pending'"
-                                        class="bi bi-hand-thumbs-down-fill" style="color:red;margin:5px"
-                                        (click)="selectedRequest = record;rejectRequest()"></i></span>
-                            </div>
-                        </td>
-
-                    </tr>
-                </tbody>
-            </table>
-
         </div>
     </div>
 </div>
