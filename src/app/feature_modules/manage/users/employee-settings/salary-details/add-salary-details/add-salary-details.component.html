@@ -186,7 +186,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
-                            <input matInput type="number" formControlName="yearlyAmount">
+                            <input matInput type="number" formControlName="yearlyAmount" readonly>
                             <mat-error *ngIf="allowance.get('yearlyAmount')?.hasError('negativeValue')">
                                 Yearly amount cannot be negative.
                             </mat-error>
@@ -247,7 +247,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
-                            <input matInput type="number" formControlName="yearlyAmount">
+                            <input matInput type="number" formControlName="yearlyAmount" readonly>
                             <mat-error *ngIf="deduction.get('yearlyAmount')?.hasError('negativeValue')">
                                 Yearly amount cannot be negative.
                             </mat-error>
@@ -309,7 +309,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
-                            <input matInput type="number" formControlName="yearlyAmount">
+                            <input matInput type="number" formControlName="yearlyAmount" readonly>
                             <mat-error *ngIf="allowance.get('yearlyAmount')?.hasError('negativeValue')">
                                 Yearly amount cannot be negative.
                             </mat-error>
@@ -371,7 +371,7 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
-                            <input matInput type="number" formControlName="yearlyAmount">
+                            <input matInput type="number" formControlName="yearlyAmount" readonly>
                             <mat-error *ngIf="deduction.get('yearlyAmount')?.hasError('negativeValue')">
                                 Yearly amount cannot be negative.
                             </mat-error>
