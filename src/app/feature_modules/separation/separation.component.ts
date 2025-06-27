@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./separation.component.css']
 })
 export class SeparationComponent implements OnInit {
-  selectedTab: number = 1;
+  selectedTab: number = 0;
   view = localStorage.getItem('adminView');
 
   constructor(
