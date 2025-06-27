@@ -10,6 +10,7 @@ import { UserService } from 'src/app/_services/users.service';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility } from 'src/app/models/table-column';
 interface ResignationStatus {
   Pending: string,
   Completed: string,
@@ -44,6 +45,168 @@ export class ResignationComponent implements OnInit {
   selectedStatus: string;
   changedStatus: string;
   resignationStatuses: ResignationStatus;
+  totalRecords: number;
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  columns = [
+    {
+      key: 'user',
+      name: 'User',
+      valueFn: (row: any) => this.getMatchingUser(row?.user)
+    },
+    {
+      key: 'resignation_date',
+      name: 'Resignation Date',
+      valueFn: (row: any) => new Date(row.resignation_date).toLocaleDateString('en-US')
+    },
+    {
+      key: 'last_working_day',
+      name: 'Last Working Day',
+      valueFn: (row: any) => new Date(row.last_working_day).toLocaleDateString('en-US')
+    },
+    {
+      key: 'notice_period',
+      name: 'Notice Period',
+      valueFn: (row: any) => row.notice_period
+    },
+    {
+      key: 'resignation_reason',
+      name: 'Resignation Reason',
+      valueFn: (row: any) => row.resignation_reason
+    },
+    {
+      key: 'exit_interview_date',
+      name: 'Exit Interview Date',
+      valueFn: (row: any) => row.exit_interview_date ? new Date(row.exit_interview_date).toLocaleDateString('en-US') : ''
+    },
+    {
+      key: 'handover_complete',
+      name: 'Handover Complete',
+      valueFn: (row: any) => row.handover_complete ? 'Yes' : 'No'
+    },
+    {
+      key: 'company_property_returned',
+      name: 'Company Property Returned',
+      valueFn: (row: any) => row.company_property_returned ? 'Yes' : 'No'
+    },
+    {
+      key: 'final_pay_processed',
+      name: 'Final Pay Processed',
+      valueFn: (row: any) => row.final_pay_processed ? 'Yes' : 'No'
+    },
+    {
+      key: 'exit_feedback',
+      name: 'Exit Feedback',
+      valueFn: (row: any) => row.exit_feedback || ''
+    },
+    {
+      key: 'resignation_status',
+      name: 'Resignation Status',
+      valueFn: (row: any) => row.resignation_status
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        {
+          label: 'Edit',
+          visibility: ActionVisibility.LABEL,
+          icon: 'edit',
+          hideCondition: (row: any) => row.resignation_status !== this.resignationStatuses.Pending
+        },
+        {
+          label: 'Delete',
+          visibility: ActionVisibility.LABEL,
+          icon: 'delete',
+          hideCondition: (row: any) => row.resignation_status !== this.resignationStatuses.Pending
+        }
+      ]
+    }
+  ];
+
+  adminColumns = [
+    {
+      key: 'user',
+      name: 'User',
+      valueFn: (row: any) => this.getMatchingUser(row?.user)
+    },
+    {
+      key: 'resignation_date',
+      name: 'Resignation Date',
+      valueFn: (row: any) => new Date(row.resignation_date).toLocaleDateString('en-US')
+    },
+    {
+      key: 'last_working_day',
+      name: 'Last Working Day',
+      valueFn: (row: any) => new Date(row.last_working_day).toLocaleDateString('en-US')
+    },
+    {
+      key: 'notice_period',
+      name: 'Notice Period',
+      valueFn: (row: any) => row.notice_period
+    },
+    {
+      key: 'resignation_reason',
+      name: 'Resignation Reason',
+      valueFn: (row: any) => row.resignation_reason
+    },
+    {
+      key: 'exit_interview_date',
+      name: 'Exit Interview Date',
+      valueFn: (row: any) => row.exit_interview_date ? new Date(row.exit_interview_date).toLocaleDateString('en-US') : ''
+    },
+    {
+      key: 'handover_complete',
+      name: 'Handover Complete',
+      valueFn: (row: any) => row.handover_complete ? 'Yes' : 'No'
+    },
+    {
+      key: 'company_property_returned',
+      name: 'Company Property Returned',
+      valueFn: (row: any) => row.company_property_returned ? 'Yes' : 'No'
+    },
+    {
+      key: 'final_pay_processed',
+      name: 'Final Pay Processed',
+      valueFn: (row: any) => row.final_pay_processed ? 'Yes' : 'No'
+    },
+    {
+      key: 'exit_feedback',
+      name: 'Exit Feedback',
+      valueFn: (row: any) => row.exit_feedback || ''
+    },
+    {
+      key: 'resignation_status',
+      name: 'Resignation Status',
+      valueFn: (row: any) => row.resignation_status
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        {
+          label: 'Completed',
+          visibility: ActionVisibility.LABEL,
+          icon: 'check_circle',
+          //hideCondition: (row: any) => (row.resignation_status === 'Completed' || row.resignation_status === 'Approved')
+        },
+        {
+          label: 'Appealed',
+          visibility: ActionVisibility.LABEL,
+          icon: 'hourglass_empty',
+          //hideCondition: (row: any) => (row.resignation_status === 'Completed' || row.resignation_status === 'Appealed' || row.resignation_status === 'Approved')
+        },
+        {
+          label: 'Approved',
+          visibility: ActionVisibility.LABEL,
+          icon: 'done',
+          //hideCondition: (row: any) => (row.resignation_status !== 'Pending' || row.resignation_status === 'Completed')
+        }
+      ]
+    }
+  ];
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
     private separationService: SeparationService,
@@ -200,11 +363,13 @@ export class ResignationComponent implements OnInit {
     if (this.view === 'admin'){
       this.separationService.getResignationsByCompany().subscribe((res: any)=>{
         this.allResignations = res.data;
+        this.totalRecords = this.allResignations.length;
       })
     }
     if (this.view === 'user') {
       this.separationService.getResignationsByUserId(this.currentUser.id).subscribe((res: any) => {
         this.resignationRecords=res.data;
+        this.totalRecords = this.resignationRecords.length;
         // this.dataSource.data = this.resignationRecords;
       });
     }    
@@ -265,4 +430,29 @@ export class ResignationComponent implements OnInit {
     });
   }
 
+  onActionClick(event: any) {
+    const { action, row } = event;
+    this.selectedRecord = row;
+    if (action.label === 'Edit') {
+      this.openDialog(row);
+    } else if (action.label === 'Delete') {
+      this.deleteDialog(row._id);
+    } else if (['Completed', 'Appealed', 'Approved'].includes(action.label)) {
+      this.selectedStatus = action.label;
+      //this.updateStatusResignation = action.label;
+      //this.changedStatus = action.label.toLowerCase() as ResignationStatus;
+      this.openUpdateStatusDialog();
+    }
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+    this.getResignationByUser();
+  }
+
+  onSearchChange(searchText: string) {
+    this.currentPage = 1;
+    this.getResignationByUser();
+  }
 }
