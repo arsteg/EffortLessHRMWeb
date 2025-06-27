@@ -180,10 +180,16 @@
                             <mat-label>Monthly Amount</mat-label>
                             <input matInput type="number" formControlName="monthlyAmount"
                                 (input)="updateYearlyAmount(i, 'salaryComponentFixedAllowance')">
+                            <mat-error *ngIf="allowance.get('monthlyAmount')?.hasError('negativeValue')">
+                                Monthly amount cannot be negative.
+                            </mat-error>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
                             <input matInput type="number" formControlName="yearlyAmount">
+                            <mat-error *ngIf="allowance.get('yearlyAmount')?.hasError('negativeValue')">
+                                Yearly amount cannot be negative.
+                            </mat-error>
                         </mat-form-field>
                         <div class="col-md-1 my-2">
                             <button mat-icon-button color="warn" (click)="removeFixedAllowance(i)" type="button"
@@ -235,10 +241,16 @@
                             <mat-label>Monthly Amount</mat-label>
                             <input matInput type="number" formControlName="monthlyAmount"
                                 (input)="updateYearlyAmount(i, 'salaryComponentFixedDeduction')">
+                            <mat-error *ngIf="deduction.get('monthlyAmount')?.hasError('negativeValue')">
+                                Monthly amount cannot be negative.
+                            </mat-error>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
                             <input matInput type="number" formControlName="yearlyAmount">
+                            <mat-error *ngIf="deduction.get('yearlyAmount')?.hasError('negativeValue')">
+                                Yearly amount cannot be negative.
+                            </mat-error>
                         </mat-form-field>
                         <div class="col-md-1 my-2">
                             <button mat-icon-button color="warn" (click)="removeFixedDeduction(i)" type="button"
@@ -291,10 +303,16 @@
                             <mat-label>Monthly Amount</mat-label>
                             <input matInput type="number" formControlName="monthlyAmount"
                                 (input)="updateYearlyAmount(i, 'salaryComponentVariableAllowance')">
+                            <mat-error *ngIf="allowance.get('monthlyAmount')?.hasError('negativeValue')">
+                                Monthly amount cannot be negative.
+                            </mat-error>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
                             <input matInput type="number" formControlName="yearlyAmount">
+                            <mat-error *ngIf="allowance.get('yearlyAmount')?.hasError('negativeValue')">
+                                Yearly amount cannot be negative.
+                            </mat-error>
                         </mat-form-field>
                         <div class="col-md-1 my-2">
                             <button mat-icon-button color="warn" (click)="removeVariableAllowance(i)" type="button"
@@ -347,10 +365,16 @@
                             <mat-label>Monthly Amount</mat-label>
                             <input matInput type="number" formControlName="monthlyAmount"
                                 (input)="updateYearlyAmount(i, 'salaryComponentVariableDeduction')">
+                            <mat-error *ngIf="deduction.get('monthlyAmount')?.hasError('negativeValue')">
+                                Monthly amount cannot be negative.
+                            </mat-error>
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
                             <input matInput type="number" formControlName="yearlyAmount">
+                            <mat-error *ngIf="deduction.get('yearlyAmount')?.hasError('negativeValue')">
+                                Yearly amount cannot be negative.
+                            </mat-error>
                         </mat-form-field>
                         <div class="col-md-1 my-2">
                             <button mat-icon-button color="warn" (click)="removeVariableDeduction(i)" type="button"

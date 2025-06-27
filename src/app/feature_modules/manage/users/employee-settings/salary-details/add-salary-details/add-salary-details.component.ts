@@ -37,6 +37,13 @@ export class AddSalaryDetailsComponent {
   view = localStorage.getItem('view');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
+   private noNegativeValues(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isNegative = control.value < 0;
+      return isNegative ? { 'negativeValue': { value: control.value } } : null;
+    };
+  }
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -283,16 +290,24 @@ export class AddSalaryDetailsComponent {
     const array = this.salaryDetailsForm.get(formArrayName) as FormArray;
     const control = array.at(index);
     const monthly = control.get('monthlyAmount').value;
-    control.patchValue({ yearlyAmount: monthly * 12 });
+
+    // Ensure monthly is not negative before calculating yearly
+    if (monthly >= 0) {
+      control.patchValue({ yearlyAmount: monthly * 12 });
+    } else {
+      // Optionally, set yearlyAmount to 0 or handle the error
+      control.patchValue({ yearlyAmount: 0 });
+    }
     this.CalculateTotalAmount();
   }
+
 
   addFixedAllowance(): void {
     const allowanceGroup = this.fb.group({
       fixedAllowanceLabel: [''],
       fixedAllowance: ['', Validators.required],
-      monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required],
+      monthlyAmount: [0, [Validators.required, this.noNegativeValues()]], // Add custom validator here
+      yearlyAmount: [0, [Validators.required, this.noNegativeValues()]],
       isNew: [true]
     });
     this.fixedAllowances.push(allowanceGroup);
@@ -306,8 +321,8 @@ export class AddSalaryDetailsComponent {
     const allowanceGroup = this.fb.group({
       fixedDeduction: ['', Validators.required],
       fixedDeductionLabel: [''],
-      monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required],
+      monthlyAmount: [0, [Validators.required, this.noNegativeValues()]], // Add custom validator here
+      yearlyAmount: [0, [Validators.required, this.noNegativeValues()]],
       isNew: [true]
     });
     this.fixedDeductionArray.push(allowanceGroup);
@@ -321,8 +336,8 @@ export class AddSalaryDetailsComponent {
     const allowanceGroup = this.fb.group({
       variableAllowance: ['', Validators.required],
       variableAllowanceLabel: [''],
-      monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required],
+      monthlyAmount: [0, [Validators.required, this.noNegativeValues()]], // Add custom validator here
+      yearlyAmount: [0, [Validators.required, this.noNegativeValues()]],
       isNew: [true]
     });
     this.variableAllowanceArray.push(allowanceGroup);
@@ -336,8 +351,8 @@ export class AddSalaryDetailsComponent {
     const allowanceGroup = this.fb.group({
       variableDeduction: ['', Validators.required],
       variableDeductionLabel: [''],
-      monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required],
+      monthlyAmount: [0, [Validators.required, this.noNegativeValues()]], // Add custom validator here
+      yearlyAmount: [0, [Validators.required, this.noNegativeValues()]],
       isNew: [true]
     });
     this.variableDeductionArray.push(allowanceGroup);
