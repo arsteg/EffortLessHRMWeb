@@ -1,9 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { TaxationService } from 'src/app/_services/taxation.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
@@ -24,6 +25,18 @@ export class TaxSectionComponent {
   currentPage: number = 1;
   sections: any[];
   public sortOrder: string = '';
+  columns: TableColumn[] = [
+    {
+      key: 'section', name: 'Section'
+    },
+    {
+      key: 'action', name: 'Action', isAction: true, options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: 'delete-btn' },
+      ]
+    }
+  ];
+  dialogRef!: MatDialogRef<any>;
 
   constructor(private modalService: NgbModal,
     private taxService: TaxationService,
@@ -41,22 +54,27 @@ export class TaxSectionComponent {
     this.getAllsections();
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
+  onActionClick(event: any, modal: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.edit = true;
+        this.selectedRecord = event.row;
+        this.setFormValues(event.row);
+        this.open(modal);
+        break;
+      case 'Delete':
+        this.deleteDialog(event.row._id);
+        break;
     }
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef = this.dialog.open(content, {
+      width: '500px'
     });
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.taxSectionForm.reset();
+    })
   }
 
   onSubmit() {
@@ -73,13 +91,10 @@ export class TaxSectionComponent {
 
     if (!this.isEdit) {
       this.taxService.addTaxSection(formValue).subscribe((res: any) => {
-        this.sections.push(res.data);
-        this.taxSectionForm.reset({
-          section: '',
-          isHRA: false,
-          maximumAmount: 0
-        });
+        this.dialogRef.close();
+        
         this.toast.success('Tax section added successfully');
+        this.getAllsections();
       },
         err => {
           this.toast.error('Tax Section Can not be Created', 'Error');

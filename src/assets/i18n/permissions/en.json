@@ -39,6 +39,8 @@
       "add": "Add",
       "update": "Update",
       "cancel": "Cancel",
-      "none": "None"
+      "none": "None",
+      "add_user_role_alert":"User role added successfully",
+      "update_user_role":"User role updated successfully"
     }
   }

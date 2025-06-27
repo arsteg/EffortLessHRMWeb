@@ -1,4 +1,7 @@
-<h2 mat-dialog-title>{{isEdit ? ('permissions.edit_user_role' | translate) : ('permissions.add_user_role' | translate)}}</h2>
+<div class="d-flex justify-content-between p-1">
+    <h4 mat-dialog-title>{{isEdit ? ('permissions.edit_user_role' | translate) : ('permissions.add_user_role' | translate)}}</h4>
+    <button type="button" mat-dialog-close mat-icon-button><mat-icon>close</mat-icon></button>
+</div>
 <mat-dialog-content>
   <form [formGroup]="userRoleForm">
     <mat-form-field appearance="outline" class="w-100">
@@ -23,11 +26,12 @@
         {{'permissions.role_required' | translate}}
       </mat-error>
     </mat-form-field>
+
+    <div class="d-flex justify-content-between mt-3">
+        <button mat-flat-button mat-dialog-close>Cancel</button>
+        <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="userRoleForm.invalid">
+          {{isEdit ? ('Update' | translate) : ('Add' | translate)}}
+        </button>
+    </div>
   </form>
 </mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">{{'cancel' | translate}}</button>
-  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="userRoleForm.invalid">
-    {{isEdit ? ('update' | translate) : ('add' | translate)}}
-  </button>
-</mat-dialog-actions>

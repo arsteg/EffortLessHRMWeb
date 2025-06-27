@@ -3,12 +3,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-role-dialog',
   templateUrl: './user-role-dialog.component.html',
 })
 export class UserRoleDialogComponent {
+  private readonly translate = inject(TranslateService);
   userRoleForm: FormGroup;
   isEdit: boolean = false;
   availableUsers: any[] = [];
@@ -53,6 +55,7 @@ export class UserRoleDialogComponent {
       if (this.isEdit) {
         this.authService.updateUserRole(this.data.userRole._id, userRoleData).subscribe({
           next: () => {
+            this.toastr.success(this.translate.instant('permissions.update_user_role'));
             this.dialogRef.close(true);
           },
           error: (error) => { 
@@ -63,6 +66,7 @@ export class UserRoleDialogComponent {
       } else {
         this.authService.createUserRole(userRoleData).subscribe({
           next: () => {
+            this.toastr.success(this.translate.instant('permissions.add_user_role_alert'));
             this.dialogRef.close(true);
           },
           error: (error) => { 

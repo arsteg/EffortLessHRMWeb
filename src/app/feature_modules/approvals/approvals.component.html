@@ -1,19 +1,13 @@
-<div class="main-content contentData">
-    <div class="container-fluid px-0">
-        <div class=" d-flex bg-white subMenu w-100">
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
-                [class.active]="selectedTab === 1">Productivity Apps</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">
-                Manual Time</button>
-
-        </div>
-
-        <div *ngIf="selectedTab === 1" class="tab-content">
-            <app-login></app-login>
-        </div>
-        <div *ngIf="selectedTab === 2" class="tab-content">
-            <app-request-manual-time></app-request-manual-time>
-        </div>
-
+<mat-tab-group mat-align-tabs="start" mat-stretch-tabs="false" [(selectedIndex)]="selectedTab" (selectedTabChange)="selectTab($event.index)">
+  <mat-tab label="Productivity Apps">
+    <div class="py-3">
+      <app-login></app-login>
     </div>
-</div>
+  </mat-tab>
+  
+  <mat-tab label="Manual Time">
+    <div class="py-3">
+      <app-request-manual-time></app-request-manual-time>
+    </div>
+  </mat-tab>
+</mat-tab-group>

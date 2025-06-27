@@ -11,6 +11,7 @@ import { UserRoleDialogComponent } from '../user-role-dialog/user-role-dialog.co
 import { RolePermissionDialogComponent } from '../role-permission-dialog/role-permission-dialog.component';
 import { ExportService } from 'src/app/_services/export.service';
 import { UserService } from 'src/app/_services/users.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 
 @Component({
@@ -23,7 +24,11 @@ export class PermissionsComponent implements OnInit {
   currentTab: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  totalRecords: number = 0;
+  totalRoles: number = 0;
+  totalPermissions: number = 0;
+  totalUserRoles: number = 0;
+  totalRolePermissions: number = 0;
+  allData = [];
 
   // Data sources for each tab
   rolesDataSource = new MatTableDataSource<Role>([]);
@@ -33,9 +38,53 @@ export class PermissionsComponent implements OnInit {
   groupedRolePermissions: { role: string, permissions: RolePermission[] }[] = [];
 
   // Displayed columns for each tab
-  rolesColumns: string[] = ['name', 'description', 'actions'];
-  permissionsColumns: string[] = ['permissionName', 'resource', 'action', 'uiElement', 'actions'];
-  userRolesColumns: string[] = ['user', 'role', 'actions'];
+  rolesColumns: TableColumn[] = [
+      {
+        key: 'name',
+        name: 'Name',
+      },
+      {
+        key: 'description',
+        name: 'Description'
+      }
+    ]
+  permissionsColumns: TableColumn[] = [
+      {
+        key: 'permissionName',
+        name: 'Permission Name',
+      },
+      {
+        key: 'resource',
+        name: 'Resource'
+      },
+      {
+        key: 'action',
+        name: 'Action'
+      },
+      {
+        key: 'uiElement',
+        name: 'UI Element'
+      },
+    ]
+  userRolesColumns: TableColumn[] = [
+      {
+        key: 'user',
+        name: 'User',
+      },
+      {
+        key: 'role',
+        name: 'Role'
+      },
+      {
+        key: 'action',
+        name: 'Action',
+        isAction: true,
+        options: [
+          { label: 'Edit', visibility: ActionVisibility.LABEL, icon: 'edit' },
+          { label: 'Delete', visibility: ActionVisibility.LABEL, icon: 'delete' }
+        ]
+      }
+    ]
   rolePermissionsColumns: string[] = ['role', 'permission', 'actions'];
 
   users: any[] = [];
@@ -56,7 +105,6 @@ export class PermissionsComponent implements OnInit {
     this.loadPermissions();
     this.loadUserRoles();
     this.loadRolePermissions();
-    
   }
 
   switchTab(tabIndex: number) {
@@ -87,7 +135,8 @@ export class PermissionsComponent implements OnInit {
     this.authService.getRoles().subscribe((res: any) => {
       this.rolesDataSource.data = res.data;
       this.roles = res.data;
-      this.totalRecords = res.total || res.data.length;
+      this.allData = structuredClone(this.roles);
+      this.totalRoles = res.total || res.data.length;
     });
   }
 
@@ -95,7 +144,8 @@ export class PermissionsComponent implements OnInit {
     this.authService.getPermissions().subscribe((res: any) => {
       this.permissionsDataSource.data = res.data.permissionList;
       this.permissions = res.data.permissionList;
-      this.totalRecords = res.total || res.data.length || res.data.permissionList.length;
+      this.allData = structuredClone(this.permissions);
+      this.totalPermissions = res.total || res.data.length || res.data.permissionList.length;
     });
   }
 
@@ -106,7 +156,7 @@ export class PermissionsComponent implements OnInit {
         user: this.getUserName(ur.userId._id),
         role: this.getRoleName(ur.roleId._id),
       }));
-      this.totalRecords = res.total || res.data.length;
+      this.totalUserRoles = res.total || res.data.length;
     });
   }
 
@@ -129,7 +179,7 @@ export class PermissionsComponent implements OnInit {
         role,
         permissions
       }));
-      this.totalRecords = res.total || res.data.length;
+      this.totalRolePermissions = res.total || res.data.length;
     });
   }
 
@@ -235,5 +285,46 @@ export class PermissionsComponent implements OnInit {
   exportToCsv() {
     const dataToExport = this.permissionsDataSource.data;
     this.exportService.exportToCSV('Permissions', '', dataToExport);
+  }
+
+  onPageChangeV1(page: any) {
+    this.currentPage = page.pageIndex + 1;
+    this.recordsPerPage = page.pageSize;
+    //this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
+  }
+
+  onRoleSearchChange(event) {
+    this.roles = this.allData?.filter(row => {
+      const found = this.rolesColumns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    }
+    );
+  }
+
+  onPermissionSearchChange(event) {
+    this.permissions = this.permissions?.filter(row => {
+      const found = this.permissionsColumns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    }
+    );
+  }
+
+  onUserRoleSearchChange(event) {
+    this.userRolesDataSource.filter = event.trim().toLowerCase();
+  }
+
+  onActionClick(event) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.openAddEditDialog('userRole', event.row);
+        break;
+      case 'Delete':
+        this.deleteItem('userRole', event.row._id);
+        break;
+    }
   }
 }
