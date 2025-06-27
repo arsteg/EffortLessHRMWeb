@@ -1,13 +1,13 @@
 <div class="dropdown">
-  <button
+ <button
     mat-icon-button
     [matMenuTriggerFor]="notificationMenu"
     [ngClass]="{'has-unread': hasUnreadNotifications}"
     class="bg-white"
-  >
+>
     <mat-icon svgIcon="notifications"></mat-icon>
-    <span class="notification-dot" *ngIf="hasUnreadNotifications"></span>
-  </button>
+    <span class="notification-dot" *ngIf="hasUnreadNotifications" style="background-color: orange;"></span>
+</button>
 
   <mat-menu #notificationMenu="matMenu" class="dropdown-menu-default drpLog shadow">
     <!-- Header Section -->
