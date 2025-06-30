@@ -197,6 +197,7 @@ export class ShiftComponent {
   }
 
   onSubmission() {
+    if(this.shiftForm.valid) {
       if (!this.isEdit) {
         this.attendanceService.addShift(this.shiftForm.value).subscribe((res: any) => {
           this.loadRecords();
@@ -213,9 +214,11 @@ export class ShiftComponent {
           this.shiftForm.reset();
         })
       }
-   
+    }
+else { this.shiftForm.markAllAsTouched();
+    }
   }
-  
+
   deleteTemplate(id: string) {
     this.attendanceService.deleteShift(id).subscribe((res: any) => {
       this.loadRecords();

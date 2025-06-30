@@ -1,51 +1,15 @@
 <div class="">
-    <div class="d-flex align-items-center justify-content-between pt-2">
-        <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Flexi Benefits</label></div>
-        <div class="d-flex align-items-center ms-auto">
-            <span class="bi bi-search searchIcon"></span>
-
-            <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                name="searchText" aria-label="default input example">
-        </div>
-        <div class="d-flex align-items-baseine mt-1">
+    <div class="my-2"><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Flexi Benefits</label></div>
+    <div class="position-relative">
+        <div class="d-flex position-absolute end-0 gap-2 mt-1">
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                 [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-            <button mat-flat-button class=" ms-2 addBtn" (click)="changeMode = 'Add'; openDialog();">Add</button>
+            <button mat-flat-button color="primary" (click)="changeMode = 'Add'; openDialog();">Add</button>
         </div>
     </div>
-    <table mat-table [dataSource]="flexiBenefits">
-        <ng-container matColumnDef="payrollUserDetails">
-            <th mat-header-cell *matHeaderCellDef> Employee Name </th>
-            <td mat-cell *matCellDef="let records"> {{records?.payrollUserDetails}} </td>
-        </ng-container>
+    <hrm-table [data]="flexiBenefits" [columns]="columns" [showSearch]="true"
+        (actionClicked)="onActionClick($event)"></hrm-table>
 
-        <ng-container matColumnDef="TotalFlexiBenefitAmount">
-            <th mat-header-cell *matHeaderCellDef> Total Flexi Benefit </th>
-            <td mat-cell *matCellDef="let records"> {{records?.TotalFlexiBenefitAmount}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef> Actions </th>
-            <td mat-cell *matCellDef="let records">
-                <button mat-icon-button [matMenuTriggerFor]="menu">
-                    <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                    <button mat-menu-item (click)="changeMode='Update'; selectedRecord = records; openDialog()">
-                        <mat-icon>edit</mat-icon>
-                        <span>Edit</span>
-                    </button>
-                    <button mat-menu-item (click)="deleteDialog(records?._id)">
-                        <mat-icon>delete</mat-icon>
-                        <span>Delete</span>
-                    </button>
-                </mat-menu>
-            </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="['payrollUserDetails', 'TotalFlexiBenefitAmount', 'actions']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['payrollUserDetails', 'TotalFlexiBenefitAmount', 'actions'];"></tr>
-    </table>
 </div>
 
 <ng-template #dialogTemplate>
@@ -76,7 +40,7 @@
             </div>
             <div class="d-flex justify-content-between mt-3">
                 <button mat-flat-button type="button" (click)="closeDialog()">Cancel</button>
-                <button mat-flat-button class="addBtn" type="submit">Save</button>
+                <button mat-flat-button color="primary" type="submit">Save</button>
             </div>
         </form>
     </div>

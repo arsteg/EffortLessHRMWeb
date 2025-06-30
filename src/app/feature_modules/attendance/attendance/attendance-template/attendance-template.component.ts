@@ -22,17 +22,19 @@ export class AttendanceTemplateComponent {
   changeMode: 'Add' | 'Next' = 'Add';
   regularizations: any;
   attendanceAssignment: any;
-  templateAssignmentCount;
-  totalRecords: number // example total records
+  templateAssignmentCount: { [key: string]: number }; // Explicitly type this
+  totalRecords: number; // example total records
   recordsPerPage: number = 10;
   currentPage: number = 1;
   public sortOrder: string = '';
 
-  constructor(private modalService: NgbModal,
+  constructor(
+    private modalService: NgbModal,
     private dialog: MatDialog,
     private exportService: ExportService,
     private toast: ToastrService,
-    private attendanceService: AttendanceService) { }
+    private attendanceService: AttendanceService
+  ) {}
 
   ngOnInit() {
     this.getAttendanceTemplateAssignment();
@@ -52,13 +54,15 @@ export class AttendanceTemplateComponent {
   loadRecords() {
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: this.recordsPerPage.toString()
+      next: this.recordsPerPage.toString(),
     };
-    this.attendanceService.getAttendanceTemplate(pagination.skip, pagination.next).subscribe((res: any) => {
-      this.attendanceTemplate = res.data;
-      this.totalRecords = res.total;
-      this.updateTemplateAssignmentCount();
-    });
+    this.attendanceService
+      .getAttendanceTemplate(pagination.skip, pagination.next)
+      .subscribe((res: any) => {
+        this.attendanceTemplate = res.data;
+        this.totalRecords = res.total;
+        this.updateTemplateAssignmentCount();
+      });
   }
 
   getAttendanceTemplateAssignment() {
@@ -70,12 +74,20 @@ export class AttendanceTemplateComponent {
 
   updateTemplateAssignmentCount() {
     if (this.attendanceTemplate?.length > 0 && this.attendanceAssignment?.length > 0) {
-      this.templateAssignmentCount = this.attendanceTemplate.reduce((acc, template) => {
-        const count = this.attendanceAssignment.filter(assignment => assignment.attendanceTemplate === template._id).length;
-        return { ...acc, [template?._id]: count };
-      }, {});
+      this.templateAssignmentCount = this.attendanceTemplate.reduce(
+        (acc, template) => {
+          const count = this.attendanceAssignment.filter(
+            (assignment) => assignment.attendanceTemplate === template._id
+          ).length;
+          return { ...acc, [template?._id]: count };
+        },
+        {} // Initialize accumulator as an empty object
+      );
+    } else {
+      this.templateAssignmentCount = {}; // Ensure it's always an object
     }
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -87,11 +99,16 @@ export class AttendanceTemplateComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService
+      .open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' })
+      .result.then(
+        (result) => {
+          this.closeResult = `Closed with: ${result}`;
+        },
+        (reason) => {
+          this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+        }
+      );
   }
 
   onChangeStep(event) {
@@ -99,8 +116,8 @@ export class AttendanceTemplateComponent {
   }
 
   onChangeMode(event) {
-    if (this.isEdit = true) {
-      this.changeMode = event
+    if ((this.isEdit = true)) {
+      this.changeMode = event;
     }
   }
 
@@ -121,19 +138,19 @@ export class AttendanceTemplateComponent {
       'Alternate Week Off Routine',
       'Approvers Type',
       'Approval Level',
-      'Attendance Modes', 
+      'Attendance Modes',
       'Leave Categories',
       'Department Designations',
-      'Duration per Week'
+      'Duration per Week',
     ];
 
-    const dataToExport = this.attendanceTemplate.map(template => {
+    const dataToExport = this.attendanceTemplate.map((template) => {
       const attendanceModes = template.attendanceMode.join(', ');
       const leveCategoryHierarchyForAbsentHalfDay = template.leveCategoryHierarchyForAbsentHalfDay.join(',');
       const hours = template.minimumHoursRequiredPerWeek;
       const minutes = template.minimumMinutesRequiredPerWeek;
       const durationPerWeek = `${hours} Hr ${minutes} Mins`;
-  
+
       return [
         template.label,
         template.alternateWeekOffRoutine,
@@ -142,51 +159,58 @@ export class AttendanceTemplateComponent {
         attendanceModes,
         leveCategoryHierarchyForAbsentHalfDay,
         template.departmentDesignations,
-        durationPerWeek
+        durationPerWeek,
       ];
     });
 
-    
     const combinedData = [headers, ...dataToExport];
 
     // Call the export service with combined data
     this.exportService.exportToCSV('attendance-template', 'attendance-template', combinedData);
   }
 
-
-
   setFormValues(templateData: any) {
     this.attendanceService.selectedTemplate.next(templateData);
   }
 
   deleteTemplate(id: string) {
-    this.attendanceService.deleteAttendanceTemplate(id).subscribe((res: any) => {
-      this.loadRecords();
-      this.toast.success('Successfully Deleted!!!', 'Attendance Template')
-    },
+    this.attendanceService.deleteAttendanceTemplate(id).subscribe(
+      (res: any) => {
+        this.loadRecords();
+        this.toast.success('Successfully Deleted!!!', 'Attendance Template');
+      },
       (err) => {
-        this.toast.error('This Attendance Template Can not be deleted'
-          , 'Error')
-      })
+        this.toast.error('Error deleting attendance template.', 'Error');
+        console.error('Delete error:', err); // Log the full error for debugging
+      }
+    );
   }
 
-  deleteDialog(id: string): void {
+  deleteDialog(templateId: string): void {
+    // Check if the template has assignments before opening the confirmation dialog
+    if (this.templateAssignmentCount && this.templateAssignmentCount[templateId] > 0) {
+      this.toast.error(
+        'This template cannot be deleted because it is assigned to employees.',
+        'Deletion Restricted'
+      );
+      return; // Stop the deletion process
+    }
+
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
     });
-    dialogRef.afterClosed().subscribe(result => {
+
+    dialogRef.afterClosed().subscribe((result) => {
       if (result === 'delete') {
-        this.deleteTemplate(id);
+        this.deleteTemplate(templateId);
       }
-      err => {
-        this.toast.error('Can not be Deleted', 'Error!')
-      }
+      // No need for an 'err' callback here, as errors from deleteTemplate are handled there.
     });
   }
 
   getRegularizations() {
     this.attendanceService.getRegularizations().subscribe((res: any) => {
       this.regularizations = res.data;
-    })
+    });
   }
 }

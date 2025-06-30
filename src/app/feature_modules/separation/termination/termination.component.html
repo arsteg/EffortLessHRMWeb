@@ -1,10 +1,21 @@
 <div class="main-content">
-    <h2 class="ps-4">Termination Management</h2>
+    <!-- <h2 class="ps-4">Termination Management</h2> -->
     <div *ngIf="view === 'admin'; else userView">
-        <div class="d-flex justify-content-end">
-            <button mat-flat-button color="primary" (click)="isEditMode = false; openDialog()">Create Termination</button>
+        <div class="position-relative d-none d-md-block">
+            <button mat-flat-button class="position-absolute end-0" color="primary" (click)="isEditMode = false; openDialog()">Create Termination</button>
         </div>
-        <table mat-table [dataSource]="terminations" class="mt-3 mat-elevation-z8">
+        <hrm-table
+            [data]="terminations"
+            [columns]="adminColumns"
+            (actionClicked)="onActionClick($event)"
+            [isServerSide]="false"
+            [showSearch]="true"
+            [totalItems]="totalRecords"
+            [pageSize]="recordsPerPage"
+            (pageChanged)="onPageChange($event)"
+            (searchChanged)="onSearchChange($event)">
+        </hrm-table>
+        <!-- <table mat-table [dataSource]="terminations" class="mt-3 mat-elevation-z8">
             <ng-container matColumnDef="user">
                 <th mat-header-cell *matHeaderCellDef> User </th>
                 <td mat-cell *matCellDef="let element"> {{getMatchingUser(element.user)}} </td>
@@ -82,13 +93,24 @@
                 </td>
               </ng-container>
               
-            <!-- Header and Row Declarations -->
+            Header and Row Declarations
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+        </table> -->
     </div>
     <ng-template #userView>
-        <table mat-table [dataSource]="userTerminations" class="mt-3 mat-elevation-z8">
+        <hrm-table
+            [data]="userTerminations"
+            [columns]="userColumns"
+            (actionClicked)="onActionClick($event)"
+            [isServerSide]="false"
+            [showSearch]="true"
+            [totalItems]="totalRecords"
+            [pageSize]="recordsPerPage"
+            (pageChanged)="onPageChange($event)"
+            (searchChanged)="onSearchChange($event)">
+        </hrm-table>
+        <!-- <table mat-table [dataSource]="userTerminations" class="mt-3 mat-elevation-z8">
             <ng-container matColumnDef="user">
                 <th mat-header-cell *matHeaderCellDef> User </th>
                 <td mat-cell *matCellDef="let element"> {{getMatchingUser(element?.user)}} </td>
@@ -153,144 +175,189 @@
                 </mat-menu>
                 </td>
             </ng-container>
-            <!-- Header and Row Declarations -->
+            Header and Row Declarations
             <tr mat-header-row *matHeaderRowDef="userTerminationColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: userTerminationColumns;"></tr>
-        </table>
+        </table> -->
     </ng-template>
 </div>
 
 <ng-template #dialogTemplate>
-    <div class="p-3">
-        <h2 mat-dialog-title class="d-flex justify-content-between">
-            {{isEditMode ? 'Update' : 'Create'}} Termination
-            <button mat-icon-button (click)="closeDialog()">
-                <mat-icon>close</mat-icon>
-            </button>
-        </h2>
-        <form [formGroup]="terminationForm" (ngSubmit)="onSubmit()">
-            <div class="row">
-                <mat-form-field appearance="outline" class="col-md-6">
-                    <mat-label>User</mat-label>
-                    <mat-select formControlName="user">
-                        <mat-option *ngFor="let user of users" [value]="user.id">
-                            {{user.firstName}} {{user.lastName}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline" class="col-md-6">
-                    <input matInput [matDatepicker]="picker1" placeholder="Termination Date"
-                        formControlName="termination_date">
-                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                    <mat-datepicker #picker1></mat-datepicker>
-                </mat-form-field>
-            </div>
-
-            <div class="row">
-                <mat-form-field appearance="outline" class="col-md-6">
-                    <input matInput [matDatepicker]="picker2" placeholder="Exit Interview Date"
-                        formControlName="exit_interview_date">
-                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                    <mat-datepicker #picker2></mat-datepicker>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="col-md-6">
-                    <input matInput placeholder="Performance Warnings" formControlName="performance_warnings"
-                        type="number">
-                </mat-form-field>
-            </div>
-
-            <div class="row">
-                <mat-checkbox class="col-md-4" formControlName="notice_given">Notice Given</mat-checkbox>
-                <mat-checkbox class="col-md-4" formControlName="severance_paid">Severance Paid</mat-checkbox>
-                <mat-checkbox class="col-md-4" formControlName="final_pay_processed">Final Pay Processed</mat-checkbox>
-                <mat-checkbox class="col-md-4" formControlName="company_property_returned">Company Property
-                    Returned</mat-checkbox>
-                <mat-checkbox class="col-md-4" formControlName="legal_compliance">Legal Compliance</mat-checkbox>
-                <mat-checkbox class="col-md-4" formControlName="unemployment_claim">Unemployment Claim</mat-checkbox>
-            </div>
-
-            <div class="row">
-                <mat-form-field appearance="outline" class="col-md-6">
-                    <textarea matInput placeholder="Termination Reason" formControlName="termination_reason"></textarea>
-                </mat-form-field>
-            </div>
-
-            <div class="d-flex justify-content-between">
-                <button mat-flat-button type="button" (click)="resetForm()">Reset</button>
-                <button mat-flat-button type="submit">{{isEditMode ? 'Update' : 'Submit'}}</button>
-            </div>
-        </form>
-    </div>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>{{isEditMode ? 'Update' : 'Create'}} Termination</h1>
+    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-dialog-content>
+    <form [formGroup]="terminationForm" (ngSubmit)="onSubmit()">
+      <div class="row d-flex justify-content-center">
+        <div class="row">
+          <div class="col-md-6 mt-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>User</mat-label>
+              <mat-select formControlName="user" required>
+                <mat-option *ngFor="let user of users" [value]="user.id">
+                  {{user.firstName}} {{user.lastName}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="terminationForm.controls['user'].hasError('required') && terminationForm.controls['user'].touched">
+                User is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 mt-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Termination Date</mat-label>
+              <input matInput [matDatepicker]="picker1" formControlName="termination_date" required>
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+              <mat-error *ngIf="terminationForm.controls['termination_date'].hasError('required') && terminationForm.controls['termination_date'].touched">
+                Termination Date is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 mt-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Exit Interview Date</mat-label>
+              <input matInput [matDatepicker]="picker2" formControlName="exit_interview_date">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 mt-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Performance Warnings</mat-label>
+              <input matInput type="number" formControlName="performance_warnings">
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Termination Reason</mat-label>
+              <textarea matInput formControlName="termination_reason" required></textarea>
+              <mat-error *ngIf="terminationForm.controls['termination_reason'].hasError('required') && terminationForm.controls['termination_reason'].touched">
+                Termination Reason is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-12 d-flex justify-content-between">
+            <mat-checkbox formControlName="notice_given">Notice Given</mat-checkbox>
+            <mat-checkbox formControlName="severance_paid">Severance Paid</mat-checkbox>
+            <mat-checkbox formControlName="final_pay_processed">Final Pay Processed</mat-checkbox>
+            <mat-checkbox formControlName="company_property_returned">Company Property Returned</mat-checkbox>
+            <mat-checkbox formControlName="legal_compliance">Legal Compliance</mat-checkbox>
+            <mat-checkbox formControlName="unemployment_claim">Unemployment Claim</mat-checkbox>
+          </div>
+        </div>
+      </div>
+      <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
+        <button mat-flat-button type="button" (click)="isEditMode ? closeDialog() : resetForm()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="terminationForm.invalid">
+          {{isEditMode ? 'Update' : 'Create'}} Termination
+        </button>
+      </div>
+    </form>
+  </mat-dialog-content>
 </ng-template>
 
 <ng-template #updateStatusResignation>
-    <div class="p-3">
-        <h2 mat-dialog-title class="d-flex justify-content-between">
-            Are you sure you want to mark the selected termination request as '{{changedStatus | titlecase}}'?
-        </h2>
-        <div class="d-flex justify-content-end">
-            <button mat-flat-button (click)="closeDialog()" type="button">No</button>
-            <button mat-flat-button color="primary" type="submit" class="ms-3"
-                (click)="updateTerminationStatus(selectedStatus, changedStatus)">Yes</button>
-        </div>
-    </div>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>Confirm Status Change</h1>
+    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-dialog-content>
+    <p>Are you sure you want to mark the selected termination request as '{{changedStatus | titlecase}}'?</p>
+  </mat-dialog-content>
+  <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
+    <button mat-flat-button type="button" (click)="closeDialog()">No</button>
+    <button mat-flat-button color="primary" type="submit" (click)="updateTerminationStatus(selectedStatus, changedStatus)">Yes</button>
+  </div>
 </ng-template>
+
 <ng-template #appealDialog>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>{{ 'separation.appeal_request' | translate }}</h1>
+    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-dialog-content>
     <form [formGroup]="appealForm" (ngSubmit)="submitAppeal()">
-      <div class="p-3">
-        <h2 mat-dialog-title class="d-flex justify-content-between align-items-center" translate="yes" >
-            {{ 'separation.appeal_request' | translate }}
-          <button mat-icon-button (click)="closeDialog()" type="button">
-            <mat-icon>close</mat-icon>
-          </button>
-        </h2>
-  
-        <mat-form-field appearance="outline" class="w-100 mt-3">
-          <mat-label><p >{{ 'separation.appeal_reason' | translate }}</p></mat-label>
-          <textarea matInput formControlName="appeal_reason" rows="4"  placeholder="Enter your reason here..."></textarea>
-        </mat-form-field>
-  
-        <div class="d-flex justify-content-end mt-3">
-          <button mat-stroked-button type="button" (click)="closeDialog()">Cancel</button>
-          <button mat-flat-button color="primary" [disabled]="selectedAppeal?.appeal_status" type="submit">Submit</button>
+      <div class="row d-flex justify-content-center">
+        <div class="row mt-3">
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ 'separation.appeal_reason' | translate }}</mat-label>
+              <textarea matInput formControlName="appeal_reason" rows="4" placeholder="Enter your reason here..." required></textarea>
+              <mat-error *ngIf="appealForm.controls['appeal_reason'].hasError('required') && appealForm.controls['appeal_reason'].touched">
+                Appeal Reason is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
         </div>
       </div>
+      <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
+        <button mat-flat-button type="button" (click)="closeDialog()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="selectedAppeal?.appeal_status || appealForm.invalid">Submit</button>
+      </div>
     </form>
-  </ng-template>
-  
-  <ng-template #reviewAppealDialog>
+  </mat-dialog-content>
+</ng-template>
+
+<ng-template #reviewAppealDialog>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>{{ 'separation.appeal_heading' | translate }}</h1>
+    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-dialog-content>
     <form [formGroup]="reviewAppealForm" (ngSubmit)="submitAppealReview()">
-      <div class="p-3">
-        <h2 mat-dialog-title class="d-flex justify-content-between align-items-center">
-            {{ 'separation.appeal_heading' | translate }}
-          <button mat-icon-button type="button" (click)="closeDialog()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </h2>
-        <mat-form-field appearance="outline" class="w-100 mt-3">
-            <mat-label>   {{ 'separation.appeal_reason' | translate }} </mat-label>
-            <textarea matInput [value]="selectedAppeal?.appeal_reason" rows="4" disabled></textarea>
-          </mat-form-field>
-        <mat-form-field appearance="outline" class="w-100 mt-3">
-          <mat-label> {{ 'separation.appeal_status' | translate }} Appeal Status</mat-label>
-          <mat-select formControlName="appeal_status">
-            <mat-option *ngFor="let key of appealStatusKeys" [value]="terminationAppealStatuses[key]">
-                {{ terminationAppealStatuses[key] }}
-              </mat-option>  </mat-select>
-        </mat-form-field>
-  
-        <mat-form-field appearance="outline" class="w-100 mt-3">
-          <mat-label> {{ 'separation.decision_notes' | translate }} Decision Notes</mat-label>
-          <textarea matInput formControlName="decision_notes" rows="4" placeholder="Write your notes here..."></textarea>
-        </mat-form-field>
-  
-        <div class="d-flex justify-content-end mt-3">
-          <button mat-stroked-button type="button" (click)="closeDialog()">Cancel</button>
-          <button mat-flat-button color="primary" type="submit">Submit</button>
+      <div class="row d-flex justify-content-center">
+        <div class="row mt-3">
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ 'separation.appeal_reason' | translate }}</mat-label>
+              <textarea matInput [value]="selectedAppeal?.appeal_reason" rows="4" disabled></textarea>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ 'separation.appeal_status' | translate }}</mat-label>
+              <mat-select formControlName="appeal_status" required>
+                <mat-option *ngFor="let key of appealStatusKeys" [value]="terminationAppealStatuses[key]">
+                  {{ terminationAppealStatuses[key] }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="reviewAppealForm.controls['appeal_status'].hasError('required') && reviewAppealForm.controls['appeal_status'].touched">
+                Appeal Status is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ 'separation.decision_notes' | translate }}</mat-label>
+              <textarea matInput formControlName="decision_notes" rows="4" placeholder="Write your notes here..."></textarea>
+            </mat-form-field>
+          </div>
         </div>
       </div>
+      <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
+        <button mat-flat-button type="button" (click)="closeDialog()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="reviewAppealForm.invalid">Submit</button>
+      </div>
     </form>
-  </ng-template>
+  </mat-dialog-content>
+</ng-template>
   
   

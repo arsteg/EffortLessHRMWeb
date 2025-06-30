@@ -31,11 +31,18 @@ export class AddSalaryDetailsComponent {
   addButtons: boolean = true;
   statutorySettings: any;
   payrollGeneralSettings: any;
-  fixedAllowance: any;
+  fixedAllowance: any[] = []; // Initialize to an empty array
   employeeDeduction: any;
 
   view = localStorage.getItem('view');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+   private noNegativeValues(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const isNegative = control.value < 0;
+      return isNegative ? { 'negativeValue': { value: control.value } } : null;
+    };
+  }
 
   constructor(
     private fb: FormBuilder,
@@ -95,13 +102,13 @@ export class AddSalaryDetailsComponent {
       });
       this.getStatutorySettings();
       this.salaryDetailsForm.patchValue({ CTCTemplate: 'manual' });
-      this.addFixedAllowance();    
+      this.addFixedAllowance();
       // this.addEmployerContribution();
       // this.addEmployeeDeduction();
       this.addFixedDeduction();
       this.addVariableAllowance();
       this.addVariableDeduction();
-      this.getCTCTemplates();     
+      this.getCTCTemplates();
       // Subscribe to changes for real-time calculations
       this.salaryDetailsForm.get('Amount')?.valueChanges.subscribe(() => {
         this.calculateStatutoryComponents();
@@ -121,29 +128,29 @@ export class AddSalaryDetailsComponent {
     }
   }
 
- totalSalaryComponentsValidator(): ValidatorFn {
-  return (formGroup: AbstractControl): ValidationErrors | null => {
-    const grossSalary = formGroup.get('Amount')?.value || 0;
-    const arrays = [
-      'salaryComponentFixedAllowance',
-      'salaryComponentFixedDeduction',
-      'salaryComponentVariableAllowance',
-      'salaryComponentVariableDeduction',
-    ];
+  totalSalaryComponentsValidator(): ValidatorFn {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const grossSalary = formGroup.get('Amount')?.value || 0;
+      const arrays = [
+        'salaryComponentFixedAllowance',
+        'salaryComponentFixedDeduction',
+        'salaryComponentVariableAllowance',
+        'salaryComponentVariableDeduction',
+      ];
 
-    let totalYearlyAmount = 0;    
+      let totalYearlyAmount = 0;
 
-    arrays.forEach(arrayName => {
-      const formArray = formGroup.get(arrayName) as FormArray;
-      formArray.controls.forEach(control => {
-        const yearlyAmount = control.get('yearlyAmount')?.value || 0;
-        totalYearlyAmount += yearlyAmount;
+      arrays.forEach(arrayName => {
+        const formArray = formGroup.get(arrayName) as FormArray;
+        formArray.controls.forEach(control => {
+          const yearlyAmount = control.get('yearlyAmount')?.value || 0;
+          totalYearlyAmount += yearlyAmount;
+        });
       });
-    });
 
-    return totalYearlyAmount <= grossSalary ? null : { exceedsGrossSalary: true };
-  };
-}
+      return totalYearlyAmount <= grossSalary ? null : { exceedsGrossSalary: true };
+    };
+  }
 
   getAllComponents() {
     forkJoin({
@@ -160,14 +167,8 @@ export class AddSalaryDetailsComponent {
       this.fixedDeduction = result.fixedDeduction.data;
       this.variableAllowance = result.variableAllowance.data;
       this.variableDeduction = result.variableDeduction.data;
-      this.salaryDetailsForm.patchValue({
-        salaryComponentFixedAllowance: this.fixedAllowance,
-        salaryComponentEmployerContribution: this.employerContribution,
-        salaryComponentEmployeeDeduction: this.employeeDeduction,
-        salaryComponentFixedDeduction: this.fixedDeduction,
-        salaryComponentVariableAllowance: this.variableAllowance,
-        salaryComponentVariableDeduction: this.variableDeduction,
-     });
+      // Note: Do not patch entire arrays directly here. Use this data for dropdown options.
+      // The form arrays should be built programmatically with addFixedAllowance, etc.
     });
   }
 
@@ -224,44 +225,89 @@ export class AddSalaryDetailsComponent {
   get fixedDeductionArray(): FormArray {
     return this.salaryDetailsForm.get('salaryComponentFixedDeduction') as FormArray;
   }
-  
+
   get variableAllowanceArray(): FormArray {
     return this.salaryDetailsForm.get('salaryComponentVariableAllowance') as FormArray;
   }
-  
+
   get variableDeductionArray(): FormArray {
     return this.salaryDetailsForm.get('salaryComponentVariableDeduction') as FormArray;
   }
-  
-  // get employerContributionArray(): FormArray {
-  //   return this.salaryDetailsForm.get('salaryComponentEmployerContribution') as FormArray;
-  // }
 
-  // get employeeDeductionArray(): FormArray {
-  //   return this.salaryDetailsForm.get('salaryComponentEmployeeDeduction') as FormArray;
-  // }
+  // Helper method to get selected IDs for a specific FormArray and control name
+  private getSelectedIds(formArray: FormArray, controlName: string): string[] {
+    return formArray.controls
+      .map(control => control.get(controlName)?.value)
+      .filter(value => value !== null && value !== undefined && value !== '');
+  }
+
+  // Method to check if an option should be disabled for a given FormArray
+  isOptionDisabled(optionId: string, currentIndex: number, formArray: FormArray, controlName: string): boolean {
+    const selectedIds = this.getSelectedIds(formArray, controlName);
+    // Disable if the option is already selected in another row
+    const isAlreadySelected = selectedIds.filter((id, idx) => idx !== currentIndex).includes(optionId);
+    return isAlreadySelected;
+  }
 
   updateLabel(index: number, value: string, type: string): void {
-    const array = this.salaryDetailsForm.get(`salaryComponent${type.charAt(0).toUpperCase() + type.slice(1)}`) as FormArray;
-    const control = array.at(index);
-    const selectedItem = this[type].find(item => item._id === value);
+    let formArray: FormArray;
+    let itemsList: any[];
+    let labelControlName: string;
+
+    switch (type) {
+      case 'fixedAllowance':
+        formArray = this.fixedAllowances;
+        itemsList = this.fixedAllowance;
+        labelControlName = 'fixedAllowanceLabel';
+        break;
+      case 'fixedDeduction':
+        formArray = this.fixedDeductionArray;
+        itemsList = this.fixedDeduction;
+        labelControlName = 'fixedDeductionLabel';
+        break;
+      case 'variableAllowance':
+        formArray = this.variableAllowanceArray;
+        itemsList = this.variableAllowance;
+        labelControlName = 'variableAllowanceLabel';
+        break;
+      case 'variableDeduction':
+        formArray = this.variableDeductionArray;
+        itemsList = this.variableDeduction;
+        labelControlName = 'variableDeductionLabel';
+        break;
+      default:
+        return; // Or throw an error if an unknown type is passed
+    }
+
+    const control = formArray.at(index);
+    const selectedItem = itemsList.find(item => item._id === value);
     if (selectedItem) {
-      control.patchValue({ [`${type}Label`]: selectedItem.label });
+      control.patchValue({ [labelControlName]: selectedItem.label });
     }
   }
+
   updateYearlyAmount(index: number, formArrayName: string): void {
     const array = this.salaryDetailsForm.get(formArrayName) as FormArray;
     const control = array.at(index);
     const monthly = control.get('monthlyAmount').value;
-    control.patchValue({ yearlyAmount: monthly * 12 });
+
+    // Ensure monthly is not negative before calculating yearly
+    if (monthly >= 0) {
+      control.patchValue({ yearlyAmount: monthly * 12 });
+    } else {
+      // Optionally, set yearlyAmount to 0 or handle the error
+      control.patchValue({ yearlyAmount: 0 });
+    }
     this.CalculateTotalAmount();
   }
+
+
   addFixedAllowance(): void {
     const allowanceGroup = this.fb.group({
       fixedAllowanceLabel: [''],
       fixedAllowance: ['', Validators.required],
-      monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required],
+      monthlyAmount: [0, [Validators.required, this.noNegativeValues()]], // Add custom validator here
+      yearlyAmount: [0, [Validators.required, this.noNegativeValues()]],
       isNew: [true]
     });
     this.fixedAllowances.push(allowanceGroup);
@@ -275,8 +321,8 @@ export class AddSalaryDetailsComponent {
     const allowanceGroup = this.fb.group({
       fixedDeduction: ['', Validators.required],
       fixedDeductionLabel: [''],
-      monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required],
+      monthlyAmount: [0, [Validators.required, this.noNegativeValues()]], // Add custom validator here
+      yearlyAmount: [0, [Validators.required, this.noNegativeValues()]],
       isNew: [true]
     });
     this.fixedDeductionArray.push(allowanceGroup);
@@ -285,13 +331,13 @@ export class AddSalaryDetailsComponent {
     this.fixedDeductionArray.removeAt(index);
     this.CalculateTotalAmount();
   }
-  
+
   addVariableAllowance(): void {
     const allowanceGroup = this.fb.group({
       variableAllowance: ['', Validators.required],
       variableAllowanceLabel: [''],
-      monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required],
+      monthlyAmount: [0, [Validators.required, this.noNegativeValues()]], // Add custom validator here
+      yearlyAmount: [0, [Validators.required, this.noNegativeValues()]],
       isNew: [true]
     });
     this.variableAllowanceArray.push(allowanceGroup);
@@ -300,15 +346,14 @@ export class AddSalaryDetailsComponent {
     this.variableAllowanceArray.removeAt(index);
     this.CalculateTotalAmount();
   }
-  
+
   addVariableDeduction(): void {
     const allowanceGroup = this.fb.group({
       variableDeduction: ['', Validators.required],
       variableDeductionLabel: [''],
-      monthlyAmount: [0, Validators.required],
-      yearlyAmount: [0, Validators.required],
+      monthlyAmount: [0, [Validators.required, this.noNegativeValues()]], // Add custom validator here
+      yearlyAmount: [0, [Validators.required, this.noNegativeValues()]],
       isNew: [true]
-
     });
     this.variableDeductionArray.push(allowanceGroup);
   }
@@ -316,26 +361,6 @@ export class AddSalaryDetailsComponent {
     this.variableDeductionArray.removeAt(index);
     this.CalculateTotalAmount();
   }
-  
-  // addEmployerContribution(): void {
-  //   const allowanceGroup = this.fb.group({
-  //     employerContribution: ['', Validators.required],
-  //     employerContributionLabel: [''],
-  //     monthlyAmount: [0, Validators.required],
-  //     yearlyAmount: [0, Validators.required]
-  //   });
-    // this.employerContributionArray.push(allowanceGroup);
-  // }
-
-  // addEmployeeDeduction(): void {
-  //   const deductionGroup = this.fb.group({
-  //     employeeDeduction: ['', Validators.required],
-  //     employeeDeductionLabel: [''],
-  //     monthlyAmount: [0, Validators.required],
-  //     yearlyAmount: [0, Validators.required]
-  //   });
-    // this.employeeDeductionArray.push(deductionGroup);
-  // }
 
   logUrlSegmentsForUser() {
     const urlPath = this.router.url;
@@ -386,7 +411,7 @@ export class AddSalaryDetailsComponent {
         });
       }
     }
-    this.salaryDetailsForm.setControl('salaryComponentEmployeeDeduction', employeeDeductionArray);   
+    this.salaryDetailsForm.setControl('salaryComponentEmployeeDeduction', employeeDeductionArray);
   }
 
   onSubmissionSalaryDetails(): void {
@@ -443,7 +468,6 @@ export class AddSalaryDetailsComponent {
         this.toast.error('The salary details cannot be added', 'Error');
       }
     );
-   
   }
 
   getCTCTemplates() {
@@ -583,26 +607,25 @@ export class AddSalaryDetailsComponent {
       }
     );
   }
-CalculateTotalAmount()
-{
-  const arrays = [
-    'salaryComponentFixedAllowance',
-    'salaryComponentFixedDeduction',
-    'salaryComponentVariableAllowance',
-    'salaryComponentVariableDeduction',
-  ];
+  CalculateTotalAmount() {
+    const arrays = [
+      'salaryComponentFixedAllowance',
+      'salaryComponentFixedDeduction',
+      'salaryComponentVariableAllowance',
+      'salaryComponentVariableDeduction',
+    ];
 
-  let totalYearlyAmount = 0;    
+    let totalYearlyAmount = 0;
 
-  arrays.forEach(arrayName => {
-    const formArray = this.salaryDetailsForm.get(arrayName) as FormArray;
-    formArray.controls.forEach(control => {
-      const yearlyAmount = control.get('yearlyAmount')?.value || 0;
-      totalYearlyAmount += yearlyAmount;
+    arrays.forEach(arrayName => {
+      const formArray = this.salaryDetailsForm.get(arrayName) as FormArray;
+      formArray.controls.forEach(control => {
+        const yearlyAmount = control.get('yearlyAmount')?.value || 0;
+        totalYearlyAmount += yearlyAmount;
+      });
     });
-  });
-  this.salaryDetailsForm.get('Amount')?.setValue(totalYearlyAmount);   
-}
+    this.salaryDetailsForm.get('Amount')?.setValue(totalYearlyAmount);
+  }
   getSalaryDetailsById() {
     let id = this.selectedSalaryDetail._id;
     this.userService.getSalaryDetailsById(id).subscribe((res: any) => {
@@ -617,21 +640,7 @@ CalculateTotalAmount()
       salaryComponentFixedAllowance.forEach((allowance) => {
         this.addFixedAllowance();
         this.fixedAllowances.at(this.fixedAllowances.length - 1).patchValue(allowance);
-      });     
-
-      // const salaryComponentEmployerContribution = res.data.employerContributionList;
-      // this.employerContributionArray.clear();
-      // salaryComponentEmployerContribution.forEach((benefit) => {
-      //   this.addEmployerContribution();
-      //   this.employerContributionArray.at(this.employerContributionArray.length - 1).patchValue(benefit);
-      // });
-
-      // const salaryComponentEmployeeDeduction = res.data.employeeDeductionList || [];
-      // this.employeeDeductionArray.clear();
-      // salaryComponentEmployeeDeduction.forEach((deduction) => {
-      //   this.addEmployeeDeduction();
-      //   this.employeeDeductionArray.at(this.employeeDeductionArray.length - 1).patchValue(deduction);
-      // });
+      });
 
       const salaryComponentFixedDeduction = res.data.fixedDeductionList;
       this.fixedDeductionArray.clear();
@@ -653,8 +662,8 @@ CalculateTotalAmount()
         this.addVariableDeduction();
         this.variableDeductionArray.at(this.variableDeductionArray.length - 1).patchValue(benefit);
       });
-    });   
-  } 
+    });
+  }
 
   enableManualEntry() {
     this.salaryDetailsForm.get('salaryComponentFixedAllowance').enable();

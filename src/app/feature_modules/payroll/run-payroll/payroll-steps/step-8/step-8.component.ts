@@ -8,6 +8,7 @@ import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { Observable, forkJoin, of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
+import { TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-step-8',
@@ -36,6 +37,12 @@ export class Step8Component {
   ctc: number = 0;
   taxCalulationMethod: boolean = false;
   isIncomeTaxDeductionFalse: boolean = false;
+  columns: TableColumn[] = [
+    { key: 'payrollUserDetails', name: 'Employee Name' },
+    { key: 'TaxCalculatedMethod', name: 'Tax Calculation Method' },
+    { key: 'TaxCalculated', name: 'Tax Calculation By EffortlessHRM (Yearly)' },
+    { key: 'TDSCalculated', name: 'TDS to be Deducted (Monthly)', }
+  ]
 
   constructor(
     private fb: FormBuilder,

@@ -77,9 +77,12 @@
                         </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="row">
-                        <mat-form-field appearance="outline" class="col-md-6">
-                            <mat-label>Date of Birth</mat-label>
-                            <input matInput type="date" formControlName="DOB">
+                        <mat-form-field class="col-md-6">
+                            <mat-label>Date of Birth (DOB)</mat-label>
+                            <input matInput [matDatepicker]="picker" formControlName="DOB">
+                            <mat-hint>MM/DD/YYYY</mat-hint>
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-6">
@@ -93,9 +96,12 @@
                     </div>
 
                     <div class="row">
-                        <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-form-field class="col-md-6">
                             <mat-label>Marriage Anniversary</mat-label>
-                            <input matInput type="date" formControlName="MarraigeAniversary">
+                            <input matInput [matDatepicker]="picker" formControlName="MarraigeAniversary">
+                            <mat-hint>MM/DD/YYYY</mat-hint>
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-6">
@@ -219,7 +225,8 @@
 
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Emergency Contact Number</mat-label>
-                            <input matInput type="number" formControlName="emergancyContactNumber" placeholder="Enter Contact Number">
+                            <input matInput type="number" formControlName="emergancyContactNumber"
+                                placeholder="Enter Contact Number">
                         </mat-form-field>
                     </div>
                 </mat-expansion-panel>

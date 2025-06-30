@@ -18,6 +18,7 @@ export class EmployeeProfileComponent {
   roles: any;
   selectedUser: any;
   isEdit = this.userService.getIsEdit();
+  bsValue = new Date();
 
   constructor(
     private fb: FormBuilder,
@@ -87,14 +88,15 @@ export class EmployeeProfileComponent {
   }
 
   onSubmit() {
-    if (this.userForm.valid) {
+    console.log(this.userForm.value)
+    // if (this.userForm.valid) {
       this.userService.updateUser(this.selectedUser[0].id, this.userForm.value).subscribe(
         (res: any) => this.toast.success('User Updated Successfully'),
         (err) => { this.toast.error('User Update Failed') }
       );
-    } else {
-      this.toast.error('Please fill all required fields correctly.');
-    }
+    // } else {
+    //   this.userForm.markAllAsTouched();
+    // }
   }
 
   getRoles() {

@@ -7,6 +7,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-step-5',
   templateUrl: './step-5.component.html',
@@ -17,7 +18,7 @@ export class Step5Component {
   arrearForm: FormGroup;
   changeMode: 'Add' | 'Update' = 'Update';
   @Input() selectedPayroll: any;
-  salaryPerDay : any; // or fetch dynamically if needed
+  salaryPerDay: any; // or fetch dynamically if needed
   selectedUserId: any;
   arrears: any;
   allUsers: any;
@@ -27,7 +28,21 @@ export class Step5Component {
   selectedPayrollUser: string;
   payrollUsers: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
-
+  columns: TableColumn[] = [
+    { key: 'payrollUserDetails', name: 'Employee Name' },
+    { key: 'manualArrears', name: 'Manual Arrears'},
+    { key: 'arrearDays', name: 'Arrear Days' },
+    { key: 'lopReversalDays', name: 'LOP Reversal Days', },
+    { key: 'salaryRevisionDays', name: 'Salary Revision Days' },
+    { key: 'lopReversalArrears', name: 'LOP Reversal Arrears' },
+    { key: 'totalArrears', name: 'Total Arrears' },
+    {
+      key: 'action', name: 'Action', isAction: true, options: [
+        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit' },
+        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
+      ]
+    }
+  ]
   constructor(
     private fb: FormBuilder,
     private payrollService: PayrollService,
@@ -59,31 +74,48 @@ export class Step5Component {
     });
     this.getArrearsByPayroll();
   }
+
+  onActionClick(event: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.changeMode = 'Update';
+        this.selectedRecord = event.row;
+        this.openDialog();
+        break;
+      case 'Delete':
+        this.selectedRecord = event.row;
+        this.deleteDialog(this.selectedRecord._id);
+        break;
+      default:
+        break;
+    }
+  }
+
   recalculateFields(): void {
     const manualArrears = this.arrearForm.get('manualArrears')?.value || 0;
     const arrearDays = this.arrearForm.get('arrearDays')?.value || 0;
     const lopReversalDays = this.arrearForm.get('lopReversalDays')?.value || 0;
     const salaryRevisionDays = this.arrearForm.get('salaryRevisionDays')?.value || 0;
-  
+
     const lopReversalArrears = lopReversalDays * this.salaryPerDay;
     const totalArrears = manualArrears + ((arrearDays + salaryRevisionDays) * this.salaryPerDay) + lopReversalArrears;
-  
+
     this.arrearForm.patchValue({
       lopReversalArrears: lopReversalArrears.toFixed(0),
       totalArrears: totalArrears.toFixed(0)
     }, { emitEvent: false }); // Prevent recursive loop
   }
-  getDailySalaryByUserId(userId: string): void {       
+  getDailySalaryByUserId(userId: string): void {
     this.userService.getDailySalaryByUserId(userId).subscribe(
       (res: any) => {
-        
+
         this.salaryPerDay = res.data;
         console.log(this.salaryPerDay);
       },
       (error: any) => {
         this.toast.error('Failed to load Salary Per Day', 'Error');
       })
-}
+  }
   selectTab(tabId: string) {
     this.activeTab = tabId;
   }
@@ -121,11 +153,11 @@ export class Step5Component {
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user?.value?._id;
-   console.log(this.selectedUserId);
-   console.log(this.selectedPayrollUser);
-         this.getDailySalaryByUserId( this.selectedUserId);
-      
-   
+    console.log(this.selectedUserId);
+    console.log(this.selectedPayrollUser);
+    this.getDailySalaryByUserId(this.selectedUserId);
+
+
     if (this.changeMode != 'Add') { this.getArrears(); }
   }
 

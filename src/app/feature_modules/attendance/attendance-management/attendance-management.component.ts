@@ -9,11 +9,11 @@ export class AttendanceManagementComponent {
   selectedTab: number = 1;
   view = localStorage.getItem('adminView');
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit(): void {
-  }
-  selectTab(tabIndex: number) {
+  ngOnInit(): void {}
+
+  selectTab(tabIndex: number): void {
     this.selectedTab = tabIndex;
   }
 }

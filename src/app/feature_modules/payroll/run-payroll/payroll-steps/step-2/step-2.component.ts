@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-step-2',
@@ -23,6 +24,12 @@ export class Step2Component {
   selectedPayrollUser: string;
   allUsers: any[] = [];
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  columns: TableColumn[] = [
+    {key: 'payrollUserDetails', name: 'Employee Name'},
+    {key: 'totalDays', name: 'Total Days'},
+    {key: 'lopDays', name: 'LOP Days'},
+    {key: 'payableDays', name: 'Payable Days'},
+  ]
 
   constructor(private payrollService: PayrollService,
     private fb: FormBuilder,

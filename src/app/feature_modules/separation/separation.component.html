@@ -1,13 +1,13 @@
-<div class="main-content contentData">
-    <div class="container-fluid px-0">
-        <ng-container>
-            <div class="d-flex bg-white subMenu w-100">              
-                <a routerLink="resignation" class="btn rounded-pill submenuTab"
-                   [routerLinkActive]="'active'">Resignation</a>
-                <a routerLink="termination" class="btn rounded-pill submenuTab"
-                   [routerLinkActive]="'active'">Termination</a>
-            </div>
-            <router-outlet></router-outlet>
-        </ng-container>
+<mat-tab-group mat-align-tabs="start" mat-stretch-tabs="false" [(selectedIndex)]="selectedTab" (selectedTabChange)="selectTab($event.index)">
+  <mat-tab label="Resignation">
+    <div class="py-3">
+      <app-resignation></app-resignation>
     </div>
-</div>
+  </mat-tab>
+  
+  <mat-tab label="Termination">
+    <div class="py-3">
+      <app-termination></app-termination>
+    </div>
+  </mat-tab>
+</mat-tab-group>

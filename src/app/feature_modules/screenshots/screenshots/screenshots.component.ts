@@ -122,7 +122,7 @@ export class ScreenshotsComponent implements OnInit {
             otherMembers.sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
 
             this.members = [this.members[0], ...otherMembers];
-            this.showScreenShots();
+            this.getLastSelectedUserFromPreferences();
           },
           error: error => {
             console.log('There was an error!', error);
@@ -137,27 +137,7 @@ export class ScreenshotsComponent implements OnInit {
     });
   }
 
-  showScreenShots() {
-  let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.preferenceService.getPreferenceByKey(PreferenceKeys.ScreenshotSelectedMember, currentUser?.id)
-      .subscribe({
-        next: (response: any) => {
-          const preferences = response?.data?.preferences || [];
-          const match = preferences.find((pref: any) =>
-            pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ScreenshotSelectedMember
-          );
-          //this.selectedMember = JSON.parse(match?.preferenceOptionId?.preferenceValue);
-          const savedMember = JSON.parse(match.preferenceOptionId.preferenceValue);
-          // Find the matching member object from the current members list
-          this.selectedMember = this.members.find(m => m.id === savedMember.id);
-          this.member = this.selectedMember || currentUser;
-        },
-        error: (err) => {
-          console.error('Failed to load language preference', err);
-          this.selectedMember = currentUser;
-        }
-      });
-      
+  showScreenShots() {      
     let formattedDate = this.formatDate(this.selectedDate);
     var result = this.timeLogService.getLogsWithImages(this.member.id, formattedDate);
     result.subscribe(res => {
@@ -468,6 +448,28 @@ export class ScreenshotsComponent implements OnInit {
     } else {
       this.dialogRef.updateSize('80vw');
     }
+  }
+
+  getLastSelectedUserFromPreferences() {
+    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.preferenceService.getPreferenceByKey(PreferenceKeys.ScreenshotSelectedMember, currentUser?.id)
+      .subscribe({
+        next: (response: any) => {
+          const preferences = response?.data?.preferences || [];
+          const match = preferences.find((pref: any) =>
+            pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ScreenshotSelectedMember
+          );
+          const savedMember = JSON.parse(match.preferenceOptionId.preferenceValue);
+          this.selectedMember = this.members.find(m => m.id === savedMember.id);
+          this.member = this.selectedMember || currentUser;
+          this.showScreenShots();
+        },
+        error: (err) => {
+          console.error('Failed to load language preference', err);
+          this.selectedMember = currentUser;
+          this.showScreenShots();
+        }
+    });
   }
 
 }

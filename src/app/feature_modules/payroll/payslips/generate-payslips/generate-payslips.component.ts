@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { CompanyService } from 'src/app/_services/company.service';
 
 @Component({
   selector: 'app-generate-payslips',
@@ -18,8 +19,15 @@ export class GeneratePayslipsComponent {
   statutoryDeductions: any;
   employerContributions: any;
   @ViewChild('payslipContainer') payslipContainer: ElementRef;
+  companyInfo: any;
 
-  constructor() { }
+  constructor(
+    private companyService: CompanyService
+  ) {
+    this.companyService.getCompanies().subscribe((res: any) => {
+      this.companyInfo = res.data.find((item)=> item._id === this.payslip.PayrollUser.company._id)
+    })
+  }
 
   ngOnInit(): void {
     this.calculateTotals();
@@ -49,8 +57,8 @@ export class GeneratePayslipsComponent {
     this.totalEarnings = fixed + flexi + variable + finalOvertime + loanDisbursement + totalArrears;
 
     // Calculate total deductions
-    const fixedDeduction = ps?.PayrollUser?.totalFixedDeduction || 0;
-    const variableDeduction = ps?.PayrollUser?.totalVariableDeduction || 0;
+    const fixedDeduction = ps?.totalFixedDeduction || 0;
+    const variableDeduction = ps?.totalVariableDeduction || 0;
     const incomeTax = ps?.tdsCalculated || 0;
 
     // Sum amounts for Repayment loans
@@ -73,6 +81,8 @@ export class GeneratePayslipsComponent {
       }
     }
     return null;
+
+
   }
 
   downloadPDF() {

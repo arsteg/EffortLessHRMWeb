@@ -8,37 +8,7 @@
                 name="searchText" aria-label="default input example">
         </div>        
     </div>
-    <table mat-table [dataSource]="overtime">
-        <ng-container matColumnDef="payrollUserDetails">
-            <th mat-header-cell *matHeaderCellDef> Employee Name </th>
-            <td mat-cell *matCellDef="let data"> {{data?.payrollUserDetails}} </td>
-        </ng-container>
 
-        <ng-container matColumnDef="LateComing">
-            <th mat-header-cell *matHeaderCellDef> Late Coming </th>
-            <td mat-cell *matCellDef="let data"> {{data?.LateComing}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="EarlyGoing">
-            <th mat-header-cell *matHeaderCellDef> Early Going </th>
-            <td mat-cell *matCellDef="let data"> {{data?.EarlyGoing}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="FinalOvertime">
-            <th mat-header-cell *matHeaderCellDef> Final Over Time(HH:MM) </th>
-            <td mat-cell *matCellDef="let data"> {{data?.FinalOvertime / 60 | number: '1.2-2'}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="OvertimePayableSalary">
-            <th mat-header-cell *matHeaderCellDef> Over Time Amount-(INR) </th>
-            <td mat-cell *matCellDef="let data"> {{data?.OvertimeAmount | number: '1.2-2'}} </td>
-        </ng-container>      
-        <tr mat-header-row
-            *matHeaderRowDef="['payrollUserDetails', 'LateComing', 'EarlyGoing', 'FinalOvertime', 'OvertimePayableSalary']">
-        </tr>
-        <tr mat-row
-            *matRowDef="let row; columns: ['payrollUserDetails', 'LateComing', 'EarlyGoing', 'FinalOvertime', 'OvertimePayableSalary'];">
-        </tr>
-    </table>
+    <hrm-table [data]="overtime" [columns]="columns" [showSearch]="true"></hrm-table>
 </div>
 
