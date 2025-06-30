@@ -30,7 +30,37 @@
       </div>
     </mat-tab>
   
-    <mat-tab label="{{'permissions.assign_permissions' | translate}}">
+   <mat-tab label="{{'permissions.assign_permissions' | translate}}">
+      <div class="py-3 tableContainer">
+        <div class="d-flex justify-content-start mb-2 px-3">
+          <mat-form-field appearance="outline">
+            <mat-label>{{'permissions.search' | translate}}</mat-label>
+            <input matInput (keyup)="applyCheckboxFilter($event)">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+        </div>
+        <div *ngFor="let group of filteredGroupedRolePermissions" class="mb-3">
+          <mat-card class="p-3">
+            <mat-card-title>{{ group.role }}</mat-card-title>
+            <mat-card-content>
+              <div class="row">
+                <div class="col-md-3 col-sm-6 mb-2" *ngFor="let permission of group.permissions">
+                  <mat-checkbox
+                    [checked]="isPermissionAssigned(group.roleId, permission._id)"
+                    (change)="onPermissionToggle($event, group.roleId, permission._id)"
+                    class="d-block"
+                  >
+                    {{ permission.permissionName }}
+                  </mat-checkbox>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-tab>
+    
+    <!-- <mat-tab label="{{'permissions.assign_permissions' | translate}}">
     <div class="py-3 tableContainer">
       <div class="d-flex justify-content-between align-items-start mb-2 px-3">
         <mat-form-field appearance="outline">
@@ -54,13 +84,13 @@
           </mat-expansion-panel-header>
 
           <table mat-table [dataSource]="group.permissions" class="mat-elevation-z1 mb-3">
-            <!-- Permission Column -->
+            
             <ng-container matColumnDef="permission">
               <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">{{ 'permissions.permission' | translate }}</th>
               <td mat-cell *matCellDef="let element">{{ element.permission }}</td>
             </ng-container>
 
-            <!-- Actions Column -->
+            
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef style="font-weight: bold;">{{ 'permissions.actions' | translate }}</th>
               <td mat-cell *matCellDef="let element">
@@ -86,5 +116,5 @@
         </mat-expansion-panel>
       </mat-accordion>
     </div>
-  </mat-tab>
+  </mat-tab> -->
   </mat-tab-group>

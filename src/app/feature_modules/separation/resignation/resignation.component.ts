@@ -113,13 +113,13 @@ export class ResignationComponent implements OnInit {
           label: 'Edit',
           visibility: ActionVisibility.LABEL,
           icon: 'edit',
-          hideCondition: (row: any) => row.resignation_status !== this.resignationStatuses.Pending
+          hideCondition: (row: any) => row.resignation_status !== this.resignationStatuses.Completed
         },
         {
           label: 'Delete',
           visibility: ActionVisibility.LABEL,
           icon: 'delete',
-          hideCondition: (row: any) => row.resignation_status !== this.resignationStatuses.Pending
+          hideCondition: (row: any) => row.resignation_status !== this.resignationStatuses.Completed
         }
       ]
     }
@@ -190,19 +190,19 @@ export class ResignationComponent implements OnInit {
           label: 'Completed',
           visibility: ActionVisibility.LABEL,
           icon: 'check_circle',
-          //hideCondition: (row: any) => (row.resignation_status === 'Completed' || row.resignation_status === 'Approved')
+          hideCondition: (row: any) => (row.resignation_status === this.resignationStatuses.Completed)
         },
         {
-          label: 'Appealed',
+          label: 'In-Progress',
           visibility: ActionVisibility.LABEL,
           icon: 'hourglass_empty',
-          //hideCondition: (row: any) => (row.resignation_status === 'Completed' || row.resignation_status === 'Appealed' || row.resignation_status === 'Approved')
+          hideCondition: (row: any) => (row.resignation_status === "In-Progress")
         },
         {
           label: 'Approved',
           visibility: ActionVisibility.LABEL,
           icon: 'done',
-          //hideCondition: (row: any) => (row.resignation_status !== 'Pending' || row.resignation_status === 'Completed')
+          hideCondition: (row: any) => (row.resignation_status === this.resignationStatuses.Approved)
         }
       ]
     }
@@ -385,6 +385,7 @@ export class ResignationComponent implements OnInit {
   }
 
   updateResignationStatus(resignation: string, status: string) {
+    status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
     // If status is being changed to Completed, check the company_property_returned flag
   if (status === this.resignationStatuses.Completed && this.selectedRecord && !this.selectedRecord.company_property_returned) {
     this.toast.error(
@@ -434,13 +435,13 @@ export class ResignationComponent implements OnInit {
     const { action, row } = event;
     this.selectedRecord = row;
     if (action.label === 'Edit') {
+      this.isEditMode = true
       this.openDialog(row);
     } else if (action.label === 'Delete') {
       this.deleteDialog(row._id);
-    } else if (['Completed', 'Appealed', 'Approved'].includes(action.label)) {
-      this.selectedStatus = action.label;
-      //this.updateStatusResignation = action.label;
-      //this.changedStatus = action.label.toLowerCase() as ResignationStatus;
+    } else if (['Completed', 'In-Progress', 'Approved'].includes(action.label)) {
+      this.selectedStatus = row._id;
+      this.changedStatus = action.label.toLowerCase() as string;
       this.openUpdateStatusDialog();
     }
   }

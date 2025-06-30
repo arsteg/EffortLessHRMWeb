@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { SeparationService } from 'src/app/_services/separation.service';
+import { ActionVisibility } from 'src/app/models/table-column';
 
 interface TerminationStatus {
   Appealed: string;
@@ -42,17 +43,199 @@ export class TerminationComponent {
   appealForm: FormGroup;
   reviewAppealForm: FormGroup;
   selectedAppeal: any;
-  displayedColumns: string[] = [
-    'user',
-    'termination_date', 'termination_reason', 'notice_given',
-    'performance_warnings', 'severance_paid', 'final_pay_processed',
-    'company_property_returned', 'exit_interview_date', 'legal_compliance',
-    'unemployment_claim', 'termination_status', 'actions'
+  totalRecords: number;
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  // displayedColumns: string[] = [
+  //   'user',
+  //   'termination_date', 'termination_reason', 'notice_given',
+  //   'performance_warnings', 'severance_paid', 'final_pay_processed',
+  //   'company_property_returned', 'exit_interview_date', 'legal_compliance',
+  //   'unemployment_claim', 'termination_status', 'actions'
+  // ];
+  // userTerminationColumns: string[] = ['termination_date', 'termination_reason', 'notice_given',
+  //   'performance_warnings', 'severance_paid', 'final_pay_processed',
+  //   'company_property_returned', 'exit_interview_date', 'legal_compliance',
+  //   'unemployment_claim', 'actions'];
+  adminColumns = [
+    {
+      key: 'user',
+      name: 'User',
+      valueFn: (row: any) => this.getMatchingUser(row?.user),
+    },
+    {
+      key: 'termination_date',
+      name: 'Termination Date',
+      valueFn: (row: any) => new Date(row.termination_date).toLocaleDateString('en-US'),
+    },
+    {
+      key: 'termination_reason',
+      name: 'Termination Reason',
+      valueFn: (row: any) => row.termination_reason,
+    },
+    {
+      key: 'notice_given',
+      name: 'Notice Given',
+      valueFn: (row: any) => (row.notice_given ? 'Yes' : 'No'),
+    },
+    {
+      key: 'performance_warnings',
+      name: 'Performance Warnings',
+      valueFn: (row: any) => row.performance_warnings,
+    },
+    {
+      key: 'severance_paid',
+      name: 'Severance Paid',
+      valueFn: (row: any) => (row.severance_paid ? 'Yes' : 'No'),
+    },
+    {
+      key: 'final_pay_processed',
+      name: 'Final Pay Processed',
+      valueFn: (row: any) => (row.final_pay_processed ? 'Yes' : 'No'),
+      },
+    {
+      key: 'company_property_returned',
+      name: 'Company Property Returned',
+      valueFn: (row: any) => (row.company_property_returned ? 'Yes' : 'No'),
+    },
+    {
+      key: 'exit_interview_date',
+      name: 'Exit Interview Date',
+      valueFn: (row: any) => (row.exit_interview_date ? new Date(row.exit_interview_date).toLocaleDateString('en-US') : ''),
+    },
+    {
+      key: 'legal_compliance',
+      name: 'Legal Compliance',
+      valueFn: (row: any) => (row.legal_compliance ? 'Yes' : 'No'),
+    },
+    {
+      key: 'unemployment_claim',
+      name: 'Unemployment Claim',
+      valueFn: (row: any) => (row.unemployment_claim ? 'Yes' : 'No'),
+    },
+    {
+      key: 'termination_status',
+      name: 'Termination Status',
+      valueFn: (row: any) => row.termination_status,
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        {
+          label: 'Complete',
+          visibility: ActionVisibility.LABEL,
+          icon: 'check_circle',
+          hideCondition: (row: any) =>
+            row.termination_status === this.terminationStatuses.Completed ||
+            row.termination_status === this.terminationStatuses.Reinstated,
+        },
+        {
+          label: 'Review Appeal',
+          visibility: ActionVisibility.LABEL,
+          icon: 'rate_review',
+          hideCondition: (row: any) =>
+            !(
+              row.termination_status === this.terminationStatuses.Completed ||
+              row.termination_status === this.terminationStatuses.Reinstated ||
+              row.termination_status === this.terminationStatuses.Appealed
+            ),
+        },
+        {
+          label: 'Edit',
+          visibility: ActionVisibility.LABEL,
+          icon: 'edit',
+          hideCondition: (row: any) =>
+            row.termination_status === this.terminationStatuses.Completed ||
+            row.termination_status === this.terminationStatuses.Reinstated,
+        },
+        {
+          label: 'Delete',
+          visibility: ActionVisibility.LABEL,
+          icon: 'delete',
+          hideCondition: (row: any) =>
+            row.termination_status !== this.terminationStatuses.Completed ||
+            row.termination_status !== this.terminationStatuses.Reinstated,
+        },
+      ],
+    },
   ];
-  userTerminationColumns: string[] = ['termination_date', 'termination_reason', 'notice_given',
-    'performance_warnings', 'severance_paid', 'final_pay_processed',
-    'company_property_returned', 'exit_interview_date', 'legal_compliance',
-    'unemployment_claim', 'actions'];
+
+  userColumns = [
+    {
+      key: 'user',
+      name: 'User',
+      valueFn: (row: any) => this.getMatchingUser(row?.user),
+    },
+    {
+      key: 'termination_date',
+      name: 'Termination Date',
+      valueFn: (row: any) => new Date(row.termination_date).toLocaleDateString('en-US'),
+    },
+    {
+      key: 'termination_reason',
+      name: 'Termination Reason',
+      valueFn: (row: any) => row.termination_reason,
+    },
+    {
+      key: 'notice_given',
+      name: 'Notice Given',
+      valueFn: (row: any) => (row.notice_given ? 'Yes' : 'No'),
+    },
+    {
+      key: 'performance_warnings',
+      name: 'Performance Warnings',
+      valueFn: (row: any) => row.performance_warnings,
+    },
+    {
+      key: 'severance_paid',
+      name: 'Severance Paid',
+      valueFn: (row: any) => (row.severance_paid ? 'Yes' : 'No'),
+    },
+    {
+      key: 'final_pay_processed',
+      name: 'Final Pay Processed',
+      valueFn: (row: any) => (row.final_pay_processed ? 'Yes' : 'No'),
+    },
+    {
+      key: 'company_property_returned',
+      name: 'Company Property Returned',
+      valueFn: (row: any) => (row.company_property_returned ? 'Yes' : 'No'),
+    },
+    {
+      key: 'exit_interview_date',
+      name: 'Exit Interview Date',
+      valueFn: (row: any) => (row.exit_interview_date ? new Date(row.exit_interview_date).toLocaleDateString('en-US') : ''),
+    },
+    {
+      key: 'legal_compliance',
+      name: 'Legal Compliance',
+      valueFn: (row: any) => (row.legal_compliance ? 'Yes' : 'No'),
+    },
+    {
+      key: 'unemployment_claim',
+      name: 'Unemployment Claim',
+      valueFn: (row: any) => (row.unemployment_claim ? 'Yes' : 'No'),
+    },
+    {
+      key: 'termination_status',
+      name: 'Termination Status',
+      valueFn: (row: any) => row.termination_status,
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        {
+          label: 'Appeal',
+          visibility: ActionVisibility.LABEL,
+          icon: 'gavel'
+        },
+      ],
+    },
+  ];
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   @ViewChild('updateStatusResignation') updateStatusResignation: TemplateRef<any>;
@@ -213,7 +396,7 @@ export class TerminationComponent {
   }
   
   updateTerminationStatus(id: string, status: string) {
-    
+    status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   // If status is being changed to Completed, check the company_property_returned flag
   if (status === this.terminationStatuses.Completed && this.selectedRecord && !this.selectedRecord.company_property_returned) {
     this.toast.error(
@@ -358,4 +541,34 @@ export class TerminationComponent {
     );
   }
     
+  onActionClick(event: any) {
+    const { action, row } = event;
+    this.selectedRecord = row;
+    if (action.label === 'Edit') {
+      this.isEditMode = true;
+      this.openDialog(row);
+    } else if (action.label === 'Delete') {
+      this.updateTerminationStatus(row._id, this.terminationStatuses.Deleted);
+    } else if (action.label === 'Complete') {
+      this.selectedStatus = row._id;
+      this.changedStatus = this.terminationStatuses.Completed;
+      this.openUpdateStatusDialog();
+    } else if (action.label === 'Review Appeal') {
+      this.openReviewDialog(row._id);
+    } else if (action.label === 'Appeal') {
+      this.openAppealDialog(row);
+    }
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+    this.getTerminations();
+  }
+
+  onSearchChange(searchText: string) {
+    this.currentPage = 1;
+    this.getTerminations();
+  }
+
 }

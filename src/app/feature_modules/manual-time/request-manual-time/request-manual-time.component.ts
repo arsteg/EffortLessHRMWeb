@@ -63,13 +63,9 @@ export class RequestManualTimeComponent implements OnInit {
     {
       key: 'manager',
       name: 'Manager',
-      isHtml: true,
+      isHtml: true,      
       valueFn: (row: any) => `
-        <span class="letter ms-2" 
-              style="background-color: ${this.commonservice.getRandomColor(row?.manager?.firstName)}"
-              title="${row?.manager?.firstName} ${row?.manager?.lastName}">
-          ${row?.manager?.firstName?.slice(0, 1)?.toUpperCase()}
-        </span>`
+        <div class="d-flex"> <span class="rounded-circle bg-primary text-white fs-5 avatar">${row?.manager?.firstName?.slice(0, 1)?.toUpperCase()}</span></div>`
     },
     {
       key: 'task',
