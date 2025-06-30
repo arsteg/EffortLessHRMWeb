@@ -17,24 +17,24 @@
                             class="bi bi-download downloadBtn pe-2"></i>
                         Download</button>
                 </div>
-            
-            <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-                (recordsPerPageChange)="onRecordsPerPageChange($event)">
-            </app-pagination>
-        </div>
+
+                <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
+                    [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
+                    (recordsPerPageChange)="onRecordsPerPageChange($event)">
+                </app-pagination>
+            </div>
             <table class="px-4">
                 <thead>
                     <tr>
                         <th class="ps-2" [appSort]="attendanceTemplate" data-name="label"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Attendance Template
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Attendance Template
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th [appSort]="attendanceTemplate" data-name="label"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Number of Employees Covered
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Number of Employees Covered
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th scope="col" class="text-center">Actions</th>
                     </tr>
@@ -69,13 +69,7 @@
 </div>
 
 <ng-template #addModal let-modal>
-
-
     <app-general-template-settings (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1"
         (close)="onClose($event)" [isEdit]="isEdit"
         (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-general-template-settings>
-
-    <app-attendance-regularization *ngIf="step == 2" [changeMode]="changeMode" (close)="onClose($event)"
-        (changeStep)="onChangeStep($event)" [isEdit]="isEdit"
-        (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"></app-attendance-regularization>
 </ng-template>
