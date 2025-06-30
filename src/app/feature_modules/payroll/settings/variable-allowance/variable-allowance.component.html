@@ -40,7 +40,24 @@
               </mat-error>
             </mat-form-field>
           </div>
-
+          <div class="mt-2 col-md-12">
+            <label class="small">{{ 'payroll._variable_allowance.form.ctc_question' | translate }} <span
+                    class="text-danger">*</span></label>
+            <div class="d-flex">
+                <mat-radio-group formControlName="isShowINCTCStructure">
+                    <mat-radio-button [value]="true">{{ 'payroll.yes' | translate }}</mat-radio-button>
+                    <mat-radio-button [value]="false" class="ms-3">{{ 'payroll.no' | translate
+                        }}</mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <div
+                *ngIf="variableAllowanceForm.get('isShowINCTCStructure').invalid && (variableAllowanceForm.get('isShowINCTCStructure').dirty || variableAllowanceForm.get('isShowINCTCStructure').touched)">
+                <small class="text-danger"
+                    *ngIf="variableAllowanceForm.get('isShowINCTCStructure')['errors']['required']">
+                    {{ 'payroll.field_required' | translate }}
+                </small>
+            </div>
+        </div>
           <div class="form-group col-md-6">
             <mat-form-field class="w-100">
               <mat-label>{{ 'payroll._variable_allowance.form.allowance_rate' | translate }}</mat-label>

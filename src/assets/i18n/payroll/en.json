@@ -431,6 +431,7 @@
                 "pt_affected": "Does this allowance affect Professional Tax?",
                 "it_affected": "Does this allowance affect Income Tax?",
                 "tax_regime": "For which Tax Regimes will the Income Tax be calculated?",
+                "ctc_question": "Does this Variable deduction show up in CTC structure?",       
                 "tax_regime_type": {
                     "new": "New regime",
                     "old": "Old regime"
@@ -606,7 +607,17 @@
             },
             "toast": {
                 "success_deleted": "CTC Template deleted successfully",
-                "error_delete": "Failed to delete CTC Template"
+                "fixed_allowance_Invalid_data": "Fixed Allowance contains invalid Value or Minimum Amount",
+                "fixed_deduction_Invalid_data": "Fixed Deduction contains invalid Value or Minimum Amount",
+                "variable_allowance_Invalid_data": "Variable Allowance contains invalid Value or Minimum Amount",
+                "variable_deduction_Invalid_data": "Variable Deduction contains invalid Value or Minimum Amount",
+                "success_updated": "CTC Template deleted successfully",
+                "failed_updated": "Failed to update CTC Template",
+                "success_saved": "CTC Template saved successfully",
+                "failed_saved": "Failed to save CTC Template",
+                "template_name": "Template name is required",
+                "one_fixed_allowance_required": "At least one Fixed Allowance is required"
+           
             }
         }
     }

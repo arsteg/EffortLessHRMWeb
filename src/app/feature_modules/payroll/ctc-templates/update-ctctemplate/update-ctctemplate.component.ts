@@ -2,6 +2,9 @@ import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { AssignedFixedAllowanceComponent } from '../assigned-templates/fixed-allowance/fixed-allowance.component';
+import { TranslateService } from '@ngx-translate/core';
 
 const labelValidator: ValidatorFn = (control: AbstractControl) => {
   const value = control.value as string;
@@ -22,7 +25,8 @@ export class UpdateCTCTemplateComponent {
   isEdit: boolean;
   selectedRecord: any = null;
   @Output() recordUpdatedFromAssigned: EventEmitter<any> = new EventEmitter<any>();
-  fixedAllowances: any;
+  fixedAllowance: any;
+  
   fixedDeduction: any;
   variableAllowance: any;
   variableDeduction: any;
@@ -30,9 +34,11 @@ export class UpdateCTCTemplateComponent {
   ctcTemplateForm: FormGroup;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: FormBuilder,    
+    private toast: ToastrService,
     private payroll: PayrollService,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute,    
+    private translate: TranslateService,
     private router: Router
   ) {
     this.ctcTemplateForm = this.fb.group({
@@ -45,6 +51,7 @@ export class UpdateCTCTemplateComponent {
   }
 
   ngOnInit() {
+    this.getDataOfAllPayrollSettings();
     this.route.params.subscribe(param => {
       const id = param['id'];
       if (id) {
@@ -52,9 +59,10 @@ export class UpdateCTCTemplateComponent {
         this.getRecordById(id);
       } else {
         this.isEdit = false;
+        this.clearAllData();
       }
     });
-    this.getDataOfAllPayrollSettings();
+   
     this.selectedRecord = this.payroll.selectedCTCTemplate.getValue();
     if (this.isEdit) {
       this.ctcTemplateForm.patchValue({
@@ -69,11 +77,75 @@ export class UpdateCTCTemplateComponent {
       this.ctcTemplateForm.reset();
     }
   }
+  onNext() {
+    const isValid = this.getAssignedTemplates();
+    if (!isValid) 
+      {
+        this.showAssignedTemplates = true;
+        return; // Stop here if invalid
+      }
+      else
+      {   
+        this.showAssignedTemplates = false;
+      }
+    
+  }
+  clearAllData() {
+    // Reset form
+    this.ctcTemplateForm.reset({
+      name: '',
+      ctcTemplateFixedAllowance: [],
+      ctcTemplateFixedDeduction: [],
+      ctcTemplateVariableAllowance: [],
+      ctcTemplateVariableDeduction: []
+    });
 
-  getAssignedTemplates() {
-   const payroll = this.payroll.selectedCTCTemplate.subscribe((data: any) => {
+    // Clear selectedRecord
+    this.selectedRecord = {
+      name: '',
+      ctcTemplateFixedAllowances: [],
+      ctcTemplateFixedDeductions: [],
+      ctcTemplateVariableAllowances: [],
+      ctcTemplateVariableDeductions: []
+    };
+
+    // Notify PayrollService to clear selected template
+    this.payroll.selectedCTCTemplate.next(this.selectedRecord);
+
+    // Clear form values in service
+    this.payroll.getFormValues.next({
+      name: '',
+      ctcTemplateFixedAllowance: [],
+      ctcTemplateFixedDeduction: [],
+      ctcTemplateVariableAllowance: [],
+      ctcTemplateVariableDeduction: []
+    });
+
+    // Notify child components via subjects
+    this.payroll.fixedAllowances.next([...this.fixedAllowance]);
+    this.payroll.fixedDeductions.next([...this.fixedDeduction]);
+    this.payroll.variableAllowances.next([...this.variableAllowance]);
+    this.payroll.variableDeductions.next([...this.variableDeduction]);
+  }
+  getAssignedTemplates(): boolean {
+    const template = this.ctcTemplateForm.value;
+  
+    // 1. Validate template name
+    if (!template.name || template.name.trim() === '') {
+      this.toast.error(this.translate.instant('payroll._ctc_templates.toast.template_name')); 
+      return false;
+    }
+  
+    // 2. Validate at least one fixed allowance
+    const fixedAllowances = this.ctcTemplateForm.get('ctcTemplateFixedAllowance')?.value;
+    if (!fixedAllowances || fixedAllowances.length === 0) {
+      this.toast.error(this.translate.instant('payroll._ctc_templates.toast.one_fixed_allowance_required'));
+      return false;
+    }
+    
+    const payroll = this.payroll.selectedCTCTemplate.subscribe((data: any) => {
       this.selectedRecord = data;
-      this.fixedAllowances = data.ctcTemplateFixedAllowances;
+      this.fixedAllowance = data.ctcTemplateFixedAllowances;
       this.fixedDeduction = data.ctcTemplateFixedDeductions;
       this.variableAllowance = data.ctcTemplateVariableAllowances;
       this.variableDeduction = data.ctcTemplateVariableDeductions;
@@ -86,7 +158,8 @@ export class UpdateCTCTemplateComponent {
     } else {
       this.payroll.getFormValues.next(this.ctcTemplateForm.value);
     }
-  }
+    return true;
+  }  
 
   getRecordById(id: string) {
     this.payroll.getCTCTemplateById(id).subscribe((res: any) => {
@@ -119,7 +192,7 @@ export class UpdateCTCTemplateComponent {
     const typeMappings = {
       fixedAllowance: {
         property: 'ctcTemplateFixedAllowances',
-        dataSource: this.fixedAllowances,
+        dataSource: this.fixedAllowance,
         subject: this.payroll.fixedAllowances
       },
       fixedDeduction: {
@@ -195,23 +268,23 @@ export class UpdateCTCTemplateComponent {
   getDataOfAllPayrollSettings() {
     let payload = { next: '', skip: '' };
     this.payroll.getFixedAllowance(payload).subscribe((res: any) => {
-      this.fixedAllowances = res.data;
-      this.payroll.fixedAllowances.next(this.fixedAllowances);
+      this.fixedAllowance = res.data;
+      this.payroll.fixedAllowances.next(this.fixedAllowance);
     });
 
     this.payroll.getFixedDeduction(payload).subscribe((res: any) => {
       this.fixedDeduction = res.data;
-      this.payroll.fixedDeductions.next(this.fixedAllowances); // Note: Likely should be this.fixedDeduction
+      this.payroll.fixedDeductions.next(this.fixedDeduction); // Note: Likely should be this.fixedDeduction
     });
 
     this.payroll.getVariableAllowance(payload).subscribe((res: any) => {
-      this.variableAllowance = res.data.filter((item: any) => item.isShowInCTCStructure === true);
-      this.payroll.variableAllowances.next(this.fixedAllowances); // Note: Likely should be this.variableAllowance
+      this.variableAllowance = res.data.filter((item: any) => item.isShowINCTCStructure === true);
+      this.payroll.variableAllowances.next(this.variableAllowance); // Note: Likely should be this.variableAllowance
     });
 
     this.payroll.getVariableDeduction(payload).subscribe((res: any) => {
       this.variableDeduction = res.data.filter((item: any) => item.isShowINCTCStructure === true);
-      this.payroll.variableDeductions.next(this.fixedAllowances); // Note: Likely should be this.variableDeduction
+      this.payroll.variableDeductions.next(this.variableDeduction); // Note: Likely should be this.variableDeduction
     });
   }
 

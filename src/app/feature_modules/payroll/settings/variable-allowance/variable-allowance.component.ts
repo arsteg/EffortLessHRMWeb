@@ -165,6 +165,7 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
     this.variableAllowanceForm = this.fb.group({
       label: ['', [Validators.required, labelValidator]],
       allowanceRatePerDay: [0, [Validators.required, Validators.min(0)]],
+      isShowINCTCStructure:[false],
       isPayrollEditable: [false],
       isProvidentFundAffected: [false],
       isESICAffected: [false],
@@ -288,6 +289,7 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
     this.variableAllowanceForm.reset({
       label: '',
       allowanceRatePerDay: 0,
+      isShowINCTCStructure:false,
       isPayrollEditable: false,
       isProvidentFundAffected: false,
       isESICAffected: false,
@@ -406,6 +408,7 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
   editRecord() {
     this.variableAllowanceForm.patchValue({
       ...this.selectedRecord,
+      isShowINCTCStructure: !!this.selectedRecord.isShowINCTCStructure,
       isPayrollEditable: !!this.selectedRecord.isPayrollEditable,
       isProvidentFundAffected: !!this.selectedRecord.isProvidentFundAffected,
       isESICAffected: !!this.selectedRecord.isESICAffected,

@@ -1,7 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { AssignedFixedAllowanceComponent } from './fixed-allowance/fixed-allowance.component';
+import { AssignedFixedDeductionComponent } from './fixed-deduction/fixed-deduction.component';
+import { VarAllowanceComponent } from './var-allowance/var-allowance.component';
+import { VarDeductionComponent } from './var-deduction/var-deduction.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-assigned-templates',
@@ -11,7 +16,16 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 export class AssignedTemplatesComponent {
   isEdit = this.payroll.isEdit.getValue();
   @Output() recordUpdated: EventEmitter<any> = new EventEmitter<any>();
-  activeTabIndex: number = 0;
+  @ViewChild('fixedAllowanceChild') fixedAllowanceChildComponent: AssignedFixedAllowanceComponent;
+  
+  @ViewChild('fixedDeductionChild') fixedDeductionChildComponent: AssignedFixedDeductionComponent;
+  
+  @ViewChild('variableAllowanceChild') variableAllowanceChildComponent: VarAllowanceComponent;
+  
+  @ViewChild('variableDeductionChild') variableDeductionChildComponent: VarDeductionComponent;
+  activeTabIndex: number = 0;  
+  tabChanges: { [key: number]: boolean } = {};
+  visitedTabs: Set<number> = new Set();
   fixedAllowanceData: any;
   fixedDeductionData: any;
   variableAllowanceData: any;
@@ -24,7 +38,8 @@ export class AssignedTemplatesComponent {
   constructor(
     private payroll: PayrollService,
     private toast: ToastrService,
-    private router: Router,
+    private router: Router,  
+    private translate: TranslateService,
     private route: ActivatedRoute
   ) { }
 
@@ -35,7 +50,10 @@ export class AssignedTemplatesComponent {
     this.updateForm();
     this.selectedRecord = this.payroll.selectedCTCTemplate.getValue();
   }
-
+  onTabChange(index: number) {
+    this.activeTabIndex = index;
+    this.visitedTabs.add(index); // Track tabs user interacted with
+  }
   goBack() {
     this.router.navigate(['home/payroll/ctc-template']);
   }
@@ -50,61 +68,80 @@ export class AssignedTemplatesComponent {
         this.variableDeductionData = res.ctcTemplateVariableDeduction || [];
       });
     }
-    if (!this.isEdit) {
-      this.payroll.fixedAllowances.subscribe(res => {
-        this.fixedAllowanceData = res;
-      });
-      this.payroll.fixedDeductions.subscribe(res => {
-        this.fixedDeductionData = res;
-      });
-      this.payroll.variableAllowances.subscribe(res => {
-        this.variableAllowanceData = res;
-      });
-      this.payroll.variableDeductions.subscribe(res => {
-        this.variableDeductionData = res;
-      });
-    }
-  }
 
+  }
+  markTabAsChanged(tabIndex: number) {
+    this.tabChanges[tabIndex] = true;
+  }
   onFixedAllowanceDataChange(data: any) {
     this.fixedAllowanceData = data;
+    if (this.activeTabIndex === 0) {     
+      this.markTabAsChanged(0);
+    }
   }
 
   onFixedDeductionDataChange(data: any) {
     this.fixedDeductionData = data;
+    if (this.activeTabIndex === 1) {    
+      this.markTabAsChanged(1);
+    }
   }
 
   onVariableAllowanceDataChange(data: any) {
-    this.variableAllowanceData = data;
+    if (this.activeTabIndex === 2) {
+      this.variableAllowanceData = data;
+      this.markTabAsChanged(2);
+    }
   }
 
   onVariableDeductionDataChange(data: any) {
-    this.variableDeductionData = data;
+   if (this.activeTabIndex === 3) {
+      this.variableDeductionData = data;
+      this.markTabAsChanged(3);
+    }
   }
 
   onSubmission() {
     const template = this.payroll.getFormValues.getValue();
+    if (!this.fixedAllowanceChildComponent.isFormValid()) {
+      this.toast.error(this.translate.instant('payroll._ctc_templates.toast.fixed_allowance_Invalid_data'));  
+      return;
+    }
+    if (!this.fixedDeductionChildComponent.isFormValid()) {
+      this.toast.error(this.translate.instant('payroll._ctc_templates.toast.fixed_deduction_Invalid_data'));  
+      return;
+    }
+    if (!this.variableAllowanceChildComponent.isFormValid()) {
+      this.toast.error(this.translate.instant('payroll._ctc_templates.toast.variable_allowance_Invalid_data'));  
+      return;
+    }
+    if (!this.variableDeductionChildComponent.isFormValid()) {
+      this.toast.error(this.translate.instant('payroll._ctc_templates.toast.variable_deduction_Invalid_data'));  
+      return;
+    }
+    console.log(this.variableAllowanceData);
     let payload = {
       name: template.name,
-      ctcTemplateFixedAllowance: this.fixedAllowanceData || [],
-      ctcTemplateFixedDeduction: this.fixedDeductionData || [],
-      ctcTemplateVariableAllowance: this.variableAllowanceData || [],
-      ctcTemplateVariableDeduction: this.variableDeductionData || []
+      ctcTemplateFixedAllowance: this.tabChanges[0] ? this.fixedAllowanceData : this.selectedRecord.ctcTemplateFixedAllowances,
+      ctcTemplateFixedDeduction: this.tabChanges[1] ? this.fixedDeductionData : this.selectedRecord.ctcTemplateFixedDeductions,
+      ctcTemplateVariableAllowance: this.tabChanges[2] ? this.variableAllowanceData : this.selectedRecord.ctcTemplateVariableAllowances,
+      ctcTemplateVariableDeduction: this.tabChanges[3] ? this.variableDeductionData : this.selectedRecord.ctcTemplateVariableDeductions
+
     };
     if (this.isEdit) {
       const id = this.payroll.selectedCTCTemplate.getValue()._id;
       this.payroll.updateCTCTemplate(id, payload).subscribe((res: any) => {
         this.recordUpdated.emit(res.data);
-        this.toast.success('CTC Template updated successfully');
+        this.toast.success(this.translate.instant('payroll._ctc_templates.toast.success_updated'));
       }, err => {
-        this.toast.error('CTC Template update failed');
+        this.toast.error(this.translate.instant('payroll._ctc_templates.toast.failed_updated'));  
       })
     } else {
       this.payroll.addCTCTemplate(payload).subscribe((res: any) => {
         this.recordUpdated.emit(res.data);
-        this.toast.success('CTC Template added successfully');
+        this.toast.success(this.translate.instant('payroll._ctc_templates.toast.success_saved'));
       }, err => {
-        this.toast.error('CTC Template add failed');
+        this.toast.error(this.translate.instant('payroll._ctc_templates.toast.failed_saved'));  
       })
     }
   }

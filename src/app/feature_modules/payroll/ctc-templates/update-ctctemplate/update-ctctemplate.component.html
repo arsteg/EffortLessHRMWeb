@@ -20,7 +20,7 @@
       <mat-label>Fixed Allowances</mat-label>
       <mat-select multiple formControlName="ctcTemplateFixedAllowance"
         (selectionChange)="onDropdownChange($event, 'fixedAllowance')">
-        <mat-option *ngFor="let fa of fixedAllowances" [value]="fa?._id">
+        <mat-option *ngFor="let fa of fixedAllowance" [value]="fa?._id">
           {{fa?.label}}
         </mat-option>
       </mat-select>
@@ -65,7 +65,7 @@
   <div class="d-flex border-top mt-2 py-2 justify-content-between">
     <button mat-flat-button type="button" (click)="goBack()">Back</button>
     <button mat-flat-button type="button" class="addBtn"
-      (click)="showAssignedTemplates = false; getAssignedTemplates()">Proceed</button>
+      (click)="onNext()" >Proceed</button>
   </div>
 </form>
 }
