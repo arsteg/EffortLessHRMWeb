@@ -1,4 +1,4 @@
-<mat-tab-group class="child-tabs" [(selectedIndex)]="activeTabIndex" (selectedIndexChange)="onTabChange($event)">
+<mat-tab-group class="child-tabs" mat-stretch-tabs="false" mat-align-tabs="start"  [(selectedIndex)]="activeTabIndex" (selectedIndexChange)="onTabChange($event)">
 
   <mat-tab label="Fixed Allowances">
     <app-assigned-fixed-allowance #fixedAllowanceChild (formDataChange)="onFixedAllowanceDataChange($event)"

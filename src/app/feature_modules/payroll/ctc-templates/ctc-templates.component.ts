@@ -28,7 +28,7 @@ export class CtcTemplatesComponent implements OnInit {
       isAction: true,
       options: [
         { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
-        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH }
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass:'delete-btn' }
       ]
     }
   ];
@@ -88,8 +88,9 @@ export class CtcTemplatesComponent implements OnInit {
   handleAction(event: any) {
     if (event.action.label === 'Edit') {
       this.editTemplate(event.row);
-    } else if (event.action === 'Delete') {
-      this.deleteDialog(event.data._id);
+    } 
+    if (event.action.label === 'Delete') {
+      this.deleteDialog(event.row._id);
     }
   }
 
