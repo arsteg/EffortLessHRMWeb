@@ -39,14 +39,21 @@ export class AuthGuard  {
   }
 
   try {
-    const hasAccess = await firstValueFrom(this.authService.isMenuAccessible(currentMenuName, userRole));
-    if(hasAccess || currentMenuName.toLowerCase() === 'home'){
-      return true;
-    }
-    else{
+    const hasAccess = currentMenuName.toLowerCase() === 'home'
+      || await firstValueFrom(this.authService.isMenuAccessible(currentMenuName, userRole));
+
+    if (!hasAccess) {
       this.toastrService.error("You are not authorized to access this page.");
-      return false;
     }
+    return hasAccess;
+    // const hasAccess = await firstValueFrom(this.authService.isMenuAccessible(currentMenuName, userRole));
+    // if(hasAccess || currentMenuName.toLowerCase() === 'home'){
+    //   return true;
+    // }
+    // else{
+    //   this.toastrService.error("You are not authorized to access this page.");
+    //   return false;
+    // }
   } catch (error) {
     this.toastrService.error("You are not authorized to access this page.");
     return false;
