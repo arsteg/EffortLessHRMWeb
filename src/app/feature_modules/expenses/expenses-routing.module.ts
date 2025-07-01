@@ -29,7 +29,7 @@ const routes: Routes = [
       { path: 'team-expense', component: TeamExpenseComponent },
       { path: 'general-information', component: GeneralInformationComponent },
       {
-        path: 'settings', component: SettingsComponent, canActivate: [AuthGuard],
+        path: 'settings', component: SettingsComponent,
         data: { permission: 'Expenses' },
         children: [
           { path: '', redirectTo: 'expense-category', pathMatch: 'full' },

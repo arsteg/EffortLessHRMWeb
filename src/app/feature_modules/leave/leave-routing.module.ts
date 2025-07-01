@@ -33,7 +33,7 @@ const routes: Routes = [
       { path: 'team-leave-grant', component: LeaveManagementComponent },
       { path: 'general-information', component: GeneralComponent },
       {
-        path: 'settings', component: LeaveSettingComponent, canActivate: [AuthGuard],
+        path: 'settings', component: LeaveSettingComponent,
         data: { permission: 'Leave' },
         children: [
           { path: '', redirectTo: 'leave-category', pathMatch: 'full' },
