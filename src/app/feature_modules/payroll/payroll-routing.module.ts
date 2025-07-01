@@ -31,7 +31,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'settings', pathMatch: 'full' },
       {
-        path: 'settings', component: SettingsComponent, canActivate: [AuthGuard],
+        path: 'settings', component: SettingsComponent,
         data: { permission: 'Payroll' },
         children: [
           { path: '', redirectTo: 'general-settings', pathMatch: 'full' },
