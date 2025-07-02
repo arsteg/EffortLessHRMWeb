@@ -190,39 +190,83 @@ export class GeneralTemplateSettingsComponent {
     this.close.emit(true);
   }
 
-  onDaysChange(event: any, day: string, type: string) {
-    let selectedDays: string[];
-    if (type === 'weeklyOfDays') {
-      const index = this.selectedWeeklyDays.indexOf(day);
-      if (event.target.checked && index === -1) {
-        this.selectedWeeklyDays.push(day);
-      } else if (!event.target.checked && index > -1) {
-        this.selectedWeeklyDays.splice(index, 1);
-      }
+  // onDaysChange(event: any, day: string, type: string) {
+  //   debugger;
+  //   let selectedDays: string[] = [];
+  //   if (type === 'weeklyOfDays') {
+  //     const index = this.selectedWeeklyDays.indexOf(day);
+  //     if (event.target.checked && index === -1) {
+  //       this.selectedWeeklyDays.push(day);
+  //     } else if (!event.target.checked && index > -1) {
+  //       this.selectedWeeklyDays.splice(index, 1);
+  //     }
   
-      this.addTemplateForm.get('weeklyOfDays')?.setValue(this.selectedWeeklyDays);
-      this.addTemplateForm.get('weeklyOfDays')?.markAsTouched();
-      this.addTemplateForm.get('weeklyOfDays')?.updateValueAndValidity();
-    } else if (type === 'weklyofHalfDay') {
-      selectedDays = this.selectedHalfDays;
-      this.addTemplateForm.patchValue({ weklyofHalfDay: selectedDays });
-    } else if (type === 'daysForAlternateWeekOffRoutine') {
-      selectedDays = this.selectedAlternateWeekDays;
-      this.addTemplateForm.patchValue({ daysForAlternateWeekOffRoutine: selectedDays });
+  //     this.addTemplateForm.get('weeklyOfDays')?.setValue(this.selectedWeeklyDays);
+  //     this.addTemplateForm.get('weeklyOfDays')?.markAsTouched();
+  //     this.addTemplateForm.get('weeklyOfDays')?.updateValueAndValidity();
+  //   } else if (type === 'weklyofHalfDay') {
+  //     //selectedDays = this.selectedHalfDays;
+  //     selectedDays.push(day);
+  //     this.addTemplateForm.patchValue({ weklyofHalfDay: selectedDays });
+  //   } else if (type === 'daysForAlternateWeekOffRoutine') {
+  //     selectedDays.push(day);//this.selectedAlternateWeekDays;
+  //     this.addTemplateForm.patchValue({ daysForAlternateWeekOffRoutine: selectedDays });
+  //   }
+
+  //   const index = selectedDays.indexOf(day);
+  //   if (event.checked && index === -1) {
+  //     selectedDays.push(day);
+  //   } else if (!event.checked && index > -1) {
+  //     selectedDays.splice(index, 1);
+  //   }
+
+  //   // Update form control value and validity
+  //   if (type === 'daysForAlternateWeekOffRoutine') {
+  //     this.addTemplateForm.get('daysForAlternateWeekOffRoutine').updateValueAndValidity();
+  //   }
+  // }
+
+  onDaysChange(event: any, day: string, type: string) {
+  if (type === 'weeklyOfDays') {
+    const index = this.selectedWeeklyDays.indexOf(day);
+    if (event.checked && index === -1) {
+      this.selectedWeeklyDays.push(day);
+    } else if (!event.checked && index > -1) {
+      this.selectedWeeklyDays.splice(index, 1);
     }
 
+    this.addTemplateForm.get('weeklyOfDays')?.setValue(this.selectedWeeklyDays);
+    this.addTemplateForm.get('weeklyOfDays')?.markAsTouched();
+    this.addTemplateForm.get('weeklyOfDays')?.updateValueAndValidity();
+  }
+
+  else if (type === 'weklyofHalfDay') {
+    const selectedDays = this.addTemplateForm.get('weklyofHalfDay')?.value || [];
     const index = selectedDays.indexOf(day);
-    if (event.target.checked && index === -1) {
+
+    if (event.checked && index === -1) {
       selectedDays.push(day);
-    } else if (!event.target.checked && index !== -1) {
+    } else if (!event.checked && index !== -1) {
       selectedDays.splice(index, 1);
     }
 
-    // Update form control value and validity
-    if (type === 'daysForAlternateWeekOffRoutine') {
-      this.addTemplateForm.get('daysForAlternateWeekOffRoutine').updateValueAndValidity();
-    }
+    this.addTemplateForm.patchValue({ weklyofHalfDay: selectedDays });
   }
+
+  else if (type === 'daysForAlternateWeekOffRoutine') {
+    const selectedDays = this.addTemplateForm.get('daysForAlternateWeekOffRoutine')?.value || [];
+    const index = selectedDays.indexOf(day);
+
+    if (event.checked && index === -1) {
+      selectedDays.push(day);
+    } else if (!event.checked && index !== -1) {
+      selectedDays.splice(index, 1);
+    }
+
+    this.addTemplateForm.patchValue({ daysForAlternateWeekOffRoutine: selectedDays });
+    this.addTemplateForm.get('daysForAlternateWeekOffRoutine')?.updateValueAndValidity();
+  }
+}
 
   getAllUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
@@ -249,7 +293,7 @@ export class GeneralTemplateSettingsComponent {
           (res: any) => {
             this.attendanceService.selectedTemplate.next(res.data);
             this.toast.success('Attendance Template created', 'Successfully!!!');
-        this.expenseTemplateReportRefreshed.emit(res.data);
+            this.expenseTemplateReportRefreshed.emit(res.data);
             this.closeModal();
             // this.changeStep.emit(2);
           },

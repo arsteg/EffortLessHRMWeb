@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExportService } from 'src/app/_services/export.service';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
+import { ActionVisibility } from 'src/app/models/table-column';
 import { forkJoin } from 'rxjs'; // Import forkJoin
 
 @Component({
@@ -28,6 +29,37 @@ export class AttendanceTemplateComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   public sortOrder: string = '';
+  @ViewChild('addModal') addModal: any;
+  dialogRef: MatDialogRef<any> | null = null;
+
+  columns = [
+    {
+      key: 'label',
+      name: 'Attendance Template'
+    },
+    {
+      key: 'employeeCount',
+      name: 'Number of Employees Covered',
+      valueFn: (row: any) => this.templateAssignmentCount[row._id] || 0,
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      isAction: true,
+      options: [
+        {
+          label: 'Edit',
+          icon: 'edit',
+          visibility: ActionVisibility.LABEL
+        },
+        {
+          label: 'Delete',
+          icon: 'delete',
+          visibility: ActionVisibility.LABEL
+        },
+      ],
+    },
+  ];
 
   constructor(
     private modalService: NgbModal,
@@ -41,15 +73,14 @@ export class AttendanceTemplateComponent {
     this.loadAllData(); // Call a new method to load both
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
-    this.loadRecords(); // This will now properly trigger assignment count update
-  }
+  // onPageChange(page: number) {
+  //   this.currentPage = page;
+  //   this.loadRecords();
+  // }
 
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.loadRecords(); // This will now properly trigger assignment count update
-  }
+  // onRecordsPerPageChange(recordsPerPage: number) {
+  //   this.recordsPerPage = recordsPerPage;
+  //   this.loadRecords();
 
   loadAllData() {
     // Use forkJoin to wait for both observables to complete
@@ -72,6 +103,7 @@ export class AttendanceTemplateComponent {
       }
     );
   }
+  // }
 
   loadRecords() {
     const pagination = {
@@ -143,17 +175,28 @@ export class AttendanceTemplateComponent {
     }
   }
 
+  // open(content: any) {
+  //   this.modalService
+  //     .open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' })
+  //     .result.then(
+  //       (result) => {
+  //         this.closeResult = `Closed with: ${result}`;
+  //       },
+  //       (reason) => {
+  //         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  //       }
+  //     );
+  // }
+
   open(content: any) {
-    this.modalService
-      .open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' })
-      .result.then(
-        (result) => {
-          this.closeResult = `Closed with: ${result}`;
-        },
-        (reason) => {
-          this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-        }
-      );
+    this.changeMode = this.isEdit ? 'Next' : 'Add';
+    this.dialogRef = this.dialog.open(content, {
+      data: { templateRef: this.addModal, title: `${this.changeMode} Template` },
+      disableClose: true
+    });
+
+    this.dialogRef.afterClosed().subscribe(() => {
+    });
   }
 
   onChangeStep(event) {
@@ -166,15 +209,14 @@ export class AttendanceTemplateComponent {
     }
   }
 
-  onClose(event) {
-    if (event) {
-      this.modalService.dismissAll();
-      this.loadAllData(); // Reload all data to ensure counts are fresh after modal close (e.g., add/edit)
+  onClose(event: boolean) {
+    if (event && this.dialogRef) {
+      this.dialogRef.close();
     }
   }
 
   refreshExpenseReportTable() {
-    this.loadAllData(); // Reload all data, not just templates
+    this.loadAllData();
   }
 
   exportToCsv() {
@@ -192,8 +234,8 @@ export class AttendanceTemplateComponent {
 
     const dataToExport = this.attendanceTemplate.map((template) => {
       const attendanceModes = template.attendanceMode.join(', ');
-      const leveCategoryHierarchyForAbsentHalfDay =
-        template.leveCategoryHierarchyForAbsentHalfDay.join(',');
+      const leveCategoryHierarchyForAbsentHalfDay = 
+      template.leveCategoryHierarchyForAbsentHalfDay.join(',');
       const hours = template.minimumHoursRequiredPerWeek;
       const minutes = template.minimumMinutesRequiredPerWeek;
       const durationPerWeek = `${hours} Hr ${minutes} Mins`;
@@ -213,11 +255,7 @@ export class AttendanceTemplateComponent {
     const combinedData = [headers, ...dataToExport];
 
     // Call the export service with combined data
-    this.exportService.exportToCSV(
-      'attendance-template',
-      'attendance-template',
-      combinedData
-    );
+    this.exportService.exportToCSV('attendance-template', 'attendance-template', combinedData);
   }
 
   setFormValues(templateData: any) {
@@ -239,10 +277,7 @@ export class AttendanceTemplateComponent {
 
   deleteDialog(templateId: string): void {
     // Check if the template has assignments before opening the confirmation dialog
-    if (
-      this.templateAssignmentCount &&
-      this.templateAssignmentCount[templateId] > 0
-    ) {
+    if (this.templateAssignmentCount && this.templateAssignmentCount[templateId] > 0) {
       this.toast.error(
         'This template cannot be deleted because it is assigned to employees.',
         'Deletion Restricted'
@@ -258,6 +293,7 @@ export class AttendanceTemplateComponent {
       if (result === 'delete') {
         this.deleteTemplate(templateId);
       }
+      // No need for an 'err' callback here, as errors from deleteTemplate are handled there.
     });
   }
 
@@ -265,5 +301,33 @@ export class AttendanceTemplateComponent {
     this.attendanceService.getRegularizations().subscribe((res: any) => {
       this.regularizations = res.data;
     });
+  }
+
+  onPageChangev1(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+    this.loadRecords();
+  }
+
+  onSearchChange(event: any) {
+    this.searchText = event.value || '';
+    this.currentPage = 1; // Reset to first page on search
+    this.loadRecords();
+  }
+
+  onActionClick(event: any){
+    switch (event.action.label) {
+      case 'Edit':
+        this.changeMode='Next';
+        this.step = 1;
+        this.isEdit= true;
+        this.selectedTemplateId=event?.row?._id;
+        this.setFormValues(event?.row);
+        this.open(this.addModal);
+        break;
+      case 'Delete':
+        this.deleteDialog(event?.row?._id);
+        break;
+    }
   }
 }
