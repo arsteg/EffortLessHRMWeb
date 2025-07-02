@@ -39,31 +39,45 @@ export class AttendanceTemplateAssignmentComponent {
   @ViewChild('editModal') editModal: any;
   dialogRef: MatDialogRef<any> | null = null;
   private cdr: ChangeDetectorRef;
+  allData = [];
 
   columns = [
       {
         key: 'employee',
         name: 'Employee Name',
         sortable: true,
-        valueFn: (row: any) => this.getUser(row.employee)
+        valueFn: (row: any) => {
+          const firstName = row?.employee?.firstName;
+          const lastName = row?.employee?.lastName;
+          return firstName && lastName ? `${firstName} ${lastName}` : 'N/A';
+        }
       },
       {
-        key: 'attendanceTemplate',
+        key: 'attendance',
         name: 'Assigned Attendance Template',
         sortable: true,
         valueFn: (row: any) => row.attendanceTemplate?.label
       },
       {
-        key: 'primaryApprover',
+        key: 'primaryApproverName',
         name: 'Primary Supervisor',
         sortable: true,
-        valueFn: (row: any) => this.getUser(row.primaryApprover)
+        valueFn: (row: any) => 
+          {
+            const firstName = row?.primaryApprover?.firstName;
+            const lastName = row?.primaryApprover?.lastName;
+            return firstName && lastName ? `${firstName} ${lastName}` : 'N/A';
+          }
       },
       {
-        key: 'secondaryApprover',
+        key: 'secondaryApproverName',
         name: 'Secondary Supervisor',
         sortable: true,
-        valueFn: (row: any) => this.getUser(row.secondaryApprover)
+        valueFn: (row: any) => {
+            const firstName = row?.secondaryApprover?.firstName;
+            const lastName = row?.secondaryApprover?.lastName;
+            return firstName && lastName ? `${firstName} ${lastName}` : 'N/A';
+          }
       },
       {
         key: 'effectiveFrom',
@@ -162,11 +176,12 @@ export class AttendanceTemplateAssignmentComponent {
 
   loadRecords() {
     const pagination = {
-      skip: "1",//((this.currentPage - 1) * this.recordsPerPage).toString(),
-      next: "100000"//this.recordsPerPage.toString()
+      skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
+      next: this.recordsPerPage.toString()
     };
     this.attendanceService.getAttendanceAssignment(pagination.skip, pagination.next).subscribe((res: any) => {
       this.attendanceTemplateAssignment = res.data;
+      this.allData = res.data;
       this.totalRecords = res.total;
     })
 
@@ -466,5 +481,65 @@ export class AttendanceTemplateAssignmentComponent {
     } else if (event.action.label === 'Delete') {
       this.deleteDialog(event.row._id);
     }
+  }
+
+  // onSearch(search: any) {
+  //   const data = this.allData?.filter(row => {
+  //     const found = this.columns.some(col => {
+  //       return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+  //     });
+  //     return found;
+  //   });
+  //   this.attendanceTemplateAssignment = data;
+  // }
+
+  onSearch(search: string) {
+    const lowerSearch = search.toLowerCase();
+
+    const data = this.allData?.filter(row => {
+      const valuesToSearch = [
+        row?.employee?.firstName,
+        row?.employee?.lastName,
+        row?.primaryApprover?.firstName,
+        row?.primaryApprover?.lastName,
+        row?.attendanceTemplate,
+        row?.company,
+        row?.effectiveFrom
+      ];
+
+      return valuesToSearch.some(value =>
+        value?.toString().toLowerCase().includes(lowerSearch)
+      );
+    });
+
+    this.attendanceTemplateAssignment = data;
+  }
+
+  onSortChange(event: { active: string, direction: string }) {
+    var sortActive = event.active;
+    var sortDirection = event.direction; 
+    this.sortData(sortActive, sortDirection);
+  }
+
+  sortData(sortKey: string, direction): any[] {
+    let data: any[] = this.attendanceTemplateAssignment;
+    return [...data].sort((a, b) => {
+      const aValue = this.getNestedValue(a, sortKey);
+      const bValue = this.getNestedValue(b, sortKey);
+
+      if (aValue == null) return direction === 'asc' ? 1 : -1;
+      if (bValue == null) return direction === 'asc' ? -1 : 1;
+
+      const aStr = aValue.toString().toLowerCase();
+      const bStr = bValue.toString().toLowerCase();
+
+      if (aStr < bStr) return direction === 'asc' ? -1 : 1;
+      if (aStr > bStr) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+  
+  getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((acc, part) => acc?.[part], obj);
   }
 }

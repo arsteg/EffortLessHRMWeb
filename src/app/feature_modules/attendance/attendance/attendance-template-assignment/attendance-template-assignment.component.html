@@ -1,38 +1,35 @@
-<div class="mainContent pt-2">
-    <div class="container">
-        <div class="py-2 px-0 bg-white">
-            <div class="d-none d-md-block">
-                <div class="d-flex justify-content-end end-0">
-                    <button mat-flat-button (click)="open('add'); changeMode = 'Update'; isEdit= false;" color="primary">
-                        <mat-icon>add</mat-icon>{{ 'attendance.ata_assign_template' | translate }}</button>
-                </div>
-            </div>
-            <hrm-table
-                [data]="attendanceTemplateAssignment"
-                [columns]="columns"
-                (actionClicked)="onAction($event)"
-                [isServerSide]="false"
-                [showSearch]="true"
-                [totalItems]="totalRecords"
-                [pageSize]="recordsPerPage"
-                (pageChanged)="onPageChange($event)"
-                [showExport]="'csv'">
-            </hrm-table>
-        </div>
+
+<div class="d-none d-md-block">
+    <div class="d-flex justify-content-end end-0">
+        <button mat-flat-button (click)="open('add'); changeMode = 'Update'; isEdit= false;" color="primary">
+            {{ 'attendance.at_add_new' | translate }}</button>
     </div>
 </div>
+<hrm-table
+    [data]="attendanceTemplateAssignment"
+    [columns]="columns"
+    (actionClicked)="onAction($event)"
+    [isServerSide]="true"
+    [showSearch]="true"
+    (searchChanged)="onSearch($event)"
+    [totalItems]="totalRecords"
+    [pageSize]="recordsPerPage"
+    (pageChanged)="onPageChange($event)"
+    (sortChanged)="onSortChange($event)"
+    [showExport]="'all'">
+</hrm-table>
 
 
 <ng-template #addModal let-modal>
     <div class="d-flex align-items-center justify-content-between">
         <h1 mat-dialog-title>{{ 'attendance.ata_attendace_template_assignment' | translate }}</h1>
-        <button type="button" mat-icon-button mat-dialog-close class="me-4">
+        <button mat-icon-button mat-dialog-close class="me-4">
             <mat-icon>close</mat-icon>
         </button>
     </div>
 
-    <div mat-dialog-content>
-        <form [formGroup]="attendanceTemplateAssignmentForm" (ngSubmit)="onCreate()">
+    <form [formGroup]="attendanceTemplateAssignmentForm" (ngSubmit)="onCreate()">
+        <div mat-dialog-content>
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>{{ 'attendance.ata_select_employee' | translate }}</mat-label>
                 <mat-select id="member" name="member" formControlName="employee" (selectionChange)="onEmployeeChange($event)" [disabled]="changeMode === 'Update'">
@@ -97,20 +94,26 @@
                     {{ 'attendance.ata_secondary_approver_required' | translate }}
                 </mat-error>
             </mat-form-field>
-            <div mat-dialog-actions class="justify-content-between">  
-                <button mat-button type="reset" mat-dialog-close>{{ 'attendance.ata_cancel' | translate }}</button>
-                <button mat-raised-button color="primary" type="submit" [disabled]="userHasTemplateError || !attendanceTemplateAssignmentForm.valid">{{ 'attendance.ata_add' | translate }}</button>
-            </div>
-        </form>
-    </div>
+        </div>
+        <div mat-dialog-actions class="d-flex align-items-center justify-content-between">  
+            <button mat-button type="reset" mat-dialog-close>
+                {{ 'attendance.ata_cancel' | translate }}
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="userHasTemplateError || !attendanceTemplateAssignmentForm.valid">
+                {{ 'attendance.ata_add' | translate }}
+            </button>
+        </div>
+    </form>
 </ng-template>
 
 <ng-template #editModal let-modal>
     <div class="d-flex align-items-center justify-content-between">
         <div>
-            <h1 mat-dialog-title>{{ 'attendance.template_assignment.update_title' | translate }}</h1>
+            <h1 mat-dialog-title>
+                {{ 'attendance.template_assignment.update_title' | translate }}
+            </h1>
         </div>
-        <button type="button" mat-icon-button mat-dialog-close class="me-4">
+        <button mat-icon-button mat-dialog-close class="me-4">
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -118,8 +121,8 @@
         <small>{{ 'attendance.template_assignment.employee_label' | translate }}: <span class="small-text">{{getUser(selectedTemplate?.employee)}}</span></small><br>
         <small>{{ 'attendance.template_assignment.template_label' | translate }}: <span class="small-text">{{selectedTemplate?.attendanceTemplate?.label}}</span></small>
     </div>
-    <div mat-dialog-content>
-        <form [formGroup]="updateTemplateAssignForm" (ngSubmit)="onUpdate()">
+    <form [formGroup]="updateTemplateAssignForm" (ngSubmit)="onUpdate()">
+        <div mat-dialog-content>
             <div *ngIf="templateById?.approversType === 'employee-wise'">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{ 'attendance.template_assignment.primary_approver_label' | translate }}</mat-label>
@@ -190,11 +193,14 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-
-            <div mat-dialog-actions class="justify-content-between">
-                <button mat-button type="reset">{{ 'attendance.template_assignment.cancel_button' | translate }}</button>
-                <button mat-raised-button color="primary" type="submit">{{ 'attendance.template_assignment.update_button' | translate }}</button>
-            </div>
-        </form>
-    </div>
+        </div>
+        <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+            <button mat-button type="reset">
+                {{ 'attendance.template_assignment.cancel_button' | translate }}
+            </button>
+            <button mat-raised-button color="primary" type="submit">
+                {{ 'attendance.template_assignment.update_button' | translate }}
+            </button>
+        </div>
+    </form>
 </ng-template>
