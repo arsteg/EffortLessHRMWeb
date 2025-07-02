@@ -1,47 +1,49 @@
-<div>
-  <ng-container>
-    <!-- Admin View -->
-    <ng-container *ngIf="view === 'admin'">
-      <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
-        <a mat-tab-link routerLink="settings" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
-          Settings
-        </a>
-        <a mat-tab-link routerLink="attendance-records" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
-          Attendance Records
-        </a>
-        <a mat-tab-link routerLink="overtime-records" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
-          Overtime Records
-        </a>
-        <a mat-tab-link routerLink="on-duty-request" routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive">
-          OnDuty Requests
-        </a>
-        <a mat-tab-link routerLink="attendance-process" routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive">
-          Attendance Process
-        </a>
-      </nav>
-      <mat-tab-nav-panel #tabPanel>
-        <router-outlet></router-outlet>
-      </mat-tab-nav-panel>
-    </ng-container>
+<div class="">
+  <div class="container-fluid px-0">
+      <!-- Admin View -->
+      <ng-container *ngIf="view === 'admin'">
+          <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+              <a mat-tab-link routerLink="settings" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
+                  {{ 'attendance.admin.settings' | translate }}
+              </a>
+              <a mat-tab-link routerLink="attendance-records" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
+                  {{ 'attendance.admin.attendanceRecords' | translate }}
+              </a>
+              <a mat-tab-link routerLink="overtime-records" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
+                  {{ 'attendance.admin.overtimeRecords' | translate }}
+              </a>
+              <!-- Remove For now it may require in future  -->
+              <!-- <a mat-tab-link routerLink="on-duty-request" routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive">
+                  {{ 'attendance.admin.onDutyRequests' | translate }}
+              </a> -->
+              <a mat-tab-link routerLink="attendance-process" routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive">
+                  {{ 'attendance.admin.attendanceProcess' | translate }}
+              </a>
+          </nav>
+          <mat-tab-nav-panel #tabPanel>
+              <router-outlet></router-outlet>
+          </mat-tab-nav-panel>
+      </ng-container>
 
-    <!-- User View -->
-    <ng-container *ngIf="view === 'user'">
-      <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
-        <a mat-tab-link routerLink="my-attendance-records" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
-          My Attendance Records
-        </a>
-        <a mat-tab-link routerLink="my-on-duty-request" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
-          OnDuty Requests
-        </a>
-        <a mat-tab-link routerLink="my-overtime-records" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
-          OverTime Records
-        </a>
-      </nav>
-      <mat-tab-nav-panel #tabPanel>
-        <router-outlet></router-outlet>
-      </mat-tab-nav-panel>
-    </ng-container>
-  </ng-container>
+      <!-- User View -->
+      <ng-container *ngIf="view === 'user'">
+          <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel2">
+              <a mat-tab-link routerLink="my-attendance-records" routerLinkActive #rla6="routerLinkActive" [active]="rla6.isActive">
+                  {{ 'attendance.user.myAttendanceRecords' | translate }}
+              </a>
+              <!-- Remove For now it may require in future  -->
+              <!-- <a mat-tab-link routerLink="my-on-duty-request" routerLinkActive #rla7="routerLinkActive" [active]="rla7.isActive">
+                  {{ 'attendance.user.myOnDutyRequests' | translate }}
+              </a> -->
+              <a mat-tab-link routerLink="my-overtime-records" routerLinkActive #rla8="routerLinkActive" [active]="rla8.isActive">
+                  {{ 'attendance.user.myOvertimeRecords' | translate }}
+              </a>
+          </nav>
+          <mat-tab-nav-panel #tabPanel2>
+              <router-outlet></router-outlet>
+          </mat-tab-nav-panel>
+      </ng-container>
+  </div>
 </div>
 
 <!-- 

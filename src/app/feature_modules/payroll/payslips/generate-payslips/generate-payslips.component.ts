@@ -87,13 +87,35 @@ export class GeneratePayslipsComponent {
 
   downloadPDF() {
     const element = this.payslipContainer.nativeElement;
-    html2canvas(element).then((canvas) => {
+
+    html2canvas(element, { scale: 2, }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF.default('p', 'mm', 'a4');
+
       const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      let position = 0;
+
+      // Handle multi-page logic
+      if (pdfHeight <= pageHeight) {
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      } else {
+        let heightLeft = pdfHeight;
+
+        while (heightLeft > 0) {
+          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+          heightLeft -= pageHeight;
+          position -= pageHeight;
+
+          if (heightLeft > 0) {
+            pdf.addPage();
+          }
+        }
+      }
+
       pdf.save('payslip.pdf');
     });
   }
