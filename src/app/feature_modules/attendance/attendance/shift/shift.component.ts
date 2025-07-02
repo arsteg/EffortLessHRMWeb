@@ -7,15 +7,6 @@ import { Subscription } from 'rxjs';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-
-// const labelValidator: ValidatorFn = (control: AbstractControl) => {
-//   const value = control.value as string;
-//   if (!value || /^\s*$/.test(value)) {
-//     return { required: true };
-//   }
-//   const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
-//   return valid ? null : { invalidLabel: true };
-// };
 @Component({
   selector: 'app-shift',
   templateUrl: './shift.component.html',
@@ -222,27 +213,34 @@ export class ShiftComponent {
     };
   }
 
-
   // Custom validator for start and end times
-  timeComparisonValidator: ValidatorFn = (control: AbstractControl): {
-    [key: string]: boolean
-  } | null => {
-    const startTime = control.get('startTime').value;
-    const endTime = control.get('endTime').value;
+ timeComparisonValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
+    const startTime = control.get('startTime')?.value;
+    const endTime = control.get('endTime')?.value;
+    const earliestArrival = control.get('earliestArrival')?.value;
+    const latestDeparture = control.get('latestDeparture')?.value;
 
-    if (startTime && endTime && startTime === endTime) {
-      return {
-        timesCannotBeSame: true
-      };
+    const errors: { [key: string]: boolean } = {};
+
+    if (startTime && endTime) {
+      if (startTime === endTime) {
+        errors['timesCannotBeSame'] = true;
+      }
+      if (startTime > endTime) {
+        errors['startTimeGreaterThanEndTime'] = true;
+      }
     }
-    if (startTime > endTime) {
-      return {
-        startTimeGreaterThanEndTime: true
-      };
+
+    if (earliestArrival && startTime && earliestArrival > startTime) {
+      errors['earliestArrivalAfterStartTime'] = true;
     }
-    return null;
+
+    if (latestDeparture && endTime && latestDeparture < endTime) {
+      errors['latestDepartureBeforeEndTime'] = true;
+    }
+
+    return Object.keys(errors).length > 0 ? errors : null;
   };
-
 
   minHoursValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
