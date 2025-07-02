@@ -1,52 +1,58 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
   selector: 'app-var-allowance',
   templateUrl: './var-allowance.component.html',
-  styleUrl: './var-allowance.component.css'
+  styleUrls: ['./var-allowance.component.css']
 })
-export class VarAllowanceComponent {
-  @Input() isEdit: boolean;
+export class VarAllowanceComponent{
+  @Input() isEdit: boolean = false;
+  @Input() selectedRecord: any = {};
+  @Input() ctcTemplateVariableAllowance: any[] = [];
   @Output() formDataChange = new EventEmitter<any>();
-  allfixedAllowances: any[] = [];
-  variableAllowances: any[] = [];
-  variableAllowanceForm: FormGroup;
-  combinedDataChange: any;
-  selectedRecord: any;
-  @Input() ctcTemplateVariableAllowance: any;
 
-  constructor(
-    private payroll: PayrollService,
-    private fb: FormBuilder
-  ) {
+  variableAllowanceForm: FormGroup;
+  variableAllowance: any[] = [];
+
+  constructor(private fb: FormBuilder) {
     this.variableAllowanceForm = this.fb.group({
       variableAllowance: this.fb.array([])
     });
   }
-
   ngOnInit() {
     this.initForm();
-    this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
-    this.patchFormValues();
   }
 
-  initForm() {
-    const allowancesControl = this.variableAllowanceForm.get('variableAllowance') as FormArray;
-    this.variableAllowances = this.selectedRecord?.ctcTemplateVariableAllowances || this.ctcTemplateVariableAllowance;
+  isFormValid(): boolean {
+    const formArray = this.variableAllowanceForm.get('variableAllowance') as FormArray;
+    let isValid = true;
 
-    this.variableAllowances.forEach(fa => {
-      allowancesControl.push(this.fb.group({
-        variableAllowance: [fa.variableAllowance?._id || ''],
-        variableAllowanceLabel: [fa.variableAllowance?.label || ''],
-        criteria: ['Amount'],
-        value: ['', [Validators.min(0)]],
-        valueType: ['0'],
-        minimumAmount: [0, [Validators.min(0)]]
-      }));
+    formArray.controls.forEach(control => {
+      control.markAllAsTouched();
+      if (control.invalid) {
+        isValid = false;
+      }
     });
 
+    return isValid;
+  }
+  initForm() {
+    const allowanceArray = this.variableAllowanceForm.get('variableAllowance') as FormArray;
+   
+    this.variableAllowance = this.selectedRecord?.ctcTemplateVariableAllowances || this.ctcTemplateVariableAllowance || [];
+
+    this.variableAllowance.forEach(item => {
+      allowanceArray.push(this.fb.group({
+        variableAllowance: [item.variableAllowance?._id || item._id || '', Validators.required],
+        variableAllowanceLabel: [item.variableAllowance?.label || item.label || '', Validators.required],
+        criteria: [item.criteria || 'Amount', Validators.required],
+        value: [item.value || '', [Validators.required, Validators.min(0)]],
+        valueType: [item.valueType || '0'],
+        minimumAmount: [item.minimumAmount || '',  [Validators.required, Validators.min(0)]]
+      }));
+    });
+    
     this.variableAllowanceForm.valueChanges.subscribe(() => {
       if (this.variableAllowanceForm.valid) {
         const formValue = this.variableAllowanceForm.value.variableAllowance.map((allowance: any) => {
@@ -55,40 +61,10 @@ export class VarAllowanceComponent {
         });
         this.formDataChange.emit(formValue);
       } else {
-        console.log("Form is invalid or incomplete");
+        this.formDataChange.emit([]);
       }
     });
   }
-
-  patchFormValues() {
-    const allowancesControl = this.variableAllowanceForm.get('variableAllowance') as FormArray;
-    allowancesControl.clear();
-    if (this.isEdit) {
-      this.selectedRecord.ctcTemplateVariableAllowances.forEach((item: any, index: number) => {
-        allowancesControl.push(this.fb.group({
-          variableAllowance: [item.variableAllowance?._id || ''],
-          variableAllowanceLabel: [item.variableAllowance?.label || ''],
-          criteria: [item.criteria || 'Amount'],
-          value: [item.value || '', [Validators.min(0)]],
-          valueType: [item.valueType || '0'],
-          minimumAmount: [item.minimumAmount || 0, [Validators.min(0)]]
-        }));
-      });
-    }
-    else if (!this.isEdit) {
-      this.ctcTemplateVariableAllowance.forEach((item: any, index: number) => {
-        allowancesControl.push(this.fb.group({
-          variableAllowance: [item.variableAllowance?._id || ''],
-          variableAllowanceLabel: [item.variableAllowance?.label || ''],
-          criteria: [item.criteria || 'Amount'],
-          value: [item.value || '', [Validators.min(0)]],
-          valueType: [item.valueType || '0'],
-          minimumAmount: [item.minimumAmount || 0, [Validators.min(0)]]
-        }));
-      });
-    }
-  }
-
   get allowances() {
     return (this.variableAllowanceForm.get('variableAllowance') as FormArray).controls;
   }

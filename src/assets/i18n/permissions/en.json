@@ -41,6 +41,11 @@
       "cancel": "Cancel",
       "none": "None",
       "add_user_role_alert":"User role added successfully",
-      "update_user_role":"User role updated successfully"
+      "update_user_role":"User role updated successfully",
+      "role_permissions_added": "Role permission added successfully",
+      "role_permissions_updated": "Role permission updated successfully",
+      "role_permissions_deleted": "Are you sure you want to remove this permission?",
+      "remove_role_permission_alert": "Role permission removed successfully",
+      "role_permission_remove_error": "Permission can not be removed"
     }
   }

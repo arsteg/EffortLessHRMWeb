@@ -12,6 +12,7 @@ import { RolePermissionDialogComponent } from '../role-permission-dialog/role-pe
 import { ExportService } from 'src/app/_services/export.service';
 import { UserService } from 'src/app/_services/users.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -29,13 +30,15 @@ export class PermissionsComponent implements OnInit {
   totalUserRoles: number = 0;
   totalRolePermissions: number = 0;
   allData = [];
+  filteredGroupedRolePermissions: { role: string, roleId: string, permissions: any[] }[] = [];
 
   // Data sources for each tab
   rolesDataSource = new MatTableDataSource<Role>([]);
   permissionsDataSource = new MatTableDataSource<Permission>([]);
   userRolesDataSource = new MatTableDataSource<UserRole>([]);
   rolePermissionsDataSource = new MatTableDataSource<RolePermission>([]);
-  groupedRolePermissions: { role: string, permissions: RolePermission[] }[] = [];
+  //groupedRolePermissions: { role: string, permissions: RolePermission[] }[] = [];
+  groupedRolePermissions: { role: string, roleId: string, permissions: any[] }[] = [];
 
   // Displayed columns for each tab
   rolesColumns: TableColumn[] = [
@@ -96,7 +99,8 @@ export class PermissionsComponent implements OnInit {
     private dialog: MatDialog,
     private fb: FormBuilder,
     private exportService: ExportService,
-    private userService: UserService
+    private userService: UserService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -160,39 +164,56 @@ export class PermissionsComponent implements OnInit {
     });
   }
 
+  // loadRolePermissions() {
+  //   this.authService.getRolePermissions().subscribe((res: any) => {
+  //     const data = res.data.map((rp: any) => ({
+  //       ...rp,
+  //       role: this.getRoleName(rp.roleId._id),
+  //       permission: this.getPermissionName(rp.permissionId._id),
+  //     }));
+  //     const groupedMap = new Map<string, RolePermission[]>();
+  //     data.forEach((item) => {
+  //       const roleName = item.role;
+  //       if (!groupedMap.has(roleName)) {
+  //         groupedMap.set(roleName, []);
+  //       }
+  //       groupedMap.get(roleName)?.push(item);
+  //     });
+  //     this.groupedRolePermissions = Array.from(groupedMap.entries()).map(([role, permissions]) => ({
+  //       role,
+  //       permissions
+  //     }));
+  //     this.totalRolePermissions = res.total || res.data.length;
+  //   });
+  // }
   loadRolePermissions() {
     this.authService.getRolePermissions().subscribe((res: any) => {
-      const data = res.data.map((rp: any) => ({
-        ...rp,
-        role: this.getRoleName(rp.roleId._id),
-        permission: this.getPermissionName(rp.permissionId._id),
-      }));
-      const groupedMap = new Map<string, RolePermission[]>();
-      data.forEach((item) => {
-        const roleName = item.role;
-        if (!groupedMap.has(roleName)) {
-          groupedMap.set(roleName, []);
-        }
-        groupedMap.get(roleName)?.push(item);
+      const data = res.data;
+      this.rolePermissionsDataSource.data = data;
+      const groupedMap = new Map<string, { roleId: string, permissions: Permission[] }>();
+      this.roles.forEach(role => {
+        groupedMap.set(role.name, { roleId: role._id, permissions: [...this.permissions] });
       });
-      this.groupedRolePermissions = Array.from(groupedMap.entries()).map(([role, permissions]) => ({
+      this.groupedRolePermissions = Array.from(groupedMap.entries()).map(([role, { roleId, permissions }]) => ({
         role,
+        roleId,
         permissions
       }));
+      this.filteredGroupedRolePermissions = structuredClone(this.groupedRolePermissions);
       this.totalRolePermissions = res.total || res.data.length;
     });
   }
 
-  applyAccordionFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+  // applyAccordionFilter(event: Event) {
+  //   const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
 
-    this.groupedRolePermissions = this.groupedRolePermissions.map(group => ({
-      ...group,
-      permissions: group.permissions.filter(p => 
-        p.permissionId.permissionName.toLowerCase().includes(filterValue)
-      )
-    })).filter(group => group.permissions.length > 0);
-  }
+  //   this.groupedRolePermissions = this.groupedRolePermissions.map(group => ({
+  //     ...group,
+  //     permissions: group.permissions.filter(p => 
+  //       p.permissionId.permissionName.toLowerCase().includes(filterValue)
+  //     )
+  //   })).filter(group => group.permissions.length > 0);
+  // }
 
   loadUsers() {
     // Assuming a method to get users exists or needs to be added
@@ -325,6 +346,53 @@ export class PermissionsComponent implements OnInit {
       case 'Delete':
         this.deleteItem('userRole', event.row._id);
         break;
+    }
+  }
+
+  applyCheckboxFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value.toLowerCase();
+    this.filteredGroupedRolePermissions = this.groupedRolePermissions.map(group => ({
+      ...group,
+      permissions: this.permissions.filter(p =>
+        p.permissionName.toLowerCase().includes(filterValue) &&
+        group.permissions.some(gp => gp._id === p._id)
+      )
+    })).filter(group => group.permissions.length > 0);
+  }
+
+  isPermissionAssigned(roleId: string, permissionId: string): boolean {
+    return this.rolePermissionsDataSource.data.some(rp => rp.roleId?._id === roleId && rp.permissionId?._id === permissionId);
+  }
+
+  onPermissionToggle(event: any, roleId: string, permissionId: string) {
+    const checked = event.checked;
+    const rolePermissionData = { roleId, permissionId };
+    if (checked) {
+      this.authService.createRolePermission(rolePermissionData).subscribe({
+        next: () => {
+          this.loadRolePermissions();
+          this.toastr.success(this.translate.instant('permissions.role_permissions_added'));
+        },
+        error: (error) => {
+          this.toastr.error(error || this.translate.instant('error'));
+          event.source.checked = false; // Revert checkbox on error
+        }
+      });
+    } else {
+      const rolePermission = this.rolePermissionsDataSource?.data.find(rp => rp.roleId?._id === roleId && rp?.permissionId?._id === permissionId);
+      if (rolePermission) {
+        if (confirm(this.translate.instant('permissions.role_permissions_deleted'))) {
+          this.authService.deleteRolePermission(rolePermission._id).subscribe(result => {
+            this.loadRolePermissions();
+            this.toastr.success(this.translate.instant('permissions.remove_role_permission_alert'));
+          },
+          err => {
+            this.toastr.error(this.translate.instant('permissions.role_permission_remove_error'));
+          })
+        } else {
+          event.source.checked = true;
+        }
+      }
     }
   }
 }

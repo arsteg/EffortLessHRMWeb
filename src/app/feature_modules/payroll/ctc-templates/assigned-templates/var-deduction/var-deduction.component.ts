@@ -5,22 +5,20 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 @Component({
   selector: 'app-var-deduction',
   templateUrl: './var-deduction.component.html',
-  styleUrl: './var-deduction.component.css'
+  styleUrls: ['./var-deduction.component.css']
 })
 export class VarDeductionComponent {
-  @Input() isEdit: boolean;
-  @Input() data: any;
-  @Output() formDataChange = new EventEmitter<any>();
-  allVariableDeductions: any[] = [];
-  variableDeductions: any[] = [];
-  variableDeductionForm: FormGroup;
-  combinedDataChange: any;
-  selectedRecord: any;
+  @Input() isEdit: boolean = false;
   @Input() ctcTemplateVariableDeduction: any;
+  @Output() formDataChange = new EventEmitter<any>();
+
+  variableDeductionForm: FormGroup;
+  variableDeduction: any[] = [];
+  selectedRecord: any;
 
   constructor(
-    private payroll: PayrollService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private payroll: PayrollService
   ) {
     this.variableDeductionForm = this.fb.group({
       variableDeduction: this.fb.array([])
@@ -28,68 +26,54 @@ export class VarDeductionComponent {
   }
 
   ngOnInit() {
-    this.initForm();
     this.selectedRecord = this.payroll?.selectedCTCTemplate.getValue();
-    this.patchFormValues();
+    this.initForm();
+  }
+
+  isFormValid(): boolean {
+    const formArray = this.variableDeductionForm.get('variableDeduction') as FormArray;
+    let isValid = true;
+
+    formArray.controls.forEach(control => {
+      control.markAllAsTouched();
+      if (control.invalid) {
+        isValid = false;
+      }
+    });
+
+    return isValid;
   }
 
   initForm() {
-    const allowancesControl = this.variableDeductionForm.get('variableDeduction') as FormArray;
-    this.variableDeductions = this.selectedRecord?.ctcTemplateVariableDeductions || this.ctcTemplateVariableDeduction;
-    this.variableDeductions.forEach(fa => {
-      allowancesControl.push(this.fb.group({
-        variableDeduction: [fa.variableDeduction?._id || ''],
-        variableDeductionLabel: [fa.variableDeduction?.label || ''],
-        criteria: ['Amount'],
-        value: ['', [Validators.min(0)]],
-        valueType: ['0'],
-        minimumAmount: [0, [Validators.min(0)]]
+    const deductionArray = this.variableDeductionForm.get('variableDeduction') as FormArray;
+  
+    this.variableDeduction = this.selectedRecord?.ctcTemplateVariableDeductions || this.ctcTemplateVariableDeduction || [];
+   
+    this.variableDeduction.forEach(vd => {
+      deductionArray.push(this.fb.group({
+        variableDeduction: [vd.variableDeduction?._id || vd._id || ''],
+        variableDeductionLabel: [vd.variableDeduction?.label || vd.label || ''],
+        criteria: [vd.criteria || 'Amount'],
+        value: [vd.value ?? '', [Validators.required, Validators.min(0)]],
+        valueType: [vd.valueType ?? 0],
+        minimumAmount: [vd.minimumAmount ?? '', [Validators.min(0)]]
       }));
     });
 
     this.variableDeductionForm.valueChanges.subscribe(() => {
       if (this.variableDeductionForm.valid) {
-        const formValue = this.variableDeductionForm.value.variableDeduction.map((allowance: any) => {
-          const { variableDeductionLabel, ...rest } = allowance;
+        const cleaned = this.variableDeductionForm.value.variableDeduction.map((item: any) => {
+          const { variableDeductionLabel, ...rest } = item;
           return rest;
         });
-        this.formDataChange.emit(formValue);
+        this.formDataChange.emit(cleaned);
       } else {
-        console.log("Form is invalid or incomplete");
+        this.formDataChange.emit([]);
       }
     });
   }
 
-  patchFormValues() {
-    const allowancesControl = this.variableDeductionForm.get('variableDeduction') as FormArray;
-    allowancesControl.clear();
-    if (this.isEdit) {
-      this.selectedRecord.ctcTemplateVariableDeductions.forEach((item: any, index: number) => {
-        allowancesControl.push(this.fb.group({
-          variableDeduction: [item.variableDeduction?._id || ''],
-          variableDeductionLabel: [item.variableDeduction?.label || ''],
-          criteria: [item.criteria || 'Amount'],
-          value: [item.value || '', [Validators.min(0)]],
-          valueType: [item.valueType || '0'],
-          minimumAmount: [item.minimumAmount || 0, [Validators.min(0)]]
-        }));
-      });
-    }
-    else if (!this.isEdit) {
-      this.ctcTemplateVariableDeduction.forEach((item: any, index: number) => {
-        allowancesControl.push(this.fb.group({
-          variableDeduction: [item.variableDeduction?._id || ''],
-          variableDeductionLabel: [item.variableDeduction?.label || ''],
-          criteria: [item.criteria || 'Amount'],
-          value: [item.value || '', [Validators.min(0)]],
-          valueType: [item.valueType || '0'],
-          minimumAmount: [item.minimumAmount || 0, [Validators.min(0)]]
-        }));
-      });
-    }
-  }
-
-  get allowances() {
+  get deductions() {
     return (this.variableDeductionForm.get('variableDeduction') as FormArray).controls;
   }
 }

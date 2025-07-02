@@ -124,6 +124,5 @@ export class LoginComponent implements OnInit {
 
     localStorage.setItem('adminView', this.selectedAppMode);
     this.router.navigateByUrl(this.returnUrl);
-    this.loading = false;
   }
 } 

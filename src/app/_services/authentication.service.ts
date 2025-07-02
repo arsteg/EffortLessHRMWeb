@@ -329,15 +329,25 @@ export class AuthenticationService {
   }
 
   isMenuAccessible(menuName: string, roleName: string): Observable<boolean> {
+    const menu = menuName.toLowerCase();
     return this.getPermissionsByRole(roleName).pipe(
       map((response: any) => {
-        if (response && response.data && Array.isArray(response.data)) {
-          const allowedPermissions: string[] = response.data.map((p: string) => p.toLowerCase());
-          return allowedPermissions.includes(menuName.toLowerCase());
+        const permissions = response?.data;
+        if (Array.isArray(permissions)) {
+          return permissions.some((p: string) => p.toLowerCase() === menu);
         }
         return false;
       })
     );
+    // return this.getPermissionsByRole(roleName).pipe(
+    //   map((response: any) => {
+    //     if (response && response.data && Array.isArray(response.data)) {
+    //       const allowedPermissions: string[] = response.data.map((p: string) => p.toLowerCase());
+    //       return allowedPermissions.includes(menuName.toLowerCase());
+    //     }
+    //     return false;
+    //   })
+    // );
   }
 
   getRolePermissionById(id: string): Observable<any> {

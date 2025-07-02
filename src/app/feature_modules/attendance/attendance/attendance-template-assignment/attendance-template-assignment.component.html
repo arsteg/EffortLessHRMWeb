@@ -58,17 +58,20 @@
                 <tbody>
                     <tr *ngFor="let template of attendanceTemplateAssignment| search: searchText">
                         <td>{{getUser(template?.employee) | titlecase}}</td>
-                        <td>{{getTemplate(template?.attendanceTemplate) | titlecase}}</td>
+                        <td>{{template?.attendanceTemplate?.label | titlecase}}</td>
                         <td>{{getUser(template?.primaryApprover) | titlecase}}</td>
                         <td>{{getUser(template?.secondaryApprover) | titlecase}}</td>
                         <td>{{template?.effectiveFrom | date: 'mediumDate'}}</td>
                         <td class="text-center">
+                            @if(template?.attendanceTemplate?.approversType === 'employee-wise')
+                            {
                             <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="open(editModal);
                                 isEdit= true;
                                 selectedTemplate=template;
                                 setFormValues(template)" aria-label="Example icon button with a menu icon">
                                 <i class="bi bi-pencil-fill"></i>
                             </button>
+                            }
 
                             <button class="actions ms-1" mat-mini-fab title="Delete"
                                 aria-label="Example icon button with a menu icon" (click)="deleteDialog(template._id)">
@@ -189,7 +192,7 @@
             <h1 class="modal-title text-muted mb-0">Update Attendance Template Assignment</h1>
             <small>Employee: <span class="small-text">{{getUser(selectedTemplate?.employee)}}</span></small><br>
             <small>Attendance Template: <span
-                    class="small-text">{{getTemplate(selectedTemplate?.attendanceTemplate)}}</span></small>
+                    class="small-text">{{selectedTemplate?.attendanceTemplate?.label}}</span></small><br>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="closeModal()"></button>

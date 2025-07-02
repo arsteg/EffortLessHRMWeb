@@ -1,24 +1,24 @@
-<mat-tab-group class="child-tabs" [(selectedIndex)]="activeTabIndex">
+<mat-tab-group class="child-tabs" mat-stretch-tabs="false" mat-align-tabs="start"  [(selectedIndex)]="activeTabIndex" (selectedIndexChange)="onTabChange($event)">
 
   <mat-tab label="Fixed Allowances">
-    <app-assigned-fixed-allowance (formDataChange)="onFixedAllowanceDataChange($event)"
+    <app-assigned-fixed-allowance #fixedAllowanceChild (formDataChange)="onFixedAllowanceDataChange($event)"
       [selectedRecord]="selectedRecord" [ctcTemplateFixedAllowance]="fixedAllowanceData"
       [isEdit]="isEdit"></app-assigned-fixed-allowance>
   </mat-tab>
 
   <mat-tab label="Fixed Deductions">
-    <app-assigned-fixed-deduction [isEdit]="isEdit" [selectedRecord]="selectedRecord"
-      (formDataChange)="onFixedDeductionDataChange($event)"
-      [ctcTemplateFixedDeduction]="fixedDeductionData"></app-assigned-fixed-deduction>
+    <app-assigned-fixed-deduction #fixedDeductionChild  
+      (formDataChange)="onFixedDeductionDataChange($event)" [selectedRecord]="selectedRecord"
+      [ctcTemplateFixedDeduction]="fixedDeductionData" [isEdit]="isEdit"></app-assigned-fixed-deduction>
   </mat-tab>
 
   <mat-tab label="Variable Allowance">
-    <app-var-allowance (formDataChange)="onVariableAllowanceDataChange($event)" [selectedRecord]="selectedRecord"
+    <app-var-allowance #variableAllowanceChild (formDataChange)="onVariableAllowanceDataChange($event)" [selectedRecord]="selectedRecord"
       [ctcTemplateVariableAllowance]="variableAllowanceData" [isEdit]="isEdit"></app-var-allowance>
   </mat-tab>
 
   <mat-tab label="Variable Deduction">
-    <app-var-deduction (formDataChange)="onVariableDeductionDataChange($event)" [selectedRecord]="selectedRecord"
+    <app-var-deduction #variableDeductionChild (formDataChange)="onVariableDeductionDataChange($event)" [selectedRecord]="selectedRecord"
       [ctcTemplateVariableDeduction]="variableDeductionData" [isEdit]="isEdit"></app-var-deduction>
   </mat-tab>
 

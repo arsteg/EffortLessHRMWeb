@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { Observable, first, tap } from 'rxjs';
@@ -9,6 +9,7 @@ import { TasksService } from 'src/app/_services/tasks.service';
 import * as moment from 'moment';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ActionVisibility } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-request-manual-time',
@@ -45,6 +46,65 @@ export class RequestManualTimeComponent implements OnInit {
   isEdit: boolean = false;
   view = localStorage.getItem('adminView');
   dialogRef: MatDialogRef<any>;
+  @ViewChild('requestModal') requestModal: TemplateRef<any>;
+  @ViewChild('deleteModal') deleteModal: TemplateRef<any>;
+
+  // Define columns for hrm-table
+  columns = [
+    {
+      key: 'date',
+      name: 'Date',
+      valueFn: (row: any) => new Date(row.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })
+    },
+    {
+      key: 'projectName',
+      name: 'Project',
+    },
+    {
+      key: 'manager',
+      name: 'Manager',
+      isHtml: true,      
+      valueFn: (row: any) => `
+        <div class="d-flex"> <span class="rounded-circle bg-primary text-white fs-5 avatar">${row?.manager?.firstName?.slice(0, 1)?.toUpperCase()}</span></div>`
+    },
+    {
+      key: 'task',
+      name: 'Task',
+      valueFn: (row: any) => row?.task?.taskName
+    },
+    {
+      key: 'fromDate',
+      name: 'From Date',
+      valueFn: (row: any) => new Date(row.fromDate).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    },
+    {
+      key: 'toDate',
+      name: 'To Date',
+      valueFn: (row: any) => new Date(row.toDate).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    },
+    {
+      key: 'reason',
+      name: 'Reason',
+    },
+    {
+      key: 'status',
+      name: 'Status',
+      icons: [
+        { value: 'approved', name: 'check', class: 'text-success' },
+        { value: 'rejected', name: 'close', class: 'text-danger' },
+        { value: 'pending', name: 'schedule', class: 'text-primary' }
+      ]
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { label: 'Edit', visibility: ActionVisibility.LABEL, icon: 'edit', hideCondition: (row: any) => row.status !== 'pending'  },
+        { label: 'Delete', visibility: ActionVisibility.LABEL, icon: 'delete' }
+      ]
+    }
+  ];
 
   constructor(private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService,
@@ -182,6 +242,7 @@ export class RequestManualTimeComponent implements OnInit {
           this.toastService.success("Manual time request created successfully", "success");
           this.addRequestForm.reset();
           this.fetchManualTimeRequests();
+          this.dialogRef.close();
         }, 30);
       }, err => {
         this.toastService.error(err.message, "Error")
@@ -194,6 +255,7 @@ export class RequestManualTimeComponent implements OnInit {
         this.toastService.success("Manual time request updated successfully", "success");
         this.addRequestForm.reset();
         this.fetchManualTimeRequests();
+        this.dialogRef.close();
       }, err => {
         this.toastService.error(err.message, "Error")
       });
@@ -224,6 +286,7 @@ export class RequestManualTimeComponent implements OnInit {
       .subscribe((res: any) => {
         this.toastService.success("Manual time request has been deleted successfully!", "success");
         this.fetchManualTimeRequests();
+        this.dialogRef.close();
       }, err => {
       });
   }
@@ -296,6 +359,9 @@ export class RequestManualTimeComponent implements OnInit {
       reason: ''
     });
     this.tasks = [];
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
   }
 
 
@@ -321,5 +387,33 @@ export class RequestManualTimeComponent implements OnInit {
   getManualById() {
     console.log(this.selectedRequest);
     this.setUpdateMode(this.selectedRequest);
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+  }
+
+  onActionClick(event: any) {
+    const { action, row } = event;
+    this.selectedRequest = row;
+    if (action.label === 'Edit') {
+      this.setUpdateMode(row);
+      this.changeMode = 'Update';
+      this.isEdit = true;
+      this.openModal(this.requestModal, '50%');
+    } else if (action.label === 'Delete') {
+      this.openModal(this.deleteModal, '300px');
+    }
+  }
+
+  onPageChangev1(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+    this.fetchManualTimeRequests();
+  }
+
+  onSearchChange(searchText: string) {
+    this.searchText = searchText;
+    this.currentPage = 1;
+    this.fetchManualTimeRequests();
   }
 }

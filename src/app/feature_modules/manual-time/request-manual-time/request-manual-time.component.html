@@ -1,105 +1,143 @@
 <div class="main-content" [ngClass]="{'pt-5': view === 'user'}">
   <div class="container-fluid">
-    <div class="container-fluid mt-3 py-2 px-0 bg-white tableContainer">
-      <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-        <p class="mb-0">({{manualTimeRequests?.length}}) Records Found</p>
-        <div class="d-flex align-items-center">
-          <span class="bi bi-search searchIcon"></span>
-          <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-            (input)="filterRecords()" name="searchText" aria-label="default input example">
-
-          <button mat-flat-button class="addBtn rounded-pill ms-3"
-            (click)="clearselectedRequest();changeMode='Add'; isEdit = false;openModal(requestModal)">New
-            Request</button>
+    <div class="py-2 px-0">
+      <div>
+        <div class="position-relative d-none d-md-block">
+          <button mat-flat-button class="position-absolute end-0" color="primary" data-bs-toggle="offcanvas"
+            (click)="clearselectedRequest();changeMode='Add'; isEdit = false;openModal(requestModal)">
+              New Request
+          </button>
         </div>
-      </div>
 
-      <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-        (recordsPerPageChange)="onRecordsPerPageChange($event)">
-      </app-pagination>
-
-      <table class="px-4 mx-2 rounded">
-        <thead>
-          <tr>
-            <th class="ps-3" [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="date"
-              (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Date&nbsp;
-              <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-            </th>
-            <th [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="projectName"
-              (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Project&nbsp;
-              <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-            </th>
-            <th [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="manager"
-              (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Manager&nbsp;
-              <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-            </th>
-            <th [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="task" class="w-25"
-              (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Task&nbsp;
-              <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-            </th>
-            <th [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="fromDate"
-              (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">From Date&nbsp;
-              <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-            </th>
-            <th [appSort]="filteredManualTimeRequests" data-order="{{ sortOrder }}" data-name="toDate"
-              (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">To Date&nbsp;
-              <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-            </th>
-
-            <th style="width: 200px;">Reason</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let record of filteredManualTimeRequests | search: searchText ">
-            <td class="ps-3">
-              <div>{{record?.date | date: 'MM/dd/yyyy'}}</div>
-            </td>
-            <td>{{record?.projectName}}</td>
-            <td>
-
-              <span class="letter ms-2"
-                [tooltip]="(record?.manager?.firstName | titlecase)+ ' ' + (record?.manager?.lastName) "
-                [style.background-color]="commonservice.getRandomColor(record?.manager?.firstName)">{{record?.manager?.firstName.slice(0,1)
-                | uppercase}}</span>
-            </td>
-            <td>{{record?.task?.taskName}}</td>
-            <td>{{ record?.fromDate | date: 'short'}}</td>
-            <td>{{ record?.toDate | date: 'short'}}</td>
-            <td>{{ record?.reason}}</td>
-            <td>
-              <span>
-                <i *ngIf="record.status=='approved'" class="fa fa-thumbs-up" style="color:green"
-                  [title]="record.status"></i>
-                <i *ngIf="record.status=='rejected'" class="fa fa-thumbs-down" style="color:red"
-                  [title]="record.status"></i>
-                <i *ngIf="record.status=='pending'" class="fa fa-clock-o" style="color:blue"
-                  [title]="record.status"></i>
-              </span>
-            </td>
-            <td>
-              <button class="actions" *ngIf="record.status=='pending'" mat-mini-fab matTooltip="Edit"
-                matTooltipPosition="before"
-                (click)="setUpdateMode(record);changeMode='Update';selectedRequest = record; isEdit = true; openModal(requestModal)"
-                aria-label="Example icon button with a menu icon">
-                <i class="bi bi-pencil-fill"></i>
-              </button>
-              <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after"
-                (click)="selectedRequest = record; openModal(deleteModal, '300px')">
-                <i class="bi bi-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <hrm-table
+            [data]="filteredManualTimeRequests" 
+            [columns]="columns" 
+            (actionClicked)="onActionClick($event)" 
+            [isServerSide]="false"
+            [showSearch]="true" 
+            [totalItems]="totalRecords" 
+            [pageSize]="recordsPerPage" 
+            (pageChanged)="onPageChangev1($event)"
+            (searchChanged)="onSearchChange($event)">
+        </hrm-table>
+    </div>
     </div>
   </div>
 </div>
-
 <ng-template #requestModal>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>{{changeMode}} Manual Time Request</h1>
+    <button type="button" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <form [formGroup]="addRequestForm" (ngSubmit)="onSubmit()">
+      <div class="row d-flex justify-content-center">
+        <div class="row">
+          <div class="col-md-6 mt-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Project</mat-label>
+              <mat-select formControlName="project" (selectionChange)="onProjectChange($event)">
+                <mat-option disabled value="undefined">Choose Any Project</mat-option>
+                <mat-option *ngFor="let project of projects" [value]="project.id">
+                  {{project.projectName}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="addRequestForm.controls['project'].hasError('required') && addRequestForm.controls['project'].touched">
+                Project is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6 mt-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Manager</mat-label>
+              <mat-select formControlName="manager">
+                <mat-option disabled value="undefined">Choose Any Manager</mat-option>
+                <mat-option *ngFor="let manager of managers" [value]="manager?.id">
+                  {{manager.name}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="addRequestForm.controls['manager'].hasError('required') && addRequestForm.controls['manager'].touched">
+                Manager is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Task</mat-label>
+              <mat-select formControlName="task" [disabled]="changeMode === 'update'">
+                <mat-option disabled value="undefined">Choose Any Task</mat-option>
+                <mat-option *ngFor="let task of tasks" [value]="task?._id">
+                  {{task.taskName}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="addRequestForm.controls['task'].hasError('required') && addRequestForm.controls['task'].touched">
+                Task is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Start Date</mat-label>
+              <input matInput type="datetime-local" formControlName="fromDate" [max]="today" required>
+              <mat-error *ngIf="addRequestForm.controls['fromDate'].hasError('required') && addRequestForm.controls['fromDate'].touched">
+                Start Date is required.
+              </mat-error>
+              <mat-error *ngIf="addRequestForm.get('fromDate').hasError('endDateBeforeStartDate')">
+                End Date must be after Start Date.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>End Date</mat-label>
+              <input matInput type="datetime-local" formControlName="toDate" [max]="today" required>
+              <mat-error *ngIf="addRequestForm.controls['toDate'].hasError('required') && addRequestForm.controls['toDate'].touched">
+                End Date is required.
+              </mat-error>
+              <mat-error *ngIf="addRequestForm.get('toDate').hasError('endDateBeforeStartDate')">
+                The end date cannot be earlier than the start date.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col-12 mt-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Reason</mat-label>
+              <input matInput type="text" formControlName="reason" required>
+              <mat-error *ngIf="addRequestForm.controls['reason'].hasError('required') && addRequestForm.controls['reason'].touched">
+                Reason is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="dateMismatchError" class="alert alert-danger error text-end pe-4">
+        Start Date and End Date should be Similar!
+      </div>
+      
+      <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
+        <button mat-flat-button class="mx-2" type="button" *ngIf="changeMode == 'Add'"
+          (click)="clearselectedRequest()">Cancel</button>
+        <button mat-flat-button class="mx-2" type="button" *ngIf="changeMode == 'Update'"
+          (click)="getManualById()">Cancel</button>
+        <button mat-flat-button color="primary" type="submit" [disabled]="addRequestForm.invalid">{{changeMode}} Request</button>
+      </div>
+    </form>
+  </mat-dialog-content>
+</ng-template>
+<!-- <ng-template #requestModal>
 
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>{{changeMode}} Manual Time Request</h1>
@@ -221,7 +259,7 @@
     </form>
   </mat-dialog-content>
 
-</ng-template>
+</ng-template> -->
 
 <!-- Delete -->
 <ng-template #deleteModal>

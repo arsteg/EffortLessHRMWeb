@@ -33,7 +33,7 @@ const routes: Routes = [
       { path: 'assets', component: AssetManagerComponent },
 
       {
-        path: 'organization-setup', component: SetupComponent, canActivate: [AuthGuard],
+        path: 'organization-setup', component: SetupComponent,
         data: { permission: 'Organization' },
         children: [
           { path: '', redirectTo: 'organization-profile', pathMatch: 'full' },

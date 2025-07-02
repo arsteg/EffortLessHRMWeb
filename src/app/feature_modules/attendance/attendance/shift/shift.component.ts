@@ -1,13 +1,21 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ExportService } from 'src/app/_services/export.service';
-import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
+// const labelValidator: ValidatorFn = (control: AbstractControl) => {
+//   const value = control.value as string;
+//   if (!value || /^\s*$/.test(value)) {
+//     return { required: true };
+//   }
+//   const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
+//   return valid ? null : { invalidLabel: true };
+// };
 @Component({
   selector: 'app-shift',
   templateUrl: './shift.component.html',
@@ -22,11 +30,14 @@ export class ShiftComponent {
   p: number = 1;
   selectedShift: any;
   shiftForm: FormGroup;
-  showColorPicker: boolean = false;
-  color: string = '#fff';
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
+
+  private shiftTypeSubscription: Subscription; // To manage subscription
+  private isLateComingAllowedSubscription: Subscription;
+  private willLateComingDeductfromPresentDaysSubscription: Subscription;
+  private isEarlyGoingAllowedSubscription: Subscription;
 
   constructor(
     private attendanceService: AttendanceService,
@@ -37,19 +48,16 @@ export class ShiftComponent {
     private fb: FormBuilder,
   ) {
     this.shiftForm = this.fb.group({
-      name: ['', Validators.required],
-      dashboardColor: [''],
-      // isOffShift: [true, Validators.required],
+      name: ['', [Validators.required, this.labelValidator()]],
       shiftType: ['', Validators.required],
       startTime: ['', Validators.required],
       endTime: ['', Validators.required],
-      minHoursPerDayToGetCreditForFullDay: ['', Validators.required],
-      isCheckoutTimeNextDay: [false],
-      // isLatestDepartureTimeNextDay: [true],
+      minHoursPerDayToGetCreditForFullDay: ['', [Validators.required, Validators.min(1),
+      Validators.max(8)]],
       earliestArrival: ['', Validators.required],
       latestDeparture: ['', Validators.required],
-      firstHalfDuration: ['', Validators.required],
-      secondHalfDuration: ['', Validators.required],
+      firstHalfDuration: ['', [Validators.required, Validators.min(1)]], // Added min
+      secondHalfDuration: ['', [Validators.required, Validators.min(1)]], // Added min
       company: [''],
       isLateComingAllowed: [false],
       noOfDaysLateComing: [0],
@@ -62,15 +70,179 @@ export class ShiftComponent {
       enterNumberOfDaysForEarlyGoing: [0],
       graceTimeLimitForEarlyGoing: [0],
       isHalfDayApplicable: [false],
-      minHoursPerDayToGetCreditforHalfDay: ['', this.minHoursValidator()],
+      minHoursPerDayToGetCreditforHalfDay: ['', [Validators.min(0)]], // Added min validator
       maxLateComingAllowedMinutesFirstHalfAttendance: [0],
-    })
+    }, {
+      validators: this.timeComparisonValidator // Apply the custom validator at the form group level
+    });
   }
 
   ngOnInit() {
     this.loadRecords();
     this.setupShiftTypeListener();
+    this.setupConditionalValidation();
   }
+  ngOnDestroy(): void {
+    // Unsubscribe to prevent memory leaks
+    if (this.shiftTypeSubscription) {
+      this.shiftTypeSubscription.unsubscribe();
+    }
+    if (this.isLateComingAllowedSubscription) {
+      this.isLateComingAllowedSubscription.unsubscribe();
+    }
+    if (this.willLateComingDeductfromPresentDaysSubscription) {
+      this.willLateComingDeductfromPresentDaysSubscription.unsubscribe();
+    }
+    if (this.isEarlyGoingAllowedSubscription) {
+      this.isEarlyGoingAllowedSubscription.unsubscribe();
+    }
+  }
+
+  setupConditionalValidation(): void {
+    // Conditional validation for 'noOfDaysLateComing', 'graceTimeLimitForLateComing', etc.
+    this.isLateComingAllowedSubscription = this.shiftForm.get('isLateComingAllowed').valueChanges.subscribe(value => {
+      const noOfDaysLateComingControl = this.shiftForm.get('noOfDaysLateComing');
+      const graceTimeLimitForLateComingControl = this.shiftForm.get('graceTimeLimitForLateComing');
+      const willLateComingDeductControl = this.shiftForm.get('willLateComingDeductfromPresentDays');
+
+      if (value) {
+        noOfDaysLateComingControl.setValidators([Validators.required, Validators.min(0)]);
+        graceTimeLimitForLateComingControl.setValidators([Validators.required, Validators.min(0)]);
+        willLateComingDeductControl.setValidators(Validators.required);
+      } else {
+        noOfDaysLateComingControl.clearValidators();
+        graceTimeLimitForLateComingControl.clearValidators();
+        willLateComingDeductControl.clearValidators();
+        // Reset values if not allowed
+        noOfDaysLateComingControl.setValue(0);
+        graceTimeLimitForLateComingControl.setValue(0);
+        willLateComingDeductControl.setValue(false);
+      }
+      noOfDaysLateComingControl.updateValueAndValidity();
+      graceTimeLimitForLateComingControl.updateValueAndValidity();
+      willLateComingDeductControl.updateValueAndValidity();
+    });
+
+    this.willLateComingDeductfromPresentDaysSubscription = this.shiftForm.get('willLateComingDeductfromPresentDays').valueChanges.subscribe(value => {
+      const noOfLateComingDaysAllowedControl = this.shiftForm.get('numberOflateComingDaysAllowed');
+      const numberOfDaysToBeDeductedControl = this.shiftForm.get('numberOfDaysToBeDeducted');
+      const maximumTimeLimitForLateComingControl = this.shiftForm.get('maximumTimeLimitForLateComing');
+
+      if (value) {
+        noOfLateComingDaysAllowedControl.setValidators([Validators.required, Validators.min(0)]);
+        numberOfDaysToBeDeductedControl.setValidators(Validators.required);
+        maximumTimeLimitForLateComingControl.setValidators([Validators.required, Validators.min(0)]);
+      } else {
+        noOfLateComingDaysAllowedControl.clearValidators();
+        numberOfDaysToBeDeductedControl.clearValidators();
+        maximumTimeLimitForLateComingControl.clearValidators();
+        // Reset values if not applicable
+        noOfLateComingDaysAllowedControl.setValue(0);
+        numberOfDaysToBeDeductedControl.setValue('');
+        maximumTimeLimitForLateComingControl.setValue(0);
+      }
+      noOfLateComingDaysAllowedControl.updateValueAndValidity();
+      numberOfDaysToBeDeductedControl.updateValueAndValidity();
+      maximumTimeLimitForLateComingControl.updateValueAndValidity();
+    });
+
+    this.isEarlyGoingAllowedSubscription = this.shiftForm.get('isEarlyGoingAllowed').valueChanges.subscribe(value => {
+      const enterNumberOfDaysForEarlyGoingControl = this.shiftForm.get('enterNumberOfDaysForEarlyGoing');
+      const graceTimeLimitForEarlyGoingControl = this.shiftForm.get('graceTimeLimitForEarlyGoing');
+
+      if (value) {
+        enterNumberOfDaysForEarlyGoingControl.setValidators([Validators.required, Validators.min(0)]);
+        graceTimeLimitForEarlyGoingControl.setValidators([Validators.required, Validators.min(0)]);
+      } else {
+        enterNumberOfDaysForEarlyGoingControl.clearValidators();
+        graceTimeLimitForEarlyGoingControl.clearValidators();
+        // Reset values
+        enterNumberOfDaysForEarlyGoingControl.setValue(0);
+        graceTimeLimitForEarlyGoingControl.setValue(0);
+      }
+      enterNumberOfDaysForEarlyGoingControl.updateValueAndValidity();
+      graceTimeLimitForEarlyGoingControl.updateValueAndValidity();
+    });
+
+    // Conditional validation for shiftType, minHoursPerDayToGetCreditforHalfDay, and minHoursPerDayToGetCreditForFullDay
+    this.shiftTypeSubscription = this.shiftForm.get('shiftType').valueChanges.subscribe(shiftType => {
+      const minHoursHalfDayControl = this.shiftForm.get('minHoursPerDayToGetCreditforHalfDay');
+      const minHoursFullDayControl = this.shiftForm.get('minHoursPerDayToGetCreditForFullDay');
+      const isHalfDayApplicableControl = this.shiftForm.get('isHalfDayApplicable');
+
+      if (shiftType === 'fixed duration') {
+        isHalfDayApplicableControl.setValidators(Validators.required);
+      } else {
+        isHalfDayApplicableControl.clearValidators();
+        minHoursHalfDayControl.clearValidators();
+        minHoursFullDayControl.clearValidators();
+        isHalfDayApplicableControl.setValue(false); // Reset if not fixed duration
+        minHoursHalfDayControl.setValue(''); // Clear value if not applicable
+        minHoursFullDayControl.setValue(''); // Clear value if not applicable
+      }
+      isHalfDayApplicableControl.updateValueAndValidity();
+      minHoursHalfDayControl.updateValueAndValidity();
+      minHoursFullDayControl.updateValueAndValidity();
+    });
+
+    // Handle minHoursPerDayToGetCreditforHalfDay and minHoursPerDayToGetCreditForFullDay based on isHalfDayApplicable
+    this.shiftForm.get('isHalfDayApplicable').valueChanges.subscribe(isHalfDayApplicable => {
+      const minHoursHalfDayControl = this.shiftForm.get('minHoursPerDayToGetCreditforHalfDay');
+      const minHoursFullDayControl = this.shiftForm.get('minHoursPerDayToGetCreditForFullDay');
+      if (isHalfDayApplicable && this.shiftForm.get('shiftType').value === 'fixed duration') {
+        minHoursHalfDayControl.setValidators([Validators.required, Validators.min(1)]);
+        minHoursFullDayControl.setValidators([Validators.required, Validators.min(1)]);
+      } else {
+        minHoursHalfDayControl.clearValidators();
+        minHoursFullDayControl.clearValidators();
+        minHoursHalfDayControl.setValue(''); // Clear value if not applicable
+        minHoursFullDayControl.setValue(''); // Clear value if not applicable
+      }
+      minHoursHalfDayControl.updateValueAndValidity();
+      minHoursFullDayControl.updateValueAndValidity();
+    });
+}
+
+  // Custom validator for shift name
+  labelValidator(): ValidatorFn {
+    return (control: AbstractControl): {
+      [key: string]: any
+    } | null => {
+      const value = control.value as string;
+      if (!value || /^\s*$/.test(value)) {
+        return {
+          required: true
+        };
+      }
+      // Allows letters, spaces, commas, hyphens, forward slashes, and parentheses
+      const valid = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s(),\-/]*$/.test(value);
+      return valid ? null : {
+        invalidLabel: true
+      };
+    };
+  }
+
+
+  // Custom validator for start and end times
+  timeComparisonValidator: ValidatorFn = (control: AbstractControl): {
+    [key: string]: boolean
+  } | null => {
+    const startTime = control.get('startTime').value;
+    const endTime = control.get('endTime').value;
+
+    if (startTime && endTime && startTime === endTime) {
+      return {
+        timesCannotBeSame: true
+      };
+    }
+    if (startTime > endTime) {
+      return {
+        startTimeGreaterThanEndTime: true
+      };
+    }
+    return null;
+  };
+
 
   minHoursValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -154,12 +326,10 @@ export class ShiftComponent {
   setFormValues(data) {
     this.shiftForm.patchValue({
       name: data.name,
-      dashboardColor: data.dashboardColor,
       shiftType: data.shiftType,
       startTime: data.startTime,
       endTime: data.endTime,
       minHoursPerDayToGetCreditForFullDay: data.minHoursPerDayToGetCreditForFullDay,
-      isCheckoutTimeNextDay: data.isCheckoutTimeNextDay,
       earliestArrival: data.earliestArrival,
       latestDeparture: data.latestDeparture,
       firstHalfDuration: data.firstHalfDuration,
@@ -182,21 +352,8 @@ export class ShiftComponent {
     })
   }
 
-  toggleColorPicker() {
-    this.showColorPicker = true;
-  }
-
-  onColorChange(color: string) {
-    this.shiftForm.patchValue({
-      dashboardColor: color
-    });
-  }
-
-  closeColorPicker() {
-    this.showColorPicker = false
-  }
-
   onSubmission() {
+    if (this.shiftForm.valid) {
       if (!this.isEdit) {
         this.attendanceService.addShift(this.shiftForm.value).subscribe((res: any) => {
           this.loadRecords();
@@ -213,9 +370,12 @@ export class ShiftComponent {
           this.shiftForm.reset();
         })
       }
-   
+    }
+    else {
+      this.shiftForm.markAllAsTouched();
+    }
   }
-  
+
   deleteTemplate(id: string) {
     this.attendanceService.deleteShift(id).subscribe((res: any) => {
       this.loadRecords();

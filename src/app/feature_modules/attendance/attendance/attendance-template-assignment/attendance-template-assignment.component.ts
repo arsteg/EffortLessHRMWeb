@@ -98,11 +98,6 @@ export class AttendanceTemplateAssignmentComponent {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
-  getTemplate(templateId: string) {
-    const matchingTemp = this.templates?.find(temp => temp._id === templateId);
-    return matchingTemp ? matchingTemp.label : '';
-  }
-
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -123,8 +118,7 @@ export class AttendanceTemplateAssignmentComponent {
 
   setFormValues(formValue: any) {
     this.isEdit = true;
-    // this.getTemplateById();
-    this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attendanceTemplate).subscribe((res: any) => {
+    this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attendanceTemplate?._id).subscribe((res: any) => {
       this.templateById = res.data;
 
       if (this.templateById.approversType === 'template-wise') {
@@ -212,7 +206,7 @@ export class AttendanceTemplateAssignmentComponent {
 
   }
   getTemplateById() {
-     this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attendanceTemplate).subscribe((res: any) => {
+    this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attendanceTemplate).subscribe((res: any) => {
       this.templateById = res.data;
 
       if (this.templateById.approversType === 'template-wise') {
@@ -317,10 +311,13 @@ export class AttendanceTemplateAssignmentComponent {
         primaryApprovar: this.updateTemplateAssignForm.value.primaryApprovar,
         secondaryApprovar: this.updateTemplateAssignForm.value.secondaryApprovar
       }
-      console.log(payload);
       this.attendanceService.updateAttendanceAssignment(this.selectedTemplate._id, payload).subscribe((res: any) => {
+        this.toast.success('Successfully Updated!!!', 'Attendance Template Assignment')
         this.loadRecords();
-      })
+      },
+        err => {
+          this.toast.error('Attendance Template Assignment can not be updated', 'Error!')
+        })
     }
     else {
       this.markFormGroupTouched(this.updateTemplateAssignForm);

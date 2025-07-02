@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" multiTemplateDataRows>
+<table mat-table [dataSource]="dataSource" multiTemplateDataRows class="hrm-table" >
     <!-- Financial Year Column -->
     <ng-container matColumnDef="financialYear">
         <th mat-header-cell *matHeaderCellDef> Financial Year </th>
@@ -23,20 +23,20 @@
 
     <!-- Expandable Row -->
     <ng-container matColumnDef="expand">
-        <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumnsWithIcon.length">
+        <td mat-cell *matCellDef="let element" class="p-0" [attr.colspan]="displayedColumnsWithIcon.length">
             <div class="element-detail" *ngIf="expandedElement === element" [@detailExpand]="'expanded'">
-                <div class="expandable-section">
+                <div class="expandable-section border rounded my-2 py-2 px-3">
                     <!-- Components by Section -->
                     <div *ngFor="let group of element.groupedComponents">
                         <h4 class="pt-3"><b>{{group.section}}</b></h4>
-                        <table class="nested-table" *ngIf="group.components?.length">
+                        <table class="nested-table hrm-table" *ngIf="group.components?.length">
                             <thead>
                                 <tr>
                                     <th>Component Name</th>
                                     <th>Applied Amount</th>
                                     <th>Approved Amount</th>
                                     <th>Maximum Amount</th>
-                                    <th>Attachements</th>
+                                    <th>Attachments</th>
                                     <th>Remarks</th>
                                     <th>Approval Status</th>
                                     <th>Actions</th>
@@ -48,7 +48,9 @@
                                     <td>{{component?.appliedAmount}}</td>
                                     <td>
                                         <ng-container *ngIf="editingComponent === component; else nonEditableApproved">
-                                            <input type="number" [(ngModel)]="component.approvedAmount">
+                                            <mat-form-field>
+                                                <input matInput type="number" [(ngModel)]="component.approvedAmount">
+                                            </mat-form-field>
                                         </ng-container>
                                         <ng-template #nonEditableApproved>
                                             {{component?.approvedAmount}}
@@ -58,14 +60,16 @@
                                     <td>
                                         <ng-container
                                             *ngFor="let file of component?.employeeIncomeTaxDeclarationAttachments">
-                                            <a [href]="file?.documentLink" style="cursor: pointer;">
+                                            <a [href]="file?.documentLink" targer="_blank" style="cursor: pointer;">
                                                 {{ file?.attachmentName }}
                                             </a>
                                         </ng-container>
                                     </td>
                                     <td>
                                         <ng-container *ngIf="editingComponent === component; else nonEditableRemark">
-                                            <input type="text" [(ngModel)]="component.remark">
+                                            <mat-form-field>
+                                                <input matInput type="text" [(ngModel)]="component.remark">
+                                            </mat-form-field>
                                         </ng-container>
                                         <ng-template #nonEditableRemark>
                                             {{component?.remark}}
@@ -73,23 +77,25 @@
                                     </td>
                                     <td>
                                         <ng-container *ngIf="editingComponent === component; else nonEditableStatus">
-                                            <select [value]="component?.approvalStatus"
-                                                (change)="onStatusChange(element, 'component', component, $event)">
-                                                <option value="Approved">Approved</option>
-                                                <option value="Rejected">Rejected</option>
-                                            </select>
+                                            <mat-form-field>
+                                                <mat-select [value]="component?.approvalStatus"
+                                                    (selectionChange)="onStatusChange(element, 'component', component, $event)">
+                                                    <mat-option value="Approved">Approved</mat-option>
+                                                    <mat-option value="Rejected">Rejected</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
                                         </ng-container>
                                         <ng-template #nonEditableStatus>
                                             {{component?.approvalStatus}}
                                         </ng-template>
                                     </td>
-                                    <td>
+                                    <td width="100px">
                                         <ng-container *ngIf="editingComponent === component; else showEdit">
                                             <mat-icon (click)="saveEditing('component', component)"
-                                                style="cursor: pointer; margin-right: 10px;">
+                                                style="cursor: pointer; margin-right: 10px;" class="text-success">
                                                 check
                                             </mat-icon>
-                                            <mat-icon (click)="cancelEditing('component')" style="cursor: pointer;">
+                                            <mat-icon (click)="cancelEditing('component')" class="text-danger" style="cursor: pointer;">
                                                 cancel
                                             </mat-icon>
                                         </ng-container>
@@ -103,7 +109,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <p *ngIf="!group.components?.length">No components available!</p>
+                        <p *ngIf="!group.components?.length" class="p-2 fw-bold m-0">No components available!</p>
                     </div>
 
                     <!-- HRA Section -->
@@ -123,7 +129,7 @@
                             <button mat-flat-button color="Primary"
                                 (click)="onBulkHRAupdate(element.incomeTaxDeclarationHRA, 'Rejected')">Reject All
                                 HRA</button>
-                            <table class="nested-table">
+                            <table class="nested-table hrm-table">
                                 <thead>
                                     <tr>
                                         <th>Month</th>
@@ -193,7 +199,7 @@
                             </table>
                         </div>
                     </div>
-                    <p *ngIf="!element.incomeTaxDeclarationHRA?.length">No HRA data available!</p>
+                    <p *ngIf="!element.incomeTaxDeclarationHRA?.length" class="p-2 fw-bold m-0">No HRA data available!</p>
                 </div>
             </div>
         </td>

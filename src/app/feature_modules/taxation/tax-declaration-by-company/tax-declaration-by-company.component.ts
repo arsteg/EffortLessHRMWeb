@@ -151,7 +151,7 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
   }
 
   onStatusChange(element: any, type: string, item: any, event: any) {
-    const newStatus = event.target.value;
+    const newStatus = event.value;
     item.approvalStatus = newStatus;
     this.dataSource.data = [...this.dataSource.data];
   }
