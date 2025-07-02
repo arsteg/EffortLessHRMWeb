@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="dataSource" multiTemplateDataRows class="hrm-table" >
+<table mat-table [dataSource]="dataSource" multiTemplateDataRows class="hrm-table">
     <!-- Financial Year Column -->
     <ng-container matColumnDef="financialYear">
         <th mat-header-cell *matHeaderCellDef> Financial Year </th>
@@ -48,7 +48,7 @@
                                     <td>{{component?.appliedAmount}}</td>
                                     <td>
                                         <ng-container *ngIf="editingComponent === component; else nonEditableApproved">
-                                            <mat-form-field>
+                                            <mat-form-field class="densed-field" style="width: 100px">
                                                 <input matInput type="number" [(ngModel)]="component.approvedAmount">
                                             </mat-form-field>
                                         </ng-container>
@@ -67,7 +67,7 @@
                                     </td>
                                     <td>
                                         <ng-container *ngIf="editingComponent === component; else nonEditableRemark">
-                                            <mat-form-field>
+                                            <mat-form-field class="densed-field" style="width: 100px">
                                                 <input matInput type="text" [(ngModel)]="component.remark">
                                             </mat-form-field>
                                         </ng-container>
@@ -77,7 +77,7 @@
                                     </td>
                                     <td>
                                         <ng-container *ngIf="editingComponent === component; else nonEditableStatus">
-                                            <mat-form-field>
+                                            <mat-form-field class="densed-field" style="width: 100px">
                                                 <mat-select [value]="component?.approvalStatus"
                                                     (selectionChange)="onStatusChange(element, 'component', component, $event)">
                                                     <mat-option value="Approved">Approved</mat-option>
@@ -95,7 +95,8 @@
                                                 style="cursor: pointer; margin-right: 10px;" class="text-success">
                                                 check
                                             </mat-icon>
-                                            <mat-icon (click)="cancelEditing('component')" class="text-danger" style="cursor: pointer;">
+                                            <mat-icon (click)="cancelEditing('component')" class="text-danger"
+                                                style="cursor: pointer;">
                                                 cancel
                                             </mat-icon>
                                         </ng-container>
@@ -114,21 +115,25 @@
 
                     <!-- HRA Section -->
                     <div class="expandable-section mt-3" *ngIf="element.incomeTaxDeclarationHRA?.length">
-                        <div class="section-header d-flex justify-content-between" (click)="toggleHRA(element)">
-                            <div class="border-bottom">
-                                <strong>Income Tax Declaration HRA:</strong> {{element.incomeTaxDeclarationHRA.length}}
+
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <button mat-stroked-button extended (click)="toggleHRA(element)" color="primary">
+                                IT Declarations HRA <mat-icon>{{expandedHRA !== element ? 'keyboard_arrow_down' :
+                                    'keyboard_arrow_up'}}</mat-icon>
+                                <span
+                                    class="badge bg-primary text-white">{{element.incomeTaxDeclarationHRA.length}}</span>
+                            </button>
+                            <div class="d-flex gap-2" *ngIf="expandedHRA === element">
+                                <button mat-flat-button color="primary"
+                                    (click)="onBulkHRAupdate(element.incomeTaxDeclarationHRA, 'Approved')">Approve All
+                                    HRA</button>
+                                <button mat-flat-button color="warn"
+                                    (click)="onBulkHRAupdate(element.incomeTaxDeclarationHRA, 'Rejected')">Reject All
+                                    HRA</button>
                             </div>
-                            <mat-icon>
-                                {{ expandedHRA === element ? 'expand_less' : 'expand_more' }}
-                            </mat-icon>
                         </div>
+
                         <div class="section-content" *ngIf="expandedHRA === element" [@detailExpand]="'expanded'">
-                            <button mat-flat-button color="accent"
-                                (click)="onBulkHRAupdate(element.incomeTaxDeclarationHRA, 'Approved')">Approve All
-                                HRA</button>
-                            <button mat-flat-button color="Primary"
-                                (click)="onBulkHRAupdate(element.incomeTaxDeclarationHRA, 'Rejected')">Reject All
-                                HRA</button>
                             <table class="nested-table hrm-table">
                                 <thead>
                                     <tr>
@@ -150,7 +155,9 @@
                                         <td>{{hra?.rentDeclared}}</td>
                                         <td>
                                             <ng-container *ngIf="editingHRA === hra; else nonEditableVerified">
-                                                <input type="number" [(ngModel)]="hra.verifiedAmount">
+                                                <mat-form-field class="densed-field" style="width: 100px">
+                                                    <input type="number" matInput [(ngModel)]="hra.verifiedAmount">
+                                                </mat-form-field>
                                             </ng-container>
                                             <ng-template #nonEditableVerified>
                                                 {{hra?.verifiedAmount}}
@@ -160,19 +167,21 @@
                                         <td>{{hra?.landlordPan}}</td>
                                         <td>
                                             <ng-container
-                                            *ngFor="let file of hra?.employeeIncomeTaxDeclarationAttachments">
-                                            <a [href]="file?.documentLink" style="cursor: pointer;">
-                                                {{ file?.attachmentName }}
-                                            </a>
-                                        </ng-container>
+                                                *ngFor="let file of hra?.employeeIncomeTaxDeclarationAttachments">
+                                                <a [href]="file?.documentLink" style="cursor: pointer;">
+                                                    {{ file?.attachmentName }}
+                                                </a>
+                                            </ng-container>
                                         </td>
                                         <td>
                                             <ng-container *ngIf="editingHRA === hra; else nonEditableHRAStatus">
-                                                <select [value]="hra?.approvalStatus"
-                                                    (change)="onStatusChange(element, 'hra', hra, $event)">
-                                                    <option value="Approved">Approved</option>
-                                                    <option value="Rejected">Rejected</option>
-                                                </select>
+                                                <mat-form-field class="densed-field" style="width: 100px">
+                                                    <mat-select [value]="hra?.approvalStatus"
+                                                        (selectionChange)="onStatusChange(element, 'hra', hra, $event)">
+                                                        <mat-option value="Approved">Approved</mat-option>
+                                                        <mat-option value="Rejected">Rejected</mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
                                             </ng-container>
                                             <ng-template #nonEditableHRAStatus>
                                                 {{hra?.approvalStatus}}
@@ -181,10 +190,10 @@
                                         <td>
                                             <ng-container *ngIf="editingHRA === hra; else showEditHRA">
                                                 <mat-icon (click)="saveEditing('hra', hra)"
-                                                    style="cursor: pointer; margin-right: 10px;">
+                                                    style="cursor: pointer; margin-right: 10px;" class="text-success">
                                                     check
                                                 </mat-icon>
-                                                <mat-icon (click)="cancelEditing('hra')" style="cursor: pointer;">
+                                                <mat-icon (click)="cancelEditing('hra')" style="cursor: pointer;" class="text-danger">
                                                     cancel
                                                 </mat-icon>
                                             </ng-container>
@@ -199,7 +208,8 @@
                             </table>
                         </div>
                     </div>
-                    <p *ngIf="!element.incomeTaxDeclarationHRA?.length" class="p-2 fw-bold m-0">No HRA data available!</p>
+                    <p *ngIf="!element.incomeTaxDeclarationHRA?.length" class="p-2 fw-bold m-0">No HRA data available!
+                    </p>
                 </div>
             </div>
         </td>

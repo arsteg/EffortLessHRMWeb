@@ -59,15 +59,13 @@ export class StatutoryDetailsComponent {
       this.setGratuityEligibilityValidator();
     }, 1000);
   }
-  
+
   logUrlSegmentsForUser() {
-    const urlPath = this.router.url;
-    const segments = urlPath.split('/').filter(segment => segment);
-    if (segments.length >= 3) {
-      const employee = segments[segments.length - 3];
-      this.userService.getUserByEmpCode(employee).subscribe((res: any) => {
+    const empCode = this.route.parent.snapshot.paramMap.get('empCode') || this.authService.currentUserValue?.empCode;
+    if (empCode) {
+      this.userService.getUserByEmpCode(empCode).subscribe((res: any) => {
         this.selectedUser = res.data[0];
-       this.payrollService.getGeneralSettings(this.selectedUser?.company?._id).subscribe((res: any) => {
+        this.payrollService.getGeneralSettings(this.selectedUser?.company?._id).subscribe((res: any) => {
           this.generalSettings = res.data;
         });
         this.getStatutoryDetailsByUser();
@@ -82,10 +80,10 @@ export class StatutoryDetailsComponent {
       this.statutoryDetailsForm.patchValue(results[0].data);
       const userId = this.selectedUser?._id;
 
-    this.statutoryDetailsForm.patchValue({
-      user: userId,
-      taxRegimeUpdatedBy: userId
-    });
+      this.statutoryDetailsForm.patchValue({
+        user: userId,
+        taxRegimeUpdatedBy: userId
+      });
     });
   }
 
@@ -96,10 +94,10 @@ export class StatutoryDetailsComponent {
       user: userId,
       taxRegimeUpdatedBy: userId
     });
-  
+
     this.userService.getStatutoryByUserId(this.selectedUser?._id).subscribe((res: any) => {
       this.statutoryDetailsForm.get('isGratuityEligible').enable();
-      
+
       if (!res.data || res.data.length === 0 || res.data === null) {
         this.userService.addStatutoryDetails(this.statutoryDetailsForm.value).subscribe((res: any) => {
           this.getStatutoryDetailsByUser();

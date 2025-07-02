@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-tax',
@@ -41,6 +42,9 @@ export class TaxComponent {
   userTaxRegime: any;
   userStatutoryDetails: any;
   taxDeclarations: any;
+  columns: TableColumn[] = [
+    { key: 'financialYear', name: 'Financial Year' },
+  ]
 
   constructor(
     private userService: UserService,
@@ -106,11 +110,47 @@ export class TaxComponent {
   getSections() {
     this.taxService?.getAllTaxSections().subscribe((res: any) => {
       this.sections = res.data;
+      this.sections.forEach((section: any) => {
+        const column = {
+          key: section?.section,
+          name: section?.section,
+          valueFn: (row: any) => this.getComponentCountForSection(row, section)
+        };
+
+        this.columns.push(column);
+      });
+
+      const actionColumn = {
+        key: 'actions',
+        name: 'Actions',
+        isAction: true,
+        options: [
+          {
+            label: 'Edit',
+            icon: 'edit',
+            visibility: ActionVisibility.LABEL
+          },
+        ]
+      };
+      this.columns.push(actionColumn);
     });
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onActionClick(event: any) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.selectedRecord = event.row; 
+        this.isEdit = true; 
+        this.taxView = false; 
+        this.taxEditView = true;
+        break;
+    }
+  }
+
+
+  onPageChange(page: any) {
+    this.currentPage = page.pageIndex + 1;
+    this.recordsPerPage = page.pageSize;
     this.getTaxDeclaration();
   }
 
