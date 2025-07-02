@@ -8,36 +8,45 @@
         </div>
         <!-- Display validation error -->
         <div *ngIf="salaryDetailsForm.errors?.['exceedsGrossSalary']" class="alert alert-danger">
-            The total yearly amount of salary components exceeds the yearly gross salary ({{
-            salaryDetailsForm.get('Amount').value | number }}).
+            The total yearly amount of salary components exceeds the yearly gross salary ({{ salaryDetailsForm.get('Amount').value | number }}).
         </div>
         <div class="row">
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>Select Payroll Effective Date</mat-label>
-                <input matInput [matDatepicker]="joiningDatePicker1" (focus)="joiningDatePicker1.open()"
-                    formControlName="payrollEffectiveFrom">
+                <input matInput [matDatepicker]="joiningDatePicker1" (focus)="joiningDatePicker1.open()" formControlName="payrollEffectiveFrom" [disabled]="edit">
                 <mat-datepicker #joiningDatePicker1></mat-datepicker>
             </mat-form-field>
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>For what frequency would you like to enter the CTC amount?</mat-label>
                 <input matInput type="text" value="Yearly" formControlName="frequencyToEnterCTC" readonly>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
-                <mat-label>Select CTC Template</mat-label>
-                <mat-select formControlName="CTCTemplate" (selectionChange)="onCTCTemplateChange($event.value)">
-                    <mat-option value="manual">Enter Manually</mat-option>
-                    <mat-option *ngFor="let ctcTemplate of ctcTemplates" [value]="ctcTemplate._id">
-                        {{ctcTemplate.name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <div *ngIf="!edit" class="col-md-6 my-2 border-bottom">
+                <mat-form-field appearance="outline">
+                    <mat-label>Select CTC Template</mat-label>
+                    <mat-select formControlName="CTCTemplate" (selectionChange)="onCTCTemplateChange($event.value)">
+                        <mat-option value="manual">Enter Manually</mat-option>
+                        <mat-option *ngFor="let ctcTemplate of ctcTemplates" [value]="ctcTemplate._id">
+                            {{ ctcTemplate.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div *ngIf="edit" class="col-md-6 my-2 border-bottom">
+                <mat-form-field appearance="outline">
+                    <mat-label>CTC Template</mat-label>
+                    <input matInput type="text" [value]="getCTCTemplateName(salaryDetailsForm.get('CTCTemplate')?.value)" readonly [disabled]="edit">
+                </mat-form-field>
+            </div>
             <mat-form-field appearance="outline" class="col-md-6 my-2 border-bottom">
                 <mat-label>Enter Yearly Gross Amount</mat-label>
-                <input matInput type="number" formControlName="Amount" readonly>
+                <input matInput type="number" formControlName="Amount" min="0" [disabled]="edit"
+                    *ngIf="!edit" (input)="restrictToDigits($event)" (paste)="handlePaste($event)" (keydown)="preventNegative($event)">
+                <input matInput type="number" formControlName="Amount" readonly [disabled]="edit" *ngIf="edit">
+               
             </mat-form-field>
             <div class="col-md-6 my-2 border-bottom">
                 <mat-label>Is employer part inclusive in salary structure</mat-label>
-                <mat-radio-group formControlName="isEmployerPartInclusiveInSalaryStructure">
+                <mat-radio-group formControlName="isEmployerPartInclusiveInSalaryStructure" [disabled]="edit">
                     <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                     <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                 </mat-radio-group>
@@ -45,44 +54,29 @@
         </div>
 
         <mat-accordion class="example-headers-align">
-            <mat-expansion-panel>
+            <mat-expansion-panel [expanded]="true">
                 <mat-expansion-panel-header class="header">
                     <mat-panel-title>Tax and Statutory Settings</mat-panel-title>
                 </mat-expansion-panel-header>
                 <div formGroupName="employeeSalaryTaxAndStatutorySetting">
-                    <!-- Statutory settings unchanged -->
-                    <div class="row">
-                        <div class="col-md-6 my-2 border-bottom">
-                            <mat-label>Variable Allowance is a part of CTC</mat-label>
-                            <mat-radio-group formControlName="isVariableAllowancePartOfCTC">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
-                            </mat-radio-group>
-                        </div>
+                    <div class="row">                       
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>PF Deduction</mat-label>
-                            <mat-radio-group formControlName="isPFDeduction">
+                            <mat-radio-group formControlName="isPFDeduction" [disabled]="edit">
                                 <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                                 <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
-                        </div>
-                        <div class="col-md-6 my-2 border-bottom">
-                            <mat-label>Provident Pension Deduction</mat-label>
-                            <mat-radio-group formControlName="isProvidentPensionDeduction">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
-                            </mat-radio-group>
-                        </div>
+                        </div>                        
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Employee Provident Fund Capped At PF Ceiling</mat-label>
-                            <mat-radio-group formControlName="isEmployeePFCappedAtPFCeiling">
+                            <mat-radio-group formControlName="isEmployeePFCappedAtPFCeiling" [disabled]="edit">
                                 <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                                 <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Employer Provident Fund Capped At PF Ceiling</mat-label>
-                            <mat-radio-group formControlName="isEmployerPFCappedAtPFCeiling">
+                            <mat-radio-group formControlName="isEmployerPFCappedAtPFCeiling" [disabled]="edit">
                                 <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                                 <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
@@ -90,13 +84,15 @@
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-form-field appearance="outline">
                                 <mat-label>Fixed Amount For Provident Fund Wage</mat-label>
-                                <input matInput type="number" formControlName="fixedAmountForProvidentFundWage">
+                                <input matInput type="number" formControlName="fixedAmountForProvidentFundWage" min="0" [disabled]="edit"
+                                    *ngIf="!edit" (input)="restrictToDigits($event)" (paste)="handlePaste($event)" (keydown)="preventNegative($event)">
+                                <input matInput type="number" formControlName="fixedAmountForProvidentFundWage" readonly [disabled]="edit" *ngIf="edit">                              
                             </mat-form-field>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-form-field appearance="outline">
                                 <mat-label>PF Template</mat-label>
-                                <mat-select formControlName="pfTemplate">
+                                <mat-select formControlName="pfTemplate" [disabled]="edit">
                                     <mat-option value="Template 1">Template 1</mat-option>
                                     <mat-option value="Template 2">Template 2</mat-option>
                                 </mat-select>
@@ -104,42 +100,42 @@
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>ESIC Deduction</mat-label>
-                            <mat-radio-group formControlName="isESICDeduction">
+                            <mat-radio-group formControlName="isESICDeduction" [disabled]="edit">
                                 <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                                 <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>PT Deduction</mat-label>
-                            <mat-radio-group formControlName="isPTDeduction">
+                            <mat-radio-group formControlName="isPTDeduction" [disabled]="edit">
                                 <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                                 <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>LWF Deduction</mat-label>
-                            <mat-radio-group formControlName="isLWFDeduction">
+                            <mat-radio-group formControlName="isLWFDeduction" [disabled]="edit">
                                 <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                                 <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Gratuity Applicable</mat-label>
-                            <mat-radio-group formControlName="isGratuityApplicable">
+                            <mat-radio-group formControlName="isGratuityApplicable" [disabled]="edit">
                                 <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                                 <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Income Tax Deduction</mat-label>
-                            <mat-radio-group formControlName="isIncomeTaxDeduction">
+                            <mat-radio-group formControlName="isIncomeTaxDeduction" [disabled]="edit">
                                 <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                                 <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Round Off Applicable</mat-label>
-                            <mat-radio-group formControlName="isRoundOffApplicable">
+                            <mat-radio-group formControlName="isRoundOffApplicable" [disabled]="edit">
                                 <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
                                 <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
@@ -160,7 +156,7 @@
                             *ngIf="salaryDetailsForm.get('CTCTemplate').value === 'manual' || allowance.get('isNew')?.value">
                             <mat-form-field appearance="outline" class="col-md-3 my-2">
                                 <mat-label>Fixed Allowance</mat-label>
-                                <mat-select formControlName="fixedAllowance"
+                                <mat-select formControlName="fixedAllowance" [disabled]="edit"
                                     (selectionChange)="updateLabel(i, $event.value, 'fixedAllowance')">
                                     <mat-option *ngFor="let item of fixedAllowance" [value]="item._id"
                                         [disabled]="isOptionDisabled(item._id, i, fixedAllowances, 'fixedAllowance')">
@@ -173,23 +169,20 @@
                             *ngIf="salaryDetailsForm.get('CTCTemplate').value !== 'manual' && !allowance.get('isNew')?.value">
                             <mat-form-field appearance="outline" class="col-md-3 my-2">
                                 <mat-label>Fixed Allowance</mat-label>
-                                <input matInput type="text" formControlName="fixedAllowanceLabel" readonly>
+                                <input matInput type="text" formControlName="fixedAllowanceLabel" readonly [disabled]="edit">
                             </mat-form-field>
                         </ng-container>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Monthly Amount</mat-label>
-                            <input matInput type="number" formControlName="monthlyAmount"
-                                (input)="updateYearlyAmount(i, 'salaryComponentFixedAllowance')">
-                            <mat-error *ngIf="allowance.get('monthlyAmount')?.hasError('negativeValue')">
-                                Monthly amount cannot be negative.
-                            </mat-error>
+                            <input matInput type="number" formControlName="monthlyAmount" min="0" [disabled]="edit"
+                                *ngIf="!edit" (input)="restrictToDigits($event); updateYearlyAmount(i, 'salaryComponentFixedAllowance')"
+                                (paste)="handlePaste($event)" (keydown)="preventNegative($event)">
+                            <input matInput type="number" formControlName="monthlyAmount" readonly [disabled]="edit" *ngIf="edit">
+                           
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
-                            <input matInput type="number" formControlName="yearlyAmount" readonly>
-                            <mat-error *ngIf="allowance.get('yearlyAmount')?.hasError('negativeValue')">
-                                Yearly amount cannot be negative.
-                            </mat-error>
+                            <input matInput type="number" formControlName="yearlyAmount" readonly [disabled]="edit">                           
                         </mat-form-field>
                         <div class="col-md-1 my-2">
                             <button mat-icon-button color="warn" (click)="removeFixedAllowance(i)" type="button"
@@ -200,22 +193,6 @@
                     </div>
                     <button mat-flat-button color="primary" (click)="addFixedAllowance()" type="button"
                         *ngIf="!edit && addButtons">Add Fixed Allowance</button>
-                </div>
-                <div *ngIf="edit">
-                    <table>
-                        <thead>
-                            <th>Fixed Allowance</th>
-                            <th>Monthly Amount</th>
-                            <th>Yearly Amount</th>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let fixedAll of salaryDetails?.fixedAllowanceList">
-                                <td>{{fixedAll?.fixedAllowance?.label}}</td>
-                                <td>{{fixedAll?.monthlyAmount | number:'1.2-2'}}</td>
-                                <td>{{fixedAll?.yearlyAmount | number:'1.2-2'}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </mat-expansion-panel>
             <!-- Fixed Deduction -->
@@ -229,7 +206,7 @@
                         [formGroupName]="i" class="row align-items-center">
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Fixed Deduction</mat-label>
-                            <mat-select formControlName="fixedDeduction"
+                            <mat-select formControlName="fixedDeduction" [disabled]="edit"
                                 (selectionChange)="updateLabel(i, $event.value, 'fixedDeduction')">
                                 <mat-option *ngFor="let item of fixedDeduction" [value]="item._id"
                                     [disabled]="isOptionDisabled(item._id, i, fixedDeductionArray, 'fixedDeduction')">
@@ -239,18 +216,14 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Monthly Amount</mat-label>
-                            <input matInput type="number" formControlName="monthlyAmount"
-                                (input)="updateYearlyAmount(i, 'salaryComponentFixedDeduction')">
-                            <mat-error *ngIf="deduction.get('monthlyAmount')?.hasError('negativeValue')">
-                                Monthly amount cannot be negative.
-                            </mat-error>
-                        </mat-form-field>
+                            <input matInput type="number" formControlName="monthlyAmount" min="0" [disabled]="edit"
+                                *ngIf="!edit" (input)="restrictToDigits($event); updateYearlyAmount(i, 'salaryComponentFixedDeduction')"
+                                (paste)="handlePaste($event)" (keydown)="preventNegative($event)">
+                            <input matInput type="number" formControlName="monthlyAmount" readonly [disabled]="edit" *ngIf="edit">
+                       </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
-                            <input matInput type="number" formControlName="yearlyAmount" readonly>
-                            <mat-error *ngIf="deduction.get('yearlyAmount')?.hasError('negativeValue')">
-                                Yearly amount cannot be negative.
-                            </mat-error>
+                            <input matInput type="number" formControlName="yearlyAmount" readonly [disabled]="edit">                           
                         </mat-form-field>
                         <div class="col-md-1 my-2">
                             <button mat-icon-button color="warn" (click)="removeFixedDeduction(i)" type="button"
@@ -261,22 +234,6 @@
                     </div>
                     <button mat-flat-button color="primary" (click)="addFixedDeduction()" type="button"
                         *ngIf="!edit && addButtons">Add Fixed Deduction</button>
-                </div>
-                <div *ngIf="edit">
-                    <table>
-                        <thead>
-                            <th>Fixed Deduction</th>
-                            <th>Monthly Amount</th>
-                            <th>Yearly Amount</th>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let fixedAll of salaryDetails?.fixedDeductionList">
-                                <td>{{fixedAll?.fixedDeduction?.label}}</td>
-                                <td>{{fixedAll?.monthlyAmount | number:'1.2-2'}}</td>
-                                <td>{{fixedAll?.yearlyAmount | number:'1.2-2'}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </mat-expansion-panel>
 
@@ -291,7 +248,7 @@
                         [formGroupName]="i" class="row align-items-center">
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Variable Allowance</mat-label>
-                            <mat-select formControlName="variableAllowance"
+                            <mat-select formControlName="variableAllowance" [disabled]="edit"
                                 (selectionChange)="updateLabel(i, $event.value, 'variableAllowance')">
                                 <mat-option *ngFor="let item of variableAllowance" [value]="item._id"
                                     [disabled]="isOptionDisabled(item._id, i, variableAllowanceArray, 'variableAllowance')">
@@ -301,18 +258,16 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Monthly Amount</mat-label>
-                            <input matInput type="number" formControlName="monthlyAmount"
-                                (input)="updateYearlyAmount(i, 'salaryComponentVariableAllowance')">
-                            <mat-error *ngIf="allowance.get('monthlyAmount')?.hasError('negativeValue')">
-                                Monthly amount cannot be negative.
-                            </mat-error>
+                            <input matInput type="number" formControlName="monthlyAmount" min="0" [disabled]="edit"
+                                *ngIf="!edit" (input)="restrictToDigits($event); updateYearlyAmount(i, 'salaryComponentVariableAllowance')"
+                                (paste)="handlePaste($event)" (keydown)="preventNegative($event)">
+                            <input matInput type="number" formControlName="monthlyAmount" readonly [disabled]="edit" *ngIf="edit">
+                           
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
-                            <input matInput type="number" formControlName="yearlyAmount" readonly>
-                            <mat-error *ngIf="allowance.get('yearlyAmount')?.hasError('negativeValue')">
-                                Yearly amount cannot be negative.
-                            </mat-error>
+                            <input matInput type="number" formControlName="yearlyAmount" readonly [disabled]="edit">
+                           
                         </mat-form-field>
                         <div class="col-md-1 my-2">
                             <button mat-icon-button color="warn" (click)="removeVariableAllowance(i)" type="button"
@@ -323,22 +278,6 @@
                     </div>
                     <button mat-flat-button color="primary" (click)="addVariableAllowance()" type="button"
                         *ngIf="!edit && addButtons">Add Variable Allowance</button>
-                </div>
-                <div *ngIf="edit">
-                    <table>
-                        <thead>
-                            <th>Variable Allowance</th>
-                            <th>Monthly Amount</th>
-                            <th>Yearly Amount</th>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let fixedAll of salaryDetails?.variableAllowanceList">
-                                <td>{{fixedAll?.variableAllowance?.label}}</td>
-                                <td>{{fixedAll?.monthlyAmount | number:'1.2-2'}}</td>
-                                <td>{{fixedAll?.yearlyAmount | number:'1.2-2'}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </mat-expansion-panel>
 
@@ -353,7 +292,7 @@
                         [formGroupName]="i" class="row align-items-center">
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Variable Deduction</mat-label>
-                            <mat-select formControlName="variableDeduction"
+                            <mat-select formControlName="variableDeduction" [disabled]="edit"
                                 (selectionChange)="updateLabel(i, $event.value, 'variableDeduction')">
                                 <mat-option *ngFor="let item of variableDeduction" [value]="item._id"
                                     [disabled]="isOptionDisabled(item._id, i, variableDeductionArray, 'variableDeduction')">
@@ -363,18 +302,16 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Monthly Amount</mat-label>
-                            <input matInput type="number" formControlName="monthlyAmount"
-                                (input)="updateYearlyAmount(i, 'salaryComponentVariableDeduction')">
-                            <mat-error *ngIf="deduction.get('monthlyAmount')?.hasError('negativeValue')">
-                                Monthly amount cannot be negative.
-                            </mat-error>
+                            <input matInput type="number" formControlName="monthlyAmount" min="0" [disabled]="edit"
+                                *ngIf="!edit" (input)="restrictToDigits($event); updateYearlyAmount(i, 'salaryComponentVariableDeduction')"
+                                (paste)="handlePaste($event)" (keydown)="preventNegative($event)">
+                            <input matInput type="number" formControlName="monthlyAmount" readonly [disabled]="edit" *ngIf="edit">
+                           
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
                             <mat-label>Yearly Amount</mat-label>
-                            <input matInput type="number" formControlName="yearlyAmount" readonly>
-                            <mat-error *ngIf="deduction.get('yearlyAmount')?.hasError('negativeValue')">
-                                Yearly amount cannot be negative.
-                            </mat-error>
+                            <input matInput type="number" formControlName="yearlyAmount" readonly [disabled]="edit">
+                          
                         </mat-form-field>
                         <div class="col-md-1 my-2">
                             <button mat-icon-button color="warn" (click)="removeVariableDeduction(i)" type="button"
@@ -385,22 +322,6 @@
                     </div>
                     <button mat-flat-button color="primary" (click)="addVariableDeduction()" type="button"
                         *ngIf="!edit && addButtons">Add Variable Deduction</button>
-                </div>
-                <div *ngIf="edit">
-                    <table>
-                        <thead>
-                            <th>Variable Deduction</th>
-                            <th>Monthly Amount</th>
-                            <th>Yearly Amount</th>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let fixedAll of salaryDetails?.variableDeductionList">
-                                <td>{{fixedAll?.variableDeduction?.label}}</td>
-                                <td>{{fixedAll?.monthlyAmount | number:'1.2-2'}}</td>
-                                <td>{{fixedAll?.yearlyAmount | number:'1.2-2'}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </mat-expansion-panel>
         </mat-accordion>
