@@ -16,7 +16,6 @@
                     <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
                             class="bi bi-download downloadBtn pe-2"></i>
                         Download</button>
-
                 </div>
 
                 <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
@@ -28,19 +27,19 @@
                 <thead>
                     <tr>
                         <th class="ps-2" [appSort]="shiftAssigments" data-name="user"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th [appSort]="shiftAssigments" data-name="template"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Shift
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Shift
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
                         <th [appSort]="shiftAssigments" data-name="startDate"
-                        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Start Date
-                        <i
-                        [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Start Date
+                            <i
+                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
 
                         <th scope="col" class="text-center">Actions</th>
@@ -85,20 +84,17 @@
     </div>
 
     <form action="" [formGroup]="shiftForm" (ngSubmit)="onSubmission()">
-
-
-
         <div class="form-group">
             <label for="">Select An Employee for Template Assignment<span class="text-danger">*</span></label>
-            <select id="member" name="member" class="form-control" [attr.disabled]="changeMode === 'Update'"
-                (change)="onEmployeeChange($event)"
+            <select id="member" name="member" class="form-control"
+                [attr.disabled]="changeMode === 'Update' ? true : null" (change)="onEmployeeChange($event)"
                 formControlName="user" class="form-select form-select-sm" aria-label="form-select-sm example">
                 <option value="" disabled selected>Select Employee -- </option>
                 <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                     {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                 </option>
             </select>
-            <div *ngIf="shiftForm.get('user').invalid && shiftForm.get('user').touched" class="text-danger error">
+            <div *ngIf="shiftForm.get('user')?.invalid && shiftForm.get('user')?.touched" class="text-danger error">
                 Please Select an Employee!
             </div>
             <div class="text-danger" *ngIf="userHasTemplateError">
@@ -115,7 +111,7 @@
                     {{template?.name}}
                 </option>
             </select>
-            <div *ngIf="shiftForm.get('template').invalid && shiftForm.get('template').touched"
+            <div *ngIf="shiftForm.get('template')?.invalid && shiftForm.get('template')?.touched"
                 class="text-danger error">
                 Please Select Shift Template!
             </div>
@@ -125,16 +121,17 @@
             <label for="">Select an Start Date<span class="text-danger">*</span></label>
             <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
                 [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate" />
-            <div *ngIf="shiftForm.get('startDate').invalid && shiftForm.get('startDate').touched"
+            <div *ngIf="shiftForm.get('startDate')?.invalid && shiftForm.get('startDate')?.touched"
                 class="text-danger error">
-                Please Select Start Date!
+                <span *ngIf="shiftForm.get('startDate')?.errors?.['required']">Please Select Start Date!</span>
+                <span *ngIf="shiftForm.get('startDate')?.errors?.['pastDate']">Start Date cannot be a past date.</span>
             </div>
         </div>
 
-
         <div class="d-flex justify-content-between mt-2">
             <button type="reset" mat-flat-button>Cancel</button>
-            <button type="submit" mat-flat-button class="addBtn" [disabled]="userHasTemplateError">{{isEdit == true ? 'Update': 'Add'}}</button>
+            <button type="submit" mat-flat-button class="addBtn" [disabled]="!shiftForm.valid">{{isEdit == true ?
+                'Update': 'Add'}}</button>
         </div>
     </form>
 

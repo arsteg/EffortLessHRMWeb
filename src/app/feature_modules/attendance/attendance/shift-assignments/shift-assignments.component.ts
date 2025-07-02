@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -41,7 +41,7 @@ export class ShiftAssignmentsComponent {
     this.shiftForm = this.fb.group({
       template: ['', Validators.required],
       user: ['', Validators.required],
-      startDate: [null, Validators.required]
+      startDate: [null, [Validators.required, this.futureDateValidator()]]
     })
   }
   ngOnInit() {
@@ -52,6 +52,28 @@ export class ShiftAssignmentsComponent {
     this.loadRecords();
   }
 
+  futureDateValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const selectedDate = control.value;
+
+      if (!selectedDate) {
+        return null; // If no date is selected, let Validators.required handle it
+      }
+
+      // Normalize dates to remove time component for accurate comparison
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Set to start of today
+
+      const dateToCompare = new Date(selectedDate);
+      dateToCompare.setHours(0, 0, 0, 0); // Set to start of selected date
+
+      if (dateToCompare.getTime() < today.getTime()) {
+        return { pastDate: true }; // Return 'pastDate' error if it's a previous date
+      }
+      return null; // Valid date
+    };
+  }
+  
   onEmployeeChange(event: any) {
     const selectedEmployeeId = event.target.value;
     this.userHasTemplateError = this.shiftAssigments.some(
@@ -89,8 +111,6 @@ export class ShiftAssignmentsComponent {
     const template = this.shift?.find(temp => temp._id === templateId);
     return template ? template.name : '';
   }
-
-
 
   getshift() {
     this.attendanceService.getShift('', '').subscribe((res: any) => {
