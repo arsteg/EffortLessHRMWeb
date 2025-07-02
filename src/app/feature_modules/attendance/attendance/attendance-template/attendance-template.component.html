@@ -1,26 +1,22 @@
-<div class="mainContent pt-2">
-    <div class="container">
-        <div class="d-none d-md-block">
-            <div class="d-flex justify-content-end end-0">
-                <button mat-flat-button (click)="open(addModal); isEdit= false; step=1" color="primary">
-                    <mat-icon>add</mat-icon>{{'attendance.at_add_template' | translate}}
-                </button>
-            </div>
-        </div>
-        <hrm-table
-            [data]="attendanceTemplate"
-            [columns]="columns"
-            (actionClicked)="onActionClick($event)"
-            [isServerSide]="false"
-            [showSearch]="true"
-            [totalItems]="totalRecords"
-            [pageSize]="recordsPerPage"
-            (pageChanged)="onPageChangev1($event)"
-            (searchChanged)="onSearchChange($event)"
-            [showExport]="'csv'">
-        </hrm-table>
+<div class="d-none d-md-block">
+    <div class="d-flex justify-content-end end-0">
+        <button mat-flat-button (click)="open(addModal); isEdit= false; step=1" color="primary">
+            {{'attendance.at_add_new' | translate}}
+        </button>
     </div>
 </div>
+<hrm-table
+    [data]="attendanceTemplate"
+    [columns]="columns"
+    (actionClicked)="onActionClick($event)"
+    [isServerSide]="false"
+    [showSearch]="true"
+    [totalItems]="totalRecords"
+    [pageSize]="recordsPerPage"
+    (pageChanged)="onPageChangev1($event)"
+    (searchChanged)="onSearchChange($event)"
+    [showExport]="'csv'">
+</hrm-table>
 
 <ng-template #addModal>
   <div class="d-flex align-items-center justify-content-between">
@@ -29,7 +25,7 @@
         <mat-icon>close</mat-icon>
     </button>
 </div>
-  <mat-dialog-content>
+  <!-- <mat-dialog-content> -->
     <app-general-template-settings
       *ngIf="step === 1"
       [changeMode]="changeMode"
@@ -40,5 +36,5 @@
       [templates]="attendanceTemplate"
       >
     </app-general-template-settings>
-  </mat-dialog-content>
+  <!-- </mat-dialog-content> -->
 </ng-template>
