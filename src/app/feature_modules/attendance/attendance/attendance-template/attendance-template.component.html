@@ -35,7 +35,9 @@
       [isEdit]="isEdit"
       (close)="onClose($event)"
       (changeStep)="onChangeStep($event)"
-      (expenseTemplateReportRefreshed)="refreshExpenseReportTable()">
+      (expenseTemplateReportRefreshed)="refreshExpenseReportTable()"
+      [templates]="attendanceTemplate"
+      >
     </app-general-template-settings>
   </mat-dialog-content>
 </ng-template>

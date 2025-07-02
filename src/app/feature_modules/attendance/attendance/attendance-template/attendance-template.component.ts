@@ -73,15 +73,6 @@ export class AttendanceTemplateComponent {
     this.loadAllData(); // Call a new method to load both
   }
 
-  // onPageChange(page: number) {
-  //   this.currentPage = page;
-  //   this.loadRecords();
-  // }
-
-  // onRecordsPerPageChange(recordsPerPage: number) {
-  //   this.recordsPerPage = recordsPerPage;
-  //   this.loadRecords();
-
   loadAllData() {
     // Use forkJoin to wait for both observables to complete
     forkJoin([
@@ -174,19 +165,6 @@ export class AttendanceTemplateComponent {
       return `with: ${reason}`;
     }
   }
-
-  // open(content: any) {
-  //   this.modalService
-  //     .open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' })
-  //     .result.then(
-  //       (result) => {
-  //         this.closeResult = `Closed with: ${result}`;
-  //       },
-  //       (reason) => {
-  //         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-  //       }
-  //     );
-  // }
 
   open(content: any) {
     this.changeMode = this.isEdit ? 'Next' : 'Add';

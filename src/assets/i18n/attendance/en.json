@@ -49,6 +49,7 @@
     "at_label": "Enter Label for Attendance Template!",
     "at_errorLabelRequired": "Label is required!.",
     "at_errorLabelInvalid": "Label cannot be just spaces, numbers or any special characters.",
+    "at_errorLabelDuplicate": "Label already exists! Please enter a different label.",
     "at_attendanceMode": "Please select the mode of capturing attendance",
     "at_minimumHoursPerWeek": "No. of minimum hours required per Week",
     "at_errorMinimumHours": "Minimum Hours per Week is required.",
