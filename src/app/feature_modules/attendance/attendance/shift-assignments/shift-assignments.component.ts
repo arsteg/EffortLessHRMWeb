@@ -8,6 +8,7 @@ import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-shift-assignments',
@@ -66,6 +67,7 @@ export class ShiftAssignmentsComponent {
     private exportService: ExportService,
     private toast: ToastrService,
     private commonService: CommonService,
+    private translate: TranslateService,
     private fb: FormBuilder) {
     this.shiftForm = this.fb.group({
       template: ['', Validators.required],
@@ -183,15 +185,15 @@ export class ShiftAssignmentsComponent {
   }
 
 
-  exportToCsv() {
-    const dataToExport = this.shiftAssigments.map((data) => ({
-      user: this.getUser(data.user),
-      template: this.getShiftTemplateName(data.template),
-      startDate: data.startDate
-    }));
-    this.exportService.exportToCSV('Shift-Assignment', 'Shift-Assignment', dataToExport);
+  // exportToCsv() {
+  //   const dataToExport = this.shiftAssigments.map((data) => ({
+  //     user: this.getUser(data.user),
+  //     template: this.getShiftTemplateName(data.template),
+  //     startDate: data.startDate
+  //   }));
+  //   this.exportService.exportToCSV('Shift-Assignment', 'Shift-Assignment', dataToExport);
 
-  }
+  // }
 
   setFormValues(data) {
     this.shiftForm.patchValue({
@@ -212,7 +214,7 @@ export class ShiftAssignmentsComponent {
         this.attendanceService.addShiftAssignment(this.shiftForm.value).subscribe((res: any) => {
           this.isSubmitting = true;
           this.loadRecords();
-          this.toast.success('Shift Template Assigned', 'Successfully');
+          this.toast.success(this.translate.instant('attendance.sta_success.assigned'), this.translate.instant('attendance.sta_success_alert'));
           this.shiftForm.reset({
             user: '',
             template: '',
@@ -223,7 +225,7 @@ export class ShiftAssignmentsComponent {
           this.isEdit = false;
         },
           err => {
-            this.toast.error('Shift Template Can not be Assigned', 'ERROR')
+            this.toast.error(this.translate.instant('attendance.sta_error.assign_failed'), 'ERROR')
           })
       }
       else {
@@ -238,15 +240,15 @@ export class ShiftAssignmentsComponent {
           this.closeModal();
           this.shiftForm.get('user').enable();
           this.isEdit = false,
-            this.toast.success('Shift Template Assignment Updated', 'Succesfully')
+            this.toast.success(this.translate.instant('attendance.sta_success.updated'), 'Succesfully')
         },
           err => {
-            this.toast.error('Shift Template Assignment Can not be Updated', 'ERROR')
+            this.toast.error(this.translate.instant('attendance.sta_error.update_failed'), 'ERROR')
           })
       }
     }
     else {
-      this.toast.error('Please fill the required Fields')
+      this.toast.error(this.translate.instant('attendance.sta_error.required_fields'))
       this.markFormGroupTouched(this.shiftForm);
     }
     this.isEdit = false;
@@ -264,10 +266,10 @@ export class ShiftAssignmentsComponent {
   deleteTemplate(id: string) {
     this.attendanceService.deleteShiftAssignment(id).subscribe((res: any) => {
       this.loadRecords();
-      this.toast.success('Successfully Deleted!!!', 'Shift Template Assignment');
+      this.toast.success(this.translate.instant('attendance.sta_success.deleted'));
     },
       (err) => {
-        this.toast.error('This Shift Template Assignment Can not be deleted', 'Error')
+        this.toast.error(this.translate.instant('attendance.sta_error.delete_failed'), 'Error')
       })
   }
 
@@ -280,7 +282,7 @@ export class ShiftAssignmentsComponent {
         this.deleteTemplate(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        this.toast.error(this.translate.instant('attendance.sta_error.delete_failed'), 'Error!')
       }
     });
   }

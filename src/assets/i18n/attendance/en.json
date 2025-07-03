@@ -219,6 +219,15 @@
   "sta_error_start_date_past": "Start date cannot be a past date",
   "sta_cancel": "Cancel",
   "sta_save": "Save",
-  "sta_update": "Update"
+  "sta_update": "Update",
+  "sta_success_alert": "Successfully",
+  "sta_error_alert": "ERROR",
+  "sta_success.assigned": "Shift Template Assigned",
+  "sta_success.updated": "Shift Template Assignment Updated",
+  "sta_success.deleted": "Shift Template Assignment Deleted",
+  "sta_error.assign_failed": "Shift Template Cannot be Assigned",
+  "sta_error.update_failed": "Shift Template Assignment Cannot be Updated",
+  "sta_error.delete_failed": "Shift Template Assignment Cannot be Deleted",
+  "sta_error.required_fields": "Please fill the required fields"
   }
 }
