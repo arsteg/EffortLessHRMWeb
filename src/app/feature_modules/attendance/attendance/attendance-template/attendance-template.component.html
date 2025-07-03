@@ -9,12 +9,13 @@
     [data]="attendanceTemplate"
     [columns]="columns"
     (actionClicked)="onActionClick($event)"
-    [isServerSide]="false"
+    [isServerSide]="true"
     [showSearch]="true"
     [totalItems]="totalRecords"
     [pageSize]="recordsPerPage"
     (pageChanged)="onPageChangev1($event)"
     (searchChanged)="onSearchChange($event)"
+    (sortChanged)="onSortChange($event)"
     [showExport]="'csv'">
 </hrm-table>
 
