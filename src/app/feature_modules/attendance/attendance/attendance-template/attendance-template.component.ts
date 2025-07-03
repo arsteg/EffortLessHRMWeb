@@ -40,6 +40,7 @@ export class AttendanceTemplateComponent {
     {
       key: 'employeeCount',
       name: 'Number of Employees Covered',
+      sortable: false,
       valueFn: (row: any) => this.templateAssignmentCount[row._id] || 0,
     },
     {
@@ -73,21 +74,14 @@ export class AttendanceTemplateComponent {
     this.loadAllData(); // Call a new method to load both
   }
 
-  // onPageChange(page: number) {
-  //   this.currentPage = page;
-  //   this.loadRecords();
-  // }
-
-  // onRecordsPerPageChange(recordsPerPage: number) {
-  //   this.recordsPerPage = recordsPerPage;
-  //   this.loadRecords();
-
   loadAllData() {
     // Use forkJoin to wait for both observables to complete
     forkJoin([
       this.attendanceService.getAttendanceTemplate(
-        ((this.currentPage - 1) * this.recordsPerPage).toString(),
-        this.recordsPerPage.toString()
+        // ((this.currentPage - 1) * this.recordsPerPage).toString(),
+        // this.recordsPerPage.toString()
+        "1",
+        "100000"
       ),
       this.attendanceService.getAttendanceAssignment('', ''), // Assuming no pagination for assignments needed here
     ]).subscribe(
@@ -174,19 +168,6 @@ export class AttendanceTemplateComponent {
       return `with: ${reason}`;
     }
   }
-
-  // open(content: any) {
-  //   this.modalService
-  //     .open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' })
-  //     .result.then(
-  //       (result) => {
-  //         this.closeResult = `Closed with: ${result}`;
-  //       },
-  //       (reason) => {
-  //         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-  //       }
-  //     );
-  // }
 
   open(content: any) {
     this.changeMode = this.isEdit ? 'Next' : 'Add';

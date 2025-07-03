@@ -26,7 +26,7 @@ export class TaxComponentBySectionComponent {
   public sortOrder: string = '';
   columns: TableColumn[] = [
     { key: 'componantName', name: 'Component Name' },
-    { key: 'section', name: 'Section', valueFn: (row: any) => { return row.section.section } },
+    { key: 'section', name: 'Section', valueFn: (row: any) => { return row?.section?.section } },
     { key: 'maximumAmount', name: 'Maximum Amount' },
     { key: 'order', name: 'Order' },
     {

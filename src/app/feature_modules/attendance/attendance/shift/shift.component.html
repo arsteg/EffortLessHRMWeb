@@ -151,23 +151,29 @@
       </div>
     </div>
     <div class="row">
-      <div class="form-group my-2 col-md-6">
-        <label for="earliestArrival">Earliest Arrival <span class="text-danger">*</span></label>
-        <input type="time" formControlName="earliestArrival" id="earliestArrival" class="form-control" />
-        <div *ngIf="shiftForm.get('earliestArrival')?.invalid && shiftForm.get('earliestArrival')?.touched"
-          class="text-danger error">
-          Please select Earliest arrival Time!
-        </div>
+    <div class="form-group my-2 col-md-6">
+      <label for="earliestArrival">Earliest Arrival <span class="text-danger">*</span></label>
+      <input type="time" formControlName="earliestArrival" id="earliestArrival" class="form-control" />
+      <div *ngIf="shiftForm.get('earliestArrival')?.invalid && shiftForm.get('earliestArrival')?.touched" class="text-danger error">
+        Please select Earliest Arrival Time!
       </div>
-      <div class="form-group my-2 col-md-6">
-        <label for="latestDeparture">Latest Departure <span class="text-danger">*</span></label>
-        <input type="time" formControlName="latestDeparture" id="latestDeparture" class="form-control" />
-        <div *ngIf="shiftForm.get('latestDeparture')?.invalid && shiftForm.get('latestDeparture')?.touched"
-          class="text-danger error">
-          Please select Latest Departure Time!
-        </div>
+      <div *ngIf="shiftForm.errors?.['earliestArrivalAfterStartTime'] && shiftForm.get('earliestArrival')?.touched"
+        class="text-danger error">
+        Earliest Arrival Time cannot be after Shift Start Time.
       </div>
     </div>
+    <div class="form-group my-2 col-md-6">
+      <label for="latestDeparture">Latest Departure <span class="text-danger">*</span></label>
+      <input type="time" formControlName="latestDeparture" id="latestDeparture" class="form-control" />
+      <div *ngIf="shiftForm.get('latestDeparture')?.invalid && shiftForm.get('latestDeparture')?.touched" class="text-danger error">
+        Please select Latest Departure Time!
+      </div>
+      <div *ngIf="shiftForm.errors?.['latestDepartureBeforeEndTime'] && shiftForm.get('latestDeparture')?.touched"
+        class="text-danger error">
+        Latest Departure Time cannot be before Shift End Time.
+      </div>
+    </div>
+  </div>
     <div class="form-group my-2" *ngIf="shiftForm.get('shiftType')?.value == 'fixed time'">
       <label for="">Is late coming allowed?</label>
       <div class="d-flex">

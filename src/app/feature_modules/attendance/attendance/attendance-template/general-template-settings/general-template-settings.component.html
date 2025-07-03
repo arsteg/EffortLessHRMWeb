@@ -1,389 +1,158 @@
 <form [formGroup]="addTemplateForm" (ngSubmit)="onSubmission()">
-  <mat-form-field appearance="outline" class="w-100">
-    <mat-label>{{ 'attendance.at_label' | translate }}</mat-label>
-    <input matInput formControlName="label" required>
-    <mat-error *ngIf="addTemplateForm.get('label')?.errors?.['required']">
-      {{ 'attendance.at_errorLabelRequired' | translate }}
-    </mat-error>
-    <mat-error *ngIf="addTemplateForm.get('label')?.errors?.['invalidLabel']">
-       {{ 'attendance.at_errorLabelInvalid' | translate }}
-    </mat-error>
-  </mat-form-field>
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ 'attendance.at_label' | translate }}</mat-label>
+      <input matInput formControlName="label" required>
+      <mat-error *ngIf="addTemplateForm.get('label')?.errors?.['required']">
+        {{ 'attendance.at_errorLabelRequired' | translate }}
+      </mat-error>
+      <mat-error *ngIf="addTemplateForm.get('label')?.errors?.['invalidLabel']">
+        {{ 'attendance.at_errorLabelInvalid' | translate }}
+      </mat-error>
+      <mat-error *ngIf="addTemplateForm.get('label')?.errors?.['duplicateLabel']">
+        {{ 'attendance.at_errorLabelDuplicate' | translate }}
+      </mat-error>
+    </mat-form-field>
 
-  <mat-form-field appearance="outline" class="w-100">
-    <mat-label>{{ 'attendance.at_attendanceMode' | translate }}</mat-label>
-    <mat-select multiple formControlName="attendanceMode">
-      <mat-option *ngFor="let mode of modes" [value]="mode?.mode">{{ mode?.mode }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>{{ 'attendance.at_attendanceMode' | translate }}</mat-label>
+      <mat-select multiple formControlName="attendanceMode">
+        <mat-option *ngFor="let mode of modes" [value]="mode?.mode">{{ mode?.mode }}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
+    
   <mat-form-field appearance="outline" class="w-50">
-    <mat-label>{{ 'attendance.at_minimumHoursPerWeek' | translate }}</mat-label>
-    <input matInput type="number" formControlName="minimumHoursRequiredPerWeek" required>
-    <mat-error *ngIf="addTemplateForm.get('minimumHoursRequiredPerWeek')?.errors?.['required']">
-      {{ 'attendance.at_errorMinimumHours' | translate }}
+      <mat-label>{{ 'attendance.at_minimumHoursPerWeek' | translate }}</mat-label>
+      <input matInput type="number" formControlName="minimumHoursRequiredPerWeek" required>
+      <mat-error *ngIf="addTemplateForm.get('minimumHoursRequiredPerWeek')?.errors?.['required']">
+        {{ 'attendance.at_errorMinimumHours' | translate }}
+      </mat-error>
+    <mat-error *ngIf="addTemplateForm.get('minimumHoursRequiredPerWeek')?.errors?.['min'] && addTemplateForm.get('minimumHoursRequiredPerWeek')?.touched">
+      {{ 'attendance.at_negativeMinimumHours' | translate }}
     </mat-error>
   </mat-form-field>
 
-  <div class="my-3">
-    <label class="mb-1">{{ 'attendance.at_notifyEmployeeMinHours' | translate }}</label>
-    <mat-radio-group formControlName="notifyEmployeeMinHours" class="d-flex flex-row gap-3">
-      <mat-radio-button [value]="true">{{ 'attendance.at_yes' | translate }}</mat-radio-button>
-      <mat-radio-button [value]="false">{{ 'attendance.at_no' | translate }}</mat-radio-button>
-    </mat-radio-group>
-    <mat-error *ngIf="addTemplateForm.get('notifyEmployeeMinHours')?.errors?.['required']">
-      {{ 'attendance.at_errorNotifyEmployeeMinHours' | translate }}
-    </mat-error>
-  </div>
-
-  <div class="my-3">
-    <label class="mb-1">{{ 'attendance.at_weeklyOffDays' | translate }}</label>
-    <div class="d-flex flex-wrap gap-2">
-      <mat-checkbox *ngFor="let day of weekDays"
-                    [checked]="selectedWeeklyDays.includes(day)"
-                    (change)="onDaysChange($event, day, 'weeklyOfDays')">
-        {{ day }}
-      </mat-checkbox>
-    </div>
-    <mat-error *ngIf="addTemplateForm.get('weeklyOfDays')?.touched && addTemplateForm.get('weeklyOfDays')?.invalid">
-      At least one day must be selected as Weekly Off.
-    </mat-error>
-  </div>
-
-  <div class="my-3">
-    <label class="mb-1">{{ 'attendance.at_weeklyOffHalfDay' | translate }}</label>
-    <div class="d-flex flex-wrap gap-2">
-      <mat-checkbox *ngFor="let halfDay of weekDays"
-                    [checked]="selectedHalfDays.includes(halfDay)"
-                    (change)="onDaysChange($event, halfDay, 'weklyofHalfDay')">
-        {{ halfDay }}
-      </mat-checkbox>
-    </div>
-  </div>
-
-  <div class="my-3">
-    <label class="mb-1">{{ 'attendance.at_alternateWeekOffRoutine' | translate }}</label>
-    <mat-radio-group formControlName="alternateWeekOffRoutine" class="d-flex flex-row gap-3">
-      <mat-radio-button value="odd">{{ 'attendance.at_odd' | translate }}</mat-radio-button>
-      <mat-radio-button value="even">{{ 'attendance.at_even' | translate }}</mat-radio-button>
-      <mat-radio-button value="none">{{ 'attendance.at_none' | translate }}</mat-radio-button>
-    </mat-radio-group>
-    <mat-error *ngIf="addTemplateForm.get('alternateWeekOffRoutine')?.invalid">
-       {{ 'attendance.at_errorAlternateWeekOffRoutine' | translate }}
-    </mat-error>
-  </div>
-
-  <div *ngIf="addTemplateForm.get('alternateWeekOffRoutine')?.value !== 'none'">
     <div class="my-3">
-      <label class="mb-1">{{ 'attendance.at_daysForAlternateWeekOffRoutine' | translate }}</label>
-      <div class="d-flex flex-wrap gap-2">
-        <mat-checkbox *ngFor="let weekday of weekDays"
-                      [checked]="selectedAlternateWeekDays.includes(weekday)"
-                      (change)="onDaysChange($event, weekday, 'daysForAlternateWeekOffRoutine')">
-          {{ weekday }}
-        </mat-checkbox>
-      </div>
-      <mat-error *ngIf="addTemplateForm.get('daysForAlternateWeekOffRoutine')?.invalid">
-        {{ 'attendance.at_errorDaysForAlternateWeekOffRoutine' | translate }}
+      <label class="mb-1">{{ 'attendance.at_notifyEmployeeMinHours' | translate }}</label>
+      <mat-radio-group formControlName="notifyEmployeeMinHours" class="d-flex flex-row gap-3">
+        <mat-radio-button color="primary" [value]="true">{{ 'attendance.at_yes' | translate }}</mat-radio-button>
+        <mat-radio-button color="primary" [value]="false">{{ 'attendance.at_no' | translate }}</mat-radio-button>
+      </mat-radio-group>
+      <mat-error *ngIf="addTemplateForm.get('notifyEmployeeMinHours')?.errors?.['required']">
+        {{ 'attendance.at_errorNotifyEmployeeMinHours' | translate }}
       </mat-error>
     </div>
 
     <div class="my-3">
-      <label class="mb-1">{{ 'attendance.at_notifySupervisors' | translate }}</label>
-      <mat-radio-group formControlName="isNotificationToSupervisors" class="d-flex flex-row gap-3">
-        <mat-radio-button [value]="true">{{ 'attendance.at_yes' | translate }}</mat-radio-button>
-        <mat-radio-button [value]="false">{{ 'attendance.at_no' | translate }}</mat-radio-button>
+      <label class="mb-1">{{ 'attendance.at_weeklyOffDays' | translate }}</label>
+      <div class="d-flex flex-wrap gap-2">
+        <mat-checkbox *ngFor="let day of weekDays" color="primary"
+                      [checked]="selectedWeeklyDays.includes(day)"
+                      (change)="onDaysChange($event, day, 'weeklyOfDays')">
+          {{ day }}
+        </mat-checkbox>
+      </div>
+      <mat-error *ngIf="addTemplateForm.get('weeklyOfDays')?.touched && addTemplateForm.get('weeklyOfDays')?.invalid">
+        At least one day must be selected as Weekly Off.
+      </mat-error>
+    </div>
+
+    <div class="my-3">
+      <label class="mb-1">{{ 'attendance.at_weeklyOffHalfDay' | translate }}</label>
+      <div class="d-flex flex-wrap gap-2">
+        <mat-checkbox *ngFor="let halfDay of weekDays" color="primary"
+                      [checked]="selectedHalfDays.includes(halfDay)"
+                      (change)="onDaysChange($event, halfDay, 'weklyofHalfDay')">
+          {{ halfDay }}
+        </mat-checkbox>
+      </div>
+    </div>
+
+    <div class="my-3">
+      <label class="mb-1">{{ 'attendance.at_alternateWeekOffRoutine' | translate }}</label>
+      <mat-radio-group formControlName="alternateWeekOffRoutine" class="d-flex flex-row gap-3">
+        <mat-radio-button color="primary" value="odd">{{ 'attendance.at_odd' | translate }}</mat-radio-button>
+        <mat-radio-button color="primary" value="even">{{ 'attendance.at_even' | translate }}</mat-radio-button>
+        <mat-radio-button color="primary" value="none">{{ 'attendance.at_none' | translate }}</mat-radio-button>
+      </mat-radio-group>
+      <mat-error *ngIf="addTemplateForm.get('alternateWeekOffRoutine')?.invalid">
+        {{ 'attendance.at_errorAlternateWeekOffRoutine' | translate }}
+      </mat-error>
+    </div>
+
+    <div *ngIf="addTemplateForm.get('alternateWeekOffRoutine')?.value !== 'none'">
+      <div class="my-3">
+        <label class="mb-1">{{ 'attendance.at_daysForAlternateWeekOffRoutine' | translate }}</label>
+        <div class="d-flex flex-wrap gap-2">
+          <mat-checkbox color="primary" *ngFor="let weekday of weekDays"
+                        [checked]="selectedAlternateWeekDays.includes(weekday)"
+                        (change)="onDaysChange($event, weekday, 'daysForAlternateWeekOffRoutine')">
+            {{ weekday }}
+          </mat-checkbox>
+        </div>
+        <mat-error *ngIf="addTemplateForm.get('daysForAlternateWeekOffRoutine')?.invalid">
+          {{ 'attendance.at_errorDaysForAlternateWeekOffRoutine' | translate }}
+        </mat-error>
+      </div>
+
+      <div class="my-3">
+        <label class="mb-1">{{ 'attendance.at_notifySupervisors' | translate }}</label>
+        <mat-radio-group formControlName="isNotificationToSupervisors" class="d-flex flex-row gap-3">
+          <mat-radio-button color="primary" [value]="true">{{ 'attendance.at_yes' | translate }}</mat-radio-button>
+          <mat-radio-button color="primary" [value]="false">{{ 'attendance.at_no' | translate }}</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+
+    <div class="my-3">
+      <label class="mb-1">{{ 'attendance.at_approversType' | translate }}</label>
+      <mat-radio-group formControlName="approversType" class="d-flex flex-row gap-3">
+        <mat-radio-button color="primary" value="template-wise">{{ 'attendance.at_templateWise' | translate }}</mat-radio-button>
+        <mat-radio-button color="primary" value="employee-wise">{{ 'attendance.at_employeeWise' | translate }}</mat-radio-button>
       </mat-radio-group>
     </div>
-  </div>
 
-  <div class="my-3">
-    <label class="mb-1">{{ 'attendance.at_approversType' | translate }}</label>
-    <mat-radio-group formControlName="approversType" class="d-flex flex-row gap-3">
-      <mat-radio-button value="template-wise">{{ 'attendance.at_templateWise' | translate }}</mat-radio-button>
-      <mat-radio-button value="employee-wise">{{ 'attendance.at_employeeWise' | translate }}</mat-radio-button>
-    </mat-radio-group>
-  </div>
-
-  <div class="my-3">
-    <label class="mb-1">{{ 'attendance.at_approvalLevel' | translate }}</label>
-    <mat-radio-group formControlName="approvalLevel" class="d-flex flex-row gap-3">
-      <mat-radio-button value="1">{{ 'attendance.at_level1' | translate }}</mat-radio-button>
-      <mat-radio-button value="2">{{ 'attendance.at_level2' | translate }}</mat-radio-button>
-    </mat-radio-group>
-  </div>
-
-  <div class="row mt-2" *ngIf="addTemplateForm.get('approversType')?.value === 'template-wise'">
-    <div class="col-md-6">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ 'attendance.at_primaryApprover' | translate }}</mat-label>
-        <mat-select formControlName="primaryApprover" required>
-          <mat-option value="" disabled>{{ 'attendance.at_selectPrimaryApprover' | translate }}</mat-option>
-          <mat-option *ngFor="let user of users" [value]="user?.id">
-            {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <div class="my-3">
+      <label class="mb-1">{{ 'attendance.at_approvalLevel' | translate }}</label>
+      <mat-radio-group formControlName="approvalLevel" class="d-flex flex-row gap-3">
+        <mat-radio-button color="primary" value="1">{{ 'attendance.at_level1' | translate }}</mat-radio-button>
+        <mat-radio-button color="primary" value="2">{{ 'attendance.at_level2' | translate }}</mat-radio-button>
+      </mat-radio-group>
     </div>
-    <div class="col-md-6" *ngIf="addTemplateForm.get('approvalLevel')?.value === '2'">
-      <mat-form-field appearance="outline" class="w-100">
-        <mat-label>{{ 'attendance.at_secondaryApprover' | translate }}</mat-label>
-        <mat-select formControlName="secondaryApprover" required>
-          <mat-option value="" disabled>{{ 'attendance.at_selectSecondaryApprover' | translate }}</mat-option>
-          <mat-option *ngFor="let user of users" [value]="user?.id">
-            {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+
+    <div class="row mt-2" *ngIf="addTemplateForm.get('approversType')?.value === 'template-wise'">
+      <div class="col-md-6">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'attendance.at_primaryApprover' | translate }}</mat-label>
+          <mat-select formControlName="primaryApprover" required>
+            <mat-option value="" disabled>{{ 'attendance.at_selectPrimaryApprover' | translate }}</mat-option>
+            <mat-option *ngFor="let user of users" [value]="user?.id">
+              {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6" *ngIf="addTemplateForm.get('approvalLevel')?.value === '2'">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ 'attendance.at_secondaryApprover' | translate }}</mat-label>
+          <mat-select formControlName="secondaryApprover" required>
+            <mat-option value="" disabled>{{ 'attendance.at_selectSecondaryApprover' | translate }}</mat-option>
+            <mat-option *ngFor="let user of users" [value]="user?.id">
+              {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
     </div>
-  </div>
+  </mat-dialog-content>
 
   <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
-        <button type="button" (click)="setFormValues()" mat-flat-button mat-dialog-close>{{ 'attendance.at_cancelButton' | translate }}</button>
-        <button type="submit" mat-flat-button color="primary" [disabled]="addTemplateForm.invalid">{{ 'attendance.at_submitButton' | translate }}</button>
+        <button type="button" (click)="setFormValues()" mat-flat-button mat-dialog-close>
+          {{ 'attendance.at_cancelButton' | translate }}
+        </button>
+        <button type="submit" mat-flat-button color="primary" [disabled]="addTemplateForm.invalid">
+          {{ 'attendance.at_submitButton' | translate }}
+        </button>
    </div>
 </form>
-
-
-<!-- <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-    <div>
-        <h1 class="modal-title text-muted mb-0">{{isEdit == true ? 'Update': 'Add'}} Attendance Template</h1>
-    </div>
-    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-            (click)="closeModal()"></button>
-    </div>
-</div>
-
-<form action="" [formGroup]="addTemplateForm" (ngSubmit)="onSubmission()">
-    <div class="form-group my-3">
-        <label for="">Enter Label for Attendance Template <span class="text-danger">*</span></label>
-        <input type="text" formControlName="label" class="form-control" required>
-        <div *ngIf="addTemplateForm.get('label').invalid && addTemplateForm.get('label').touched" class="text-danger">
-            <div *ngIf="addTemplateForm.get('label').errors?.['required']">
-                Label is required.
-            </div>
-            <div
-                *ngIf="addTemplateForm.get('label').errors?.['invalidLabel']">
-                Label cannot be just spaces, numbers or any special characters.
-            </div>
-        </div>
-    </div>
-
-    <mat-form-field appearance="outline" class=" w-100 mx-1">
-        <mat-label>Please select the mode of capturing attendance</mat-label>
-        <mat-select multiple formControlName="attendanceMode">
-            <mat-option [value]="mode?.mode" *ngFor="let mode of modes">{{mode?.mode}}</mat-option>
-        </mat-select>
-    </mat-form-field>
-
-    <div class="form-group my-3">
-        <label for="">No. of minimum hours required per Week <span class="text-danger">*</span></label>
-        <div class="d-flex justify-content-between">
-            <input type="number" placeholder="Enter Hours" formControlName="minimumHoursRequiredPerWeek"
-                class="form-control w-50 me-2">
-        </div>
-        <div *ngIf="addTemplateForm.get('minimumHoursRequiredPerWeek').invalid && addTemplateForm.get('minimumHoursRequiredPerWeek').touched"
-            class="text-danger">
-            Minimum Hours per Week is required.
-        </div>
-    </div>
-
-    <div class="form-group my-3">
-        <label for="">Do you want to notify employee if Min Hours not accomplished? <span
-                class="text-danger">*</span></label>
-        <div class="d-flex">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" formControlName="notifyEmployeeMinHours"
-                    id="flexRadioDefault-Yes" required [value]="true">
-                <label class="form-check-label" for="flexRadioDefault-Yes">
-                    Yes
-                </label>
-            </div>
-            <div class="form-check ms-3">
-                <input class="form-check-input" type="radio" formControlName="notifyEmployeeMinHours"
-                    id="flexRadioDefault-No" required [value]="false">
-                <label class="form-check-label" for="flexRadioDefault-No">
-                    No
-                </label>
-            </div>
-        </div>
-        <div *ngIf="addTemplateForm.get('notifyEmployeeMinHours').invalid && addTemplateForm.get('notifyEmployeeMinHours').touched"
-            class="text-danger">
-            Notify Employee minimum hour is required.
-        </div>
-    </div>
-
-    <div class="form-group my-3">
-        <label for="">Which days should be considered as weekly off? </label>
-        <div class="d-flex justify-content-between">
-            <ng-container *ngFor="let day of weekDays; let i = index">
-                <label class="d-flex align-items-center">
-                    <input class="form-check-input checks mx-1" [id]="'day' + i" type="checkbox"
-                        [checked]="selectedWeeklyDays.includes(day)"
-                        (change)="onDaysChange($event, day, 'weeklyOfDays')" />
-                    {{day}}
-                </label>
-            </ng-container>
-        </div>
-    </div>
-    <div *ngIf="addTemplateForm.get('weeklyOfDays').invalid && addTemplateForm.get('weeklyOfDays').touched"
-        class="text-danger mt-2">
-        At least one day must be selected as Weekly Off.
-    </div>
-    <div class="form-group my-3">
-        <label for="">Which week off is a half day? </label>
-        <div class="d-flex justify-content-between">
-            <ng-container *ngFor="let halfDay of weekDays; let i = index">
-                <label class="d-flex align-items-center">
-                    <input class="form-check-input checks mx-1" [id]="'halfDay' + i" type="checkbox"
-                        [checked]="selectedHalfDays.includes(halfDay)"
-                        (change)="onDaysChange($event, halfDay, 'weklyofHalfDay')" />
-                    {{halfDay}}
-                </label>
-            </ng-container>
-        </div>
-    </div>
-
-    <div class="form-group my-3">
-        <label for="">Alternate week off routine <span class="text-danger">*</span></label>
-        <div class="d-flex">
-            <div class="form-check">
-                <input class="form-check-input" type="radio" formControlName="alternateWeekOffRoutine"
-                    id="flexRadioDefault2-Yes" required value="odd">
-                <label class="form-check-label" for="flexRadioDefault2-Yes">
-                    Odd
-                </label>
-            </div>
-            <div class="form-check mx-3">
-                <input class="form-check-input" type="radio" formControlName="alternateWeekOffRoutine"
-                    id="flexRadioDefault2-No" required value="even">
-                <label class="form-check-label" for="flexRadioDefault2-No">
-                    Even
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" formControlName="alternateWeekOffRoutine"
-                    id="flexRadioDefaul2-No" required value="none">
-                <label class="form-check-label" for="flexRadioDefaul2-No">
-                    None
-                </label>
-            </div>
-        </div>
-        <div *ngIf="addTemplateForm.get('alternateWeekOffRoutine').invalid && addTemplateForm.get('alternateWeekOffRoutine').touched"
-            class="text-danger">
-            Alternative Week off Routine is required.
-        </div>
-    </div>
-
-    <div *ngIf="addTemplateForm.get('alternateWeekOffRoutine').value != 'none'">
-        <div class="form-group my-3">
-            <label for="">Days for alternate week off routine <span class="text-danger">*</span></label>
-            <div class="d-flex justify-content-between">
-                <ng-container *ngFor="let weekday of weekDays; let i = index">
-                    <label class="d-flex align-items-center">
-                        <input class="form-check-input checks mx-1" [id]="'alternateDay' + i" type="checkbox"
-                            [checked]="selectedAlternateWeekDays.includes(weekday)"
-                            (change)="onDaysChange($event, weekday, 'daysForAlternateWeekOffRoutine')" />
-                        {{weekday}}
-                    </label>
-                </ng-container>
-            </div>
-            <div *ngIf="addTemplateForm.get('daysForAlternateWeekOffRoutine').invalid && addTemplateForm.get('daysForAlternateWeekOffRoutine').touched"
-                class="text-danger">
-                At least one day must be selected for alternate week off routine.
-            </div>
-        </div>
-
-        <div class="form-group my-3">
-            <label for="">Do you want to send notification to supervisors? <span class="text-danger">*</span></label>
-            <div class="d-flex">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" formControlName="isNotificationToSupervisors"
-                        id="flexRadioDefault3-Yes" required [value]="true">
-                    <label class="form-check-label" for="flexRadioDefault3-Yes">
-                        Yes
-                    </label>
-                </div>
-                <div class="form-check ms-3">
-                    <input class="form-check-input" type="radio" formControlName="isNotificationToSupervisors"
-                        id="flexRadioDefault3-No" required [value]="false">
-                    <label class="form-check-label" for="flexRadioDefault3-No">
-                        No
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group my-3">
-        <label for="">Approvers Type for each employee <span class="text-danger">*</span></label>
-        <div class="d-flex">
-            <div class="form-check">
-                <input class="form-check-input" formControlName="approversType" type="radio" id="flexRadioDefault5-Yes"
-                    required value="template-wise">
-                <label class="form-check-label" for="flexRadioDefault5-Yes">
-                    Template Wise
-                </label>
-            </div>
-            <div class="form-check ms-3">
-                <input class="form-check-input" formControlName="approversType" type="radio" id="flexRadioDefault5-No"
-                    required value="employee-wise">
-                <label class="form-check-label" for="flexRadioDefault5-No">
-                    Employee Wise
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <div class="form-group my-3">
-        <label for="">How many levels of approvals you want to add? <span class="text-danger">*</span></label>
-        <div class="d-flex">
-            <div class="form-check">
-                <input class="form-check-input" formControlName="approvalLevel" type="radio" id="approvalLevel1"
-                    required value="1">
-                <label class="form-check-label" for="approvalLevel1">
-                    Level 1
-                </label>
-            </div>
-            <div class="form-check ms-3">
-                <input class="form-check-input" formControlName="approvalLevel" type="radio" id="approvalLevel2"
-                    required value="2">
-                <label class="form-check-label" for="approvalLevel2">
-                    Level 2
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-2" *ngIf="addTemplateForm.get('approversType').value === 'template-wise'">
-        <div class="col-md-6">
-            <label for="firstApprovalEmployee">Please select the primary approver for this template <span
-                    class="text-danger">*</span></label>
-            <select name="" id="firstApprovalEmployee" formControlName="primaryApprover" required
-                class="ms-2 form-control">
-                <option value="" disabled>Select Primary Approver</option>
-                <option [value]="user?.id" *ngFor="let user of users">{{user?.firstName |
-                    titlecase}} {{user.lastName | titlecase}}</option>
-            </select>
-        </div>
-        <div class="col-md-6" *ngIf="addTemplateForm.get('approvalLevel').value === '2'">
-            <label for="secondApprovalEmployee">Please select the Secondary approver for this template <span
-                    class="text-danger">*</span></label>
-            <select name="" id="secondApprovalEmployee" formControlName="secondaryApprover" required
-                class="ms-2 form-control">
-                <option value="" disabled>Select Secondary Approver</option>
-                <option [value]="user?.id" *ngFor="let user of users">{{user?.firstName |
-                    titlecase}} {{user.lastName | titlecase}}</option>
-            </select>
-        </div>
-    </div>
-
-    <div *ngIf="addTemplateForm.invalid && (addTemplateForm.dirty || addTemplateForm.touched)"
-        class="text-danger text-end">
-        Please fill out the Required Fields to Proceed!
-    </div>
-    <div class="d-flex justify-content-between">
-        <button type="button" (click)="setFormValues()" mat-flat-button>Cancel</button>
-        <button type="submit" mat-flat-button class="addBtn">Submit</button>
-    </div>
-</form> -->

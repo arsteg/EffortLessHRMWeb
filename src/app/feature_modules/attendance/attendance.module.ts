@@ -6,7 +6,6 @@ import { AttendanceManagementComponent } from './attendance-management/attendanc
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { GeneralSettingsComponent } from './attendance/generalSettings/generalSettings.component';
-import { AttendanceRegularizationComponent } from './attendance/attendance-template/attendance-regularization/attendance-regularization.component';
 import { AttendanceTemplateComponent } from './attendance/attendance-template/attendance-template.component';
 import { GeneralTemplateSettingsComponent } from './attendance/attendance-template/general-template-settings/general-template-settings.component';
 import { RouterOutlet } from '@angular/router';
@@ -44,7 +43,6 @@ import { OvertimeComponent } from './attendance/overtime/overtime.component';
 @NgModule({
   declarations: [
     GeneralSettingsComponent,
-    AttendanceRegularizationComponent,
     AttendanceTemplateComponent,
     GeneralTemplateSettingsComponent,
     AttendanceTemplateAssignmentComponent,
