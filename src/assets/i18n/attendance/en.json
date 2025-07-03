@@ -53,6 +53,7 @@
     "at_attendanceMode": "Please select the mode of capturing attendance",
     "at_minimumHoursPerWeek": "No. of minimum hours required per Week",
     "at_errorMinimumHours": "Minimum Hours per Week is required.",
+    "at_negativeMinimumHours": "Minimum hours cannot be negative.",
     "at_notifyEmployeeMinHours": "Do you want to notify employee if Min Hours not accomplished?",
     "at_errorNotifyEmployeeMinHours": "Notify Employee minimum hour is required.",
     "at_weeklyOffDays": "Which days should be considered as weekly off?",

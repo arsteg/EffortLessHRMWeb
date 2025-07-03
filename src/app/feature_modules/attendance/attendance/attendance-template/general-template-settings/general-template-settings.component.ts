@@ -57,8 +57,8 @@ export class GeneralTemplateSettingsComponent {
     this.addTemplateForm = this.fb.group({
       label: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
       attendanceMode: [[], Validators.required],
-      minimumHoursRequiredPerWeek: [40, Validators.required],
-      minimumMinutesRequiredPerWeek: [0, Validators.required],
+      minimumHoursRequiredPerWeek: [40,  [Validators.required, Validators.min(0)]],
+      minimumMinutesRequiredPerWeek: [0,  [Validators.required, Validators.min(0)]],
       notifyEmployeeMinHours: [true, Validators.required],
       weeklyOfDays: [[]],
       weklyofHalfDay: [null],

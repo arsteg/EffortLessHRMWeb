@@ -21,13 +21,17 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-50">
+    
+  <mat-form-field appearance="outline" class="w-50">
       <mat-label>{{ 'attendance.at_minimumHoursPerWeek' | translate }}</mat-label>
       <input matInput type="number" formControlName="minimumHoursRequiredPerWeek" required>
       <mat-error *ngIf="addTemplateForm.get('minimumHoursRequiredPerWeek')?.errors?.['required']">
         {{ 'attendance.at_errorMinimumHours' | translate }}
       </mat-error>
-    </mat-form-field>
+    <mat-error *ngIf="addTemplateForm.get('minimumHoursRequiredPerWeek')?.errors?.['min'] && addTemplateForm.get('minimumHoursRequiredPerWeek')?.touched">
+      {{ 'attendance.at_negativeMinimumHours' | translate }}
+    </mat-error>
+  </mat-form-field>
 
     <div class="my-3">
       <label class="mb-1">{{ 'attendance.at_notifyEmployeeMinHours' | translate }}</label>
