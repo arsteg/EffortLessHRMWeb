@@ -87,7 +87,6 @@ export class AttendanceTemplateComponent {
       ([templateRes, assignmentRes]: [any, any]) => {
         this.attendanceTemplate = templateRes.data;
         this.allData = templateRes.data;
-        debugger;
         this.totalRecords = templateRes.total;
         this.attendanceAssignment = assignmentRes.data;
         this.updateTemplateAssignmentCount(); // Call after both are populated

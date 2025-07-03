@@ -67,8 +67,8 @@ export class GeneralTemplateSettingsComponent {
       isNotificationToSupervisors: [true],
       isCommentMandatoryForRegularisation: [true],
       departmentDesignations: ['Software Developer', Validators.required],
-      approversType: ['', Validators.required],
-      approvalLevel: ['', Validators.required],
+      approversType: ['template-wise', Validators.required],
+      approvalLevel: ['1', Validators.required],
       primaryApprover: [null],
       secondaryApprover: [null],
       leveCategoryHierarchyForAbsentHalfDay: [[''], Validators.required]
