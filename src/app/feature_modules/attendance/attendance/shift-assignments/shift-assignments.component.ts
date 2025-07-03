@@ -30,6 +30,7 @@ export class ShiftAssignmentsComponent {
   currentPage: number = 1;
   public sortOrder: string = '';
   userHasTemplateError: boolean = false;
+  isSubmitting: boolean = false;
 
   constructor(private attendanceService: AttendanceService,
     private modalService: NgbModal,
@@ -173,8 +174,10 @@ export class ShiftAssignmentsComponent {
 
   onSubmission() {
     if (this.shiftForm.valid) {
+      
       if (!this.isEdit) {
         this.attendanceService.addShiftAssignment(this.shiftForm.value).subscribe((res: any) => {
+          this.isSubmitting = true;
           this.loadRecords();
           this.toast.success('Shift Template Assigned', 'Successfully');
           this.shiftForm.reset({
@@ -182,6 +185,7 @@ export class ShiftAssignmentsComponent {
             template: '',
             startDate: new Date()
           });
+          this.closeModal();
           this.shiftForm.get('user').enable();
           this.isEdit = false;
         },
@@ -191,12 +195,14 @@ export class ShiftAssignmentsComponent {
       }
       else {
         this.attendanceService.updateShiftAssignment(this.selectedShift, this.shiftForm.value).subscribe((res: any) => {
+          this.isSubmitting = true;
           this.loadRecords();
           this.shiftForm.reset({
             user: '',
             template: '',
             startDate: new Date()
           });
+          this.closeModal();
           this.shiftForm.get('user').enable();
           this.isEdit = false,
             this.toast.success('Shift Template Assignment Updated', 'Succesfully')

@@ -130,7 +130,7 @@
 
         <div class="d-flex justify-content-between mt-2">
             <button type="reset" mat-flat-button>Cancel</button>
-            <button type="submit" mat-flat-button class="addBtn" [disabled]="!shiftForm.valid">{{isEdit == true ?
+            <button type="submit" mat-flat-button class="addBtn" [disabled]="!shiftForm.valid || isSubmitting">{{isEdit == true ?
                 'Update': 'Add'}}</button>
         </div>
     </form>
