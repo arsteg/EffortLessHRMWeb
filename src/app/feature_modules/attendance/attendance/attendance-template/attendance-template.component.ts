@@ -315,10 +315,23 @@ export class AttendanceTemplateComponent {
     }
   }
 
-  onSortChange(event: any) {
-    const sorted = this.allData.slice().sort((a, b) => {
-      return event.direction === 'asc' ? (a > b ? 1 : -1) : (a < b ? 1 : -1);
+  // onSortChange(event: any) {
+  //   const sorted = this.allData.slice().sort((a, b) => {
+  //     return event.direction === 'asc' ? (a > b ? 1 : -1) : (a < b ? 1 : -1);
+  //   });
+  //   this.attendanceTemplate = sorted;
+  // }
+
+   onSortChange(event: any) {
+    const sorted = this.attendanceTemplate.slice().sort((a: any, b: any) => {
+      const valueA = this.getNestedValue(a, event.active);
+      const valueB = this.getNestedValue(b, event.active);
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
     });
     this.attendanceTemplate = sorted;
+  }
+
+  private getNestedValue(obj: any, key: string): any {
+    return key.split('.').reduce((o, k) => (o ? o[k] : undefined), obj);
   }
 }

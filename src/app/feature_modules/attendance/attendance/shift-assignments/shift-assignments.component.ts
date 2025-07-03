@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-shift-assignments',
@@ -31,6 +32,33 @@ export class ShiftAssignmentsComponent {
   public sortOrder: string = '';
   userHasTemplateError: boolean = false;
   isSubmitting: boolean = false;
+  allData: any[] = [];
+  dialogRef: MatDialogRef<any> | null = null;
+
+  columns: TableColumn[] = [
+    { key: 'userName',
+      name: 'Employee',
+      valueFn: (row: any) => this.getUser(row?.user)
+    },
+    { key: 'templateName', 
+      name: 'Shift',
+      valueFn: (row: any) => this.getShiftTemplateName(row?.template)
+    },
+    { 
+      key: 'startDate', 
+      name: 'Start Date',
+      valueFn: (row: any) => new Date(row.startDate).toLocaleDateString()
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(private attendanceService: AttendanceService,
     private modalService: NgbModal,
@@ -76,14 +104,15 @@ export class ShiftAssignmentsComponent {
   }
   
   onEmployeeChange(event: any) {
-    const selectedEmployeeId = event.target.value;
+    const selectedEmployeeId = event.value;
     this.userHasTemplateError = this.shiftAssigments.some(
       (assignment: any) => assignment.user === selectedEmployeeId
     );
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.loadRecords();
   }
 
@@ -99,6 +128,7 @@ export class ShiftAssignmentsComponent {
     };
     this.attendanceService.getShiftAssignment(pagination.skip, pagination.next).subscribe((res: any) => {
       this.shiftAssigments = res.data;
+      this.allData = res.data;
       this.totalRecords = res.total;
     })
 
@@ -129,7 +159,9 @@ export class ShiftAssignmentsComponent {
     this.userHasTemplateError = false;
   }
   closeModal() {
-    this.modalService.dismissAll();
+    //this.modalService.dismissAll();
+    this.clearForm();
+    this.dialogRef.close(true);
   }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -142,10 +174,11 @@ export class ShiftAssignmentsComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
+    });
+    this.dialogRef.afterClosed().subscribe(result => {
     });
   }
 
@@ -250,5 +283,59 @@ export class ShiftAssignmentsComponent {
         this.toast.error('Can not be Deleted', 'Error!')
       }
     });
+  }
+
+  handleAction(event: any, content: any) { // CHANGED: Simplified logic
+    if (event.action.label === 'Edit') {
+      this.changeMode == 'Update';
+      this.isEdit= true;
+      this.selectedShift = event?.row?._id;
+      this.setFormValues(event?.row);
+      this.open(content);
+    } 
+    if (event.action.label === 'Delete') {
+      this.deleteDialog(event.row._id);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.shiftAssigments.slice().sort((a: any, b: any) => {
+      const valueA = this.getNestedValue(a, event.active);
+      const valueB = this.getNestedValue(b, event.active);
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.shiftAssigments = sorted;
+  }
+
+  onSearchChange(event: string) {
+    const lowerSearch = event.toLowerCase();
+
+    const data = this.allData?.filter(row => {
+      const valuesToSearch = [
+        this.getUser(row?.user),
+        this.getShiftTemplateName(row?.template),
+        row?.effectiveFrom
+      ];
+
+      return valuesToSearch.some(value =>
+        value?.toString().toLowerCase().includes(lowerSearch)
+      );
+    });
+
+    this.shiftAssigments = data;
+    // this.searchText = event;
+    // this.shiftAssigments = this.allData?.filter(row => {
+    //   return this.columns.some(col => {
+    //     if (col.key !== 'action') {
+    //       const value = this.getNestedValue(row, col.key);
+    //       return value?.toString().toLowerCase().includes(event.toLowerCase());
+    //     }
+    //     return false;
+    //   });
+    // });
+  }
+
+  private getNestedValue(obj: any, key: string): any {
+    return key.split('.').reduce((o, k) => (o ? o[k] : undefined), obj);
   }
 }

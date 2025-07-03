@@ -204,6 +204,21 @@
   "shift.min_hours_half_day_required": "Minimum hours for half day is required.",
   "shift.min_hours_half_day_invalid": "Minimum hours must be at least 1.",
   "shift.max_late_coming_minutes_required": "Maximum late coming minutes is required.",
-  "shift.minutes_negative": "Minutes cannot be negative."
+  "shift.minutes_negative": "Minutes cannot be negative.",
+  "sta_add_title": "Add Shift Assignment",
+  "sta_update_title": "Update Shift Assignment",
+  "sta_employee": "Select Employee",
+  "sta_employee_placeholder": "Select Employee",
+  "sta_error_employee_required": "Please select an employee",
+  "sta_error_employee_has_template": "The selected employee already has an assigned shift template",
+  "sta_template": "Select Template",
+  "sta_template_placeholder": "Select Template",
+  "sta_error_template_required": "Please select a shift template",
+  "sta_start_date": "Start Date",
+  "sta_error_start_date_required": "Please select a start date",
+  "sta_error_start_date_past": "Start date cannot be a past date",
+  "sta_cancel": "Cancel",
+  "sta_save": "Save",
+  "sta_update": "Update"
   }
 }
