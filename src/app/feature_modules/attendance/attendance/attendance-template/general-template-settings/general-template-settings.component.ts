@@ -57,8 +57,8 @@ export class GeneralTemplateSettingsComponent {
     this.addTemplateForm = this.fb.group({
       label: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
       attendanceMode: [[], Validators.required],
-      minimumHoursRequiredPerWeek: [40,  [Validators.required, Validators.min(0)]],
-      minimumMinutesRequiredPerWeek: [0,  [Validators.required, Validators.min(0)]],
+      minimumHoursRequiredPerWeek: [40, [Validators.required, Validators.min(0)]],
+      minimumMinutesRequiredPerWeek: [0, [Validators.required, Validators.min(0)]],
       notifyEmployeeMinHours: [true, Validators.required],
       weeklyOfDays: [[]],
       weklyofHalfDay: [null],
@@ -105,7 +105,7 @@ export class GeneralTemplateSettingsComponent {
       this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value);
     });
   }
-duplicateLabelValidator(): ValidatorFn {
+  duplicateLabelValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
       const label = control.value;
       if (label && this.templates.some(template => template.label.toLowerCase() === label.toLowerCase())) {
@@ -115,23 +115,32 @@ duplicateLabelValidator(): ValidatorFn {
     };
   }
 
-  validateApprovers(approversType, approverLevel) {
+  validateApprovers(approversType: string, approverLevel: string) {
     const primaryApproverControl = this.addTemplateForm.get('primaryApprover');
     const secondaryApproverControl = this.addTemplateForm.get('secondaryApprover');
 
-    if (approverLevel === '1' && approversType === 'template-wise') {
-      primaryApproverControl.setValidators([Validators.required]);
-      secondaryApproverControl.clearValidators();
-    } else if (approverLevel === '2' && approversType === 'template-wise') {
-      primaryApproverControl.setValidators([Validators.required]);
-      secondaryApproverControl.setValidators([Validators.required]);
-    } else {
-      primaryApproverControl.clearValidators();
-      secondaryApproverControl.clearValidators();
+    // Always clear validators and reset values before setting new ones,
+    // to ensure a clean state when switching approver types.
+    primaryApproverControl.clearValidators();
+    secondaryApproverControl.clearValidators();
+    primaryApproverControl.setValue(null);
+    secondaryApproverControl.setValue(null);
+
+    if (approversType === 'template-wise') {
+      if (approverLevel === '1') {
+        primaryApproverControl.setValidators([Validators.required]);
+      } else if (approverLevel === '2') {
+        primaryApproverControl.setValidators([Validators.required]);
+        secondaryApproverControl.setValidators([Validators.required]);
+      }
     }
+    // No explicit validators for 'employee-wise' as per your logic,
+    // but the clearValidators and setValue(null) above handle the reset.
+
     primaryApproverControl.updateValueAndValidity();
     secondaryApproverControl.updateValueAndValidity();
   }
+
 
   setFormValues() {
     if (this.isEdit) {
@@ -185,57 +194,21 @@ duplicateLabelValidator(): ValidatorFn {
     }
   }
 
-  isWeeklyDays(days) {
+  isWeeklyDays(days: string) {
     return this.selectedWeeklyDays?.length ? this.selectedWeeklyDays.includes(days) : false;
   }
 
-  isHalfDays(days) {
+  isHalfDays(days: string) {
     return this.selectedHalfDays?.length ? this.selectedHalfDays.includes(days) : false;
   }
 
-  isAlternateWeekDays(days) {
+  isAlternateWeekDays(days: string) {
     return this.selectedAlternateWeekDays?.length ? this.selectedAlternateWeekDays.includes(days) : false;
   }
 
   closeModal() {
     this.close.emit(true);
   }
-
-  // onDaysChange(event: any, day: string, type: string) {
-  //   debugger;
-  //   let selectedDays: string[] = [];
-  //   if (type === 'weeklyOfDays') {
-  //     const index = this.selectedWeeklyDays.indexOf(day);
-  //     if (event.target.checked && index === -1) {
-  //       this.selectedWeeklyDays.push(day);
-  //     } else if (!event.target.checked && index > -1) {
-  //       this.selectedWeeklyDays.splice(index, 1);
-  //     }
-
-  //     this.addTemplateForm.get('weeklyOfDays')?.setValue(this.selectedWeeklyDays);
-  //     this.addTemplateForm.get('weeklyOfDays')?.markAsTouched();
-  //     this.addTemplateForm.get('weeklyOfDays')?.updateValueAndValidity();
-  //   } else if (type === 'weklyofHalfDay') {
-  //     //selectedDays = this.selectedHalfDays;
-  //     selectedDays.push(day);
-  //     this.addTemplateForm.patchValue({ weklyofHalfDay: selectedDays });
-  //   } else if (type === 'daysForAlternateWeekOffRoutine') {
-  //     selectedDays.push(day);//this.selectedAlternateWeekDays;
-  //     this.addTemplateForm.patchValue({ daysForAlternateWeekOffRoutine: selectedDays });
-  //   }
-
-  //   const index = selectedDays.indexOf(day);
-  //   if (event.checked && index === -1) {
-  //     selectedDays.push(day);
-  //   } else if (!event.checked && index > -1) {
-  //     selectedDays.splice(index, 1);
-  //   }
-
-  //   // Update form control value and validity
-  //   if (type === 'daysForAlternateWeekOffRoutine') {
-  //     this.addTemplateForm.get('daysForAlternateWeekOffRoutine').updateValueAndValidity();
-  //   }
-  // }
 
   onDaysChange(event: any, day: string, type: string) {
     if (type === 'weeklyOfDays') {
@@ -289,7 +262,7 @@ duplicateLabelValidator(): ValidatorFn {
     const requestBody = { skip: this.defaultCatSkip, next: this.defaultCatNext };
     this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
       const categories = res.data;
-      this.leaveCategories = categories.filter((leaveType) => leaveType.leaveType === 'general-leave');
+      this.leaveCategories = categories.filter((leaveType: { leaveType: string; }) => leaveType.leaveType === 'general-leave');
     });
   }
 
