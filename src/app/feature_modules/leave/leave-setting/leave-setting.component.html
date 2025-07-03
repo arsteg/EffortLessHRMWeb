@@ -1,20 +1,21 @@
-<div class="main-content pt-2">
-    <div class="container-fluid">
-        <div class="tabs">
-            <!-- it may require in future -->
-            <!-- <button class="btn" routerLink="general-setting" routerLinkActive="active">
-                {{ 'leave.generalSettings' | translate }}
-            </button> -->
-            <button class="btn" routerLink="leave-category" routerLinkActive="active">
-                {{ 'leave.leaveCategories' | translate }}
-            </button>
-            <button class="btn" routerLink="leave-template" routerLinkActive="active">
-                {{ 'leave.leaveTemplates' | translate }}
-            </button>
-            <button class="btn" routerLink="leave-assignment" routerLinkActive="active">
-                {{ 'leave.leaveAssignment' | translate }}
-            </button>
-        </div>
-        <router-outlet></router-outlet>
+<div class="main-content px-2">
+    <div class="container-fluid px-0">
+        <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel" class="child-tabs">
+            <a mat-tab-link
+               routerLink="leave-category"
+               routerLinkActive #rla1="routerLinkActive"
+               [active]="rla1.isActive">{{ 'leave.leaveCategories' | translate }}</a>
+            <a mat-tab-link
+               routerLink="leave-template"
+               routerLinkActive #rla2="routerLinkActive"
+               [active]="rla2.isActive">{{ 'leave.leaveTemplates' | translate }}</a>
+            <a mat-tab-link
+               routerLink="leave-assignment"
+               routerLinkActive #rla3="routerLinkActive"
+               [active]="rla3.isActive">{{ 'leave.leaveAssignment' | translate }}</a>
+        </nav>
+        <mat-tab-nav-panel #tabPanel>
+            <router-outlet></router-outlet>
+        </mat-tab-nav-panel>
     </div>
 </div>
