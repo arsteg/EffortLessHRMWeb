@@ -46,6 +46,7 @@ export class GeneralTemplateSettingsComponent {
   modes: any;
   @Output() expenseTemplateReportRefreshed: any = new EventEmitter();
   @Input() templates: any;
+  submitted: boolean = true;
 
   constructor(
     private commonService: CommonService,
@@ -267,40 +268,49 @@ export class GeneralTemplateSettingsComponent {
   }
 
   onSubmission() {
-    if (this.addTemplateForm.valid) {
+    if (this.addTemplateForm.valid && !this.submitted) {
+      this.submitted = true; // Disable button immediately
       this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
       this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
       this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays;
       this.addTemplateForm.value.weeklyOfDays = this.selectedWeeklyDays;
+
       if (!this.isEdit) {
-        this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe(
-          (res: any) => {
+        this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe({
+          next: (res: any) => {
             this.attendanceService.selectedTemplate.next(res.data);
             this.toast.success('Attendance Template created', 'Successfully!!!');
             this.expenseTemplateReportRefreshed.emit(res.data);
             this.closeModal();
-            // this.changeStep.emit(2);
           },
-          (err) => {
+          error: (err) => {
             this.toast.error('Attendance Template cannot be created', 'Error!!!');
+            this.submitted = false; // Re-enable button on error
+          },
+          complete: () => {
+            this.submitted = false; // Re-enable button after completion
           }
-        );
+        });
       } else {
         const templateId = this.attendanceService.selectedTemplate.getValue()._id;
-        this.attendanceService.updateAttendanceTemplate(templateId, this.addTemplateForm.value).subscribe(
-          (res: any) => {
+        this.attendanceService.updateAttendanceTemplate(templateId, this.addTemplateForm.value).subscribe({
+          next: (res: any) => {
             this.toast.success('Attendance Template Updated', 'Successfully!');
             this.expenseTemplateReportRefreshed.emit(res.data);
             this.closeModal();
-            // this.changeStep.emit(2);
           },
-          (err) => {
+          error: (err) => {
             this.toast.error('Attendance Template cannot be Updated', 'Error!');
+            this.submitted = false; // Re-enable button on error
+          },
+          complete: () => {
+            this.submitted = false; // Re-enable button after completion
           }
-        );
+        });
       }
     } else {
       this.addTemplateForm.markAllAsTouched();
+      this.submitted = false; // Ensure button is enabled if form is invalid
     }
   }
 

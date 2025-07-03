@@ -151,7 +151,7 @@
         <button type="button" (click)="setFormValues()" mat-flat-button mat-dialog-close>
           {{ 'attendance.at_cancelButton' | translate }}
         </button>
-        <button type="submit" mat-flat-button color="primary" [disabled]="addTemplateForm.invalid">
+        <button type="submit" mat-flat-button color="primary" [disabled]="submitted && !addTemplateForm.valid">
           {{ 'attendance.at_submitButton' | translate }}
         </button>
    </div>
