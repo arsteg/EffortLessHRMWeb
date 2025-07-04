@@ -1,286 +1,206 @@
-<div class="mainContent pt-2">
-    <div class="container">
-        <div class="py-2 px-0 bg-white tableContainer">
 
-            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-
-                    <button mat-flat-button (click)="open(addModal); changeMode = 'Update'; isEdit= false;"
-                        class="addBtn rounded-pill mx-3">Assign
-                        Template</button>
-
-                    <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
-                            class="bi bi-download downloadBtn pe-2"></i>
-                        Download</button>
-
-                </div>
-
-                <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                    [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-                    (recordsPerPageChange)="onRecordsPerPageChange($event)">
-                </app-pagination>
-            </div>
-            <table class="px-4">
-                <thead>
-                    <tr>
-                        <th class="ps-2" [appSort]="attendanceTemplateAssignment" data-name="employee"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee Name
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="attendanceTemplateAssignment" data-name="attendanceTemplate"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Assigned Attendance Template
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="attendanceTemplateAssignment" data-name="primaryApprover"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Primary Supervisor
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="attendanceTemplateAssignment" data-name="secondaryApprover"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Secondary Supervisor
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="attendanceTemplateAssignment" data-name="effectiveFrom"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Effective Date
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th scope="col" class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let template of attendanceTemplateAssignment| search: searchText">
-                        <td>{{getUser(template?.employee) | titlecase}}</td>
-                        <td>{{template?.attendanceTemplate?.label | titlecase}}</td>
-                        <td>{{getUser(template?.primaryApprover) | titlecase}}</td>
-                        <td>{{getUser(template?.secondaryApprover) | titlecase}}</td>
-                        <td>{{template?.effectiveFrom | date: 'mediumDate'}}</td>
-                        <td class="text-center">
-                            @if(template?.attendanceTemplate?.approversType === 'employee-wise')
-                            {
-                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="open(editModal);
-                                isEdit= true;
-                                selectedTemplate=template;
-                                setFormValues(template)" aria-label="Example icon button with a menu icon">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                            }
-
-                            <button class="actions ms-1" mat-mini-fab title="Delete"
-                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(template._id)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-        </div>
+<div class="d-none d-md-block">
+    <div class="d-flex justify-content-end end-0">
+        <button mat-flat-button (click)="open('add'); changeMode = 'Update'; isEdit= false;" color="primary">
+            {{ 'attendance.at_add_new' | translate }}</button>
     </div>
 </div>
+<hrm-table
+    [data]="attendanceTemplateAssignment"
+    [columns]="columns"
+    (actionClicked)="onAction($event)"
+    [isServerSide]="true"
+    [showSearch]="true"
+    (searchChanged)="onSearch($event)"
+    [totalItems]="totalRecords"
+    [pageSize]="recordsPerPage"
+    (pageChanged)="onPageChange($event)"
+    (sortChanged)="onSortChange($event)"
+    [showExport]="'all'">
+</hrm-table>
 
 
 <ng-template #addModal let-modal>
-    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-        <div>
-            <h1 class="modal-title text-muted mb-0">Attendance Template Assignment</h1>
-        </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="closeModal()"></button>
-        </div>
+    <div class="d-flex align-items-center justify-content-between">
+        <h1 mat-dialog-title>{{ 'attendance.ata_attendace_template_assignment' | translate }}</h1>
+        <button mat-icon-button mat-dialog-close class="me-4">
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
 
     <form [formGroup]="attendanceTemplateAssignmentForm" (ngSubmit)="onCreate()">
+        <div mat-dialog-content>
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'attendance.ata_select_employee' | translate }}</mat-label>
+                <mat-select id="member" name="member" formControlName="employee" (selectionChange)="onEmployeeChange($event)" [disabled]="changeMode === 'Update'">
+                    <mat-option value="" disabled>{{ 'attendance.ata_select_employee' | translate }}</mat-option>
+                    <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="attendanceTemplateAssignmentForm.get('employee')?.hasError('required') && attendanceTemplateAssignmentForm.get('employee')?.touched">
+                    {{ 'attendance.ata_employee_required' | translate }}
+                </mat-error>
+                <mat-error *ngIf="attendanceTemplateAssignmentForm.get('employee')?.hasError('employeeAlreadyAssigned') && attendanceTemplateAssignmentForm.get('employee')?.touched">
+                    {{ 'attendance.ata_employee_already_assigned' | translate }}
+                </mat-error>
+            </mat-form-field>
 
-        <div class="form-group">
-            <label for="">Select An Employee for Template Assignment <span class="text-danger">*</span></label>
-            <select id="member" name="member" class="form-control" (change)="onEmployeeChange($event)"
-                [attr.disabled]="changeMode === 'Update'" formControlName="employee" class="form-select form-select-sm"
-                aria-label="form-select-sm example">
-                <option value="" disabled selected>Select Employee -- </option>
-                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
-                </option>
-            </select>
-            <div class="text-danger"
-                *ngIf="attendanceTemplateAssignmentForm.get('employee').hasError('required') && attendanceTemplateAssignmentForm.get('employee').touched">
-                Employee is required!
-            </div>
-            <div class="text-danger" *ngIf="userHasTemplateError">
-                The selected employee already has an assigned attendance template!
-            </div>
+            <mat-form-field appearance="outline" class="w-100"> 
+                <mat-label>{{ 'attendance.ata_select_template' | translate }}</mat-label>
+                <mat-select id="attendanceTemplate" name="attendanceTemp" formControlName="attendanceTemplate" (selectionChange)="onTemplateSelectionChange($event)" [disabled]="isEdit === true">
+                    <mat-option value="" disabled>{{ 'attendance.ata_select_template' | translate }}</mat-option>
+                    <mat-option *ngFor="let template of templates" [value]="template?._id">
+                    {{ template?.label }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="attendanceTemplateAssignmentForm.get('attendanceTemplate')?.hasError('required') && attendanceTemplateAssignmentForm.get('attendanceTemplate')?.touched">
+                    {{ 'attendance.ata_template_required' | translate }}
+                </mat-error>
+            </mat-form-field>
 
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'attendance.ata_effective_date' | translate }}</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="effectiveFrom">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="attendanceTemplateAssignmentForm.get('effectiveFrom')?.hasError('required') && attendanceTemplateAssignmentForm.get('effectiveFrom')?.touched">
+                    {{ 'attendance.ata_effective_date_required' | translate }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'attendance.ata_primary_approver' | translate }}</mat-label>
+                <mat-select id="member" name="primary" formControlName="primaryApprover">
+                    <mat-option value="" disabled>{{ 'attendance.ata_select_primary_approver' | translate }}</mat-option>
+                    <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="attendanceTemplateAssignmentForm.get('primaryApprover')?.hasError('required') && attendanceTemplateAssignmentForm.get('primaryApprover')?.touched">
+                    {{ 'attendance.ata_primary_approver_required' | translate }}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100">
+                <mat-label>{{ 'attendance.ata_secondary_approver' | translate }}</mat-label>
+                <mat-select id="member" name="secondary" formControlName="secondaryApprover"> 
+                    <mat-option value="" disabled>{{ 'attendance.ata_select_secondary_approver' | translate }}</mat-option>
+                    <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                    {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="attendanceTemplateAssignmentForm.get('secondaryApprover')?.hasError('required') && attendanceTemplateAssignmentForm.get('secondaryApprover')?.touched">
+                    {{ 'attendance.ata_secondary_approver_required' | translate }}
+                </mat-error>
+            </mat-form-field>
         </div>
-
-        <div class="form-group my-2">
-            <label for="">Select Template <span class="text-danger">*</span></label>
-            <select id="attendanceTemplate" class="form-control" [attr.disabled]="isEdit === true"
-                formControlName="attendanceTemplate" name="attendanceTemp" class="form-select form-select-sm"
-                aria-label=".form-select-sm example" (change)="onTemplateSelectionChange($event)">
-                <option value="" disabled selected>Select Template -- </option>
-                <option *ngFor="let template of templates" [value]="template?._id">
-                    {{template?.label}}
-                </option>
-            </select>
-            <div class="text-danger"
-                *ngIf="attendanceTemplateAssignmentForm.get('attendanceTemplate').hasError('required') && attendanceTemplateAssignmentForm.get('attendanceTemplate').touched">
-                Attendance Template is required!
-            </div>
-        </div>
-
-
-        <div class="form-group my-2">
-            <label for="">Select an Effective Date <span class="text-danger">*</span></label>
-            <div class=" col-12 form-group mb-3">
-                <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="effectiveFrom" />
-                <div class="text-danger"
-                    *ngIf="attendanceTemplateAssignmentForm.get('effectiveFrom').hasError('required') && attendanceTemplateAssignmentForm.get('effectiveFrom').touched">
-                    Effective Date is required!
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group my-2">
-            <label for="">Choose Primary Approver <span class="text-danger">*</span></label>
-            <select id="member" name="primary" class="form-control" formControlName="primaryApprover"
-                class="form-select form-select-sm" aria-label=".form-select-sm example">
-
-                <option value="" disabled selected>Select Primary Approver -- </option>
-                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                    {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
-                </option>
-            </select>
-            <div class="text-danger"
-                *ngIf="attendanceTemplateAssignmentForm.get('primaryApprover').hasError('required') && attendanceTemplateAssignmentForm.get('primaryApprover').touched">
-                Primary Approver is required!
-            </div>
-        </div>
-
-        <div class="form-group my-2">
-            <label for="">Choose Secondary Approver <span class="text-danger">*</span></label>
-            <select id="member" name="secondary" class="form-control" formControlName="secondaryApprover"
-                class="form-select form-select-sm" aria-label="form-select-sm example">
-                <option value="" disabled selected>Select Secondary Approver -- </option>
-                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
-                </option>
-            </select>
-            <div class="text-danger"
-                *ngIf="attendanceTemplateAssignmentForm.get('secondaryApprover').hasError('required') && attendanceTemplateAssignmentForm.get('secondaryApprover').touched">
-                Secondary Approver is required!
-            </div>
-        </div>
-        <div class="d-flex border-top mt-2 py-2 justify-content-between">
-            <button mat-flat-button type="reset">Cancel</button>
-            <button mat-flat-button type="submit" class="addBtn"
-                [disabled]="userHasTemplateError && !attendanceTemplateAssignmentForm.valid">Add</button>
+        <div mat-dialog-actions class="d-flex align-items-center justify-content-between">  
+            <button mat-button type="reset" mat-dialog-close>
+                {{ 'attendance.ata_cancel' | translate }}
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="userHasTemplateError || !attendanceTemplateAssignmentForm.valid">
+                {{ 'attendance.ata_add' | translate }}
+            </button>
         </div>
     </form>
 </ng-template>
 
 <ng-template #editModal let-modal>
-    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
+    <div class="d-flex align-items-center justify-content-between">
         <div>
-            <h1 class="modal-title text-muted mb-0">Update Attendance Template Assignment</h1>
-            <small>Employee: <span class="small-text">{{getUser(selectedTemplate?.employee)}}</span></small><br>
-            <small>Attendance Template: <span
-                    class="small-text">{{selectedTemplate?.attendanceTemplate?.label}}</span></small><br>
+            <h1 mat-dialog-title>
+                {{ 'attendance.template_assignment.update_title' | translate }}
+            </h1>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="closeModal()"></button>
-        </div>
+        <button mat-icon-button mat-dialog-close class="me-4">
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
-
+    <div class="ms-4">
+        <small>{{ 'attendance.template_assignment.employee_label' | translate }}: <span class="small-text">{{getUser(selectedTemplate?.employee)}}</span></small><br>
+        <small>{{ 'attendance.template_assignment.template_label' | translate }}: <span class="small-text">{{selectedTemplate?.attendanceTemplate?.label}}</span></small>
+    </div>
     <form [formGroup]="updateTemplateAssignForm" (ngSubmit)="onUpdate()">
-        <div *ngIf="templateById?.approversType === 'employee-wise'">
+        <div mat-dialog-content>
+            <div *ngIf="templateById?.approversType === 'employee-wise'">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{ 'attendance.template_assignment.primary_approver_label' | translate }}</mat-label>
+                    <mat-select id="member" name="primary" formControlName="primaryApprovar">
+                        <mat-option value="" disabled>{{ 'attendance.template_assignment.select_primary_approver' | translate }}</mat-option>
+                        <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                            {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="updateTemplateAssignForm.get('primaryApprovar')?.hasError('required') && updateTemplateAssignForm.get('primaryApprovar')?.touched">
+                        {{ 'attendance.template_assignment.primary_approver_required' | translate }}
+                    </mat-error>
+                </mat-form-field>
 
-            <div class="form-group my-2">
-                <label for="">Choose Primary Approver</label>
-                <select id="member" name="primary" class="form-control" formControlName="primaryApprovar"
-                    class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                        {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
-                    </option>
-                </select>
-                <div class="text-danger"
-                    *ngIf="updateTemplateAssignForm.get('primaryApprovar').hasError('required') && updateTemplateAssignForm.get('primaryApprovar').touched">
-                    Primary Approver is required!
-                </div>
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{ 'attendance.template_assignment.secondary_approver_label' | translate }}</mat-label>
+                    <mat-select id="member" name="secondary" formControlName="secondaryApprovar">
+                        <mat-option value="" disabled>{{ 'attendance.template_assignment.select_secondary_approver' | translate }}</mat-option>
+                        <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                            {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="updateTemplateAssignForm.get('secondaryApprovar')?.hasError('required') && updateTemplateAssignForm.get('secondaryApprovar')?.touched">
+                        {{ 'attendance.template_assignment.secondary_approver_required' | translate }}
+                    </mat-error>
+                </mat-form-field>
             </div>
 
-            <div class="form-group my-2">
-                <label for="">Choose Secondary Approver</label>
-                <select id="member" name="secondary" class="form-control" formControlName="secondaryApprovar"
-                    class="form-select form-select-sm" aria-label="form-select-sm example">
-                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                        {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
-                    </option>
-                </select>
-                <div class="text-danger"
-                    *ngIf="updateTemplateAssignForm.get('secondaryApprovar').hasError('required') && updateTemplateAssignForm.get('secondaryApprovar').touched">
-                    Secondary Approver is required!
-                </div>
-            </div>
-        </div>
-
-        <div *ngIf="templateById?.approversType === 'template-wise' && templateById?.approvalLevel === '1'">
-
-            <div class="form-group my-2">
-                <label for="">Choose Primary Approver</label>
-                <select id="member" name="primary" [disabled] class="form-control" formControlName="primaryApprovar"
-                    class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                        {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
-                    </option>
-                </select>
-                <div class="text-danger"
-                    *ngIf="updateTemplateAssignForm.get('primaryApprovar').hasError('required') && updateTemplateAssignForm.get('primaryApprovar').touched">
-                    Primary Approver is required!
-                </div>
-            </div>
-        </div>
-
-        <div *ngIf="templateById?.approversType === 'template-wise' && templateById?.approvalLevel === '2'">
-            <div class="form-group my-2">
-                <label for="">Choose Primary Approver</label>
-                <select id="member" name="primary" [disabled] class="form-control" formControlName="primaryApprovar"
-                    class="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                        {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
-                    </option>
-                </select>
-                <div class="text-danger"
-                    *ngIf="updateTemplateAssignForm.get('primaryApprovar').hasError('required') && updateTemplateAssignForm.get('primaryApprovar').touched">
-                    Primary Approver is required!
-                </div>
+            <div *ngIf="templateById?.approversType === 'template-wise' && templateById?.approvalLevel === '1'">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{ 'attendance.template_assignment.primary_approver_label' | translate }}</mat-label>
+                    <mat-select id="member" name="primary" formControlName="primaryApprovar" [disabled]="true">
+                        <mat-option value="" disabled>{{ 'attendance.template_assignment.select_primary_approver' | translate }}</mat-option>
+                        <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                            {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="updateTemplateAssignForm.get('primaryApprovar')?.hasError('required') && updateTemplateAssignForm.get('primaryApprovar')?.touched">
+                        {{ 'attendance.template_assignment.primary_approver_required' | translate }}
+                    </mat-error>
+                </mat-form-field>
             </div>
 
-            <div class="form-group my-2">
-                <label for="">Choose Secondary Approver</label>
-                <select id="member" name="secondary" [disabled] class="form-control" formControlName="secondaryApprovar"
-                    class="form-select form-select-sm" aria-label="form-select-sm example">
-                    <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                        {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
-                    </option>
-                </select>
-                <div class="text-danger"
-                    *ngIf="updateTemplateAssignForm.get('secondaryApprovar').hasError('required') && updateTemplateAssignForm.get('secondaryApprovar').touched">
-                    Secondary Approver is required!
-                </div>
+            <div *ngIf="templateById?.approversType === 'template-wise' && templateById?.approvalLevel === '2'">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{ 'attendance.template_assignment.primary_approver_label' | translate }}</mat-label>
+                    <mat-select id="member" name="primary" formControlName="primaryApprovar" [disabled]="true">
+                        <mat-option value="" disabled>{{ 'attendance.template_assignment.select_primary_approver' | translate }}</mat-option>
+                        <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                            {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="updateTemplateAssignForm.get('primaryApprovar')?.hasError('required') && updateTemplateAssignForm.get('primaryApprovar')?.touched">
+                        {{ 'attendance.template_assignment.primary_approver_required' | translate }}
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>{{ 'attendance.template_assignment.secondary_approver_label' | translate }}</mat-label>
+                    <mat-select id="member" name="secondary" formControlName="secondaryApprovar" [disabled]="true">
+                        <mat-option value="" disabled>{{ 'attendance.template_assignment.select_secondary_approver' | translate }}</mat-option>
+                        <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                            {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="updateTemplateAssignForm.get('secondaryApprovar')?.hasError('required') && updateTemplateAssignForm.get('secondaryApprovar')?.touched">
+                        {{ 'attendance.template_assignment.secondary_approver_required' | translate }}
+                    </mat-error>
+                </mat-form-field>
             </div>
         </div>
-
-        <div class="d-flex border-top mt-2 py-2 justify-content-between">
-            <button mat-flat-button type="reset">Cancel</button>
-            <button mat-flat-button type="submit" class="addBtn">Update</button>
+        <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+            <button mat-button type="reset">
+                {{ 'attendance.template_assignment.cancel_button' | translate }}
+            </button>
+            <button mat-raised-button color="primary" type="submit">
+                {{ 'attendance.template_assignment.update_button' | translate }}
+            </button>
         </div>
     </form>
 </ng-template>

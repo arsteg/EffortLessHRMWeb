@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { ActionVisibility } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-attendance-template-assignment',
@@ -29,11 +30,80 @@ export class AttendanceTemplateAssignmentComponent {
   updateTemplateAssignForm: FormGroup;
   templateById: any;
   selectedTemp: any;
-  totalRecords: number
+  totalRecords: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   public sortOrder: string = '';
   userHasTemplateError: boolean = false;
+  @ViewChild('addModal') addModal: any;
+  @ViewChild('editModal') editModal: any;
+  dialogRef: MatDialogRef<any> | null = null;
+  private cdr: ChangeDetectorRef;
+  allData = [];
+
+  columns = [
+      {
+        key: 'employeeName',
+        name: 'Employee Name',
+        sortable: true,
+        valueFn: (row: any) => {
+          const firstName = row?.employee?.firstName;
+          const lastName = row?.employee?.lastName;
+          return firstName && lastName ? `${firstName} ${lastName}` : 'N/A';
+        }
+      },
+      {
+        key: 'attendance',
+        name: 'Assigned Attendance Template',
+        sortable: true,
+        valueFn: (row: any) => row.attendanceTemplate?.label
+      },
+      {
+        key: 'primaryApproverName',
+        name: 'Primary Supervisor',
+        sortable: true,
+        valueFn: (row: any) => 
+          {
+            const firstName = row?.primaryApprover?.firstName;
+            const lastName = row?.primaryApprover?.lastName;
+            return firstName && lastName ? `${firstName} ${lastName}` : 'N/A';
+          }
+      },
+      {
+        key: 'secondaryApproverName',
+        name: 'Secondary Supervisor',
+        sortable: true,
+        valueFn: (row: any) => {
+            const firstName = row?.secondaryApprover?.firstName;
+            const lastName = row?.secondaryApprover?.lastName;
+            return firstName && lastName ? `${firstName} ${lastName}` : 'N/A';
+          }
+      },
+      {
+        key: 'effectiveFrom',
+        name: 'Effective Date',
+        sortable: true,
+        valueFn: (row: any) => new Date(row.effectiveFrom).toLocaleDateString()
+      },
+      {
+        key: 'actions',
+        name: 'Actions',
+        isAction: true,
+        options: [
+          {
+            label: 'Edit',
+            icon: 'edit',
+            visibility: ActionVisibility.LABEL,
+            hideCondition: (row: any) => row.attendanceTemplate?.approversType !== 'employee-wise'
+          },
+          {
+            label: 'Delete',
+            icon: 'delete',
+            visibility: ActionVisibility.LABEL
+          }
+        ]
+      }
+    ];
 
   constructor(private modalService: NgbModal,
     private exportService: ExportService,
@@ -64,14 +134,37 @@ export class AttendanceTemplateAssignmentComponent {
     this.loadRecords();
   }
 
+  // onEmployeeChange(event: any) {
+  //   const selectedEmployeeId = event.value;
+  //   this.userHasTemplateError = this.attendanceTemplateAssignment.some(
+  //     (assignment: any) => assignment.employee === selectedEmployeeId
+  //   );
+  // }
   onEmployeeChange(event: any) {
-    const selectedEmployeeId = event.target.value;
-    this.userHasTemplateError = this.attendanceTemplateAssignment.some(
-      (assignment: any) => assignment.employee === selectedEmployeeId
-    );
+    const selectedEmployeeId = event.value;
+    const employeeControl = this.attendanceTemplateAssignmentForm.get('employee');
+    
+    if (selectedEmployeeId) {
+      this.userHasTemplateError = this.attendanceTemplateAssignment.some(
+        (assignment: any) => assignment.employee === selectedEmployeeId
+      );
+      if (this.userHasTemplateError) {
+        employeeControl?.setErrors({ employeeAlreadyAssigned: true });
+      } else {
+        const errors = employeeControl?.errors ? { ...employeeControl.errors } : {};
+        delete errors['employeeAlreadyAssigned'];
+        employeeControl?.setErrors(Object.keys(errors).length ? errors : null);
+      }
+    } else {
+      this.userHasTemplateError = false;
+      const errors = employeeControl?.errors ? { ...employeeControl.errors } : {};
+      delete errors['employeeAlreadyAssigned'];
+      employeeControl?.setErrors(Object.keys(errors).length ? errors : null);
+    }
+    this.cdr.detectChanges();
   }
 
-  onPageChange(page: number) {
+  onPageChange(page: any) {
     this.currentPage = page;
     this.loadRecords();
   }
@@ -88,6 +181,7 @@ export class AttendanceTemplateAssignmentComponent {
     };
     this.attendanceService.getAttendanceAssignment(pagination.skip, pagination.next).subscribe((res: any) => {
       this.attendanceTemplateAssignment = res.data;
+      this.allData = res.data;
       this.totalRecords = res.total;
     })
 
@@ -108,12 +202,41 @@ export class AttendanceTemplateAssignmentComponent {
     }
   }
 
-  open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+  // open(content: any) {
+  //   this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
+  //     this.closeResult = `Closed with: ${result}`;
+  //   }, (reason) => {
+  //     this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+  //   });
+  // }
+
+  open(content: string) {
+    if (content === 'add') {
+      this.changeMode = 'Add';
+      this.isEdit = false;
+      this.dialogRef = this.dialog.open(this.addModal, {
+        width: '600px',
+        disableClose: true
+      });
+      this.dialogRef.afterClosed().subscribe(result => {
+        // if (result) {
+        //   this.onCreate(); // Call onCreate if form is submitted
+        // }
+      });
+    } else if (content === 'edit') {
+      this.changeMode = 'Update';
+      this.isEdit = true;
+      this.dialogRef = this.dialog.open(this.editModal, {
+        width: '600px',
+        disableClose: true
+      });
+
+      this.dialogRef.afterClosed().subscribe(result => {
+        // if (result) {
+        //   this.onUpdate(); // Call onUpdate if form is submitted
+        // }
+      });
+    }
   }
 
   setFormValues(formValue: any) {
@@ -142,7 +265,6 @@ export class AttendanceTemplateAssignmentComponent {
       else if (this.templateById.approversType === 'employee-wise') {
         this.attendanceService.getAttendanceAssignmentById(this.selectedTemplate._id).subscribe((res: any) => {
           const response = res.data;
-          console.log(response);
           this.updateTemplateAssignForm.patchValue({
             primaryApprovar: response.primaryApprover,
             secondaryApprovar: response.secondaryApprover
@@ -155,21 +277,21 @@ export class AttendanceTemplateAssignmentComponent {
     })
   }
 
-  exportToCsv() {
-    const dataToExport = this.attendanceTemplateAssignment.map((tempAssign) => ({
-      employee: this.getUser(tempAssign?.employee),
-      effectiveFrom: tempAssign.effectiveFrom,
-      primaryApprover: this.getUser(tempAssign?.primaryApprover),
-      secondaryApprover: this.getUser(tempAssign?.secondaryApprover)
-    }));
-    this.exportService.exportToCSV('attendance-template-assignment', 'attendance-template-assignment', dataToExport);
-  }
+  // exportToCsv() {
+  //   const dataToExport = this.attendanceTemplateAssignment.map((tempAssign) => ({
+  //     employee: this.getUser(tempAssign?.employee),
+  //     effectiveFrom: tempAssign.effectiveFrom,
+  //     primaryApprover: this.getUser(tempAssign?.primaryApprover),
+  //     secondaryApprover: this.getUser(tempAssign?.secondaryApprover)
+  //   }));
+  //   this.exportService.exportToCSV('attendance-template-assignment', 'attendance-template-assignment', dataToExport);
+  // }
 
-  closeModal() {
-    this.modalService.dismissAll();
-  }
+  // closeModal() {
+  //   this.modalService.dismissAll();
+  // }
   onTemplateSelectionChange(event: any) {
-    const selectedTemplateId = event.target.value;
+    const selectedTemplateId = event.value;
     this.selectedTemp = selectedTemplateId;
     this.attendanceService.getAttendanceTemplateById(selectedTemplateId).subscribe((res: any) => {
       this.templateById = res.data;
@@ -280,6 +402,7 @@ export class AttendanceTemplateAssignmentComponent {
         this.attendanceService.addAttendanceAssignment(payload).subscribe((res: any) => {
           this.loadRecords();
           this.toast.success('Attendance Template Assigned', 'Successfully');
+          this.dialogRef.close(true);
           this.attendanceTemplateAssignmentForm.reset({
             employee: '',
             attendanceTemplate: '',
@@ -305,7 +428,6 @@ export class AttendanceTemplateAssignmentComponent {
   }
 
   onUpdate() {
-    console.log(this.selectedTemplate);
     if (this.updateTemplateAssignForm.valid) {
       let payload = {
         primaryApprovar: this.updateTemplateAssignForm.value.primaryApprovar,
@@ -314,6 +436,7 @@ export class AttendanceTemplateAssignmentComponent {
       this.attendanceService.updateAttendanceAssignment(this.selectedTemplate._id, payload).subscribe((res: any) => {
         this.toast.success('Successfully Updated!!!', 'Attendance Template Assignment')
         this.loadRecords();
+        this.dialogRef.close(true);
       },
         err => {
           this.toast.error('Attendance Template Assignment can not be updated', 'Error!')
@@ -349,4 +472,66 @@ export class AttendanceTemplateAssignmentComponent {
     });
   }
 
+  onAction(event: { action: any, row: any }) {
+    if (event.action.label === 'Edit') {
+      this.selectedTemplate = event.row;
+      this.isEdit = true;
+      this.setFormValues(event.row);
+      this.open('edit');
+    } else if (event.action.label === 'Delete') {
+      this.deleteDialog(event.row._id);
+    }
+  }
+
+  // onSearch(search: any) {
+  //   const data = this.allData?.filter(row => {
+  //     const found = this.columns.some(col => {
+  //       return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+  //     });
+  //     return found;
+  //   });
+  //   this.attendanceTemplateAssignment = data;
+  // }
+
+  onSearch(search: string) {
+    const lowerSearch = search.toLowerCase();
+
+    const data = this.allData?.filter(row => {
+      const valuesToSearch = [
+        row?.employee?.firstName,
+        row?.employee?.lastName,
+        row?.primaryApprover?.firstName,
+        row?.primaryApprover?.lastName,
+        row?.attendanceTemplate,
+        row?.company,
+        row?.effectiveFrom
+      ];
+
+      return valuesToSearch.some(value =>
+        value?.toString().toLowerCase().includes(lowerSearch)
+      );
+    });
+
+    this.attendanceTemplateAssignment = data;
+  }
+
+  // onSortChange(event: any) {
+  //   const sorted = this.allData.slice().sort((a, b) => {
+  //     return event.direction === 'asc' ? (a > b ? 1 : -1) : (a < b ? 1 : -1);
+  //   });
+  //   this.attendanceTemplateAssignment = sorted;
+  // }
+
+  onSortChange(event: any) {
+    const sorted = this.attendanceTemplateAssignment.slice().sort((a: any, b: any) => {
+      const valueA = this.getNestedValue(a, event.active);
+      const valueB = this.getNestedValue(b, event.active);
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.attendanceTemplateAssignment = sorted;
+  }
+
+  private getNestedValue(obj: any, key: string): any {
+    return key.split('.').reduce((o, k) => (o ? o[k] : undefined), obj);
+  }
 }

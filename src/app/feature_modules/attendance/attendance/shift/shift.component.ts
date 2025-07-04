@@ -1,21 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ExportService } from 'src/app/_services/export.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-
-// const labelValidator: ValidatorFn = (control: AbstractControl) => {
-//   const value = control.value as string;
-//   if (!value || /^\s*$/.test(value)) {
-//     return { required: true };
-//   }
-//   const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
-//   return valid ? null : { invalidLabel: true };
-// };
 @Component({
   selector: 'app-shift',
   templateUrl: './shift.component.html',
@@ -26,13 +18,31 @@ export class ShiftComponent {
   searchText: string = '';
   closeResult: string = '';
   changeMode: 'Add' | 'Update' = 'Add';
-  shift: any;
+  shift: any[] = [];
   p: number = 1;
   selectedShift: any;
   shiftForm: FormGroup;
-  totalRecords: number
+  totalRecords: number = 0
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  allData: any[] = [];
+  @ViewChild('addModal') addModal: any;
+  dialogRef: MatDialogRef<any> | null = null;
+
+  columns: TableColumn[] = [
+    { key: 'name', name: 'Shift' },
+    { key: 'startTime', name: 'Starts From' },
+    { key: 'endTime', name: 'Ends At' },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   private shiftTypeSubscription: Subscription; // To manage subscription
   private isLateComingAllowedSubscription: Subscription;
@@ -222,27 +232,34 @@ export class ShiftComponent {
     };
   }
 
-
   // Custom validator for start and end times
-  timeComparisonValidator: ValidatorFn = (control: AbstractControl): {
-    [key: string]: boolean
-  } | null => {
-    const startTime = control.get('startTime').value;
-    const endTime = control.get('endTime').value;
+ timeComparisonValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
+    const startTime = control.get('startTime')?.value;
+    const endTime = control.get('endTime')?.value;
+    const earliestArrival = control.get('earliestArrival')?.value;
+    const latestDeparture = control.get('latestDeparture')?.value;
 
-    if (startTime && endTime && startTime === endTime) {
-      return {
-        timesCannotBeSame: true
-      };
+    const errors: { [key: string]: boolean } = {};
+
+    if (startTime && endTime) {
+      if (startTime === endTime) {
+        errors['timesCannotBeSame'] = true;
+      }
+      if (startTime > endTime) {
+        errors['startTimeGreaterThanEndTime'] = true;
+      }
     }
-    if (startTime > endTime) {
-      return {
-        startTimeGreaterThanEndTime: true
-      };
+
+    if (earliestArrival && startTime && earliestArrival > startTime) {
+      errors['earliestArrivalAfterStartTime'] = true;
     }
-    return null;
+
+    if (latestDeparture && endTime && latestDeparture < endTime) {
+      errors['latestDepartureBeforeEndTime'] = true;
+    }
+
+    return Object.keys(errors).length > 0 ? errors : null;
   };
-
 
   minHoursValidator() {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -271,11 +288,6 @@ export class ShiftComponent {
     });
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
-    this.loadRecords();
-  }
-
   onRecordsPerPageChange(recordsPerPage: number) {
     this.recordsPerPage = recordsPerPage;
     this.loadRecords();
@@ -288,6 +300,7 @@ export class ShiftComponent {
     };
     this.attendanceService.getShift(pagination.skip, pagination.next).subscribe((res: any) => {
       this.shift = res.data;
+      this.allData = res.data;
       this.totalRecords = res.total;
     })
   }
@@ -296,7 +309,8 @@ export class ShiftComponent {
     this.shiftForm.reset();
   }
   closeModal() {
-    this.modalService.dismissAll();
+    this.clearForm();
+    this.dialogRef.close(true);
   }
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -309,10 +323,11 @@ export class ShiftComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef = this.dialog.open(this.addModal, {
+      width: '600px',
+      disableClose: true
+    });
+    this.dialogRef.afterClosed().subscribe(result => {
     });
   }
 
@@ -398,5 +413,45 @@ export class ShiftComponent {
         this.toast.error('Can not be Deleted', 'Error!')
       }
     });
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1; // Mat Paginator uses 0-based index
+    this.recordsPerPage = event.pageSize;
+    this.loadRecords();
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.shift.slice().sort((a: any, b: any) => {
+      const valueA = a[event.active];
+      const valueB = b[event.active];
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.shift = sorted;
+  }
+
+  onSearchChange(event: string) {
+    this.searchText = event;
+    this.shift = this.allData?.filter(row => {
+      return this.columns.some(col => {
+        if (col.key !== 'action') {
+          return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+        }
+        return false;
+      });
+    });
+  }
+
+  handleAction(event: any) {
+    if (event.action.label === 'Edit') {
+      this.changeMode=='Update';
+      this.isEdit= true;
+      this.open(this.addModal);
+      this.selectedShift=event?.row?._id;
+      this.setFormValues(event?.row);
+    }
+    if (event.action.label === 'Delete') {
+      this.deleteDialog(event.row._id);
+    }
   }
 }

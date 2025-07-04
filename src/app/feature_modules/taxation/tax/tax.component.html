@@ -1,59 +1,26 @@
-<div *ngIf="!taxView && !taxEditView" class="tableContainer bg-white mt-3">
-    <div class="d-md-flex d-block align-items-center p-2">
-        <p class="mb-md-0 mb-2 me-auto">({{totalRecords}}) Records Found</p>
 
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center justify-content-end me-2">
-                <span class="bi bi-search searchIcon"></span>
-                <input class="form-control" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                    name="searchText" aria-label="default input example">
-            </div>
-            <button type="button" mat-flat-button [disabled]="userTaxRegime != 'Old Regime' && userStatutoryDetails === null" (click)="isEdit= false; open(addModal)">Add&nbsp;Tax&nbsp;Declaration</button>
-            <button type="button" class="ms-2 " mat-flat-button [disabled]="userStatutoryDetails === null" (click)="getTaxDeclaration(); taxEditView= false; taxView = true;">Tax&nbsp;Calculator</button>
+<div *ngIf="!taxView && !taxEditView">
+
+    <div class="d-flex align-items-center justify-content-between">
+
+        <h2>My Tax Declarations</h2>
+
+        <div>
+            <button type="button" mat-flat-button color="primary"
+                [disabled]="userTaxRegime != 'Old Regime' && userStatutoryDetails === null"
+                (click)="isEdit= false; open(addModal)">Add&nbsp;Tax&nbsp;Declaration</button>
+    
+            <button type="button" class="ms-2 " color="primary" mat-flat-button [disabled]="userStatutoryDetails === null"
+                (click)="getTaxDeclaration(); taxEditView= false; taxView = true;">Tax&nbsp;Calculator</button>
         </div>
     </div>
 
-    <div class="px-2 mt-2">
-        <table class="px-2">
-            <thead>
-                <th class="pe-lg-0 pe-3" [appSort]="taxList" data-name="financialYear"
-                    (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Financial&nbsp;Year
-                    <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                </th>
-                <th *ngFor="let section of sections">
-                    {{ section?.section }}
-                </th>
-                <th class="pe-lg-0 pe-3">Actions</th>
-            </thead>
 
-            <tbody>
-                <tr *ngFor="let tax of taxDeclarations | search:searchText">
-                    <td>{{tax?.financialYear}}</td>
-                    <td *ngFor="let section of sections">
-                        {{ getComponentCountForSection(tax, section) }}
-                    </td>
-                    <td class="action text-center">
-                        <mat-menu #menu="matMenu">
-                            <button mat-menu-item
-                                (click)="selectedRecord = tax; isEdit = true; taxView = false; taxEditView = true;">
-                                <mat-icon class="text-success">edit</mat-icon>
-                                <span class="ms-2">Edit</span>
-                            </button>
-                        </mat-menu>
+    @if(sections?.length){
+    <hrm-table [data]="taxDeclarations" [columns]="columns" [showSearch]="true" (actionClicked)="onActionClick($event)"
+        (pageChanged)="onPageChange($event)" [totalItems]="totalRecords" [isServerSide]="true"></hrm-table>
+    }
 
-                        <button mat-mini-fab [matMenuTriggerFor]="menu" class="actions ms-2" aria-label="Actions">
-                            <mat-icon>send</mat-icon>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-        [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-        (recordsPerPageChange)="onRecordsPerPageChange($event)">
-    </app-pagination>
 </div>
 
 <div *ngIf="taxView || taxEditView">
