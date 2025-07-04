@@ -96,7 +96,7 @@
         <div class="form-group col-md-6">
           <mat-form-field appearance="fill" class="w-100">
             <mat-label translate>organization.setup.email</mat-label>
-            <input matInput type="email" formControlName="email"
+            <input matInput type="email" formControlName="email"   [disabled]="true"
               [placeholder]="'organization.setup.enter_email' | translate" />
             <mat-error
               *ngIf="companyForm.get('email')?.hasError('required') && (companyForm.get('email')?.dirty || companyForm.get('email')?.touched)"
