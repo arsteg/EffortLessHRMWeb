@@ -10,7 +10,7 @@
         <div class="row p-2">
             <div class="form-group col-md-6 mb-2">
                 <label for="">Is this Employee Eligiable for the Provident Fund Deduction?
-                    </label>
+                    <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio"
@@ -32,7 +32,7 @@
             </div>
             <div class="form-group col-md-6 mb-2">
                 <label for="">Will this Employee's Provident Fund contribution be capped at the provident Fund Ceiling?
-                    (Rs 15,000)</label>
+                    (Rs 15,000)  <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio"
@@ -55,7 +55,7 @@
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">Will this Employer's Provident Fund contribution be capped at the provident Fund Ceiling?
-                    (Rs 15,000)</label>
+                    (Rs 15,000)  <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio"
@@ -84,14 +84,44 @@
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">What is the Employee's Provident Number?</label>
-                <input class="form-control" tyep="text" placeholder="Enter PF Number"
-                    formControlName="providentFundNumber">
-            </div>
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter PF Number"
+                  formControlName="providentFundNumber"
+                  maxlength="22"
+                />
+                <div
+                *ngIf="statutoryDetailsForm.get('providentFundNumber')?.invalid && (statutoryDetailsForm.get('providentFundNumber')?.dirty || statutoryDetailsForm.get('providentFundNumber')?.touched)"
+                  class="text-danger small"
+                >
+                  <div *ngIf="statutoryDetailsForm.get('providentFundNumber')?.errors?.['pattern']">
+                    Provident Fund Number can only contain letters and numbers (max 22 characters).
+                  </div>
+                </div>
+              </div>
+              
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">What is the Employee's UAN Number?</label>
-                <input class="form-control" tyep="text" placeholder="Enter UAN Number" formControlName="UANNumber">
-            </div>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter UAN Number"
+                  formControlName="UANNumber"
+                  maxlength="12"
+                />
+                <div
+                *ngIf="statutoryDetailsForm.get('UANNumber')?.invalid && (statutoryDetailsForm.get('UANNumber')?.dirty || statutoryDetailsForm.get('UANNumber')?.touched)"
+                class="text-danger small"
+              >
+                <div *ngIf="statutoryDetailsForm.get('UANNumber')?.errors?.['pattern']">
+                  UAN Number must be exactly 12 digits if provided.
+                </div>
+              </div>
+              
+              </div>
+              
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">Would you like to set a fixed amount for your Provident Fund Wage?</label>
@@ -101,13 +131,22 @@
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">What additional contribution % would this employee voluntarily contribute, above and
-                    beyond and mandate 12%?</label>
-                <input class="form-control" tyep="text" placeholder="Enter PF Wage"
+                    beyond and mandate 12%?  <span class="text-danger">*</span></label>
+                <input class="form-control" type="text" placeholder="Enter PF Wage"  maxlength="5"
                     formControlName="additionalPFContributionInPercentage">
+                    <div
+  *ngIf="statutoryDetailsForm.get('additionalPFContributionInPercentage')?.invalid && 
+         (statutoryDetailsForm.get('additionalPFContributionInPercentage')?.dirty || statutoryDetailsForm.get('additionalPFContributionInPercentage')?.touched)"
+  class="text-danger small"
+>
+  <div *ngIf="statutoryDetailsForm.get('additionalPFContributionInPercentage')?.errors?.['pattern']">
+    Please enter a valid positive number without symbols or characters.
+  </div>
+</div>
             </div>
 
             <div class="form-group col-md-6 mb-2">
-                <label for="">Is found eligible, would this employee have ESIC deducted from his/her salary?</label>
+                <label for="">Is found eligible, would this employee have ESIC deducted from his/her salary?  <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" formControlName="isESICDeductedFromSalary"
@@ -121,15 +160,29 @@
                     </div>
                 </div>
             </div>
-
             <div class="form-group col-md-6 mb-2">
                 <label for="">What is the Employee's ESIC Number?</label>
-                <input class="form-control" tyep="text" placeholder="Enter ESIC Number" formControlName="ESICNumber">
-            </div>
-
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Enter ESIC Number"
+                  formControlName="ESICNumber"
+                  maxlength="17"
+                />
+                <div
+                *ngIf="statutoryDetailsForm.get('ESICNumber')?.invalid && (statutoryDetailsForm.get('ESICNumber')?.dirty || statutoryDetailsForm.get('ESICNumber')?.touched)"
+                class="text-danger small"
+              >
+                <div *ngIf="statutoryDetailsForm.get('ESICNumber')?.errors?.['pattern']">
+                  ESIC Number must be exactly 17 digits.
+                </div>
+              </div>
+              
+              </div>
+              
             <div class="form-group col-md-6 mb-2">
                 <label for="">Should Professional Tax be deducted from his employee's payslip (if applicable for his/her
-                    branch location)?</label>
+                    branch location)?  <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" formControlName="isTaxDeductedFromPlayslip"
@@ -146,7 +199,7 @@
 
             <div class="form-group col-md-6 mb-2">
                 <label for="">Should LWF be deducted from his employee's payslip (if applicable for his/her branch
-                    location)?</label>
+                    location)?  <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" formControlName="isLWFDeductedFromPlayslip"
@@ -162,7 +215,7 @@
             </div>
 
             <div class="form-group col-md-6 mb-2">
-                <label for="">If applicable, Should Income Tax be deducted from the employee's salary?</label>
+                <label for="">If applicable, Should Income Tax be deducted from the employee's salary?  <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" formControlName="isIncomeTaxDeducted"
@@ -178,7 +231,7 @@
             </div>
 
             <div class="form-group col-md-6 mb-2">
-                <label for="">Is this employee eligible for Gratuity?</label>
+                <label for="">Is this employee eligible for Gratuity?  <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" formControlName="isGratuityEligible"
@@ -194,7 +247,7 @@
             </div>
 
             <div class="form-group col-md-6 mb-2">
-                <label for="">Is this employee comes under Gratuity act?</label>
+                <label for="">Is this employee comes under Gratuity act?  <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" formControlName="isComeUnderGratuityPaymentAct"
@@ -210,12 +263,15 @@
             </div>
 
             <div class="form-group col-md-6 mb-2">
-                <label for="">What is the Employee's tax Regime?</label>
-                <select formControlName="taxRegime" class="form-control">
-                    <option value="" [disabled] [selected]>Select Regime --</option>
+                <label for="">
+                    What is the Employee's tax Regime?
+                    <span class="text-danger">*</span>
+                  </label>
+                  <select formControlName="taxRegime" class="form-control" required>
+                    <option value="" disabled selected>Select Regime --</option>
                     <option value="Old Regime">Old Regime</option>
                     <option value="New Regime">New Regime</option>
-                </select>
+                  </select>
             </div>
 
             <div class="form-group">
@@ -225,7 +281,7 @@
             </div>
 
             <div class="form-group col-md-6 mb-2">
-                <label for="">Is the Round Off applicable for this employee?</label>
+                <label for="">Is the Round Off applicable for this employee?  <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" formControlName="roundOffApplicable"
@@ -243,7 +299,7 @@
 
 
             <div class="form-group col-md-6 mb-2">
-                <label for="">Is this employee eligible for Overtime?</label>
+                <label for="">Is this employee eligible for Overtime?  <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" formControlName="eligibleForOvertime"

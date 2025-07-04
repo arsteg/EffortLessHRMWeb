@@ -72,7 +72,7 @@ export class ProfileComponent implements OnInit {
       state: ['', Validators.required],
       country: ['', Validators.required],
       pincode: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]],
-      email: ['', [Validators.required, Validators.email]],
+      email: [{ value: '', disabled: true }, [Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]]
     });
   }

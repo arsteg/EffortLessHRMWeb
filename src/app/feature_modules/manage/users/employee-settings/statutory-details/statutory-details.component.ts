@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from 'src/app/_services/users.service';
@@ -16,6 +16,8 @@ export class StatutoryDetailsComponent {
   statutoryDetailsForm: FormGroup;
   selectedUser: any;
   generalSettings: any;
+  
+  isUserMode: boolean = true; 
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -31,12 +33,15 @@ export class StatutoryDetailsComponent {
       isEmployeePFCappedAtPFCeiling: [true],
       isEmployerPFCappedAtPFCeiling: [true],
       providentFundJoiningDate: [],
-      providentFundNumber: [0],
-      UANNumber: [0],
+      providentFundNumber: ['', [Validators.pattern(/^[a-zA-Z0-9]{1,22}$/)]],
+      UANNumber: ['', [Validators.pattern(/^\d{12}$/)]],
       fixedAmountForYourProvidentFundWage: [0],
-      additionalPFContributionInPercentage: [0],
+      additionalPFContributionInPercentage: [
+        0,
+        [Validators.pattern(/^\d*\.?\d+$/)] // accepts integers or decimals, but no + - or characters
+      ],
       isESICDeductedFromSalary: [true],
-      ESICNumber: [''],
+      ESICNumber: ['', [Validators.pattern(/^\d{17}$/)]],
       isTaxDeductedFromPlayslip: [true],
       isLWFDeductedFromPlayslip: [true],
       isIncomeTaxDeducted: [true],
@@ -52,7 +57,37 @@ export class StatutoryDetailsComponent {
 
   ngOnInit() {
     this.logUrlSegmentsForUser();
+    this.isUserMode = this.router.url.includes('profile');
+    this.toggleRadioControlsDisable(this.isUserMode);
   }
+  
+  toggleRadioControlsDisable(isDisable: boolean) {
+    const controlsToToggle = [
+      'isEmployeeEligibleForPFDeduction',
+      'isEmployeePFCappedAtPFCeiling',
+      'isEmployerPFCappedAtPFCeiling',
+      'isESICDeductedFromSalary',
+      'isTaxDeductedFromPlayslip',
+      'isLWFDeductedFromPlayslip',
+      'isIncomeTaxDeducted',
+      'isGratuityEligible',
+      'isComeUnderGratuityPaymentAct',
+      'roundOffApplicable',
+      'eligibleForOvertime'
+    ];
+  
+    controlsToToggle.forEach(controlName => {
+      const control = this.statutoryDetailsForm.get(controlName);
+      if (!control) return;
+  
+      if (isDisable) {
+        control.disable();
+      } else {
+        control.enable();
+      }
+    });
+  }
+  
   ngAfterViewInit() {
     // Set gratuity validation after data is fully loaded
     setTimeout(() => {
