@@ -73,7 +73,7 @@ export class AddSalaryDetailsComponent {
   ) {
     this.salaryDetailsForm = this.fb.group({
       user: [''],
-      payrollEffectiveFrom: [''],
+      payrollEffectiveFrom: [null, Validators.required],
       frequencyToEnterCTC: [''],
       CTCTemplate: ['manual'],
       isEmployerPartInclusiveInSalaryStructure: [{ value: true, disabled: true }],
