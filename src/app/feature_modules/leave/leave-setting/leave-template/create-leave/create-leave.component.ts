@@ -136,7 +136,7 @@ export class CreateLeaveComponent {
     this.close.emit(true);
     this.leaveService.selectedTemplate.next('');
     this.addTemplateForm.reset();
-    this.toast.info(this.translate.instant('leave.modalClosed'));
+    //this.toast.success(this.translate.instant('leave.modalClosed'));
   }
 
   onSubmission() {
