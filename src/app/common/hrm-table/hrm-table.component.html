@@ -34,8 +34,11 @@
     </div>
 
 </div>
-<div #table class="table-responsive">
-    <table mat-table [dataSource]="pagedData" matSort (matSortChange)="onSort($event)" class="table hrm-table">
+
+
+
+<div #table class="table-responsive mb-2">
+    <table mat-table [dataSource]="pagedData" matSort (matSortChange)="onSort($event)" class="table hrm-table mb-0">
         @for(column of columns; track column){
         <ng-container [matColumnDef]="column.key">
             <th mat-header-cell *matHeaderCellDef mat-sort-header="{{ column.key }}"
@@ -133,6 +136,12 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+
+    @if(!pagedData?.length){
+    <div class="border border-top-0 text-center">
+        <img src="./assets/images/empty-data.svg" width="200px" alt="">
+    </div>
+}
 </div>
 
 <!-- Pagination -->
