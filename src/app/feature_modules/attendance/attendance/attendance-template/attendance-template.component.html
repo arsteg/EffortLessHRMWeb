@@ -9,12 +9,13 @@
     [data]="attendanceTemplate"
     [columns]="columns"
     (actionClicked)="onActionClick($event)"
-    [isServerSide]="false"
+    [isServerSide]="true"
     [showSearch]="true"
     [totalItems]="totalRecords"
     [pageSize]="recordsPerPage"
     (pageChanged)="onPageChangev1($event)"
     (searchChanged)="onSearchChange($event)"
+    (sortChanged)="onSortChange($event)"
     [showExport]="'csv'">
 </hrm-table>
 
@@ -25,7 +26,6 @@
         <mat-icon>close</mat-icon>
     </button>
 </div>
-  <!-- <mat-dialog-content> -->
     <app-general-template-settings
       *ngIf="step === 1"
       [changeMode]="changeMode"
@@ -36,5 +36,4 @@
       [templates]="attendanceTemplate"
       >
     </app-general-template-settings>
-  <!-- </mat-dialog-content> -->
 </ng-template>

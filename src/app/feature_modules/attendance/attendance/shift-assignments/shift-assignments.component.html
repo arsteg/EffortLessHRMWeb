@@ -1,138 +1,95 @@
-<div class="mainContent pt-2">
-    <div class="container">
-        <div class="py-2 px-0 bg-white tableContainer">
-
-            <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-                <div class="d-flex align-items-center">
-                    <span class="bi bi-search searchIcon"></span>
-
-                    <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                        name="searchText" aria-label="default input example">
-
-                    <button mat-flat-button (click)="clearForm(); changeMode == 'Add'; isEdit= false; open(addModal);"
-                        class="addBtn rounded-pill mx-3">Add
-                    </button>
-
-                    <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
-                            class="bi bi-download downloadBtn pe-2"></i>
-                        Download</button>
-                </div>
-
-                <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-                    [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-                    (recordsPerPageChange)="onRecordsPerPageChange($event)">
-                </app-pagination>
-            </div>
-            <table class="px-4">
-                <thead>
-                    <tr>
-                        <th class="ps-2" [appSort]="shiftAssigments" data-name="user"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="shiftAssigments" data-name="template"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Shift
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-                        <th [appSort]="shiftAssigments" data-name="startDate"
-                            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Start Date
-                            <i
-                                [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-                        </th>
-
-                        <th scope="col" class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let shift of shiftAssigments| search: searchText">
-                        <td>{{getUser(shift?.user) | titlecase}}</td>
-                        <td>{{getShiftTemplateName(shift?.template)}}</td>
-                        <td>{{shift?.startDate | date: 'mediumDate'}}</td>
-
-                        <td class="text-center">
-                            <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
-                                open(addModal);
-                                isEdit= true;
-                                selectedShift=shift._id;
-                                setFormValues(shift)" aria-label="Example icon button with a menu icon">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-
-                            <button class="actions ms-2" mat-mini-fab title="Delete"
-                                aria-label="Example icon button with a menu icon" (click)="deleteDialog(shift._id)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div class="d-none d-md-block">
+  <div class="d-flex justify-content-end end-0">
+      <button mat-flat-button class="end-0" color="primary" (click)="clearForm(); changeMode = 'Add'; isEdit = false; open(addModal);">
+        {{ 'attendance.at_add_new' | translate }}
+      </button>
+   </div>
 </div>
+    <hrm-table 
+      [data]="shiftAssigments" 
+      [isServerSide]="true" 
+      [columns]="columns" 
+      [showExport]="'all'" 
+      [showSearch]="true" 
+      [totalItems]="totalRecords" 
+      (actionClicked)="handleAction($event, addModal)" 
+      (pageChanged)="onPageChange($event)" 
+      (sortChanged)="onSortChange($event)" 
+      (searchChanged)="onSearchChange($event)">
+    </hrm-table>
 
 <ng-template #addModal let-modal>
-    <div class="modal-header border-bottom mb-2 pt-0 d-flex justify-content-between">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit == true ? 'Update': 'Add'}} Shift
-            </h1>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      {{ (isEdit ? 'attendance.sta_update_title' : 'attendance.sta_add_title') | translate }}
+    </h1>
+    <button mat-icon-button mat-dialog-close="" class="me-4" (click)="closeModal()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="shiftForm" (ngSubmit)="onSubmission()">
+    <div mat-dialog-content>
+      <div class="row m-0">
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.sta_employee' | translate }}</mat-label>
+            <mat-select formControlName="user" [disabled]="changeMode === 'Update'" (selectionChange)="onEmployeeChange($event)">
+              <mat-option value="" disabled>{{ 'attendance.sta_employee_placeholder' | translate }}</mat-option>
+              <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
+                {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="shiftForm.get('user')?.invalid && (shiftForm.get('user')?.touched || shiftForm.get('user')?.dirty)">
+              {{ 'attendance.sta_error_employee_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+          <div *ngIf="userHasTemplateError" class="text-danger">
+            {{ 'attendance.sta_error_employee_has_template' | translate }}
+          </div>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="closeModal()"></button>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.sta_template' | translate }}</mat-label>
+            <mat-select formControlName="template">
+              <mat-option value="" disabled>{{ 'attendance.sta_template_placeholder' | translate }}</mat-option>
+              <mat-option *ngFor="let template of shift" [value]="template?._id">
+                {{ template?.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="shiftForm.get('template')?.invalid && (shiftForm.get('template')?.touched || shiftForm.get('template')?.dirty)">
+              {{ 'attendance.sta_error_template_required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.sta_start_date' | translate }}</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="startDate">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="shiftForm.get('startDate')?.invalid && (shiftForm.get('startDate')?.touched || shiftForm.get('startDate')?.dirty)">
+              <span *ngIf="shiftForm.get('startDate')?.errors?.['required']">
+                {{ 'attendance.sta_error_start_date_required' | translate }}
+              </span>
+              <span *ngIf="shiftForm.get('startDate')?.errors?.['pastDate']">
+                {{ 'attendance.sta_error_start_date_past' | translate }}
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
     </div>
 
-    <form action="" [formGroup]="shiftForm" (ngSubmit)="onSubmission()">
-        <div class="form-group">
-            <label for="">Select An Employee for Template Assignment<span class="text-danger">*</span></label>
-            <select id="member" name="member" class="form-control"
-                [attr.disabled]="changeMode === 'Update' ? true : null" (change)="onEmployeeChange($event)"
-                formControlName="user" class="form-select form-select-sm" aria-label="form-select-sm example">
-                <option value="" disabled selected>Select Employee -- </option>
-                <option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                    {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
-                </option>
-            </select>
-            <div *ngIf="shiftForm.get('user')?.invalid && shiftForm.get('user')?.touched" class="text-danger error">
-                Please Select an Employee!
-            </div>
-            <div class="text-danger" *ngIf="userHasTemplateError">
-                The selected Employee already has an assigned Shift Template!
-            </div>
-        </div>
-
-        <div class="form-group my-2">
-            <label for="">Select Template<span class="text-danger">*</span></label>
-            <select id="attendanceTemplate" class="form-control" formControlName="template" name="attendanceTemp"
-                class="form-select form-select-sm" aria-label=".form-select-sm example">
-                <option value="" disabled selected>Select Template -- </option>
-                <option *ngFor="let template of shift" [value]="template?._id">
-                    {{template?.name}}
-                </option>
-            </select>
-            <div *ngIf="shiftForm.get('template')?.invalid && shiftForm.get('template')?.touched"
-                class="text-danger error">
-                Please Select Shift Template!
-            </div>
-        </div>
-
-        <div class="form-group my-2">
-            <label for="">Select an Start Date<span class="text-danger">*</span></label>
-            <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker [bsValue]="bsValue"
-                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate" />
-            <div *ngIf="shiftForm.get('startDate')?.invalid && shiftForm.get('startDate')?.touched"
-                class="text-danger error">
-                <span *ngIf="shiftForm.get('startDate')?.errors?.['required']">Please Select Start Date!</span>
-                <span *ngIf="shiftForm.get('startDate')?.errors?.['pastDate']">Start Date cannot be a past date.</span>
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-between mt-2">
-            <button type="reset" mat-flat-button>Cancel</button>
-            <button type="submit" mat-flat-button class="addBtn" [disabled]="!shiftForm.valid">{{isEdit == true ?
-                'Update': 'Add'}}</button>
-        </div>
-    </form>
-
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+      <button mat-flat-button mat-dialog-close="">
+        {{ 'attendance.sta_cancel' | translate }}
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="!shiftForm.valid || isSubmitting">
+        {{ (isEdit ? 'attendance.sta_update' : 'attendance.sta_save') | translate }}
+      </button>
+    </div>
+  </form>
 </ng-template>

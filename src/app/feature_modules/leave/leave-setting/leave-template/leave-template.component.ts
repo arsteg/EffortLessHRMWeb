@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit, EventEmitter, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -7,6 +7,7 @@ import { LeaveService } from 'src/app/_services/leave.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-leave-template',
@@ -24,6 +25,34 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
   @Output() LeaveTableRefreshed: EventEmitter<void> = new EventEmitter<void>();
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  allData: any[] = [];
+  dialogRef: MatDialogRef<any> | null = null;
+
+  columns: TableColumn[] = [
+    { 
+      key: 'label', 
+      name: 'Leave Label' 
+    },
+    { 
+      key: 'numberOfEmployeesCovered', 
+      name: 'Number Of Employees Covered',
+      valueFn: (row: any) => this.calculateTotalEmployees(row)
+    },
+    { 
+      key: 'numberOfLeaveCategories', 
+      name: 'Number Of Leave Categories',
+      valueFn: (row: any) => row?.applicableCategories?.length
+    },
+    {
+      key: 'actions',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(
     private modalService: NgbModal,
@@ -58,15 +87,12 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-        this.getLeaveTemplates();
-      }
-    );
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
+    });
+    this.dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   setFormValues(templateData: any) {
@@ -89,7 +115,7 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
 
   onClose(event: boolean) {
     if (event) {
-      this.modalService.dismissAll();
+      this.dialogRef.close(true);
     }
   }
 
@@ -114,6 +140,7 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
       next: (res: any) => {
         if (res.status === 'success') {
           this.tableService.setData(res.data || []);
+          this.allData = res.data;
           this.tableService.totalRecords = res.total || 0;
         }
       },
@@ -155,6 +182,9 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
   }
 
  calculateTotalEmployees(leaveTemp: any) {
+  if (!leaveTemp || !leaveTemp.applicableCategories || !Array.isArray(leaveTemp.applicableCategories)) {
+    return 0;
+  }
     let totalEmployees: any;
     for (const category of leaveTemp?.applicableCategories) {
       if (!category?.templateApplicableCategoryEmployee.length) {
@@ -166,8 +196,44 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
     return totalEmployees;
   }
 
+  handleAction(event: any, addModal: any) {
+    if (event.action.label === 'Edit') {
+      this.changeMode='Next'; 
+      this.isEdit = true; 
+      this.selectedTemplate= event?.row; 
+      this.setFormValues(event?.row); 
+      this.open(addModal);
+    } 
+    if (event.action.label === 'Delete') {
+      this.deleteDialog(event.row._id);
+    }
+  }
+
   onPageChange(event: any) {
-    this.tableService.updatePagination(event);
+    this.paginator.pageIndex = event.pageIndex;
+    this.paginator.pageSize = event.pageSize;
     this.getLeaveTemplates();
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.tableService.dataSource.data.slice().sort((a: any, b: any) => {
+      const valueA = a[event.active];
+      const valueB = b[event.active];
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.tableService.dataSource.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.tableService.dataSource.data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        if (col.key !== 'actions') {
+          const value = row[col.key];
+          return value?.toString().toLowerCase().includes(event.toLowerCase());
+        }
+        return false;
+      });
+      return found;
+    });
   }
 }

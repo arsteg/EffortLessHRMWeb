@@ -1,67 +1,69 @@
-<div>
-   @if(view === 'admin') {
-      <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
-         <a mat-tab-link
-            routerLink="settings"
-            routerLinkActive #rla1="routerLinkActive"
-            [active]="rla1.isActive">{{'leave.admin.settings' | translate}}</a>
-         <a mat-tab-link
-            routerLink="leave-grant"
-            routerLinkActive #rla2="routerLinkActive"
-            [active]="rla2.isActive">{{ 'leave.admin.leaveGrant' | translate }}</a>
-         <a mat-tab-link
-            routerLink="leave-balance"
-            routerLinkActive #rla3="routerLinkActive"
-            [active]="rla3.isActive">{{ 'leave.admin.leaveBalance' | translate }}</a>
-         <a mat-tab-link
-            routerLink="leave-application"
-            routerLinkActive #rla4="routerLinkActive"
-            [active]="rla4.isActive">{{ 'leave.admin.leaveApplication' | translate }}</a>
-         <a mat-tab-link
-            routerLink="short-leave"
-            routerLinkActive #rla5="routerLinkActive"
-            [active]="rla5.isActive">{{ 'leave.admin.shortLeave' | translate }}</a>
-      </nav>
-      <mat-tab-nav-panel #tabPanel>
-         <router-outlet></router-outlet>
-      </mat-tab-nav-panel>
-   } @else if(view === 'user') {
-      <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
-         <a mat-tab-link
-            routerLink="my-application"
-            routerLinkActive #rla1="routerLinkActive"
-            [active]="rla1.isActive">{{ 'leave.user.myApplication' | translate }}</a>
-         <a mat-tab-link
-            routerLink="my-leave-balance"
-            routerLinkActive #rla2="routerLinkActive"
-            [active]="rla2.isActive">{{ 'leave.user.myLeaveBalance' | translate }}</a>
-         <a mat-tab-link
-            routerLink="my-leave-grant"
-            routerLinkActive #rla3="routerLinkActive"
-            [active]="rla3.isActive">{{ 'leave.user.myLeaveGrant' | translate }}</a>
-         <a mat-tab-link
-            routerLink="my-short-leave"
-            routerLinkActive #rla4="routerLinkActive"
-            [active]="rla4.isActive">{{ 'leave.user.myShortLeave' | translate }}</a>
-         <a mat-tab-link
-            routerLink="team-application"
-            routerLinkActive #rla5="routerLinkActive"
-            [active]="rla5.isActive">{{ 'leave.user.teamApplication' | translate }}</a>
-         <a mat-tab-link
-            routerLink="my-team-balance"
-            routerLinkActive #rla6="routerLinkActive"
-            [active]="rla6.isActive">{{ 'leave.user.myTeamBalance' | translate }}</a>
-         <a mat-tab-link
-            routerLink="team-leave-grant"
-            routerLinkActive #rla7="routerLinkActive"
-            [active]="rla7.isActive">{{ 'leave.user.teamLeaveGrant' | translate }}</a>
-         <a mat-tab-link
-            routerLink="team-short-leave"
-            routerLinkActive #rla8="routerLinkActive"
-            [active]="rla8.isActive">{{ 'leave.user.teamShortLeave' | translate }}</a>
-      </nav>
-      <mat-tab-nav-panel #tabPanel>
-         <router-outlet></router-outlet>
-      </mat-tab-nav-panel>
-   }
+<div class="container-fluid px-0">
+  <ng-container *ngIf="view === 'admin'">
+    <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+      <a mat-tab-link
+         routerLink="settings"
+         routerLinkActive #rla1="routerLinkActive"
+         [active]="rla1.isActive">{{ 'leave.admin.settings' | translate }}</a>
+      <a mat-tab-link
+         routerLink="leave-grant"
+         routerLinkActive #rla2="routerLinkActive"
+         [active]="rla2.isActive">{{ 'leave.admin.leaveGrant' | translate }}</a>
+      <a mat-tab-link
+         routerLink="leave-balance"
+         routerLinkActive #rla3="routerLinkActive"
+         [active]="rla3.isActive">{{ 'leave.admin.leaveBalance' | translate }}</a>
+      <a mat-tab-link
+         routerLink="leave-application"
+         routerLinkActive #rla4="routerLinkActive"
+         [active]="rla4.isActive">{{ 'leave.admin.leaveApplication' | translate }}</a>
+      <a mat-tab-link
+         routerLink="short-leave"
+         routerLinkActive #rla5="routerLinkActive"
+         [active]="rla5.isActive">{{ 'leave.admin.shortLeave' | translate }}</a>
+    </nav>
+    <mat-tab-nav-panel #tabPanel>
+      <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
+  </ng-container>
+
+  <ng-container *ngIf="view === 'user'">
+    <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel2"> <!-- CHANGED: Changed tabPanel to tabPanel2 -->
+      <a mat-tab-link
+         routerLink="my-application"
+         routerLinkActive #rla6="routerLinkActive"
+         [active]="rla6.isActive">{{ 'leave.user.myApplication' | translate }}</a>
+      <a mat-tab-link
+         routerLink="my-leave-balance"
+         routerLinkActive #rla7="routerLinkActive"
+         [active]="rla7.isActive">{{ 'leave.user.myLeaveBalance' | translate }}</a>
+      <a mat-tab-link
+         routerLink="my-leave-grant"
+         routerLinkActive #rla8="routerLinkActive"
+         [active]="rla8.isActive">{{ 'leave.user.myLeaveGrant' | translate }}</a>
+      <a mat-tab-link
+         routerLink="my-short-leave"
+         routerLinkActive #rla9="routerLinkActive"
+         [active]="rla9.isActive">{{ 'leave.user.myShortLeave' | translate }}</a>
+      <a mat-tab-link
+         routerLink="team-application"
+         routerLinkActive #rla10="routerLinkActive"
+         [active]="rla10.isActive">{{ 'leave.user.teamApplication' | translate }}</a>
+      <a mat-tab-link
+         routerLink="my-team-balance"
+         routerLinkActive #rla11="routerLinkActive"
+         [active]="rla11.isActive">{{ 'leave.user.myTeamBalance' | translate }}</a>
+      <a mat-tab-link
+         routerLink="team-leave-grant"
+         routerLinkActive #rla12="routerLinkActive"
+         [active]="rla12.isActive">{{ 'leave.user.teamLeaveGrant' | translate }}</a>
+      <a mat-tab-link
+         routerLink="team-short-leave"
+         routerLinkActive #rla13="routerLinkActive"
+         [active]="rla13.isActive">{{ 'leave.user.teamShortLeave' | translate }}</a>
+    </nav>
+    <mat-tab-nav-panel #tabPanel2>
+      <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
+  </ng-container>
 </div>

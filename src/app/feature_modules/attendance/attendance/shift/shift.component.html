@@ -1,423 +1,357 @@
-<div class="mainContent pt-2">
-  <div class="container">
-    <div class="py-2 px-0 bg-white tableContainer">
-
-      <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-        <div class="d-flex align-items-center">
-          <span class="bi bi-search searchIcon"></span>
-
-          <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-            name="searchText" aria-label="default input example">
-
-          <button mat-flat-button (click)="clearForm(); changeMode == 'Add'; isEdit= false; open(addModal);"
-            class="addBtn rounded-pill mx-3">Add
-          </button>
-
-          <button class="submenuTab active  rounded-pill" (click)="exportToCsv()"> <i
-              class="bi bi-download downloadBtn pe-2"></i>
-            Download</button>
-
-        </div>
-
-        <app-pagination [recordsPerPageOptions]="[5, 10, 25, 50, 100]" [totalRecords]="totalRecords"
-          [recordsPerPage]="recordsPerPage" [currentPage]="currentPage" (pageChange)="onPageChange($event)"
-          (recordsPerPageChange)="onRecordsPerPageChange($event)">
-        </app-pagination>
-      </div>
-      <table class="px-4">
-        <thead>
-          <tr>
-            <th class="ps-2">Shift</th>
-            <th>Starts from</th>
-            <th>Ends At</th>
-
-            <th scope="col" class="text-center">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let shift of shift| search: searchText">
-            <td>{{shift?.name}}</td>
-            <td>{{shift?.startTime}}</td>
-            <td>{{shift?.endTime}}</td>
-
-            <td class="text-center">
-              <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" (click)="changeMode=='Update';
-                                open(addModal);
-                                isEdit= true;
-                                selectedShift=shift._id;
-                                setFormValues(shift)" aria-label="Example icon button with a menu icon">
-                <i class="bi bi-pencil-fill"></i>
-              </button>
-
-              <button class="actions ms-2" mat-mini-fab title="Delete" aria-label="Example icon button with a menu icon"
-                (click)="deleteDialog(shift._id)">
-                <i class="bi bi-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-    </div>
+<div class="d-none d-md-block">
+  <div class="d-flex justify-content-end end-0">
+    <button mat-flat-button class="end-0" color="primary" 
+      (click)="clearForm(); changeMode == 'Add'; isEdit= false; open(addModal);">
+      {{'attendance.at_add_new' | translate}}
+    </button>
   </div>
 </div>
+   <hrm-table 
+      [data]="shift" 
+      [isServerSide]="true" 
+      [columns]="columns" 
+      [showExport]="'all'" 
+      [showSearch]="true" 
+      [totalItems]="totalRecords" 
+      (actionClicked)="handleAction($event)" 
+      (pageChanged)="onPageChange($event)" 
+      (sortChanged)="onSortChange($event)" 
+      (searchChanged)="onSearchChange($event)">
+    </hrm-table>
 
 <ng-template #addModal let-modal>
-  <div class="modal-header border-bottom mb-2 pt-0  d-flex justify-content-between">
-    <div>
-      <h1 class="modal-title text-muted mb-0">{{isEdit == true ? 'Update': 'Add'}} Shift
-      </h1>
-    </div>
-    <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-        (click)="closeModal()"></button>
-    </div>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      {{ (isEdit ? 'attendance.shift.update_title' : 'attendance.shift.add_title') | translate }}
+    </h1>
+    <button mat-icon-button mat-dialog-close="" class="me-4" (click)="closeModal()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
 
   <form [formGroup]="shiftForm" (ngSubmit)="onSubmission()">
-    <div class="form-group">
-      <label for="">Please assign a shift name <span class="text-danger">*</span></label>
-      <input type="text" formControlName="name" class="form-control" />
+    <div mat-dialog-content>
+      <div class="row m-0">
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.name' | translate }}</mat-label>
+            <input matInput type="text" formControlName="name">
+            <mat-error *ngIf="shiftForm.get('name')?.invalid && (shiftForm.get('name')?.touched || shiftForm.get('name')?.dirty)">
+              <span *ngIf="shiftForm.get('name')?.errors?.['required']">
+                {{ 'attendance.shift.name_required' | translate }}
+              </span>
+              <span *ngIf="shiftForm.get('name')?.errors?.['invalidLabel']">
+                {{ 'attendance.shift.name_invalid' | translate }}
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
 
-      <div *ngIf="shiftForm.get('name')?.invalid && shiftForm.get('name')?.touched" class="text-danger error">
-        <div *ngIf="shiftForm.get('name')?.errors?.['required']">
-          Please Add Name for shift!
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.shift_type' | translate }}</mat-label>
+            <mat-select formControlName="shiftType">
+              <mat-option value="" disabled>{{ 'attendance.shift.shift_type_placeholder' | translate }}</mat-option>
+              <mat-option value="fixed time">{{ 'attendance.shift.shift_type_fixed_time' | translate }}</mat-option>
+              <mat-option value="fixed duration">{{ 'attendance.shift.shift_type_fixed_duration' | translate }}</mat-option>
+              <mat-option value="flexi">{{ 'attendance.shift.shift_type_flexi' | translate }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="shiftForm.get('shiftType')?.invalid && (shiftForm.get('shiftType')?.touched || shiftForm.get('shiftType')?.dirty)">
+              {{ 'attendance.shift.shift_type_required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
-        <div *ngIf="shiftForm.get('name')?.errors?.['invalidLabel']">
-          Shift name cannot be just spaces, numbers or any special characters.
-        </div>
-      </div>
-    </div>
-    <div class="form-group my-2">
-      <label for="shiftType">Select Shift Type <span class="text-danger">*</span></label>
-      <select name="shiftType" formControlName="shiftType" id="shiftType" class="form-control">
-        <option value="">-- Select --</option>
-        <option value="fixed time">Fixed Time</option>
-        <option value="fixed duration">Fixed Duration</option>
-        <option value="flexi">Flexi</option>
-      </select>
-      <div *ngIf="shiftForm.get('shiftType')?.invalid && shiftForm.get('shiftType')?.touched" class="text-danger error">
-        Please Select Shift Type!
-      </div>
-    </div>
-    <div class="row">
-      <div class="form-group my-2 col-md-6">
-        <label for="">What is the shift start timing? <span class="text-danger">*</span></label>
 
-        <input type="time" formControlName="startTime" class="form-control formTable" />
-        <div *ngIf="shiftForm.get('startTime')?.invalid && shiftForm.get('startTime')?.touched"
-          class="text-danger error">
-          Please Select Start Time!
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.start_time' | translate }}</mat-label>
+            <input matInput type="time" formControlName="startTime">
+            <mat-error *ngIf="shiftForm.get('startTime')?.invalid && (shiftForm.get('startTime')?.touched || shiftForm.get('startTime')?.dirty)">
+              {{ 'attendance.shift.start_time_required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
-      </div>
-      <div class="form-group my-2 col-md-6">
-        <label for="">What is the shift end timing? <span class="text-danger">*</span></label>
-        <input type="time" formControlName="endTime" class="form-control formTable" />
-        <div *ngIf="shiftForm.get('endTime')?.invalid && shiftForm.get('endTime')?.touched" class="text-danger error">
-          Please Select End Time!
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.end_time' | translate }}</mat-label>
+            <input matInput type="time" formControlName="endTime">
+            <mat-error *ngIf="shiftForm.get('endTime')?.invalid && (shiftForm.get('endTime')?.touched || shiftForm.get('endTime')?.dirty)">
+              {{ 'attendance.shift.end_time_required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
-      </div>
-      <div
-        *ngIf="shiftForm.errors?.['timesCannotBeSame'] && (shiftForm.get('startTime')?.touched || shiftForm.get('endTime')?.touched)"
-        class="col-12 text-danger error">
-        Shift start and end times cannot be the same.
-      </div>
-      <div
-        *ngIf="shiftForm.errors?.['startTimeGreaterThanEndTime'] && (shiftForm.get('startTime')?.touched || shiftForm.get('endTime')?.touched)"
-        class="col-12 text-danger error">
-        Shift start time must be less than end time.
-      </div>
-    </div>
-    <div class="row">
-      <div class="form-group my-2 col-md-6">
-        <label for="firstHalfDuration">First Half Duration <span class="text-danger">*</span></label>
-        <input type="number" formControlName="firstHalfDuration" id="firstHalfDuration" class="form-control" />
-        <div *ngIf="shiftForm.get('firstHalfDuration')?.invalid && shiftForm.get('firstHalfDuration')?.touched"
-          class="text-danger error">
-          <span *ngIf="shiftForm.get('firstHalfDuration')?.errors?.['required']">Please Add First Half Duration!</span>
-          <span *ngIf="shiftForm.get('firstHalfDuration')?.errors?.['min']">Duration must be a positive number.</span>
-          <span *ngIf="shiftForm.get('firstHalfDuration')?.errors?.['pattern']">Only whole numbers are allowed.</span>
-        </div>
-      </div>
-      <div class="form-group my-2 col-md-6">
-        <label for="secondHalfDuration">Second Half Duration <span class="text-danger">*</span></label>
-        <input type="number" id="secondHalfDuration" formControlName="secondHalfDuration" class="form-control" />
-        <div *ngIf="shiftForm.get('secondHalfDuration')?.invalid && shiftForm.get('secondHalfDuration')?.touched"
-          class="text-danger error">
-          <span *ngIf="shiftForm.get('secondHalfDuration')?.errors?.['required']">Please Add Second Half
-            Duration!</span>
-          <span *ngIf="shiftForm.get('secondHalfDuration')?.errors?.['min']">Duration must be a positive number.</span>
-          <span *ngIf="shiftForm.get('secondHalfDuration')?.errors?.['pattern']">Only whole numbers are allowed.</span>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-    <div class="form-group my-2 col-md-6">
-      <label for="earliestArrival">Earliest Arrival <span class="text-danger">*</span></label>
-      <input type="time" formControlName="earliestArrival" id="earliestArrival" class="form-control" />
-      <div *ngIf="shiftForm.get('earliestArrival')?.invalid && shiftForm.get('earliestArrival')?.touched" class="text-danger error">
-        Please select Earliest Arrival Time!
-      </div>
-      <div *ngIf="shiftForm.errors?.['earliestArrivalAfterStartTime'] && shiftForm.get('earliestArrival')?.touched"
-        class="text-danger error">
-        Earliest Arrival Time cannot be after Shift Start Time.
-      </div>
-    </div>
-    <div class="form-group my-2 col-md-6">
-      <label for="latestDeparture">Latest Departure <span class="text-danger">*</span></label>
-      <input type="time" formControlName="latestDeparture" id="latestDeparture" class="form-control" />
-      <div *ngIf="shiftForm.get('latestDeparture')?.invalid && shiftForm.get('latestDeparture')?.touched" class="text-danger error">
-        Please select Latest Departure Time!
-      </div>
-      <div *ngIf="shiftForm.errors?.['latestDepartureBeforeEndTime'] && shiftForm.get('latestDeparture')?.touched"
-        class="text-danger error">
-        Latest Departure Time cannot be before Shift End Time.
-      </div>
-    </div>
-  </div>
-    <div class="form-group my-2" *ngIf="shiftForm.get('shiftType')?.value == 'fixed time'">
-      <label for="">Is late coming allowed?</label>
-      <div class="d-flex">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" formControlName="isLateComingAllowed" id="isLateComingAllowed"
-            [value]="true" />
-          <label class="form-check-label" for="isLateComingAllowed"> Yes </label>
-        </div>
-        <div class="form-check ms-3">
-          <input class="form-check-input" type="radio" formControlName="isLateComingAllowed" id="isLateComingAllowed-No"
-            [value]="false" />
-          <label class="form-check-label" for="isLateComingAllowed-No"> No </label>
-        </div>
-      </div>
-      <div *ngIf="shiftForm.get('isLateComingAllowed')?.invalid && shiftForm.get('isLateComingAllowed')?.touched"
-        class="text-danger error">
-        Please select an option for "Is late coming allowed?".
-      </div>
-    </div>
-    <div *ngIf="shiftForm.get('isLateComingAllowed')?.value === true">
-      <div class="form-group my-2">
-        <label for="noOfDaysLateComing">Enter Number Of Days For Late Coming</label>
-        <input type="number" id="noOfDaysLateComing" class="form-control" formControlName="noOfDaysLateComing"
-          placeholder="Enter number of Days" />
-        <div *ngIf="shiftForm.get('noOfDaysLateComing')?.invalid && shiftForm.get('noOfDaysLateComing')?.touched"
-          class="text-danger error">
-          <span *ngIf="shiftForm.get('noOfDaysLateComing')?.errors?.['required']">Number of days for late coming is
-            required.</span>
-          <span *ngIf="shiftForm.get('noOfDaysLateComing')?.errors?.['min']">Number of days cannot be negative.</span>
-          <span *ngIf="shiftForm.get('noOfDaysLateComing')?.errors?.['pattern']">Only whole numbers are allowed.</span>
-        </div>
-      </div>
 
-      <div class="form-group my-2">
-        <label for="graceTimeLimitForLateComing">Grace Time Limit For Late Coming</label>
-        <input type="number" id="graceTimeLimitForLateComing" class="form-control"
-          formControlName="graceTimeLimitForLateComing" placeholder="Enter grace time in Minutes" />
-        <div
-          *ngIf="shiftForm.get('graceTimeLimitForLateComing')?.invalid && shiftForm.get('graceTimeLimitForLateComing')?.touched"
-          class="text-danger error">
-          <span *ngIf="shiftForm.get('graceTimeLimitForLateComing')?.errors?.['required']">Grace time limit is
-            required.</span>
-          <span *ngIf="shiftForm.get('graceTimeLimitForLateComing')?.errors?.['min']">Grace time cannot be
-            negative.</span>
-          <span *ngIf="shiftForm.get('graceTimeLimitForLateComing')?.errors?.['pattern']">Only whole numbers are
-            allowed.</span>
+        <div *ngIf="shiftForm.errors?.['timesCannotBeSame'] && (shiftForm.get('startTime')?.touched || shiftForm.get('endTime')?.touched)" class="col-12">
+          <small class="text-danger">{{ 'attendance.shift.times_cannot_be_same' | translate }}</small>
         </div>
-      </div>
+        <div *ngIf="shiftForm.errors?.['startTimeGreaterThanEndTime'] && (shiftForm.get('startTime')?.touched || shiftForm.get('endTime')?.touched)" class="col-12">
+          <small class="text-danger">{{ 'attendance.shift.start_time_greater_than_end_time' | translate }}</small>
+        </div>
 
-      <div class="form-group my-2">
-        <label for="">Will Late Coming Deduct from Present Days?</label>
-        <div class="d-flex">
-          <div class="form-check">
-            <input class="form-check-input" type="radio" formControlName="willLateComingDeductfromPresentDays"
-              id="willLateComingDeductfromPresentDays" [value]="true" />
-            <label class="form-check-label" for="willLateComingDeductionfromPresentDays">
-              Yes
-            </label>
-          </div>
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.first_half_duration' | translate }}</mat-label>
+            <input matInput type="number" formControlName="firstHalfDuration">
+            <mat-error *ngIf="shiftForm.get('firstHalfDuration')?.invalid && (shiftForm.get('firstHalfDuration')?.touched || shiftForm.get('firstHalfDuration')?.dirty)">
+              <span *ngIf="shiftForm.get('firstHalfDuration')?.errors?.['required']">
+                {{ 'attendance.shift.first_half_duration_required' | translate }}
+              </span>
+              <span *ngIf="shiftForm.get('firstHalfDuration')?.errors?.['min']">
+                {{ 'attendance.shift.duration_negative' | translate }}
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.second_half_duration' | translate }}</mat-label>
+            <input matInput type="number" formControlName="secondHalfDuration">
+            <mat-error *ngIf="shiftForm.get('secondHalfDuration')?.invalid && (shiftForm.get('secondHalfDuration')?.touched || shiftForm.get('secondHalfDuration')?.dirty)">
+              <span *ngIf="shiftForm.get('secondHalfDuration')?.errors?.['required']">
+                {{ 'attendance.shift.second_half_duration_required' | translate }}
+              </span>
+              <span *ngIf="shiftForm.get('secondHalfDuration')?.errors?.['min']">
+                {{ 'attendance.shift.duration_negative' | translate }}
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
 
-          <div class="form-check ms-3">
-            <input class="form-check-input" type="radio" formControlName="willLateComingDeductfromPresentDays"
-              id="willLateComingDeductfromPresentDays-No" [value]="false" />
-            <label class="form-check-label" for="willLateComingDeductfromPresentDays-No">
-              No
-            </label>
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.earliest_arrival' | translate }}</mat-label>
+            <input matInput type="time" formControlName="earliestArrival">
+            <mat-error *ngIf="shiftForm.get('earliestArrival')?.invalid && (shiftForm.get('earliestArrival')?.touched || shiftForm.get('earliestArrival')?.dirty)">
+              {{ 'attendance.shift.earliest_arrival_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+          <div *ngIf="shiftForm.errors?.['earliestArrivalAfterStartTime'] && shiftForm.get('earliestArrival')?.touched" class="text-danger">
+            <small>{{ 'attendance.shift.earliest_arrival_after_start_time' | translate }}</small>
           </div>
         </div>
-        <div
-          *ngIf="shiftForm.get('willLateComingDeductfromPresentDays')?.invalid && shiftForm.get('willLateComingDeductionfromPresentDays')?.touched"
-          class="text-danger error">
-          Please select an option.
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.latest_departure' | translate }}</mat-label>
+            <input matInput type="time" formControlName="latestDeparture">
+            <mat-error *ngIf="shiftForm.get('latestDeparture')?.invalid && (shiftForm.get('latestDeparture')?.touched || shiftForm.get('latestDeparture')?.dirty)">
+              {{ 'attendance.shift.latest_departure_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+          <div *ngIf="shiftForm.errors?.['latestDepartureBeforeEndTime'] && shiftForm.get('latestDeparture')?.touched" class="text-danger">
+            <small>{{ 'attendance.shift.latest_departure_before_end_time' | translate }}</small>
+          </div>
         </div>
-      </div>
-    </div>
-    <div *ngIf="shiftForm.get('willLateComingDeductfromPresentDays')?.value === true">
-      <div class="form-group my-2">
-        <label for="numberOflateComingDaysAllowed">Number Of late Coming Days Allowed</label>
-        <input type="number" class="form-control" id="numberOflateComingDaysAllowed"
-          formControlName="numberOflateComingDaysAllowed" placeholder="Number of Days" />
-        <div
-          *ngIf="shiftForm.get('numberOflateComingDaysAllowed')?.invalid && shiftForm.get('numberOflateComingDaysAllowed')?.touched"
-          class="text-danger error">
-          <span *ngIf="shiftForm.get('numberOflateComingDaysAllowed')?.errors?.['required']">Number of late coming days
-            allowed is required.</span>
-          <span *ngIf="shiftForm.get('numberOflateComingDaysAllowed')?.errors?.['min']">Number of days cannot be
-            negative.</span>
-          <span *ngIf="shiftForm.get('numberOflateComingDaysAllowed')?.errors?.['pattern']">Only whole numbers are
-            allowed.</span>
-        </div>
-      </div>
 
-      <div class="form-group my-2">
-        <label for="numberOfDaysToBeDeducted">Number Of Days To Be Deducted</label>
-        <select name="" id="numberOfDaysToBeDeducted" formControlName="numberOfDaysToBeDeducted" class="form-control">
-          <option value="">-- Select --</option>
-          <option value="half day">Half Day</option>
-          <option value="full day">Full Day</option>
-        </select>
-        <div
-          *ngIf="shiftForm.get('numberOfDaysToBeDeducted')?.invalid && shiftForm.get('numberOfDaysToBeDeducted')?.touched"
-          class="text-danger error">
-          Please select the number of days to be deducted.
-        </div>
-      </div>
-      <div class="form-group my-2">
-        <label for="maximumTimeLimitForLateComing">Maximum Time Limit For Late Coming?</label>
-        <input type="number" formControlName="maximumTimeLimitForLateComing" id="maximumTimeLimitForLateComing"
-          placeholder="Number of Minutes" class="form-control" />
-        <div
-          *ngIf="shiftForm.get('maximumTimeLimitForLateComing')?.invalid && shiftForm.get('maximumTimeLimitForLateComing')?.touched"
-          class="text-danger error">
-          <span *ngIf="shiftForm.get('maximumTimeLimitForLateComing')?.errors?.['required']">Maximum time limit for late
-            coming is required.</span>
-          <span *ngIf="shiftForm.get('maximumTimeLimitForLateComing')?.errors?.['min']">Time limit cannot be
-            negative.</span>
-          <span *ngIf="shiftForm.get('maximumTimeLimitForLateComing')?.errors?.['pattern']">Only whole numbers are
-            allowed.</span>
-        </div>
-      </div>
-    </div>
-    <div class="form-group my-2">
-      <label for="">Is early going allowed?</label>
-      <div class="d-flex">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" formControlName="isEarlyGoingAllowed" id="isEarlyGoingAllowed"
-            [value]="true" />
-          <label class="form-check-label" for="isEarlyGoingAllowed"> Yes </label>
-        </div>
-        <div class="form-check ms-3">
-          <input class="form-check-input" type="radio" formControlName="isEarlyGoingAllowed" id="isEarlyGoingAllowed-No"
-            [value]="false" />
-          <label class="form-check-label" for="isEarlyGoingAllowed-No"> No </label>
-        </div>
-      </div>
-      <div *ngIf="shiftForm.get('isEarlyGoingAllowed')?.invalid && shiftForm.get('isEarlyGoingAllowed')?.touched"
-        class="text-danger error">
-        Please select an option for "Is early going allowed?".
-      </div>
-    </div>
-    <div *ngIf="shiftForm.get('isEarlyGoingAllowed')?.value === true" class="row">
-      <div class="form-group my-2 col-md-6">
-        <label for="enterNumberOfDaysForEarlyGoing">Enter Number Of Days For Early Going </label>
-        <input type="number" id="enterNumberOfDaysForEarlyGoing" class="form-control"
-          formControlName="enterNumberOfDaysForEarlyGoing" placeholder="Number of Days" />
-        <div
-          *ngIf="shiftForm.get('enterNumberOfDaysForEarlyGoing')?.invalid && shiftForm.get('enterNumberOfDaysForEarlyGoing')?.touched"
-          class="text-danger error">
-          <span *ngIf="shiftForm.get('enterNumberOfDaysForEarlyGoing')?.errors?.['required']">Number of days for early
-            going is required.</span>
-          <span *ngIf="shiftForm.get('enterNumberOfDaysForEarlyGoing')?.errors?.['min']">Number of days cannot be
-            negative.</span>
-          <span *ngIf="shiftForm.get('enterNumberOfDaysForEarlyGoing')?.errors?.['pattern']">Only whole numbers are
-            allowed.</span>
-        </div>
-      </div>
-      <div class="form-group my-2 col-md-6">
-        <label for="graceTimeLimitForEarlyGoing">Grace Time Limit For Early Going</label>
-        <input type="number" id="graceTimeLimitForEarlyGoing" formControlName="graceTimeLimitForEarlyGoing"
-          placeholder="Enter Grace Time in Minutes" class="form-control" />
-        <div
-          *ngIf="shiftForm.get('graceTimeLimitForEarlyGoing')?.invalid && shiftForm.get('graceTimeLimitForEarlyGoing')?.touched"
-          class="text-danger error">
-          <span *ngIf="shiftForm.get('graceTimeLimitForEarlyGoing')?.errors?.['required']">Grace time limit for early
-            going is required.</span>
-          <span *ngIf="shiftForm.get('graceTimeLimitForEarlyGoing')?.errors?.['min']">Grace time cannot be
-            negative.</span>
-          <span *ngIf="shiftForm.get('graceTimeLimitForEarlyGoing')?.errors?.['pattern']">Only whole numbers are
-            allowed.</span>
-        </div>
-      </div>
-    </div>
-    <div class="form-group my-2">
-      <label for="minHoursPerDayToGetCreditForFullDay">What are the minimum hours per day that an employee should work to get credit for a Full Day? <span
-          class="text-danger">*</span></label>
-          <input type="number" id="minHoursPerDayToGetCreditForFullDay" formControlName="minHoursPerDayToGetCreditForFullDay"
-          placeholder="Minimum Hour" class="form-control" />
-      <div
-          *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.invalid && shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.touched"
-          class="text-danger error">
-          <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['required']">Grace time limit for early
-            going is required.</span>
-          <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['min']">Grace time cannot be
-            negative.</span>
-        </div>
-    </div>
-    <div *ngIf="shiftForm.get('shiftType')?.value === 'fixed duration'">
-      <div class="form-group my-2">
-        <label for="">Is half day Applicable?</label>
-        <div class="d-flex">
-          <div class="form-check">
-            <input class="form-check-input" type="radio" formControlName="isHalfDayApplicable" id="isHalfDayApplicable"
-              [value]="true" />
-            <label class="form-check-label" for="isHalfDayApplicable">
-              Yes
-            </label>
+        <div class="form-group my-2 col-md-12" *ngIf="shiftForm.get('shiftType')?.value === 'fixed time'">
+          <label class="small">{{ 'attendance.shift.is_late_coming_allowed' | translate }} <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <mat-radio-group formControlName="isLateComingAllowed">
+              <mat-radio-button color="primary" [value]="true">{{ 'attendance.shift.yes' | translate }}</mat-radio-button>
+              <mat-radio-button color="primary" [value]="false" class="ms-3">{{ 'attendance.shift.no' | translate }}</mat-radio-button>
+            </mat-radio-group>
           </div>
-          <div class="form-check ms-3">
-            <input class="form-check-input" type="radio" formControlName="isHalfDayApplicable"
-              id="isHalfDayApplicable-No" [value]="false" />
-            <label class="form-check-label" for="isHalfDayApplicable-No">
-              No
-            </label>
+          <div *ngIf="shiftForm.get('isLateComingAllowed')?.invalid && (shiftForm.get('isLateComingAllowed')?.touched || shiftForm.get('isLateComingAllowed')?.dirty)">
+            <small class="text-danger">{{ 'attendance.shift.late_coming_required' | translate }}</small>
           </div>
         </div>
-        <div *ngIf="shiftForm.get('isHalfDayApplicable')?.invalid && shiftForm.get('isHalfDayApplicable')?.touched"
-          class="text-danger error">
-          Please select whether half day is applicable.
+
+        <div *ngIf="shiftForm.get('isLateComingAllowed')?.value === true">
+          <div class="form-group my-2 col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'attendance.shift.no_of_days_late_coming' | translate }}</mat-label>
+              <input matInput type="number" formControlName="noOfDaysLateComing">
+              <mat-error *ngIf="shiftForm.get('noOfDaysLateComing')?.invalid && (shiftForm.get('noOfDaysLateComing')?.touched || shiftForm.get('noOfDaysLateComing')?.dirty)">
+                <span *ngIf="shiftForm.get('noOfDaysLateComing')?.errors?.['required']">
+                  {{ 'attendance.shift.no_of_days_late_coming_required' | translate }}
+                </span>
+                <span *ngIf="shiftForm.get('noOfDaysLateComing')?.errors?.['min']">
+                  {{ 'attendance.shift.days_negative' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group my-2 col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'attendance.shift.grace_time_limit_late_coming' | translate }}</mat-label>
+              <input matInput type="number" formControlName="graceTimeLimitForLateComing">
+              <mat-error *ngIf="shiftForm.get('graceTimeLimitForLateComing')?.invalid && (shiftForm.get('graceTimeLimitForLateComing')?.touched || shiftForm.get('graceTimeLimitForLateComing')?.dirty)">
+                <span *ngIf="shiftForm.get('graceTimeLimitForLateComing')?.errors?.['required']">
+                  {{ 'attendance.shift.grace_time_limit_required' | translate }}
+                </span>
+                <span *ngIf="shiftForm.get('graceTimeLimitForLateComing')?.errors?.['min']">
+                  {{ 'attendance.shift.grace_time_negative' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group my-2 col-md-12">
+            <label class="small">{{ 'attendance.shift.will_late_coming_deduct' | translate }} <span class="text-danger">*</span></label>
+            <div class="d-flex">
+              <mat-radio-group formControlName="willLateComingDeductfromPresentDays">
+                <mat-radio-button color="primary" [value]="true">{{ 'attendance.shift.yes' | translate }}</mat-radio-button>
+                <mat-radio-button color="primary" [value]="false" class="ms-3">{{ 'attendance.shift.no' | translate }}</mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <div *ngIf="shiftForm.get('willLateComingDeductfromPresentDays')?.invalid && (shiftForm.get('willLateComingDeductfromPresentDays')?.touched || shiftForm.get('willLateComingDeductfromPresentDays')?.dirty)">
+              <small class="text-danger">{{ 'attendance.shift.late_coming_deduct_required' | translate }}</small>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="form-group my-2" *ngIf="shiftForm.get('isHalfDayApplicable')?.value === true">
-        <label for="">What are the minimum hours per day that an employee should work to get credit for a Half Day?
-        </label>
-        <input type="number" formControlName="minHoursPerDayToGetCreditforHalfDay" class="form-control formTable" />
-        <div
-          *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.invalid && shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.touched"
-          class="text-danger error">
-          <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['required']">Minimum half day
-            hours are required.</span>
-          <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['min']">Minimum hours must be at
-            least 1.</span>
-          <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['pattern']">Only whole numbers
-            are allowed.</span>
+
+        <div *ngIf="shiftForm.get('willLateComingDeductfromPresentDays')?.value === true">
+          <div class="form-group my-2 col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'attendance.shift.number_of_late_coming_days_allowed' | translate }}</mat-label>
+              <input matInput type="number" formControlName="numberOflateComingDaysAllowed">
+              <mat-error *ngIf="shiftForm.get('numberOflateComingDaysAllowed')?.invalid && (shiftForm.get('numberOflateComingDaysAllowed')?.touched || shiftForm.get('numberOflateComingDaysAllowed')?.dirty)">
+                <span *ngIf="shiftForm.get('numberOflateComingDaysAllowed')?.errors?.['required']">
+                  {{ 'attendance.shift.number_of_late_coming_days_required' | translate }}
+                </span>
+                <span *ngIf="shiftForm.get('numberOflateComingDaysAllowed')?.errors?.['min']">
+                  {{ 'attendance.shift.days_negative' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group my-2 col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'attendance.shift.number_of_days_to_be_deducted' | translate }}</mat-label>
+              <mat-select formControlName="numberOfDaysToBeDeducted">
+                <mat-option value="" disabled>{{ 'attendance.shift.number_of_days_to_be_deducted_placeholder' | translate }}</mat-option>
+                <mat-option value="half day">{{ 'attendance.shift.half_day' | translate }}</mat-option>
+                <mat-option value="full day">{{ 'attendance.shift.full_day' | translate }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="shiftForm.get('numberOfDaysToBeDeducted')?.invalid && (shiftForm.get('numberOfDaysToBeDeducted')?.touched || shiftForm.get('numberOfDaysToBeDeducted')?.dirty)">
+                {{ 'attendance.shift.number_of_days_to_be_deducted_required' | translate }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group my-2 col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'attendance.shift.maximum_time_limit_late_coming' | translate }}</mat-label>
+              <input matInput type="number" formControlName="maximumTimeLimitForLateComing">
+              <mat-error *ngIf="shiftForm.get('maximumTimeLimitForLateComing')?.invalid && (shiftForm.get('maximumTimeLimitForLateComing')?.touched || shiftForm.get('maximumTimeLimitForLateComing')?.dirty)">
+                <span *ngIf="shiftForm.get('maximumTimeLimitForLateComing')?.errors?.['required']">
+                  {{ 'attendance.shift.maximum_time_limit_required' | translate }}
+                </span>
+                <span *ngIf="shiftForm.get('maximumTimeLimitForLateComing')?.errors?.['min']">
+                  {{ 'attendance.shift.time_limit_negative' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group my-2 col-md-12">
+          <label class="small">{{ 'attendance.shift.is_early_going_allowed' | translate }} <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <mat-radio-group formControlName="isEarlyGoingAllowed">
+              <mat-radio-button color="primary" [value]="true">{{ 'attendance.shift.yes' | translate }}</mat-radio-button>
+              <mat-radio-button color="primary" [value]="false" class="ms-3">{{ 'attendance.shift.no' | translate }}</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div *ngIf="shiftForm.get('isEarlyGoingAllowed')?.invalid && (shiftForm.get('isEarlyGoingAllowed')?.touched || shiftForm.get('isEarlyGoingAllowed')?.dirty)">
+            <small class="text-danger">{{ 'attendance.shift.early_going_required' | translate }}</small>
+          </div>
+        </div>
+
+        <div *ngIf="shiftForm.get('isEarlyGoingAllowed')?.value === true" class="row m-0">
+          <div class="form-group my-2 col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'attendance.shift.enter_number_of_days_for_early_going' | translate }}</mat-label>
+              <input matInput type="number" formControlName="enterNumberOfDaysForEarlyGoing">
+              <mat-error *ngIf="shiftForm.get('enterNumberOfDaysForEarlyGoing')?.invalid && (shiftForm.get('enterNumberOfDaysForEarlyGoing')?.touched || shiftForm.get('enterNumberOfDaysForEarlyGoing')?.dirty)">
+                <span *ngIf="shiftForm.get('enterNumberOfDaysForEarlyGoing')?.errors?.['required']">
+                  {{ 'attendance.shift.number_of_days_early_going_required' | translate }}
+                </span>
+                <span *ngIf="shiftForm.get('enterNumberOfDaysForEarlyGoing')?.errors?.['min']">
+                  {{ 'attendance.shift.days_negative' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="form-group my-2 col-md-6">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'attendance.shift.grace_time_limit_early_going' | translate }}</mat-label>
+              <input matInput type="number" formControlName="graceTimeLimitForEarlyGoing">
+              <mat-error *ngIf="shiftForm.get('graceTimeLimitForEarlyGoing')?.invalid && (shiftForm.get('graceTimeLimitForEarlyGoing')?.touched || shiftForm.get('graceTimeLimitForEarlyGoing')?.dirty)">
+                <span *ngIf="shiftForm.get('graceTimeLimitForEarlyGoing')?.errors?.['required']">
+                  {{ 'attendance.shift.grace_time_early_going_required' | translate }}
+                </span>
+                <span *ngIf="shiftForm.get('graceTimeLimitForEarlyGoing')?.errors?.['min']">
+                  {{ 'attendance.shift.grace_time_negative' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-group my-2 col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.min_hours_full_day' | translate }}</mat-label>
+            <input matInput type="number" formControlName="minHoursPerDayToGetCreditForFullDay">
+            <mat-error *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.invalid && (shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.touched || shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.dirty)">
+              <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['required']">
+                {{ 'attendance.shift.min_hours_full_day_required' | translate }}
+              </span>
+              <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['min'] || shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['max']">
+                {{ 'attendance.shift.min_hours_invalid' | translate }}
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group my-2 col-md-12" *ngIf="shiftForm.get('shiftType')?.value === 'fixed duration'">
+          <label class="small">{{ 'attendance.shift.is_half_day_applicable' | translate }} <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <mat-radio-group formControlName="isHalfDayApplicable">
+              <mat-radio-button color="primary" [value]="true">{{ 'attendance.shift.yes' | translate }}</mat-radio-button>
+              <mat-radio-button color="primary" [value]="false" class="ms-3">{{ 'attendance.shift.no' | translate }}</mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div *ngIf="shiftForm.get('isHalfDayApplicable')?.invalid && (shiftForm.get('isHalfDayApplicable')?.touched || shiftForm.get('isHalfDayApplicable')?.dirty)">
+            <small class="text-danger">{{ 'attendance.shift.half_day_applicable_required' | translate }}</small>
+          </div>
+        </div>
+
+        <div class="form-group my-2 col-md-6" *ngIf="shiftForm.get('isHalfDayApplicable')?.value === true">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.min_hours_half_day' | translate }}</mat-label>
+            <input matInput type="number" formControlName="minHoursPerDayToGetCreditforHalfDay">
+            <mat-error *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.invalid && (shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.touched || shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.dirty)">
+              <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['required']">
+                {{ 'attendance.shift.min_hours_half_day_required' | translate }}
+              </span>
+              <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['min']">
+                {{ 'attendance.shift.min_hours_half_day_invalid' | translate }}
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group my-2 col-md-6" *ngIf="shiftForm.get('shiftType')?.value === 'flexi'">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'attendance.shift.max_late_coming_minutes' | translate }}</mat-label>
+            <input matInput type="number" formControlName="maxLateComingAllowedMinutesFirstHalfAttendance">
+            <mat-error *ngIf="shiftForm.get('maxLateComingAllowedMinutesFirstHalfAttendance')?.invalid && (shiftForm.get('maxLateComingAllowedMinutesFirstHalfAttendance')?.touched || shiftForm.get('maxLateComingAllowedMinutesFirstHalfAttendance')?.dirty)">
+              <span *ngIf="shiftForm.get('maxLateComingAllowedMinutesFirstHalfAttendance')?.errors?.['required']">
+                {{ 'attendance.shift.max_late_coming_minutes_required' | translate }}
+              </span>
+              <span *ngIf="shiftForm.get('maxLateComingAllowedMinutesFirstHalfAttendance')?.errors?.['min']">
+                {{ 'attendance.shift.minutes_negative' | translate }}
+              </span>
+            </mat-error>
+          </mat-form-field>
         </div>
       </div>
     </div>
-    <div class="form-group my-2" *ngIf="shiftForm.get('shiftType')?.value == 'flexi'">
-      <label for="">Maximum Late Coming Allowed Minutes for First Half Attendance</label>
-      <input type="number" formControlName="maxLateComingAllowedMinutesFirstHalfAttendance" class="form-control" />
-      <div
-        *ngIf="shiftForm.get('maxLateComingAllowedMinutesFirstHalfAttendance')?.invalid && shiftForm.get('maxLateComingAllowedMinutesFirstHalfAttendance')?.touched"
-        class="text-danger error">
-        <span *ngIf="shiftForm.get('maxLateComingAllowedMinutesFirstHalfAttendance')?.errors?.['required']">Maximum late
-          coming minutes are required.</span>
-        <span *ngIf="shiftForm.get('maxLateComingAllowedMinutesFirstHalfAttendance')?.errors?.['min']">Minutes cannot be
-          negative.</span>
-        <span *ngIf="shiftForm.get('maxLateComingAllowedMinutesFirstHalfAttendance')?.errors?.['pattern']">Only whole
-          numbers are allowed.</span>
-      </div>
-    </div>
-    <div class="d-flex justify-content-between mt-2">
-      <button type="reset" mat-flat-button>Cancel</button>
-      <button type="submit" mat-flat-button class="addBtn">
-        {{ isEdit === true ? "Update" : "Add" }}
+
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+      <button mat-flat-button (click)="closeModal()" mat-dialog-close="">
+        {{ 'attendance.shift.cancel' | translate }}
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="!shiftForm.valid">
+        {{ (isEdit ? 'attendance.shift.update' : 'attendance.shift.save') | translate }}
       </button>
     </div>
   </form>

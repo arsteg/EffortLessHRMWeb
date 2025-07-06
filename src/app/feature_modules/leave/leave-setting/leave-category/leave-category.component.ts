@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
@@ -9,13 +9,15 @@ import { LeaveService } from 'src/app/_services/leave.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-leave-category',
   templateUrl: './leave-category.component.html',
   styleUrls: ['./leave-category.component.css']
 })
-export class LeaveCategoryComponent implements OnInit, AfterViewInit {
+export class LeaveCategoryComponent implements OnInit, AfterViewInit, OnDestroy {
   categoryForm: FormGroup;
   selectedLeaveCategory: any;
   isEdit: boolean = false;
@@ -23,8 +25,34 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['label', 'leaveType', 'leaveAccrualPeriod', 'actions'];
   recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
   closeResult: string = '';
+  allData: any[]= [];
+  dialogRef: MatDialogRef<any> | null = null;
+  private leaveTypeSubscription: Subscription;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  columns: TableColumn[] = [
+    { 
+      key: 'label', 
+      name: 'Leave Label'
+    },
+    { 
+      key: 'leaveType', 
+      name: 'Leave Type' 
+    },
+    { 
+      key: 'leaveAccrualPeriod', 
+      name: 'Frequency Of Accrual'
+    },
+    {
+      key: 'actions',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(
     private modalService: NgbModal,
@@ -44,7 +72,7 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
       isHalfDayTypeOfLeave: [true, Validators.required],
       submitBefore: [0, Validators.required],
       displayLeaveBalanceInPayslip: [true, Validators.required],
-      leaveAccrualPeriod: ['', Validators.required],
+      leaveAccrualPeriod: [''],
       isAnnualHolidayLeavePartOfNumberOfDaysTaken: [true],
       isWeeklyOffLeavePartOfNumberOfDaysTaken: [true],
       isEligibleForLeaveEncashmentDuringRollover: [true],
@@ -65,6 +93,17 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
       isEmployeeAccrualLeaveInAdvance: [true]
     });
 
+    this.leaveTypeSubscription = this.categoryForm.get('leaveType')?.valueChanges.subscribe(value => {
+      const leaveAccrualPeriodControl = this.categoryForm.get('leaveAccrualPeriod');
+      if (value === 'general-leave') {
+        leaveAccrualPeriodControl?.setValidators([Validators.required]);
+      } else {
+        leaveAccrualPeriodControl?.clearValidators();
+        leaveAccrualPeriodControl?.setValue(''); // Clear value for non-general leave types
+      }
+      leaveAccrualPeriodControl?.updateValueAndValidity();
+    });
+
     this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
       const searchString = filter.toLowerCase();
       return data.label.toLowerCase().includes(searchString) ||
@@ -82,9 +121,18 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
     this.getAllLeaveCategories();
   }
 
+  ngOnDestroy(): void {
+    if (this.leaveTypeSubscription) {
+      this.leaveTypeSubscription.unsubscribe();
+    }
+  }
+
   reset() {
     this.isEdit = false;
     this.categoryForm.reset({
+      leaveType: '',
+      label: '',
+      abbreviation: '',
       canEmployeeApply: false,
       isHalfDayTypeOfLeave: false,
       displayLeaveBalanceInPayslip: false,
@@ -105,19 +153,20 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
       minimumNumberOfDaysAllowed: 0,
       maximumNumberConsecutiveLeaveDaysAllowed: 0,
       dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth: 0,
-      dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth: 0
+      dayOfMonthEmployeeNeedToResignToGetCreditforTheMonth: 0,
+      leaveAccrualPeriod: ''
     });
+    this.categoryForm.get('leaveAccrualPeriod')?.clearValidators();
+    this.categoryForm.get('leaveAccrualPeriod')?.updateValueAndValidity();
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
+    });
+    this.dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   private getDismissReason(reason: any): string {
@@ -137,6 +186,7 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
     };
     this.leaveService.getAllLeaveCategories(pagination).subscribe((res: any) => {
       this.tableService.setData(res.data);
+      this.allData = res.data;
       this.tableService.totalRecords = res.total;
     });
   }
@@ -149,7 +199,7 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
             this.tableService.setData([...this.tableService.dataSource.data, res.data]);
             this.toast.success(this.translate.instant('leave.leaveSuccessfulAssigned'));
             this.reset();
-            this.modalService.dismissAll();
+            this.dialogRef.close(true);
           },
           (err) => {
             this.toast.error(this.translate.instant('leave.leaveErrorAssigned'));
@@ -165,7 +215,7 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
             this.tableService.setData(updatedData);
             this.toast.success(this.translate.instant('leave.leaveSuccessfulAssignmentUpdated'));
             this.reset();
-            this.modalService.dismissAll();
+            this.dialogRef.close(true);
           },
           (err) => {
             this.toast.error(this.translate.instant('leave.leaveErrorAssignmentUpdated'));
@@ -196,7 +246,8 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
       isHalfDayTypeOfLeave: this.selectedLeaveCategory.isHalfDayTypeOfLeave,
       submitBefore: this.selectedLeaveCategory.submitBefore || 0,
       displayLeaveBalanceInPayslip: this.selectedLeaveCategory.displayLeaveBalanceInPayslip,
-      leaveAccrualPeriod: this.selectedLeaveCategory.leaveAccrualPeriod,
+      //leaveAccrualPeriod: this.selectedLeaveCategory.leaveAccrualPeriod,
+      leaveAccrualPeriod: this.selectedLeaveCategory.leaveAccrualPeriod || '',
       isAnnualHolidayLeavePartOfNumberOfDaysTaken: this.selectedLeaveCategory.isAnnualHolidayLeavePartOfNumberOfDaysTaken,
       isWeeklyOffLeavePartOfNumberOfDaysTaken: this.selectedLeaveCategory.isWeeklyOffLeavePartOfNumberOfDaysTaken,
       isEligibleForLeaveEncashmentDuringRollover: this.selectedLeaveCategory.isEligibleForLeaveEncashmentDuringRollover,
@@ -216,6 +267,13 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
       isPaidLeave: this.selectedLeaveCategory.isPaidLeave,
       isEmployeeAccrualLeaveInAdvance: this.selectedLeaveCategory.isEmployeeAccrualLeaveInAdvance
     });
+    const leaveAccrualPeriodControl = this.categoryForm.get('leaveAccrualPeriod');
+    if (this.selectedLeaveCategory.leaveType === 'general-leave') {
+      leaveAccrualPeriodControl?.setValidators([Validators.required]);
+    } else {
+      leaveAccrualPeriodControl?.clearValidators();
+    }
+    leaveAccrualPeriodControl?.updateValueAndValidity();
   }
 
   exportToCsv() {
@@ -246,8 +304,46 @@ export class LeaveCategoryComponent implements OnInit, AfterViewInit {
     });
   }
 
-  onPageChange(event: any) {
-    this.tableService.updatePagination(event);
+  handleAction(event: any, contant: any) {
+    if (event.action.label === 'Edit') {
+      this.open(contant);
+      this.selectedLeaveCategory = event?.row; 
+      this.editCategory();
+    } 
+    if (event.action.label === 'Delete') {
+      this.deleteDialog(event?.row?._id);
+    }
+  }
+
+  onPageChange(event: any) { // CHANGED: Updated to match reference
+    this.tableService.currentPage = event.pageIndex + 1;
+    this.tableService.recordsPerPage = event.pageSize;
     this.getAllLeaveCategories();
+  }
+
+  onSortChange(event: any) { // CHANGED: Updated to match reference
+    const sorted = this.tableService.dataSource.data.slice().sort((a: any, b: any) => {
+      const valueA = a[event.active];
+      const valueB = b[event.active];
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.tableService.dataSource.data = sorted;
+  }
+
+  onSearchChange(event: string) { // CHANGED: Updated to match reference
+    this.tableService.dataSource.data = this.allData.filter(row => {
+      return this.columns.some(col => {
+        if (col.key !== 'actions') {
+          const value = row[col.key];
+          return value?.toString().toLowerCase().includes(event.toLowerCase());
+        }
+        return false;
+      });
+    });
+  }
+
+  close(){
+    this.reset();
+    this.dialogRef.close(this);
   }
 }

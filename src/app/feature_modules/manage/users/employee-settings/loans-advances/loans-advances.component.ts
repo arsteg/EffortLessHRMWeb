@@ -140,7 +140,10 @@ export class UserLoansAdvancesComponent {
   }
 
   edit() {
-    this.loansAdvancesForm.patchValue(this.selectedRecord);
+    const record = { ...this.selectedRecord };
+    // Ensure only the category ID is set in the form
+    record.loanAdvancesCategory = record.loanAdvancesCategory?._id;
+    this.loansAdvancesForm.patchValue(record);
   }
 
   onSubmission() {

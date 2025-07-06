@@ -73,7 +73,7 @@ export class AddSalaryDetailsComponent {
   ) {
     this.salaryDetailsForm = this.fb.group({
       user: [''],
-      payrollEffectiveFrom: [''],
+      payrollEffectiveFrom: [null, Validators.required],
       frequencyToEnterCTC: [''],
       CTCTemplate: ['manual'],
       isEmployerPartInclusiveInSalaryStructure: [{ value: true, disabled: true }],
@@ -358,15 +358,11 @@ export class AddSalaryDetailsComponent {
   getAllComponents() {
     forkJoin({
       fixedAllowance: this.payrollService.getFixedAllowance({ next: '', skip: '' }),
-      employerContribution: this.payrollService.getFixedContribution({ next: '', skip: '' }),
-      employeeDeduction: this.payrollService.getFixedDeduction({ next: '', skip: '' }),
       fixedDeduction: this.payrollService.getFixedDeduction({ next: '', skip: '' }),
       variableAllowance: this.payrollService.getVariableAllowance({ next: '', skip: '' }),
       variableDeduction: this.payrollService.getVariableDeduction({ next: '', skip: '' }),
     }).subscribe(result => {
       this.fixedAllowance = result.fixedAllowance.data;
-      this.employerContribution = result.employerContribution.data;
-      this.employeeDeduction = result.employeeDeduction.data;
       this.fixedDeduction = result.fixedDeduction.data;
       this.variableAllowance = result.variableAllowance.data;
       this.variableDeduction = result.variableDeduction.data;
@@ -987,7 +983,7 @@ export class AddSalaryDetailsComponent {
         isLWFDeduction: this.statutorySettings.isLWFDeductedFromPlayslip,
         isGratuityApplicable: this.statutorySettings?.isGratuityEligible,
         isRoundOffApplicable: this.statutorySettings.roundOffApplicable,
-        isIncomeTaxDeduction: this.payrollGeneralSettings?.isAllowTDSFromEffortlessHRM
+        isIncomeTaxDeduction: this.statutorySettings?.isIncomeTaxDeducted
       }, { emitEvent: false });
       if (this.edit) {
         this.salaryDetailsForm.get('employeeSalaryTaxAndStatutorySetting')?.disable({ emitEvent: false });

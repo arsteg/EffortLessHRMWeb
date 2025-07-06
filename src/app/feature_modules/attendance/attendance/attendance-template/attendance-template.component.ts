@@ -25,12 +25,13 @@ export class AttendanceTemplateComponent {
   regularizations: any;
   attendanceAssignment: any[] = []; // Initialize as empty array
   templateAssignmentCount: { [key: string]: number } = {}; // Initialize as empty object
-  totalRecords: number; // example total records
+  totalRecords: number = 0; // example total records
   recordsPerPage: number = 10;
   currentPage: number = 1;
   public sortOrder: string = '';
   @ViewChild('addModal') addModal: any;
   dialogRef: MatDialogRef<any> | null = null;
+  allData: any;
 
   columns = [
     {
@@ -78,15 +79,14 @@ export class AttendanceTemplateComponent {
     // Use forkJoin to wait for both observables to complete
     forkJoin([
       this.attendanceService.getAttendanceTemplate(
-        // ((this.currentPage - 1) * this.recordsPerPage).toString(),
-        // this.recordsPerPage.toString()
-        "1",
-        "100000"
+        ((this.currentPage - 1) * this.recordsPerPage).toString(),
+        this.recordsPerPage.toString()
       ),
       this.attendanceService.getAttendanceAssignment('', ''), // Assuming no pagination for assignments needed here
     ]).subscribe(
       ([templateRes, assignmentRes]: [any, any]) => {
         this.attendanceTemplate = templateRes.data;
+        this.allData = templateRes.data;
         this.totalRecords = templateRes.total;
         this.attendanceAssignment = assignmentRes.data;
         this.updateTemplateAssignmentCount(); // Call after both are populated
@@ -291,9 +291,12 @@ export class AttendanceTemplateComponent {
   }
 
   onSearchChange(event: any) {
-    this.searchText = event.value || '';
-    this.currentPage = 1; // Reset to first page on search
-    this.loadRecords();
+    this.attendanceTemplate = this.allData?.filter(row => {
+    return this.columns.some(col => {
+      const value = row[col.key];
+      return value?.toString().toLowerCase().includes(event.toLowerCase());
+    });
+  });
   }
 
   onActionClick(event: any){
@@ -310,5 +313,25 @@ export class AttendanceTemplateComponent {
         this.deleteDialog(event?.row?._id);
         break;
     }
+  }
+
+  // onSortChange(event: any) {
+  //   const sorted = this.allData.slice().sort((a, b) => {
+  //     return event.direction === 'asc' ? (a > b ? 1 : -1) : (a < b ? 1 : -1);
+  //   });
+  //   this.attendanceTemplate = sorted;
+  // }
+
+   onSortChange(event: any) {
+    const sorted = this.attendanceTemplate.slice().sort((a: any, b: any) => {
+      const valueA = this.getNestedValue(a, event.active);
+      const valueB = this.getNestedValue(b, event.active);
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.attendanceTemplate = sorted;
+  }
+
+  private getNestedValue(obj: any, key: string): any {
+    return key.split('.').reduce((o, k) => (o ? o[k] : undefined), obj);
   }
 }
