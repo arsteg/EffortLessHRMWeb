@@ -86,35 +86,97 @@ export class AddLeaveComponent {
     this.member = JSON.parse(member.value);
   }
 
-  onSubmission() {
-    const today = new Date();
-    const leaveDate = new Date(this.leaveGrant.value.date);
+//   onSubmission() {
+//     const today = new Date();
+//     const leaveDate = new Date(this.leaveGrant.value.date);
 
-    if (leaveDate > today) {
-      this.toast.error(this.translate.instant('leave.futureDateError'));
-      return;
+//     if (leaveDate > today) {
+//       this.toast.error(this.translate.instant('leave.futureDateError'));
+//       return;
+//     }
+
+//     let payload = {
+//       date: this.leaveGrant.value.date,
+//       status: 'Pending',
+//       comment: this.leaveGrant.value.comment,
+//       users: this.leaveGrant.value.users.map(user => ({ user: user }))
+//     };
+//     if (this.portalView == 'user') {
+//       let users: any[] = [];
+//       if (this.tab === 3) {
+//         users.push(this.currentUser?.id);
+//         payload.users = users.map(id => ({ user: id }));
+//       } else if (this.tab === 7) {
+//         users.push(this.member?.id);
+//         payload.users = this.leaveGrant.value.users.map(user => ({ user: user }));
+//       }
+//     }
+
+//     this.leaveGrant.markAllAsTouched();
+//     if (this.leaveGrant.invalid) {
+//       this.toast.error(this.translate.instant('leave.formInvalidError'));
+//       return;
+//     }
+
+//     this.leaveService.addLeaveGrant(payload).subscribe({
+//       next: (res: any) => {
+//         this.leaveGrantRefreshed.emit();
+//         this.leaveGrant.reset();
+//         this.toast.success(this.translate.instant('leave.leaveCreatedSuccessfully'));
+//         this.close.emit(true);
+//       },
+//       error: (err: any) => {
+//         this.toast.error(err);
+//       }
+//     });
+//   }
+// }
+
+onSubmission() {
+  const today = new Date();
+  const leaveDate = new Date(this.leaveGrant.value.date);
+
+  if (leaveDate > today) {
+    this.toast.error(this.translate.instant('leave.futureDateError'));
+    return;
+  }
+
+  let payload = {
+    date: this.leaveGrant.value.date,
+    status: 'Pending',
+    comment: this.leaveGrant.value.comment,
+    users: this.leaveGrant.value.users.map(user => ({ user: user }))
+  };
+
+  if (this.portalView === 'user') {
+    let users: any[] = [];
+    if (this.tab === 3) {
+      users = [this.currentUser?.id].filter(id => id);
+      payload.users = users.map(id => ({ user: id }));
+    } else if (this.tab === 7) {
+      users = [this.member?.id].filter(id => id);
+      payload.users = users.map(id => ({ user: id }));
     }
 
-    let payload = {
-      date: this.leaveGrant.value.date,
-      status: 'Pending',
-      comment: this.leaveGrant.value.comment,
-      users: this.leaveGrant.value.users.map(user => ({ user: user }))
-    };
-    if (this.portalView == 'user') {
-      let users: any[] = [];
-      if (this.tab === 4) {
-        users.push(this.currentUser?.id);
-        payload.users = users.map(id => ({ user: id }));
-      } else if (this.tab === 7) {
-        users.push(this.member?.id);
-        payload.users = this.leaveGrant.value.users.map(user => ({ user: user }));
-      }
-    }
-    this.leaveService.addLeaveGrant(payload).subscribe((res: any) => {
+    this.leaveGrant.get('users')?.setValue(users);
+  }
+
+  this.leaveGrant.markAllAsTouched();
+  if (this.leaveGrant.invalid) {
+    this.toast.error(this.translate.instant('leave.formInvalidError'));
+    return;
+  }
+
+  this.leaveService.addLeaveGrant(payload).subscribe({
+    next: (res: any) => {
       this.leaveGrantRefreshed.emit();
       this.leaveGrant.reset();
+      this.toast.success(this.translate.instant('leave.leaveCreatedSuccessfully'));
       this.close.emit(true);
-    });
+    },
+    error: (err: any) => {
+      this.toast.error(err.error?.message || this.translate.instant('leave.leaveCreationFailed'));
+    }
+  });
   }
 }

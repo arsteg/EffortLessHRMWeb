@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { baseService } from './base';
 import { environment } from 'src/environments/environment';
 import { applicationStatus } from '../models/interviewProcess/applicationStatus';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +19,9 @@ export class LeaveService extends baseService {
   leave: any = new BehaviorSubject('')
   selectedTemplate: any = new BehaviorSubject('');
   categories: any = new BehaviorSubject('');
+  private selectedTabSubject = new BehaviorSubject<number>(
+    Number(localStorage.getItem('leaveSelectedTab')) || 1
+  );
 
   constructor(private http: HttpClient) {
     super();
@@ -277,5 +280,14 @@ export class LeaveService extends baseService {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${environment.apiUrlDotNet}/leave/short-leave-by-user/${userId}`, requestBody, this.httpOptions);
+  }
+
+  setSelectedTab(tab: number) {
+    this.selectedTabSubject.next(tab);
+    localStorage.setItem('leaveSelectedTab', tab.toString());
+  }
+
+  getSelectedTab(): Observable<number> {
+    return this.selectedTabSubject.asObservable();
   }
 }

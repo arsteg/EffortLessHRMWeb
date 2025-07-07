@@ -210,7 +210,9 @@
             "pending": "Pending",
             "approved": "Approved",
             "rejected": "Rejected",
-            "cancelled": "Cancelled"
+            "cancelled": "Cancelled",
+            "view": "View",
+            "delete": "Delete"
         },
         "status_pending": "Level 1 Approval Pending",
         "employeeName": "Employee Name",
@@ -436,6 +438,18 @@
             "leaveTemplate": "leaveTemplate",
             "primaryApprover": "primaryApprover",
             "secondaryApprover": "secondaryApprover"
-        }
+        },
+        "leaveGrant": {
+            "employeeColName": "Employee Name",
+            "appliedOnColName": "Applied On",
+            "appliedForColName": "Applied For",
+            "usedOnColName": "Used On",
+            "commentColName": "Comment",
+            "statusColName": "Status",
+            "actionColName": "Action",
+            "leaveCreatedSuccessfully": "Leave Grant Updated Successfully.",
+            "leaveCreatedError": "A leave grant can not be updated."
+        },
+        "leaveCreatedSuccessfully": "Leave request created successfully."
     }
 }
