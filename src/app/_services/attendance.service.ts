@@ -437,7 +437,7 @@ export class AttendanceService {
   }
 
   getAttendanceRecordsByMonthByUser(payload: any): Observable<response<any>> {
-    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/get-attendance-by-month`, payload, this.httpOptions);
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/get-attendance-by-month-user`, payload, this.httpOptions);
     return response;
   }
 
