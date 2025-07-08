@@ -37,7 +37,7 @@ export class AttendanceRecordsComponent implements OnInit {
   holidays: any[] = [];
   selectedUser: any;
   attendanceData: any[] = [];
-  shifts: any;
+  shifts: any[];
 
   months = [
     { name: 'January', value: 1 }, { name: 'February', value: 2 }, { name: 'March', value: 3 },
@@ -73,18 +73,14 @@ export class AttendanceRecordsComponent implements OnInit {
         this.leave = results.leaves.data.filter((l: any) => l.status === 'Approved');
         this.holidays = results.holidays.data;
         this.attendanceTemplateAssignment = results.attendanceTemplate.data;
-        this.shifts = results.shiftData;
-        if (this.shifts) {
-          this.fullDayDuration = this.parseHoursToMinutes(this.shifts.minHoursPerDayToGetCreditForFullDay);
-          this.halfDayDuration = this.parseHoursToMinutes(this.shifts.minHoursPerDayToGetCreditforHalfDay);
-        }
+        this.shifts = results.shiftData.data;
       },
       error: (error) => {
-        console.error('An error occurred during initial data load:', error);
         this.toast.error(this.translate.instant('common.initial_data_load_error'));
       }
     });
   }
+
 
   parseHoursToMinutes(timeString: string): number {
     if (!timeString) return 0;
@@ -112,11 +108,11 @@ export class AttendanceRecordsComponent implements OnInit {
   }
 
   getShiftDetails(): Observable<any> {
-    const defaultShiftId = '673324b399c23b1771c5c491';
-    return this.attendanceService.getShiftByUser(defaultShiftId).pipe(
-      map((res: any) => res.data)
-    );
+    let payload = { skip: '', next: '' };
+    return this.attendanceService.getShiftAssignment(payload.skip, payload.next);
   }
+
+
 
   getAttendanceTemplateAssignment(): Observable<any> {
     let payload = { skip: '', next: '' };
@@ -147,15 +143,10 @@ export class AttendanceRecordsComponent implements OnInit {
         this.leave = results.leaves.data.filter((l: any) => l.status === 'Approved');
         this.holidays = results.holidays.data;
 
-        this.shifts = results.shiftData;
-        if (this.shifts) {
-          this.fullDayDuration = this.shifts.minHoursPerDayToGetCreditForFullDay;
-          this.halfDayDuration = this.parseHoursToMinutes(this.shifts.minHoursPerDayToGetCreditforHalfDay);
-        }
+        this.shifts = results.shiftData.data;
         this.toast.success(this.translate.instant('common.data_updated_success'));
       },
       error: (error) => {
-        console.error('Error fetching data on change:', error);
         this.toast.error(this.translate.instant('common.data_update_error'));
       }
     });
@@ -213,7 +204,23 @@ export class AttendanceRecordsComponent implements OnInit {
     const assignment = this.attendanceTemplateAssignment?.find(
       (assignment: any) => assignment?.employee?._id === user?._id
     );
+
+    const shiftAssignment = this.shifts.find(
+      (shift: any) => shift?.user === user?._id
+    )
+    if (shiftAssignment) {
+      const fullDayDuration = shiftAssignment?.template?.minHoursPerDayToGetCreditForFullDay;
+      const halfDayDuration = this.parseHoursToMinutes(shiftAssignment?.template?.minHoursPerDayToGetCreditforHalfDay);
+
+      if (attendance?.duration >= fullDayDuration * 60) {
+        return 'present';
+      }
+      if (attendance?.duration >= halfDayDuration) {
+        return 'halfDay';
+      }
+    }
     const assignedTemplate = assignment?.attendanceTemplate;
+
     const weeklyOfDays = assignedTemplate?.weeklyOfDays || [];
     const dayOfWeekNumber = date.getDay();
     const dayOfWeekName = dayNames[dayOfWeekNumber];
@@ -242,13 +249,14 @@ export class AttendanceRecordsComponent implements OnInit {
     if (attendance.duration < this.fullDayDuration * 60) {
       return 'incomplete';
     }
-    if (attendance.duration === this.halfDayDuration) {
-      return 'halfday';
-    }
+    // if (attendance.duration === this.halfDayDuration) {
+    //   return 'halfday';
+    // }
     if (attendance.duration < this.halfDayDuration) {
       return 'incomplete halfday';
     }
     return 'N/A';
+
   }
 
   isDateOnLeave(userId: string, date: Date): boolean {
