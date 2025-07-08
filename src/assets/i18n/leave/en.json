@@ -19,7 +19,7 @@
         },
         "recordsFound": "Records Found",
         "searchPlaceholder": "Search...",
-        "addButton": "Add",
+        "addButton": "Add New",
         "downloadButton": "Download",
         "itemsPerPage": "Items per page",
         "of": "of",
@@ -210,7 +210,9 @@
             "pending": "Pending",
             "approved": "Approved",
             "rejected": "Rejected",
-            "cancelled": "Cancelled"
+            "cancelled": "Cancelled",
+            "view": "View",
+            "delete": "Delete"
         },
         "status_pending": "Level 1 Approval Pending",
         "employeeName": "Employee Name",
@@ -420,6 +422,34 @@
             "successDeleted": "Successfully Deleted!",
             "errorCannotDelete": "This leave is already being used! Leave template cannot be deleted.",
             "title": "Leave Template"
-        }
+        },
+        "selectLabel": "Select",
+        "successAssignmentDeleted": "Leave template assignment has been deleted.",
+        "errorAssignmentDeleted": "Leave template assignment has not been deleted.",
+        "templateAssignment": {
+            "title": "Leave template"
+        },
+        "successAssigned": "Leave template assinged successfully.",
+        "errorAssigned": "Leave template not assigned successfully.",
+        "successAssignmentUpdated": "Leave template updated successfully.",
+        "errorAssignmentUpdated": "Error occured in leave template assignment.",
+        "leaveassignment": {
+            "employee": "user",
+            "leaveTemplate": "leaveTemplate",
+            "primaryApprover": "primaryApprover",
+            "secondaryApprover": "secondaryApprover"
+        },
+        "leaveGrant": {
+            "employeeColName": "Employee Name",
+            "appliedOnColName": "Applied On",
+            "appliedForColName": "Applied For",
+            "usedOnColName": "Used On",
+            "commentColName": "Comment",
+            "statusColName": "Status",
+            "actionColName": "Action",
+            "leaveCreatedSuccessfully": "Leave Grant Updated Successfully.",
+            "leaveCreatedError": "A leave grant can not be updated."
+        },
+        "leaveCreatedSuccessfully": "Leave request created successfully."
     }
 }

@@ -1,4 +1,80 @@
-<div class="d-flex justify-content-between">
+<div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      {{ 'leave.addLeaveGrantTitle' | translate }}
+    </h1>
+    <button mat-icon-button (click)="closeModal()" class="me-4" aria-label="{{ 'leave.closeButtonAriaLabel' | translate }}">
+      <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<form [formGroup]="leaveGrant" (ngSubmit)="onSubmission()">
+    <div mat-dialog-content>
+        <div *ngIf="portalView != 'user'" class="row m-0">
+        <div class="form-group col-md-12">
+            <mat-form-field class="w-100">
+            <mat-label>{{ 'leave.selectEmployee' | translate }}</mat-label>
+            <mat-select name="users" multiple formControlName="users" required>
+                <mat-option *ngFor="let member of allAssignee" [value]="member.id">
+                {{ member?.firstName | titlecase }} {{ member?.lastName }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="leaveGrant.get('users')?.invalid && leaveGrant.get('users')?.touched">
+                {{ 'leave.employeeRequiredError' | translate }}
+            </mat-error>
+            </mat-form-field>
+        </div>
+        </div>
+
+        <div *ngIf="portalView === 'user' && tab === 7" class="row m-0">
+        <div class="form-group col-md-12">
+            <mat-form-field class="w-100">
+            <mat-label>{{ 'leave.selectEmployee' | translate }}</mat-label>
+            <mat-select name="users" multiple formControlName="users" required>
+                <mat-option *ngFor="let member of members" [value]="member.id">
+                {{ member?.name | titlecase }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="leaveGrant.get('users')?.invalid && leaveGrant.get('users')?.touched">
+                {{ 'leave.employeeRequiredError' | translate }}
+            </mat-error>
+            </mat-form-field>
+        </div>
+        </div>
+
+        <div class="row m-0 mt-2">
+        <div class="form-group col-md-12">
+            <mat-form-field class="w-100">
+            <mat-label>{{ 'leave.effectiveDateLabel' | translate }}</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date" aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="leaveGrant.get('date')?.invalid && leaveGrant.get('date')?.touched">
+                {{ 'leave.dateRequiredError' | translate }}
+            </mat-error>
+            </mat-form-field>
+        </div>
+        </div>
+
+        <div class="row m-0 mt-2">
+        <div class="form-group col-md-12">
+            <mat-form-field class="w-100">
+            <mat-label>{{ 'leave.comment' | translate }}</mat-label>
+            <textarea matInput formControlName="comment" rows="3" aria-label="{{ 'leave.commentAriaLabel' | translate }}"></textarea>
+            </mat-form-field>
+        </div>
+        </div>
+    </div>
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">  
+        <button mat-button type="reset" (click)="closeModal()">
+            {{ 'leave.cancel' | translate }}
+        </button>
+        <button mat-raised-button color="primary" type="submit">
+            {{ 'leave.submit' | translate }}
+        </button>
+    </div>
+</form>
+
+<!-- <div class="d-flex justify-content-between">
     <h1 class="modal-title text-muted">{{ 'leave.addLeaveGrantTitle' | translate }}</h1>
     <button type="button" data-bs-dismiss="modal" class="btn-close text-end" (click)="closeModal()" aria-label="{{ 'leave.closeButtonAriaLabel' | translate }}"></button>
 </div>
@@ -57,4 +133,4 @@
             <button mat-button class="addBtn" type="submit">{{ 'leave.submit' | translate }}</button>
         </div>
     </form>
-</div>
+</div> -->

@@ -110,7 +110,6 @@ export class OvertimeRecordsComponent {
       user: this.currentUser.id
     }
     if (this.view == 'user') {
-      console.log('User API called');
       this.attendanceService.getAttendanceOvertimeByUser(payloadForUser).subscribe((res: any) => {
         const userOvertimeMap = new Map();
 
@@ -159,7 +158,6 @@ export class OvertimeRecordsComponent {
           });
         }
         this.overtimeRecords = Array.from(userOvertimeMap.values());
-        console.log(this.overtimeRecords);
       });
     }
   }

@@ -1,35 +1,37 @@
-<div class="modal-content">
-    <div class="modal-body">
-        <div class="d-flex justify-content-between">
-            <div class="">
-                <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Rejected'">{{ 'leave.confirmReject' | translate }}</h4>
-                <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Approved'">{{ 'leave.confirmApprove' | translate }}</h4>
-                <h4 class="modal-title text-start" *ngIf="leaveService.leave.getValue().status == 'Cancelled'">{{ 'leave.confirmCancel' | translate }}</h4>
-            </div>
-            <div mat-dialog-actions>
-                <button mat-button mat-dialog-close (click)="closeModal()"><mat-icon aria-hidden="false" aria-label="{{ 'leave.closeIconLabel' | translate }}"
-                        fontIcon="close"></mat-icon></button>
-            </div>
-        </div>
-        <hr class="mt-0">
-        <div class="row" mat-dialog-content>
-            <form [formGroup]="updateLeaveReport" (ngSubmit)="updateApprovedReport()">
-                <div class="mt-3">
+<div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title [ngSwitch]="leaveService.leave.getValue().status">
+    <span *ngSwitchCase="'Rejected'">{{ 'leave.confirmReject' | translate }}</span>
+    <span *ngSwitchCase="'Approved'">{{ 'leave.confirmApprove' | translate }}</span>
+    <span *ngSwitchCase="'Cancelled'">{{ 'leave.confirmCancel' | translate }}</span>
+    <!-- <span *ngSwitchDefault>{{ 'leave.confirmCancel' | translate }}</span> -->
+    </h1>
+    <button mat-icon-button (click)="closeModal()" class="me-4">
+        <mat-icon>close</mat-icon>
+    </button>
+</div>
+
+<form [formGroup]="updateLeaveReport" (ngSubmit)="updateApprovedReport()">
+    <div mat-dialog-content>
+        <div class="row m-0">
+            <div class="form-group col-12 my-2">
+                <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.reasonLabel' | translate }}</mat-label>
-                    <textarea name="comment" [placeholder]="('leave.commentPlaceholder' | translate)" formControlName="level1Reason" cols="5"
-                        rows="3" class="form-control form-control-width ng-pristine ng-invalid ng-touched"></textarea>
-                </div>
-                <div class="d-flex justify-content-between m-3">
-                    <div>
-                        <button mat-flat-button type="button" class="mx-2" data-bs-dismiss="modal"
-                            (click)="closeModal()">{{ 'leave.no' | translate }}</button>
-                    </div>
-                    <div>
-                        <button mat-flat-button class="addBtn" type="submit" data-bs-dismiss="modal"
-                            type="submit">{{ 'leave.yes' | translate }}</button>
-                    </div>
-                </div>
-            </form>
+                    <textarea matInput formControlName="level1Reason" [placeholder]="('leave.commentPlaceholder' | translate)" rows="3"></textarea>
+                    <mat-error *ngIf="updateLeaveReport.get('level1Reason')?.invalid && (updateLeaveReport.get('level1Reason')?.touched || updateLeaveReport.get('level1Reason')?.dirty)">
+                        <span *ngIf="updateLeaveReport.get('level1Reason')?.errors?.['required']">
+                        {{ 'leave.reasonRequired' | translate }}
+                        </span>
+                    </mat-error>
+                </mat-form-field>
+            </div>
         </div>
     </div>
-</div>
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+        <button mat-flat-button type="button" (click)="closeModal()">
+            {{ 'leave.no' | translate }}
+        </button>
+        <button mat-flat-button color="primary" type="submit">
+            {{ 'leave.yes' | translate }}
+        </button>
+    </div>
+</form>

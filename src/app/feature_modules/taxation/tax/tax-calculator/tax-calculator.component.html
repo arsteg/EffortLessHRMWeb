@@ -1,19 +1,19 @@
 <mat-accordion class="example-headers-align" multi>
   <!-- Gross Salary Section -->
   <mat-expansion-panel [expanded]="true">
-    <div>
-      <hr>
-      <table>
+    <div class="table-responsive mt-4">
+      <table class="hrm-table">
         <thead>
-          <th>Regime</th>
+          <th class="py-2">Regime</th>
           <th>Annual Gross Salary</th>
         </thead>
         <tbody>
           <tr>
-           
             <td>{{ userRegime }}</td>
             <td>
-              <input type="number" class="form-control" [formControl]="grossSalaryControl" readonly>
+              <mat-form-field class="densed-field">
+                <input type="number" matInput [formControl]="grossSalaryControl" readonly>
+              </mat-form-field>
             </td>
           </tr>
         </tbody>
@@ -37,30 +37,36 @@
       <div class="p-2">
         <!-- HRA Section -->
         @if (section?.isHRA) {
-        <input type="number" class="form-control" [formControl]="hraControl" readonly>
+          <mat-form-field class="densed-field">
+            <input type="number" matInput [formControl]="hraControl" readonly>
+          </mat-form-field>
         <h4>HRA Details</h4>
-        <table class="table">
+        <table class="hrm-table">
           <thead>
-            <th>Month</th>
+            <th class="py-2">Month</th>
             <th>Verified Amount</th>
           </thead>
           <tbody>
             <tr *ngFor="let hra of getAllHraMonths(); trackBy: trackByHra; let i = index">
               <td>{{ hra.month }}</td>
               <td>
-                <input type="number" class="form-control" [formControl]="hraControls[i]">
+                <mat-form-field class="densed-field">
+                  <input type="number" matInput [formControl]="hraControls[i]">
+                </mat-form-field>
               </td>
             </tr>
           </tbody>
         </table>
         } @else {
         <!-- Non-HRA Section -->
-        <input type="number" class="form-control" [formControl]="sectionControls[section?._id]" readonly>
+         <mat-form-field class="densed-field">
+           <input type="number" matInput [formControl]="sectionControls[section?._id]" readonly>
+         </mat-form-field>
         @if (getAllComponentsForSection(section?._id)?.length) {
         <h4>Section Components</h4>
-        <table class="table">
+        <table class="hrm-table">
           <thead>
-            <th>Component Name</th>
+            <th class="py-2">Component Name</th>
             <th>Approved Amount</th>
           </thead>
           <tbody>
@@ -68,7 +74,9 @@
               <td>{{ component.componantName || 'Unnamed Component' }} <span *ngIf="component?.maximumAmount"> | Maximum
                   Amount Limit: {{component?.maximumAmount | number: '1.2-2'}}</span></td>
               <td>
-                <input type="number" class="form-control" [formControl]="componentControls[component._id]">
+                <mat-form-field class="densed-field">
+                  <input type="number" matInput [formControl]="componentControls[component._id]">
+                </mat-form-field>
               </td>
             </tr>
           </tbody>
@@ -93,21 +101,23 @@
 
 <!-- Action Buttons -->
 <div class="d-flex justify-content-between mt-2 border-top pt-2">
-  <button type="reset" mat-flat-button>Cancel</button>
-  <button type="button" class="addBtn" mat-flat-button (click)="calculateTax(); open(addModal);">Calculate</button>
+  <!-- <button type="reset" mat-flat-button>Cancel</button> -->
+  <button type="button" color="primary" mat-flat-button (click)="calculateTax(); open(addModal);">Calculate</button>
 </div>
 
 <!-- Modal for Tax Calculation -->
 <ng-template #addModal let-modal>
-  <div class="modal-header">
-    <h1 class="modal-title text-muted mb-0">Computed Amount</h1>
-    <button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-      (click)="modal.close('Escape clicked')"></button>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>Computed Amount</h1>
+    <button type="button" mat-icon-button mat-dialog-close="" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
-  <div class="modal-body">
-    <table class="table">
+
+  <div mat-dialog-content>
+    <table class="hrm-table">
       <thead>
-        <th>Section Name</th>
+        <th class="py-2">Section Name</th>
         <th>According to Old Regime</th>
       </thead>
       <tbody>

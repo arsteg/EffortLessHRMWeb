@@ -1,5 +1,4 @@
 import { Component, Input, SimpleChanges, OnInit, ChangeDetectorRef, OnDestroy, AfterViewInit } from '@angular/core';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { UserService } from 'src/app/_services/users.service';
 import { FormControl, Validators } from '@angular/forms';
@@ -8,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-tax-calculator',
@@ -49,7 +49,7 @@ export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy 
   private controlSubscriptions: Subscription[] = [];
 
   constructor(
-    private modalService: NgbModal,
+    private dialog: MatDialog,
     private userService: UserService,
     private taxService: TaxationService,
     private companyService: CompanyService,
@@ -503,23 +503,6 @@ export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
+    this.dialog.open(content, { width: '80%' })
   }
 }

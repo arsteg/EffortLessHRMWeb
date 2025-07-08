@@ -59,7 +59,7 @@ export class TaxComponentsComponent {
   fetchAndMatchTaxComponents() {
     const pagination = { skip: '', next: '' };
     this.taxService.getAllTaxComponents(pagination).subscribe((res: any) => {
-      this.taxComponents = res.data.filter(data => data.section.section === this.activeTab);
+      this.taxComponents = res.data.filter(data => data?.section?.section === this.activeTab);
       this.totalRecords = res.total;
   
       const formArray = this.fb.array(
