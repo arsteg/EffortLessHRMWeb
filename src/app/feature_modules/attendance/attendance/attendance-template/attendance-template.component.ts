@@ -64,7 +64,6 @@ export class AttendanceTemplateComponent {
   ];
 
   constructor(
-    private modalService: NgbModal,
     private dialog: MatDialog,
     private exportService: ExportService,
     private toast: ToastrService,

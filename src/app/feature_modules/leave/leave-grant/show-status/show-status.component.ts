@@ -2,13 +2,14 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { UpdateStatusComponent } from '../update-status/update-status.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ViewLeaveComponent } from '../view-leave/view-leave.component';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
 import { ExportService } from 'src/app/_services/export.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-show-status',
@@ -29,6 +30,51 @@ export class ShowStatusComponent {
   totalRecords: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  allData: any[] = [];
+  dialogRef: MatDialogRef<any> | null = null;
+
+  columns: TableColumn[] = [
+    { key: 'employeeName', name: this.translate.instant('leave.leaveGrant.employeeColName'),
+      valueFn: (row: any) => `${row?.employee?.firstName} ${row?.employee?.lastName}`
+    },
+    { key: 'appliedOn', name: this.translate.instant('leave.leaveGrant.appliedOnColName'),
+      valueFn: (row: any) => new Date(row.appliedOn).toLocaleDateString() },
+    { key: 'date', name: this.translate.instant('leave.leaveGrant.appliedForColName'),
+      valueFn: (row: any) => new Date(row.date).toLocaleDateString()
+    },
+    { key: 'usedOn', name: this.translate.instant('leave.leaveGrant.usedOnColName'),
+      valueFn: (row: any) => new Date(row.usedOn).toLocaleDateString()
+    },
+    { key: 'comment', name: this.translate.instant('leave.leaveGrant.commentColName') },
+    { key: 'status', name: this.translate.instant('leave.leaveGrant.statusColName') },
+    {
+      key: 'action',
+      name: this.translate.instant('leave.leaveGrant.actionColName'),
+      isAction: true,
+      options: [
+        { label: 'Approve', 
+          icon: 'check_circle', 
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.actionOptions.approve
+        },
+        { label: 'Reject', 
+          icon: 'person_remove', 
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.actionOptions.reject
+        },
+        { label: 'Delete', 
+          icon: 'delete', 
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.actionOptions.delete
+        },
+        { label: 'View', 
+          icon: 'visibility', 
+          visibility: ActionVisibility.LABEL,
+        hideCondition: (row: any) => !this.actionOptions.view
+       }
+      ]
+    }
+  ];
 
   constructor(
     private modalService: NgbModal,
@@ -49,16 +95,6 @@ export class ShowStatusComponent {
     this.getLeaveGrant();
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
-    this.getLeaveGrant();
-  }
-
-  onRecordsPerPageChange(recordsPerPage: number) {
-    this.recordsPerPage = recordsPerPage;
-    this.getLeaveGrant();
-  }
-
   getLeaveGrant() {
     const requestBody = {
       "skip": ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -71,6 +107,7 @@ export class ShowStatusComponent {
         if (res.status == 'success') {
           this.totalRecords = res.total;
           this.leaveGrant = res.data;
+          this.allData = res.data;
         }
       });
     }
@@ -84,6 +121,7 @@ export class ShowStatusComponent {
           if (res.status == 'success') {
             this.totalRecords = res.total;
             this.leaveGrant = res.data;
+            this.allData = res.data;
           }
         });
       }
@@ -92,7 +130,7 @@ export class ShowStatusComponent {
 
   onClose(event) {
     if (event) {
-      this.modalService.dismissAll();
+      this.dialogRef.close(true);
     }
   }
 
@@ -146,31 +184,13 @@ export class ShowStatusComponent {
     }
   }
 
-  exportToCsv() {
-    const dataToExport = this.leaveGrant.map((leave) => ({
-      Employee: this.getUser(leave.employee),
-      Applied_On: leave.appliedOn,
-      Applied_For: leave.date,
-      Used_On: leave.usedOn,
-      Comment: leave.comment,
-      Status: this.translate.instant(`leave.status.${leave.status.toLowerCase()}`)
-    }));
-    this.exportService.exportToCSV(
-      this.translate.instant('leave.csvTitle'),
-      this.translate.instant('leave.csvFileName'),
-      dataToExport
-    );
-  }
-
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
+    this.dialogRef = this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
+    });
+    this.dialogRef.afterClosed().subscribe(result => {
+    });
   }
 
   private getDismissReason(reason: any): string {
@@ -231,5 +251,73 @@ export class ShowStatusComponent {
         this.deleteLeaveGrant(id);
       }
     });
+  }
+
+  handleAction(event: any) {
+    if (event.action.label === 'Approve') {
+      this.openStatusModal(event.row, 'Approved');
+    } else if (event.action.label === 'Reject') {
+      this.openStatusModal(event.row, 'Rejected');
+    } else if (event.action.label === 'Delete') {
+      this.deleteDialog(event.row._id);
+    } else if (event.action.label === 'View') {
+      this.openSecondModal(event.row);
+    }
+  }
+
+  onPageChange(event: any) {
+    this.recordsPerPage = event.pageSize;
+    this.currentPage = event.pageIndex + 1;
+    this.getLeaveGrant();
+  }
+
+ onSortChange(event: any) {
+    const sorted = this.allData.slice().sort((a: any, b: any) => {
+      var valueA = '';
+      var valueB = '';
+      
+      if (event.active === 'employee' || event.active === 'employeeName') {
+        valueA = `${a.employee.firstName || ''} ${a.employee.lastName || ''}`.toLowerCase();
+        valueB = `${b.employee.firstName || ''} ${b.employee.lastName || ''}`.toLowerCase();
+      } else {
+        valueA = this.getNestedValue(a, event.active);
+        valueB = this.getNestedValue(b, event.active);
+      }
+
+      // Handle nulls and undefined
+      valueA = valueA ?? '';
+      valueB = valueB ?? '';
+
+      if (valueA < valueB) return event.direction === 'asc' ? -1 : 1;
+      if (valueA > valueB) return event.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    this.leaveGrant = sorted;
+  }
+
+  private getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((o, key) => (o ? o[key] : undefined), obj);
+  }
+
+  onSearchChange(search: string) {
+    const lowerSearch = search.toLowerCase();
+
+    const data = this.allData?.filter(row => {
+      const valuesToSearch = [
+        `${row?.employee?.firstName} ${row?.employee?.lastName}`,
+        row?.appliedOn,
+        row?.usedOn,
+        row?.date,
+        row?.comment,
+        row?.status
+      ];
+
+      return valuesToSearch.some(value =>
+        value?.toString().toLowerCase().includes(lowerSearch)
+      );
+    });
+
+    this.leaveGrant = data;
   }
 }

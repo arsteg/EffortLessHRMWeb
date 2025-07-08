@@ -51,9 +51,6 @@
           <mat-icon class="absentIcon">clear</mat-icon>Absent
         </div>
         <div class="menu-item d-flex align-items-center me-3" role="button">
-          <mat-icon class="in-outIcon">compare_arrows</mat-icon>In/Out
-        </div>
-        <div class="menu-item d-flex align-items-center me-3" role="button">
           <mat-icon class="incompleteIcon">update</mat-icon>Incomplete Record
         </div>
         <div class="menu-item d-flex align-items-center me-3" role="button">
@@ -102,7 +99,7 @@
                   </span>
 
                   <button *ngSwitchCase="'weeklyOff'" class="rounded weekly-off" mat-flat-button type="button">
-                    Weekly Off
+                   <mat-icon class="weeklyOffIcon">event</mat-icon>
                   </button>
 
                   <span *ngSwitchCase="'halfday'">
@@ -115,7 +112,7 @@
 
                   <button *ngSwitchCase="'notApplicable'" class="rounded not-applicable" mat-flat-button
                     type="button">
-                    N/A
+                    
                   </button>
 
                   <span *ngSwitchCase="'incomplete'">

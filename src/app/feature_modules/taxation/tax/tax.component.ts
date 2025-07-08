@@ -1,12 +1,12 @@
 import { Component, ComponentFactoryResolver, EventEmitter, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { TaxCalculatorComponent } from './tax-calculator/tax-calculator.component';
 import { UserService } from 'src/app/_services/users.service';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-tax',
@@ -45,10 +45,11 @@ export class TaxComponent {
   columns: TableColumn[] = [
     { key: 'financialYear', name: 'Financial Year' },
   ]
+  dialogRef: MatDialogRef<any>;
 
   constructor(
     private userService: UserService,
-    private modalService: NgbModal,
+    private dialog: MatDialog,
     private fb: FormBuilder,
     private taxService: TaxationService,
     private toastr: ToastrService
@@ -250,21 +251,9 @@ export class TaxComponent {
     return allSections;
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef = this.dialog.open(content, {
+      width: '500px',
     });
   }
 
@@ -280,7 +269,7 @@ export class TaxComponent {
         this.taxService.addIncomeTax(payload).subscribe((res: any) => {
             this.taxDeclarations.push(res.data);
             this.toastr.success('Tax Declaration Added Successfully');
-            this.modalService.dismissAll();
+            this.dialogRef.close();
           },
           (err) => {
             console.error('Error saving tax declaration:', err);
@@ -289,7 +278,7 @@ export class TaxComponent {
         );
       } else if (res.data[0].taxRegime === 'New Regime') {
         this.toastr.error('Tax Declaration is not allowed in New Regime');
-        this.modalService.dismissAll();
+        this.dialogRef.close();
       }
     });
   }

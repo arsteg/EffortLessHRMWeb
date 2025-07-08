@@ -91,20 +91,25 @@
                                     </td>
                                     <td width="100px">
                                         <ng-container *ngIf="editingComponent === component; else showEdit">
-                                            <mat-icon (click)="saveEditing('component', component)"
-                                                style="cursor: pointer; margin-right: 10px;" class="text-success">
-                                                check
-                                            </mat-icon>
-                                            <mat-icon (click)="cancelEditing('component')" class="text-danger"
-                                                style="cursor: pointer;">
-                                                cancel
-                                            </mat-icon>
+                                            <button mat-icon-button (click)="saveEditing('component', component)"
+                                                class="success-btn">
+                                                <mat-icon>
+                                                    check
+                                                </mat-icon>
+                                            </button>
+                                            <button mat-icon-button (click)="cancelEditing('component')"
+                                                class="delete-btn">
+                                                <mat-icon>
+                                                    close
+                                                </mat-icon>
+                                            </button>
                                         </ng-container>
                                         <ng-template #showEdit>
-                                            <mat-icon (click)="startEditing('component', component)"
-                                                style="cursor: pointer;">
-                                                edit
-                                            </mat-icon>
+                                            <button mat-icon-button (click)="startEditing('component', component)">
+                                                <mat-icon>
+                                                    edit
+                                                </mat-icon>
+                                            </button>
                                         </ng-template>
                                     </td>
                                 </tr>
@@ -189,18 +194,25 @@
                                         </td>
                                         <td>
                                             <ng-container *ngIf="editingHRA === hra; else showEditHRA">
-                                                <mat-icon (click)="saveEditing('hra', hra)"
-                                                    style="cursor: pointer; margin-right: 10px;" class="text-success">
-                                                    check
-                                                </mat-icon>
-                                                <mat-icon (click)="cancelEditing('hra')" style="cursor: pointer;" class="text-danger">
-                                                    cancel
-                                                </mat-icon>
+                                                <button mat-icon-button (click)="saveEditing('hra', hra)"
+                                                    class="success-btn">
+                                                    <mat-icon>
+                                                        check
+                                                    </mat-icon>
+                                                </button>
+                                                <button mat-icon-button (click)="cancelEditing('hra')"
+                                                    class="delete-btn">
+                                                    <mat-icon>
+                                                        close
+                                                    </mat-icon>
+                                                </button>
                                             </ng-container>
                                             <ng-template #showEditHRA>
-                                                <mat-icon (click)="startEditing('hra', hra)" style="cursor: pointer;">
-                                                    edit
-                                                </mat-icon>
+                                                <button mat-icon-button (click)="startEditing('hra', hra)">
+                                                    <mat-icon>
+                                                        edit
+                                                    </mat-icon>
+                                                </button>
                                             </ng-template>
                                         </td>
                                     </tr>

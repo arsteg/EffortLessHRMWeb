@@ -1,4 +1,20 @@
-<div class="bg-white py-2 px-0 tableContainer">
+<div class="d-none d-md-block">
+  <div class="d-flex justify-content-end end-0">
+    <button mat-flat-button color="primary" (click)="open(addModal)">{{ 'leave.addButton' | translate }}</button>
+</div>
+<hrm-table 
+    [data]="leaveGrant" 
+    [isServerSide]="true" 
+    [columns]="columns" 
+    [showExport]="'csv'"
+    [showSearch]="true" 
+    [totalItems]="totalRecords" 
+    (actionClicked)="handleAction($event)"
+    (pageChanged)="onPageChange($event)" 
+    (sortChanged)="onSortChange($event)"
+    (searchChanged)="onSearchChange($event)">
+</hrm-table>
+<!-- <div class="bg-white py-2 px-0 tableContainer">
     <div class="d-flex justify-content-between align-items-center mb-2 px-3">
         <p class="mb-0">({{leaveGrant?.length}}) {{ 'leave.recordsFound' | translate }}</p>
         <div class="d-flex align-items-center">
@@ -84,7 +100,7 @@
             </tr>
         </tbody>
     </table>
-</div>
+</div> -->
 
 <ng-template #addModal let-modal>
     <app-add-leave [tab]="tab" (close)="onClose($event)"

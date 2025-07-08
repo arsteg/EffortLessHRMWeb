@@ -1,34 +1,39 @@
-<div class="modal-body">
-    <div class="d-flex justify-content-between">
-        <div class="">
-            <h1 mat-dialog-title>{{ 'leave.grantLeaveDetailsTitle' | translate }}</h1>
+<div class="d-flex align-items-center justify-content-between">
+<h1 mat-dialog-title>
+    {{ 'leave.grantLeaveDetailsTitle' | translate }}
+</h1>
+<button mat-icon-button mat-dialog-close class="me-4">
+    <mat-icon>close</mat-icon>
+</button>
+</div>
+
+<div mat-dialog-content>
+<div class="row m-0">
+    <mat-card>
+    <mat-card-content>
+        <div class="row">
+            <div class="col-6 font-weight-bold">{{ 'leave._status' | translate }}</div>
+            <div class="col-6">{{ leaveService?.leave?.getValue()?.status || 'N/A' }}</div>
         </div>
-        <div mat-dialog-actions>
-            <button mat-button mat-dialog-close><mat-icon aria-hidden="false" aria-label="{{ 'leave.closeIconLabel' | translate }}"
-                    fontIcon="close"></mat-icon></button>
+        <div class="row mt-2">
+            <div class="col-6 font-weight-bold">{{ 'leave.appliedOn' | translate }}</div>
+            <div class="col-6">{{ leaveService?.leave?.getValue()?.appliedOn || 'N/A' }}</div>
         </div>
-    </div>
-    <hr class="mt-0">
-    <div class="row" mat-dialog-content>
-        <div class="tableContainer">
-            <table>
-                <tr>
-                    <th class="w-50">{{ 'leave._status' | translate }}</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.status}}</td>
-                </tr>
-                <tr>
-                    <th class="w-50">{{ 'leave.appliedOn' | translate }}</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.appliedOn}}</td>
-                </tr>
-                <tr>
-                    <th class="w-50">{{ 'leave.appliedFor' | translate }}</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.usedOn}}</td>
-                </tr>
-                <tr>
-                    <th class="w-50">{{ 'leave.comment' | translate }}</th>
-                    <td>{{this.leaveService?.leave?.getValue()?.comment}}</td>
-                </tr>
-            </table>
+        <div class="row mt-2">
+            <div class="col-6 font-weight-bold">{{ 'leave.appliedFor' | translate }}</div>
+            <div class="col-6">{{ leaveService?.leave?.getValue()?.usedOn || 'N/A' }}</div>
         </div>
-    </div>
+        <div class="row mt-2">
+            <div class="col-6 font-weight-bold">{{ 'leave.comment' | translate }}</div>
+            <div class="col-6">{{ leaveService?.leave?.getValue()?.comment || 'N/A' }}</div>
+        </div>
+    </mat-card-content>
+    </mat-card>
+</div>
+</div>
+
+<div mat-dialog-actions class="d-flex align-items-center justify-content-end">
+    <button mat-flat-button mat-dialog-close>
+        {{ 'leave.close' | translate }}
+    </button>
 </div>

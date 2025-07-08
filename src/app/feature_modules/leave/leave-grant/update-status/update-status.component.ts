@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { LeaveService } from 'src/app/_services/leave.service';
 
@@ -17,6 +18,7 @@ export class UpdateStatusComponent {
   constructor(public leaveService: LeaveService,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<UpdateStatusComponent>,
+    private translate: TranslateService,
     private toast: ToastrService) {
     this.updateLeaveReport = this.fb.group({
       user: [''],
@@ -31,6 +33,12 @@ export class UpdateStatusComponent {
   ngOnInit() { }
 
   updateApprovedReport() {
+    this.updateLeaveReport.markAllAsTouched();
+    if (this.updateLeaveReport.invalid) {
+      this.toast.error(this.translate.instant('leave.formInvalidError'));
+      return;
+    }
+
     this.leaveUpdateStatus = this.leaveService.leave.getValue();
     let id = this.leaveService.leave.getValue()._id;
     let payload = {
@@ -42,12 +50,11 @@ export class UpdateStatusComponent {
       comment: this.leaveUpdateStatus.comment
     }
     this.leaveService.updateLeaveGrant(id, payload).subscribe((res: any) => {
-      this.toast.success('Leave Grant Updated Successfully');
+      this.toast.success(this.translate.instant('leave.leaveGrant.leaveCreatedSuccessfully'));
       this.leaveGrantRefreshed.emit();
       this.dialogRef.close();
-
     },
-    (err: any) => this.toast.error('A leave grant can not be updated') );
+    (err: any) => this.toast.error(err || this.translate.instant('leave.leaveGrant.leaveCreatedError')) );
     this.leaveGrantRefreshed.emit();
   }
 

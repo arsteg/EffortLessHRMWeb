@@ -1,54 +1,69 @@
 <div>
-    <small>For the Metro City Max Amount would be {{metroDeclaredRent}}<span class="text-danger">*</span></small><br>
-    <small>For the Non-Metro City Max Amount would be {{nonMetroDeclaredRent}}<span class="text-danger">*</span></small>
-
-    <form class="d-flex justify-content-between p-2" [formGroup]="formGroup" (ngSubmit)="onSubmission()">
-        <div class="form-group">
-            <select id="" class="mx-2 form-control" placeholder="City Type" formControlName="cityType">
-                <option value="" [disabled] [selected]>Select City Type -</option>
-                <option value="Metro">Metro</option>
-                <option value="Non-Metro">Non-Metro</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <input type="number" class="form-control" placeholder="Per Month Rent" formControlName="rentDeclared">
-            <small *ngIf="
-              formGroup.get('rentDeclared')?.touched &&
-              formGroup.get('rentDeclared')?.hasError('exceedLimit')
-            " class="error-message">
-                You cannot declare rent more than
-                {{ formGroup.get('cityType')?.value === 'Metro' ? metroDeclaredRent : nonMetroDeclaredRent | number:
-                '1.2-2' }}
-                for the selected city type.
-            </small>
-        </div>
-
-        <div class="form-group">
-            <input type="text" class="form-control" placeholder="Landlord Name" formControlName="landlordName">
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" placeholder="Landlord PAN Number" formControlName="landlordPan"
-                (input)="convertToUppercase()">
-            <div *ngIf="(formGroup.get('landlordPan')?.touched || formGroup.get('landlordPan')?.dirty) && formGroup.get('landlordPan')?.invalid"
-                class="error-message">
-                Please enter a valid PAN number (e.g., ABCDE1234F)
+    <div class="border rounded p-3">
+        <form class="d-flex flex-row flex-wrap gap-2" [formGroup]="formGroup" (ngSubmit)="onSubmission()">
+            <div>
+                <mat-form-field>
+                    <mat-select placeholder="City Type" formControlName="cityType">
+                        <mat-option value="" [disabled] [selected]>Select City Type -</mat-option>
+                        <mat-option value="Metro">Metro</mat-option>
+                        <mat-option value="Non-Metro">Non-Metro</mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" placeholder="Landlord Address" formControlName="landlordAddress">
-        </div>
-        <button mat-flat-button color="accent"
-            type="submit">Apply&nbsp;to&nbsp;All</button>
 
-    </form>
-    <form [formGroup]="formGroup">
-        <table>
+            <div>
+                <mat-form-field>
+                    <input type="number" matInput placeholder="Per Month Rent" formControlName="rentDeclared">
+                    <mat-error
+                        *ngIf="formGroup.get('rentDeclared')?.touched && formGroup.get('rentDeclared')?.hasError('exceedLimit')">
+                        You cannot declare rent more than
+                        {{ formGroup.get('cityType')?.value === 'Metro' ? metroDeclaredRent : nonMetroDeclaredRent |
+                        number:
+                        '1.2-2' }}
+                        for the selected city type.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Landlord Name" formControlName="landlordName">
+                </mat-form-field>
+
+            </div>
+            <div>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Landlord PAN Number" formControlName="landlordPan"
+                        (input)="convertToUppercase()">
+                    <mat-error
+                        *ngIf="(formGroup.get('landlordPan')?.touched || formGroup.get('landlordPan')?.dirty) && formGroup.get('landlordPan')?.invalid">
+                        Please enter a valid PAN number (e.g., ABCDE1234F)
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div>
+                <mat-form-field>
+                    <input type="text" matInput placeholder="Landlord Address" formControlName="landlordAddress">
+                </mat-form-field>
+            </div>
+
+            <div class="ml-auto">
+                <button mat-flat-button color="primary" type="submit">Apply to All</button>
+            </div>
+
+        </form>
+        <small>For the Metro City Max Amount would be {{metroDeclaredRent}}<span class="text-danger">*</span></small> <br/>
+        <small>For the Non-Metro City Max Amount would be {{nonMetroDeclaredRent}}<span
+                class="text-danger">*</span></small>
+    </div>
+    <form [formGroup]="formGroup" class="table-responsive">
+        <table class="hrm-table mt-2">
             <thead>
                 <th>Month</th>
                 <th>Metro</th>
                 <th>Rent Declared</th>
-                <th>Verified Amount(In Rs.)</th>
+                <th>Verified Amount (In Rs.)</th>
                 <th>Landlord Name</th>
                 <th>Landlord PAN</th>
                 <th>Landlord Address</th>
@@ -59,60 +74,70 @@
             <tbody formArrayName="employeeIncomeTaxDeclarationHRA">
                 <tr *ngFor="let group of formGroup?.get('employeeIncomeTaxDeclarationHRA')['controls'];  let i = index"
                     [formGroupName]="i">
-                    <td>
-                        <div class="month">
+                    <td class="align-top">
+                        <div class="month  pt-2">
                             {{ getMonthsArray()[i] }}
                         </div>
                     </td>
 
-                    <td>
-                        <select id="" class="form-control" formControlName="cityType"
-                            [readonly]="!group.get('isEditable')?.value">
-                            <option value="" disabled selected>City Type --</option>
-                            <option value="Metro">Metro</option>
-                            <option value="Non-Metro">Non-Metro</option>
-                        </select>
+                    <td style="max-width: 135px;">
+                            <mat-form-field class="densed-field w-100">
+                                <mat-select formControlName="cityType" [readonly]="!group.get('isEditable')?.value">
+                                    <mat-option value="" disabled selected>City Type --</mat-option>
+                                    <mat-option value="Metro">Metro</mat-option>
+                                    <mat-option value="Non-Metro">Non-Metro</mat-option>
+                                </mat-select>
+                            </mat-form-field>
                     </td>
 
-                    <td>
-                        <input type="number" class="form-control w-75" formControlName="rentDeclared"
-                            [readonly]="!group.get('isEditable')?.value" />
-                        <small *ngIf="
+                    <td style="max-width: 135px;">
+                        <mat-form-field class="densed-field w-100">
+                            <input type="number" matInput formControlName="rentDeclared"
+                                [readonly]="!group.get('isEditable')?.value" />
+                            <mat-error *ngIf="
                             group.get('rentDeclared')?.touched &&
-                            group.get('rentDeclared')?.hasError('exceedLimit')
-                          " class="error-message">
-                            You cannot declare rent more than
-                            {{ group.get('cityType')?.value === 'Metro' ? metroDeclaredRent : nonMetroDeclaredRent |
-                            number: '1.2-2' }}
-                            for the selected city type.
-                        </small>
+                            group.get('rentDeclared')?.hasError('exceedLimit')">
+                                You cannot declare rent more than
+                                {{ group.get('cityType')?.value === 'Metro' ? metroDeclaredRent : nonMetroDeclaredRent |
+                                number: '1.2-2' }}
+                                for the selected city type.
+                            </mat-error>
+                        </mat-form-field>
                     </td>
-                    <td><input type="number" class="form-control w-75" formControlName="verifiedAmount"
-                            [readonly]="!group.get('isEditable')?.value" /></td>
-
-                    <td>
-                        <input type="text" class="form-control" formControlName="landlordName"
-                            [readonly]="!group.get('isEditable')?.value" />
+                    <td style="max-width: 100px;">
+                        <mat-form-field class="densed-field w-100">
+                            <input type="number" matInput formControlName="verifiedAmount"
+                                [readonly]="!group.get('isEditable')?.value" />
+                        </mat-form-field>
                     </td>
-                    <td>
-                        <input type="text" class="form-control w-75" formControlName="landlordPan"
-                            [readonly]="!group.get('isEditable')?.value" (input)="convertToUppercaseSelectedPAN(i)" />
-                        <small *ngIf="group.get('landlordPan')?.dirty && group.get('landlordPan')?.invalid"
-                            class="error-message">
-                            Please enter a valid PAN number (e.g., ABCDE1234F)
-                        </small>
+                    <td style="max-width: 135px;">
+                        <mat-form-field class="densed-field w-100">
+                            <input type="text" matInput formControlName="landlordName"
+                                [readonly]="!group.get('isEditable')?.value" />
+                        </mat-form-field>
                     </td>
-                    <td>
-                        <input type="text" class="form-control" formControlName="landlordAddress"
-                            [readonly]="!group.get('isEditable')?.value" />
+                    <td style="max-width: 135px;">
+                        <mat-form-field class="densed-field w-100">
+                            <input type="text" matInput formControlName="landlordPan"
+                                [readonly]="!group.get('isEditable')?.value" (input)="convertToUppercaseSelectedPAN(i)" />
+                            <mat-error *ngIf="group.get('landlordPan')?.dirty && group.get('landlordPan')?.invalid">
+                                Please enter a valid PAN number (e.g., ABCDE1234F)
+                            </mat-error>
+                        </mat-form-field>
+                    </td>
+                    <td style="max-width: 135px;">
+                        <mat-form-field class="densed-field w-100">
+                            <input type="text" matInput formControlName="landlordAddress"
+                                [readonly]="!group.get('isEditable')?.value" />
+                        </mat-form-field>
                     </td>
                     <td>
                         <ng-container [ngSwitch]="group.get('approvalStatus')?.value">
-                            <mat-icon *ngSwitchCase="'Pending'" color="warn" matTooltip="Pending"
+                            <mat-icon *ngSwitchCase="'Pending'" color="primary" matTooltip="Pending"
                                 matTooltipPosition="below">hourglass_empty</mat-icon>
-                            <mat-icon *ngSwitchCase="'Approved'" color="primary" matTooltip="Approved"
+                            <mat-icon *ngSwitchCase="'Approved'" color="accent" matTooltip="Approved"
                                 matTooltipPosition="below">check_circle</mat-icon>
-                            <mat-icon *ngSwitchCase="'Rejected'" color="accent" matTooltip="Rejected"
+                            <mat-icon *ngSwitchCase="'Rejected'" color="warn" matTooltip="Rejected"
                                 matTooltipPosition="below">cancel</mat-icon>
                             <span *ngSwitchDefault>{{ group.get('approvalStatus')?.value }}</span>
                         </ng-container>
@@ -131,16 +156,18 @@
                                             {{ attachment.get('attachmentName')?.value || 'Unnamed Attachment' }}</a>
                                     </span>
                                     <ng-container *ngIf="group.get('isEditable')?.value">
-                                        <i class="bi bi-x-circle text-danger ms-2" matTooltip="Remove Attachment"
+                                        <mat-icon matTooltip="Remove Attachment"
                                             matTooltipPosition="below" style="cursor: pointer;"
-                                            (click)="removeAttachment(i, j)"></i>
+                                            (click)="removeAttachment(i, j)">
+                                            cancel
+                                        </mat-icon>
                                     </ng-container>
                                 </div>
                             </ng-container>
                             <ng-template #noAttachment>
                                 <label for="attachment-{{ i }}" *ngIf="group.get('isEditable')?.value">
-                                    <i class="bi bi-paperclip" matTooltip="Add Attachment File"
-                                        matTooltipPosition="below"></i>
+                                    <mat-icon matTooltip="Add Attachment File"
+                                        matTooltipPosition="below">attachment_file</mat-icon>
                                 </label>
                             </ng-template>
                             <input type="file" id="attachment-{{ i }}" [readonly]="!group.get('isEditable')?.value"
@@ -149,15 +176,20 @@
                     </td>
                     <td>
                         @if(!group.get('isEditable')?.value){
-                        <button class="actions" mat-mini-fab matTooltip="Edit" matTooltipPosition="before" type="button"
-                            (click)="selectRow(i)"> <i class="bi bi-pencil"></i></button>
+                        <button mat-icon-button matTooltip="Edit" matTooltipPosition="before" type="button"
+                            (click)="selectRow(i)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
                         } @else {
                         <div class="d-flex">
-                            <button class="actions" mat-mini-fab matTooltip="Update" matTooltipPosition="below"
-                                type="button" (click)="onSubmissionRowData(i)"> <i
-                                    class="bi bi-check"></i></button>
-                            <button class="actions" mat-mini-fab matTooltip="Close" matTooltipPosition="below"
-                                type="button" (click)="cancelEditing(i)"> <i class="bi bi-x"></i></button>
+                            <button mat-icon-button matTooltip="Update" matTooltipPosition="below" type="button"
+                                (click)="onSubmissionRowData(i)" class="success-btn">
+                                <mat-icon>check</mat-icon>
+                            </button>
+                            <button mat-icon-button matTooltip="Cancel" matTooltipPosition="below" type="button"
+                                (click)="cancelEditing(i)" class="delete-btn">
+                                <mat-icon>close</mat-icon>
+                            </button>
                         </div>
                         }
                     </td>
