@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { LeaveService } from 'src/app/_services/leave.service';
 
 @Component({
   selector: 'app-pending-application',
@@ -15,9 +17,22 @@ export class PendingApplicationComponent {
     view: true
   };
 
- @Input() selectedTab: number;
+ //@Input() selectedTab: number;
+ selectedTab: number = Number(localStorage.getItem('leaveSelectedTab')) || 1;
+  private tabSubscription: Subscription;
+
+  constructor(private leaveService: LeaveService){}
 
  ngOnInit(){
+  this.tabSubscription = this.leaveService.getSelectedTab().subscribe(tab => {
+      this.selectedTab = tab;
+  });  
  }
+
+ ngOnDestroy(): void {
+    if (this.tabSubscription) {
+      this.tabSubscription.unsubscribe();
+    }
+  }
 
 }

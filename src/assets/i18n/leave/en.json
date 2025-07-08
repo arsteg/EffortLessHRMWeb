@@ -396,6 +396,7 @@
         "confirmCancel": "Are you sure you want to cancel this request?",
         "commentPlaceholder": "Leave a reason",
         "grantLeaveDetailsTitle": "Show Grant Leave Details",
+        "showLeaveApplicationDetailsTitle": "Show leave details",
         "appliedOn": "Applied On",
         "appliedFor": "Applied For",
         "usedOn": "Used On",
