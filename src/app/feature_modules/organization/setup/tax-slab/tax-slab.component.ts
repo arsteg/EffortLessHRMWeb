@@ -2,10 +2,12 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-tax-slab',
@@ -26,6 +28,7 @@ export class TaxSlabComponent {
   currentPage: number = 1;
   fiscalYears: string[] = [];
   selectedCycle: string;
+  isSubmitting: boolean = false;
   columns: TableColumn[] = [
     {key: 'IncomeTaxSlabs', name:'Income Tax Slabs'},
     {key: 'minAmount', name:'Minimum'},
@@ -44,6 +47,7 @@ export class TaxSlabComponent {
     private companyService: CompanyService,
     private modalService: NgbModal,
     private fb: FormBuilder,
+    private translate: TranslateService,
     private dialog: MatDialog,
   ) {
     this.taxSlabForm = this.fb.group({
@@ -155,54 +159,70 @@ export class TaxSlabComponent {
   }
 
   onSubmission() {
+    this.isSubmitting = true;
+    this.taxSlabForm.markAllAsTouched();
+
+    // Prevent submission if form is invalid
+    if (this.taxSlabForm.invalid) {
+      this.isSubmitting = false;
+      return;
+    }
     if (!this.isEdit) {
       this.companyService.addTaxSlab(this.taxSlabForm.value).subscribe((res: any) => {
-        this.toast.success('Income Tax Slab Created', 'Successfully!');
-        this.taxSlabForm.reset({
-          IncomeTaxSlabs: '',
-          minAmount: 0,
-          maxAmount: 0,
-          taxPercentage: 0,
-          cycle: '',
-          regime: ''
-        });
-        this.taxSlabs.push(res.data);
+        this.toast.success(this.translate.instant('organization.setup.tax_slab_added'), this.translate.instant('organization.toast.success'));
+        this.resetTaxSlabForm();this.isSubmitting = false;
+        this.getTaxSlabs();
       },
-        err => { this.toast.error('Income Tax Slab Can not be Created', 'Error!') })
+        err => { 
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('organization.setup.tax_slab_add_fail')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
+          this.isSubmitting = false;   
+         })
     }
     if (this.isEdit) {
       this.companyService.updateTaxSlab(this.selectedRecord?._id, this.taxSlabForm.value).subscribe((res: any) => {
-        const index = this.taxSlabs.findIndex((z) => z._id === this.selectedRecord._id);
-        if (index !== -1) {
-          this.taxSlabs[index] = { ...res.data };
-        }
-        this.toast.success('Income Tax Slab Updated', 'Successfully!');
-
-        this.taxSlabForm.reset({
-          IncomeTaxSlabs: '',
-          minAmount: 0,
-          maxAmount: 0,
-          taxPercentage: 0,
-          cycle: '',
-          regime: ''
-        })
+        this.getTaxSlabs();
+        this.toast.success(this.translate.instant('organization.setup.tax_slab_added'), this.translate.instant('organization.toast.success'));
+       this.resetTaxSlabForm();this.isSubmitting = false;
         this.isEdit = false;
       },
-        err => { this.toast.error('Income Tax Slab Can not be Updated', 'Error!') })
+        err => {   const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('organization.setup.tax_slab_add_fail')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
+          this.isSubmitting = false;   
+         })
     }
   }
-
+  resetTaxSlabForm(): void {
+    this.taxSlabForm.reset({
+      IncomeTaxSlabs: '',
+      minAmount: 0,
+      maxAmount: 0,
+      taxPercentage: 0,
+      cycle: '',
+      regime: ''
+    });
+  
+    this.taxSlabForm.markAsPristine();
+    this.taxSlabForm.markAsUntouched();
+  }
+  
   deleteTaxSlab(id: string) {
     this.companyService.deleteTaxSlab(id).subscribe((res: any) => {
-      const index = this.taxSlabs.findIndex(temp => temp._id === id);
-      if (index !== -1) {
-        this.taxSlabs.splice(index, 1);
-      }
-      this.toast.success('Successfully Deleted!!!', 'Income Tax Slab')
+     this.taxSlabs();
+      this.toast.success(this.translate.instant('organization.setup.deleted'), this.translate.instant('organization.toast.success'));
+     
     },
-      (err) => {
-        this.toast.error('This Income Tax Slab Can not be deleted!', 'Error')
-      })
+    (err) => {
+        const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('organization.setup.delete_fail')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
+        
+    })
   }
 
   deleteDialog(id: string): void {
@@ -214,7 +234,10 @@ export class TaxSlabComponent {
         this.deleteTaxSlab(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
       }
     });
   }

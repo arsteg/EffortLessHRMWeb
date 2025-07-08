@@ -22,7 +22,7 @@
 
         <div class="form-group mt-2">
             <label for="">Enter Designation<span class="text-danger">*</span></label>
-            <input type="text" class="form-control" placeholder="Enter Department Name" formControlName="designation">
+            <input type="text" class="form-control" placeholder="Enter Designation Name" formControlName="designation">
             <div *ngIf="designationForm.get('designation').invalid && 
             (designationForm.get('designation').dirty || designationForm.get('designation').touched)">
                 <small class="text-danger">Designation is required.</small>
@@ -31,7 +31,7 @@
 
         <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
             <button mat-flat-button type="button" (click)="clearselectedRequest()">Cancel</button>
-            <button mat-flat-button class="addBtn" type="submit" [disabled]="!designationForm.valid">Submit</button>
+            <button mat-flat-button class="addBtn" type="submit" [disabled]="isSubmitting">Submit</button>
         </div>
     </form>
 </ng-template>

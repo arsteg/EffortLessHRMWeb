@@ -107,6 +107,12 @@
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>PAN Card</mat-label>
                             <input matInput formControlName="Pancard" placeholder="Enter PAN Card Number">
+                            <mat-error *ngIf="userForm.get('Pancard')?.hasError('required') && userForm.get('Pancard')?.touched">
+                                PAN Card Number is required.
+                              </mat-error>
+                              <mat-error *ngIf="userForm.get('Pancard')?.hasError('invalidPAN') && userForm.get('Pancard')?.touched">
+                                PAN Card Number must be 10 characters (5 letters, 4 digits, 1 letter, e.g., ABCDE1234F).
+                              </mat-error>
                         </mat-form-field>
                     </div>
 
@@ -114,6 +120,15 @@
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Aadhar Number</mat-label>
                             <input matInput formControlName="AadharNumber" placeholder="Enter Aadhar Number">
+                            <mat-error *ngIf="userForm.get('AadharNumber')?.hasError('required') && userForm.get('AadharNumber')?.touched">
+                                Aadhar Number is required.
+                              </mat-error>
+                              <mat-error *ngIf="userForm.get('AadharNumber')?.hasError('digitsOnly') && userForm.get('AadharNumber')?.touched">
+                                Aadhar Number must contain only digits.
+                              </mat-error>
+                              <mat-error *ngIf="userForm.get('AadharNumber')?.hasError('invalidAadhar') && userForm.get('AadharNumber')?.touched">
+                                Aadhar Number must be exactly 12 digits.
+                              </mat-error>
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-6">
@@ -225,50 +240,88 @@
 
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Emergency Contact Number</mat-label>
-                            <input matInput type="number" formControlName="emergancyContactNumber"
-                                placeholder="Enter Contact Number">
-                        </mat-form-field>
+                            <input matInput type="number" min="0" pattern="[0-9]*" formControlName="emergancyContactNumber" placeholder="Enter Contact Number">
+                            <mat-error *ngIf="userForm.get('emergancyContactNumber')?.hasError('digitsOnly') && userForm.get('emergancyContactNumber')?.touched">
+                              Emergency Contact Number must contain only digits.
+                            </mat-error>                           
+                            <mat-error *ngIf="userForm.get('emergancyContactNumber')?.hasError('invalidLength') && userForm.get('emergancyContactNumber')?.touched">
+                                Emergency Contact Number must be between 10 and 15 digits.
+                            </mat-error>
+                          </mat-form-field>
                     </div>
                 </mat-expansion-panel>
 
                 <!-- Bank Details -->
                 <mat-expansion-panel>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            Bank Details
-                        </mat-panel-title>
+                      <mat-panel-title>
+                        Bank Details
+                      </mat-panel-title>
                     </mat-expansion-panel-header>
                     <div class="row">
-                        <mat-form-field appearance="outline" class="col-md-6">
-                            <mat-label>Bank Name</mat-label>
-                            <input matInput formControlName="BankName" placeholder="Enter Bank Name">
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="col-md-6">
-                            <mat-label>Bank Account Number</mat-label>
-                            <input matInput formControlName="BankAccountNumber" placeholder="Enter Account Number">
-                        </mat-form-field>
+                      <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>Bank Name</mat-label>
+                        <input matInput formControlName="BankName" placeholder="Enter Bank Name">
+                        <mat-error *ngIf="userForm.get('BankName')?.hasError('required') && userForm.get('BankName')?.touched">
+                          Bank Name is required.
+                        </mat-error>
+                        <mat-error *ngIf="userForm.get('BankName')?.hasError('invalidBankName') && userForm.get('BankName')?.touched">
+                          Bank Name must contain only letters, spaces, or allowed characters (&, -, .).
+                        </mat-error>
+                      </mat-form-field>
+          
+                      <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>Bank Account Number</mat-label>
+                        <input matInput type="number" min="0" pattern="[0-9]*" formControlName="BankAccountNumber" placeholder="Enter Account Number">
+                        <mat-error *ngIf="userForm.get('BankAccountNumber')?.hasError('required') && userForm.get('BankAccountNumber')?.touched">
+                          Bank Account Number is required.
+                        </mat-error>
+                        <mat-error *ngIf="userForm.get('BankAccountNumber')?.hasError('digitsOnly') && userForm.get('BankAccountNumber')?.touched">
+                          Bank Account Number must contain only digits.
+                        </mat-error>                       
+                        <mat-error *ngIf="userForm.get('BankAccountNumber')?.hasError('invalidLength') && userForm.get('BankAccountNumber')?.touched">
+                            Bank Account Number must be between 9 and 18 digits.
+                        </mat-error>
+                      </mat-form-field>
                     </div>
-
+          
                     <div class="row">
-                        <mat-form-field appearance="outline" class="col-md-6">
-                            <mat-label>Bank IFSC Code</mat-label>
-                            <input matInput formControlName="BankIFSCCode" placeholder="Enter IFSC Code">
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="col-md-6">
-                            <mat-label>Bank Branch</mat-label>
-                            <input matInput formControlName="BankBranch" placeholder="Enter Bank Branch">
-                        </mat-form-field>
+                      <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>Bank IFSC Code</mat-label>
+                        <input matInput formControlName="BankIFSCCode" placeholder="Enter IFSC Code">
+                        <mat-error *ngIf="userForm.get('BankIFSCCode')?.hasError('required') && userForm.get('BankIFSCCode')?.touched">
+                          Bank IFSC Code is required.
+                        </mat-error>
+                        <mat-error *ngIf="userForm.get('BankIFSCCode')?.hasError('invalidIFSC') && userForm.get('BankIFSCCode')?.touched">
+                          Bank IFSC Code must be 11 characters (4 letters, 0, 6 digits, e.g., SBIN0001234).
+                        </mat-error>
+                      </mat-form-field>
+          
+                      <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>Bank Branch</mat-label>
+                        <input matInput formControlName="BankBranch" placeholder="Enter Bank Branch">
+                        <mat-error *ngIf="userForm.get('BankBranch')?.hasError('required') && userForm.get('BankBranch')?.touched">
+                          Bank Branch is required.
+                        </mat-error>
+                        <mat-error *ngIf="userForm.get('BankBranch')?.hasError('invalidBankBranch') && userForm.get('BankBranch')?.touched">
+                          Bank Branch must contain only letters, spaces, or allowed characters (&, -, .).
+                        </mat-error>
+                      </mat-form-field>
                     </div>
-
+          
                     <div class="row">
-                        <mat-form-field appearance="outline" class="col-md-6">
-                            <mat-label>Bank Address</mat-label>
-                            <input matInput formControlName="BankAddress" placeholder="Enter Bank Address">
-                        </mat-form-field>
+                      <mat-form-field appearance="outline" class="col-md-6">
+                        <mat-label>Bank Address</mat-label>
+                        <input matInput formControlName="BankAddress" placeholder="Enter Bank Address">
+                        <mat-error *ngIf="userForm.get('BankAddress')?.hasError('required') && userForm.get('BankAddress')?.touched">
+                          Bank Address is required.
+                        </mat-error>
+                        <mat-error *ngIf="userForm.get('BankAddress')?.hasError('invalidBankAddress') && userForm.get('BankAddress')?.touched">
+                          Bank Address must contain only letters, numbers, spaces, or allowed characters (,.\/-).
+                        </mat-error>
+                      </mat-form-field>
                     </div>
-                </mat-expansion-panel>
+                  </mat-expansion-panel>
 
                 <!-- Extra Details -->
                 <mat-expansion-panel>

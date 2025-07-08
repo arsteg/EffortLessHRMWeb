@@ -8,6 +8,7 @@ import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { forkJoin } from 'rxjs';
 import { AuthenticationService } from 'src/app/_services/authentication.service';      
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-loans-advances',
@@ -36,6 +37,7 @@ export class UserLoansAdvancesComponent {
     private dialog: MatDialog,
     private toast: ToastrService,
     private router: Router,
+    private translate: TranslateService,
     public authService: AuthenticationService,
     private route: ActivatedRoute
   ) {
@@ -108,10 +110,14 @@ export class UserLoansAdvancesComponent {
       if (result === 'delete') {
         this.deleteLoansAdvance(id);
       } else {
-        this.toast.error('Deletion cancelled', 'Info');
+        this.toast.error(this.translate.instant('manage.users.employee-settings.failed_loan_advance_delete'));
       }
     }, err => {
-      this.toast.error('Cannot be deleted', 'Error!');
+      const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('manage.users.employee-settings.failed_loan_advance_delete')
+          ;
+         
+          this.toast.error(errorMessage, 'Error!');
     });
   }
 
@@ -119,11 +125,15 @@ export class UserLoansAdvancesComponent {
     this.userService.deleteLoansAdvances(id).subscribe(
       (res: any) => {
         this.loadRecords();
-        this.toast.success('Successfully Deleted!!!', 'Loan/Advance');
+        this.toast.success(this.translate.instant('manage.users.employee-settings.loan_advance_deleted'), this.translate.instant('common.success'))
+    
       },
       (err) => {
-        const errorMessage = err?.error?.message || err?.message || 'Something went wrong.';
-        this.toast.error(errorMessage, 'Error!');
+        const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('manage.users.employee-settings.failed_loan_advance_delete')
+          ;
+         
+          this.toast.error(errorMessage, 'Error!');
       }
     );
   }
@@ -158,12 +168,13 @@ export class UserLoansAdvancesComponent {
       const totalAmount = monthlyInstallment * noOfInstallment;
       noOfInstallment = Math.ceil(totalAmount / maxEMI);
       if (noOfInstallment > 36) {
-        this.toast.error('Cannot adjust EMI: Required installments exceed maximum of 36.', 'Error');
+         this.toast.error(this.translate.instant('manage.users.employee-settings.installments_exceed'), this.translate.instant('common.error'))
+    
         return;
       }
       this.loansAdvancesForm.get('noOfInstallment').setValue(noOfInstallment);
       this.calculateTotalAmount();
-      this.toast.warning(`Number of installments increased to ${noOfInstallment} to keep EMI affordable.`);
+      this.toast.warning(`Number of installments increased to ${noOfInstallment} to keep EMI affordable.`);       
     }
 
     this.loansAdvancesForm.get('amount').enable();
@@ -174,10 +185,13 @@ export class UserLoansAdvancesComponent {
             this.loadRecords();
             this.loansAdvancesForm.reset();
             this.dialog.closeAll();
-            this.toast.success('Successfully Added!!!', 'Loan/Advance');
+            this.toast.success(this.translate.instant('manage.users.employee-settings.loan_advance_added'), this.translate.instant('common.success'))
           },
           (err) => {
-            const errorMessage = err?.error?.message || err?.message || 'Something went wrong.';
+            const errorMessage = err?.error?.message || err?.message || err 
+            || this.translate.instant('manage.users.employee-settings.failed_loan_advance_add')
+            ;
+           
             this.toast.error(errorMessage, 'Error!');
           }
         );
@@ -188,10 +202,14 @@ export class UserLoansAdvancesComponent {
             this.isEdit = false;
             this.loansAdvancesForm.reset();
             this.dialog.closeAll();
-            this.toast.success('Successfully Updated!!!', 'Loan/Advance');
+            this.toast.success(this.translate.instant('manage.users.employee-settings.loan_advance_updated'), this.translate.instant('common.success'))
+   
           },
           (err) => {
-            const errorMessage = err?.error?.message || err?.message || 'Something went wrong.';
+            const errorMessage = err?.error?.message || err?.message || err 
+            || this.translate.instant('manage.users.employee-settings.failed_loan_advance_updated')
+            ;
+           
             this.toast.error(errorMessage, 'Error!');
           }
         );
@@ -234,7 +252,9 @@ export class UserLoansAdvancesComponent {
           this.loansAdvancesForm.setValidators(this.validateLoanConstraints(() => this.annualSalary));
           this.loansAdvancesForm.updateValueAndValidity();
         }, err => {
-          this.toast.error('Failed to load user data', 'Error!');
+        
+          this.toast.error(this.translate.instant('manage.users.employee-settings.loan_advance_load_failed'), this.translate.instant('common.error'))
+   
         });
       });
     }
@@ -253,7 +273,7 @@ export class UserLoansAdvancesComponent {
       this.totalRecords = results[0].total;
       this.loansAdvancesCategories = results[1].data;
     }, err => {
-      this.toast.error('Failed to load records', 'Error!');
+      this.toast.error(this.translate.instant('manage.users.employee-settings.loan_advance_load_failed'), this.translate.instant('common.error'))
     });
   }
 

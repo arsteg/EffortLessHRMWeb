@@ -1,26 +1,31 @@
-import { Component, ComponentFactoryResolver, inject, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, inject, OnInit, ViewChild, ViewContainerRef, OnDestroy } from '@angular/core';
 import { signup, User } from 'src/app/models/user';
-import { Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { Validators, FormGroup, FormBuilder, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { RoleService } from 'src/app/_services/role.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ActivatedRoute, NavigationEnd, Router, RouterEvent } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { TableColumn, ActionVisibility } from 'src/app/models/table-column';
 import { DatePipe } from '@angular/common';
-import { filter } from 'rxjs';
+import { filter, switchMap, map, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css'],
 })
-export class UserListComponent implements OnInit {
+export class UserListComponent implements OnInit, OnDestroy {
   private datePipe = inject(DatePipe);
+  private destroy$ = new Subject<void>();
   usersList: MatTableDataSource<any>;
   inviteUser: signup[] = [];
   searchText = '';
@@ -37,7 +42,9 @@ export class UserListComponent implements OnInit {
   userForm: FormGroup;
   roles: any;
   totalRecords: number;
-  showOffcanvas: boolean;
+  showOffcanvas: boolean = false;
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
   columns: TableColumn[] = [
     { key: 'empCode', name: 'Emp Code', valueFn: (row: any) => row.appointment[0]?.empCode },
@@ -58,21 +65,41 @@ export class UserListComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private UserService: UserService,
+    private userService: UserService,
     private fb: FormBuilder,
     private roleService: RoleService,
     private toastrrr: ToastrService,
     public commonservice: CommonService,
     private dialog: MatDialog,
-    private toast: ToastrService) {
+    private translate: TranslateService,
+    private toast: ToastrService
+  ) {
+    // Custom validators
+
+
+    const emailExistsValidator = (): AsyncValidatorFn => {
+      return (control: AbstractControl): Observable<ValidationErrors | null> => {
+        if (!control.value) return of(null);
+        return of(control.value).pipe(
+          debounceTime(500),
+          distinctUntilChanged(),
+          switchMap(email => this.userService.checkEmailExists(email)),
+          map(response => {
+          
+            return response.exists ? { emailExists: true } : null;
+          }),
+          takeUntil(this.destroy$)
+        );
+      };
+    };
 
     this.userForm = this.fb.group(
       {
         firstName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
         lastName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(8)]],
-        passwordConfirm: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email], [emailExistsValidator()]],
+        password: ['', [Validators.required, Validators.minLength(8), CustomValidators.strongPasswordValidator]],
+        passwordConfirm: ['', [Validators.required]],
         jobTitle: [''],
         phone: ['', [Validators.pattern('^[0-9]{10}$')]],
         role: ['', Validators.required],
@@ -80,16 +107,22 @@ export class UserListComponent implements OnInit {
       { validator: this.passwordMatchValidator }
     );
 
+    this.userForm.statusChanges.pipe(takeUntil(this.destroy$)).subscribe(status => {
+      console.log('Form status:', status, this.userForm.errors, this.userForm.get('email')?.errors);
+    });
+
     if (this.router.url === '/home/manage/employees') {
       this.showEmployeeDetails = false;
     } else {
       this.showEmployeeDetails = true;
     }
     this.router.events
-      .pipe(filter((event: any) => event instanceof NavigationEnd))
+      .pipe(
+        filter((event: any) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
       .subscribe((event: NavigationEnd) => {
         console.log('Navigation ended:', event.url);
-
         if (event.url === '/home/manage/employees') {
           this.showEmployeeDetails = false;
           this.fetchUsers();
@@ -104,20 +137,36 @@ export class UserListComponent implements OnInit {
     this.fetchUsers();
     this.firstLetter = this.commonservice.firstletter;
   }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   fetchUsers() {
-    this.UserService.getUserList().subscribe((result: any) => {
-      this.totalRecords = result.results;
-      this.usersList = new MatTableDataSource(result && result.data && result.data.data);
-    })
+    this.userService.getUserList().subscribe({
+      next: (result: any) => {
+        this.totalRecords = result.results;
+        this.usersList = new MatTableDataSource(result && result.data && result.data.data);
+      },
+      error: (err) => {
+      
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.users.user-list.failed_user_load')
+        ;
+       
+        this.toast.error(errorMessage, 'Error!');
+      }
+    });
   }
 
   onActionClick(event: any) {
     switch (event.action.label) {
       case 'Settings':
-        this.toggleView(event.row)
+        this.toggleView(event.row);
         break;
       case 'Delete':
-        this.deleteEmployee(event.row?._id)
+        this.deleteEmployee(event.row?._id);
         break;
     }
   }
@@ -128,103 +177,145 @@ export class UserListComponent implements OnInit {
     return password === confirmPassword ? null : { notMatching: true };
   }
 
+  togglePasswordVisibility(field: 'password' | 'passwordConfirm') {
+    if (field === 'password') {
+      this.showPassword = !this.showPassword;
+    } else {
+      this.showConfirmPassword = !this.showConfirmPassword;
+    }
+  }
+
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.usersList.data, event.previousIndex, event.currentIndex);
     this.usersList.data = [...this.usersList.data];
   }
 
   getRoleName(id) {
-    let role = this.roles.find((role) => { return role.id == id; });
-    if (role && role.Name) {
-      return role.Name
-    } else { return 'Employee' }
+    let role = this.roles.find((role) => role.id == id);
+    return role && role.Name ? role.Name : 'Employee';
   }
 
   getRoles() {
-    this.roleService.getAllRole().subscribe((res: any) => {
-      this.roles = res.data;
-    })
+    this.roleService.getAllRole().subscribe({
+      next: (res: any) => {
+        this.roles = res.data;
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.users.user-list.failed_roles_load')
+        ;
+       
+        this.toast.error(errorMessage, 'Error!');
+      }
+    });
   }
 
   addUser() {
-    if (this.userForm.valid) {
-      this.UserService.addUser(this.userForm.value).subscribe(result => {
-        const users = result['data'].User;
-        this.usersList.data = [...this.usersList.data, users];
-        this.toastrrr.success('New User Added', 'Successfully Added!');
-      }, err => {
-        this.toastrrr.error('User with this Email already Exists', 'Duplicate Email!')
-      });
-      this.userForm.reset();
-    }
-    else {
+    if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
+      this.toast.error(this.translate.instant('common.missing_required_Field'), this.translate.instant('common.validation_error')); 
+      return;
     }
+
+    const formValue = { ...this.userForm.value };
+    delete formValue.passwordConfirm; // Remove confirmPassword before sending to backend
+    this.userService.addUser(formValue).subscribe({
+      next: (result) => {
+         const users = result['data'].User;
+        this.usersList.data = [...this.usersList.data, users];
+         this.toast.success(this.translate.instant('manage.user-list.user_added'), this.translate.instant('common.success'));
+         this.userForm.reset();
+        this.showOffcanvas = false;
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.user-list.user_add_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
+       }
+    });
   }
 
   deleteUser() {
-    this.UserService.deleteUser(this.selectedUser._id)
-      .subscribe(response => {
-        this.usersList.data = this.usersList.data.filter(user => user._id !== this.selectedUser._id);
-        this.toastrrr.success('Existing User Deleted', 'Successfully Deleted!')
-      }, err => {
-        this.toastrrr.error('Can not be Deleted', 'ERROR!')
-      })
+    this.userService.deleteUser(this.selectedUser._id).subscribe({
+      next: (response) => {
+        this.usersList.data = this.usersList.data.filter((user) => user._id !== this.selectedUser._id);
+        this.toast.success(this.translate.instant('manage.user-list.user_deleted'), this.translate.instant('common.success'));
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.user-list.user_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
+        
+      }
+    });
   }
 
   toggleView(data: any) {
     this.isEdit = true;
-    this.UserService.setData(data, this.isEdit);
-
+    this.userService.setData(data, this.isEdit);
     const empCode = data.appointment[0]?.empCode;
     if (empCode) {
-      this.router.navigate([empCode, 'employee-settings', 'employee-profile'], { relativeTo: this.route, state: { data: { empName: data.firstName + ' ' + data.lastName } } });
+      this.router.navigate([empCode, 'employee-settings', 'employee-profile'], {
+        relativeTo: this.route,
+        state: { data: { empName: data.firstName + ' ' + data.lastName } },
+      });
     } else {
       console.error('empCode is not defined');
     }
-    // this.showEmployeeDetails = !this.showEmployeeDetails;
   }
-
 
   openOffcanvas(isEdit: boolean) {
     this.isEdit = isEdit;
     this.showOffcanvas = true;
+    this.userForm.reset(); // Reset form to clear previous values
   }
 
   closeOffcanvas() {
     this.showOffcanvas = false;
     this.isEdit = false;
+    this.userForm.reset();
   }
 
   deleteEmployee(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
-
     });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'delete') {
-        this.delete(id);
-      }
-      err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        if (result === 'delete') {
+          this.delete(id);
+        }
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.user-list.user_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
+      
       }
     });
   }
 
   delete(id: string) {
-    this.UserService.deleteUser(id).subscribe((res: any) => {
-      this.usersList.data = this.usersList.data.filter(user => user?._id !== id);
-      this.toast.success('Employee record has been successfully deleted.', 'Action Complete');
-    },
-      (err) => {
-        this.toast.error('This Employee record Can not be deleted.'
-          , 'Error!')
-      })
+    this.userService.deleteUser(id).subscribe({
+      next: (res: any) => {
+        this.usersList.data = this.usersList.data.filter((user) => user?._id !== id);
+        this.toast.success(this.translate.instant('manage.user-list.user_deleted'), this.translate.instant('common.success'));
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.user-list.user_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
+       
+      }
+    });
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.usersList.filter = filterValue.trim().toLowerCase();
   }
-
 }

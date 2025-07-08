@@ -1,0 +1,54 @@
+{  
+  "manage": {
+    "users": {
+    "employee-settings": {
+      "employee_profile_updated": "Employee profile updated successfully.",
+  
+      "appointment_Added": "Appointment added successfully.",
+      "appointment_updated": "Appointment updated successfully.",
+      "failed_employee_update": "Failed to update employee profile. Please check required fields.",
+      
+      "job_information_Added": "Job information added successfully.",
+      "job_information_Updated": "Job information updated successfully.",
+      "failed_job_information_add": "Failed to add job information. Please check required fields.",
+      "failed_job_information_update": "Failed to update job information. Please check required fields.",
+       "loan_advance_added": "Loan/advance added successfully.",
+      "loan_advance_updated": "Loan/advance updated successfully.",
+      "failed_loan_advance_add": "Failed to add loan/advance. Please check required fields.",
+      "failed_loan_advance_updated": "Failed to update loan/advance. Please check required fields.",
+      "loan_advance_deleted": "Loan/advance deleted successfully.",
+      "failed_loan_advance_delete": "Failed to delete loan/advance.",
+      
+      "loan_advance_load_failed": "Failed to load loan/advance data.",
+      
+      "installments_exceed": "Cannot adjust EMI: Number of installments exceeds the allowed maximum of 36."
+    }
+   },
+   "email-template":{
+    "email_template_add_fail": "Failed to add Email Template",
+  "email_template_added": "Email Template added successfully",
+  "email_template_update_fail": "Failed to update Email Template",
+  "email_template_updated": "Email Template updated successfully",
+  "email_template_delete_fail": "This Email Template cannot be deleted!",
+  "email_template_deleted": "Email Template deleted successfully" 
+   },
+   "user-list":{
+    "failed_user_load": "Failed to load user data",
+    "failed_roles_load": "Failed to load roles",
+    "user_add_fail": "Failed to add user",
+    "user_delete_fail": "Failed to delete user",
+    "user_added": "User added successfully",
+    "user_deleted": "User deleted successfully"
+   }
+  },
+  
+    "common": {
+    "warning": "Warning",
+    "success": "Success",
+    "validation_error": "Validation Error",
+    "error": "Error",
+    "missing_required_Field": "Please fill all required fields correctly."
+    
+  }
+
+}

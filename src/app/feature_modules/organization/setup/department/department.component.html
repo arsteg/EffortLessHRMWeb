@@ -43,7 +43,7 @@
 
         <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
             <button mat-flat-button type="button" (click)="clearselectedRequest()">Cancel</button>
-            <button mat-flat-button class="addBtn" type="submit" [disabled]="!departmentForm.valid">Submit</button>
+            <button mat-flat-button class="addBtn" type="submit" [disabled]="isSubmitting">Submit</button>
         </div>
 
     </form>

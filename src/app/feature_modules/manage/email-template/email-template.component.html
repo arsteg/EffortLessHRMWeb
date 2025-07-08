@@ -55,41 +55,63 @@
         </div>
         <form class="mt-4 p-3 bg-light border rounded" [formGroup]="form" (ngSubmit)="addEmail(form.value)">
           <div class="form-group row">
-            <div class="col-sm-0">
-              Name:
-            </div>
+            
+            <!-- Name -->
             <div class="col-sm-12">
+              <label>Name: <span class="text-danger">*</span></label>
               <input type="text" formControlName="Name" class="form-control">
-            </div> <br>
-            <div class="col-sm-12" style="margin-top: 12px;">
-              Subject:
+              <div *ngIf="form.get('Name').touched && form.get('Name').invalid" class="text-danger">
+                Name is required.
+              </div>
             </div>
-            <div class="col-sm-12">
+        
+            <!-- Subject -->
+            <div class="col-sm-12 mt-3">
+              <label>Subject: <span class="text-danger">*</span></label>
               <input type="text" formControlName="subject" class="form-control">
-            </div><br>
-            <div class="col-sm-0" style="margin-top: 12px;">
-              Id:
+              <div *ngIf="form.get('subject').touched && form.get('subject').invalid" class="text-danger">
+                Subject is required.
+              </div>
             </div>
-            <div class="col-sm-12">
+        
+            <!-- Template Type / Id -->
+            <div class="col-sm-12 mt-3">
+              <label>Id: <span class="text-danger">*</span></label>
               <input type="text" formControlName="templateType" class="form-control">
-            </div><br>
-            <div class="col-sm-12" style="margin-top: 12px;">
-              Content Data:
+              <div *ngIf="form.get('templateType').touched && form.get('templateType').invalid" class="text-danger">
+                Id is required.
+              </div>
             </div>
-            <select (change)="onDropdownChange($event)" class="my-2 py-2">
-              <option selected>- Select -</option>
-              <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
-            </select>
-
-            <quill-editor #editor [styles]="{height: 'auto'}" formControlName="contentData"
-              [(ngModel)]="editorContent"></quill-editor>
-
-            <br>
-            <div class="col-sm-1" style="margin-top: 12px;">
-              <button type="submit" class="rounded-pill btn addBtn ml-5" style="min-width: 100px;">Add</button>
+        
+            <!-- Dropdown (optional: show error if needed) -->
+            <div class="col-sm-12 mt-3">
+              <label>Content Data: <span class="text-danger">*</span></label>
+              <select (change)="onDropdownChange($event)" class="my-2 py-2 form-control">
+                <option selected disabled>- Select -</option>
+                <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
+              </select>
             </div>
+        
+            <!-- Quill Editor -->
+            <div class="col-sm-12">
+              <quill-editor #editor [styles]="{height: 'auto'}" formControlName="contentData"
+                [(ngModel)]="editorContent">
+              </quill-editor>
+              <div *ngIf="form.get('contentData').touched && form.get('contentData').invalid" class="text-danger">
+                Content is required.
+              </div>
+            </div>
+        
+            <!-- Submit Button -->
+            <div class="col-sm-12 mt-4">
+              <button type="submit" class="rounded-pill btn addBtn" style="min-width: 100px;" [disabled]="isSubmitting">
+                Add
+              </button>
+            </div>
+        
           </div>
         </form>
+        
       </div>
     </div>
 
@@ -111,52 +133,66 @@
               <form class="row" [formGroup]="updateForm" (ngSubmit)="updateEmail(updateForm.value)">
                 <div class="row d-flex justify-content-center">
                   <div class="col-md-8">
+              
+                    <!-- Name -->
                     <div class="row">
-                      <label for="Name" class="text-start"> Name</label>
+                      <label for="Name" class="text-start">Name <span class="text-danger">*</span></label>
                     </div>
-                    <input type="text" name="Name" id="Name" class="form-control input pt-0"
-                      [(ngModel)]="selectedEmail.Name" formControlName="Name">
-                    <div class="row" style="margin-top: 12px;">
-                      <label for="Subject" class="text-start">Subject:</label>
+                    <input type="text" id="Name" class="form-control input pt-0"
+                           formControlName="Name">
+                    <div *ngIf="updateForm.get('Name').touched && updateForm.get('Name').invalid" class="text-danger">
+                      Name is required.
                     </div>
-                    <div class="row">
-                      <div class="col-12 form-group mb-3">
-                        <input type="text" formControlName="subject" class="form-control"
-                          [(ngModel)]="selectedEmail.subject">
-                      </div>
+              
+                    <!-- Subject -->
+                    <div class="row mt-3">
+                      <label for="Subject" class="text-start">Subject <span class="text-danger">*</span></label>
                     </div>
-                    <div class="row">
-                      <label for="Id:" class="text-start">Id:</label>
+                    <input type="text" id="Subject" class="form-control"
+                           formControlName="subject">
+                    <div *ngIf="updateForm.get('subject').touched && updateForm.get('subject').invalid" class="text-danger">
+                      Subject is required.
                     </div>
-                    <div class="row">
-                      <div class="col-12 form-group mb-3">
-                        <input type="text" formControlName="templateType" class="form-control"
-                          [(ngModel)]="selectedEmail.templateType">
-                      </div>
+              
+                    <!-- Id -->
+                    <div class="row mt-3">
+                      <label for="templateType" class="text-start">Id <span class="text-danger">*</span></label>
                     </div>
-                    <div class="row">
-                      <label for="Email" class="text-start"><span>
-                          Content Data: </span></label>
+                    <input type="text" id="templateType" class="form-control"
+                           formControlName="templateType">
+                    <div *ngIf="updateForm.get('templateType').touched && updateForm.get('templateType').invalid" class="text-danger">
+                      Id is required.
                     </div>
-                    <select (change)="onUpdate($event)" class="my-2 w-50">
-                      <option selected>- Select -</option>
+              
+                    <!-- Dropdown (optional field) -->
+                    <div class="row mt-3">
+                      <label for="dropdown" class="text-start">Insert Variable:</label>
+                    </div>
+                    <select (change)="onUpdate($event)" class="form-control w-100 my-2">
+                      <option selected disabled>- Select -</option>
                       <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
                     </select>
-
-                    <quill-editor #editor [styles]="{height: '100px'}" formControlName="contentData"
-                      [(ngModel)]="selectedEmail.contentData"></quill-editor>
+              
+                    <!-- Quill Editor -->
+                    <div class="row mt-2">
+                      <label for="contentData" class="text-start">Content Data <span class="text-danger">*</span></label>
+                    </div>
+                    <quill-editor #editor [styles]="{height: '100px'}" formControlName="contentData">
+                    </quill-editor>
+                    <div *ngIf="updateForm.get('contentData').touched && updateForm.get('contentData').invalid" class="text-danger">
+                      Content is required.
+                    </div>
+              
                   </div>
                 </div>
+              
+                <!-- Buttons -->
                 <div class="d-flex justify-content-between m-3">
-                  <div class="">
-                    <button mat-flat-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
-                  </div>
-                  <div>
-                    <button mat-flat-button  class="addBtn" data-bs-dismiss="modal"
-                      type="submit">Update</button>
-                  </div>
+                  <button mat-flat-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
+                  <button mat-flat-button class="addBtn" type="submit">Update</button>
                 </div>
               </form>
+              
             </div>
           </div>
         </div>

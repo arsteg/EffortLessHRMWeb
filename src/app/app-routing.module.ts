@@ -59,7 +59,8 @@ const routes: Routes = [
       {
         path: 'manage',
         loadChildren: () => import('./feature_modules/manage/manage.module').then(m => m.ManageModule),
-        data: { permission: 'Manage' }
+        resolve: { translation: TranslationResolver },
+        data: {moduleKey: 'manage', permission: 'Manage' }
       },
       {
         path: 'calendar',
@@ -105,7 +106,14 @@ const routes: Routes = [
       {
         path: 'taxation',
         loadChildren: () => import('./feature_modules/taxation/taxation.module').then(m => m.TaxationModule),
-        data: { permission: 'Taxation' },
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'taxation', permission: 'Taxation' }
+      },
+      {
+        path: 'manage',
+        loadChildren: () => import('./feature_modules/manage/manage.module').then(m => m.ManageModule),
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'manage', permission: 'Manage' }
       },
       {
         path: 'reports',

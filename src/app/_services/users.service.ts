@@ -161,7 +161,10 @@ export class UserService {
     });
   }
   getUserList(): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrlDotNet}/users`, this.httpOptions);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users`, this.httpOptions);  
+  } 
+ checkEmailExists(email: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/checkemailexists/${email}`, this.httpOptions);
   }
   getUserById(userId: any): Observable<newUser> {
     return this.http.post<newUser>(`${environment.apiUrlDotNet}/users/getusers`, userId, this.httpOptions);

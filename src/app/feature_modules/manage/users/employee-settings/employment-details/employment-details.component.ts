@@ -6,6 +6,9 @@ import { CompanyService } from 'src/app/_services/company.service';
 import { UserService } from 'src/app/_services/users.service';
 import { forkJoin } from 'rxjs';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { TranslateService } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-employment-details',
   templateUrl: './employment-details.component.html',
@@ -27,7 +30,8 @@ export class EmploymentDetailsComponent {
   locations: any = [];
   appointment: any;
   isNew: boolean = true;
-  jobInformationId:any;
+  jobInformationId: any;
+
   constructor(
     private userService: UserService,
     private companyService: CompanyService,
@@ -35,31 +39,31 @@ export class EmploymentDetailsComponent {
     private toast: ToastrService,
     private route: ActivatedRoute,
     private router: Router,
-    public authService: AuthenticationService,
-
+    private translate: TranslateService,
+    public authService: AuthenticationService
   ) {
-    this.appointmentForm = this.fb.group(
-      {
-        user: [''],
-        salaryTypePaid: [''],
-        joiningDate: [0],
-        confirmationDate: [0]
-      }
-    )
+   
+
+    this.appointmentForm = this.fb.group({
+      user: [''],
+      salaryTypePaid: ['',Validators.required],
+      joiningDate: [0,Validators.required],
+      confirmationDate: [0]
+    });
 
     this.jobInformationForm = this.fb.group({
-      user: ['', Validators.required],
+      user: [''],
       effectiveFrom: ['', Validators.required],
-      location: ['', Validators.required],
-      designation: ['', Validators.required],
-      employmentType: ['', Validators.required],
-      reportingSupervisor: ['', Validators.required],
-      department: ['', Validators.required],
-      band: ['', Validators.required],
-      subDepartments: ['', Validators.required],
-      employmentStatusEffectiveFrom: ['', Validators.required],
-      zone: ['', Validators.required],
-      noticePeriod: ['0', Validators.required]
+      location: [''],
+      designation: [''],
+      employmentType: [''],
+      reportingSupervisor: [''],
+      department: [''],
+      band: [''],
+      subDepartments: [''],
+      employmentStatusEffectiveFrom: [''],
+      zone: [''],
+      noticePeriod: ['0', [Validators.required, CustomValidators.digitsOnly]]
     });
     this.jobInformationForm.patchValue({ noticePeriod: '0' });
   }
@@ -83,45 +87,86 @@ export class EmploymentDetailsComponent {
   getAllUsers() {
     this.userService.getUserList().subscribe((res: any) => {
       this.supervisors = res.data;
-    })
+    });
   }
 
   onAppointmentSubmission() {
-    this.appointmentForm.value.user = this.selectedUser[0]._id
+    if (this.appointmentForm.invalid) {
+      this.appointmentForm.markAllAsTouched();
+      this.toast.error(this.translate.instant('common.missing_required_Field'), this.translate.instant('common.validation_error'));
+    
+      return;
+    }
+
+    this.appointmentForm.value.user = this.selectedUser[0]._id;
     this.userService.getAppointmentByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
       if (!res.data) {
         this.userService.addAppointment(this.appointmentForm.value).subscribe((res: any) => {
-          this.toast.success('Appointment Details Added', 'Successfully')
-        })
-      }
-      else {
+         
+          this.toast.success(this.translate.instant('manage.users.employee-settings.appointment_Added'), this.translate.instant('common.success'));
+    
+        });
+      } else {
         this.userService.updateAppointment(res.data._id, this.appointmentForm.value).subscribe((res: any) => {
-          this.toast.success('Appointment Details Updated', 'Successfully')
-        })
+          this.toast.success(this.translate.instant('manage.users.employee-settings.appointment_updated'), this.translate.instant('common.success'))
+        });
       }
-    })
+    });
   }
 
   onSubmissionJobInformation() {
-    console.log( this.selectedUser[0]?._id);
-    this.jobInformationForm.enable();  
-      this.jobInformationForm.value.user = this.selectedUser[0]?._id;
-      if( this.isNew === true)
-        {
-          this.jobInformationForm.value.user = this.selectedUser[0]._id;
-          this.userService.addJobInformation(this.jobInformationForm.value).subscribe((res: any) => {
-            this.toast.success('Job Information Added Successfully');
-          }, err => { this.toast.error('Job Information Not Added', 'Error'); })
-        } else {
-          this.userService.updateJobInformation(this.jobInformationId, this.jobInformationForm.value).subscribe((res: any) => {
-            this.toast.success('Job Information updated Successfully');
-          });
+    if (this.jobInformationForm.invalid) {
+      this.jobInformationForm.markAllAsTouched();
+      this.toast.error(this.translate.instant('common.missing_required_Field'), this.translate.instant('common.validation_error'));
+      return;
+    }
+
+    this.jobInformationForm.enable();
+    const formData = { ...this.jobInformationForm.value, user: this.selectedUser[0]?._id };
+
+    // Convert empty strings to null for ObjectId fields to avoid CastError
+    const objectIdFields = ['location', 'designation', 'reportingSupervisor', 'department', 'band', 'subDepartments', 'zone'];
+    objectIdFields.forEach(field => {
+      if (formData[field] === '' || formData[field] === null || formData[field] === undefined) {
+        formData[field] = null;
+      }
+    });
+
+    if (this.isNew === true) {
+      this.userService.addJobInformation(formData).subscribe({
+        next: (res: any) => {
+          this.toast.success(this.translate.instant('manage.users.employee-settings.job_information_Added'), this.translate.instant('common.success'));
+    
+        },
+        error: (err) => {
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('manage.users.employee-settings.failed_job_information_add')
+          ;
+         
+          this.toast.error(errorMessage, 'Error!');
         }
-        this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
-        this.jobInformationForm.patchValue(res.data[0]);
-        this.jobInformationId=res.data[0]._id;
-        this.isNew === false;
-        })   
+      });
+    } else {
+      this.userService.updateJobInformation(this.jobInformationId, formData).subscribe({
+        next: (res: any) => {
+          this.toast.success(this.translate.instant('manage.users.employee-settings.job_information_Updated'), this.translate.instant('common.success'));
+    
+        },
+        error: (err) => {
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('manage.users.employee-settings.failed_job_information_update')
+          ;
+         
+          this.toast.error(errorMessage, 'Error!');
+        }
+      });
+    }
+
+    this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
+      this.jobInformationForm.patchValue(res.data[0]);
+      this.jobInformationId = res.data[0]._id;
+      this.isNew = false;
+    });
   }
 
   logUrlSegmentsForUser() {
@@ -129,13 +174,12 @@ export class EmploymentDetailsComponent {
     if (empCode) {
       this.userService.getUserByEmpCode(empCode).subscribe((res: any) => {
         this.selectedUser = res.data;
-        this.getData(); // Call getData after setting selectedUser
-      })
+        this.getData();
+      });
     }
   }
 
   getData() {
-    console.log(this.selectedUser)
     forkJoin([
       this.userService.getAppointmentByUserId(this.selectedUser[0]._id),
       this.userService.getJobInformationByUserId(this.selectedUser[0]._id),
@@ -150,14 +194,13 @@ export class EmploymentDetailsComponent {
       this.appointment = results[0].data;
       this.appointmentForm.patchValue(results[0].data);
       this.jobInformationForm.patchValue(results[1].data[0]);
-      if(results[1].data[0])
-      {
-        this.isNew=false;
-        this.jobInformationId=results[1].data[0]._id;
+      if (results[1].data[0]) {
+        this.isNew = false;
+        this.jobInformationId = results[1].data[0]._id;
       }
       this.supervisors = results[2].data.data;
       this.bands = results[3].data;
-      this.zones = results[4].data;
+      this.zones = results[4].data.filter(zone => zone.status === 'Active');
       this.subDepartments = results[5].data;
       this.departments = results[6].data;
       this.designations = results[7].data;

@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
@@ -18,7 +19,8 @@ export class BandComponent {
   bandForm: FormGroup;
   closeResult: string;
   isEdit: boolean = false;
-  searchText: string = '';
+  searchText: string = '';  
+  isSubmitting: boolean = false;
   selectedRecord: any;
   public sortOrder: string = '';
   columns: TableColumn[] = [
@@ -51,6 +53,7 @@ export class BandComponent {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private toast: ToastrService,
+    private translate: TranslateService,
   ) {
     this.bandForm = this.fb.group({
       band: ['', Validators.required],
@@ -84,29 +87,46 @@ export class BandComponent {
   }
 
   onSubmission() {
+    this.isSubmitting = true;
+
+    this.bandForm.markAllAsTouched();
+  
+    if (this.bandForm.invalid) {
+      this.isSubmitting = false;
+      return;
+    }
+  
     // add Department
     if (this.bandForm.valid) {
       if (!this.isEdit) {
         this.companyService.addBand(this.bandForm.value).subscribe(res => {
-          this.bands.push(res.data);
-          this.toast.success('Band added successfully', 'Success');
+          this.getBands();
+          this.toast.success(this.translate.instant('organization.setup.band_updated'), this.translate.instant('toast.success'));
+          this.isSubmitting = false;
           this.bandForm.reset();
         },
-          err => { this.toast.error('Band Can not be Added', 'Error') }
+          err => { const errorMessage = err?.error?.message || err?.message || err 
+            || this.translate.instant('organization.setup.band_update_fail')
+            ;
+            this.toast.error(errorMessage, 'Error!');
+            this.isSubmitting = false;  }
         );
       }
       // updateZone
       else if (this.isEdit) {
         this.companyService.updateBand(this.selectedRecord._id, this.bandForm.value).subscribe(res => {
-          this.toast.success('Band updated successfully', 'Success');
-          const index = this.bands.findIndex(z => z._id === this.selectedRecord._id);
-          if (index !== -1) {
-            this.bands[index] = { ...this.selectedRecord, ...this.bandForm.value };
-          }
+          this.toast.success(this.translate.instant('organization.setup.band_updated'), this.translate.instant('toast.success'));
+      
+          this.getBands();
           this.bandForm.reset();
+          this.isSubmitting = false;
           this.isEdit = false;
         },
-          err => { this.toast.error('Band Can not be Updated', 'Error') }
+          err => {  const errorMessage = err?.error?.message || err?.message || err 
+            || this.translate.instant('organization.setup.band_update_fail')
+            ;
+            this.toast.error(errorMessage, 'Error!');
+            this.isSubmitting = false;  }
         );
       }
     }
@@ -148,10 +168,14 @@ export class BandComponent {
   deleteBand(id: string) {
     this.companyService.deleteBand(id).subscribe((res: any) => {
       this.getBands();
-      this.toast.success('Successfully Deleted!!!', 'Band')
+      this.toast.success(this.translate.instant('organization.setup.band_deleted'), this.translate.instant('toast.success'));
+      
     },
       (err) => {
-        this.toast.error('This Band Can not be deleted!', 'Error')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.band_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
       })
   }
 
@@ -164,7 +188,10 @@ export class BandComponent {
         this.deleteBand(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.band_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
       }
     });
   }

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { EmailtemplateService } from 'src/app/_services/emailtemplate.service';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-email-template',
@@ -19,6 +20,7 @@ export class EmailTemplateComponent implements OnInit {
   selectedOption: string;
   editorContent: string = '';
 
+  isSubmitting: boolean = false;
   dropdownOptions = [
     { label: 'firstName', value: 'option1' },
     { label: 'lastName', value: 'option2' },
@@ -38,6 +40,7 @@ export class EmailTemplateComponent implements OnInit {
   isFormLoaded = false;
   
   constructor(private emailservice: EmailtemplateService, private fb: FormBuilder,
+    private translate: TranslateService,
     private toast: ToastrService) {
     this.form = this.fb.group({
       Name: ['', Validators.required],
@@ -47,9 +50,9 @@ export class EmailTemplateComponent implements OnInit {
     });
     this.updateForm = this.fb.group({
       Name: [{value:'', disabled: true}],
-      subject: [''],
-      templateType: [''],
-      contentData: ['']
+      subject: ['', Validators.required],
+      templateType: ['', Validators.required],
+      contentData: ['', Validators.required]
     });
   }
 
@@ -90,27 +93,39 @@ export class EmailTemplateComponent implements OnInit {
     this.emailmodel = false;
   }
   addEmail(form) {
-    console.log(form.Name)
+    this.isSubmitting = true;
+    this.form.markAllAsTouched();
+
+    // Prevent submission if form is invalid
+    if (this.form.invalid) {
+      this.toast.error(this.translate.instant('common.missing_required_Field'), this.translate.instant('common.validation_error'));
+   
+      this.isSubmitting = false;
+      return;
+    }
 
     this.emailservice.addEmail(form).subscribe((response: any) => {
       if (response != null && response != 0) {
-        this.toast.success('Email Template added successfully!');
-        this.ngOnInit();
+        this.toast.success(this.translate.instant('manage.email-template.email_template_added'), this.translate.instant('common.success'));     
+        this.getEmailList();
         this.form.reset();
       }
       else {
-        this.toast.error('Error adding Email Template', 'Error!');
-      }
+        this.toast.success(this.translate.instant('manage.email-template.email_template_add_fail'), this.translate.instant('common.error'));     
+        }
     })
   }
 
   deleteEmail(id: any) {
     this.emailservice.deleteEmail(id).subscribe((response: any) => {
       this.ngOnInit();
-      this.toast.success('Email Template deleted successfully!');
+      this.toast.success(this.translate.instant('manage.email-template.email_template_deleted'), this.translate.instant('common.success'));     
     },
       err => {
-        this.toast.error('Error Email Template not delete', 'Error!');
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.email-template.email_template_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
       }
     )
   }
@@ -126,16 +141,25 @@ export class EmailTemplateComponent implements OnInit {
     this.emailupdatemodel = true;
   }
   updateEmail(updateForm) {
-    const updatedData = this.updateForm.value;
+    this.form.markAllAsTouched();
+
+    // Prevent submission if form is invalid
+    if (this.updateForm.invalid) {
+      this.toast.error(this.translate.instant('common.missing_required_Field'), this.translate.instant('common.validation_error')); 
+      return;
+    }
+
     this.emailservice.updateEmail(this.selectedEmail._id, updateForm)
       .subscribe(
         response => {
-          console.log('Data updated successfully:', response);
+          this.toast.success(this.translate.instant('manage.email-template.email_template_updated'), this.translate.instant('common.success'));
           this.ngOnInit();
         },
-        error => {
-
-          console.error('Error updating data:', error);
+        err => {
+          const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.email-template.email_template_update_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
         })
   }
 }

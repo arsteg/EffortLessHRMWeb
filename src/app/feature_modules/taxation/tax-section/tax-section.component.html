@@ -19,18 +19,28 @@
 
     <form [formGroup]="taxSectionForm" (ngSubmit)="onSubmit()">
         <div mat-dialog-content>
-
+            <div class="form-group mt-2">
             <mat-form-field class="w-100">
                 <mat-label>Enter Section Name</mat-label>
                 <input type="text" matInput formControlName="section">
+                <div
+                *ngIf="taxSectionForm.get('section').invalid && 
+                      (taxSectionForm.get('section').dirty || taxSectionForm.get('section').touched)">
+                <small class="text-danger">Section Name is required.</small>
+            </div>
             </mat-form-field>
+            </div>
 
             <mat-checkbox formControlName="isHRA" color="primary">Is HRA Section?</mat-checkbox>
 
             <mat-form-field class="w-100 mt-3">
                 <mat-label>Enter the Maximum amount for the Section</mat-label>
                 <input type="number" matInput formControlName="maximumAmount">
-            </mat-form-field>
+                <mat-error *ngIf="taxSectionForm.get('maximumAmount')?.hasError('required') && taxSectionForm.get('maximumAmount')?.touched">
+                    Maximum amount is required, Enter 0 for no Limit.
+                  </mat-error> <mat-error *ngIf="taxSectionForm.get('maximumAmount')?.hasError('digitsOnly') && taxSectionForm.get('maximumAmount')?.touched">
+                    Maximum amount must contain only digits.
+                  </mat-error></mat-form-field>
 
         </div>
 
