@@ -7,6 +7,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-salary-details',
@@ -69,6 +70,7 @@ export class AddSalaryDetailsComponent {
     private toast: ToastrService,
     private router: Router,
     private cdr: ChangeDetectorRef,
+    private translate: TranslateService,
     private dialog: MatDialog
   ) {
     this.salaryDetailsForm = this.fb.group({
@@ -187,9 +189,12 @@ export class AddSalaryDetailsComponent {
           this.cdr.detectChanges();
           resolve();
         },
-        error: (err) => {
-          this.toast.error('Error fetching CTC templates', 'Error');
-          reject(err);
+        error: (err) => {         
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('manage.users.employee-settings.failed_to_fetch_ctc_template')
+          ;
+         
+          this.toast.error(errorMessage, 'Error!');
         }
       });
     });
@@ -204,7 +209,7 @@ export class AddSalaryDetailsComponent {
        
         const isValidTemplate = ctcTemplateId === 'manual' || this.ctcTemplates.some(t => t._id === ctcTemplateId);
         if (!isValidTemplate && ctcTemplateId !== 'manual') {
-           this.toast.warning('Selected CTC template not found, defaulting to manual');
+           this.toast.success(this.translate.instant('manage.users.employee-settings.ctc_template_not_found'));
         }
 
         // Patch top-level form fields
@@ -312,7 +317,10 @@ export class AddSalaryDetailsComponent {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        this.toast.error('Error fetching salary details', 'Error');
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.users.employee-settings.failed_to_fetch_salary_details')
+        ;       
+        this.toast.error(errorMessage, 'Error!');
       }
     });
   }
@@ -817,10 +825,14 @@ export class AddSalaryDetailsComponent {
 
     this.userService.addSalaryDetails(payload).subscribe(
       (res: any) => {
-        this.toast.success('The salary details have been successfully added.');
-      },
+        this.toast.success(this.translate.instant('manage.users.employee-settings.salary_details_added'));
+        },
       err => {
-        this.toast.error('The salary details cannot be added', 'Error');
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.users.employee-settings.failed_to_add_salary_details')
+        ;
+       
+        this.toast.error(errorMessage, 'Error!');
       }
     );
   }

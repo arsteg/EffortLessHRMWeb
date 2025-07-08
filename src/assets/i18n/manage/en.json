@@ -18,20 +18,22 @@
       "failed_loan_advance_updated": "Failed to update loan/advance. Please check required fields.",
       "loan_advance_deleted": "Loan/advance deleted successfully.",
       "failed_loan_advance_delete": "Failed to delete loan/advance.",
-      
-      "loan_advance_load_failed": "Failed to load loan/advance data.",
-      
-      "installments_exceed": "Cannot adjust EMI: Number of installments exceeds the allowed maximum of 36."
-    }
-   },
-   "email-template":{
-    "email_template_add_fail": "Failed to add Email Template",
-  "email_template_added": "Email Template added successfully",
-  "email_template_update_fail": "Failed to update Email Template",
-  "email_template_updated": "Email Template updated successfully",
-  "email_template_delete_fail": "This Email Template cannot be deleted!",
-  "email_template_deleted": "Email Template deleted successfully" 
-   },
+      "loan_advance_load_failed": "Failed to load loan/advance data.",      
+      "installments_exceed": "Cannot adjust EMI: Number of installments exceeds the allowed maximum of 36.",
+
+      "salary_details_deleted": "Salary details deleted successfully.",
+      "failed_to_fetch_ctc_template": "Failed to fetch CTC template.",
+      "salary_details_added": "Salary details added successfully.",
+      "failed_to_add_salary_details": "Failed to add salary details.",
+      "failed_to_fetch_salary_details": "Failed to fetch salary details.",
+      "ctc_template_not_found": "Selected CTC template not found, defaulting to manual entry.",
+      "failed_salary_details_delete": "Failed to delete salary details.",
+      "statutory_details_updated": "Statutory details updated successfully.",
+      "statutory_details_added": "Statutory details added successfully.",
+      "failed_to_update_statutory_details": "Failed to update statutory details.",
+      "failed_to_add_statutory_details": "Failed to add statutory details."
+      }
+    },
    "user-list":{
     "failed_user_load": "Failed to load user data",
     "failed_roles_load": "Failed to load roles",
@@ -39,9 +41,16 @@
     "user_delete_fail": "Failed to delete user",
     "user_added": "User added successfully",
     "user_deleted": "User deleted successfully"
-   }
+    }
   },
-  
+  "email-template":{
+    "email_template_add_fail": "Failed to add Email Template",
+    "email_template_added": "Email Template added successfully",
+    "email_template_update_fail": "Failed to update Email Template",
+    "email_template_updated": "Email Template updated successfully",
+    "email_template_delete_fail": "This Email Template cannot be deleted!",
+    "email_template_deleted": "Email Template deleted successfully" 
+  },
     "common": {
     "warning": "Warning",
     "success": "Success",
@@ -50,5 +59,4 @@
     "missing_required_Field": "Please fill all required fields correctly."
     
   }
-
 }
