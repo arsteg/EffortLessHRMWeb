@@ -32,7 +32,7 @@
           class="me-2" (click)="downloadAttendance()">
           <mat-icon>download</mat-icon>
         </button>
-  
+
         <input type="file" #fileInput style="display: none;" (change)="uploadAttendance($event)" accept=".csv" />
         <button mat-stroked-button (click)="fileInput.click()" matTooltip="Upload Attendance">
           Upload
@@ -76,7 +76,6 @@
             <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
           </th>
           <th *ngFor="let date of currentMonthDates" class="text-center">{{ date | date: 'MMM d' }}</th>
-          <!-- <th>Action</th> -->
         </tr>
       </thead>
       <tbody>
@@ -92,34 +91,28 @@
           <td *ngFor="let date of currentMonthDates; trackBy: trackByDate" class="text-center align-middle">
             <ng-container [ngSwitch]="getAttendanceStatus(user, date)">
               <span *ngSwitchCase="'present'">
-                <!-- <mat-icon class="check">check</mat-icon> -->
                 <span class="border-2 border-bottom border-success px-1">P</span>
               </span>
 
               <span *ngSwitchCase="'leave'">
-                <!-- <mat-icon class="leaveIcon"> directions_walk</mat-icon> -->
                 <span class="border-2 border-bottom border-primary px-1">L</span>
               </span>
 
               <span *ngSwitchCase="'holiday'">
-                <!-- <mat-icon class="holidayIcon">accessibility_new</mat-icon> -->
                 <span class="border-2 border-bottom border-secondary px-1">H</span>
               </span>
 
               <span *ngSwitchCase="'weeklyOff'">
-                <!-- <mat-icon class="weeklyOffIcon">event</mat-icon> -->
                 <span class="border-2 border-bottom border-dark px-1">W</span>
               </span>
 
               <span *ngSwitchCase="'halfday'">
-                <!-- <mat-icon class="halfDayIcon">exposure</mat-icon> -->
                 <span class="border-2 border-bottom border-info px-1">H</span>
 
               </span>
 
-              <span *ngSwitchCase="'incomplete halfday'" matTooltip="Incomplete Half Day can not be creditted">
-                <!-- <mat-icon class="text-danger">clear</mat-icon> -->
-                <span class="border-2 border-bottom border-warning px-1">I</span>
+              <span *ngSwitchCase="'incomplete halfDay'" matTooltip="Incomplete Half Day can not be creditted">
+                <span class="border-2 border-bottom border-warning px-1">IH</span>
               </span>
 
               <span *ngSwitchCase="'notApplicable'">
@@ -127,21 +120,14 @@
               </span>
 
               <span *ngSwitchCase="'incomplete'">
-                <!-- <mat-icon class="incompleteIcon">update</mat-icon> -->
                 <span class="border-2 border-bottom border-warning px-1">I</span>
               </span>
 
               <span *ngSwitchDefault>
-                <!-- <mat-icon class="text-danger">clear</mat-icon> -->
                 <span class="border-2 border-bottom border-danger px-1">A</span>
               </span>
             </ng-container>
           </td>
-          <!-- <td>
-                <button mat-mini-fab title="View Attendance History" type="button" (click)="viewHistory(user)">
-                  <mat-icon color="warn">remove_red_eye</mat-icon>
-                </button>
-              </td> -->
         </tr>
       </tbody>
     </table>
