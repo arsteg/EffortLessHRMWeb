@@ -107,9 +107,111 @@
       "deleted": "Successfully Deleted!!!",
       "delete_fail": "Failed to delete"
     },
-    "toast": {
-    "success": "Success",
-    "error": "Error"
-  }
+      "toast": {
+      "success": "Success",
+      "error": "Error"
+    },
+    "zone": {
+      "add" : "Add",
+      "update": "Update",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "close": "Close",
+      "submit": "Submit",
+      "save": "Submit",
+      "zonetitle" : "Zone",
+      "form": {
+        "start_date": "Start Date",
+        "zone_code": "Zone Code",
+        "zone_name": "Zone Name",
+        "description": "Description",
+        "description_placeholder": "Add Description",
+        "status": "Status",
+        "status_active": "Active",
+        "status_inactive": "Inactive",
+        "error": {
+          "start_date_required": "Start Date is required",
+          "zone_code_required": "Zone Code is required",
+          "zone_name_required": "Zone Name is required",
+          "status_required": "Status is required"
+        }
+      },
+      "table": {
+        "start_date": "Start Date",
+        "zone_code": "Zone Code",
+        "zone_name": "Zone Name",
+        "description": "Description",
+        "status": "Status",
+        "action": "Action",
+        "action_edit": "Edit",
+        "action_delete": "Delete"
+      },
+      "success": {
+        "title": "Success",
+        "added": "Zone added successfully",
+        "updated": "Zone updated successfully",
+        "deleted": "Zone deleted successfully"
+      },
+      "error": {
+        "title": "Error",
+        "add_failed": "Zone cannot be added",
+        "update_failed": "Zone cannot be updated",
+        "delete_failed": "Zone cannot be deleted"
+      }
+    },
+    "location": {
+      "modal": {
+        "add": "Add Location",
+        "update": "Update Location"
+      },
+      "form": {
+        "location_code": "Location Code",
+        "country": "Country",
+        "country_placeholder": "Countries",
+        "country_india": "India",
+        "state": "State",
+        "state_placeholder": "States",
+        "city": "City",
+        "city_placeholder": "Cities",
+        "city_1": "City-1",
+        "organization": "Organization",
+        "organization_arsteg": "Arsteg",
+        "pf_registration_code": "Provident Fund Registration Code",
+        "esic_registration_code": "ESIC Registration Code",
+        "pt_registration_code": "Professional Tax Registration Code",
+        "lwf_registration_code": "LWF Registration Code",
+        "tax_declaration_approvers": "Tax Declaration Approver",
+        "tax_declaration_approvers_placeholder": "Select Approver",
+        "error": {
+          "location_code_required": "Location Code is required",
+          "country_required": "Country is required",
+          "state_required": "State is required",
+          "city_required": "City is required",
+          "organization_required": "Organization is required",
+          "pf_registration_code_format": "Format: e.g., TN/12345",
+          "esic_registration_code_format": "Format: e.g., 17-digit ESIC number",
+          "pt_registration_code_format": "Format: e.g., MH/PT/12345",
+          "lwf_registration_code_format": "Format: e.g., KA/LWF/1234"
+        }
+      },
+      "table": {
+        "location_code": "Location Code",
+        "country": "Country",
+        "state": "State",
+        "city": "City",
+        "organization": "Organization",
+        "pf_registration_code": "PF Reg. Code",
+        "esic_registration_code": "ESIC Reg. Code",
+        "pt_registration_code": "Professional Tax Reg. Code",
+        "lwf_registration_code": "LWF Reg. Code",
+        "action": "Action",
+        "action_edit": "Edit",
+        "action_delete": "Delete"
+      },
+      "add_new": "Add New",
+      "cancel": "Cancel",
+      "save": "Save",
+      "update": "Update"
+    }
   }
 }

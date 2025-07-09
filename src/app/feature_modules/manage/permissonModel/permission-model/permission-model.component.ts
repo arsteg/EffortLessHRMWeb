@@ -30,16 +30,13 @@ export class PermissionModelComponent implements OnInit {
     this.getRolePermissions();
   }
   getRolePermissions(){
-    debugger;
     this.permSrv.getRolePermissions().subscribe((result:any) => {
-      debugger;
       this.userPermissions = result['data'];
       console.log("Result", this.userPermissions);
     })
   }
 
   sortByAsc(val:string){
-    debugger;
     let filteredData;
 
     switch(val){
