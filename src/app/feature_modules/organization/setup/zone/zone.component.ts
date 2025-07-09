@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
@@ -8,6 +8,7 @@ import { CompanyService } from 'src/app/_services/company.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { TableColumn, ActionVisibility } from 'src/app/models/table-column';
 import { DatePipe } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-zone',
   templateUrl: './zone.component.html',
@@ -22,29 +23,33 @@ export class ZoneComponent {
   searchText: string = '';
   selectedZone: any;
   public sortOrder: string = '';
+  dialogRef: MatDialogRef<any> | null = null;
+  totalRecords: number = 0;
+  recordsPerPage: number =10;
+  currentPage: number = 1;
   columns: TableColumn[] = [
       {
         key: 'startDate',
-        name: 'Start Date',
+        name: this.translate.instant('organization.zone.table.start_date'),
         valueFn: (row: any)=> {return row.startDate ? this.datePipe.transform(row.startDate, 'mediumDate') : ''}
       }, {
         key: 'zoneCode',
-        name: 'Zone Code'
+        name: this.translate.instant('organization.zone.table.zone_code')
       },
       {
         key: 'zoneName',
-        name: 'Zone Name'
+        name: this.translate.instant('organization.zone.table.zone_name')
       },{
         key: 'description',
-        name: 'Description'
+        name: this.translate.instant('organization.zone.table.description')
       },
       {
         key: 'status',
-        name: 'Status'
+        name: this.translate.instant('organization.zone.table.status')
       },
       {
         key: 'action',
-        name: 'Action',
+        name: this.translate.instant('organization.zone.table.action'),
         options: [
           {
             label: 'Edit',
@@ -67,6 +72,7 @@ export class ZoneComponent {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private dialog: MatDialog,
+    private translate: TranslateService,
     private toast: ToastrService) {
     this.zoneForm = this.fb.group({
       startDate: ['', Validators.required],
@@ -98,30 +104,43 @@ export class ZoneComponent {
 
   getZones() {
     this.companyService.getZones().subscribe(res => {
-      this.zones.data = res.data;
+      // this.zones.data = res.data;
+      // this.totalRecords = this.zones.data.length;
+      const data = Array.isArray(res.data) ? res.data : [];
+      this.zones.data = [...data]; // Spread operator to ensure change detection
+      this.totalRecords = data.length;
     });
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.zones.filter = filterValue.trim().toLowerCase();
+    this.totalRecords = this.zones.filteredData.length;
   }
 
   onSubmission() {
+    this.zoneForm.markAllAsTouched();
+    if (this.zoneForm.invalid) {
+      return;
+    }
     // add zone
     if (!this.isEdit) {
       this.companyService.addZone(this.zoneForm.value).subscribe(res => {
         this.zones.data.push(res.data);
-        this.toast.success('Zone added successfully', 'Success');
+        this.toast.success(this.translate.instant('organization.zone.success.added'), this.translate.instant('organization.zone.success.title'));
         this.zoneForm.reset();
+        this.dialogRef.close(true);
+        this.getZones();
       },
-        err => { this.toast.error('Zone Can not be Added', 'Error') }
+        err => { 
+          this.toast.error(err?.error?.message || err?.message || err || this.translate.instant('organization.zone.error.add_failed'), this.translate.instant('organization.zone.error.title'));
+        }
       );
     }
     // updateZone
     else if (this.isEdit) {
       this.companyService.updateZone(this.selectedZone._id, this.zoneForm.value).subscribe(res => {
-        this.toast.success('Zone updated successfully', 'Success');
+        this.toast.success(this.translate.instant('organization.zone.success.updated'), this.translate.instant('organization.zone.success.title'));
         const index = this.zones.data.findIndex(z => z._id === this.selectedZone._id);
         if (index !== -1) {
           this.zones.data[index] = { ...this.selectedZone, ...this.zoneForm.value };
@@ -130,8 +149,12 @@ export class ZoneComponent {
         this.isEdit = false;
         this.zoneForm.get('zoneCode').enable();
         this.zoneForm.get('zoneName').enable();
+        this.dialogRef.close(true);
+        this.getZones();
       },
-        err => { this.toast.error('Zone Can not be Updated', 'Error') }
+        err => { 
+          this.toast.error(err?.error?.message || err?.message || err || this.translate.instant('organization.zone.error.update_failed'), this.translate.instant('organization.zone.error.title'));
+        }
       );
     }
   }
@@ -171,21 +194,25 @@ export class ZoneComponent {
     }
   }
   open(content: any) {
-    if (this.isEdit === false) { this.zoneForm.reset(); }
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    if (this.isEdit === false) {
+      this.zoneForm.reset();
+    }
+    this.dialogRef = this.dialog.open(content, {
+      disableClose: true,
+      width: "50%"
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
     });
   }
 
   deleteZone(id: string) {
     this.companyService.deleteZone(id).subscribe((res: any) => {
       this.getZones();
-      this.toast.success('Successfully Deleted!!!', 'Zone')
+      this.toast.success(this.translate.instant('organization.zone.success.deleted'), this.translate.instant('organization.zone.success.title'));
     },
       (err) => {
-        this.toast.error('This ZOne Can not be deleted', 'Error')
+        this.toast.error(err?.error?.message || err?.message || err || this.translate.instant('organization.zone.error.delete_failed'), this.translate.instant('organization.zone.error.title'));
       })
   }
 
@@ -198,9 +225,24 @@ export class ZoneComponent {
         this.deleteZone(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        this.toast.error(err?.error?.message || err?.message || err || this.translate.instant('organization.zone.error.delete_failed'), this.translate.instant('organization.zone.error.title'));
       }
     });
+  }
+
+  onClose(){
+    this.dialogRef.close(this);
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+    this.getZones();
+  }
+
+  onSearchChange(searchText: string) {
+    this.currentPage = 1;
+    this.getZones();
   }
 
 }

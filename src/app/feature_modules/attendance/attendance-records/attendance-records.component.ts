@@ -193,70 +193,64 @@ export class AttendanceRecordsComponent implements OnInit {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
-  getAttendanceStatus(user: any, date: Date): any {
+
+  getAttendanceStatus(user: any, date: Date): string {
+    const today = new Date();
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    let status = 'N/A';
+
+    if (date > today) {
+      status = 'notApplicable';
+      return status;
+    }
+
     const attendance = user.attendance.find(
       (att: any) => new Date(att.date).toDateString() === date.toDateString()
     );
 
-    const today = new Date();
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    if (!attendance) {
+      status = 'noRecord';
+      return status;
+    }
+
+    const shiftAssignment = this.shifts.find(
+      (shift: any) => shift?.user === user?._id
+    );
+
+    if (shiftAssignment) {
+      const fullDayDuration = shiftAssignment?.template?.minHoursPerDayToGetCreditForFullDay * 60;
+      const halfDayDuration = this.parseHoursToMinutes(shiftAssignment?.template?.minHoursPerDayToGetCreditforHalfDay);
+
+      if (attendance.duration >= fullDayDuration) {
+        status = 'present';
+      } else if (attendance.duration >= halfDayDuration) {
+        status = 'halfDay';
+      } else if (attendance.duration < halfDayDuration) {
+        status = 'incomplete halfDay';
+      } else {
+        status = 'incomplete';
+      }
+      return status;
+    }
 
     const assignment = this.attendanceTemplateAssignment?.find(
       (assignment: any) => assignment?.employee?._id === user?._id
     );
-
-    const shiftAssignment = this.shifts.find(
-      (shift: any) => shift?.user === user?._id
-    )
-    if (shiftAssignment) {
-      const fullDayDuration = shiftAssignment?.template?.minHoursPerDayToGetCreditForFullDay;
-      const halfDayDuration = this.parseHoursToMinutes(shiftAssignment?.template?.minHoursPerDayToGetCreditforHalfDay);
-
-      if (attendance?.duration >= fullDayDuration * 60) {
-        return 'present';
-      }
-      if (attendance?.duration >= halfDayDuration) {
-        return 'halfDay';
-      }
-    }
     const assignedTemplate = assignment?.attendanceTemplate;
-
     const weeklyOfDays = assignedTemplate?.weeklyOfDays || [];
-    const dayOfWeekNumber = date.getDay();
-    const dayOfWeekName = dayNames[dayOfWeekNumber];
+    const dayOfWeekName = dayNames[date.getDay()];
 
     if (weeklyOfDays.includes(dayOfWeekName)) {
-      return 'weeklyOff';
+      status = 'weeklyOff';
+      return status;
     }
-    if (this.isDateOnLeave(user._id, date)) {
-      return 'leave';
-    }
-    if (this.isHolidayForUser(user, date)) {
-      return 'holiday';
-    }
-    if (date > today) {
-      return 'notApplicable';
-    }
-    if (!attendance) {
-      return 'noRecord';
-    }
-    if (this.fullDayDuration === 0 || this.halfDayDuration === 0) {
-      return 'N/A';
-    }
-    if (attendance.duration >= this.fullDayDuration * 60) {
-      return 'present';
-    }
-    if (attendance.duration < this.fullDayDuration * 60) {
-      return 'incomplete';
-    }
-    // if (attendance.duration === this.halfDayDuration) {
-    //   return 'halfday';
-    // }
-    if (attendance.duration < this.halfDayDuration) {
-      return 'incomplete halfday';
-    }
-    return 'N/A';
 
+    if (this.isDateOnLeave(user._id, date)) {
+      status = 'leave';
+    } else if (this.isHolidayForUser(user, date)) {
+      status = 'holiday';
+    }
+    return status;
   }
 
   isDateOnLeave(userId: string, date: Date): boolean {
@@ -292,7 +286,7 @@ export class AttendanceRecordsComponent implements OnInit {
 
       if (holidayDate.getTime() === compareDate.getTime()) {
         if (Array.isArray(holiday.holidayapplicableEmployee)) {
-          if (holiday.holidayapplicableEmployee.some((emp: any) => emp.user === user._id)) { // Use user._id here
+          if (holiday.holidayapplicableEmployee.some((emp: any) => emp.user === user._id)) {
             return true;
           }
         }
@@ -503,7 +497,7 @@ export class AttendanceRecordsComponent implements OnInit {
     const daysInMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
 
     this.selectedAttendanceRecord = {
-      user: user.userName,
+      user: user?._id,
       month: this.selectedMonth,
       year: this.selectedYear,
       records: attendanceRecords,
@@ -512,7 +506,6 @@ export class AttendanceRecordsComponent implements OnInit {
       shiftHalfDayTime: this.formatHoursToTime(halfHours),
       monthDays: daysInMonth
     };
-
     this.dialog.open(EmployeeAttendanceHistoryComponent, {
       data: this.selectedAttendanceRecord,
       width: '80vw',

@@ -1,151 +1,135 @@
-<div class="mainContent pt-3 ">
-  <div class="container">
-    <div class="py-2 px-0">
+<div class="py-2 px-0">
+  <div class="row">
 
-      <div class="d-flex justify-content-between align-items-start">
+    <div class="col-12 col-md-4 col-lg-3">
+      <mat-form-field class="w-100">
+        <mat-label>Search</mat-label>
+        <input type="text" type="text" placeholder="Search..." [(ngModel)]="searchText" matInput />
+      </mat-form-field>
+    </div>
 
-          <div>
-            <mat-form-field appearance="outline">
-              <mat-label>Search</mat-label>
-              <input type="text" type="text" placeholder="Search..." [(ngModel)]="searchText" matInput />
-            </mat-form-field>
-          </div>
+    <div class="col-12 col-md-4 col-lg-3">
+      <mat-form-field class="w-100">
+        <mat-label>Select Month</mat-label>
+        <mat-select [(ngModel)]="selectedMonth" (selectionChange)="onMonthChange($event)">
+          <mat-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-          <div>
-            <mat-form-field appearance="outline">
-              <mat-label>Select Month</mat-label>
-              <mat-select [(ngModel)]="selectedMonth" (selectionChange)="onMonthChange($event)">
-                <mat-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
+    <div class="col-12 col-md-4 col-lg-3">
+      <mat-form-field class="w-100">
+        <mat-label>Select Year</mat-label>
+        <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange($event)">
+          <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-          <div>
-            <mat-form-field appearance="outline">
-              <mat-label>Select Year</mat-label>
-              <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange($event)">
-                <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
+    <div class="col-12 col-md-4 col-lg-3">
+      <div class="d-flex  align-items-start justify-content-md-end">
+        <button mat-icon-button matTooltip="Download sample Excel sheet to fill and upload" matTooltipPosition="below"
+          class="me-2" (click)="downloadAttendance()">
+          <mat-icon>download</mat-icon>
+        </button>
 
-
-        <div class="d-flex  align-items-start">
-          <button mat-icon-button matTooltip="Download sample Excel sheet to fill and upload"
-            matTooltipPosition="below" class="me-2" (click)="downloadAttendance()">
-            <mat-icon>download</mat-icon>
-          </button>
-
-          <input type="file" #fileInput style="display: none;" (change)="uploadAttendance($event)" accept=".csv" />
-          <button mat-stroked-button  (click)="fileInput.click()" matTooltip="Upload Attendance">
-            Upload
-          </button>
-        </div>
-      </div>
-
-      <div class="d-flex flex-nowrap align-items-center overflow-auto pt-0 mb-2">
-        <div class="d-flex align-items-center me-3">
-          <span class="border-2 border-start border-success px-1">Present</span>
-        </div>
-        <div class="d-flex align-items-center me-3">
-          <span class="border-2 border-start border-danger py-2 px-1"></span>Absent
-        </div>
-        <div class="d-flex align-items-center me-3">
-          <span class="border-2 border-start border-warning py-2 px-1"></span>Incomplete Record
-        </div>
-        <div class="d-flex align-items-center me-3">
-          <span class="border-2 border-start border-info py-2 px-1"></span>Halfday
-        </div>
-        <div class="d-flex align-items-center me-3">
-          <span class="border-2 border-start border-dark py-2 px-1"></span>Weekly Off
-        </div>
-        <div class="d-flex align-items-center me-3">
-          <span class="border-2 border-start border-secondary py-2 px-1"></span>Holiday
-        </div>
-        <div class="d-flex align-items-center me-3">
-          <span class="border-2 border-start border-primary py-2 px-1"></span>Leave
-        </div>
-        <div class="d-flex align-items-center">
-          <span class="border p-2 me-2"></span>Not Applicable
-        </div>
-      </div>
-      <div class="table-wrapper border-start border-end ">
-        <table class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <th class="ps-2" [appSort]="groupedAttendanceRecords" [attr.data-order]="sortOrder" data-name="userName"
-                (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
-                <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-              </th>
-              <th *ngFor="let date of currentMonthDates" class="text-center">{{ date | date: 'MMM d' }}</th>
-              <!-- <th>Action</th> -->
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let user of groupedAttendanceRecords | search: searchText; let i = index" (click)="viewHistory(user)" class="cursor-pointer">
-              <td class="align-middle">
-                <span class="rounded-circle bg-primary text-center text-white me-1 d-inline-block py-1" style="width: 30px; height: 30px;">
-                  {{user?.userName[0] | uppercase}}
-                </span>
-                {{user?.userName}}
-              </td>
-              <td *ngFor="let date of currentMonthDates; trackBy: trackByDate" class="text-center align-middle">
-                <ng-container [ngSwitch]="getAttendanceStatus(user, date)">
-                  <span *ngSwitchCase="'present'">
-                    <!-- <mat-icon class="check">check</mat-icon> -->
-                    <span class="border-2 border-bottom border-success px-1">P</span>
-                  </span>
-
-                  <span *ngSwitchCase="'leave'">
-                    <!-- <mat-icon class="leaveIcon"> directions_walk</mat-icon> -->
-                     <span class="border-2 border-bottom border-primary px-1">L</span>
-                  </span>
-
-                  <span *ngSwitchCase="'holiday'">
-                    <!-- <mat-icon class="holidayIcon">accessibility_new</mat-icon> -->
-                     <span class="border-2 border-bottom border-secondary px-1">H</span>
-                  </span>
-
-                  <span *ngSwitchCase="'weeklyOff'">
-                    <!-- <mat-icon class="weeklyOffIcon">event</mat-icon> -->
-                     <span class="border-2 border-bottom border-dark px-1">W</span>
-                  </span>
-
-                  <span *ngSwitchCase="'halfday'">
-                    <!-- <mat-icon class="halfDayIcon">exposure</mat-icon> -->
-                    <span class="border-2 border-bottom border-info px-1">H</span>
-
-                  </span>
-
-                  <span *ngSwitchCase="'incomplete halfday'" matTooltip="Incomplete Half Day can not be creditted">
-                    <!-- <mat-icon class="text-danger">clear</mat-icon> -->
-                    <span class="border-2 border-bottom border-warning px-1">I</span>
-                  </span>
-
-                  <span *ngSwitchCase="'notApplicable'">
-
-                  </span>
-
-                  <span *ngSwitchCase="'incomplete'">
-                    <!-- <mat-icon class="incompleteIcon">update</mat-icon> -->
-                    <span class="border-2 border-bottom border-warning px-1">I</span>
-                  </span>
-
-                  <span *ngSwitchDefault>
-                    <!-- <mat-icon class="text-danger">clear</mat-icon> -->
-                    <span class="border-2 border-bottom border-danger px-1">A</span>
-                  </span>
-                </ng-container>
-              </td>
-              <!-- <td>
-                <button mat-mini-fab title="View Attendance History" type="button" (click)="viewHistory(user)">
-                  <mat-icon color="warn">remove_red_eye</mat-icon>
-                </button>
-              </td> -->
-            </tr>
-          </tbody>
-        </table>
+        <input type="file" #fileInput style="display: none;" (change)="uploadAttendance($event)" accept=".csv" />
+        <button mat-stroked-button (click)="fileInput.click()" matTooltip="Upload Attendance">
+          Upload
+        </button>
       </div>
     </div>
+  </div>
+
+  <div class="d-flex flex-wrap align-items-center overflow-auto pt-0 my-2">
+    <div class="d-flex align-items-center me-3">
+      <span class="border-2 border-start border-success px-1">Present</span>
+    </div>
+    <div class="d-flex align-items-center me-3">
+      <span class="border-2 border-start border-danger py-2 px-1"></span>Absent
+    </div>
+    <div class="d-flex align-items-center me-3">
+      <span class="border-2 border-start border-warning py-2 px-1"></span>Incomplete Record
+    </div>
+    <div class="d-flex align-items-center me-3">
+      <span class="border-2 border-start border-info py-2 px-1"></span>Halfday
+    </div>
+    <div class="d-flex align-items-center me-3">
+      <span class="border-2 border-start border-dark py-2 px-1"></span>Weekly Off
+    </div>
+    <div class="d-flex align-items-center me-3">
+      <span class="border-2 border-start border-secondary py-2 px-1"></span>Holiday
+    </div>
+    <div class="d-flex align-items-center me-3">
+      <span class="border-2 border-start border-primary py-2 px-1"></span>Leave
+    </div>
+    <div class="d-flex align-items-center">
+      <span class="border p-2 me-2"></span>Not Applicable
+    </div>
+  </div>
+  <div class="table-wrapper border-start border-end ">
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th class="ps-2" [appSort]="groupedAttendanceRecords" [attr.data-order]="sortOrder" data-name="userName"
+            (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Employee
+            <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+          </th>
+          <th *ngFor="let date of currentMonthDates" class="text-center">{{ date | date: 'MMM d' }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of groupedAttendanceRecords | search: searchText; let i = index"
+          (click)="viewHistory(user)" class="cursor-pointer">
+          <td class="align-middle">
+            <span class="rounded-circle bg-primary text-center text-white me-1 d-inline-block py-1"
+              style="width: 30px; height: 30px;">
+              {{user?.userName[0] | uppercase}}
+            </span>
+            {{user?.userName}}
+          </td>
+          <td *ngFor="let date of currentMonthDates; trackBy: trackByDate" class="text-center align-middle">
+            <ng-container [ngSwitch]="getAttendanceStatus(user, date)">
+              <span *ngSwitchCase="'present'">
+                <span class="border-2 border-bottom border-success px-1">P</span>
+              </span>
+
+              <span *ngSwitchCase="'leave'">
+                <span class="border-2 border-bottom border-primary px-1">L</span>
+              </span>
+
+              <span *ngSwitchCase="'holiday'">
+                <span class="border-2 border-bottom border-secondary px-1">H</span>
+              </span>
+
+              <span *ngSwitchCase="'weeklyOff'">
+                <span class="border-2 border-bottom border-dark px-1">W</span>
+              </span>
+
+              <span *ngSwitchCase="'halfday'">
+                <span class="border-2 border-bottom border-info px-1">H</span>
+
+              </span>
+
+              <span *ngSwitchCase="'incomplete halfDay'" matTooltip="Incomplete Half Day can not be creditted">
+                <span class="border-2 border-bottom border-warning px-1">IH</span>
+              </span>
+
+              <span *ngSwitchCase="'notApplicable'">
+
+              </span>
+
+              <span *ngSwitchCase="'incomplete'">
+                <span class="border-2 border-bottom border-warning px-1">I</span>
+              </span>
+
+              <span *ngSwitchDefault>
+                <span class="border-2 border-bottom border-danger px-1">A</span>
+              </span>
+            </ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

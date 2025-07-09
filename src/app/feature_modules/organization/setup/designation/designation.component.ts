@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -23,10 +23,14 @@ export class DesignationComponent {
   searchText: string = '';
   selectedRecord: any;
   public sortOrder: string = '';
+  totalRecords: number = 0;
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  dialogRef: MatDialogRef<any> | null = null;
   columns: TableColumn[] = [
     {
       key: 'designation',
-      name: 'Designation'
+      name: this.translate.instant('organization.designation.table.designation')
     },
     {
       key: 'action',
@@ -66,7 +70,10 @@ export class DesignationComponent {
 
   getDesignations() {
     this.companyService.getDesignations().subscribe(res => {
-      this.designations = res.data;
+      //this.designations = res.data;
+      const data = Array.isArray(res.data) ? res.data : [];
+      this.designations = [...data];
+      this.totalRecords = data.length;
     });
   }
 
@@ -101,6 +108,7 @@ export class DesignationComponent {
         this.toast.success(this.translate.instant('organization.setup.designation_deleted'));
         this.designationForm.reset();
         this.isSubmitting = false;
+        this.dialogRef.close(true);
       },
         err => { 
            const errorMessage = err?.error?.message || err?.message || err 
@@ -116,6 +124,7 @@ export class DesignationComponent {
         this.getDesignations();
         this.designationForm.reset(); this.isSubmitting = false;
         this.isEdit = false;
+        this.dialogRef.close(true);
       },
         err => {   const errorMessage = err?.error?.message || err?.message || err 
           || this.translate.instant('organization.setup.designation_update_fail')
@@ -147,11 +156,13 @@ export class DesignationComponent {
   }
 
   open(content: any) {
+    this.dialogRef = this.dialog.open(content, {
+      disableClose: true,
+      width: '50%'
+    });
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.dialogRef = null;
     });
   }
 
@@ -184,6 +195,25 @@ export class DesignationComponent {
         this.toast.error(errorMessage, 'Error!'); 
       }
     });
+  }
+
+  onClose() {
+    this.isEdit = false;
+    this.designationForm.reset();
+    this.dialogRef.close(true);
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+    this.getDesignations();
+  }
+
+  onSearchChange(searchText: string) {
+    this.searchText = searchText;
+    this.currentPage = 1;
+    this.designations.filter = searchText.trim().toLowerCase();
+    this.totalRecords = this.designations.filteredData.length;
   }
 
 }

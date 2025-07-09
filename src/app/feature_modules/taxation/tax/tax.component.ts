@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, EventEmitter, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, EventEmitter, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { TaxCalculatorComponent } from './tax-calculator/tax-calculator.component';
 import { UserService } from 'src/app/_services/users.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tax',
@@ -22,6 +23,7 @@ export class TaxComponent {
   isEdit: boolean = false;
   @ViewChild(TaxCalculatorComponent) taxCalculator: TaxCalculatorComponent;
   @ViewChild('offcanvasContent', { read: ViewContainerRef }) offcanvasContent: ViewContainerRef;
+  @ViewChild('addModal') addModal!: TemplateRef<any>;
   selectedUser: any;
   taxView: boolean;
   totalRecords: number;
@@ -41,6 +43,7 @@ export class TaxComponent {
   taxEditView: boolean = false;
   userTaxRegime: any;
   userStatutoryDetails: any;
+  userSalaryDetails: any;
   taxDeclarations: any;
   columns: TableColumn[] = [
     { key: 'financialYear', name: 'Financial Year' },
@@ -51,8 +54,8 @@ export class TaxComponent {
     private userService: UserService,
     private dialog: MatDialog,
     private fb: FormBuilder,
-    private taxService: TaxationService,
-    private toastr: ToastrService
+    private taxService: TaxationService,  private translate: TranslateService,
+    private toast: ToastrService
   ) {
     this.taxDeclarationForm = this.fb.group({
       financialYear: [''],
@@ -77,8 +80,42 @@ export class TaxComponent {
       this.userTaxRegime = res?.data?.taxRegime;
       this.userStatutoryDetails = res?.data;
      });
+     this.userService.getSalaryByUserId(this.user.id).subscribe((res: any) => {    
+      this.userSalaryDetails = res?.data;
+     });
+     
   }
-
+  handleAddTaxDeclaration() {
+    if (this.userTaxRegime !== 'Old Regime') {
+      this.toast.warning(this.translate.instant('taxation.tax_declaration_allow'), this.translate.instant('taxation.toast.warning'));
+       return;
+    }
+    if (!this.userSalaryDetails) {
+      this.toast.warning(this.translate.instant('taxation.salary_details_Validation_for_tax_declaration'), this.translate.instant('taxation.toast.warning'));
+      return;
+    }
+  
+    if (!this.userStatutoryDetails) {
+      this.toast.warning(this.translate.instant('taxation.statutory_Validation_for_tax_declaration'), this.translate.instant('taxation.toast.warning'));
+      return;
+    }
+  
+    this.isEdit = false;
+    this.open(this.addModal); // or whatever modal reference you're using
+  }
+  
+  
+  handleOpenTaxCalculator() {
+    if (!this.userStatutoryDetails) {
+       this.toast.warning(this.translate.instant('taxation.statutory_Validation_for_tax_calculator'), this.translate.instant('taxation.toast.warning'));
+       return;
+    }
+    else{  
+    this.getTaxDeclaration();
+    this.taxEditView = false;
+    this.taxView = true;
+    }
+  }
   goBackToMainView() {
     this.taxView = false;
     this.taxEditView = false;
@@ -176,7 +213,7 @@ export class TaxComponent {
   
       if (!this.taxList) {
         this.totalRecords = 0;
-        this.toastr.warning('No tax declaration found');
+        this.toast.warning(this.translate.instant('taxation.tax_declaraton_not_found'), this.translate.instant('taxation.toast.warning'));
         return;
       }
 
@@ -212,13 +249,17 @@ export class TaxComponent {
           this.totalRecords = res.total || 0;
         },
         error: (err) => {
-          console.error('Error fetching sections:', err);
-          this.toastr.error('Failed to fetch tax sections');
+            const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('taxation.failed_to_tax_sections')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
         }
       });
     }, (err) => {
-      console.error('Error fetching tax declaration:', err);
-      this.toastr.error('Failed to fetch tax declaration');
+      const errorMessage = err?.error?.message || err?.message || err 
+      || this.translate.instant('taxation.failed_to_tax_declaration')
+      ;
+      this.toast.error(errorMessage, 'Error!'); 
     });
   }
 
@@ -268,17 +309,19 @@ export class TaxComponent {
       if (res.data?.taxRegime === 'Old Regime') {
         this.taxService.addIncomeTax(payload).subscribe((res: any) => {
             this.taxDeclarations.push(res.data);
-            this.toastr.success('Tax Declaration Added Successfully');
+            this.toast.success(this.translate.instant('taxation.tax_declaraton_added'), this.translate.instant('taxation.toast.success'));
             this.dialogRef.close();
           },
           (err) => {
-            console.error('Error saving tax declaration:', err);
-            this.toastr.error('Something went wrong');
+            const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('taxation.failed_tax_declaraton_add')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
           }
         );
       } else if (res.data[0].taxRegime === 'New Regime') {
-        this.toastr.error('Tax Declaration is not allowed in New Regime');
-        this.dialogRef.close();
+           this.toast.error(this.translate.instant('taxation.tax_declaraton_only_Old_regime'), this.translate.instant('taxation.toast.error'));
+           this.dialogRef.close();
       }
     });
   }

@@ -1,5 +1,6 @@
 import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
@@ -9,6 +10,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SeparationService } from 'src/app/_services/separation.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 
 @Component({
@@ -75,6 +77,37 @@ export class AttendanceProcessComponent {
 
   @ViewChild('LopFormDialog') dialogTemplate: TemplateRef<any>;
 
+  processAttendanceColumns: TableColumn[] = [{
+    key: 'attendanceProcessPeriod',
+    name: 'Attendance Process Period',
+    valueFn: (row) => { 
+      return `${row?.attendanceProcessPeriodMonth}-${row?.attendanceProcessPeriodYear}`
+     }
+  },
+  {
+    key: 'users',
+    name: 'Employee'
+  },
+  {
+    key: 'runDate',
+    name: 'Run Date',
+    valueFn: (row) => row?.runDate ? this.datePipe.transform(row?.runDate, 'mediumDate') : ''
+  },
+  {
+    key: 'exportToPayroll',
+    name: 'Export to Payroll',
+    valueFn: (row) => row?.exportToPayroll ? 'Yes' : 'No'
+  },
+  {
+    key: 'actions',
+    name: 'Action',
+    isAction: true,
+    options: [
+      { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
+    ]
+  }]
+
+
   constructor(
     private attendanceService: AttendanceService,
     private fb: FormBuilder,
@@ -84,7 +117,8 @@ export class AttendanceProcessComponent {
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    private separationService: SeparationService
+    private separationService: SeparationService,
+    private datePipe: DatePipe,
   ) {
     this.lopForm = this.fb.group({
       month: ['', Validators.required],
@@ -116,7 +150,11 @@ export class AttendanceProcessComponent {
       });
   }
 
-  
+  onActionClick(event: any) {
+    if (event.action.label === 'Delete') {
+      this.deleteDialog(event.row);
+    }
+  }
 
   ngOnInit() {
     this.generateYearList();
@@ -156,16 +194,16 @@ attendanceTemplateValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const selectedUserIds: string[] = control.value;
     if (!selectedUserIds || selectedUserIds.length === 0) {
-      return null; // Let Validators.required handle empty selection
+      return null;
     }
     const hasTemplateAssigned = selectedUserIds.every(userId =>
-      this.attendanceTemplateAssignment?.find(template => template.employee === userId)
+      this.attendanceTemplateAssignment?.find(template => template.employee?._id === userId)
     );
     return hasTemplateAssigned ? null : { 'noAttendanceTemplate': true };
   };
 }
 
- async onUserSelectionChange(event: any) {
+  async onUserSelectionChange(event: any) {
     const selectedUserIds: string[] = event.value;
     this.attendanceTemplateAssignment = [];
 
@@ -186,7 +224,7 @@ attendanceTemplateValidator(): ValidatorFn {
           const userId = selectedUserIds[index];
           if (res && res.data && res.data.length > 0) {
             this.attendanceTemplateAssignment.push(...res.data);
-          } 
+          }
         });
 
         // Mark as touched and update validity to trigger mat-error
@@ -195,7 +233,7 @@ attendanceTemplateValidator(): ValidatorFn {
 
         // Check for users without templates
         const usersWithoutTemplate = selectedUserIds.filter(userId =>
-          !this.attendanceTemplateAssignment.some(template => template.employee === userId)
+          !this.attendanceTemplateAssignment.some(template => template.employee?._id === userId)
         );
 
         if (usersWithoutTemplate.length > 0) {

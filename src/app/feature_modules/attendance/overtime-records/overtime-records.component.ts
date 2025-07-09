@@ -41,14 +41,14 @@ export class OvertimeRecordsComponent {
   ) { }
 
   ngOnInit() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    });
     this.loadDatesForSelectedMonth();
     this.generateYearList();
-    setTimeout(() => {
+    this.commonService.populateUsers().subscribe((res: any) => {
+      this.users = res.data.data;
       this.getOvertimeByMonth();
-    }, 1000)
+    });
+
+
   }
 
   trackByDate: TrackByFunction<string> = (index: number, date: string): string => {
@@ -160,6 +160,12 @@ export class OvertimeRecordsComponent {
         this.overtimeRecords = Array.from(userOvertimeMap.values());
       });
     }
+  }
+
+  convertMinutesToHours(minutes) {
+    const hrs = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return minutes > 0 ? (minutes > 59 ? `${hrs}h ${mins}m` : `${minutes}m`) : '';
   }
 
 }

@@ -212,7 +212,7 @@ export class TaxSlabComponent {
   
   deleteTaxSlab(id: string) {
     this.companyService.deleteTaxSlab(id).subscribe((res: any) => {
-     this.taxSlabs();
+      this.getTaxSlabs();
       this.toast.success(this.translate.instant('organization.setup.deleted'), this.translate.instant('organization.toast.success'));
      
     },

@@ -1,135 +1,157 @@
 <div class="position-relative">
-    <button mat-flat-button color="primary" class="position-absolute end-0"
-        (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
+  <div class="position-absolute end-0">
+    <button mat-flat-button color="primary" (click)="clearselectedRequest(); isEdit=false; open(addModal)">
+      {{ 'organization.location.add_new' | translate }}
+    </button>
+  </div>
 </div>
 
+<hrm-table [data]="locations" [columns]="columns" [isServerSide]="false" [totalItems]="totalRecords" 
+    [pageSize]="recordsPerPage" [showExport]="'none'" (pageChanged)="onPageChange($event)"
+    (searchChanged)="onSearchChange($event)" [showSearch]="true"
+  (actionClicked)="onActionClick($event)"></hrm-table>
 
-<hrm-table [data]="locations" [columns]="columns" [showExport]="'none'" [showSearch]="true"
-    (actionClicked)="onActionClick($event)"></hrm-table>
-
-<!-- add location -->
 <ng-template #addModal let-modal>
-    <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Location</h1>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      {{ (isEdit ? 'organization.location.modal.update' : 'organization.location.modal.add') | translate }}
+    </h1>
+    <button mat-icon-button (click)="onClose()" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="locationForm" (ngSubmit)="onSubmission()">
+    <div mat-dialog-content>
+      <div class="row m-0">
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.location.form.location_code' | translate }}</mat-label>
+            <input matInput type="text" formControlName="locationCode">
+            <mat-error
+              *ngIf="locationForm.get('locationCode')?.hasError('required') && (locationForm.get('locationCode')?.touched || locationForm.get('locationCode')?.dirty)">
+              {{ 'organization.location.form.error.location_code_required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.location.form.country' | translate }}</mat-label>
+            <mat-select formControlName="country">
+              <mat-option [value]="null" disabled>{{ 'organization.location.form.country_placeholder' | translate }}</mat-option>
+              <mat-option value="India">{{ 'organization.location.form.country_india' | translate }}</mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="locationForm.get('country')?.hasError('required') && (locationForm.get('country')?.touched || locationForm.get('country')?.dirty)">
+              {{ 'organization.location.form.error.country_required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.location.form.state' | translate }}</mat-label>
+            <mat-select formControlName="state">
+              <mat-option [value]="null" disabled>{{ 'organization.location.form.state_placeholder' | translate }}</mat-option>
+              <mat-option *ngFor="let state of states" [value]="state">{{ state }}</mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="locationForm.get('state')?.hasError('required') && (locationForm.get('state')?.touched || locationForm.get('state')?.dirty)">
+              {{ 'organization.location.form.error.state_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.location.form.city' | translate }}</mat-label>
+            <mat-select formControlName="city">
+              <mat-option [value]="null" disabled>{{ 'organization.location.form.city_placeholder' | translate }}</mat-option>
+              <mat-option value="city-1">{{ 'organization.location.form.city_1' | translate }}</mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="locationForm.get('city')?.hasError('required') && (locationForm.get('city')?.touched || locationForm.get('city')?.dirty)">
+              {{ 'organization.location.form.error.city_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.location.form.organization' | translate }}</mat-label>
+            <mat-select formControlName="organization">
+              <mat-option value="Arsteg">{{ 'organization.location.form.organization_arsteg' | translate }}</mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="locationForm.get('organization')?.hasError('required') && (locationForm.get('organization')?.touched || locationForm.get('organization')?.dirty)">
+              {{ 'organization.location.form.error.organization_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.location.form.pf_registration_code' | translate }}</mat-label>
+            <input matInput type="text" formControlName="providentFundRegistrationCode">
+            <mat-error
+              *ngIf="locationForm.get('providentFundRegistrationCode')?.hasError('pattern') && (locationForm.get('providentFundRegistrationCode')?.touched || locationForm.get('providentFundRegistrationCode')?.dirty)">
+              {{ 'organization.location.form.error.pf_registration_code_format' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.location.form.esic_registration_code' | translate }}</mat-label>
+            <input matInput type="text" formControlName="esicRegistrationCode">
+            <mat-error
+              *ngIf="locationForm.get('esicRegistrationCode')?.hasError('pattern') && (locationForm.get('esicRegistrationCode')?.touched || locationForm.get('esicRegistrationCode')?.dirty)">
+              {{ 'organization.location.form.error.esic_registration_code_format' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.location.form.pt_registration_code' | translate }}</mat-label>
+            <input matInput type="text" formControlName="professionalTaxRegistrationCode">
+            <mat-error
+              *ngIf="locationForm.get('professionalTaxRegistrationCode')?.hasError('pattern') && (locationForm.get('professionalTaxRegistrationCode')?.touched || locationForm.get('professionalTaxRegistrationCode')?.dirty)">
+              {{ 'organization.location.form.error.pt_registration_code_format' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.location.form.lwf_registration_code' | translate }}</mat-label>
+            <input matInput type="text" formControlName="lwfRegistrationCode">
+            <mat-error
+              *ngIf="locationForm.get('lwfRegistrationCode')?.hasError('pattern') && (locationForm.get('lwfRegistrationCode')?.touched || locationForm.get('lwfRegistrationCode')?.dirty)">
+              {{ 'organization.location.form.error.lwf_registration_code_format' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.location.form.tax_declaration_approvers' | translate }}</mat-label>
+            <mat-select formControlName="taxDeclarationApprovers">
+              <mat-option value="">{{ 'organization.location.form.tax_declaration_approvers_placeholder' | translate }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
     </div>
 
-    <form [formGroup]="locationForm" (ngSubmit)="onSubmission()">
-        <div class="form-group mt-2">
-            <label for="">Location Code <span class="text-danger">*</span></label>
-            <input class="form-control" formControlName="locationCode"
-                [ngClass]="{'is-invalid': locationForm.get('locationCode').invalid && (locationForm.get('locationCode').dirty || locationForm.get('locationCode').touched)}">
-            <div *ngIf="locationForm.get('locationCode').invalid && (locationForm.get('locationCode').dirty || locationForm.get('locationCode').touched)"
-                class="invalid-feedback">
-                <small class="text-danger">Location Code is required.</small>
-            </div>
-        </div>
-        <div class="form-group mt-2">
-            <label for="Select Country">Select Country <span class="text-danger">*</span></label>
-            <select formControlName="country"
-                [ngClass]="{'is-invalid': locationForm.get('country').invalid && (locationForm.get('country').dirty || locationForm.get('country').touched)}">
-                <option [ngValue]="null" disabled>Countries</option>
-                <option value="India">India</option>
-            </select>
-            <div *ngIf="locationForm.get('country').invalid && (locationForm.get('country').dirty || locationForm.get('country').touched)"
-                class="invalid-feedback">
-                <small class="text-danger">Country is required.</small>
-            </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="Select State">Select State <span class="text-danger">*</span></label>
-            <select formControlName="state"
-                [ngClass]="{'is-invalid': locationForm.get('state').invalid && (locationForm.get('state').dirty || locationForm.get('state').touched)}">
-                <option [ngValue]="null" disabled>States</option>
-                <option *ngFor="let state of states" value="{{state}}">{{state}}</option>
-            </select>
-            <div *ngIf="locationForm.get('state').invalid && (locationForm.get('state').dirty || locationForm.get('state').touched)"
-                class="invalid-feedback">
-                <small class="text-danger">State is required.</small>
-            </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="Select City">Select City <span class="text-danger">*</span></label>
-            <select formControlName="city"
-                [ngClass]="{'is-invalid': locationForm.get('city').invalid && (locationForm.get('city').dirty || locationForm.get('city').touched)}">
-                <option [ngValue]="null" disabled>Cities</option>
-                <option value="city-1">City-1</option>
-            </select>
-            <div *ngIf="locationForm.get('city').invalid && (locationForm.get('city').dirty || locationForm.get('city').touched)"
-                class="invalid-feedback">
-                <small class="text-danger">City is required.</small>
-            </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="">Select Organization <span class="text-danger">*</span></label>
-            <select formControlName="organization"
-                [ngClass]="{'is-invalid': locationForm.get('organization').invalid && (locationForm.get('organization').dirty || locationForm.get('organization').touched)}">
-                <option value="Arsteg">Arsteg</option>
-            </select>
-            <div *ngIf="locationForm.get('organization').invalid && (locationForm.get('organization').dirty || locationForm.get('organization').touched)"
-                class="invalid-feedback">
-                <small class="text-danger">Organization is required.</small>
-            </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="">Provident Fund Registration Code</label>
-            <input type="text" class="form-control" formControlName="providentFundRegistrationCode"
-              [ngClass]="{'is-invalid': locationForm.get('providentFundRegistrationCode').invalid && (locationForm.get('providentFundRegistrationCode').dirty || locationForm.get('providentFundRegistrationCode').touched)}">
-            
-            <div *ngIf="locationForm.get('providentFundRegistrationCode').invalid && (locationForm.get('providentFundRegistrationCode').dirty || locationForm.get('providentFundRegistrationCode').touched)" class="invalid-feedback">
-              <small class="text-danger">Format: e.g., TN/12345</small>
-            </div>
-          </div>        
-       
-        <div class="form-group mt-2">
-            <label for="">ESIC Registration Code</label>
-            <input type="text" class="form-control" formControlName="esicRegistrationCode"
-              [ngClass]="{'is-invalid': locationForm.get('esicRegistrationCode').invalid && (locationForm.get('esicRegistrationCode').dirty || locationForm.get('esicRegistrationCode').touched)}">
-            
-            <div *ngIf="locationForm.get('esicRegistrationCode').invalid && (locationForm.get('esicRegistrationCode').dirty || locationForm.get('esicRegistrationCode').touched)" class="invalid-feedback">
-              <small class="text-danger">Format: e.g., 17-digit ESIC number</small>
-            </div>
-          </div>
-          
-      
-        <div class="form-group mt-2">
-            <label for="">Professional Tax Registration Code</label>
-            <input type="text" class="form-control" formControlName="professionalTaxRegistrationCode"
-              [ngClass]="{'is-invalid': locationForm.get('professionalTaxRegistrationCode').invalid && (locationForm.get('professionalTaxRegistrationCode').dirty || locationForm.get('professionalTaxRegistrationCode').touched)}">
-            
-            <div *ngIf="locationForm.get('professionalTaxRegistrationCode').invalid && (locationForm.get('professionalTaxRegistrationCode').dirty || locationForm.get('professionalTaxRegistrationCode').touched)" class="invalid-feedback">
-              <small class="text-danger">Format: e.g.,MH/PT/12345</small>
-            </div>
-          </div>
-     
-        <div class="form-group mt-2">
-            <label for="">LWF Registration Code</label>
-            <input type="text" class="form-control" formControlName="lwfRegistrationCode"
-              [ngClass]="{'is-invalid': locationForm.get('lwfRegistrationCode').invalid && (locationForm.get('lwfRegistrationCode').dirty || locationForm.get('lwfRegistrationCode').touched)}">
-            
-            <div *ngIf="locationForm.get('lwfRegistrationCode').invalid && (locationForm.get('lwfRegistrationCode').dirty || locationForm.get('lwfRegistrationCode').touched)" class="invalid-feedback">
-              <small class="text-danger">Format: e.g., KA/LWF/1234</small>
-            </div>
-          </div>
-        <div class="form-group mt-2">
-            <label for="">Select Tax Declaration Approver</label>
-            <select name="" id="" formControlName="taxDeclarationApprovers">
-                <option value=""></option>
-            </select>
-        </div>
-
-        <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-            <button mat-flat-button type="button" (click)="clearselectedRequest()">Cancel</button>
-            <button mat-flat-button class="addBtn" type="submit"  [disabled]="isSubmitting">Submit</button>
-        </div>
-    </form>
-
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+      <button mat-flat-button (click)="onClose()">
+        {{ 'organization.location.cancel' | translate }}
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting">
+        {{ (isEdit ? 'organization.location.update' : 'organization.location.save') | translate }}
+      </button>
+    </div>
+  </form>
 </ng-template>
