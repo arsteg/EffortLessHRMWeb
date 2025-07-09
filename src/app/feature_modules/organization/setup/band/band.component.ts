@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -23,10 +23,14 @@ export class BandComponent {
   isSubmitting: boolean = false;
   selectedRecord: any;
   public sortOrder: string = '';
+  totalRecords: number = 0;
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  dialogRef: MatDialogRef<any> | null = null;
   columns: TableColumn[] = [
     {
       key: 'band',
-      name: 'Band'
+      name: this.translate.instant('organization.band.table.band')
     },
     {
       key: 'action',
@@ -82,7 +86,10 @@ export class BandComponent {
 
   getBands() {
     this.companyService.getBand().subscribe(res => {
-      this.bands = res.data;
+      //this.bands = res.data;
+      const data = Array.isArray(res.data) ? res.data : [];
+      this.bands = [...data];
+      this.totalRecords = data.length;
     });
   }
 
@@ -104,6 +111,7 @@ export class BandComponent {
           this.toast.success(this.translate.instant('organization.setup.band_added'), this.translate.instant('toast.success'));
           this.isSubmitting = false;
           this.bandForm.reset();
+          this.dialogRef.close(true);
         },
           err => { const errorMessage = err?.error?.message || err?.message || err 
             || this.translate.instant('organization.setup.band_update_fail')
@@ -121,6 +129,7 @@ export class BandComponent {
           this.bandForm.reset();
           this.isSubmitting = false;
           this.isEdit = false;
+          this.dialogRef.close(true);
         },
           err => {  const errorMessage = err?.error?.message || err?.message || err 
             || this.translate.instant('organization.setup.band_update_fail')
@@ -157,11 +166,13 @@ export class BandComponent {
   }
 
   open(content: any) {
+    this.dialogRef = this.dialog.open(content, {
+      disableClose: true,
+      width: '50%'
+    });
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.dialogRef = null;
     });
   }
 
@@ -196,4 +207,22 @@ export class BandComponent {
     });
   }
 
+  onClose() {
+    this.isEdit = false;
+    this.bandForm.reset();
+    this.dialogRef.close(true);
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+    this.getBands();
+  }
+
+  onSearchChange(searchText: string) {
+    this.searchText = searchText;
+    this.currentPage = 1;
+    this.bands.filter = searchText.trim().toLowerCase();
+    this.totalRecords = this.bands.filteredData.length;
+  }
 }

@@ -212,6 +212,76 @@
       "cancel": "Cancel",
       "save": "Save",
       "update": "Update"
+    },
+    "department": {
+      "modal": {
+        "add": "Add Department",
+        "update": "Update Department"
+      },
+      "form": {
+        "department_name": "Department Name",
+        "department_name_placeholder": "Enter Department Name",
+        "department_code": "Department Code",
+        "department_code_placeholder": "Enter Department Code",
+        "error": {
+          "department_name_required": "Department Name is required",
+          "department_code_required": "Department Code is required"
+        }
+      },
+      "sub_department": {
+        "assign": "Assign Sub-Department",
+        "label": "Assign Sub-Department",
+        "placeholder": "Select Sub-Department",
+        "submit": "Submit"
+      },
+      "table": {
+        "department_code": "Department Code",
+        "department_name": "Department Name"
+      },
+      "add_new": "Add New",
+      "cancel": "Cancel",
+      "save": "Save",
+      "update": "Update"
+    },
+    "designation": {
+      "add_new": "Add New",
+      "modal": {
+        "add": "Add Designation",
+        "update": "Update Designation"
+      },
+      "form": {
+        "designation_name": "Designation Name",
+        "designation_name_placeholder": "Enter Designation Name",
+        "error": {
+          "designation_name_required": "Designation Name is required"
+        }
+      },
+      "cancel": "Cancel",
+      "save": "Save",
+      "update": "Update",
+      "table": {
+        "designation": "Designation"
+      }
+    },
+    "band": {
+      "add_new": "Add New",
+      "modal": {
+        "add": "Add Band",
+        "update": "Update Band"
+      },
+      "form": {
+        "band_name": "Band Name",
+        "band_name_placeholder": "Enter Band Name",
+        "error": {
+          "band_name_required": "Band Name is required"
+        }
+      },
+      "cancel": "Cancel",
+      "save": "Save",
+      "update": "Update",
+      "table": {
+        "band": "Band"
+      }
     }
   }
 }
