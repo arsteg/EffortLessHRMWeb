@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tax-calculator',
@@ -52,7 +53,7 @@ export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy 
     private dialog: MatDialog,
     private userService: UserService,
     private taxService: TaxationService,
-    private companyService: CompanyService,
+    private companyService: CompanyService,private translate: TranslateService,
     private payrollService: PayrollService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef
@@ -140,7 +141,8 @@ export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy 
       },
       error: (err) => {
         console.error('Error fetching tax sections:', err);
-        this.toastr.error('Failed to fetch tax sections');
+        this.toastr.error(this.translate.instant('taxation.failed_to_fetch_tax_sections'), this.translate.instant('taxation.toast.error'));
+     
       }
     });
   }
@@ -153,7 +155,8 @@ export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy 
             try {
               component.section = JSON.parse(component.section);
             } catch (e) {
-              console.error('Error parsing component section:', e);
+              this.toastr.error(this.translate.instant('taxation.failed_to_fetch_tax_components'), this.translate.instant('taxation.toast.error'));
+    
             }
           }
           return component;
@@ -166,7 +169,8 @@ export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy 
       },
       error: (err) => {
         console.error('Error fetching tax components:', err);
-        this.toastr.error('Failed to fetch tax components');
+        this.toastr.error(this.translate.instant('taxation.failed_to_fetch_tax_components'), this.translate.instant('taxation.toast.error'));
+    
       }
     });
   }
@@ -180,7 +184,8 @@ export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy 
       },
       error: (err) => {
         console.error('Error fetching salary:', err);
-        this.toastr.error('Failed to fetch salary details');
+        this.toastr.error(this.translate.instant('taxation.failed_to_fetch_salary'), this.translate.instant('taxation.toast.error'));
+   
       }
     });
   }
@@ -192,8 +197,7 @@ export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy 
         this.getTaxSlabs(); // Fetch tax slabs after userRegime is set
       },
       error: (err) => {
-        console.error('Error fetching statutory settings:', err);
-        this.toastr.error('Failed to fetch statutory settings');
+        this.toastr.error(this.translate.instant('taxation.failed_to_fetch_statutory_settings'), this.translate.instant('taxation.toast.error'));
         this.userRegime = 'Old Regime';
         this.getTaxSlabs();
       }
@@ -284,18 +288,20 @@ export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy 
           this.taxSlabs = res.data.filter((slab: any) => slab?.regime === this.userRegime);
           if (this.taxSlabs.length === 0) {
             console.warn(`No tax slabs found for regime: ${this.userRegime}`);
-            this.toastr.warning(`No tax slabs found for ${this.userRegime}`);
+            this.toastr.warning(this.translate.instant('taxation.no_tax_slabs_found'), this.translate.instant('taxation.toast.error'));
+   
           }
         } else {
           console.warn('getTaxSlabs: res.data is not an array', res.data);
           this.taxSlabs = [];
-          this.toastr.error('Invalid tax slab data received');
+          this.toastr.error(this.translate.instant('taxation.invalid_tax_slab_data'), this.translate.instant('taxation.toast.error'));
+   
         }
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error fetching tax slabs:', err);
-        this.toastr.error('Failed to fetch tax slabs');
+        this.toastr.error(this.translate.instant('taxation.failed_to_fetch_tax_slabs'), this.translate.instant('taxation.toast.error'));
         this.taxSlabs = [];
       }
     });

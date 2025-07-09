@@ -1,318 +1,314 @@
 <div class="px-2">
-    <label class="me-auto">{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}} |
-        Statutory Details</label>
-
+    <label class="me-auto">{{selectedUser?.firstName | titlecase}} {{selectedUser?.lastName | titlecase}} | Statutory Details</label>
+  
     <form [formGroup]="statutoryDetailsForm" (ngSubmit)="onSubmission()">
-        <div class="d-flex">
-            <button mat-flat-button class="addBtn ms-auto my-2" type="submit">Save</button>
+      <div class="d-flex">
+        <button mat-flat-button class="addBtn ms-auto my-2" type="submit" [disabled]="isSubmitting">Save</button>
+      </div>
+  
+      <div class="row p-2">
+        <!-- Provident Fund Eligibility -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Is this Employee Eligible for the Provident Fund Deduction? <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="isEmployeeEligibleForPFDeduction" id="isEmployeeEligibleForPFDeduction-Yes" [value]="true">
+              <label class="form-check-label" for="isEmployeeEligibleForPFDeduction-Yes">Yes</label>
+            </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="isEmployeeEligibleForPFDeduction" id="isEmployeeEligibleForPFDeduction-No" [value]="false">
+              <label class="form-check-label" for="isEmployeeEligibleForPFDeduction-No">No</label>
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isEmployeeEligibleForPFDeduction')?.invalid && statutoryDetailsForm.get('isEmployeeEligibleForPFDeduction')?.touched && statutoryDetailsForm.get('isEmployeeEligibleForPFDeduction')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('isEmployeeEligibleForPFDeduction')?.errors?.['required']" translate>
+             common.missing_required_Field
+            </div>
+          </div>
         </div>
-
-        <div class="row p-2">
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Is this Employee Eligiable for the Provident Fund Deduction?
-                    <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio"
-                            formControlName="isEmployeeEligibleForPFDeduction"
-                            id="isEmployeeEligibleForPFDeduction-Yes" required
-                            [value]="true">
-                        <label class="form-check-label"
-                            for="isEmployeeEligibleForPFDeduction-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio"
-                            formControlName="isEmployeeEligibleForPFDeduction"
-                            id="isEmployeeEligibleForPFDeduction-No" required
-                            [value]="false">
-                        <label class="form-check-label"
-                            for="isEmployeeEligibleForPFDeduction-No">No</label>
-                    </div>
-                </div>
+  
+        <!-- Employee PF Capped -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Will this Employee's Provident Fund contribution be capped at the Provident Fund Ceiling? (Rs 15,000) <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="isEmployeePFCappedAtPFCeiling" id="isEmployeePFCappedAtPFCeiling-Yes" [value]="true">
+              <label class="form-check-label" for="isEmployeePFCappedAtPFCeiling-Yes">Yes</label>
             </div>
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Will this Employee's Provident Fund contribution be capped at the provident Fund Ceiling?
-                    (Rs 15,000)  <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio"
-                            formControlName="isEmployeePFCappedAtPFCeiling"
-                            id="isEmployeePFCappedAtPFCeiling-Yes" required
-                            [value]="true">
-                        <label class="form-check-label"
-                            for="isEmployeePFCappedAtPFCeiling-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio"
-                            formControlName="isEmployeePFCappedAtPFCeiling"
-                            id="isEmployeePFCappedAtPFCeiling-No" required
-                            [value]="false">
-                        <label class="form-check-label"
-                            for="isEmployeePFCappedAtPFCeiling-No">No</label>
-                    </div>
-                </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="isEmployeePFCappedAtPFCeiling" id="isEmployeePFCappedAtPFCeiling-No" [value]="false">
+              <label class="form-check-label" for="isEmployeePFCappedAtPFCeiling-No">No</label>
             </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Will this Employer's Provident Fund contribution be capped at the provident Fund Ceiling?
-                    (Rs 15,000)  <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio"
-                            formControlName="isEmployerPFCappedAtPFCeiling"
-                            id="isEmployerPFCappedAtPFCeiling-Yes" required
-                            [value]="true">
-                        <label class="form-check-label"
-                            for="isEmployerPFCappedAtPFCeiling-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio"
-                            formControlName="isEmployerPFCappedAtPFCeiling"
-                            id="isEmployerPFCappedAtPFCeiling-No" required
-                            [value]="false">
-                        <label class="form-check-label"
-                            for="isEmployerPFCappedAtPFCeiling-No">No</label>
-                    </div>
-                </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isEmployeePFCappedAtPFCeiling')?.invalid && statutoryDetailsForm.get('isEmployeePFCappedAtPFCeiling')?.touched && statutoryDetailsForm.get('isEmployeePFCappedAtPFCeiling')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('isEmployeePFCappedAtPFCeiling')?.errors?.['required']" translate>
+              common.missing_required_Field'
             </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">What will the Employee's Provident Fund Joining Date?</label>
-                <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="providentFundJoiningDate">
-            </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">What is the Employee's Provident Number?</label>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="Enter PF Number"
-                  formControlName="providentFundNumber"
-                  maxlength="22"
-                />
-                <div
-                *ngIf="statutoryDetailsForm.get('providentFundNumber')?.invalid && (statutoryDetailsForm.get('providentFundNumber')?.dirty || statutoryDetailsForm.get('providentFundNumber')?.touched)"
-                  class="text-danger small"
-                >
-                  <div *ngIf="statutoryDetailsForm.get('providentFundNumber')?.errors?.['pattern']">
-                    Provident Fund Number can only contain letters and numbers (max 22 characters).
-                  </div>
-                </div>
-              </div>
-              
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">What is the Employee's UAN Number?</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="Enter UAN Number"
-                  formControlName="UANNumber"
-                  maxlength="12"
-                />
-                <div
-                *ngIf="statutoryDetailsForm.get('UANNumber')?.invalid && (statutoryDetailsForm.get('UANNumber')?.dirty || statutoryDetailsForm.get('UANNumber')?.touched)"
-                class="text-danger small"
-              >
-                <div *ngIf="statutoryDetailsForm.get('UANNumber')?.errors?.['pattern']">
-                  UAN Number must be exactly 12 digits if provided.
-                </div>
-              </div>
-              
-              </div>
-              
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Would you like to set a fixed amount for your Provident Fund Wage?</label>
-                <input class="form-control" tyep="text" formControlName="fixedAmountForYourProvidentFundWage"
-                    placeholder="Enter PF Wage">
-            </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">What additional contribution % would this employee voluntarily contribute, above and
-                    beyond and mandate 12%?  <span class="text-danger">*</span></label>
-                <input class="form-control" type="text" placeholder="Enter PF Wage"  maxlength="5"
-                    formControlName="additionalPFContributionInPercentage">
-                    <div
-  *ngIf="statutoryDetailsForm.get('additionalPFContributionInPercentage')?.invalid && 
-         (statutoryDetailsForm.get('additionalPFContributionInPercentage')?.dirty || statutoryDetailsForm.get('additionalPFContributionInPercentage')?.touched)"
-  class="text-danger small"
->
-  <div *ngIf="statutoryDetailsForm.get('additionalPFContributionInPercentage')?.errors?.['pattern']">
-    Please enter a valid positive number without symbols or characters.
-  </div>
-</div>
-            </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Is found eligible, would this employee have ESIC deducted from his/her salary?  <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="isESICDeductedFromSalary"
-                            id="isESICDeductedFromSalary-Yes" required [value]="true">
-                        <label class="form-check-label" for="isESICDeductedFromSalary-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="isESICDeductedFromSalary"
-                            id="isESICDeductedFromSalary-No" required [value]="false">
-                        <label class="form-check-label" for="isESICDeductedFromSalary-No">No</label>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group col-md-6 mb-2">
-                <label for="">What is the Employee's ESIC Number?</label>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="Enter ESIC Number"
-                  formControlName="ESICNumber"
-                  maxlength="17"
-                />
-                <div
-                *ngIf="statutoryDetailsForm.get('ESICNumber')?.invalid && (statutoryDetailsForm.get('ESICNumber')?.dirty || statutoryDetailsForm.get('ESICNumber')?.touched)"
-                class="text-danger small"
-              >
-                <div *ngIf="statutoryDetailsForm.get('ESICNumber')?.errors?.['pattern']">
-                  ESIC Number must be exactly 17 digits.
-                </div>
-              </div>
-              
-              </div>
-              
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Should Professional Tax be deducted from his employee's payslip (if applicable for his/her
-                    branch location)?  <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="isTaxDeductedFromPlayslip"
-                            id="isTaxDeductedFromPlayslip-Yes" required [value]="true">
-                        <label class="form-check-label" for="isTaxDeductedFromPlayslip-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="isTaxDeductedFromPlayslip"
-                            id="isTaxDeductedFromPlayslip-No" required [value]="false">
-                        <label class="form-check-label" for="isTaxDeductedFromPlayslip-No">No</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Should LWF be deducted from his employee's payslip (if applicable for his/her branch
-                    location)?  <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="isLWFDeductedFromPlayslip"
-                            id="isLWFDeductedFromPlayslip-Yes" required [value]="true">
-                        <label class="form-check-label" for="isLWFDeductedFromPlayslip-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="isLWFDeductedFromPlayslip"
-                            id="isLWFDeductedFromPlayslip-No" required [value]="false">
-                        <label class="form-check-label" for="isLWFDeductedFromPlayslip-No">No</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">If applicable, Should Income Tax be deducted from the employee's salary?  <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="isIncomeTaxDeducted"
-                            id="isIncomeTaxDeducted-Yes" required [value]="true">
-                        <label class="form-check-label" for="isIncomeTaxDeducted-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="isIncomeTaxDeducted"
-                            id="isIncomeTaxDeducted-No" required [value]="false">
-                        <label class="form-check-label" for="isIncomeTaxDeducted-No">No</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Is this employee eligible for Gratuity?  <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="isGratuityEligible"
-                            id="isGratuityEligible-Yes" required [value]="true">
-                        <label class="form-check-label" for="isGratuityEligible-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="isGratuityEligible"
-                            id="isGratuityEligible-No" required [value]="false">
-                        <label class="form-check-label" for="isGratuityEligible-No">No</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Is this employee comes under Gratuity act?  <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="isComeUnderGratuityPaymentAct"
-                            id="isComeUnderGratuityPaymentAct-Yes" required [value]="true">
-                        <label class="form-check-label" for="isComeUnderGratuityPaymentAct-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="isComeUnderGratuityPaymentAct"
-                            id="isComeUnderGratuityPaymentAct-No" required [value]="false">
-                        <label class="form-check-label" for="isComeUnderGratuityPaymentAct-No">No</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">
-                    What is the Employee's tax Regime?
-                    <span class="text-danger">*</span>
-                  </label>
-                  <select formControlName="taxRegime" class="form-control" required>
-                    <option value="" disabled selected>Select Regime --</option>
-                    <option value="Old Regime">Old Regime</option>
-                    <option value="New Regime">New Regime</option>
-                  </select>
-            </div>
-
-            <div class="form-group">
-                <label for="">When was the tax Regime Updated?</label>
-                <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
-                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="taxRegimeUpdated">
-            </div>
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Is the Round Off applicable for this employee?  <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="roundOffApplicable"
-                            id="roundOffApplicable-Yes" required [value]="true">
-                        <label class="form-check-label" for="roundOffApplicable-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="roundOffApplicable"
-                            id="roundOffApplicable-No" required [value]="false">
-                        <label class="form-check-label" for="roundOffApplicable-No">No</label>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <div class="form-group col-md-6 mb-2">
-                <label for="">Is this employee eligible for Overtime?  <span class="text-danger">*</span></label>
-                <div class="d-flex">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" formControlName="eligibleForOvertime"
-                            id="eligibleForOvertime-Yes" required [value]="true">
-                        <label class="form-check-label" for="eligibleForOvertime-Yes">Yes</label>
-                    </div>
-                    <div class="form-check ms-3">
-                        <input class="form-check-input" type="radio" formControlName="eligibleForOvertime"
-                            id="eligibleForOvertime-No" required [value]="false">
-                        <label class="form-check-label" for="eligibleForOvertime-No">No</label>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
+  
+        <!-- Employer PF Capped -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Will this Employer's Provident Fund contribution be capped at the Provident Fund Ceiling? (Rs 15,000) <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="isEmployerPFCappedAtPFCeiling" id="isEmployerPFCappedAtPFCeiling-Yes" [value]="true">
+              <label class="form-check-label" for="isEmployerPFCappedAtPFCeiling-Yes">Yes</label>
+            </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="isEmployerPFCappedAtPFCeiling" id="isEmployerPFCappedAtPFCeiling-No" [value]="false">
+              <label class="form-check-label" for="isEmployerPFCappedAtPFCeiling-No">No</label>
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isEmployerPFCappedAtPFCeiling')?.invalid && statutoryDetailsForm.get('isEmployerPFCappedAtPFCeiling')?.touched && statutoryDetailsForm.get('isEmployerPFCappedAtPFCeiling')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('isEmployerPFCappedAtPFCeiling')?.errors?.['required']" translate>
+             common.missing_required_Field
+            </div>
+          </div>
+        </div>
+  
+        <!-- Provident Fund Joining Date -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">What is the Employee's Provident Fund Joining Date?</label>
+          <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="providentFundJoiningDate">
+        </div>
+  
+        <!-- Provident Fund Number -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">What is the Employee's Provident Fund Number?</label>
+          <input class="form-control" type="text" placeholder="Enter PF Number" formControlName="providentFundNumber" maxlength="22">
+          <div *ngIf="statutoryDetailsForm.get('providentFundNumber')?.invalid && (statutoryDetailsForm.get('providentFundNumber')?.dirty || statutoryDetailsForm.get('providentFundNumber')?.touched)" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('providentFundNumber')?.errors?.['pattern']" translate>
+           manage.users.employee-settings.invalid_provident_fund_number
+            </div>
+          </div>
+        </div>
+  
+        <!-- UAN Number -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">What is the Employee's UAN Number?</label>
+          <input type="text" class="form-control" placeholder="Enter UAN Number" formControlName="UANNumber" maxlength="12">
+          <div *ngIf="statutoryDetailsForm.get('UANNumber')?.invalid && (statutoryDetailsForm.get('UANNumber')?.dirty || statutoryDetailsForm.get('UANNumber')?.touched)" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('UANNumber')?.errors?.['pattern']" translate>
+             manage.users.employee-settings.invalid_uan_number
+            </div>
+          </div>
+        </div>
+  
+        <!-- Fixed PF Wage -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Would you like to set a fixed amount for your Provident Fund Wage?</label>
+          <input class="form-control" type="text" formControlName="fixedAmountForYourProvidentFundWage" placeholder="Enter PF Wage">
+        </div>
+  
+        <!-- Additional PF Contribution -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">What additional contribution % would this employee voluntarily contribute, above and beyond the mandatory 12%? <span class="text-danger">*</span></label>
+          <input class="form-control" type="text" placeholder="Enter PF Wage" maxlength="5" formControlName="additionalPFContributionInPercentage">
+          <div *ngIf="statutoryDetailsForm.get('additionalPFContributionInPercentage')?.invalid && (statutoryDetailsForm.get('additionalPFContributionInPercentage')?.dirty || statutoryDetailsForm.get('additionalPFContributionInPercentage')?.touched)" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('additionalPFContributionInPercentage')?.errors?.['pattern']" translate>
+            manage.users.employee-settings.invalid_percentage
+            </div>
+          </div>
+        </div>
+  
+        <!-- ESIC Deduction -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Is found eligible, would this employee have ESIC deducted from his/her salary? <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="isESICDeductedFromSalary" id="isESICDeductedFromSalary-Yes" [value]="true">
+              <label class="form-check-label" for="isESICDeductedFromSalary-Yes">Yes</label>
+            </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="isESICDeductedFromSalary" id="isESICDeductedFromSalary-No" [value]="false">
+              <label class="form-check-label" for="isESICDeductedFromSalary-No">No</label>
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isESICDeductedFromSalary')?.invalid && statutoryDetailsForm.get('isESICDeductedFromSalary')?.touched && statutoryDetailsForm.get('isESICDeductedFromSalary')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('isESICDeductedFromSalary')?.errors?.['required']" translate>
+            common.missing_required_Field
+            </div>
+          </div>
+        </div>
+  
+        <!-- ESIC Number -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">What is the Employee's ESIC Number?</label>
+          <input class="form-control" type="text" placeholder="Enter ESIC Number" formControlName="ESICNumber" maxlength="17">
+          <div *ngIf="statutoryDetailsForm.get('ESICNumber')?.invalid && (statutoryDetailsForm.get('ESICNumber')?.dirty || statutoryDetailsForm.get('ESICNumber')?.touched)" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('ESICNumber')?.errors?.['pattern']" translate>
+           manage.users.employee-settings.invalid_esic_number
+            </div>
+          </div>
+        </div>
+  
+        <!-- Professional Tax -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Should Professional Tax be deducted from this employee's payslip (if applicable for his/her branch location)? <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="isTaxDeductedFromPlayslip" id="isTaxDeductedFromPlayslip-Yes" [value]="true">
+              <label class="form-check-label" for="isTaxDeductedFromPlayslip-Yes">Yes</label>
+            </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="isTaxDeductedFromPlayslip" id="isTaxDeductedFromPlayslip-No" [value]="false">
+              <label class="form-check-label" for="isTaxDeductedFromPlayslip-No">No</label>
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isTaxDeductedFromPlayslip')?.invalid && statutoryDetailsForm.get('isTaxDeductedFromPlayslip')?.touched && statutoryDetailsForm.get('isTaxDeductedFromPlayslip')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('isTaxDeductedFromPlayslip')?.errors?.['required']" translate>
+            common.missing_required_Field
+            </div>
+          </div>
+        </div>
+  
+        <!-- LWF Deduction -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Should LWF be deducted from this employee's payslip (if applicable for his/her branch location)? <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="isLWFDeductedFromPlayslip" id="isLWFDeductedFromPlayslip-Yes" [value]="true">
+              <label class="form-check-label" for="isLWFDeductedFromPlayslip-Yes">Yes</label>
+            </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="isLWFDeductedFromPlayslip" id="isLWFDeductedFromPlayslip-No" [value]="false">
+              <label class="form-check-label" for="isLWFDeductedFromPlayslip-No">No</label>
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isLWFDeductedFromPlayslip')?.invalid && statutoryDetailsForm.get('isLWFDeductedFromPlayslip')?.touched && statutoryDetailsForm.get('isLWFDeductedFromPlayslip')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('isLWFDeductedFromPlayslip')?.errors?.['required']" translate>
+             common.missing_required_Field
+            </div>
+          </div>
+        </div>
+  
+        <!-- Income Tax Deduction -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">If applicable, should Income Tax be deducted from the employee's salary? <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="isIncomeTaxDeducted" id="isIncomeTaxDeducted-Yes" [value]="true">
+              <label class="form-check-label" for="isIncomeTaxDeducted-Yes">Yes</label>
+            </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="isIncomeTaxDeducted" id="isIncomeTaxDeducted-No" [value]="false">
+              <label class="form-check-label" for="isIncomeTaxDeducted-No">No</label>
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isIncomeTaxDeducted')?.invalid && statutoryDetailsForm.get('isIncomeTaxDeducted')?.touched && statutoryDetailsForm.get('isIncomeTaxDeducted')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('isIncomeTaxDeducted')?.errors?.['required']" translate>
+             common.missing_required_Field
+            </div>
+          </div>
+        </div>
+  
+        <!-- Gratuity Eligibility -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Is this employee eligible for Gratuity? <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="isGratuityEligible" id="isGratuityEligible-Yes" [value]="true">
+              <label class="form-check-label" for="isGratuityEligible-Yes">Yes</label>
+            </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="isGratuityEligible" id="isGratuityEligible-No" [value]="false">
+              <label class="form-check-label" for="isGratuityEligible-No">No</label>
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isGratuityEligible')?.invalid && statutoryDetailsForm.get('isGratuityEligible')?.touched && statutoryDetailsForm.get('isGratuityEligible')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('isGratuityEligible')?.errors?.['required']" translate>
+             common.missing_required_Field
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isGratuityEligible')?.errors?.['generalSettingRestricted']" class="text-danger small" translate>
+          manage.users.employee-settings.gratuity_restricted
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isGratuityEligible')?.errors?.['notCompletedFiveYears']" class="text-danger small" translate>
+        manage.users.employee-settings.gratuity_five_years
+          </div>
+        </div>
+  
+        <!-- Gratuity Act -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Is this employee covered under the Gratuity Act? <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="isComeUnderGratuityPaymentAct" id="isComeUnderGratuityPaymentAct-Yes" [value]="true">
+              <label class="form-check-label" for="isComeUnderGratuityPaymentAct-Yes">Yes</label>
+            </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="isComeUnderGratuityPaymentAct" id="isComeUnderGratuityPaymentAct-No" [value]="false">
+              <label class="form-check-label" for="isComeUnderGratuityPaymentAct-No">No</label>
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('isComeUnderGratuityPaymentAct')?.invalid && statutoryDetailsForm.get('isComeUnderGratuityPaymentAct')?.touched && statutoryDetailsForm.get('isComeUnderGratuityPaymentAct')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('isComeUnderGratuityPaymentAct')?.errors?.['required']" translate>
+             common.missing_required_Field
+            </div>
+          </div>
+        </div>
+  
+        <!-- Tax Regime -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">What is the Employee's Tax Regime? <span class="text-danger">*</span></label>
+          <select formControlName="taxRegime" class="form-control">
+            <option value="" disabled selected>Select Regime --</option>
+            <option value="Old Regime">Old Regime</option>
+            <option value="New Regime">New Regime</option>
+          </select>
+          <div *ngIf="statutoryDetailsForm.get('taxRegime')?.invalid && statutoryDetailsForm.get('taxRegime')?.touched && statutoryDetailsForm.get('taxRegime')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('taxRegime')?.errors?.['required']" translate>
+            common.missing_required_Field
+            </div>
+          </div>
+        </div>
+  
+        <!-- Tax Regime Updated -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">When was the Tax Regime Updated?</label>
+          <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="taxRegimeUpdated">
+        </div>
+  
+        <!-- Round Off -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Is Round Off applicable for this employee? <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="roundOffApplicable" id="roundOffApplicable-Yes" [value]="true">
+              <label class="form-check-label" for="roundOffApplicable-Yes">Yes</label>
+            </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="roundOffApplicable" id="roundOffApplicable-No" [value]="false">
+              <label class="form-check-label" for="roundOffApplicable-No">No</label>
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('roundOffApplicable')?.invalid && statutoryDetailsForm.get('roundOffApplicable')?.touched && statutoryDetailsForm.get('roundOffApplicable')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('roundOffApplicable')?.errors?.['required']" translate>
+             common.missing_required_Field
+            </div>
+          </div>
+        </div>
+  
+        <!-- Overtime Eligibility -->
+        <div class="form-group col-md-6 mb-2">
+          <label for="">Is this employee eligible for Overtime? <span class="text-danger">*</span></label>
+          <div class="d-flex">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="eligibleForOvertime" id="eligibleForOvertime-Yes" [value]="true">
+              <label class="form-check-label" for="eligibleForOvertime-Yes">Yes</label>
+            </div>
+            <div class="form-check ms-3">
+              <input class="form-check-input" type="radio" formControlName="eligibleForOvertime" id="eligibleForOvertime-No" [value]="false">
+              <label class="form-check-label" for="eligibleForOvertime-No">No</label>
+            </div>
+          </div>
+          <div *ngIf="statutoryDetailsForm.get('eligibleForOvertime')?.invalid && statutoryDetailsForm.get('eligibleForOvertime')?.touched && statutoryDetailsForm.get('eligibleForOvertime')?.enabled" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('eligibleForOvertime')?.errors?.['required']" translate>
+              common.missing_required_Field
+            </div>
+          </div>
+        </div>
+      </div>
     </form>
-</div>
+  </div>

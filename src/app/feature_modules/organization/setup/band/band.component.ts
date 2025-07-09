@@ -101,7 +101,7 @@ export class BandComponent {
       if (!this.isEdit) {
         this.companyService.addBand(this.bandForm.value).subscribe(res => {
           this.getBands();
-          this.toast.success(this.translate.instant('organization.setup.band_updated'), this.translate.instant('toast.success'));
+          this.toast.success(this.translate.instant('organization.setup.band_added'), this.translate.instant('toast.success'));
           this.isSubmitting = false;
           this.bandForm.reset();
         },

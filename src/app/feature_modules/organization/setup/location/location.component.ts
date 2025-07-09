@@ -147,7 +147,7 @@ export class LocationComponent {
     if (!this.isEdit) {
       this.companyService.addLocation(this.locationForm.value).subscribe(res => {
         this.getLocations();
-        this.toast.success(this.translate.instant('organization.setup.Location_added'), this.translate.instant('toast.success'));
+        this.toast.success(this.translate.instant('organization.setup.Location_added'));
         this.isSubmitting = false;
         this.locationForm.reset();
       },
@@ -162,7 +162,7 @@ export class LocationComponent {
     // updateZone
     else if (this.isEdit) {
       this.companyService.updateLocation(this.selectedZone._id, this.locationForm.value).subscribe(res => {
-        this.toast.success(this.translate.instant('organization.setup.Location_updated'), this.translate.instant('toast.success'));
+        this.toast.success(this.translate.instant('organization.setup.Location_updated'));
         this.getLocations();
         this.locationForm.reset();
         this.isEdit = false;
@@ -224,7 +224,7 @@ export class LocationComponent {
   deleteLocation(id: string) {
     this.companyService.deleteLocation(id).subscribe((res: any) => {
       this.getLocations();
-      this.toast.success(this.translate.instant('organization.setup.location_deleted'), this.translate.instant('toast.success'));
+      this.toast.success(this.translate.instant('organization.setup.location_deleted'));
    
     },
       (err) => {
