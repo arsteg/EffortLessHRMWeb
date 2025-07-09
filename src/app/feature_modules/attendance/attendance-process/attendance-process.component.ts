@@ -156,10 +156,10 @@ attendanceTemplateValidator(): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } | null => {
     const selectedUserIds: string[] = control.value;
     if (!selectedUserIds || selectedUserIds.length === 0) {
-      return null; // Let Validators.required handle empty selection
+      return null;
     }
     const hasTemplateAssigned = selectedUserIds.every(userId =>
-      this.attendanceTemplateAssignment?.find(template => template.employee === userId)
+      this.attendanceTemplateAssignment?.find(template => template.employee?._id === userId)
     );
     return hasTemplateAssigned ? null : { 'noAttendanceTemplate': true };
   };
@@ -195,7 +195,7 @@ attendanceTemplateValidator(): ValidatorFn {
 
         // Check for users without templates
         const usersWithoutTemplate = selectedUserIds.filter(userId =>
-          !this.attendanceTemplateAssignment.some(template => template.employee === userId)
+          !this.attendanceTemplateAssignment.some(template => template.employee?._id === userId)
         );
 
         if (usersWithoutTemplate.length > 0) {
