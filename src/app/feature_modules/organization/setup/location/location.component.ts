@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -28,6 +28,10 @@ export class LocationComponent {
   isSubmitting: boolean = false;
   countryName = '';
   selectedCountryCode: string;
+  dialogRef: MatDialogRef<any> | null = null;
+  totalRecords: number = 0;
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
   states = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
@@ -61,15 +65,15 @@ export class LocationComponent {
   public sortOrder: string = '';
 
   columns: TableColumn[] = [
-    { key: 'locationCode', name: 'Location Code' },
-    { key: 'country', name: 'Country' },
-    { key: 'state', name: 'State' },
-    { key: 'city', name: 'City' },
-    { key: 'organization', name: 'Organization' },
-    { key: 'providentFundRegistrationCode', name: 'PF Reg. Code' },
-    { key: 'esicRegistrationCode', name: 'ESIC Reg. Code' },
-    { key: 'professionalTaxRegistrationCode', name: 'Professional Tax Reg. Code' },
-    { key: 'lwfRegistrationCode', name: 'LWF Reg. Code' },
+    { key: 'locationCode', name: this.translate.instant('organization.location.table.location_code') },
+    { key: 'country', name: this.translate.instant('organization.location.table.country') },
+    { key: 'state', name: this.translate.instant('organization.location.table.state') },
+    { key: 'city', name: this.translate.instant('organization.location.table.city') },
+    { key: 'organization', name: this.translate.instant('organization.location.table.organization') },
+    { key: 'providentFundRegistrationCode', name: this.translate.instant('organization.location.table.pf_registration_code') },
+    { key: 'esicRegistrationCode', name: this.translate.instant('organization.location.table.esic_registration_code') },
+    { key: 'professionalTaxRegistrationCode', name: this.translate.instant('organization.location.table.pt_registration_code') },
+    { key: 'lwfRegistrationCode', name: this.translate.instant('organization.location.table.lwf_registration_code') },
     {
       key: 'action', name: 'Action', isAction: true, options: [
         {
@@ -130,7 +134,10 @@ export class LocationComponent {
 
   getLocations() {
     this.companyService.getLocations().subscribe(res => {
-      this.locations = res.data;
+      //this.locations = res.data;
+      const data = Array.isArray(res.data) ? res.data : [];
+      this.locations = [...data]; // Spread operator to ensure change detection
+      this.totalRecords = data.length;
     });
   }
 
@@ -147,12 +154,13 @@ export class LocationComponent {
     if (!this.isEdit) {
       this.companyService.addLocation(this.locationForm.value).subscribe(res => {
         this.getLocations();
-        this.toast.success(this.translate.instant('organization.setup.Location_added'), this.translate.instant('toast.success'));
+        this.toast.success(this.translate.instant('organization.setup.Location_added'));
         this.isSubmitting = false;
         this.locationForm.reset();
+        this.dialogRef.close(true);
       },
       err => { const errorMessage = err?.error?.message || err?.message || err 
-        || this.translate.instant('organization.setup.Location_add_fail')
+        || this.translate.instant('organization.setup.location_add_fail')
         ;
         this.toast.error(errorMessage, 'Error!'); 
         this.isSubmitting = false;
@@ -162,16 +170,17 @@ export class LocationComponent {
     // updateZone
     else if (this.isEdit) {
       this.companyService.updateLocation(this.selectedZone._id, this.locationForm.value).subscribe(res => {
-        this.toast.success(this.translate.instant('organization.setup.Location_updated'), this.translate.instant('toast.success'));
+        this.toast.success(this.translate.instant('organization.setup.Location_updated'));
         this.getLocations();
         this.locationForm.reset();
         this.isEdit = false;
         this.isSubmitting = false;
         this.locationForm.get('locationCode').enable();
+        this.dialogRef.close(true);
 
       },
       err => { const errorMessage = err?.error?.message || err?.message || err 
-        || this.translate.instant('organization.setup.Location_add_fail')
+        || this.translate.instant('organization.setup.location_add_fail')
         ;
         this.toast.error(errorMessage, 'Error!'); 
         this.isSubmitting = false;
@@ -214,17 +223,21 @@ export class LocationComponent {
 
   open(content: any) {
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef = this.dialog.open(content, {
+      disableClose: true,
+      width: '50%'
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.dialogRef = null;
     });
   }
+  
 
   deleteLocation(id: string) {
     this.companyService.deleteLocation(id).subscribe((res: any) => {
       this.getLocations();
-      this.toast.success(this.translate.instant('organization.setup.location_deleted'), this.translate.instant('toast.success'));
+      this.toast.success(this.translate.instant('organization.setup.location_deleted'));
    
     },
       (err) => {
@@ -249,4 +262,19 @@ export class LocationComponent {
     });
   }
 
+  onClose(){
+    this.locationForm.reset();
+    this.dialogRef.close(true);
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+    this.getLocations();
+  }
+
+  onSearchChange(searchText: string) {
+    this.currentPage = 1;
+    this.getLocations();
+  }
 }

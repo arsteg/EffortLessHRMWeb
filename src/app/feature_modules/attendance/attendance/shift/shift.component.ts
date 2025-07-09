@@ -324,7 +324,7 @@ export class ShiftComponent {
 
   open(content: any) {
     this.dialogRef = this.dialog.open(this.addModal, {
-      width: '600px',
+      width: '50%',
       disableClose: true
     });
     this.dialogRef.afterClosed().subscribe(result => {

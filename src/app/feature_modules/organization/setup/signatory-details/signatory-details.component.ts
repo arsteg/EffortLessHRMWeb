@@ -102,7 +102,7 @@ export class SignatoryDetailsComponent {
     if (!this.isEdit) {
       this.companyService.addSignatoryDetails(this.signatoryDetailForm.value).subscribe(res => {
         this.getSignatoryDetails();      
-        this.toast.success(this.translate.instant('organization.setup.signatory_updated'), this.translate.instant('toast.success'));
+        this.toast.success(this.translate.instant('organization.setup.signatory_updated'));
           this.signatoryDetailForm.reset();
         this.isSubmitting = false;
       },
@@ -116,7 +116,7 @@ export class SignatoryDetailsComponent {
     // updateZone
     else if (this.isEdit) {
       this.companyService.updateSignatoryDetails(this.selectedRecord._id, this.signatoryDetailForm.value).subscribe(res => {
-          this.toast.success(this.translate.instant('organization.setup.signatory_updated'), this.translate.instant('toast.success'));
+          this.toast.success(this.translate.instant('organization.setup.signatory_updated'));
         this.getSignatoryDetails();
         this.isSubmitting = false;
         this.signatoryDetailForm.reset();
@@ -166,7 +166,7 @@ export class SignatoryDetailsComponent {
   deleteBand(id: string) {
     this.companyService.deleteSignatoryDetails(id).subscribe((res: any) => {
       this.getSignatoryDetails();
-      this.toast.success(this.translate.instant('organization.setup.signatory_deleted'), this.translate.instant('toast.success'));
+      this.toast.success(this.translate.instant('organization.setup.signatory_deleted'));
     
     },
       (err) => {

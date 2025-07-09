@@ -5,13 +5,11 @@
         <h2>My Tax Declarations</h2>
 
         <div>
-            <button type="button" mat-flat-button color="primary"
-                [disabled]="userTaxRegime != 'Old Regime' && userStatutoryDetails === null"
-                (click)="isEdit= false; open(addModal)">Add&nbsp;Tax&nbsp;Declaration</button>
+            <button type="button" mat-flat-button color="primary" (click)="isEdit= false;handleAddTaxDeclaration()"
+               >Add&nbsp;Tax&nbsp;Declaration</button>
 
             <button type="button" class="ms-2 " color="primary" mat-flat-button
-                [disabled]="userStatutoryDetails === null"
-                (click)="getTaxDeclaration(); taxEditView= false; taxView = true;">Tax&nbsp;Calculator</button>
+            (click)="handleOpenTaxCalculator();">Tax&nbsp;Calculator</button>
         </div>
     </div>
 

@@ -180,7 +180,7 @@ export class HolidaysComponent {
       if (!this.isEdit) {
         this.companyService.addHolidays(formData).subscribe(res => {
           this.getHolidays();
-          this.toast.success(this.translate.instant('organization.setup.holiday_added'), this.translate.instant('toast.success')) 
+          this.toast.success(this.translate.instant('organization.setup.holiday_added')) 
           this.holidayForm.reset(this.getDefaultFormValues());
         },
           err => {  const errorMessage = err?.error?.message || err?.message || err 
@@ -192,7 +192,7 @@ export class HolidaysComponent {
       }
       else if (this.isEdit) {
         this.companyService.updateHolidays(this.selectedRecord._id, formData).subscribe(res => {
-          this.toast.success(this.translate.instant('organization.setup.holiday_updated'), this.translate.instant('toast.success'));
+          this.toast.success(this.translate.instant('organization.setup.holiday_updated'));
       
           this.getHolidays();
           this.holidayForm.reset(this.getDefaultFormValues());
@@ -254,7 +254,7 @@ export class HolidaysComponent {
   deleteHoliday(id: string) {
     this.companyService.deleteHolidays(id).subscribe((res: any) => {
       this.getHolidays();
-      this.toast.success(this.translate.instant('organization.setup.holiday_deleted'), this.translate.instant('toast.success'));
+      this.toast.success(this.translate.instant('organization.setup.holiday_deleted'));
     },
       (err) => {
         const errorMessage = err?.error?.message || err?.message || err 

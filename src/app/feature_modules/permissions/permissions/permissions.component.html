@@ -20,7 +20,7 @@
         <div>
           <div class="position-relative">
             <button mat-flat-button class="position-absolute end-0" color="primary" data-bs-toggle="offcanvas" (click)="openAddEditDialog('userRole')">
-              <mat-icon>add</mat-icon>{{'permissions.add_user_role' | translate}}
+              {{'permissions.add_user_role' | translate}}
             </button>
           </div>
           <hrm-table [data]="this.userRolesDataSource.data" [columns]="userRolesColumns" [isServerSide]="false"
@@ -45,7 +45,7 @@
             <mat-card-content>
               <div class="row">
                 <div class="col-md-3 col-sm-6 mb-2" *ngFor="let permission of group.permissions">
-                  <mat-checkbox
+                  <mat-checkbox color="primary"
                     [checked]="isPermissionAssigned(group.roleId, permission._id)"
                     (change)="onPermissionToggle($event, group.roleId, permission._id)"
                     class="d-block"
