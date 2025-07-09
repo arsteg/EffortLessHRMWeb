@@ -4,85 +4,104 @@
     </div>
 </div>
 
+<hrm-table 
+    [data]="zones.data" 
+    [columns]="columns" 
+    [isServerSide]="false" 
+    [showSearch]="true"
+    [totalItems]="totalRecords" 
+    [pageSize]="recordsPerPage"
+    (pageChanged)="onPageChange($event)"
+    (searchChanged)="onSearchChange($event)"
+    (actionClicked)="onActionClick($event)">
+</hrm-table>
 
-<hrm-table [data]="zones.data" [columns]="columns" [showExport]="'none'" [showSearch]="true"
-    (actionClicked)="onActionClick($event)"></hrm-table>
 
-
-<!-- add company -->
 <ng-template #addModal let-modal>
-    <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Zone</h1>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      {{ (isEdit ? 'organization.zone.update' : 'organization.zone.add') | translate }}
+      {{ 'organization.zone.zonetitle' | translate }}
+    </h1>
+    <button mat-icon-button mat-dialog-close="onClose();" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="zoneForm" (ngSubmit)="onSubmission()">
+    <div mat-dialog-content>
+      <div class="row m-0">
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.zone.form.start_date' | translate }}</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="startDate" placeholder="YYYY-MM-DD">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error
+              *ngIf="zoneForm.get('startDate')?.hasError('required') && (zoneForm.get('startDate')?.touched || zoneForm.get('startDate')?.dirty)">
+              {{ 'organization.zone.form.error.start_date_required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.zone.form.zone_code' | translate }}</mat-label>
+            <input matInput type="text" formControlName="zoneCode">
+            <mat-error
+              *ngIf="zoneForm.get('zoneCode')?.hasError('required') && (zoneForm.get('zoneCode')?.touched || zoneForm.get('zoneCode')?.dirty)">
+              {{ 'organization.zone.form.error.zone_code_required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
+
+        <div class="form-group col-md-6">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.zone.form.zone_name' | translate }}</mat-label>
+            <input matInput type="text" formControlName="zoneName">
+            <mat-error
+              *ngIf="zoneForm.get('zoneName')?.hasError('required') && (zoneForm.get('zoneName')?.touched || zoneForm.get('zoneName')?.dirty)">
+              {{ 'organization.zone.form.error.zone_name_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-12">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.zone.form.description' | translate }}</mat-label>
+            <textarea matInput formControlName="description" placeholder="{{ 'organization.zone.form.description_placeholder' | translate }}" rows="2"></textarea>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-12">
+          <label>{{ 'organization.zone.form.status' | translate }}</label>
+          <div class="d-flex">
+            <mat-radio-group formControlName="status">
+              <mat-radio-button color="primary" value="Active">
+                {{ 'organization.zone.form.status_active' | translate }}
+              </mat-radio-button>
+              <mat-radio-button color="primary" value="Inactive" class="ms-3">
+                {{ 'organization.zone.form.status_inactive' | translate }}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+          <div
+            *ngIf="zoneForm.get('status')?.hasError('required') && (zoneForm.get('status')?.touched || zoneForm.get('status')?.dirty)">
+            <small class="text-danger">
+              {{ 'organization.zone.form.error.status_required' | translate }}
+            </small>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <form [formGroup]="zoneForm" (ngSubmit)="onSubmission()">
-
-        <div class="form-group">
-            <label for="">Start Date <span class="text-danger">*</span></label>
-            <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
-                [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate">
-            <div
-                *ngIf="zoneForm.get('startDate').invalid && (zoneForm.get('startDate').dirty || zoneForm.get('startDate').touched)">
-                <small class="text-danger">Start Date is required</small>
-            </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="">Zone Code <span class="text-danger">*</span></label>
-            <input class="form-control" formControlName="zoneCode">
-            <div
-                *ngIf="zoneForm.get('zoneCode').invalid && (zoneForm.get('zoneCode').dirty || zoneForm.get('zoneCode').touched)">
-                <small class="text-danger">Zone Code is required</small>
-            </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="">Zone Name <span class="text-danger">*</span></label>
-            <input class="form-control" formControlName="zoneName">
-            <div
-                *ngIf="zoneForm.get('zoneName').invalid && (zoneForm.get('zoneName').dirty || zoneForm.get('zoneName').touched)">
-                <small class="text-danger">Zone Name is required</small>
-            </div>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="">Description</label>
-            <textarea class="form-control" formControlName="description" placeholder="Add Description"
-                row="2"></textarea>
-        </div>
-
-        <div class="form-group mt-2">
-            <label for="">Status <span class="text-danger">*</span></label>
-            <div class="d-flex">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" formControlName="status" id="flexRadioDefault-Yes"
-                        required value="Active">
-                    <label class="form-check-label" for="flexRadioDefault-Yes">
-                        Active
-                    </label>
-                </div>
-                <div class="form-check ms-3">
-                    <input class="form-check-input" type="radio" formControlName="status" id="flexRadioDefault-No"
-                        required value="Inactive">
-                    <label class="form-check-label" for="flexRadioDefault-No">
-                        Inactive
-                    </label>
-                </div>
-            </div>
-            <div
-                *ngIf="zoneForm.get('status').invalid && (zoneForm.get('status').dirty || zoneForm.get('status').touched)">
-                <small class="text-danger">Status is required</small>
-            </div>
-        </div>
-
-        <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-            <button mat-flat-button type="button" (click)="clearselectedRequest()">Cancel</button>
-            <button mat-flat-button class="addBtn" type="submit" [disabled]="!zoneForm.valid">Submit</button>
-        </div>
-    </form>
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+      <button mat-flat-button mat-dialog-close="onClose();">
+        {{ 'organization.zone.cancel' | translate }}
+      </button>
+      <button mat-flat-button color="primary" type="submit">
+        {{ (isEdit ? 'organization.zone.update' : 'organization.zone.save') | translate }}
+      </button>
+    </div>
+  </form>
 </ng-template>

@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { UpdateApplicationComponent } from '../update-application/update-application.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ExportService } from 'src/app/_services/export.service';
 import { ViewApplicationComponent } from '../view-application/view-application.component';
@@ -13,6 +13,7 @@ import { FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { forkJoin, map, of } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-show-application',
@@ -39,6 +40,71 @@ export class ShowApplicationComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   displayedColumns: string[] = ['employeeName', 'leaveCategory', 'startDate', 'endDate', 'totalLeaveDays', 'status', 'actions'];
+  dialogRef: MatDialogRef<any> | null = null;
+  allData: any[] = [];
+  columns: TableColumn[] = [
+    {
+      key: 'employeeName',
+      name: this.translate.instant('leave.employeeName'),
+      valueFn: (row: any) => this.getUser(row.employee) || ''
+    },
+    {
+      key: 'leaveCategory',
+      name: this.translate.instant('leave.leaveCategory'),
+      valueFn: (row: any) => this.getCategory(row.leaveCategory) || ''
+    },
+    {
+      key: 'startDate',
+      name: this.translate.instant('leave.startDate'),
+      valueFn: (row: any) => this.datePipe.transform(row.startDate, 'mediumDate') || ''
+    },
+    {
+      key: 'endDate',
+      name: this.translate.instant('leave.endDate'),
+      valueFn: (row: any) => this.datePipe.transform(row.endDate, 'mediumDate') || ''
+    },
+    {
+      key: 'totalLeaveDays',
+      name: this.translate.instant('leave.totalLeaveDays'),
+      valueFn: (row: any) => row.totalLeaveDays || ''
+    },
+    {
+      key: 'status',
+      name: this.translate.instant('leave._status'),
+      valueFn: (row: any) => row.status || ''
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('leave.actions'),
+      isAction: true,
+      options: [
+        {
+          label: 'Approve',
+          icon: 'check_circle',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.actionOptions.approve || !this.checkForApproval(row)
+        },
+        {
+          label: 'Reject',
+          icon: 'person_remove',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.actionOptions.reject
+        },
+        {
+          label: 'Delete',
+          icon: 'delete',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.actionOptions.delete
+        },
+        {
+          label: 'View',
+          icon: 'visibility',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.actionOptions.view
+        }
+      ]
+    }
+  ];
 
   constructor(
     private modalService: NgbModal,
@@ -69,8 +135,8 @@ export class ShowApplicationComponent {
     this.getleaveCatgeories();
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
     this.getLeaveApplication();
   }
 
@@ -81,7 +147,7 @@ export class ShowApplicationComponent {
 
   onClose(event: any) {
     if (event) {
-      this.modalService.dismissAll();
+      this.dialogRef.close(true);
     }
   }
 
@@ -113,23 +179,23 @@ export class ShowApplicationComponent {
   }
 
   open(content: any) {
-    const dialogRef = this.dialog.open(content, {
-      width: '500px',
+    this.dialogRef = this.dialog.open(content, {
+      width: '50%',
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });
   }
 
   openSecondModal(selectedReport: any): void {
     this.leaveService.leave.next(selectedReport);
-    const dialogRef = this.dialog.open(ViewApplicationComponent, {
+    this.dialogRef = this.dialog.open(ViewApplicationComponent, {
       width: '50%',
       data: { report: selectedReport }
     });
-    dialogRef.afterClosed().subscribe(result => {
+    this.dialogRef.afterClosed().subscribe(result => {
       this.getLeaveApplication();
     });
   }
@@ -186,6 +252,7 @@ export class ShowApplicationComponent {
       return this.leaveService.getLeaveApplication(requestBody).pipe(
         map((res: any) => {
           this.leaveApplication.data = res.data;
+          this.allData = res.data;
           this.totalRecords = res.total;
           this.leaveApplication.data = res.data.map((leave: any) => {
             leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
@@ -196,6 +263,7 @@ export class ShowApplicationComponent {
               endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
             };
           });
+          this.allData = this.leaveApplication.data;
           return res;
         })
       );
@@ -207,6 +275,7 @@ export class ShowApplicationComponent {
           this.leaveApplication.data.forEach((leave: any) => {
             leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
           });
+          this.allData = this.leaveApplication.data;
           return res;
         })
       );
@@ -218,6 +287,7 @@ export class ShowApplicationComponent {
           this.leaveApplication.data.forEach((leave: any) => {
             leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
           });
+          this.allData = this.leaveApplication.data;
           return res;
         })
       );
@@ -255,5 +325,70 @@ export class ShowApplicationComponent {
 
   checkForApproval(leavecategory: any) {
     return true;
+  }
+
+  // CHANGE: Added onSortChange to handle sorting
+  onSortChange(event: any) {
+    const sorted = this.leaveApplication.data.slice().sort((a: any, b: any) => {
+      let valueA: any = '';
+      let valueB: any = '';
+
+      if (event.active === 'employeeName') {
+        valueA = this.getUser(a.employee)?.toLowerCase() || '';
+        valueB = this.getUser(b.employee)?.toLowerCase() || '';
+      } else if (event.active === 'leaveCategory') {
+        valueA = this.getCategory(a.leaveCategory)?.toLowerCase() || '';
+        valueB = this.getCategory(b.leaveCategory)?.toLowerCase() || '';
+      } else if (event.active === 'startDate' || event.active === 'endDate') {
+        valueA = new Date(a[event.active]).getTime();
+        valueB = new Date(b[event.active]).getTime();
+      } else {
+        valueA = a[event.active]?.toString().toLowerCase() || '';
+        valueB = b[event.active]?.toString().toLowerCase() || '';
+      }
+
+      valueA = valueA ?? '';
+      valueB = valueB ?? '';
+
+      if (valueA < valueB) return event.direction === 'asc' ? -1 : 1;
+      if (valueA > valueB) return event.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    this.leaveApplication.data = sorted;
+    this.leaveApplication._updateChangeSubscription();
+  }
+
+  onSearchChange(search: string) {
+    const lowerSearch = search.toLowerCase();
+    const data = this.allData.filter((row: any) => {
+      const valuesToSearch = [
+        this.getUser(row.employee),
+        this.getCategory(row.leaveCategory),
+        this.datePipe.transform(row.startDate, 'mediumDate'),
+        this.datePipe.transform(row.endDate, 'mediumDate'),
+        row.totalLeaveDays?.toString(),
+        row.status
+      ];
+
+      return valuesToSearch.some(value =>
+        value?.toString().toLowerCase().includes(lowerSearch)
+      );
+    });
+
+    this.leaveApplication.data = data;
+    this.leaveApplication._updateChangeSubscription();
+  }
+
+  handleAction(event: any) {
+    if (event.action.label === 'Approve') {
+      this.openStatusModal(event.row, 'Approved');
+    } else if (event.action.label === 'Reject') {
+      this.openStatusModal(event.row, 'Rejected');
+    } else if (event.action.label === 'Delete') {
+      this.deleteDialog(event.row._id);
+    } else if (event.action.label === 'View') {
+      this.openSecondModal(event.row);
+    }
   }
 }

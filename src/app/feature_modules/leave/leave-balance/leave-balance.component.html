@@ -1,10 +1,84 @@
 <div class="pt-4">
-    <div class="bg-white mt-5 py-2 px-3 tableContainer">
+    <div class="bg-white mt-0 py-2 px-3">
+        <form [formGroup]="leaveBalanceForm" (ngSubmit)="getLeaveBalance()">
+            <div class="row m-0">
+                <ng-container *ngIf="portalView == 'admin'">
+                    <div class="form-group col-md-3">
+                        <mat-form-field class="w-100">
+                            <mat-label>{{ 'leave.selectEmployee' | translate }}</mat-label>
+                            <mat-select name="users" formControlName="user">
+                                <mat-option *ngFor="let member of users" [value]="member.id" (click)="selecteduser(member.id)">
+                                    {{ member?.name | titlecase }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="leaveBalanceForm.get('user')?.invalid && (leaveBalanceForm.get('user')?.touched || leaveBalanceForm.get('user')?.dirty)">
+                                {{ error | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="portalView == 'user' && extractedUrl == 'my-team-balance'">
+                    <div class="form-group col-md-3">
+                        <mat-form-field class="w-100">
+                            <mat-label>{{ 'leave.selectTeamMember' | translate }}</mat-label>
+                            <mat-select id="member" name="member" formControlName="member">
+                                <mat-option *ngFor="let m of users" [value]="m|json" (click)="selecteduser(m.id)">
+                                    {{ m.name | titlecase }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="leaveBalanceForm.get('member')?.invalid && (leaveBalanceForm.get('member')?.touched || leaveBalanceForm.get('member')?.dirty)">
+                                {{ error | translate }}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </ng-container>
+
+                <div class="form-group col-md-3">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ 'leave.selectLeaveCycle' | translate }}</mat-label>
+                        <mat-select formControlName="cycle">
+                            <mat-option *ngFor="let year of years" [value]="year.label">
+                                {{ year.label }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="form-group col-md-3">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ 'leave.selectLeaveCategory' | translate }}</mat-label>
+                        <mat-select formControlName="category">
+                            <mat-option *ngFor="let category of leaveCategories" [value]="category?.leaveCategory?._id">
+                                {{ category?.leaveCategory?.label | titlecase }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row m-0">
+                <div class="col-12 mt-2">
+                    <hrm-table 
+                        [data]="leaveBalance" 
+                        [isServerSide]="false" 
+                        [columns]="columns" 
+                        [showExport]="'none'" 
+                        [showSearch]="false" 
+                        [totalItems]="totalRecords"
+                    >
+                    </hrm-table>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- 
+<div class="pt-4">
+    <div class="bg-white mt-0 py-2 px-3">
         <form [formGroup]="leaveBalanceForm" (ngSubmit)="getLeaveBalance()">
             <ng-container *ngIf="portalView == 'admin'">
                 <div class="form-group d-flex mb-4 justify-content-between align-items-baseline">
                     <label for="">{{ 'leave.selectEmployee' | translate }} <span class="text-danger">*</span></label>
-                    <mat-form-field appearance="outline" class="w-50 mx-1">
+                    <mat-form-field appearance="outline" class="w-50">
                         <mat-select name="users" formControlName="user">
                             <mat-option *ngFor="let member of users" value="{{member.id}}"
                                 (click)="selecteduser(member.id)">
@@ -20,7 +94,7 @@
             <ng-container *ngIf="portalView == 'user' && extractedUrl == 'my-team-balance'">
                 <div class="form-group d-flex justify-content-between align-items-baseline">
                     <label for="member" class="pt-2 pe-3">{{ 'leave.selectTeamMember' | translate }} <span class="text-danger">*</span></label>
-                    <mat-form-field appearance="outline" class="w-50 mx-1">
+                    <mat-form-field appearance="outline" class="w-50">
                         <mat-select id="member" name="member">
                             <mat-option *ngFor="let m of users" value="{{m|json}}" (click)="selecteduser(m.id)">
                                 {{ m.name | titlecase }}
@@ -81,4 +155,4 @@
             </table>
         </form>
     </div>
-</div>
+</div> -->
