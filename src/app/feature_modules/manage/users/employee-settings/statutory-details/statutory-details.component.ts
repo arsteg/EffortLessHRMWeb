@@ -17,8 +17,9 @@ export class StatutoryDetailsComponent {
   statutoryDetailsForm: FormGroup;
   selectedUser: any;
   generalSettings: any;
-  
-  isUserMode: boolean = true; 
+  isUserMode: boolean = true;
+  isSubmitting: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -31,30 +32,30 @@ export class StatutoryDetailsComponent {
   ) {
     this.statutoryDetailsForm = this.fb.group({
       user: [''],
-      isEmployeeEligibleForPFDeduction: [true],
-      isEmployeePFCappedAtPFCeiling: [true],
-      isEmployerPFCappedAtPFCeiling: [true],
+      isEmployeeEligibleForPFDeduction: [true, Validators.required],
+      isEmployeePFCappedAtPFCeiling: [true, Validators.required],
+      isEmployerPFCappedAtPFCeiling: [true, Validators.required],
       providentFundJoiningDate: [],
       providentFundNumber: ['', [Validators.pattern(/^[a-zA-Z0-9]{1,22}$/)]],
       UANNumber: ['', [Validators.pattern(/^\d{12}$/)]],
       fixedAmountForYourProvidentFundWage: [0],
       additionalPFContributionInPercentage: [
         0,
-        [Validators.pattern(/^\d*\.?\d+$/)] // accepts integers or decimals, but no + - or characters
+        [Validators.pattern(/^\d*\.?\d+$/)] // Accepts integers or decimals, no + - or characters
       ],
-      isESICDeductedFromSalary: [true],
+      isESICDeductedFromSalary: [true, Validators.required],
       ESICNumber: ['', [Validators.pattern(/^\d{17}$/)]],
-      isTaxDeductedFromPlayslip: [true],
-      isLWFDeductedFromPlayslip: [true],
-      isIncomeTaxDeducted: [true],
-      isGratuityEligible: [true],
-      isComeUnderGratuityPaymentAct: [true],
-      taxRegime: [''],
+      isTaxDeductedFromPlayslip: [true, Validators.required],
+      isLWFDeductedFromPlayslip: [true, Validators.required],
+      isIncomeTaxDeducted: [true, Validators.required],
+      isGratuityEligible: [true, Validators.required],
+      isComeUnderGratuityPaymentAct: [true, Validators.required],
+      taxRegime: ['', Validators.required],
       taxRegimeUpdated: [],
       taxRegimeUpdatedBy: [''],
-      roundOffApplicable: [true],
-      eligibleForOvertime: [true]
-    })
+      roundOffApplicable: [true, Validators.required],
+      eligibleForOvertime: [true, Validators.required]
+    });
   }
 
   ngOnInit() {
@@ -62,36 +63,8 @@ export class StatutoryDetailsComponent {
     this.isUserMode = this.router.url.includes('profile');
     this.toggleRadioControlsDisable(this.isUserMode);
   }
-  
-  toggleRadioControlsDisable(isDisable: boolean) {
-    const controlsToToggle = [
-      'isEmployeeEligibleForPFDeduction',
-      'isEmployeePFCappedAtPFCeiling',
-      'isEmployerPFCappedAtPFCeiling',
-      'isESICDeductedFromSalary',
-      'isTaxDeductedFromPlayslip',
-      'isLWFDeductedFromPlayslip',
-      'isIncomeTaxDeducted',
-      'isGratuityEligible',
-      'isComeUnderGratuityPaymentAct',
-      'roundOffApplicable',
-      'eligibleForOvertime'
-    ];
-  
-    controlsToToggle.forEach(controlName => {
-      const control = this.statutoryDetailsForm.get(controlName);
-      if (!control) return;
-  
-      if (isDisable) {
-        control.disable();
-      } else {
-        control.enable();
-      }
-    });
-  }
-  
+
   ngAfterViewInit() {
-    // Set gratuity validation after data is fully loaded
     setTimeout(() => {
       this.setGratuityEligibilityValidator();
     }, 1000);
@@ -116,7 +89,6 @@ export class StatutoryDetailsComponent {
     ]).subscribe((results: any[]) => {
       this.statutoryDetailsForm.patchValue(results[0].data);
       const userId = this.selectedUser?._id;
-
       this.statutoryDetailsForm.patchValue({
         user: userId,
         taxRegimeUpdatedBy: userId
@@ -124,7 +96,108 @@ export class StatutoryDetailsComponent {
     });
   }
 
+  toggleRadioControlsDisable(isDisable: boolean) {
+    const controlsToToggle = [
+      'isEmployeeEligibleForPFDeduction',
+      'isEmployeePFCappedAtPFCeiling',
+      'isEmployerPFCappedAtPFCeiling',
+      'isESICDeductedFromSalary',
+      'isTaxDeductedFromPlayslip',
+      'isLWFDeductedFromPlayslip',
+      'isIncomeTaxDeducted',
+      'isComeUnderGratuityPaymentAct',
+      'roundOffApplicable',
+      'eligibleForOvertime'
+    ];
+
+    controlsToToggle.forEach(controlName => {
+      const control = this.statutoryDetailsForm.get(controlName);
+      if (!control) return;
+
+      if (isDisable) {
+        control.disable({ emitEvent: false });
+        control.clearValidators(); // Prevent disabled controls from affecting form validity
+      } else {
+        control.enable({ emitEvent: false });
+        control.setValidators(Validators.required);
+      }
+      control.updateValueAndValidity({ emitEvent: false });
+    });
+
+    // Handle taxRegime separately as it’s a select, not a radio button
+    const taxRegimeControl = this.statutoryDetailsForm.get('taxRegime');
+    if (taxRegimeControl) {
+      if (isDisable) {
+        taxRegimeControl.disable({ emitEvent: false });
+        taxRegimeControl.clearValidators();
+      } else {
+        taxRegimeControl.enable({ emitEvent: false });
+        taxRegimeControl.setValidators(Validators.required);
+      }
+      taxRegimeControl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  setGratuityEligibilityValidator() {
+    const gratuityControl = this.statutoryDetailsForm.get('isGratuityEligible');
+    if (!gratuityControl) return;
+
+    if (!this.generalSettings?.isGraduityEligible) {
+      gratuityControl.setValue(false);
+      gratuityControl.setErrors({ generalSettingRestricted: true });
+      gratuityControl.disable({ emitEvent: false });
+      gratuityControl.clearValidators();
+      gratuityControl.updateValueAndValidity({ emitEvent: false });
+      return;
+    }
+
+    const createdOn = new Date(this.selectedUser?.createdOn);
+    const currentDate = new Date();
+    const yearDiff = currentDate.getFullYear() - createdOn.getFullYear();
+    const monthDiff = currentDate.getMonth() - createdOn.getMonth();
+    const dayDiff = currentDate.getDate() - createdOn.getDate();
+
+    const completedFiveYears =
+      yearDiff > 5 || (yearDiff === 5 && (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)));
+
+    if (!completedFiveYears) {
+      gratuityControl.setValue(false);
+      gratuityControl.setErrors({ notCompletedFiveYears: true });
+      gratuityControl.disable({ emitEvent: false });
+      gratuityControl.clearValidators();
+      gratuityControl.updateValueAndValidity({ emitEvent: false });
+    } else {
+      gratuityControl.enable({ emitEvent: false });
+      if (!this.isUserMode) {
+        gratuityControl.setValidators(Validators.required);
+      }
+      gratuityControl.setErrors(null);
+      gratuityControl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
   onSubmission() {
+    this.isSubmitting = true;
+    this.statutoryDetailsForm.markAllAsTouched(); // Show validation errors in UI
+
+    // Check only enabled controls for validity
+    let isInvalid = false;
+    Object.keys(this.statutoryDetailsForm.controls).forEach(controlName => {
+      const control = this.statutoryDetailsForm.get(controlName);
+      if (control?.enabled && control?.invalid) {
+        isInvalid = true;
+      }
+    });
+
+    if (isInvalid) {
+      this.toast.error(
+        this.translate.instant('common.missing_required_Field'),
+        this.translate.instant('common.validation_error')
+      );
+      this.isSubmitting = false;
+      return;
+    }
+
     const userId = this.selectedUser?._id;
 
     this.statutoryDetailsForm.patchValue({
@@ -133,65 +206,48 @@ export class StatutoryDetailsComponent {
     });
 
     this.userService.getStatutoryByUserId(this.selectedUser?._id).subscribe((res: any) => {
-      this.statutoryDetailsForm.get('isGratuityEligible').enable();
+      this.statutoryDetailsForm.get('isGratuityEligible').enable({ emitEvent: false });
 
       if (!res.data || res.data.length === 0 || res.data === null) {
-        this.userService.addStatutoryDetails(this.statutoryDetailsForm.value).subscribe((res: any) => {
-          this.getStatutoryDetailsByUser();
-          this.toast.success(this.translate.instant('manage.users.employee-settings.statutory_details_added'));
-        }, err => {
-          const errorMessage = err?.error?.message || err?.message || err 
-          || this.translate.instant('manage.users.employee-settings.failed_to_add_statutory_details')
-          ;       
-          this.toast.error(errorMessage, 'Error!');
-        })
+        this.userService.addStatutoryDetails(this.statutoryDetailsForm.value).subscribe({
+          next: (res: any) => {
+            this.getStatutoryDetailsByUser();
+            this.toast.success(
+              this.translate.instant('manage.users.employee-settings.statutory_details_added'),
+              this.translate.instant('common.success')
+            );
+            this.isSubmitting = false;
+          },
+          error: (err) => {
+            const errorMessage =
+              err?.error?.message ||
+              err?.message ||
+              this.translate.instant('manage.users.employee-settings.failed_to_add_statutory_details');
+            this.toast.error(errorMessage, this.translate.instant('common.error'));
+            this.isSubmitting = false;
+          }
+        });
       } else {
-        this.userService.updateStatutoryDetails(res.data?._id, this.statutoryDetailsForm.value).subscribe((res: any) => {
-          this.getStatutoryDetailsByUser();
-          this.toast.success(this.translate.instant('manage.users.employee-settings.statutory_details_updated'));
-   
-        }, err => {
-          const errorMessage = err?.error?.message || err?.message || err 
-          || this.translate.instant('manage.users.employee-settings.failed_to_update_statutory_details')
-          ;       
-          this.toast.error(errorMessage, 'Error!');
-        })
+        this.userService.updateStatutoryDetails(res.data?._id, this.statutoryDetailsForm.value).subscribe({
+          next: (res: any) => {
+            this.getStatutoryDetailsByUser();
+            this.toast.success(
+              this.translate.instant('manage.users.employee-settings.statutory_details_updated'),
+              this.translate.instant('common.success')
+            );
+            this.isSubmitting = false;
+          },
+          error: (err) => {
+            const errorMessage =
+              err?.error?.message ||
+              err?.message ||
+              this.translate.instant('manage.users.employee-settings.failed_to_update_statutory_details');
+            this.toast.error(errorMessage, this.translate.instant('common.error'));
+            this.isSubmitting = false;
+          }
+        });
       }
-      this.statutoryDetailsForm.get('isGratuityEligible').disable();
+      this.setGratuityEligibilityValidator(); // Reapply gratuity validator after submission
     });
-
   }
-  setGratuityEligibilityValidator() {
-    const gratuityControl = this.statutoryDetailsForm.get('isGratuityEligible');
-
-    if (!this.generalSettings?.isGraduityEligible) {
-      // Not eligible per general settings
-      gratuityControl?.setValue(false);
-      gratuityControl?.setErrors({ generalSettingRestricted: true });
-      gratuityControl?.disable();
-      return;
-    }
-
-    // Calculate year difference
-    const createdOn = new Date(this.selectedUser?.createdOn);
-    const currentDate = new Date();
-    const yearDiff = currentDate.getFullYear() - createdOn.getFullYear();
-    const monthDiff = currentDate.getMonth() - createdOn.getMonth();
-    const dayDiff = currentDate.getDate() - createdOn.getDate();
-
-    const completedFiveYears = (
-      yearDiff > 5 ||
-      (yearDiff === 5 && (monthDiff > 0 || (monthDiff === 0 && dayDiff >= 0)))
-    );
-
-    if (!completedFiveYears) {
-      gratuityControl?.setValue(false);
-      gratuityControl?.setErrors({ notCompletedFiveYears: true });
-      gratuityControl?.disable();
-    } else {
-      gratuityControl?.enable();
-      gratuityControl?.setErrors(null);
-    }
-  }
-
 }

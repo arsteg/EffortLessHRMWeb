@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tax-declaration-by-company',
@@ -32,7 +33,7 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
 
   constructor(
     private taxService: TaxationService,
-    private fb: FormBuilder,
+    private fb: FormBuilder,   private translate: TranslateService,
     private toast: ToastrService
   ) {
     this.taxComponentForm = this.fb.group({
@@ -109,7 +110,12 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
   }
 
   saveEditing(type: string, item: any) {
+    
     if (type === 'component') {
+      if (item?.approvalStatus === 'Approved' && (item?.approvedAmount === null || item?.approvedAmount === undefined || item?.approvedAmount === '')) {
+        this.toast.error(this.translate.instant('taxation.approve_amount_required'), this.translate.instant('taxation.toast.error')); 
+        return; // Exit early if validation fails
+      }
       const payload = {
         employeeIncomeTaxDeclaration: item?.employeeIncomeTaxDeclaration,
         incomeTaxComponent: item?.incomeTaxComponent?._id,
@@ -123,7 +129,11 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
         this.originalComponent = null;
       });
     } else if (type === 'hra') {
-      console.log(item);
+      
+      if (item?.approvalStatus === 'Approved' && (item?.verifiedAmount === null || item?.verifiedAmount === undefined || item?.verifiedAmount === '')) {
+        this.toast.error(this.translate.instant('taxation.verified_amount_required'), this.translate.instant('taxation.toast.error')); 
+        return; // Exit early if validation fails
+      }
       const payload = {
         employeeIncomeTaxDeclaration: item?.employeeIncomeTaxDeclaration,
         verifiedAmount: item?.verifiedAmount,
@@ -159,7 +169,7 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
   onBulkHRAupdate(hraArray: any[], approvalStatus: string) {
     console.log('HRA Array: ', hraArray);
     if (!hraArray || hraArray.length === 0) {
-      this.toast.error('No HRA entries to update', 'Error');
+      this.toast.error(this.translate.instant('taxation.no_hra_entries_to_update'), this.translate.instant('taxation.toast.error'));
       return;
     }
 
@@ -181,7 +191,8 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
     };
     this.taxService.updateIncomeTax(id, payload).subscribe(
       (res: any) => {
-        this.toast.success('All HRA Income Tax Declarations are Updated', 'Successfully');
+         this.toast.success(this.translate.instant('taxation.all_hra_updated'), this.translate.instant('taxation.toast.success'));
+   
         if (this.expandedElement && res.data?.employeeIncomeTaxDeclarationHRA) {
           this.expandedElement.incomeTaxDeclarationHRA = res.data.employeeIncomeTaxDeclarationHRA;
         } else {
@@ -193,7 +204,8 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
         }
         this.dataSource.data = [...this.dataSource.data];
       },
-      err => this.toast.error('Unable to Update HRA Tax Declarations', 'Error')
+      err =>    this.toast.error(this.translate.instant('taxation.failed_to_update_bulk_hra'), this.translate.instant('taxation.toast.error'))
+   
     );
   }
 
@@ -210,11 +222,11 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
             link.href = trimmedUrl;
             link.download = attachmentName; // Use attachmentName as the download filename
             link.click();
-        } else {
-            console.error('Attachment name not found in URL');
+        } else {          
+            this.toast.error(this.translate.instant('taxation.attachment_name_not_found'), this.translate.instant('taxation.toast.error'))
         }
-    } else {
-        console.error('Attachment URL or name is missing');
+    } else {       
+        this.toast.error(this.translate.instant('taxation.attachment_missing'), this.translate.instant('taxation.toast.error'))
     }
 }
 

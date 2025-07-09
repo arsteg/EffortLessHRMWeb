@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -26,7 +27,7 @@ export class RentInformationComponent {
   constructor(
     private fb: FormBuilder,
     private taxService: TaxationService,
-    private toast: ToastrService,
+    private toast: ToastrService,private translate: TranslateService,
     private userService: UserService
   ) {
     this.formGroup = this.fb.group({
@@ -221,9 +222,9 @@ export class RentInformationComponent {
 
     if (attachmentsArray.length > attachmentIndex) {
       attachmentsArray.removeAt(attachmentIndex);
-      this.toast.success('Attachment removed successfully', 'Success!');
+      this.toast.success(this.translate.instant('taxation.attachment_removed'), this.translate.instant('taxation.toast.success'));
     } else {
-      this.toast.error('Attachment not found', 'Error!');
+      this.toast.error(this.translate.instant('taxation.attachment_not_found'), this.translate.instant('taxation.toast.error'));
     }
   }
 
@@ -334,12 +335,15 @@ export class RentInformationComponent {
       };
       this.taxService.updateIncTaxDecHRA(payload).subscribe(
         (res: any) => {
-          this.toast.success('Successfully Added!!!', 'Rent Information');
-          const control = this.formGroup.get(`employeeIncomeTaxDeclarationHRA.${index}`) as FormGroup;
-          control.get('isEditable').setValue(false);
+           this.toast.success(this.translate.instant('taxation.rent_information_added'), this.translate.instant('taxation.toast.success'));
+           const control = this.formGroup.get(`employeeIncomeTaxDeclarationHRA.${index}`) as FormGroup;
+           control.get('isEditable').setValue(false);
         },
         (err) => {
-          this.toast.error('Selected Record Can not be updated', 'Rent Information');
+           const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('taxation.failed_to_add_rent_information')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
         }
       );
     });
@@ -368,7 +372,7 @@ export class RentInformationComponent {
     const months = this.getMonthsArray();
 
     const section = this.sectionId;
-
+    
     this.employeeIncomeTaxDeclaration.reset();
     months.forEach((month, index) => {
       this.employeeIncomeTaxDeclaration.push(
@@ -395,10 +399,13 @@ export class RentInformationComponent {
       (res: any) => {
         this.formGroup.reset();
         this.getIncomeTaXDeclarationById();
-        this.toast.success('Successfully Updated!!!', 'Rent Information');
+        this.toast.success(this.translate.instant('taxation.rent_information_updated'), this.translate.instant('taxation.toast.success'));       
       },
       (err) => {
-        this.toast.error('Selected Rent Information Can not be updated', 'Error');
+        const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('taxation.failed_to_update_rent_information')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
       }
     );
   }
