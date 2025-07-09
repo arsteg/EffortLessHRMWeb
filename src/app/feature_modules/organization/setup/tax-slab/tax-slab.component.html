@@ -44,7 +44,7 @@
 
         <div class="form-group mt-2">
             <label for="">Enter Minimum Amount <span class="text-danger">*</span></label>
-            <input class="form-control" type="number" formControlName="minAmount">
+            <input class="form-control" type="number" formControlName="minAmount" min="0">
             <div *ngIf="taxSlabForm.get('minAmount').invalid && (taxSlabForm.get('minAmount').dirty || taxSlabForm.get('minAmount').touched)"
                 class="error">
                 <small class="text-danger">Minimum Amount is required.</small>
@@ -72,23 +72,29 @@
         <div class="form-group mt-2">
             <label for="cycle" class="form-label">Cycle</label>
             <select id="cycle" formControlName="cycle" class="form-select">
-                <option value="" [disabled] selected>Select Cycle --</option>
+                <option value="" [disabled]>Select Cycle --</option>
                 <option *ngFor="let year of fiscalYears" [value]="year">{{ year }}</option>
             </select>
+            <div *ngIf="taxSlabForm.get('cycle').invalid && (taxSlabForm.get('cycle').touched || taxSlabForm.get('cycle').dirty)">
+                <small class="text-danger">Cycle is required.</small>
+              </div>
         </div>
 
         <div class="form-group mt-2">
             <label for="regime" class="form-label">Regime</label>
             <select id="regime" formControlName="regime" class="form-select">
-                <option value="" [disabled] selected>Select Regime --</option>
+                <option value="" [disabled]>Select Regime --</option>
                 <option value="Old Regime">Old Regime</option>
                 <option value="New Regime">New Regime</option>
             </select>
+            <div *ngIf="taxSlabForm.get('regime').invalid && (taxSlabForm.get('regime').touched || taxSlabForm.get('regime').dirty)">
+                <small class="text-danger">Regime is required.</small>
+              </div>
         </div>
 
         <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
             <button mat-flat-button type="button" (click)="setFormValues()">Cancel</button>
-            <button mat-flat-button class="addBtn" type="submit">Submit</button>
+            <button mat-flat-button class="addBtn" type="submit"  [disabled]="isSubmitting">Submit</button>
         </div>
     </form>
 

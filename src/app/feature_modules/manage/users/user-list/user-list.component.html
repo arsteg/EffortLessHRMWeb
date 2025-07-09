@@ -1,168 +1,178 @@
 <router-outlet></router-outlet>
 <div class="main-content" *ngIf="!showEmployeeDetails">
-
-        <div class="position-relative">
-            <button mat-flat-button class="position-absolute end-0" color="primary" data-bs-toggle="offcanvas" data-bs-target="#addUser">Add New</button>
-        </div>
-        <hrm-table [data]="usersList?.data" [columns]="columns" (actionClicked)="onActionClick($event)"
-            [showSearch]="true"></hrm-table>
-
+  <div class="position-relative">
+    <button mat-flat-button class="position-absolute end-0" color="primary" (click)="openOffcanvas(false)">Add New</button>
+  </div>
+  <hrm-table [data]="usersList?.data" [columns]="columns" (actionClicked)="onActionClick($event)" [showSearch]="true"></hrm-table>
 </div>
 
-<div class="offcanvas offcanvas-end w-75" id="addUser" data-bs-backdrop="static">
-    <div class="offcanvas-header">
-        <h2>Create Employee</h2>
-    </div>
-    <hr class="pb-0 mb-0">
-    <button type="button" class="text-white text-reset times" data-bs-dismiss="offcanvas" aria-label="Close">
-        <mat-icon>arrow_back</mat-icon>
-    </button>
+<div class="offcanvas offcanvas-end w-75" id="addUser" data-bs-backdrop="static" [ngClass]="{'show': showOffcanvas}">
+  <div class="offcanvas-header">
+    <h2>{{isEdit ? 'Edit Employee' : 'Create Employee'}}</h2>
+  </div>
+  <hr class="pb-0 mb-0">
+  <button type="button" class="text-white text-reset times" (click)="closeOffcanvas()" aria-label="Close">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
 
-    <div class=" offcanvas-body px-3">
-        <div class="addForm">
-            <form [formGroup]="userForm" (ngSubmit)="addUser()">
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="firstName">First Name <span class="text-danger">*</span></label>
-                        <input formControlName="firstName" type="text" class="form-control" id="firstName"
-                            placeholder="Enter First Name">
-                        <div *ngIf="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid">
-                            <small class="text-danger" *ngIf="userForm.get('firstName')?.errors?.['required']">
-                                First Name is required.
-                            </small>
-                            <small class="text-danger" *ngIf="userForm.get('firstName')?.errors?.['pattern']">
-                                Must contain at least 2 alphabetic characters.
-                            </small>
-                        </div>
-                    </div>
+  <div class="offcanvas-body px-3">
+    <div class="addForm">
+      <form [formGroup]="userForm" (ngSubmit)="addUser()">
+        <div class="row">
+          <div class="form-group col-md-6 mt-2">
+            <label for="firstName">First Name <span class="text-danger">*</span></label>
+            <input formControlName="firstName" type="text" class="form-control" id="firstName" placeholder="Enter First Name">
+            <div *ngIf="userForm.get('firstName')?.touched && userForm.get('firstName')?.invalid">
+              <small class="text-danger" *ngIf="userForm.get('firstName')?.errors?.['required']">
+                First Name is required.
+              </small>
+              <small class="text-danger" *ngIf="userForm.get('firstName')?.errors?.['pattern']">
+                Must contain at least 2 alphabetic characters.
+              </small>
+            </div>
+          </div>
 
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="lastName">Last Name <span class="text-danger">*</span></label>
-                        <input formControlName="lastName" type="text" class="form-control" id="lastName"
-                            placeholder="Enter Last Name">
-                        <div *ngIf="userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid">
-                            <small class="text-danger" *ngIf="userForm.get('lastName')?.errors?.['required']">
-                                Last Name is required.
-                            </small>
-                            <small class="text-danger" *ngIf="userForm.get('lastName')?.errors?.['pattern']">
-                                Must contain at least 2 alphabetic characters.
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="jobTitle">Job Title</label>
-                        <input formControlName="jobTitle" type="text" class="form-control" id="jobTitle"
-                            placeholder="Enter Job Title">
-                    </div>
-
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="email">Email <span class="text-danger">*</span></label>
-                        <input type="text" formControlName="email" class="form-control">
-                        <div *ngIf="userForm.get('email')?.touched && userForm.get('email')?.invalid">
-                            <small class="text-danger" *ngIf="userForm.get('email')?.errors?.['required']">
-                                Email is required.
-                            </small>
-                            <small class="text-danger" *ngIf="userForm.get('email')?.errors?.['email']">
-                                Enter a valid email address.
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="password">Password <span class="text-danger">*</span></label>
-                        <input type="text" formControlName="password" class="form-control">
-                        <div *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid">
-                            <small class="text-danger" *ngIf="userForm.get('password')?.errors?.['required']">
-                                Password is required.
-                            </small>
-                            <small class="text-danger" *ngIf="userForm.get('password')?.errors?.['minlength']">
-                                Password must be at least 8 characters long.
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="email">Confirm Password <span class="text-danger">*</span></label>
-                        <input type="text" formControlName="passwordConfirm" class="form-control">
-                        <div *ngIf="userForm.get('passwordConfirm')?.touched && userForm.hasError('notMatching')">
-                            <small class="text-danger">
-                                Password and Confirm Password must match.
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="role">Role <span class="text-danger">*</span></label>
-                        <select name="" id="" formControlName="role">
-                            <option value="" disabled>Select Role</option>
-                            <option [value]="role._id" *ngFor="let role of roles">{{role?.name}}</option>
-                        </select>
-                        <div *ngIf="userForm.get('role')?.touched && userForm.get('role')?.invalid">
-                            <small class="text-danger">Role is required.</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6 mt-2">
-                        <label for="phone">Phone</label>
-                        <input formControlName="phone" type="text" class="form-control" id="phone"
-                            placeholder="Enter Phone Number">
-                        <div *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid">
-                            <small class="text-danger" *ngIf="userForm.get('phone')?.errors?.['pattern']">
-                                Phone number must be 10 digits.
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-                <hr>
-                <div class="d-flex justify-content-between mt-2">
-                    <button type="reset" class="" mat-flat-button>Reset</button>
-                    <button type="submit" color="primary" mat-flat-button>Submit</button>
-                </div>
-            </form>
+          <div class="form-group col-md-6 mt-2">
+            <label for="lastName">Last Name <span class="text-danger">*</span></label>
+            <input formControlName="lastName" type="text" class="form-control" id="lastName" placeholder="Enter Last Name">
+            <div *ngIf="userForm.get('lastName')?.touched && userForm.get('lastName')?.invalid">
+              <small class="text-danger" *ngIf="userForm.get('lastName')?.errors?.['required']">
+                Last Name is required.
+              </small>
+              <small class="text-danger" *ngIf="userForm.get('lastName')?.errors?.['pattern']">
+                Must contain at least 2 alphabetic characters.
+              </small>
+            </div>
+          </div>
         </div>
+
+        <div class="row">
+          <div class="form-group col-md-6 mt-2">
+            <label for="jobTitle">Job Title</label>
+            <input formControlName="jobTitle" type="text" class="form-control" id="jobTitle" placeholder="Enter Job Title">
+          </div>
+
+          <div class="form-group col-md-6 mt-2">
+            <label for="email">Email <span class="text-danger">*</span></label>
+            <input type="text" formControlName="email" class="form-control" placeholder="Enter Email" autocomplete="off">
+            <div *ngIf="userForm.get('email')?.touched && userForm.get('email')?.invalid">
+              <small class="text-danger" *ngIf="userForm.get('email')?.errors?.['required']">
+                Email is required.
+              </small>
+              <small class="text-danger" *ngIf="userForm.get('email')?.errors?.['email']">
+                Enter a valid email address.
+              </small>
+              <small class="text-danger" *ngIf="userForm.get('email')?.errors?.['emailExists']">
+                This email is already in use.
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6 mt-2">
+            <label for="password">Password <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <input [type]="showPassword ? 'text' : 'password'" formControlName="password" class="form-control" placeholder="Enter Password" autocomplete="off">
+              <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility('password')">
+                <mat-icon>{{showPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </div>
+            <div *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid">
+              <small class="text-danger" *ngIf="userForm.get('password')?.errors?.['required']">
+                Password is required.
+              </small>
+              <small class="text-danger" *ngIf="userForm.get('password')?.errors?.['minlength']">
+                Password must be at least 8 characters long.
+              </small>
+              <small class="text-danger" *ngIf="userForm.get('password')?.errors?.['weakPassword']">
+                Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character.
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group col-md-6 mt-2">
+            <label for="passwordConfirm">Confirm Password <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="passwordConfirm" class="form-control" placeholder="Confirm Password" autocomplete="off">
+              <button type="button" class="btn btn-outline-secondary" (click)="togglePasswordVisibility('passwordConfirm')">
+                <mat-icon>{{showConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </div>
+            <div *ngIf="userForm.get('passwordConfirm')?.touched && userForm.get('passwordConfirm')?.invalid">
+              <small class="text-danger" *ngIf="userForm.get('passwordConfirm')?.errors?.['required']">
+                Confirm Password is required.
+              </small>
+            </div>
+            <div *ngIf="userForm.get('passwordConfirm')?.touched && userForm.hasError('notMatching')">
+              <small class="text-danger">
+                Password and Confirm Password must match.
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-md-6 mt-2">
+            <label for="role">Role <span class="text-danger">*</span></label>
+            <select formControlName="role" class="form-control">
+              <option value="" disabled>Select Role</option>
+              <option [value]="role._id" *ngFor="let role of roles">{{role?.name}}</option>
+            </select>
+            <div *ngIf="userForm.get('role')?.touched && userForm.get('role')?.invalid">
+              <small class="text-danger">Role is required.</small>
+            </div>
+          </div>
+
+          <div class="form-group col-md-6 mt-2">
+            <label for="phone">Phone</label>
+            <input formControlName="phone" type="text" class="form-control" id="phone" placeholder="Enter Phone Number">
+            <div *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid">
+              <small class="text-danger" *ngIf="userForm.get('phone')?.errors?.['pattern']">
+                Phone number must be 10 digits.
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+        <div class="d-flex justify-content-between mt-2">
+          <button type="reset" class="btn btn-secondary" (click)="userForm.reset()">Reset</button>
+          <button type="submit" color="primary" mat-flat-button [disabled]="userForm.invalid">Submit</button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 
 <!-- Delete -->
 <div class="modal" id="deleteModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content px-3">
-            <div class="modal-body px-0">
-                <div class="d-flex justify-content-between">
-                    <div class="">
-                        <h4 class="modal-title text-start">Delete Member</h4>
-                    </div>
-                    <div class="">
-                        <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-                    </div>
-                </div>
-                <hr class="mt-0">
-
-                <div class="row">
-                    <div class="col-md-12 text-center">
-                        <h3>Do you really want to delete ?</h3>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-between m-3">
-                    <div>
-                        <button mat-flat-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                    <div>
-                        <button mat-flat-button class="addBtn" data-bs-dismiss="modal"
-                            (click)="deleteUser()">Delete</button>
-                    </div>
-                </div>
-            </div>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content px-3">
+      <div class="modal-body px-0">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h4 class="modal-title text-start">Delete Member</h4>
+          </div>
+          <div>
+            <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
+          </div>
         </div>
+        <hr class="mt-0">
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <h3>Do you really want to delete?</h3>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between m-3">
+          <div>
+            <button mat-flat-button class="mx-2" data-bs-dismiss="modal">Cancel</button>
+          </div>
+          <div>
+            <button mat-flat-button class="addBtn" data-bs-dismiss="modal" (click)="deleteUser()">Delete</button>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

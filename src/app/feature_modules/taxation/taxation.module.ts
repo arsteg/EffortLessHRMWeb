@@ -14,6 +14,7 @@ import { UserTaxDeclarationComponent } from './user-tax-declaration/user-tax-dec
 import { TaxComponentsComponent } from './tax/edit-tax/tax-components/tax-components.component';
 import { TaxComponentBySectionComponent } from './tax-component-by-section/tax-component-by-section.component';
 import { TaxDeclarationByCompanyComponent } from './tax-declaration-by-company/tax-declaration-by-company.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { TaxDeclarationByCompanyComponent } from './tax-declaration-by-company/t
     CommonModule,
     CommonComponentsModule,
     FormsModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule,    
+    TranslateModule,
     TaxationRoutingModule,
   ],
   schemas: [

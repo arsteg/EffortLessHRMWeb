@@ -37,16 +37,18 @@ export class ShiftAssignmentsComponent {
   dialogRef: MatDialogRef<any> | null = null;
 
   columns: TableColumn[] = [
-    { key: 'userName',
+    {
+      key: 'userName',
       name: 'Employee',
       valueFn: (row: any) => this.getUser(row?.user)
     },
-    { key: 'templateName', 
+    {
+      key: 'templateName',
       name: 'Shift',
-      valueFn: (row: any) => this.getShiftTemplateName(row?.template)
+      valueFn: (row: any) => row?.template.name
     },
-    { 
-      key: 'startDate', 
+    {
+      key: 'startDate',
       name: 'Start Date',
       valueFn: (row: any) => new Date(row.startDate).toLocaleDateString()
     },
@@ -62,9 +64,7 @@ export class ShiftAssignmentsComponent {
   ];
 
   constructor(private attendanceService: AttendanceService,
-    private modalService: NgbModal,
     private dialog: MatDialog,
-    private exportService: ExportService,
     private toast: ToastrService,
     private commonService: CommonService,
     private translate: TranslateService,
@@ -98,13 +98,10 @@ export class ShiftAssignmentsComponent {
       const dateToCompare = new Date(selectedDate);
       dateToCompare.setHours(0, 0, 0, 0); // Set to start of selected date
 
-      if (dateToCompare.getTime() < today.getTime()) {
-        return { pastDate: true }; // Return 'pastDate' error if it's a previous date
-      }
       return null; // Valid date
     };
   }
-  
+
   onEmployeeChange(event: any) {
     const selectedEmployeeId = event.value;
     this.userHasTemplateError = this.shiftAssigments.some(
@@ -184,32 +181,20 @@ export class ShiftAssignmentsComponent {
     });
   }
 
-
-  // exportToCsv() {
-  //   const dataToExport = this.shiftAssigments.map((data) => ({
-  //     user: this.getUser(data.user),
-  //     template: this.getShiftTemplateName(data.template),
-  //     startDate: data.startDate
-  //   }));
-  //   this.exportService.exportToCSV('Shift-Assignment', 'Shift-Assignment', dataToExport);
-
-  // }
-
   setFormValues(data) {
     this.shiftForm.patchValue({
-      template: data.template,
+      template: data?.template?._id,
       user: data.user,
       startDate: data.startDate
     });
     if (this.isEdit) {
-      this.shiftForm.get('user').disable();
       this.userHasTemplateError = false;
     }
   }
 
   onSubmission() {
     if (this.shiftForm.valid) {
-      
+
       if (!this.isEdit) {
         this.attendanceService.addShiftAssignment(this.shiftForm.value).subscribe((res: any) => {
           this.isSubmitting = true;
@@ -228,19 +213,15 @@ export class ShiftAssignmentsComponent {
             this.toast.error(this.translate.instant('attendance.sta_error.assign_failed'), 'ERROR')
           })
       }
-      else {
+      else if (this.isEdit) {
         this.attendanceService.updateShiftAssignment(this.selectedShift, this.shiftForm.value).subscribe((res: any) => {
           this.isSubmitting = true;
           this.loadRecords();
-          this.shiftForm.reset({
-            user: '',
-            template: '',
-            startDate: new Date()
-          });
+          this.shiftForm.reset();
           this.closeModal();
           this.shiftForm.get('user').enable();
-          this.isEdit = false,
-            this.toast.success(this.translate.instant('attendance.sta_success.updated'), 'Succesfully')
+          // this.isEdit = false,
+          this.toast.success(this.translate.instant('attendance.sta_success.updated'), 'Succesfully')
         },
           err => {
             this.toast.error(this.translate.instant('attendance.sta_error.update_failed'), 'ERROR')
@@ -251,8 +232,8 @@ export class ShiftAssignmentsComponent {
       this.toast.error(this.translate.instant('attendance.sta_error.required_fields'))
       this.markFormGroupTouched(this.shiftForm);
     }
-    this.isEdit = false;
   }
+
   markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
       if (control instanceof FormGroup) {
@@ -287,14 +268,15 @@ export class ShiftAssignmentsComponent {
     });
   }
 
-  handleAction(event: any, content: any) { // CHANGED: Simplified logic
+  handleAction(event: any, content: any) {
+    this.changeMode === 'Update' // CHANGED: Simplified logic
     if (event.action.label === 'Edit') {
-      this.changeMode == 'Update';
-      this.isEdit= true;
+      this.changeMode === 'Update';
+      this.isEdit = true;
       this.selectedShift = event?.row?._id;
       this.setFormValues(event?.row);
       this.open(content);
-    } 
+    }
     if (event.action.label === 'Delete') {
       this.deleteDialog(event.row._id);
     }
@@ -325,16 +307,6 @@ export class ShiftAssignmentsComponent {
     });
 
     this.shiftAssigments = data;
-    // this.searchText = event;
-    // this.shiftAssigments = this.allData?.filter(row => {
-    //   return this.columns.some(col => {
-    //     if (col.key !== 'action') {
-    //       const value = this.getNestedValue(row, col.key);
-    //       return value?.toString().toLowerCase().includes(event.toLowerCase());
-    //     }
-    //     return false;
-    //   });
-    // });
   }
 
   private getNestedValue(obj: any, key: string): any {

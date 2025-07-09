@@ -435,7 +435,7 @@ export class AddApplicationComponent {
   }
 
   closeModal() {
-    this.leaveApplication.reset();
+    //this.leaveApplication.reset();
     this.close.emit(true);
   }
 

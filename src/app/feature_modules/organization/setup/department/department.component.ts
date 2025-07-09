@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
@@ -23,6 +24,7 @@ export class DepartmentComponent {
   searchText: string = '';
   selectedRecord: any;
   public sortOrder: string = '';
+  isSubmitting: boolean = false;
 
   columns: TableColumn[] = [
     {
@@ -61,6 +63,7 @@ export class DepartmentComponent {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private dialog: MatDialog,
+    private translate: TranslateService,
     private toast: ToastrService,
   ) {
     this.departmentForm = this.fb.group({
@@ -102,30 +105,49 @@ export class DepartmentComponent {
   }
 
   onSubmission() {
+    this.isSubmitting = true;
+
+    this.departmentForm.markAllAsTouched();
+  
+    if (this.departmentForm.invalid) {
+      this.isSubmitting = false;
+      return;
+    }
+  
     // add Department
     if (!this.isEdit) {
       this.companyService.addDepartments(this.departmentForm.value).subscribe(res => {
-        this.departments.push(res.data);
-        this.toast.success('Department added successfully', 'Success');
+        this.getDepartments();
+        this.toast.success(this.translate.instant('organization.setup.department_added'), this.translate.instant('toast.success'));
+
+        this.isSubmitting = false;
         this.departmentForm.reset();
       },
-        err => { this.toast.error('Department Can not be Added', 'Error') }
+        err => { const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('organization.setup.department_add_fail')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
+          this.isSubmitting = false;
+        }
       );
     }
     // updateZone
     else if (this.isEdit) {
       this.companyService.updateDepartments(this.selectedRecord._id, this.departmentForm.value).subscribe(res => {
-        this.toast.success('Department updated successfully', 'Success');
-        const index = this.departments.findIndex(z => z._id === this.selectedRecord._id);
-        if (index !== -1) {
-          this.departments[index] = { ...this.selectedRecord, ...this.departmentForm.value };
-        }
+        this.toast.success(this.translate.instant('organization.setup.department_updated'), this.translate.instant('toast.success'));
+        this.getDepartments();
         this.departmentForm.reset();
         this.isEdit = false;
         this.departmentForm.get('departmentCode').enable();
+        this.isSubmitting = false;
 
       },
-        err => { this.toast.error('Department Can not be Updated', 'Error') }
+        err => { const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('organization.setup.department_update_fail')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
+          this.isSubmitting = false;
+        }
       );
     }
   }
@@ -166,10 +188,14 @@ export class DepartmentComponent {
   deleteDepartments(id: string) {
     this.companyService.deleteDepartments(id).subscribe((res: any) => {
       this.getDepartments();
-      this.toast.success('Successfully Deleted!!!', 'Department')
+      this.toast.success(this.translate.instant('organization.setup.department_deleted'), this.translate.instant('toast.success'));
+
     },
       (err) => {
-        this.toast.error('This Department Can not be deleted!', 'Error')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.department_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
       })
   }
 
@@ -182,7 +208,10 @@ export class DepartmentComponent {
         this.deleteDepartments(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.department_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
       }
     });
   }

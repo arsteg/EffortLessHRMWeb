@@ -3,6 +3,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CompanyService } from 'src/app/_services/company.service';
@@ -23,7 +24,8 @@ export class HolidaysComponent {
   searchText: string = '';
   selectedRecord: any;
   members: any[] = [];
-  currentYear: number;
+  currentYear: number = new Date().getFullYear();
+  isSubmitting: boolean = false;
   selectedYear: number;
   totalRecords: number
   recordsPerPage: number = 10;
@@ -63,6 +65,7 @@ export class HolidaysComponent {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private toast: ToastrService,
+    private translate: TranslateService,
     private commonService: CommonService,
     private datePipe: DatePipe
   ) {
@@ -121,7 +124,8 @@ export class HolidaysComponent {
   }
 
   onYearChange(event: any) {
-    this.selectedYear = event.value;
+    this.currentYear = event.value;
+    this.getHolidays();
   }
 
   onPageChange(page: number) {
@@ -136,6 +140,7 @@ export class HolidaysComponent {
 
 
   getHolidays() {
+    console.log(this.currentYear);
     const pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString(),
@@ -149,6 +154,14 @@ export class HolidaysComponent {
   }
 
   onSubmission() {
+    this.isSubmitting = true;
+
+    this.holidayForm.markAllAsTouched();
+  
+    if (this.holidayForm.invalid) {
+      this.isSubmitting = false;
+      return;
+    }
     const formData = this.holidayForm.getRawValue();
     if (formData.holidaysAppliesFor === 'specific-employees' &&
       (!formData.users || formData.users.length === 0)) {
@@ -166,24 +179,30 @@ export class HolidaysComponent {
     if (this.holidayForm.valid) {
       if (!this.isEdit) {
         this.companyService.addHolidays(formData).subscribe(res => {
-          this.holidays.push(res.data);
-          this.toast.success('Holiday added successfully', 'Success');
+          this.getHolidays();
+          this.toast.success(this.translate.instant('organization.setup.holiday_added'), this.translate.instant('toast.success')) 
           this.holidayForm.reset(this.getDefaultFormValues());
         },
-          err => { this.toast.error('Holiday Can not be Added', 'Error') }
+          err => {  const errorMessage = err?.error?.message || err?.message || err 
+            || this.translate.instant('organization.setup.holiday_add_fail')
+            ;
+            this.toast.error(errorMessage, 'Error!'); 
+            this.isSubmitting = false;}
         );
       }
       else if (this.isEdit) {
         this.companyService.updateHolidays(this.selectedRecord._id, formData).subscribe(res => {
-          this.toast.success('Holiday updated successfully', 'Success');
-          const index = this.holidays.findIndex((z) => z._id === this.selectedRecord._id);
-          if (index !== -1) {
-            this.holidays[index] = { ...res.data };
-          }
+          this.toast.success(this.translate.instant('organization.setup.holiday_updated'), this.translate.instant('toast.success'));
+      
+          this.getHolidays();
           this.holidayForm.reset(this.getDefaultFormValues());
           this.isEdit = false;
         },
-          err => { this.toast.error('Holiday Can not be Updated', 'Error') }
+          err => { const errorMessage = err?.error?.message || err?.message || err 
+            || this.translate.instant('organization.setup.holiday_update_fail')
+            ;
+            this.toast.error(errorMessage, 'Error!'); 
+            this.isSubmitting = false; }
         );
       }
     }
@@ -235,10 +254,13 @@ export class HolidaysComponent {
   deleteHoliday(id: string) {
     this.companyService.deleteHolidays(id).subscribe((res: any) => {
       this.getHolidays();
-      this.toast.success('Successfully Deleted!!!', 'Holiday')
+      this.toast.success(this.translate.instant('organization.setup.holiday_deleted'), this.translate.instant('toast.success'));
     },
       (err) => {
-        this.toast.error('This Holiday Can not be deleted!', 'Error')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.holiday_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
       })
   }
 
@@ -251,7 +273,10 @@ export class HolidaysComponent {
         this.deleteHoliday(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.holiday_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
       }
     });
   }

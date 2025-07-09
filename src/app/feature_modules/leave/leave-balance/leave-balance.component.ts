@@ -5,6 +5,7 @@ import { TimeLogService } from 'src/app/_services/timeLogService';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
+import { TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-leave-balance',
@@ -43,6 +44,36 @@ export class LeaveBalanceComponent {
   ];
   extractedUrl: string = '';
   error: string = '';
+//{ key: 'empCode', name: 'Emp Code', valueFn: (row: any) => row.appointment[0]?.empCode },
+  columns: TableColumn[] = [
+    { 
+      key: 'startMonth', 
+      name: this.translate.instant('leave.startMonth') 
+    },
+    { key: 'endMonth', 
+      name: this.translate.instant('leave.endMonth') 
+    },
+    { key: 'openingBalance', 
+      name: this.translate.instant('leave.openingBalance') 
+    },
+    { key: 'accruedBalance', 
+      name: this.translate.instant('leave.accruedBalance') 
+    },
+    { key: 'leaveApplied', 
+      name: this.translate.instant('leave.leaveApplied') 
+    },
+    { key: 'leaveRemaining', 
+      name: this.translate.instant('leave.leaveRemaining') 
+    },
+    { key: 'closingBalance', 
+      name: this.translate.instant('leave.closingBalance') 
+    },
+    { key: 'leaveTaken', 
+      name: this.translate.instant('leave.leaveTaken') 
+    }
+  ];
+  allData: any[] = [];
+  totalRecords: number = 0;
 
   constructor(
     private leaveService: LeaveService,
@@ -147,6 +178,8 @@ export class LeaveBalanceComponent {
       this.leaveService.getLeaveBalance(payload).subscribe({
         next: (res: any) => {
           this.leaveBalance = res.data;
+          this.allData = this.leaveBalance;
+          this.totalRecords = this.leaveBalance.lenght;
         },
         error: () => {
           this.toast.error(this.translate.instant('leave.errorFetchingBalance'));
@@ -220,5 +253,4 @@ export class LeaveBalanceComponent {
     const category = this.allCategories.find(category => category._id === categoryId);
     return category ? category.label : '';
   }
-
 }

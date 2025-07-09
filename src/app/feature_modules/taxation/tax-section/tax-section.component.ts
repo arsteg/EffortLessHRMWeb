@@ -1,11 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-tax-section',
@@ -23,7 +25,8 @@ export class TaxSectionComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  sections: any[];
+  sections: any[];  
+  isSubmitting: boolean = false;
   public sortOrder: string = '';
   columns: TableColumn[] = [
     {
@@ -40,14 +43,16 @@ export class TaxSectionComponent {
 
   constructor(private modalService: NgbModal,
     private taxService: TaxationService,
-    private toast: ToastrService,
+    private toast: ToastrService,    
+    private translate: TranslateService,
     private fb: FormBuilder,
-    private dialog: MatDialog) {
+    private dialog: MatDialog) {   
     this.taxSectionForm = this.fb.group({
-      section: [''],
+      section:['', Validators.required],
       isHRA: [false],
-      maximumAmount: [0]
+      maximumAmount: ['0', [Validators.required, CustomValidators.digitsOnly]]
     })
+    this.isEdit = false;
   }
 
   ngOnInit() {
@@ -73,42 +78,58 @@ export class TaxSectionComponent {
       width: '500px'
     });
     this.dialogRef.afterClosed().subscribe(result => {
-      this.taxSectionForm.reset();
+      this.resetForm(); 
     })
   }
-
+  resetForm() {
+    this.taxSectionForm.reset({
+      section: '',
+      isHRA: false,
+      maximumAmount: 0
+    });
+    this.isEdit = false;
+    this.selectedRecord = null;
+  }
   onSubmit() {
-    const formValue = this.taxSectionForm.value;
-
-    // Check if the section is marked as HRA
-    if (formValue.isHRA) {
-      const hraSection = this.sections.find(section => section.isHRA);
-      if (hraSection) {
-        this.toast.error('HRA already exists! You cannot create multiple HRA sections.');
-        return;
-      }
+    this.isSubmitting = true;
+    this.taxSectionForm.markAllAsTouched();
+  
+    if (this.taxSectionForm.invalid) {
+      this.isSubmitting = false;
+      return;
     }
-
+    const formValue = this.taxSectionForm.value;
+   
     if (!this.isEdit) {
       this.taxService.addTaxSection(formValue).subscribe((res: any) => {
         this.dialogRef.close();
-        
-        this.toast.success('Tax section added successfully');
+        this.toast.success(this.translate.instant('taxation.tax_section_added'), this.translate.instant('taxation.toast.success'));
+        this.isSubmitting = false;   
+        this.resetForm(); 
         this.getAllsections();
       },
         err => {
-          this.toast.error('Tax Section Can not be Created', 'Error');
+          const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('taxation.tax_section_add_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
+        this.isSubmitting = false;        
         })
     }
     else if (this.isEdit) {
       this.taxService.updateTaxSection(this.selectedRecord._id, formValue).subscribe((res: any) => {
-        this.toast.success('Tax section updated successfully');
+        this.isSubmitting = false;
+        this.toast.success(this.translate.instant('taxation.tax_section_updated'), this.translate.instant('taxation.toast.success'));
         this.isEdit = false;
-        this.taxSectionForm.reset();
         this.getAllsections();
+        this.resetForm(); 
       },
         err => {
-          this.toast.error('Tax Section Can not be Updated', 'Error');
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('taxation.tax_section_update_fail')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
+          this.isSubmitting = false;        
         })
     }
   }
@@ -126,11 +147,13 @@ export class TaxSectionComponent {
   deleteRecord(id: string) {
     this.taxService.deleteTaxSection(id).subscribe((res: any) => {
       this.getAllsections();
-      this.toast.success('Successfully Deleted!!!', 'Tax Section')
+      this.toast.success(this.translate.instant('taxation.deleted'), this.translate.instant('taxation.toast.success'));
     },
       (err) => {
-        this.toast.error('This Tax Section Can not be deleted'
-          , 'Error')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('taxation.delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!');    
       })
   }
 
@@ -143,7 +166,10 @@ export class TaxSectionComponent {
         this.deleteRecord(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('taxation.delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!');        
       }
     });
   }

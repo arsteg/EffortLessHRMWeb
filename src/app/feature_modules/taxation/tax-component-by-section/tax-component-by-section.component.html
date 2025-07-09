@@ -20,6 +20,9 @@
             <mat-form-field class="w-100">
                 <mat-label>Component Name</mat-label>
                 <input type="text" matInput formControlName="componantName">
+                <mat-error *ngIf="taxComponentForm.get('componantName')?.hasError('required') && taxComponentForm.get('componantName')?.touched">
+                    componant Name is required
+                  </mat-error> 
             </mat-form-field>
 
             <mat-form-field class="w-100">
@@ -29,16 +32,29 @@
                         {{section?.section}}
                     </mat-option>
                 </mat-select>
+                <mat-error *ngIf="taxComponentForm.get('section')?.hasError('required') && taxComponentForm.get('section')?.touched">
+                    Section Name is required
+                  </mat-error> 
             </mat-form-field>
 
             <mat-form-field class="w-100">
                 <mat-label>Enter Maximum Amount</mat-label>
                 <input type="number" matInput formControlName="maximumAmount">
+                <mat-error *ngIf="taxComponentForm.get('maximumAmount')?.hasError('required') && taxComponentForm.get('maximumAmount')?.touched">
+                    Maximum amount is required, Enter 0 for no Limit.
+                  </mat-error> <mat-error *ngIf="taxComponentForm.get('maximumAmount')?.hasError('digitsOnly') && taxComponentForm.get('maximumAmount')?.touched">
+                    Maximum amount must contain only digits.
+                  </mat-error>
             </mat-form-field>
             
             <mat-form-field class="w-100">
                 <mat-label>Enter Order of this Component</mat-label>
                 <input type="number" matInput formControlName="order">
+                <mat-error *ngIf="taxComponentForm.get('order')?.hasError('required') && taxComponentForm.get('order')?.touched">
+                    Order is required
+                  </mat-error> <mat-error *ngIf="taxComponentForm.get('order')?.hasError('digitsOnly') && taxComponentForm.get('order')?.touched">
+                    Order must contain only digits.
+                  </mat-error>
             </mat-form-field>
         </div>
 

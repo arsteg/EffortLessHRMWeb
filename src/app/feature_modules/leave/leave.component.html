@@ -21,7 +21,7 @@
          routerLinkActive #rla4="routerLinkActive"
          (click)="selectTab(4)"
          [active]="rla4.isActive">{{ 'leave.admin.leaveApplication' | translate }}</a>
-      <a mat-tab-link
+      <a mat-tab-link *ngIf="false"
          routerLink="short-leave"
          routerLinkActive #rla5="routerLinkActive"
          (click)="selectTab(5)"
@@ -49,7 +49,7 @@
          routerLinkActive #rla8="routerLinkActive"
          (click)="selectTab(3)"
          [active]="rla8.isActive">{{ 'leave.user.myLeaveGrant' | translate }}</a>
-      <a mat-tab-link
+      <a mat-tab-link *ngIf="false"
          routerLink="my-short-leave"
          routerLinkActive #rla9="routerLinkActive"
          (click)="selectTab(4)"
@@ -69,7 +69,7 @@
          routerLinkActive #rla12="routerLinkActive"
          (click)="selectTab(7)"
          [active]="rla12.isActive">{{ 'leave.user.teamLeaveGrant' | translate }}</a>
-      <a mat-tab-link
+      <a mat-tab-link *ngIf="false"
          routerLink="team-short-leave"
          routerLinkActive #rla13="routerLinkActive"
          (click)="selectTab(8)"

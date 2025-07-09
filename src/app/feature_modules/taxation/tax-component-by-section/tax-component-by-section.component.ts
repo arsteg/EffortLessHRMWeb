@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-tax-component-by-section',
@@ -22,6 +24,7 @@ export class TaxComponentBySectionComponent {
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  isSubmitting: boolean = false;
   sections: any;
   public sortOrder: string = '';
   columns: TableColumn[] = [
@@ -42,14 +45,15 @@ export class TaxComponentBySectionComponent {
   constructor(private modalService: NgbModal,
     private taxService: TaxationService,
     private toast: ToastrService,
+    private translate: TranslateService,
     private fb: FormBuilder,
     private dialog: MatDialog
-  ) {
+  ) {   
     this.taxComponentForm = this.fb.group({
-      componantName: [''],
-      section: [''],
-      maximumAmount: [0],
-      order: [0]
+      componantName:['', Validators.required],
+      section:['', Validators.required],
+      maximumAmount: ['0', [Validators.required, CustomValidators.digitsOnly]],
+      order:  ['0', [Validators.required, CustomValidators.digitsOnly]]
     })
   }
 
@@ -81,30 +85,55 @@ export class TaxComponentBySectionComponent {
       this.taxComponentForm.reset();
     });
   }
-
+  resetForm() {
+    this.taxComponentForm.reset({
+      section: '',
+      componantName: '',
+      maximumAmount: 0,
+      order: 0
+    });
+    this.edit = false;
+    this.selectedRecord = null;
+  }
   onSubmission() {
+    this.isSubmitting = true;
+    this.taxComponentForm.markAllAsTouched();
+    if (this.taxComponentForm.invalid) {
+      this.isSubmitting = false;
+      return;
+    }
+    const formValue = this.taxComponentForm.value;
     if (!this.edit) {
       this.taxService.addTaxComponent(this.taxComponentForm.value).subscribe((res: any) => {
-       
-        this.toast.success('Tax component added successfully');
+        this.isSubmitting = false;
+        this.toast.success(this.translate.instant('taxation.tax_componant_added'), this.translate.instant('taxation.toast.success'));
+        this.resetForm();
         this.getTaxComponents();
       },
         err => {
-          this.toast.error('Tax Component Can not be Created', 'Error');
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('taxation.taxcomponant_add_fail')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
+        
+          this.isSubmitting = false;
         })
     }
     else if (this.edit) {
       this.taxService.updateTaxComponent(this.selectedRecord._id, this.taxComponentForm.value).subscribe((res: any) => {
-        const index = this.taxComponents.findIndex(item => item._id === this.selectedRecord._id);
-        if (index !== -1) {
-          this.taxComponents[index] = res.data;
-        }
+        this.getTaxComponents();
         this.edit = false;
-        this.toast.success('Tax Component Updated', 'Successfully!');
+        this.isSubmitting = false;
+        this.resetForm();
+        this.toast.success(this.translate.instant('taxation.tax_componant_updated'), this.translate.instant('taxation.toast.success'));
         this.getTaxComponents();
       },
         err => {
-          this.toast.error('Tax Component Can not be Updated', 'Error!');
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('taxation.tax_componant_update_fail')
+          ;
+          this.toast.error(errorMessage, 'Error!'); 
+          this.isSubmitting = false;
         })
     }
   }
@@ -148,7 +177,6 @@ export class TaxComponentBySectionComponent {
     }
   }
 
-
   setFormValues(data) {
     this.taxComponentForm.patchValue(data);
   }
@@ -156,11 +184,15 @@ export class TaxComponentBySectionComponent {
   deleteRecord(id: string) {
     this.taxService.deleteTaxComponent(id).subscribe((res: any) => {
       this.getTaxComponents();
-      this.toast.success('Successfully Deleted!!!', 'Attendance Template')
+    
+      this.toast.success(this.translate.instant('taxation.deleted'), this.translate.instant('taxation.toast.success'));
+    
     },
       (err) => {
-        this.toast.error('This Attendance Template Can not be deleted'
-          , 'Error')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('taxation.delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!');        
       })
   }
 
@@ -173,7 +205,10 @@ export class TaxComponentBySectionComponent {
         this.deleteRecord(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('taxation.delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!');    
       }
     });
   }

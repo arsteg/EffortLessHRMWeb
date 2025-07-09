@@ -1,0 +1,19 @@
+{
+    "taxation":{
+        "tax_section_added": "Tax section added successfully",
+        "tax_section_updated": "Tax section updated successfully",
+        "tax_section_add_fail": "Failed to To Tax section",
+        "tax_section_update_fail": "Failed to To Tax section",
+        "tax_componant_added": "Tax componant added successfully",
+        "tax_componant_updated": "Tax componant updated successfully",
+        "tax_componant_add_fail": "Failed to Add Tax componant",
+        "tax_componant_update_fail": "Failed to Update Tax componant",
+        "deleted": "Successfully Deleted!!!",
+        "delete_fail": "Failed to delete",
+        "toast": {
+          "success": "Success",
+          "error": "Error"
+        }      
+      }
+      
+}

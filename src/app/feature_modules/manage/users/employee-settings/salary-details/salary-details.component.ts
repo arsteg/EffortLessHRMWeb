@@ -7,6 +7,7 @@ import { UserService } from 'src/app/_services/users.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { forkJoin } from 'rxjs';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-salary-details',
@@ -31,6 +32,7 @@ export class SalaryDetailsComponent {
     private toast: ToastrService,
     private dialog: MatDialog,
     private router: Router,
+    private translate: TranslateService,
     public authService: AuthenticationService,
     private route: ActivatedRoute,
   ) { }
@@ -80,7 +82,11 @@ export class SalaryDetailsComponent {
         this.deleteSalary(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.users.employee-settings.failed_salary_details_delete')
+        ;
+       
+        this.toast.error(errorMessage, 'Error!');
       }
     });
   }
@@ -88,11 +94,13 @@ export class SalaryDetailsComponent {
   deleteSalary(id: string) {
     this.userService.deleteSalaryDetails(id).subscribe((res: any) => {
       this.getSalaryDetails();
-      this.toast.success('Successfully Deleted!!!', 'Salary Details')
-    },
+      this.toast.success(this.translate.instant('manage.users.employee-settings.salary_details_deleted'));
+      },
       (err) => {
-        this.toast.error('This Salary Details is already being used!'
-          , 'Salary Details, Can not be deleted!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('manage.users.employee-settings.failed_salary_details_delete')
+        ;       
+        this.toast.error(errorMessage, 'Error!');
       })
   }
 

@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'src/app/_services/company.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
@@ -15,7 +16,8 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 export class SignatoryDetailsComponent {
   @ViewChild('addModal') addModal: ElementRef;
   signatoryDetails: any;
-  signatoryDetailForm: FormGroup;
+  signatoryDetailForm: FormGroup;  
+  isSubmitting: boolean = false;
   closeResult: string;
   isEdit: boolean = false;
   searchText: string = '';
@@ -53,6 +55,7 @@ export class SignatoryDetailsComponent {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private dialog: MatDialog,
+    private translate: TranslateService,
     private toast: ToastrService,
     ) {
     this.signatoryDetailForm = this.fb.group({
@@ -87,28 +90,44 @@ export class SignatoryDetailsComponent {
   }
 
   onSubmission() {
+    this.isSubmitting = true;
+
+    this.signatoryDetailForm.markAllAsTouched();
+  
+    if (this.signatoryDetailForm.invalid) {
+      this.isSubmitting = false;
+      return;
+    }
     // add Department
     if (!this.isEdit) {
       this.companyService.addSignatoryDetails(this.signatoryDetailForm.value).subscribe(res => {
-        this.signatoryDetails.push(res.data);
-        this.toast.success('Signatory Detail added successfully', 'Success');
-        this.signatoryDetailForm.reset();
+        this.getSignatoryDetails();      
+        this.toast.success(this.translate.instant('organization.setup.signatory_updated'), this.translate.instant('toast.success'));
+          this.signatoryDetailForm.reset();
+        this.isSubmitting = false;
       },
-        err => { this.toast.error('Signatory Detail Can not be Added', 'Error') }
+        err => { const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('organization.setup.signatory_update_fail')
+          ;
+          this.toast.error(errorMessage, 'Error!');
+          this.isSubmitting = false; }
       );
     }
     // updateZone
     else if (this.isEdit) {
       this.companyService.updateSignatoryDetails(this.selectedRecord._id, this.signatoryDetailForm.value).subscribe(res => {
-        this.toast.success('Signatory Detail updated successfully', 'Success');
-        const index = this.signatoryDetails.findIndex(z => z._id === this.selectedRecord._id);
-        if (index !== -1) {
-          this.signatoryDetails[index] = { ...this.selectedRecord, ...this.signatoryDetailForm.value };
-        }
+          this.toast.success(this.translate.instant('organization.setup.signatory_updated'), this.translate.instant('toast.success'));
+        this.getSignatoryDetails();
+        this.isSubmitting = false;
         this.signatoryDetailForm.reset();
         this.isEdit = false;
       },
-        err => { this.toast.error('Signatory Detail Can not be Updated', 'Error') }
+        err => { 
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('organization.setup.signatory_update_fail')
+          ;
+          this.toast.error(errorMessage, 'Error!');
+          this.isSubmitting = false;  }
       );
     }
   }
@@ -147,11 +166,15 @@ export class SignatoryDetailsComponent {
   deleteBand(id: string) {
     this.companyService.deleteSignatoryDetails(id).subscribe((res: any) => {
       this.getSignatoryDetails();
-      this.toast.success('Successfully Deleted!!!', 'Signatory Detail')
+      this.toast.success(this.translate.instant('organization.setup.signatory_deleted'), this.translate.instant('toast.success'));
+    
     },
       (err) => {
-        this.toast.error('This Signatory Detail Can not be deleted!', 'Error')
-      })
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.signatory_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
+        })
   }
 
   deleteDialog(id: string): void {
@@ -163,7 +186,10 @@ export class SignatoryDetailsComponent {
         this.deleteBand(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.signatory_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!');
       }
     });
   }

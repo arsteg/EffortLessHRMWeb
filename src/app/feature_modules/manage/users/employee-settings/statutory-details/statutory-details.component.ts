@@ -6,6 +6,7 @@ import { UserService } from 'src/app/_services/users.service';
 import { forkJoin } from 'rxjs';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-statutory-details',
@@ -25,6 +26,7 @@ export class StatutoryDetailsComponent {
     private router: Router,
     private payrollService: PayrollService,
     private route: ActivatedRoute,
+    private translate: TranslateService,
     public authService: AuthenticationService
   ) {
     this.statutoryDetailsForm = this.fb.group({
@@ -136,16 +138,23 @@ export class StatutoryDetailsComponent {
       if (!res.data || res.data.length === 0 || res.data === null) {
         this.userService.addStatutoryDetails(this.statutoryDetailsForm.value).subscribe((res: any) => {
           this.getStatutoryDetailsByUser();
-          this.toast.success('Statutory Details Added Successfully');
-        }, error => {
-          this.toast.error('Statutory Details Add Failed');
+          this.toast.success(this.translate.instant('manage.users.employee-settings.statutory_details_added'));
+        }, err => {
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('manage.users.employee-settings.failed_to_add_statutory_details')
+          ;       
+          this.toast.error(errorMessage, 'Error!');
         })
       } else {
         this.userService.updateStatutoryDetails(res.data?._id, this.statutoryDetailsForm.value).subscribe((res: any) => {
           this.getStatutoryDetailsByUser();
-          this.toast.success('Statutory Details Updated Successfully');
-        }, error => {
-          this.toast.error('Statutory Details Update Failed');
+          this.toast.success(this.translate.instant('manage.users.employee-settings.statutory_details_updated'));
+   
+        }, err => {
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('manage.users.employee-settings.failed_to_update_statutory_details')
+          ;       
+          this.toast.error(errorMessage, 'Error!');
         })
       }
       this.statutoryDetailsForm.get('isGratuityEligible').disable();

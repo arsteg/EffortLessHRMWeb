@@ -49,42 +49,15 @@
   th:first-child, td:first-child {
     position: sticky;
     left: 0;
-    background-color: white; 
+    /* background-color: white;  */
     z-index: 1; 
-    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1); */
   }
   
-  th:last-child, td:last-child {
+  /* th:last-child, td:last-child {
     position: sticky;
     right: 0;
     background-color: white;
     z-index: 1;
     box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
-  }
-  .menu-row {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    overflow-x: auto;
-    white-space: nowrap;
-    padding: 10px;
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    margin-right: 15px;
-    height: 40px;
-    line-height: 40px;
-}
-
-.menu-item mat-icon {
-    font-size: 18px;
-    vertical-align: middle;
-}
-
-.mat-icon {
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center;
-}
+  } */

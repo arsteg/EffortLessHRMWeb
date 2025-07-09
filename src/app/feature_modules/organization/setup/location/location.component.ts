@@ -3,6 +3,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -24,6 +25,7 @@ export class LocationComponent {
   isEdit: boolean = false;
   searchText: string = '';
   selectedZone: any;
+  isSubmitting: boolean = false;
   countryName = '';
   selectedCountryCode: string;
   states = [
@@ -91,6 +93,7 @@ export class LocationComponent {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private toast: ToastrService,
+    private translate: TranslateService,
     private http: HttpClient) {
     this.locationForm = this.fb.group({
       locationCode: ['', Validators.required],
@@ -98,10 +101,10 @@ export class LocationComponent {
       state: ['', Validators.required],
       city: ['', Validators.required],
       organization: ['', Validators.required],
-      providentFundRegistrationCode: [''],
-      esicRegistrationCode: [''],
-      professionalTaxRegistrationCode: [''],
-      lwfRegistrationCode: [''],
+      providentFundRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/\d{5}$/)]],  // Example: TN/12345
+      esicRegistrationCode: ['', [Validators.pattern(/^\d{17}$/)]],  // Example: 17-digit ESIC number
+      professionalTaxRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/PT\/\d{5}$/)]],  // Example: MH/PT/12345
+      lwfRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/LWF\/\d{4}$/)]],  // Example: KA/LWF/1234    
       taxDeclarationApprovers: [['']]
     });
   }
@@ -132,30 +135,47 @@ export class LocationComponent {
   }
 
   onSubmission() {
+    this.isSubmitting = true;
+
+    this.locationForm.markAllAsTouched();
+  
+    if (this.locationForm.invalid) {
+      this.isSubmitting = false;
+      return;
+    }
     // add Location
     if (!this.isEdit) {
       this.companyService.addLocation(this.locationForm.value).subscribe(res => {
-        this.locations.push(res.data);
-        this.toast.success('Location added successfully', 'Success');
+        this.getLocations();
+        this.toast.success(this.translate.instant('organization.setup.Location_added'), this.translate.instant('toast.success'));
+        this.isSubmitting = false;
         this.locationForm.reset();
       },
-        err => { this.toast.error('Location Can not be Added', 'Error') }
+      err => { const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.Location_add_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
+        this.isSubmitting = false;
+      }
       );
     }
     // updateZone
     else if (this.isEdit) {
       this.companyService.updateLocation(this.selectedZone._id, this.locationForm.value).subscribe(res => {
-        this.toast.success('Location updated successfully', 'Success');
-        const index = this.locations.findIndex(z => z._id === this.selectedZone._id);
-        if (index !== -1) {
-          this.locations[index] = { ...this.selectedZone, ...this.locationForm.value };
-        }
+        this.toast.success(this.translate.instant('organization.setup.Location_updated'), this.translate.instant('toast.success'));
+        this.getLocations();
         this.locationForm.reset();
         this.isEdit = false;
+        this.isSubmitting = false;
         this.locationForm.get('locationCode').enable();
 
       },
-        err => { this.toast.error('Location Can not be Updated', 'Error') }
+      err => { const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.Location_add_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
+        this.isSubmitting = false;
+      }
       );
     }
   }
@@ -204,10 +224,14 @@ export class LocationComponent {
   deleteLocation(id: string) {
     this.companyService.deleteLocation(id).subscribe((res: any) => {
       this.getLocations();
-      this.toast.success('Successfully Deleted!!!', 'Location')
+      this.toast.success(this.translate.instant('organization.setup.location_deleted'), this.translate.instant('toast.success'));
+   
     },
       (err) => {
-        this.toast.error('This Location Can not be deleted!', 'Error')
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('organization.setup.location_delete_fail')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
       })
   }
 
@@ -220,7 +244,7 @@ export class LocationComponent {
         this.deleteLocation(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        this.toast.error(this.translate.instant('organization.setup.location_delete_fail'));
       }
     });
   }

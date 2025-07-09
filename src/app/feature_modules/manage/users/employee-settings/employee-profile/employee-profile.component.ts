@@ -1,12 +1,13 @@
 import { formatDate } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { RoleService } from 'src/app/_services/role.service';
 import { UserService } from 'src/app/_services/users.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-employee-profile',
   templateUrl: './employee-profile.component.html',
@@ -26,12 +27,13 @@ export class EmployeeProfileComponent {
     public authService: AuthenticationService,
     private toast: ToastrService,
     private roleService: RoleService,
+    private translate: TranslateService,
     private router: Router,
     private route: ActivatedRoute
-  ) {
+  ) {   
     this.userForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
-      lastName: ['', [Validators.pattern('^[A-Za-z]{2,}$')]],
+      lastName: ['', [Validators.required, Validators.pattern('^[A-Za-z]{2,}$')]],
       jobTitle: [''],
       address: [''],
       city: [''],
@@ -43,22 +45,22 @@ export class EmployeeProfileComponent {
       mobile: [, [Validators.pattern('^[0-9]{10}$')]],
       pincode: [, [Validators.pattern('^[0-9]{6}$')]],
       emergancyContactName: [''],
-      emergancyContactNumber: [],
+      emergancyContactNumber: ['', [CustomValidators.digitsOnly, CustomValidators.phoneNumber]],
       Gender: [''],
       DOB: [''],
       MaritalStatus: ['Unmarried'],
       MarraigeAniversary: [''],
       PassportDetails: [''],
-      Pancard: [''],
-      AadharNumber: [''],
+      Pancard: ['', [Validators.required, CustomValidators.panCard]],
+      AadharNumber: ['', [Validators.required, CustomValidators.digitsOnly, CustomValidators.aadharNumber]],
       Disability: ['no'],
       FatherHusbandName: [''],
       NoOfChildren: [''],
-      BankName: [''],
-      BankAccountNumber: [''],
-      BankIFSCCode: [''],
-      BankBranch: [''],
-      BankAddress: ['']
+      BankName: ['', [Validators.required, CustomValidators.bankName]],
+      BankAccountNumber: ['', [Validators.required, CustomValidators.digitsOnly, CustomValidators.bankAccountNumber]],
+      BankIFSCCode: ['', [Validators.required, CustomValidators.ifscCode]],
+      BankBranch: ['', [Validators.required, CustomValidators.bankBranch]],
+      BankAddress: ['', [Validators.required, CustomValidators.bankAddress]]
     });
   }
 
@@ -88,11 +90,20 @@ export class EmployeeProfileComponent {
   }
 
   onSubmit() {
-    console.log(this.userForm.value)
+    if (this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
+      this.toast.error(this.translate.instant('common.missing_required_Field'), this.translate.instant('common.validation_error'));
+      return;
+    }
     // if (this.userForm.valid) {
       this.userService.updateUser(this.selectedUser[0].id, this.userForm.value).subscribe(
-        (res: any) => this.toast.success('User Updated Successfully'),
-        (err) => { this.toast.error('User Update Failed') }
+        (res: any) =>  this.toast.success(this.translate.instant('manage.users.employee-settings.employee_profile_updated'), this.translate.instant('common.success'))
+        ,
+        (err) => {  const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('manage.users.employee-settings.failed_employee_update')
+          ;
+         
+          this.toast.error(errorMessage, 'Error!'); } 
       );
     // } else {
     //   this.userForm.markAllAsTouched();
