@@ -113,7 +113,7 @@
       </mat-radio-group>
     </div>
 
-    <div class="my-3" *ngIf="addTemplateForm.get('approversType')?.value === 'template-wise'">
+    <div class="my-3 d-none" *ngIf="addTemplateForm.get('approversType')?.value === 'template-wise'">
       <label class="mb-1">{{ 'attendance.at_approvalLevel' | translate }}</label>
       <mat-radio-group formControlName="approvalLevel" class="d-flex flex-row gap-3">
         <mat-radio-button color="primary" value="1">{{ 'attendance.at_level1' | translate }}</mat-radio-button>
@@ -133,7 +133,7 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="col-md-6" *ngIf="addTemplateForm.get('approvalLevel')?.value === '2'">
+      <div class="col-md-6 d-none" *ngIf="addTemplateForm.get('approvalLevel')?.value === '2'">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>{{ 'attendance.at_secondaryApprover' | translate }}</mat-label>
           <mat-select formControlName="secondaryApprover" required>
