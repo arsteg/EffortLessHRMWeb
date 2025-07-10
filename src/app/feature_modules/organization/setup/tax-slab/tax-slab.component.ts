@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -23,22 +23,24 @@ export class TaxSlabComponent {
   closeResult: string;
   public sortOrder: string = '';
   searchText: string = '';
-  totalRecords: number
+  totalRecords: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   fiscalYears: string[] = [];
   selectedCycle: string;
   isSubmitting: boolean = false;
+  allData: any[] = [];
+  dialogRef: MatDialogRef<any> | null = null;
   columns: TableColumn[] = [
-    {key: 'IncomeTaxSlabs', name:'Income Tax Slabs'},
-    {key: 'minAmount', name:'Minimum'},
-    {key: 'maxAmount', name:'Maximum'},
-    {key: 'taxPercentage', name:'Percentage'},
-    {key: 'cycle', name:'Cycle'},
-    {key: 'regime', name:'Regime'},
+    {key: 'IncomeTaxSlabs', name: this.translate.instant('organization.tax_slab.table.income_tax_slabs')},
+    {key: 'minAmount', name: this.translate.instant('organization.tax_slab.table.min_amount')},
+    {key: 'maxAmount', name: this.translate.instant('organization.tax_slab.table.max_amount')},
+    {key: 'taxPercentage', name: this.translate.instant('organization.tax_slab.table.tax_percentage')},
+    {key: 'cycle', name: this.translate.instant('organization.tax_slab.table.cycle')},
+    {key: 'regime', name: this.translate.instant('organization.tax_slab.table.regime')},
     {key: 'action', name: 'Action', isAction: true, options:[
-      {label: 'Edit', icon:'edit', visibility:ActionVisibility.BOTH},
-      {label: 'Delete', icon:'delete', visibility:ActionVisibility.BOTH, cssClass:'text-danger'},
+      {label: 'Edit', icon:'edit', visibility:ActionVisibility.LABEL},
+      {label: 'Delete', icon:'delete', visibility:ActionVisibility.LABEL},
     ]}
   ]
 
@@ -68,6 +70,7 @@ export class TaxSlabComponent {
   onActionClick(event) {
     switch (event.action.label) {
       case 'Edit':
+        this.isSubmitting = false;
         this.selectedRecord = event.row;
         this.isEdit = true;
         this.setFormValues();
@@ -87,16 +90,17 @@ export class TaxSlabComponent {
     }
     this.companyService.getTaxSlabByCompany(payload).subscribe((res: any) => {
       this.taxSlabs = res.data;
+      this.allData = res.data;
       this.totalRecords = res.total;
     })
   }
 
   onTaxSlabChange(event) {
-    console.log(event)
     if (!event.value) { this.getTaxSlabs() }
     if (event.value) {
       this.companyService.getTaxSlabByYear(event.value).subscribe((res: any) => {
         this.taxSlabs = res.data;
+        this.allData = res.data;
         this.totalRecords = res.total;
       })
     }
@@ -116,8 +120,9 @@ export class TaxSlabComponent {
     this.taxSlabForm.controls['cycle'].setValue(this.fiscalYears[0]);
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getTaxSlabs();
   }
 
@@ -137,10 +142,13 @@ export class TaxSlabComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef = this.dialog.open(content, {
+      disableClose: true,
+      width: '50%'
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.dialogRef = null;
     });
   }
 
@@ -171,6 +179,7 @@ export class TaxSlabComponent {
       this.companyService.addTaxSlab(this.taxSlabForm.value).subscribe((res: any) => {
         this.toast.success(this.translate.instant('organization.setup.tax_slab_added'), this.translate.instant('organization.toast.success'));
         this.resetTaxSlabForm();this.isSubmitting = false;
+        this.dialogRef.close(true);
         this.getTaxSlabs();
       },
         err => { 
@@ -186,6 +195,7 @@ export class TaxSlabComponent {
         this.getTaxSlabs();
         this.toast.success(this.translate.instant('organization.setup.tax_slab_added'), this.translate.instant('organization.toast.success'));
        this.resetTaxSlabForm();this.isSubmitting = false;
+       this.dialogRef.close(true);
         this.isEdit = false;
       },
         err => {   const errorMessage = err?.error?.message || err?.message || err 
@@ -240,5 +250,37 @@ export class TaxSlabComponent {
         this.toast.error(errorMessage, 'Error!'); 
       }
     });
+  }
+
+  onClose() {
+    this.isEdit = false;
+    this.isSubmitting = false;
+    this.resetTaxSlabForm();
+    this.dialogRef.close(true);
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.allData.slice().sort((a: any, b: any) => {
+      const valueA = this.getNestedValue(a, event.active);
+      const valueB = this.getNestedValue(b, event.active);
+      if (valueA < valueB) return event.direction === 'asc' ? -1 : 1;
+      if (valueA > valueB) return event.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+    this.taxSlabs = sorted;
+  }
+
+  private getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((o, key) => (o ? o[key] : undefined), obj);
+  }
+
+  onSearchChange(search: any) {
+    const data = this.allData?.filter(row => {
+      return this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+    });
+    this.taxSlabs = data;
+    this.totalRecords = data.length;
   }
 }

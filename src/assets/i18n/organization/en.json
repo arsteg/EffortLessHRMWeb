@@ -282,6 +282,113 @@
       "table": {
         "band": "Band"
       }
+    },
+    "signatory": {
+      "add_new": "Add New",
+      "modal": {
+        "add": "Add Signatory Detail",
+        "update": "Update Signatory Detail"
+      },
+      "form": {
+        "name": "Full Name",
+        "designation": "Designation",
+        "name_placeholder": "Enter Full Name of Company's Authorized Signatory",
+        "designation_placeholder": "Enter Designation of Company's Authorized Signatory",
+        "error": {
+          "name_required": "Name is required.",
+          "designation_required": "Designation is required."
+        }
+      },
+      "cancel": "Cancel",
+      "save": "Save",
+      "update": "Update",
+      "table": {
+        "name": "Name",
+        "designation": "Designation"
+      }
+    },
+    "holiday": {
+      "add_new": "Add New",
+      "modal": {
+        "add": "Add Holiday",
+        "update": "Update Holiday"
+      },
+      "form": {
+        "year": "Choose Year",
+        "year_option": "Calendar year - {{year}}",
+        "label": "Holiday Label",
+        "label_placeholder": "Enter Label for The Holiday",
+        "date": "Select Date",
+        "date_placeholder": "Select Date",
+        "reoccur": "Does this Holiday Reoccur on the Same Date Every Year?",
+        "reoccur_yes": "Yes",
+        "reoccur_no": "No",
+        "mandatory_flexi": "Is this a Mandatory or a Flexi Holiday?",
+        "mandatory": "Mandatory",
+        "flexi": "Flexi",
+        "applies_for": "Which Employees Does this Holiday Apply to?",
+        "all_employees": "All Employees",
+        "specific_employees": "Specific Employees",
+        "select_employees": "Select Employees",
+        "error": {
+          "label_required": "Label is required.",
+          "date_required": "Date is required.",
+          "reoccur_required": "Please select if the holiday reoccurs every year.",
+          "mandatory_flexi_required": "Please select if the holiday is mandatory or flexi.",
+          "applies_for_required": "Please select for whom the holiday applies.",
+          "employees_required": "Please select at least one employee."
+        }
+      },
+      "cancel": "Cancel",
+      "save": "Save",
+      "update": "Update",
+      "table": {
+        "holiday": "Holiday",
+        "date": "Date",
+        "type": "Type",
+        "reoccur": "Reoccur Every Year",
+        "applies_to": "Applies To"
+      }
+    },
+    "tax_slab": {
+      "add_new": "Add New",
+      "modal": {
+        "add": "Add Income Tax Slab",
+        "update": "Update Income Tax Slab"
+      },
+      "form": {
+        "income_tax_slabs": "Income Tax Slab",
+        "income_tax_slabs_placeholder": "Enter Income Tax Slab",
+        "min_amount": "Minimum Amount",
+        "max_amount": "Maximum Amount",
+        "tax_percentage": "Tax Percentage",
+        "cycle": "Cycle",
+        "cycle_placeholder": "Select Cycle",
+        "cycle_option": "Fiscal Year {{year}}",
+        "regime": "Regime",
+        "regime_placeholder": "Select Regime",
+        "regime_old": "Old Regime",
+        "regime_new": "New Regime",
+        "error": {
+          "income_tax_slabs_required": "Income Tax Slab is required.",
+          "min_amount_required": "Minimum Amount is required.",
+          "max_amount_required": "Maximum Amount is required.",
+          "tax_percentage_required": "Tax Percentage is required.",
+          "cycle_required": "Cycle is required.",
+          "regime_required": "Regime is required."
+        }
+      },
+      "cancel": "Cancel",
+      "save": "Save",
+      "update": "Update",
+      "table": {
+        "income_tax_slabs": "Income Tax Slabs",
+        "min_amount": "Minimum",
+        "max_amount": "Maximum",
+        "tax_percentage": "Percentage",
+        "cycle": "Cycle",
+        "regime": "Regime"
+      }
     }
   }
 }
