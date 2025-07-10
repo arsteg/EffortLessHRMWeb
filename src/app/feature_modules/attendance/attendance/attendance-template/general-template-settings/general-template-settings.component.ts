@@ -269,8 +269,6 @@ export class GeneralTemplateSettingsComponent {
 
   onSubmission() {
   if (this.addTemplateForm.valid) {
-    // Set submitted to true to immediately disable the submit button
-    // This prevents multiple clicks while the API call is in progress
     this.submitted = true;
 
     this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
@@ -281,19 +279,15 @@ export class GeneralTemplateSettingsComponent {
     if (!this.isEdit) {
       this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe(
         (res: any) => {
-          // On success:
           this.attendanceService.selectedTemplate.next(res.data);
           this.toast.success('Attendance Template created', 'Successfully!!!');
           this.expenseTemplateReportRefreshed.emit(res.data);
           this.closeModal();
-          // Re-enable the button after the operation is complete
-          this.submitted = false; // Important: Re-enable the button
+          this.submitted = false;
         },
         (err) => {
-          // On error:
           this.toast.error('Attendance Template cannot be created', 'Error!!!');
-          // Re-enable the button even on error, so the user can try again
-          this.submitted = false; // Important: Re-enable the button
+          this.submitted = false;
         }
       );
     } else {
