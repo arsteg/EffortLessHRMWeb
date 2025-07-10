@@ -99,12 +99,12 @@ export class GeneralTemplateSettingsComponent {
       daysControl.updateValueAndValidity();
     });
 
-    this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(this.addTemplateForm.get('approversType').value, value);
-    });
-    this.addTemplateForm.get('approversType').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value);
-    });
+    // this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
+    //   this.validateApprovers(this.addTemplateForm.get('approversType').value, value);
+    // });
+    // this.addTemplateForm.get('approversType').valueChanges.subscribe((value: any) => {
+    //   this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value);
+    // });
   }
   duplicateLabelValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
