@@ -33,7 +33,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   currentProfile: any;
   dropdownOpen: boolean = false;
   selectedOption: string;
-  isLoading: boolean = true;
   options: string[] = [
     'You spent the 7 connects on the availability',
     'The work week has ended, and your weekly summary is available for summary',
@@ -98,7 +97,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   //   });
   // }
   ngOnInit(): void {
-    this.isLoading = true;
       let role = localStorage.getItem('role');
       this.adminView = localStorage.getItem('adminView');
       this.commonService.setCurrentUserRole(role);
@@ -111,7 +109,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.menuList = SideBarAdminMenu.filter(item => 
               !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
             );
-            this.isLoading = false;
           });
         } else if (this.adminView?.toLowerCase() === 'user') {
           this.adminView = 'user';
@@ -120,7 +117,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.menuList = SideBarUserMenu.filter(item => 
               !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
             );
-            this.isLoading = false;
           });
         }
       } else {
@@ -129,14 +125,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
             this.menuList = SideBarAdminMenu.filter(item => 
               !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
             );
-            this.isLoading = false;
           });
         } else if (role?.toLowerCase() === 'user') {
           this.GetPermissionsByRole(Role.User).subscribe((allowedPermissions) => {
             this.menuList = SideBarUserMenu.filter(item => 
               !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
             );
-            this.isLoading = false;
           });
         }
         this.adminView = role?.toLowerCase();
@@ -204,7 +198,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // }
 
   switchView(view: string) {
-  this.isLoading = true;
     this.adminView = view;
     localStorage.setItem('adminView', view);
 
