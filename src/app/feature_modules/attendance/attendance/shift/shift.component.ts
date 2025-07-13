@@ -8,6 +8,15 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+
+const labelValidator: ValidatorFn = (control: AbstractControl) => {
+  const value = control.value as string;
+  if (!value || /^\s*$/.test(value)) {
+    return { required: true };
+  }
+  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
+  return valid ? null : { invalidLabel: true };
+};
 @Component({
   selector: 'app-shift',
   templateUrl: './shift.component.html',
@@ -51,14 +60,13 @@ export class ShiftComponent {
 
   constructor(
     private attendanceService: AttendanceService,
-    private modalService: NgbModal,
     private dialog: MatDialog,
     private exportService: ExportService,
     private toast: ToastrService,
     private fb: FormBuilder,
   ) {
     this.shiftForm = this.fb.group({
-      name: ['', [Validators.required, this.labelValidator()]],
+      name: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
       shiftType: ['', Validators.required],
       startTime: ['', Validators.required],
       endTime: ['', Validators.required],
@@ -80,7 +88,7 @@ export class ShiftComponent {
       enterNumberOfDaysForEarlyGoing: [0],
       graceTimeLimitForEarlyGoing: [0],
       isHalfDayApplicable: [false],
-      minHoursPerDayToGetCreditforHalfDay: ['', [Validators.min(0)]], // Added min validator
+      minHoursPerDayToGetCreditforHalfDay: ['',  [Validators.min(1), this.minHoursValidator()]], // Added min validator
       maxLateComingAllowedMinutesFirstHalfAttendance: [0],
     }, {
       validators: this.timeComparisonValidator // Apply the custom validator at the form group level
@@ -108,8 +116,17 @@ export class ShiftComponent {
     }
   }
 
+  duplicateLabelValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+      const name = control.value;
+      if (name && this.shift.some(template => template.name.toLowerCase() === name.toLowerCase())) {
+        return { duplicateLabel: true };
+      }
+      return null;
+    };
+  }
+
   setupConditionalValidation(): void {
-    // Conditional validation for 'noOfDaysLateComing', 'graceTimeLimitForLateComing', etc.
     this.isLateComingAllowedSubscription = this.shiftForm.get('isLateComingAllowed').valueChanges.subscribe(value => {
       const noOfDaysLateComingControl = this.shiftForm.get('noOfDaysLateComing');
       const graceTimeLimitForLateComingControl = this.shiftForm.get('graceTimeLimitForLateComing');
@@ -194,24 +211,9 @@ export class ShiftComponent {
       minHoursHalfDayControl.updateValueAndValidity();
       minHoursFullDayControl.updateValueAndValidity();
     });
+  }
+   
 
-    // Handle minHoursPerDayToGetCreditforHalfDay and minHoursPerDayToGetCreditForFullDay based on isHalfDayApplicable
-    this.shiftForm.get('isHalfDayApplicable').valueChanges.subscribe(isHalfDayApplicable => {
-      const minHoursHalfDayControl = this.shiftForm.get('minHoursPerDayToGetCreditforHalfDay');
-      const minHoursFullDayControl = this.shiftForm.get('minHoursPerDayToGetCreditForFullDay');
-      if (isHalfDayApplicable && this.shiftForm.get('shiftType').value === 'fixed duration') {
-        minHoursHalfDayControl.setValidators([Validators.required, Validators.min(1)]);
-        minHoursFullDayControl.setValidators([Validators.required, Validators.min(1)]);
-      } else {
-        minHoursHalfDayControl.clearValidators();
-        minHoursFullDayControl.clearValidators();
-        minHoursHalfDayControl.setValue(''); // Clear value if not applicable
-        minHoursFullDayControl.setValue(''); // Clear value if not applicable
-      }
-      minHoursHalfDayControl.updateValueAndValidity();
-      minHoursFullDayControl.updateValueAndValidity();
-    });
-}
 
   // Custom validator for shift name
   labelValidator(): ValidatorFn {
@@ -233,7 +235,7 @@ export class ShiftComponent {
   }
 
   // Custom validator for start and end times
- timeComparisonValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
+  timeComparisonValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
     const startTime = control.get('startTime')?.value;
     const endTime = control.get('endTime')?.value;
     const earliestArrival = control.get('earliestArrival')?.value;
@@ -444,10 +446,10 @@ export class ShiftComponent {
 
   handleAction(event: any) {
     if (event.action.label === 'Edit') {
-      this.changeMode=='Update';
-      this.isEdit= true;
+      this.changeMode == 'Update';
+      this.isEdit = true;
       this.open(this.addModal);
-      this.selectedShift=event?.row?._id;
+      this.selectedShift = event?.row?._id;
       this.setFormValues(event?.row);
     }
     if (event.action.label === 'Delete') {

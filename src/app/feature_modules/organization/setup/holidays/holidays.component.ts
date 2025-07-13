@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -27,19 +27,31 @@ export class HolidaysComponent {
   currentYear: number = new Date().getFullYear();
   isSubmitting: boolean = false;
   selectedYear: number;
-  totalRecords: number
+  totalRecords: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   public sortOrder: string = '';
+  dialogRef: MatDialogRef<any> | null = null;
+  allData: any[]= [];
   columns: TableColumn[] = [
-    { key: 'label', name: 'Holiday' },
-    { key: 'date', name: 'Date', valueFn: (row: any) => { return row.date ? this.datePipe.transform(row.date, 'mediumDate') : '' } },
+    {
+      key: 'label', 
+      name: this.translate.instant('organization.holiday.table.holiday')
+    },
+    { 
+      key: 'date', 
+      name: this.translate.instant('organization.holiday.table.date'),
+      valueFn: (row: any) => { return row.date ? this.datePipe.transform(row.date, 'mediumDate') : '' } },
     { key: 'isMandatoryForFlexiHoliday',
-       name: 'Type',
+       name: this.translate.instant('organization.holiday.table.type'),
       valueFn: (row: any) => { return row.isMandatoryForFlexiHoliday ? 'Mandatory' : 'Flexi' }
      },
-    { key: 'isHolidayOccurEveryYearOnSameDay', name: 'Re-occure Every Year', valueFn: (row: any) => { return row.isHolidayOccurEveryYearOnSameDay ? 'Yes' : 'No' } },
-    { key: 'holidaysAppliesFor', name: 'Applies To' },
+    { key: 'isHolidayOccurEveryYearOnSameDay', 
+      name: this.translate.instant('organization.holiday.table.reoccur'),
+      valueFn: (row: any) => { return row.isHolidayOccurEveryYearOnSameDay ? 'Yes' : 'No' } },
+    { key: 'holidaysAppliesFor', 
+      name: this.translate.instant('organization.holiday.table.applies_to'),
+    },
     {
       key: 'action',
       name: 'Action',
@@ -48,13 +60,12 @@ export class HolidaysComponent {
         {
           label: 'Edit',
           icon: 'edit',
-          visibility: ActionVisibility.BOTH
+          visibility: ActionVisibility.LABEL
         },
         {
           label: 'Delete',
           icon: 'delete',
-          visibility: ActionVisibility.BOTH,
-          cssClass: 'text-danger'
+          visibility: ActionVisibility.LABEL,
         }
       ]
     }
@@ -93,6 +104,7 @@ export class HolidaysComponent {
   onActionClick(event) {
     switch (event.action.label) {
       case 'Edit':
+        this.isSubmitting = false;
         this.selectedRecord = event.row;
         this.isEdit = true;
         this.edit(event.row);
@@ -128,8 +140,9 @@ export class HolidaysComponent {
     this.getHolidays();
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.getHolidays();
   }
 
@@ -149,6 +162,7 @@ export class HolidaysComponent {
     };
     this.companyService.getHolidays(pagination).subscribe(res => {
       this.holidays = res.data;
+      this.allData = res.data;
       this.totalRecords = res.total;
     });
   }
@@ -182,6 +196,7 @@ export class HolidaysComponent {
           this.getHolidays();
           this.toast.success(this.translate.instant('organization.setup.holiday_added')) 
           this.holidayForm.reset(this.getDefaultFormValues());
+          this.dialogRef.close(true);
         },
           err => {  const errorMessage = err?.error?.message || err?.message || err 
             || this.translate.instant('organization.setup.holiday_add_fail')
@@ -197,6 +212,7 @@ export class HolidaysComponent {
           this.getHolidays();
           this.holidayForm.reset(this.getDefaultFormValues());
           this.isEdit = false;
+          this.dialogRef.close(true);
         },
           err => { const errorMessage = err?.error?.message || err?.message || err 
             || this.translate.instant('organization.setup.holiday_update_fail')
@@ -230,6 +246,7 @@ export class HolidaysComponent {
 
   clearselectedRequest() {
     this.isEdit = false;
+    this.isSubmitting = false;
     this.holidayForm.reset(this.getDefaultFormValues());
   }
 
@@ -244,10 +261,13 @@ export class HolidaysComponent {
   }
 
   open(content: any) {
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef = this.dialog.open(content, {
+      disableClose: true,
+      width: '50%'
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.dialogRef = null;
     });
   }
 
@@ -279,5 +299,38 @@ export class HolidaysComponent {
         this.toast.error(errorMessage, 'Error!'); 
       }
     });
+  }
+
+  onClose() {
+    this.isEdit = false;
+    this.holidayForm.reset(this.getDefaultFormValues());
+    this.dialogRef.close(true);
+  }
+
+ onSortChange(event: any) {
+    const sorted = this.allData.slice().sort((a: any, b: any) => {
+      var valueA = this.getNestedValue(a, event.active);
+      var valueB = this.getNestedValue(b, event.active);
+      
+      if (valueA < valueB) return event.direction === 'asc' ? -1 : 1;
+      if (valueA > valueB) return event.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    this.holidays = sorted;
+  }
+
+  private getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((o, key) => (o ? o[key] : undefined), obj);
+  }
+
+  onSearchChange(search: any) {
+    const data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(search.toLowerCase());
+      });
+      return found;
+    });
+    this.holidays = data;
   }
 }

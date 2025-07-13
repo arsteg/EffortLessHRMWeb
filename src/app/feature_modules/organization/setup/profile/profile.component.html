@@ -4,15 +4,20 @@
 
 
 <ng-template #addEditCompanyDialog>
-  <h1 mat-dialog-title>{{ (isEdit ? 'organization.setup.update_company' : 'organization.setup.add_company') | translate
-    }}</h1>
-  <hr class="mt-0" />
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      {{ (isEdit ? 'organization.setup.update_company' : 'organization.setup.add_company') | translate }}
+    </h1>
+    <button mat-icon-button (click)="dialogRef.close()" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
   <form [formGroup]="companyForm" (ngSubmit)="onSubmission()">
     <div mat-dialog-content>
-      <div class="row">
+      <div class="row m-0">
         <div class="form-group col-md-12">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label translate>organization.setup.company_name</mat-label>
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.setup.company_name' | translate }}</mat-label>
             <input matInput type="text" formControlName="companyName"
               [placeholder]="'organization.setup.enter_company_name' | translate" />
             <mat-error
@@ -20,11 +25,10 @@
               translate>organization.setup.company_name_required</mat-error>
           </mat-form-field>
         </div>
-      </div>
-      <div class="row">
+      
         <div class="form-group col-md-12">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label translate>organization.setup.contact_person</mat-label>
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.setup.contact_person' | translate }}</mat-label>
             <input matInput type="text" formControlName="contactPerson"
               [placeholder]="'organization.setup.enter_contact_person' | translate" />
             <mat-error
@@ -32,11 +36,10 @@
               translate>organization.setup.contact_person_required</mat-error>
           </mat-form-field>
         </div>
-      </div>
-      <div class="row">
+      
         <div class="form-group col-md-12">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label translate>organization.setup.address</mat-label>
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.setup.address' | translate }}</mat-label>
             <input matInput type="text" formControlName="address"
               [placeholder]="'organization.setup.enter_address' | translate" />
             <mat-error
@@ -44,11 +47,10 @@
               translate>organization.setup.address_required</mat-error>
           </mat-form-field>
         </div>
-      </div>
-      <div class="row">
+      
         <div class="form-group col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label translate>organization.setup.city</mat-label>
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.setup.city' | translate }}</mat-label>
             <input matInput type="text" formControlName="city"
               [placeholder]="'organization.setup.enter_city' | translate" />
             <mat-error
@@ -57,8 +59,8 @@
           </mat-form-field>
         </div>
         <div class="form-group col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label translate>organization.setup.state</mat-label>
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.setup.state' | translate }}</mat-label>
             <input matInput type="text" formControlName="state"
               [placeholder]="'organization.setup.enter_state' | translate" />
             <mat-error
@@ -66,11 +68,10 @@
               translate>organization.setup.state_required</mat-error>
           </mat-form-field>
         </div>
-      </div>
-      <div class="row">
+      
         <div class="form-group col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label translate>organization.setup.country</mat-label>
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.setup.country' | translate }}</mat-label>
             <input matInput type="text" formControlName="country"
               [placeholder]="'organization.setup.enter_country' | translate" />
             <mat-error
@@ -79,8 +80,8 @@
           </mat-form-field>
         </div>
         <div class="form-group col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label translate>organization.setup.pincode</mat-label>
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.setup.pincode' | translate }}</mat-label>
             <input matInput type="text" formControlName="pincode"
               [placeholder]="'organization.setup.enter_pincode' | translate" />
             <mat-error
@@ -91,11 +92,10 @@
               translate>organization.setup.pincode_invalid</mat-error>
           </mat-form-field>
         </div>
-      </div>
-      <div class="row">
+      
         <div class="form-group col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label translate>organization.setup.email</mat-label>
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.setup.email' | translate }}</mat-label>
             <input matInput type="email" formControlName="email"   [disabled]="true"
               [placeholder]="'organization.setup.enter_email' | translate" />
             <mat-error
@@ -107,8 +107,8 @@
           </mat-form-field>
         </div>
         <div class="form-group col-md-6">
-          <mat-form-field appearance="fill" class="w-100">
-            <mat-label translate>organization.setup.phone</mat-label>
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.setup.phone' | translate }}</mat-label>
             <input matInput type="text" formControlName="phone"
               [placeholder]="'organization.setup.enter_phone' | translate" />
             <mat-error
@@ -121,31 +121,35 @@
         </div>
       </div>
     </div>
-    <div mat-dialog-actions class="d-flex justify-content-between border-top mt-2 py-2">
-      <button mat-flat-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' | translate}}</button>
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+      <button mat-flat-button (click)="dialogRef.close()">{{'organization.setup.close' | translate}}</button>
       <button mat-flat-button color="primary" type="submit">{{'organization.setup.update' | translate}}</button>
     </div>
 </form>
 </ng-template>
 
 <ng-template #uploadLogoDialog>
-  <h1 mat-dialog-title translate>organization.setup.upload_company_logo</h1>
-  <hr class="mt-0" />
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>{{ 'organization.setup.upload_company_logo' | translate }}</h1>
+    <button mat-icon-button (click)="dialogRef.close()" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
   <div mat-dialog-content>
-    <div class="row">
+    <div class="row m-0">
       <div class="form-group col-md-12">
         <input type="file" accept="image/*" (change)="onFileSelected($event)" #fileInput />
         <div *ngIf="selectedFile" class="mt-2">
-          <p translate>organization.setup.selected_file {{ selectedFile.name }}</p>
+          <p>{{ 'organization.setup.selected_file' | translate }} {{ selectedFile.name }}</p>
           <img [src]="imagePreview" alt="Logo Preview" style="max-width: 200px; max-height: 200px;"
             *ngIf="imagePreview" />
         </div>
-        <mat-error *ngIf="fileError" translate>organization.setup.{{ fileError }}</mat-error>
+        <mat-error *ngIf="fileError">{{ 'organization.setup.' + fileError | translate }}</mat-error>
       </div>
     </div>
   </div>
-  <div mat-dialog-actions class="d-flex justify-content-between border-top mt-2 py-2">
-    <button mat-flat-button type="button" (click)="dialogRef.close()">{{'organization.setup.close' |
+  <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+    <button mat-flat-button (click)="dialogRef.close()">{{'organization.setup.close' |
       translate}}</button>
     <button mat-flat-button color="primary" (click)="uploadLogo()"
       [disabled]="!selectedFile">{{'organization.setup.update' | translate}}</button>

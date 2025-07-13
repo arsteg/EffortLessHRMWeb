@@ -1,37 +1,56 @@
 <div class="position-relative">
-    <button mat-flat-button class="position-absolute end-0" color="primary"
-        (click)="clearselectedRequest(); isEdit=false; open(addModal)">Add New</button>
+  <div class="position-absolute end-0">
+    <button mat-flat-button color="primary" (click)="clearselectedRequest(); isEdit=false; open(addModal)">
+      {{ 'organization.designation.add_new' | translate }}
+    </button>
+  </div>
 </div>
 
+<hrm-table 
+  [data]="designations" 
+  [columns]="columns" 
+  [isServerSide]="false" 
+  [showSearch]="true"
+  [totalItems]="totalRecords" 
+  [pageSize]="recordsPerPage"
+  (pageChanged)="onPageChange($event)"
+  (searchChanged)="onSearchChange($event)"
+  (actionClicked)="onActionClick($event)">
+</hrm-table>
 
-<hrm-table [data]="designations" [columns]="columns" [showExport]="'none'" [showSearch]="true"
-    (actionClicked)="onActionClick($event)"></hrm-table>
-
-<!-- add company -->
 <ng-template #addModal let-modal>
-    <div class="modal-header d-flex justify-content-between border-bottom mb-2 pt-0">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{isEdit? 'Update': 'Add'}} Designation</h1>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      {{ (isEdit ? 'organization.designation.modal.update' : 'organization.designation.modal.add') | translate }}
+    </h1>
+    <button mat-icon-button (click)="onClose()" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="designationForm" (ngSubmit)="onSubmission()">
+    <div mat-dialog-content>
+      <div class="row m-0">
+        <div class="form-group col-md-12">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'organization.designation.form.designation_name' | translate }}</mat-label>
+            <input matInput type="text" formControlName="designation" placeholder="{{ 'organization.designation.form.designation_name_placeholder' | translate }}">
+            <mat-error
+              *ngIf="designationForm.get('designation')?.hasError('required') && (designationForm.get('designation')?.touched || designationForm.get('designation')?.dirty)">
+              {{ 'organization.designation.form.error.designation_name_required' | translate }}
+            </mat-error>
+          </mat-form-field>
         </div>
-        <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-                (click)="modal.close('Escape clicked')"></button>
-        </div>
+      </div>
     </div>
 
-    <form [formGroup]="designationForm" (ngSubmit)="onSubmission()">
-
-        <div class="form-group mt-2">
-            <label for="">Enter Designation<span class="text-danger">*</span></label>
-            <input type="text" class="form-control" placeholder="Enter Designation Name" formControlName="designation">
-            <div *ngIf="designationForm.get('designation').invalid && 
-            (designationForm.get('designation').dirty || designationForm.get('designation').touched)">
-                <small class="text-danger">Designation is required.</small>
-            </div>
-        </div>
-
-        <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-            <button mat-flat-button type="button" (click)="clearselectedRequest()">Cancel</button>
-            <button mat-flat-button class="addBtn" type="submit" [disabled]="isSubmitting">Submit</button>
-        </div>
-    </form>
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+      <button mat-flat-button (click)="onClose()">
+        {{ 'organization.designation.cancel' | translate }}
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting">
+        {{ (isEdit ? 'organization.designation.update' : 'organization.designation.save') | translate }}
+      </button>
+    </div>
+  </form>
 </ng-template>

@@ -73,7 +73,7 @@
     "at_approvalLevel": "How many levels of approvals you want to add?",
     "at_level1": "Level 1",
     "at_level2": "Level 2",
-    "at_primaryApprover": "Primary Approver",
+    "at_primaryApprover": "Select Approver",
     "at_selectPrimaryApprover": "Select Primary Approver",
     "at_secondaryApprover": "Secondary Approver",
     "at_selectSecondaryApprover": "Select Secondary Approver",

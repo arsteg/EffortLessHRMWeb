@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SideBarAdminMenu, SideBarUserMenu } from './menu.const';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Role } from 'src/app/models/role.model';
+import { map, Observable, timer  } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -48,53 +49,99 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private dialog: MatDialog
   ) { }
 
-  ngOnInit(): void {
-    let role = localStorage.getItem('role');
-    this.adminView = localStorage.getItem('adminView');
-    // this.auth.getRole(roleId).subscribe((response: any) => {
-    // let role = response && response.data && response.data[0].RoleName;
-    this.commonService.setCurrentUserRole(role);
-    console.log(role);
-    console.log(this.adminView);
-    if (this.adminView) {
-      if (this.adminView?.toLowerCase() == 'admin') {
-        this.adminView = 'admin';
-        localStorage.setItem('adminView', 'admin');
-        //this.menuList = SideBarAdminMenu;
-        this.GetPermissionsByRole(Role.Admin, SideBarAdminMenu);
-        //this.portalType = this.adminView?.toLowerCase();
-        //console.log(this.portalType);
-      }
-      if (this.adminView?.toLowerCase() == 'user') {
-        this.adminView = 'user';
-        //this.menuList = SideBarUserMenu;
-        this.GetPermissionsByRole(Role.User, SideBarUserMenu);
-        localStorage.setItem('adminView', 'user');
-      }
-    } else {
-      if (role && role?.toLowerCase() == 'admin') {
-        //this.menuList = SideBarAdminMenu;
-        this.GetPermissionsByRole(Role.Admin, SideBarAdminMenu);
-        // this.portalType = role?.toLowerCase();
-        // console.log(this.portalType)
-      }
-      if (role && role?.toLowerCase() == 'user') {
-        //this.menuList = SideBarUserMenu;
-        this.GetPermissionsByRole(Role.User, SideBarUserMenu);
-      }
-      this.adminView = role?.toLowerCase();
-    }
-    // this.portalType = roleId && roleId?.toLowerCase();
-    // console.log(this.portalType)
-    // });
+  // ngOnInit(): void {
+  //   let role = localStorage.getItem('role');
+  //   this.adminView = localStorage.getItem('adminView');
+  //   // this.auth.getRole(roleId).subscribe((response: any) => {
+  //   // let role = response && response.data && response.data[0].RoleName;
+  //   this.commonService.setCurrentUserRole(role);
+  //   console.log(role);
+  //   console.log(this.adminView);
+  //   if (this.adminView) {
+  //     if (this.adminView?.toLowerCase() == 'admin') {
+  //       this.adminView = 'admin';
+  //       localStorage.setItem('adminView', 'admin');
+  //       //this.menuList = SideBarAdminMenu;
+  //       this.GetPermissionsByRole(Role.Admin, SideBarAdminMenu);
+  //       //this.portalType = this.adminView?.toLowerCase();
+  //       //console.log(this.portalType);
+  //     }
+  //     if (this.adminView?.toLowerCase() == 'user') {
+  //       this.adminView = 'user';
+  //       //this.menuList = SideBarUserMenu;
+  //       this.GetPermissionsByRole(Role.User, SideBarUserMenu);
+  //       localStorage.setItem('adminView', 'user');
+  //     }
+  //   } else {
+  //     if (role && role?.toLowerCase() == 'admin') {
+  //       //this.menuList = SideBarAdminMenu;
+  //       this.GetPermissionsByRole(Role.Admin, SideBarAdminMenu);
+  //       // this.portalType = role?.toLowerCase();
+  //       // console.log(this.portalType)
+  //     }
+  //     if (role && role?.toLowerCase() == 'user') {
+  //       //this.menuList = SideBarUserMenu;
+  //       this.GetPermissionsByRole(Role.User, SideBarUserMenu);
+  //     }
+  //     this.adminView = role?.toLowerCase();
+  //   }
+  //   // this.portalType = roleId && roleId?.toLowerCase();
+  //   // console.log(this.portalType)
+  //   // });
 
-    let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.auth.GetMe(currentUser.id).subscribe((response: any) => {
-      this.currentProfile = response && response.data.users;
-      this.commonService.setCurrentUser(this.currentProfile);
-      return this.currentProfile;
-    });
-  }
+  //   let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  //   this.auth.GetMe(currentUser.id).subscribe((response: any) => {
+  //     this.currentProfile = response && response.data.users;
+  //     this.commonService.setCurrentUser(this.currentProfile);
+  //     return this.currentProfile;
+  //   });
+  // }
+  ngOnInit(): void {
+      let role = localStorage.getItem('role');
+      this.adminView = localStorage.getItem('adminView');
+      this.commonService.setCurrentUserRole(role);
+
+      if (this.adminView) {
+        if (this.adminView?.toLowerCase() === 'admin') {
+          this.adminView = 'admin';
+          localStorage.setItem('adminView', 'admin');
+          this.GetPermissionsByRole(Role.Admin).subscribe((allowedPermissions) => {
+            this.menuList = SideBarAdminMenu.filter(item => 
+              !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
+            );
+          });
+        } else if (this.adminView?.toLowerCase() === 'user') {
+          this.adminView = 'user';
+          localStorage.setItem('adminView', 'user');
+          this.GetPermissionsByRole(Role.User).subscribe((allowedPermissions) => {
+            this.menuList = SideBarUserMenu.filter(item => 
+              !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
+            );
+          });
+        }
+      } else {
+        if (role?.toLowerCase() === 'admin') {
+          this.GetPermissionsByRole(Role.Admin).subscribe((allowedPermissions) => {
+            this.menuList = SideBarAdminMenu.filter(item => 
+              !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
+            );
+          });
+        } else if (role?.toLowerCase() === 'user') {
+          this.GetPermissionsByRole(Role.User).subscribe((allowedPermissions) => {
+            this.menuList = SideBarUserMenu.filter(item => 
+              !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
+            );
+          });
+        }
+        this.adminView = role?.toLowerCase();
+      }
+
+      let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      this.auth.GetMe(currentUser.id).subscribe((response: any) => {
+        this.currentProfile = response?.data?.users;
+        this.commonService.setCurrentUser(this.currentProfile);
+      });
+    }
 
   ngAfterViewInit(): void {
     if (this.drawerRef && this.contentArea) {
@@ -136,17 +183,42 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.dropdownOpen = this.dropdownOpen == false ? true : false;
   }
 
+  // switchView(view: string) {
+  //   this.adminView = view;
+  //   localStorage.setItem('adminView', view);
+  //   if (view == 'user') {      
+  //     //this.menuList = SideBarUserMenu;
+  //     this.GetPermissionsByRole(Role.User, SideBarUserMenu);
+  //     this.router.navigateByUrl('home/dashboard/user');
+  //   } else if (view == 'admin') {
+  //     //this.menuList = SideBarAdminMenu;
+  //     this.GetPermissionsByRole(Role.Admin, SideBarAdminMenu);
+  //     this.router.navigateByUrl('home/dashboard');
+  //   }
+  // }
+
   switchView(view: string) {
     this.adminView = view;
     localStorage.setItem('adminView', view);
-    if (view == 'user') {      
-      //this.menuList = SideBarUserMenu;
-      this.GetPermissionsByRole(Role.User, SideBarUserMenu);
-      this.router.navigateByUrl('home/dashboard/user');
-    } else if (view == 'admin') {
-      //this.menuList = SideBarAdminMenu;
-      this.GetPermissionsByRole(Role.Admin, SideBarAdminMenu);
-      this.router.navigateByUrl('home/dashboard');
+
+    if (view === 'user') {
+      this.GetPermissionsByRole(Role.User).subscribe((allowedPermissions) => {
+        this.menuList = SideBarUserMenu.filter(item =>
+          !item.title || allowedPermissions?.some(p =>
+            p?.toLowerCase() === item?.title?.toLowerCase()
+          )
+        );
+        this.router.navigateByUrl('home/dashboard/user');
+      });
+    } else if (view === 'admin') {
+      this.GetPermissionsByRole(Role.Admin).subscribe((allowedPermissions) => {
+        this.menuList = SideBarAdminMenu.filter(item =>
+          !item.title || allowedPermissions?.some(p =>
+            p?.toLowerCase() === item?.title?.toLowerCase()
+          )
+        );
+        this.router.navigateByUrl('home/dashboard');
+      });
     }
   }
 
@@ -159,20 +231,27 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('rememberMe');
     localStorage.removeItem('loginTime');
+    localStorage.removeItem('leaveSelectedTab');
     window.location.reload();
     this.router.navigateByUrl('/login');
   }
 
-  GetPermissionsByRole(role: string, sideBarMenuList?: any) {
-    this.auth.getPermissionsByRole(role).subscribe((response: any) => {
-      if (response && response.data && response.data.length > 0) {
-        const allowedPermissions: string[] = response.data;
-        this.menuList = sideBarMenuList.filter(item => 
-          !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
-        );
-      } else {
-        this.menuList = [];
-      }
-    });
+  GetPermissionsByRole(role: string): Observable<string[]> {
+    return this.auth.getPermissionsByRole(role).pipe(
+      map((response: any) => response?.data ?? [])
+    );
   }
+  
+  // GetPermissionsByRole(role: string, sideBarMenuList?: any) {
+  //   this.auth.getPermissionsByRole(role).subscribe((response: any) => {
+  //     if (response && response.data && response.data.length > 0) {
+  //       const allowedPermissions: string[] = response.data;
+  //       this.menuList = sideBarMenuList.filter(item => 
+  //         !item.title || allowedPermissions?.some(p => p?.toLowerCase() === item?.title?.toLowerCase())
+  //       );
+  //     } else {
+  //       this.menuList = [];
+  //     }
+  //   });
+  // }
 }

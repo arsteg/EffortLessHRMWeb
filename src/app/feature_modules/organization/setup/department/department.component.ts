@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -25,14 +25,18 @@ export class DepartmentComponent {
   selectedRecord: any;
   public sortOrder: string = '';
   isSubmitting: boolean = false;
+  totalRecords: number = 0;
+  recordsPerPage: number = 10;
+  currentPage: number = 1;
+  dialogRef: MatDialogRef<any> | null = null;
 
   columns: TableColumn[] = [
     {
       key: 'departmentCode',
-      name: 'Department Code'
+      name: this.translate.instant('organization.department.table.department_code')
     }, {
       key: 'departmentName',
-      name: 'Department Name'
+      name: this.translate.instant('organization.department.table.department_name')
     },
     {
       key: 'action',
@@ -48,12 +52,13 @@ export class DepartmentComponent {
           icon: 'delete',
           visibility: ActionVisibility.BOTH,
           cssClass: 'text-danger border-bottom'
-        },
-        {
-          label: 'Assign Sub-Department',
-          icon: '',
-          visibility: ActionVisibility.LABEL
         }
+        // ,
+        // {
+        //   label: 'Assign Sub-Department',
+        //   icon: '',
+        //   visibility: ActionVisibility.LABEL
+        // }
       ],
       isAction: true
     }
@@ -100,7 +105,10 @@ export class DepartmentComponent {
 
   getDepartments() {
     this.companyService.getDepartments().subscribe(res => {
-      this.departments = res.data;
+      //this.departments = res.data;
+      const data = Array.isArray(res.data) ? res.data : [];
+        this.departments = [...data];
+        this.totalRecords = data.length;
     });
   }
 
@@ -122,6 +130,7 @@ export class DepartmentComponent {
 
         this.isSubmitting = false;
         this.departmentForm.reset();
+        this.dialogRef.close(true);
       },
         err => { const errorMessage = err?.error?.message || err?.message || err 
           || this.translate.instant('organization.setup.department_add_fail')
@@ -140,6 +149,7 @@ export class DepartmentComponent {
         this.isEdit = false;
         this.departmentForm.get('departmentCode').enable();
         this.isSubmitting = false;
+        this.dialogRef.close(true);
 
       },
         err => { const errorMessage = err?.error?.message || err?.message || err 
@@ -177,11 +187,13 @@ export class DepartmentComponent {
   }
 
   open(content: any) {
+    this.dialogRef = this.dialog.open(content, {
+      disableClose: true,
+      width: '50%'
+    });
 
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.dialogRef = null;
     });
   }
 
@@ -214,6 +226,25 @@ export class DepartmentComponent {
         this.toast.error(errorMessage, 'Error!'); 
       }
     });
+  }
+
+  onClose() {
+    this.isEdit = false;
+    this.departmentForm.reset();
+    this.dialogRef.close(true);
+  }
+
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
+    this.getDepartments();
+  }
+
+  onSearchChange(searchText: string) {
+    this.searchText = searchText;
+    this.currentPage = 1;
+    this.departments.filter = searchText.trim().toLowerCase();
+    this.totalRecords = this.departments.filteredData.length;
   }
 
 }
