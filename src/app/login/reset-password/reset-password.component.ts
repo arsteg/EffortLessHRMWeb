@@ -1,67 +1,85 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, NgForm } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs';
 import { NotificationService } from '../../_services/notification.service';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
-import { signup } from 'src/app/models/user';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
   styleUrls: ['../login.component.css']
 })
-
 export class ResetPasswordComponent implements OnInit {
+  resetPasswordForm: FormGroup;
   loading = false;
-  resetToken: null;
-  CurrentState: any;
-  submitted = false;
-  user: signup = new signup();
-  @ViewChild('f') resetPasswordForm: NgForm;
+  resetToken: string | null = null;
   hidePassword: boolean = true;
   hideConfirmPassword: boolean = true;
   errorMessage: string = '';
 
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private notifyService: NotificationService) {
+      private translate: TranslateService,
+    private notifyService: NotificationService,
+    private fb: FormBuilder
+  ) {
+    this.resetPasswordForm = this.fb.group(
+      {
+        password: ['', [Validators.required, CustomValidators.strongPasswordValidator]],
+        passwordConfirm: ['', [Validators.required]]
+      },
+      { validator: CustomValidators.passwordMatchValidator }
+    );
+
     this.route.params.subscribe(params => {
       this.resetToken = params['token'];
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    // Log initial form state for debugging
+    console.log('Initial form state:', {
+      value: this.resetPasswordForm.value,
+      valid: this.resetPasswordForm.valid,
+      errors: this.resetPasswordForm.errors
+    });
+  }
 
   onSubmit() {
-    this.submitted = true;
+    this.resetPasswordForm.markAllAsTouched(); // Show all validation errors
     this.errorMessage = '';
-    this.user.password = this.resetPasswordForm.value.password;
-    this.user.passwordConfirm = this.resetPasswordForm.value.confirm_password;
-    if (this.resetPasswordForm.value.password !== this.resetPasswordForm.value.confirm_password) {
-      this.notifyService.showWarning("Passwords don't match", "warning");
+
+    if (this.resetPasswordForm.invalid) {
+      const invalidFields = Object.keys(this.resetPasswordForm.controls).filter(
+        key => this.resetPasswordForm.get(key)?.invalid
+      );
+      console.log('Submission failed. Invalid fields:', invalidFields, this.resetPasswordForm.value, this.resetPasswordForm.errors);
+      this.notifyService.showWarning(this.translate.instant('login.reset_form_correct_error'), 'Validation Error');
       return;
     }
+
     this.loading = true;
-    this.authenticationService.resetPassword(this.user.password, this.user.passwordConfirm, this.resetToken)
-      .pipe(first())
-      .subscribe(
-        data => {
-          setTimeout(() => {
-            this.loading = false;
-            this.router.navigate(['login']);
-            this.notifyService.showSuccess("Password Link Send Successfully", "success");
-          }, 30);
-        },
-        err => {
-          this.errorMessage = err;
+    this.authenticationService
+      .resetPassword(this.resetPasswordForm.value.password, this.resetPasswordForm.value.passwordConfirm, this.resetToken)     
+      .subscribe
+        (data => {
           this.loading = false;
-          if (err.error) {
-            this.notifyService.showError(err.message, "Error");
-          }
-        }
-      );
+          this.router.navigate(['login']);
+          this.notifyService.showSuccess(this.translate.instant('login.reset_password_success'), 'Success');
+        },
+        (err) => {
+          this.loading = false;
+     
+      const errorMessage = err?.error?.message || err?.message || err 
+      || this.translate.instant('login.failed_reset_password')
+      ;
+      this.notifyService.showError( errorMessage,  "Error");
+      })
   }
 
   togglePasswordVisibility() {

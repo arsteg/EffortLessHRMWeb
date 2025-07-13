@@ -19,26 +19,37 @@
             </tr>
         }
         <tbody formArrayName="incomeTaxComponent">
-            <tr *ngFor="let group of incomeTaxDecComponentForm.get('incomeTaxComponent')['controls']; let i = index"
+            <tr *ngFor="let group of incomeTaxDecComponentForm.get('incomeTaxComponent')['controls']; let i = index"          
                 [formGroupName]="i">
                 <td>{{ taxComponents[i]?.componantName }}</td>
                 <td style="max-width: 135px;">
                     <mat-form-field class="densed-field w-100">
-                        <input matInput formControlName="maximumAmount" type="number" [readonly]="!group.get('isEditable')?.value" />
+                        <input matInput formControlName="maximumAmount" type="number" [readonly]="true"/>
                     </mat-form-field>
                 </td>
                 <td style="max-width: 135px;">
-                    <mat-form-field class="densed-field w-100">
-                        <input matInput formControlName="appliedAmount" type="number" [readonly]="!group.get('isEditable')?.value" />
-                    </mat-form-field>
+                    <mat-form-field class="densed-field w-100" appearance="outline">
+                        <mat-label>Applied Amount </mat-label>
+                        <input matInput type="number" formControlName="appliedAmount" 
+                               [readonly]="!group.get('isEditable')?.value"/>
+                      
+                        <mat-error *ngIf="group.get('appliedAmount')?.hasError('required') && group.get('appliedAmount')?.touched">
+                          Applied amount is required.
+                        </mat-error>
+                      
+                        <mat-error *ngIf="group.get('appliedAmount')?.hasError('appliedExceedsMax') && group.get('appliedAmount')?.touched">
+                          Applied amount cannot exceed maximum amount.
+                        </mat-error>
+                      </mat-form-field>
+                      
                 </td>
                 <td style="max-width: 135px;">
                     <mat-form-field class="densed-field w-100">
-                        <input matInput formControlName="approvedAmount" type="number" [readonly]="!group.get('isEditable')?.value" />
+                        <input matInput formControlName="approvedAmount" type="number" [readonly]="true" />
                     </mat-form-field>
                 </td>
                 <td style="width: 100px;">
-                    <ng-container [ngSwitch]="group.get('approvalStatus')?.value">
+                    <ng-container [ngSwitch]="group.get('approvalStatus')?.value"  [readonly]="true" >
                         <mat-icon *ngSwitchCase="'Pending'" color="warn">hourglass_empty</mat-icon>
                         <mat-icon *ngSwitchCase="'Approved'" color="primary">check_circle</mat-icon>
                         <mat-icon *ngSwitchCase="'Rejected'" color="accent">cancel</mat-icon>
@@ -47,7 +58,7 @@
                 </td>
                 <td style="max-width: 135px;">
                     <mat-form-field class="densed-field w-100">
-                        <input matInput formControlName="remark" type="text" [readonly]="!group.get('isEditable')?.value" />
+                        <input matInput formControlName="remark" type="text"  [readonly]="true"  />
                     </mat-form-field>
                 </td>
                 <td class="text-center">
