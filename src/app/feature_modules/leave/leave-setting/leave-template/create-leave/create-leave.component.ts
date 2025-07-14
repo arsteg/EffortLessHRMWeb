@@ -1,10 +1,18 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 
+const labelValidator: ValidatorFn = (control: AbstractControl) => {
+  const value = control.value as string;
+  if (!value || /^\s*$/.test(value)) {
+    return { required: true };
+  }
+  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
+  return valid ? null : { invalidLabel: true };
+};
 @Component({
   selector: 'app-create-leave',
   templateUrl: './create-leave.component.html',
@@ -22,6 +30,7 @@ export class CreateLeaveComponent {
   categoryList: any;
   skip: string = '0';
   next = '10000';
+  @Input() templates: any;
 
   constructor(
     private fb: FormBuilder,
@@ -31,8 +40,8 @@ export class CreateLeaveComponent {
     private translate: TranslateService
   ) {
     this.addTemplateForm = this.fb.group({
-      label: ['', Validators.required],
-      approvalLevel: ['1-level', Validators.required],
+      label: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
+      approvalLevel: ['1-level'],
       approvalType: ['employee-wise', Validators.required],
       primaryApprover: [''],
       secondaryApprover: [''],
@@ -50,12 +59,22 @@ export class CreateLeaveComponent {
     this.getAllUsers();
     this.getLeaveCategories();
 
-    this.addTemplateForm.get('approvalLevel')?.valueChanges.subscribe((value: any) => {
-      this.validateApprovers(this.addTemplateForm.get('approvalType')?.value, value);
-    });
-    this.addTemplateForm.get('approvalType')?.valueChanges.subscribe((value: any) => {
-      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel')?.value);
-    });
+    // this.addTemplateForm.get('approvalLevel')?.valueChanges.subscribe((value: any) => {
+    //   this.validateApprovers(this.addTemplateForm.get('approvalType')?.value, value);
+    // });
+    // this.addTemplateForm.get('approvalType')?.valueChanges.subscribe((value: any) => {
+    //   this.validateApprovers(value, this.addTemplateForm.get('approvalLevel')?.value);
+    // });
+  }
+
+  duplicateLabelValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+      const label = control.value;
+      if (label && this.templates.some(template => template.label.toLowerCase() === label.toLowerCase())) {
+        return { duplicateLabel: true };
+      }
+      return null;
+    };
   }
 
   validateApprovers(approverType: string, approverLevel: string) {
@@ -75,11 +94,21 @@ export class CreateLeaveComponent {
 
   setFormValues() {
     if (this.changeMode === 'Add') {
-      this.addTemplateForm.reset();
+      this.addTemplateForm.reset({
+        label: '',
+        approvalLevel: '1-level',
+        approvalType: 'employee-wise',
+        primaryApprover: '',
+        secondaryApprover: '',
+        isCommentMandatory: true,
+        clubbingRestrictions: false,
+        weeklyOffClubTogether: true,
+        holidayClubTogether: true,
+        leaveCategories: []
+      });
     }
     const templateData = this.selectedTemplate;
     if (this.changeMode === 'Next') {
-      console.log(templateData);
       // Map applicableCategories to an array of _id strings
       let leaveCategories = templateData?.applicableCategories
         ? templateData.applicableCategories.map(category => category.leaveCategory._id)
@@ -136,27 +165,13 @@ export class CreateLeaveComponent {
     this.close.emit(true);
     this.leaveService.selectedTemplate.next('');
     this.addTemplateForm.reset();
-    //this.toast.success(this.translate.instant('leave.modalClosed'));
   }
 
   onSubmission() {
-    const payload = {
-      label: this.addTemplateForm.value.label,
-      approvalLevel: this.addTemplateForm.value.approvalLevel,
-      approvalType: this.addTemplateForm.value.approvalType,
-      primaryApprover: this.addTemplateForm.value.primaryApprover,
-      secondaryApprover: this.addTemplateForm.value.secondaryApprover,
-      isCommentMandatory: this.addTemplateForm.value.isCommentMandatory,
-      clubbingRestrictions: this.addTemplateForm.value.clubbingRestrictions,
-      weeklyOffClubTogether: this.addTemplateForm.value.weeklyOffClubTogether,
-      holidayClubTogether: this.addTemplateForm.value.holidayClubTogether,
-      clubbingRestrictionCategories: this.addTemplateForm.value.clubbingRestrictionCategories,
-      leaveCategories: this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }))
-    };
-
+    this.addTemplateForm.value.leaveCategories = this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }))
     if (this.addTemplateForm.valid) {
       if (this.changeMode === 'Add') {
-        this.leaveService.addLeaveTemplate(payload).subscribe({
+        this.leaveService.addLeaveTemplate(this.addTemplateForm.value).subscribe({
           next: (res: any) => {
             this.leaveService.selectedTemplate.next(res.data);
             this.leaveService.categories.next(res.categories);
@@ -167,9 +182,9 @@ export class CreateLeaveComponent {
             this.toast.error(this.translate.instant('leave.errorCreatingTemplate'));
           }
         });
-      } else {
+      } else if (this.changeMode === 'Next') {
         const id = this.leaveService.selectedTemplate.getValue()._id;
-        this.leaveService.updateLeaveTemplate(id, payload).subscribe((res: any) => {
+        this.leaveService.updateLeaveTemplate(id, this.addTemplateForm.value).subscribe((res: any) => {
           // this.leaveService.selectedTemplate.next(res.data);
           // this.leaveService.categories.next(res.categories);
           this.changeStep.emit(2);

@@ -40,6 +40,9 @@ export class AddCategoryLeaveComponent {
   ) {}
 
   ngOnInit() {
+    if(!this.isEdit) {
+      this.selectedTemplate = this.leaveService.selectedTemplate.getValue();
+    }
     this.firstForm = this._formBuilder.group({
       leaveCategories: this._formBuilder.array([]),
       leaveTemplate: [this.selectedTemplate?._id || this.leaveService.selectedTemplate.getValue()._id]
