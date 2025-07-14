@@ -1,9 +1,9 @@
-<div class="mainContent mt-5 pt-4 container-fluid">
-  <div class="row tableContainer bg-white pt-3">
+<div class="mainContent">
+  <div class="row bg-white pt-3">
     <div class="col-md-6">
-      <p id="example-radio-group-label" class="contentHeading">Notifications
-        <a (click)="triggerNotificationTab()" class="add-notification-link ms-2">
-          + Add event notification
+      <p id="example-radio-group-label" class="contentHeading">{{ 'alerts.eventviewer.notifications' | translate }}
+        <a (click)="redirectToNotification()" class="add-notification-link ms-2">
+          {{ 'alerts.eventviewer.addEventNotification' | translate }}
         </a>
       </p>
       <mat-radio-group id="member" name="member" aria-labelledby="example-radio-group-label"
@@ -15,23 +15,23 @@
       </mat-radio-group><br>
     </div>
     <div class="col-md-6">
-        <p class="contentHeading">Members</p>
+        <p class="contentHeading">{{ 'alerts.eventviewer.members' | translate }}</p>
         <div class="members bg-white common" style="height: calc(82vh - 100px); overflow-y: auto;">
           <ul type="none" class="ps-0">
           <li>
-            <label>
+            <mat-label>
               <mat-checkbox color="primary" [checked]="allChecked" (change)="onAllCheckChange($event)">
-                All
+                {{ 'alerts.eventviewer.all' | translate }}
               </mat-checkbox>
-            </label>
+            </mat-label>
           </li>
           <li *ngFor="let user of teamOfUsers">
-            <label [class.selected]="user === selectedUser">
+            <mat-label [class.selected]="user === selectedUser">
               <mat-checkbox color="primary" [checked]="user.isSelected"
                 (change)="selectManager($event, user)">
                 {{ user.firstName | titlecase }} {{ user.lastName | titlecase }}
               </mat-checkbox>
-            </label>
+            </mat-label>
           </li>
         </ul>
         </div>

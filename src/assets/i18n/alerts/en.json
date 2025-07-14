@@ -1,0 +1,73 @@
+{
+ "alerts": {
+    "add_new": "Add New",
+    "notification_types": "Notification Types",
+    "notification": "Notification",
+    "viewer": "Viewer",
+    "notification-type": {
+      "addEdit": "Add/Edit Notification Type",
+      "name": "Name",
+      "notificationLabel": "Notification Label",
+      "actions": "Actions",
+      "add": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "confirmDelete": "Are you sure you want to delete this notification type?",
+      "addSuccess": "Notification type added successfully!",
+      "addError": "Error adding notification type",
+      "updateSuccess": "Notification type updated successfully!",
+      "updateError": "Error updating notification type",
+      "deleteSuccess": "Notification type deleted successfully!",
+      "deleteError": "Error deleting notification type",
+      "error": "Error!"
+    },
+    "eventNotification": {
+      "addEdit": "Add/Edit Event Notification",
+      "name": "Name",
+      "description": "Description",
+      "type": "Type",
+      "date": "Date",
+      "recurring": "Recurring",
+      "frequency": "Frequency",
+      "frequency.daily": "Daily",
+      "frequency.weekly": "Weekly",
+      "frequency.monthly": "Monthly",
+      "frequency.annually": "Annually",
+      "leadTime": "Lead Time",
+      "actions": "Actions",
+      "add": "Add",
+      "update": "Update",
+      "cancel": "Cancel",
+      "yes": "Yes",
+      "no": "No",
+      "confirmDelete": "Are you sure you want to delete this event notification?",
+      "addSuccess": "Event notification added successfully!",
+      "addError": "Error adding event notification",
+      "updateSuccess": "Event notification updated successfully!",
+      "updateError": "Error updating event notification",
+      "deleteSuccess": "Event notification deleted successfully!",
+      "deleteError": "Error deleting event notification",
+      "error": "Error!"
+    },
+    "eventviewer": {
+      "notifications": "Notifications",
+      "addEventNotification": "Add event notification",
+      "members": "Members",
+      "all": "All",
+      "messages": {
+        "failedToLoadUsers": "Failed to load team of users",
+        "failedToLoadNotifications": "Failed to load event notifications",
+        "failedToLoadUserNotifications": "Failed to load user notifications",
+        "notificationIdMissing": "Notification ID is missing",
+        "userNotificationUpdated": "User notification updated!"
+      },
+      "viewer": "Viewer",
+      "notification": "Notification",
+      "notification_types": "Notification Types",
+      "goToNotification": "Go to Notification",
+      "eventNotification": {
+        "recurring": "Recurring"
+      }
+    }
+  }
+}

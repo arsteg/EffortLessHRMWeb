@@ -95,7 +95,8 @@ const routes: Routes = [
       {
         path: 'alerts',
         loadChildren: () => import('./feature_modules/alerts/alerts.module').then(m => m.AlertsModule),
-        data: { permission: 'Alerts' },
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'alerts', permission: 'Alerts' },
       },
       {
         path: 'payroll',

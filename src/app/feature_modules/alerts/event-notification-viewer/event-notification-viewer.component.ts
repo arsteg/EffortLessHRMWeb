@@ -1,18 +1,19 @@
 import { Component, OnInit, OnDestroy, EventEmitter, Output } from '@angular/core';
-import { SharedModule } from 'src/app/shared/shared.Module';
+//import { SharedModule } from 'src/app/shared/shared.Module';
 import { eventNotification, notificationUser } from 'src/app/models/eventNotification/eventNotitication';
 import { FormBuilder } from '@angular/forms';
 import { EventNotificationService } from 'src/app/_services/eventNotification.Service';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
-import { TimeLogService } from 'src/app/_services/timeLogService';
+import { Router, ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-event-notification-viewer',
-  standalone: true,
-  imports: [SharedModule],
+  // standalone: true,
+  // imports: [SharedModule],
   templateUrl: './event-notification-viewer.component.html',
   styleUrls: ['./event-notification-viewer.component.css']
 })
@@ -30,7 +31,10 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private eventNotificationService: EventNotificationService,
     private manageTeamService: ManageTeamService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router, 
+    private route: ActivatedRoute,
+    private translate: TranslateService
   ) {}
 
   ngOnInit(): void {
@@ -49,8 +53,8 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
         this.selectedManager = this.teamOfUsers.find(user => user._id === currentUser.id) || null;
       },
-      error: () => {
-        this.toastr.error('Failed to load team of users');
+      error: (err) => {
+        this.toastr.error(err || this.translate.instant('alerts.eventviewer.messages.failedToLoadUsers'));
       }
     });
   }
@@ -60,8 +64,8 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
       next: result => {
         this.eventNotifications = result.data.filter(item => item.status === 'scheduled');
       },
-      error: () => {
-        this.toastr.error('Failed to load event notifications');
+      error: (err) => {
+        this.toastr.error(err || this.translate.instant('alerts.eventviewer.messages.failedToLoadNotifications'));
       }
     });
   }
@@ -81,8 +85,8 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
           });
           this.updateAllCheckboxState();
         },
-        error: () => {
-          this.toastr.error('Failed to load user notifications');
+        error: (err) => {
+          this.toastr.error(err || this.translate.instant('alerts.eventviewer.messages.failedToLoadUserNotifications'));
         }
       });
     }
@@ -108,7 +112,7 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
 
   updateUserNotifications(notificationId: string | undefined, userId: string, action: string): void {
     if (!notificationId) {
-      this.toastr.error('Notification ID is missing');
+      this.toastr.error(this.translate.instant('alerts.eventviewer.messages.notificationIdMissing'));
       return;
     }
 
@@ -117,10 +121,10 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
     this.eventNotificationService.updateUserNotifications(updateUserNotification).subscribe({
       next: () => {
         // Handle success (if any additional actions are needed)
-        this.toastr.success('User notification updated!');
+       this.toastr.success(this.translate.instant('alerts.eventviewer.messages.userNotificationUpdated'));
       },
       error: () => {
-        this.toastr.error('Failed to update user notifications');
+        this.toastr.error(this.translate.instant('alerts.eventviewer.messages.failedToUpdateUserNotifications'));
       }
     });
   }
@@ -131,5 +135,12 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
 
   triggerNotificationTab(): void {
     this.addNotification.emit();
+  }
+
+  redirectToNotification(): void {
+    this.router.navigate(['../notification'], { relativeTo: this.route })
+      .catch(err => {
+        console.error('Navigation to notification failed:', err);
+      });
   }
 }
