@@ -67,11 +67,21 @@ export class CreateLeaveComponent {
     // });
   }
 
+  
   duplicateLabelValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
       const label = control.value;
-      if (label && this.templates.some(template => template.label.toLowerCase() === label.toLowerCase())) {
-        return { duplicateLabel: true };
+      if (label && this.templates?.length) {
+        // In edit mode, exclude the current record's label from the duplicate check
+        if (this.isEdit && this.selectedTemplate?.label.toLowerCase() === label.toLowerCase()) {
+          return null; // No duplicate error if the label hasn't changed
+        }
+        // Check for duplicates in templates, excluding the current record in edit mode
+        const isDuplicate = this.templates.some(template =>
+          template._id !== (this.isEdit ? this.selectedTemplate?._id : '') &&
+          template.label.toLowerCase() === label.toLowerCase()
+        );
+        return isDuplicate ? { duplicateLabel: true } : null;
       }
       return null;
     };

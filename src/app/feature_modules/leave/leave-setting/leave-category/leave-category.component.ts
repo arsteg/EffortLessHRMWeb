@@ -122,11 +122,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
     this.getAllLeaveCategories();
   }
 
-  // ngAfterViewInit() {
-  //   this.tableService.initializeDataSource([]);
-  //   this.getAllLeaveCategories();
-  // }
-
   ngOnDestroy(): void {
     if (this.leaveTypeSubscription) {
       this.leaveTypeSubscription.unsubscribe();
@@ -136,8 +131,15 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   duplicateLabelValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: boolean } | null => {
       const label = control.value;
-      if (label && this.allData.some(template => template.label.toLowerCase() === label.toLowerCase())) {
-        return { duplicateLabel: true };
+      if (label && this.allData.length) {
+        if (this.isEdit && this.selectedLeaveCategory?.label.toLowerCase() === label.toLowerCase()) {
+          return null;
+        }
+        const isDuplicate = this.allData.some(template =>
+          template._id !== (this.isEdit ? this.selectedLeaveCategory?._id : '') &&
+          template.label.toLowerCase() === label.toLowerCase()
+        );
+        return isDuplicate ? { duplicateLabel: true } : null;
       }
       return null;
     };
@@ -183,16 +185,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
-
   getAllLeaveCategories() {
     const pagination = {
       skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
@@ -218,7 +210,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
             this.toast.error(this.translate.instant('leave.leaveErrorAssigned'));
           }
         );
-      } else {
+      } else if (this.isEdit) {
         const id = this.selectedLeaveCategory._id;
         this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe(
           (res: any) => {

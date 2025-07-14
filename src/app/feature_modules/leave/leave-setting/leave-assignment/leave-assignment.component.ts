@@ -32,8 +32,9 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
   columns: TableColumn[] = [
     { key: this.translate.instant('leave.leaveassignment.employee'), name: 'Employee', valueFn: (row) => this.getUser(row?.user) },
     { key: this.translate.instant('leave.leaveassignment.leaveTemplate'), name: 'Current Leave Policy', valueFn: (row) => this.getTemplateLabel(row?.leaveTemplate) },
-    { key: this.translate.instant('leave.leaveassignment.primaryApprover'), name: 'Primary Approver', valueFn: (row) => this.getUser(row.primaryApprover) },
-    { key: this.translate.instant('leave.leaveassignment.secondaryApprover'), name: 'Secondary Approver', valueFn: (row) => this.getUser(row.secondaryApprover) },
+    { key: this.translate.instant('leave.leaveassignment.primaryApprover'), name: 'Approver', valueFn: (row) => this.getUser(row.primaryApprover) },
+    // { key: this.translate.instant('leave.leaveassignment.primaryApprover'), name: 'Primary Approver', valueFn: (row) => this.getUser(row.primaryApprover) },
+    // { key: this.translate.instant('leave.leaveassignment.secondaryApprover'), name: 'Secondary Approver', valueFn: (row) => this.getUser(row.secondaryApprover) },
     {
       key: 'action',
       name: 'Action',
@@ -135,7 +136,8 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
       user: this.templateAssignmentForm.value.user,
       leaveTemplate: this.templateAssignmentForm.value.leaveTemplate,
       primaryApprover: this.showApprovers ? this.templateAssignmentForm.value.primaryApprover || null : null,
-      secondaryApprover: this.showApprovers ? this.templateAssignmentForm.value.secondaryApprover || null : null
+      secondaryApprover: null
+      // secondaryApprover: this.showApprovers ? this.templateAssignmentForm.value.secondaryApprover || null : null
     };
 
     if (!this.isEdit) {
@@ -155,7 +157,7 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
       });
     } else {
       const id = this.selectedLeaveAssignment._id;
-      this.leaveService.updateTemplateAssignment(id, payload).subscribe({
+      this.leaveService.addLeaveTemplateAssignment(payload).subscribe({
         next: (res: any) => {
           if (res.status === 'success') {
             const updatedData = this.tableService.dataSource.data.map(item =>
