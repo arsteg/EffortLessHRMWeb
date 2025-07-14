@@ -130,11 +130,11 @@ export class AddCategoryLeaveComponent {
       category.users = category.users.map(user => ({ user }));
     });
     this.leaveService.updateLeaveTemplateCategories(formData).subscribe((res: any) => {
-      this.toast.success(this.translate.instant('leave.templateCategories.successTemplateCategoriesUpdated'));
+      this.toast.success(this.translate.instant('leave.successTemplateCategoriesUpdated'));
       this.updateLeaveTemplateTable.emit();
       this.closeModal();
     }, err => {
-      this.toast.error(err?.message || this.translate.instant('leave.templateCategories.errorTemplateCategoriesUpdated'));
+      this.toast.error(err?.message || this.translate.instant('leave.errorTemplateCategoriesUpdated'));
     });
   }
 

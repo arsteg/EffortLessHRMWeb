@@ -291,7 +291,8 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
         this.toast.success(this.translate.instant('leave.leaveSuccessfulAssignmentDeleted'));
       },
       (err) => {
-        this.toast.error(this.translate.instant('leave.leaveErrorAssignmentDeleted'));
+        const errorMessage = err || this.translate.instant('leave.leaveErrorAssignmentDeleted');
+        this.toast.error(errorMessage);
       }
     );
   }

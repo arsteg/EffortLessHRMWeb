@@ -121,6 +121,7 @@
         "leaveErrorAssignmentUpdated": "Cannot update leave assignment!",
         "leaveErrorAssignmentDeleted": "Cannot delete leave template assignment!",
         "successTemplateCategoriesUpdated": "Leave Template Categories updated successfully!",
+        "errorTemplateCategoriesUpdated": "Failed to update leave template categories",
         "templateCategories": {
             "title": "Leave Template Applicable Categories",
             "done": "Done",
