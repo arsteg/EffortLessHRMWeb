@@ -89,11 +89,9 @@ export class AddApplicationComponent {
   ngOnInit() {
     forkJoin({
       users: this.commonService.populateUsers(),
-      leaveCategories: this.getleaveCatgeoriesByUser()
     }).subscribe({
-      next: ({ users, leaveCategories }) => {
+      next: ({ users }) => {
         this.allAssignee = users?.data?.data;
-        this.leaveCategories = leaveCategories;
       },
       error: () => {
         this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
@@ -121,7 +119,7 @@ export class AddApplicationComponent {
       });
     });
 
-    if (this.currentUser.id) {
+    if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
       this.leaveService.getLeaveCategoriesByUserv1(this.currentUser.id).subscribe({
         next: (res: any) => {
           this.leaveCategories = res.data;
@@ -131,9 +129,10 @@ export class AddApplicationComponent {
           this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
         }
       });
+      this.getattendanceTemplatesByUser();
     }
 
-    this.getattendanceTemplatesByUser();
+
 
     this.leaveApplication.get('employee')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.leaveApplication.get('leaveCategory')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
@@ -147,9 +146,8 @@ export class AddApplicationComponent {
 
   getLeaveCategoryDetails(category: any) {
     this.leaveService.getLeaveCategorById(this.leaveApplication.get('leaveCategory')?.value).subscribe((res: any) => {
-      console.log('Leave Category Details:', res?.data?.submitBefore);
       this.tempLeaveCategory = res?.data;
-      this.updateMinDate(); // Update minDate when category details are fetched
+      this.updateMinDate();
     });
   }
 
@@ -240,15 +238,15 @@ export class AddApplicationComponent {
         }
       }
     }
-
+    this.getattendanceTemplatesByUser();
     this.numberOfLeaveAppliedForSelectedCategory = 0;
     this.getAppliedLeaveCount(this.leaveApplication.value.employee, this.tempLeaveCategory.leaveCategory._id);
   }
 
   addHalfDayEntry() {
-    this.halfDays.push(this.fb.group({ 
-      date: ['', Validators.required], 
-      dayHalf: ['', Validators.required] 
+    this.halfDays.push(this.fb.group({
+      date: ['', Validators.required],
+      dayHalf: ['', Validators.required]
     }));
   }
 
@@ -262,14 +260,58 @@ export class AddApplicationComponent {
     );
   }
 
+  // getattendanceTemplatesByUser() {
+  //   let userId = this.portalView === 'user' ? this.currentUser.id : this.leaveApplication.get('employee')?.value;
+  //   if (!userId) {
+  //     return;
+  //   }
+  //   else if (userId) {
+  //     this.leaveService.getattendanceTemplatesByUser(userId).subscribe({
+  //       next: (res: any) => {
+  //         if (res.status == "success") {
+  //           let attandanceData = res.data[0].attendanceTemplate;
+  //           attandanceData.weeklyOfDays.forEach(day => {
+  //             if (day != "false") {
+  //               this.dayCounts[day] = 0;
+  //             }
+  //           });
+  //         }
+  //       },
+  //       error: () => {
+  //         this.toast.error(this.translate.instant('leave.errorFetchingAttendanceTemplates'));
+  //       }
+  //     });
+  //   }
+  // }
+  weeklyOffDays: string[] = []; // Store weekly off days (e.g., ["Sunday", "Saturday"])
+
   getattendanceTemplatesByUser() {
-    this.leaveService.getattendanceTemplatesByUser(this.currentUser.id).subscribe({
+    let userId = this.portalView === 'user' ? this.currentUser.id : this.leaveApplication.get('employee')?.value;
+    if (!userId) {
+      return;
+    }
+    this.leaveService.getattendanceTemplatesByUser(userId).subscribe({
       next: (res: any) => {
-        if (res.status == "success") {
-          let attandanceData = res.data;
-          attandanceData.weeklyOfDays.forEach(day => {
-            if (day != "false") {
-              this.dayCounts[day] = 0;
+        if (res.status === 'success') {
+          let attendanceData = res.data[0].attendanceTemplate;
+          this.weeklyOffDays = [];
+          this.dayCounts = {};
+
+          // Map short day names to full names for moment.js compatibility
+          const dayNameMap: { [key: string]: string } = {
+            'Sun': 'Sunday',
+            'Sat': 'Saturday',
+            'Mon': 'Monday',
+            'Tue': 'Tuesday',
+            'Wed': 'Wednesday',
+            'Thu': 'Thursday',
+            'Fri': 'Friday'
+          };
+
+          attendanceData.weeklyOfDays.forEach((day: string) => {
+            if (day !== 'false' && dayNameMap[day]) {
+              this.weeklyOffDays.push(dayNameMap[day]);
+              this.dayCounts[dayNameMap[day]] = 0;
             }
           });
         }
@@ -279,31 +321,68 @@ export class AddApplicationComponent {
       }
     });
   }
+  weeklyOffDates: Date[] = []; // Store specific weekly off dates in the selected range
+
+  updateWeeklyOffDates() {
+    const startDate = this.leaveApplication.get('startDate')?.value;
+    const endDate = this.leaveApplication.get('endDate')?.value;
+    this.weeklyOffDates = this.getWeeklyOffDates(startDate, endDate);
+  }
+
+  getWeeklyOffDates(startDate: Date, endDate: Date): Date[] {
+    if (!startDate || !endDate || !this.weeklyOffDays.length) {
+      return [];
+    }
+
+    const weeklyOffDates: Date[] = [];
+    const currentDate = new Date(startDate);
+    const end = new Date(endDate);
+
+    while (currentDate <= end) {
+      const dayName = moment(currentDate).format('dddd');
+      if (this.weeklyOffDays.includes(dayName)) {
+        weeklyOffDates.push(new Date(currentDate));
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return weeklyOffDates;
+  }
+  weeklyOffDateFilter = (date: Date | null): boolean => {
+    if (!date || !this.weeklyOffDays.length) {
+      return true;
+    }
+    const dayIndex = date.getDay(); // 0 = Sunday, 6 = Saturday
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return !this.weeklyOffDays.includes(dayNames[dayIndex]);
+  };
 
   populateMembers() {
-    this.members = [];
-    let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    this.members.push({ id: currentUser.id, name: this.translate.instant('leave.userMe'), email: currentUser.email });
-    this.member = currentUser;
-    this.timeLogService.getTeamMembers(this.member.id).subscribe({
-      next: response => {
-        this.timeLogService.getusers(response.data).subscribe({
-          next: result => {
-            result.data.forEach(user => {
-              if (user.id != currentUser.id) {
-                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
-              }
-            });
-          },
-          error: () => {
-            this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
-          }
-        });
-      },
-      error: () => {
-        this.toast.error(this.translate.instant('leave.errorFetchingTeamMembers'));
-      }
-    });
+    if (this.portalView === 'user') {
+      this.members = [];
+      let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      this.members.push({ id: currentUser.id, name: this.translate.instant('leave.userMe'), email: currentUser.email });
+      this.member = currentUser;
+      this.timeLogService.getTeamMembers(this.member.id).subscribe({
+        next: response => {
+          this.timeLogService.getusers(response.data).subscribe({
+            next: result => {
+              result.data.forEach(user => {
+                if (user.id != currentUser.id) {
+                  this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+                }
+              });
+            },
+            error: () => {
+              this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
+            }
+          });
+        },
+        error: () => {
+          this.toast.error(this.translate.instant('leave.errorFetchingTeamMembers'));
+        }
+      });
+    }
   }
 
   onMemberSelectionChange(member: any) {

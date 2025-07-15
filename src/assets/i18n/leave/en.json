@@ -337,6 +337,7 @@
         "successDeleteLeave": "Successfully deleted leave application",
         "errorDeleteLeave": "Leave application cannot be deleted",
         "deleteTitle": "Leave Application",
+        "deleteGrantTitle": "Leave Grant",
         "errorTitle": "Error",
         "exportTitle": "Leave Application",
         "exportFileName": "Leave_Application",
