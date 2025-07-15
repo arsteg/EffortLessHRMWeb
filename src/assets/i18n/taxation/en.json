@@ -20,7 +20,7 @@
         "tax_declaraton_only_Old_regime": "Tax Declaration is not allowed in New Regime",
         "tax_declaraton_componant_updated": "Income Tax Declaration Component Updated Successfully",
         "filed_to_tax_declaraton_componant_update": "Failed To update Income Tax Declaration Component Update",
-        "componant_already_apprved": "This component is already approved. You cannot modify it.", 
+        "componant_already_apprved": "This component is already approved/Rejected. You cannot modify it.", 
         "remark_required": "Remark is required",
         "failed_to_update_component": "Failed to update the component. Please try again later.",
         "approved_less_than_applied": "Approved amount cannot be more than applied amount.",

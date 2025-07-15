@@ -120,13 +120,29 @@ export class CustomValidators {
       return control.value === '' || control.value === null ? { selectRequired: true } : null;
     }
     static passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
-      const password = group.get('password')?.value;
-      const confirmPassword = group.get('passwordConfirm')?.value;
+      const passwordControl = group.get('password');
+      const confirmControl = group.get('passwordConfirm');
     
-      if (password === confirmPassword) {
+      if (!passwordControl || !confirmControl) return null;
+    
+      const password = passwordControl.value ?? '';
+      const confirmPassword = confirmControl.value ?? '';
+    
+      
+      if (!password || !confirmPassword) {
+        confirmControl.setErrors(null); // remove stale errors
         return null;
-      } else {
+      }
+    
+      if (password !== confirmPassword) {
+        confirmControl.setErrors({ notMatching: true });
         return { notMatching: true };
+      } else {
+        // Only clear the error if no other errors exist
+        if (confirmControl.hasError('notMatching')) {
+          confirmControl.setErrors(null);
+        }
+        return null;
       }
     }
 }

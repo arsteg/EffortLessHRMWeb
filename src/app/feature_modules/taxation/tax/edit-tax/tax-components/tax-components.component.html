@@ -50,9 +50,9 @@
                 </td>
                 <td style="width: 100px;">
                     <ng-container [ngSwitch]="group.get('approvalStatus')?.value"  [readonly]="true" >
-                        <mat-icon *ngSwitchCase="'Pending'" color="warn">hourglass_empty</mat-icon>
-                        <mat-icon *ngSwitchCase="'Approved'" color="primary">check_circle</mat-icon>
-                        <mat-icon *ngSwitchCase="'Rejected'" color="accent">cancel</mat-icon>
+                        <mat-icon *ngSwitchCase="'Pending'" color="primary">hourglass_empty</mat-icon>
+                        <mat-icon *ngSwitchCase="'Approved'" color="accent">check_circle</mat-icon>
+                        <mat-icon *ngSwitchCase="'Rejected'" color="warn">cancel</mat-icon>
                         <span *ngSwitchDefault>{{ group.get('approvalStatus')?.value }}</span>
                     </ng-container>
                 </td>

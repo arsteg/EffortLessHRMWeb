@@ -126,7 +126,7 @@ export class DepartmentComponent {
     if (!this.isEdit) {
       this.companyService.addDepartments(this.departmentForm.value).subscribe(res => {
         this.getDepartments();
-        this.toast.success(this.translate.instant('organization.setup.department_added'), this.translate.instant('toast.success'));
+        this.toast.success(this.translate.instant('organization.setup.department_added'));
 
         this.isSubmitting = false;
         this.departmentForm.reset();
@@ -143,7 +143,7 @@ export class DepartmentComponent {
     // updateZone
     else if (this.isEdit) {
       this.companyService.updateDepartments(this.selectedRecord._id, this.departmentForm.value).subscribe(res => {
-        this.toast.success(this.translate.instant('organization.setup.department_updated'), this.translate.instant('toast.success'));
+        this.toast.success(this.translate.instant('organization.setup.department_updated'));
         this.getDepartments();
         this.departmentForm.reset();
         this.isEdit = false;
@@ -200,7 +200,7 @@ export class DepartmentComponent {
   deleteDepartments(id: string) {
     this.companyService.deleteDepartments(id).subscribe((res: any) => {
       this.getDepartments();
-      this.toast.success(this.translate.instant('organization.setup.department_deleted'), this.translate.instant('toast.success'));
+      this.toast.success(this.translate.instant('organization.setup.department_deleted'));
 
     },
       (err) => {

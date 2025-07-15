@@ -133,7 +133,7 @@ export class TaxComponentsComponent {
     const control = this.incomeTaxDecComponentForm.get(`incomeTaxComponent.${index}`) as FormGroup;
     const status = control.get('approvalStatus')?.value;
 
-    if (status === 'Approved') {
+    if (status === 'Approved' || status === 'Rejected') {
       this.translate.instant('taxation.componant_already_apprved')
       this.toast.warning(this.translate.instant('taxation.componant_already_apprved'), this.translate.instant('taxation.toast.warning'));
       

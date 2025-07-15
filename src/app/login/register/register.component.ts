@@ -37,7 +37,8 @@ export class RegisterComponent implements OnInit {
       password: ['', [Validators.required, CustomValidators.strongPasswordValidator]],
       passwordConfirm: ['', [Validators.required]],
       companyName: ['']
-    }, { validator: CustomValidators.passwordMatchValidator });
+    }, {  
+      validators: CustomValidators.passwordMatchValidator });
   }
 
   ngOnInit(): void {} 

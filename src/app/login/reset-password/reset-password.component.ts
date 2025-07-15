@@ -33,7 +33,7 @@ export class ResetPasswordComponent implements OnInit {
         password: ['', [Validators.required, CustomValidators.strongPasswordValidator]],
         passwordConfirm: ['', [Validators.required]]
       },
-      { validator: CustomValidators.passwordMatchValidator }
+      { validators: CustomValidators.passwordMatchValidator }
     );
 
     this.route.params.subscribe(params => {
