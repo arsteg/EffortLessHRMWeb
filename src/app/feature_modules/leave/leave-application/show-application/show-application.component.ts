@@ -82,13 +82,13 @@ export class ShowApplicationComponent {
           label: 'Approve',
           icon: 'check_circle',
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.approve || !this.checkForApproval(row)
+          hideCondition: (row: any) => !this.actionOptions.approve || !this.checkForApproval(row) || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 5))
         },
         {
           label: 'Reject',
           icon: 'person_remove',
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.reject
+          hideCondition: (row: any) => !this.actionOptions.reject || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 5))
         },
         {
           label: 'Delete',
@@ -121,6 +121,7 @@ export class ShowApplicationComponent {
   }
 
   ngOnInit() {
+    console.log(this.tab)
     forkJoin({
       users: this.commonService.populateUsers(),
       leaveApplications: this.getLeaveApplication()

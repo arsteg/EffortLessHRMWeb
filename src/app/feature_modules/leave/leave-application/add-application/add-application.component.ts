@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CompanyService } from 'src/app/_services/company.service';
 
 @Component({
   selector: 'app-add-application',
@@ -50,6 +51,8 @@ export class AddApplicationComponent {
   checkStatus: any;
   existingLeaves: any[] = [];
   minSelectableDate: Date; // New property for minimum selectable date
+  weeklyOffDates: Date[] = [];
+  holidays: any;
 
   constructor(
     private fb: FormBuilder,
@@ -57,7 +60,7 @@ export class AddApplicationComponent {
     private leaveService: LeaveService,
     private timeLogService: TimeLogService,
     private toast: ToastrService,
-    private holidayService: HolidaysService,
+    private companyService: CompanyService,
     private translate: TranslateService
   ) {
     this.translate.setDefaultLang('en');
@@ -99,7 +102,7 @@ export class AddApplicationComponent {
     });
 
     this.populateMembers();
-
+    this.getHolidays();
     this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
       this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory?.documentRequired || false;
@@ -117,6 +120,7 @@ export class AddApplicationComponent {
           this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
         }
       });
+      this.getHolidays();
     });
 
     if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
@@ -130,10 +134,8 @@ export class AddApplicationComponent {
         }
       });
       this.getattendanceTemplatesByUser();
+      this.getHolidays();
     }
-
-
-
     this.leaveApplication.get('employee')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.leaveApplication.get('leaveCategory')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
@@ -185,6 +187,14 @@ export class AddApplicationComponent {
     if (endDate && this.minSelectableDate && moment(endDate).isBefore(moment(this.minSelectableDate))) {
       this.leaveApplication.get('endDate')?.setErrors({ submitBeforeError: true });
     }
+  }
+  getHolidays() {
+    const payload = {
+      next: '', skip: '', status: '', year: new Date().getFullYear()
+    };
+    this.companyService.getHolidays(payload).subscribe((res: any) => {
+      this.holidays = res.data;
+    });
   }
 
   checkForDuplicateLeave() {
@@ -260,29 +270,7 @@ export class AddApplicationComponent {
     );
   }
 
-  // getattendanceTemplatesByUser() {
-  //   let userId = this.portalView === 'user' ? this.currentUser.id : this.leaveApplication.get('employee')?.value;
-  //   if (!userId) {
-  //     return;
-  //   }
-  //   else if (userId) {
-  //     this.leaveService.getattendanceTemplatesByUser(userId).subscribe({
-  //       next: (res: any) => {
-  //         if (res.status == "success") {
-  //           let attandanceData = res.data[0].attendanceTemplate;
-  //           attandanceData.weeklyOfDays.forEach(day => {
-  //             if (day != "false") {
-  //               this.dayCounts[day] = 0;
-  //             }
-  //           });
-  //         }
-  //       },
-  //       error: () => {
-  //         this.toast.error(this.translate.instant('leave.errorFetchingAttendanceTemplates'));
-  //       }
-  //     });
-  //   }
-  // }
+
   weeklyOffDays: string[] = []; // Store weekly off days (e.g., ["Sunday", "Saturday"])
 
   getattendanceTemplatesByUser() {
@@ -321,13 +309,6 @@ export class AddApplicationComponent {
       }
     });
   }
-  weeklyOffDates: Date[] = []; // Store specific weekly off dates in the selected range
-
-  updateWeeklyOffDates() {
-    const startDate = this.leaveApplication.get('startDate')?.value;
-    const endDate = this.leaveApplication.get('endDate')?.value;
-    this.weeklyOffDates = this.getWeeklyOffDates(startDate, endDate);
-  }
 
   getWeeklyOffDates(startDate: Date, endDate: Date): Date[] {
     if (!startDate || !endDate || !this.weeklyOffDays.length) {
@@ -349,12 +330,20 @@ export class AddApplicationComponent {
     return weeklyOffDates;
   }
   weeklyOffDateFilter = (date: Date | null): boolean => {
-    if (!date || !this.weeklyOffDays.length) {
-      return true;
+    if (!date) {
+      return true; // Allow if no date
     }
-    const dayIndex = date.getDay(); // 0 = Sunday, 6 = Saturday
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return !this.weeklyOffDays.includes(dayNames[dayIndex]);
+    // Check for weekly off days
+    const dayName = moment(date).format('dddd'); // e.g., "Sunday"
+    if (this.weeklyOffDays.includes(dayName)) {
+      return false; // Disable weekly off days
+    }
+    // Check for holidays
+    const formattedDate = this.stripTime(date); // Normalize to YYYY-MM-DD
+    const isHoliday = this.holidays.some(holiday =>
+      this.stripTime(new Date(holiday.date)) === formattedDate
+    );
+    return !isHoliday; // Disable holiday dates
   };
 
   populateMembers() {
@@ -484,20 +473,17 @@ export class AddApplicationComponent {
   }
 
   submitLeaveApplication(payload: any) {
-    this.leaveService.addLeaveApplication(payload).subscribe({
-      next: (res: any) => {
-        this.leaveApplication.reset();
-        if (res.data != null) {
-          this.toast.success(this.translate.instant('leave.successAddLeave'));
-          this.leaveApplicationRefreshed.emit(res.data);
-        } else {
-          this.toast.error(this.translate.instant('leave.errorAddLeave', { message: res.message }));
-        }
-      },
-      error: () => {
-        this.toast.error(this.translate.instant('leave.errorAddLeaveGeneric'));
+    this.leaveService.addLeaveApplication(payload).subscribe((res: any) => {
+      this.toast.success(this.translate.instant('leave.successAddLeave'));
+      this.leaveApplicationRefreshed.emit(res.data);
+      this.leaveApplication.reset();
+
+    },
+      (error) => {
+        const errorMessage = error || this.translate.instant('leave.errorAddLeaveGeneric');
+        this.toast.error(errorMessage);
       }
-    });
+    );
   }
 
   onFileSelected(event: any) {

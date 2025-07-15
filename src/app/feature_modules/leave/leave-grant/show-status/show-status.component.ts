@@ -53,12 +53,12 @@ export class ShowStatusComponent {
         { label: 'Approve', 
           icon: 'check_circle', 
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.approve
+          hideCondition: (row: any) => !this.actionOptions.approve || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 7))
         },
         { label: 'Reject', 
           icon: 'person_remove', 
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.reject
+          hideCondition: (row: any) => !this.actionOptions.reject ||  ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 7))
         },
         { label: 'Delete', 
           icon: 'delete', 
@@ -108,7 +108,7 @@ export class ShowStatusComponent {
       });
     }
     if (this.portalView === 'user') {
-      if (this.tab === 4) {
+      if (this.tab === 3) {
         this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
           this.leaveGrant = res.data.filter(leave => leave.status === this.status);
         });
