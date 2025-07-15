@@ -10,6 +10,7 @@ import { LeaveService } from 'src/app/_services/leave.service';
 export class ViewApplicationComponent {
   totalLeaveDays = 0;
   @Output() close: any = new EventEmitter();
+  leaveApplication: any;
 
   constructor(public leaveService: LeaveService,
     public dialogRef: MatDialogRef<ViewApplicationComponent>) {
@@ -17,8 +18,7 @@ export class ViewApplicationComponent {
   }
 
   ngOnInit() {
-    this.leaveService.leave.getValue();
-    console.log(this.leaveService.leave.getValue());
+    this.leaveApplication = this.leaveService.leave.getValue();
     this.calculateTotalLeaveDays();
   }
 

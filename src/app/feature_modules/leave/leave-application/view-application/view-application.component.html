@@ -13,19 +13,19 @@
       <mat-card-content>
         <div class="row">
           <div class="col-6 font-weight-bold">{{ 'leave.employeeName' | translate }}</div>
-          <div class="col-6">{{ leaveService?.leave?.getValue()?.employeeName | titlecase }}</div>
+          <div class="col-6">{{ leaveApplication?.employee | titlecase }}</div>
         </div>
         <div class="row mt-2">
           <div class="col-6 font-weight-bold">{{ 'leave._status' | translate }}</div>
-          <div class="col-6">{{ leaveService?.leave?.getValue()?.status | translate: 'leave.status' }}</div>
+          <div class="col-6">{{ leaveApplication?.status }}</div>
         </div>
         <div class="row mt-2">
           <div class="col-6 font-weight-bold">{{ 'leave.startDateLabel' | translate }}</div>
-          <div class="col-6">{{ leaveService?.leave?.getValue()?.startDate | date: 'yyyy-MM-dd' }}</div>
+          <div class="col-6">{{ leaveApplication?.startDate | date: 'yyyy-MM-dd' }}</div>
         </div>
         <div class="row mt-2">
           <div class="col-6 font-weight-bold">{{ 'leave.endDateLabel' | translate }}</div>
-          <div class="col-6">{{ leaveService?.leave?.getValue()?.endDate | date: 'yyyy-MM-dd' }}</div>
+          <div class="col-6">{{ leaveApplication?.endDate | date: 'yyyy-MM-dd' }}</div>
         </div>
         <div class="row mt-2">
           <div class="col-6 font-weight-bold">{{ 'leave.totalLeaveDaysLabel' | translate }}</div>
@@ -35,13 +35,12 @@
           <div class="col-6 font-weight-bold">{{ 'leave.reason' | translate }}</div>
           <div class="col-6">{{ leaveService?.leave?.getValue()?.comment }}</div>
         </div>
-    
+
         <div class="row mt-2" *ngIf="leaveService.leave.getValue()?.documentLink">
           <div class="col-6 font-weight-bold">{{ 'leave.documentLabel' | translate }}</div>
           <div class="col-6">
             <a [href]="leaveService.leave.getValue()?.documentLink"
-               [attr.aria-label]="'leave.downloadDocument' | translate"
-               class="text-primary">
+              [attr.aria-label]="'leave.downloadDocument' | translate" class="text-primary">
               {{ 'leave.downloadDocument' | translate }}
             </a>
           </div>
@@ -52,7 +51,7 @@
 </div>
 
 <div mat-dialog-actions class="d-flex align-items-center justify-content-end">
-    <button mat-flat-button mat-dialog-close>
-        {{ 'leave.close' | translate }}
-    </button>
+  <button mat-flat-button mat-dialog-close>
+    {{ 'leave.close' | translate }}
+  </button>
 </div>
