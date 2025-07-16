@@ -17,7 +17,7 @@
 <div class="mt-2">
     @if(!isHRA){
     <app-tax-components [sectionId]="activeTab" [selectedData]="component" [selectedTaxDeclaration]="selectedRecord"
-        [selectedUser]="selectedUser" (tabSelected)="selectTab($event)">
+        [selectedUser]="selectedUser" (tabSelected)="selectTab($event)"   (dataUpdated)="onDataUpdated()">
     </app-tax-components>
     } @else {
     <app-rent-information [sectionId]="activeTab" [selectedRecord]="selectedRecord"

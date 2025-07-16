@@ -15,6 +15,7 @@ import { UserService } from 'src/app/_services/users.service';
 export class TaxComponentsComponent {
   selectedRecord: any;
   isEdit: boolean = false;
+  @Output() dataUpdated = new EventEmitter<void>();
   searchText: string = '';
   data: any;
   taxDecalaration = [];
@@ -176,6 +177,7 @@ export class TaxComponentsComponent {
         this.toast.success(this.translate.instant('taxation.tax_declaraton_componant_updated'), this.translate.instant('taxation.toast.success'));
         const control = this.incomeTaxDecComponentForm.get(`incomeTaxComponent.${i}`) as FormGroup;
         control.get('isEditable').setValue(false);
+        this.dataUpdated.emit(); // Notify parent of update
       },
       (err) => {
         const errorMessage = err?.error?.message || err?.message || err 
@@ -210,11 +212,8 @@ export class TaxComponentsComponent {
     const attachmentsArray = selectedFormGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
 
     if (attachmentsArray.length > attachmentIndex) {
-      attachmentsArray.removeAt(attachmentIndex);
-      this.toast.success(this.translate.instant('taxation.attachment_removed'), this.translate.instant('taxation.toast.success'));
-       } else {
-        this.toast.error(this.translate.instant('taxation.attachment_not_found'), this.translate.instant('taxation.toast.error')); 
-    }
+      attachmentsArray.removeAt(attachmentIndex);    
+        }
   }
 
   uploadAttachment(event: any, index: number) {
