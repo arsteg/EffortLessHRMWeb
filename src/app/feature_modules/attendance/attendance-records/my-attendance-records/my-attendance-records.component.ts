@@ -35,17 +35,18 @@ export class MyAttendanceRecordsComponent {
   attendanceRecordsColumns: TableColumn[] = [
     {
       key: 'date',
-      name: 'Date'
+      name: 'Date',
+      valueFn: (row) => row?.date ? this.datePipe.transform(row?.date, 'mediumDate') : ''
     },
     {
       key: 'checkIn',
       name: 'CheckIn',
-      valueFn: (row) => row?.checkIn ? this.datePipe.transform(row?.checkIn, 'mediumDate') : ''
+      valueFn: (row) => row?.checkIn ? this.datePipe.transform(row?.checkIn, 'mediumTime') : ''
     },
     {
       key: 'checkOut',
       name: 'CheckOut',
-      valueFn: (row) => row?.checkOut ? this.datePipe.transform(row?.checkOut, 'mediumDate') : ''
+      valueFn: (row) => row?.checkOut ? this.datePipe.transform(row?.checkOut, 'mediumTime') : ''
     },
     {
       key: 'duration',
