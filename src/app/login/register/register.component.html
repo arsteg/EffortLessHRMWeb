@@ -32,11 +32,11 @@
           autocomplete="off">
           <div class="row mb-2">
             <div class="col-md-6">
-              <mat-form-field class="w-100">
+              <mat-form-field class="w-100" [class.mb-3]="!registerNewUser.get('firstName').valid && registerNewUser.get('firstName').touched">
                 <mat-label>{{'login.first_name' | translate }}</mat-label>
                 <input matInput id="firstName" type="text" formControlName="firstName" name="firstName"   maxlength="15" required
                   autofocus>
-                <mat-error *ngIf="!registerNewUser.get('firstName').valid && registerNewUser.get('firstName').touched">
+                <mat-error class="mb-3" *ngIf="!registerNewUser.get('firstName').valid && registerNewUser.get('firstName').touched">
                   <span *ngIf="registerNewUser.get('firstName').errors?.['required']">{{ 'login.first_name_required' |
                     translate }}</span>
                   <span *ngIf="registerNewUser.get('firstName').errors?.['invalidName']">{{ 'login.first_name_invalid' |
@@ -49,7 +49,7 @@
             </div>
 
             <div class="col-md-6">
-              <mat-form-field class="w-100">
+              <mat-form-field class="w-100" [class.mb-3]="!registerNewUser.get('lastName').valid && registerNewUser.get('lastName').touched">
                 <mat-label>{{'login.last_name' | translate }}</mat-label>
                 <input matInput id="lastName" type="text" formControlName="lastName" name="lastName"  maxlength="15" required autofocus>
                 <mat-error *ngIf="!registerNewUser.get('lastName').valid && registerNewUser.get('lastName').touched">
@@ -132,7 +132,7 @@
           </div>
 
 
-          <mat-form-field class="w-100 mb-2">
+          <mat-form-field class="w-100 mb-2" [class.mb-4]="!registerNewUser.get('password').valid && registerNewUser.get('password').touched">
             <mat-label>{{ 'login.password' | translate }}</mat-label>
             <input matInput [type]="hidePassword ? 'password' : 'text'" id="password" formControlName="password"
               name="password" required>
