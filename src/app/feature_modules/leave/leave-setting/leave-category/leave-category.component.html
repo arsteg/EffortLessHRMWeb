@@ -76,9 +76,13 @@
                             formControlName="abbreviation" />
                         <mat-error *ngIf="
                     categoryForm.get('abbreviation')?.invalid &&
-                    categoryForm.get('abbreviation')?.touched
-                    ">
-                            {{ "leave.errorAbbreviation" | translate }}
+                    (categoryForm.get('abbreviation')?.touched || categoryForm.get('label')?.dirty)">
+                            <span *ngIf="categoryForm.get('abbreviation')?.errors?.['required']">
+                                {{ "leave.errorAbbreviation" | translate }}
+                            </span>
+                            <span *ngIf="categoryForm.get('abbreviation')?.errors?.['invalidLabel']">
+                                {{ 'leave.abbreviation_invalid' | translate }}
+                            </span>
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -130,7 +134,7 @@
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.submitBeforeDays" | translate }}</mat-label>
                         <input matInput type="number" [placeholder]="'leave.daysPlaceholder' | translate"
-                            formControlName="submitBefore" />
+                            formControlName="submitBefore" min="0" />
                         <mat-error *ngIf="categoryForm.get('submitBefore')?.invalid">
                             <span *ngIf="categoryForm.get('submitBefore')?.errors?.['min']">
                                 {{ 'leave.duration_negative' | translate }}
@@ -326,7 +330,7 @@
                 <div class="form-group col-md-6 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.minDaysAllowed" | translate }}</mat-label>
-                        <input matInput type="number" formControlName="minimumNumberOfDaysAllowed" />
+                        <input matInput type="number" formControlName="minimumNumberOfDaysAllowed"  min="0" />
                         <mat-error *ngIf="categoryForm.get('minimumNumberOfDaysAllowed')?.invalid">
                             <span *ngIf="categoryForm.get('minimumNumberOfDaysAllowed')?.errors?.['min']">
                                 {{ 'leave.duration_negative' | translate }}
@@ -350,12 +354,12 @@
                 <div class="form-group col-md-6 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.maxConsecutiveDays" | translate }}</mat-label>
-                        <input matInput type="number" formControlName="maximumNumberConsecutiveLeaveDaysAllowed" />
-                         <mat-error *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.invalid">
-            <span *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.errors?.['min']">
-                {{ 'leave.duration_negative' | translate }}
-            </span>
-        </mat-error>
+                        <input matInput type="number" formControlName="maximumNumberConsecutiveLeaveDaysAllowed" min="0" />
+                        <mat-error *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.invalid">
+                            <span *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.errors?.['min']">
+                                {{ 'leave.duration_negative' | translate }}
+                            </span>
+                        </mat-error>
                     </mat-form-field>
                 </div>
                 <div class="form-group col-md-6 my-2">

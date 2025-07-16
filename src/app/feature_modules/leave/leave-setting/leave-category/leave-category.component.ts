@@ -76,10 +76,10 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
     this.categoryForm = this.fb.group({
       leaveType: ['', Validators.required],
       label: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
-      abbreviation: ['', Validators.required],
+      abbreviation: ['',[ Validators.required, labelValidator] ],
       canEmployeeApply: [true, Validators.required],
       isHalfDayTypeOfLeave: [true, Validators.required],
-      submitBefore: [0, [Validators.required, Validators.min(0)]], // Already there, good!
+      submitBefore: [0, [Validators.required, Validators.min(0)]],
       displayLeaveBalanceInPayslip: [true, Validators.required],
       leaveAccrualPeriod: [''],
       isAnnualHolidayLeavePartOfNumberOfDaysTaken: [true],
