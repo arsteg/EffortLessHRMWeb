@@ -88,7 +88,7 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
 
   open(content: any) {
     this.dialogRef = this.dialog.open(content, {
-      width: '600px',
+      width: '50%',
       disableClose: true
     });
     this.dialogRef.afterClosed().subscribe(result => {

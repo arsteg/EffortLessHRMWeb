@@ -12,7 +12,7 @@
 <form [formGroup]="addTemplateForm" (ngSubmit)="onSubmission()">
     <div mat-dialog-content style="overflow-x: hidden; max-width: 100%;">
         <div class="row m-0">
-            <div class="form-group col-md-6 my-2">
+            <div class="form-group col-12 my-2">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.createTemplate.label' | translate }}</mat-label>
                     <input matInput type="text" [placeholder]="'leave.createTemplate.labelPlaceholder' | translate"
@@ -32,7 +32,7 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-            <div class="form-group col-md-6 my-2 d-none">
+            <div class="form-group col-12 my-2 d-none">
                 <label>{{ 'leave.createTemplate.approvalLevel' | translate }} <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <mat-radio-group formControlName="approvalLevel">
@@ -51,7 +51,7 @@
         </div>
         <div class="row m-0">
 
-            <div class="form-group col-md-6 my-2">
+            <div class="form-group col-12 my-2">
                 <label>{{ 'leave.createTemplate.approvalType' | translate }} <span class="text-danger">*</span></label>
                 <div class="d-flex">
                     <mat-radio-group formControlName="approvalType">
@@ -69,7 +69,7 @@
             </div>
 
             @if (addTemplateForm.get('approvalType')?.value === 'template-wise') {
-            <div class="form-group col-md-6 my-2">
+            <div class="form-group col-12 my-2">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.createTemplate.primaryApprover' | translate }}</mat-label>
                     <mat-select formControlName="primaryApprover">
@@ -91,7 +91,7 @@
         <!-- @if (addTemplateForm.get('approvalType')?.value === 'template-wise' &&
         addTemplateForm.get('approvalLevel')?.value === '2-level') {
         <div class="row m-0">
-            <div class="form-group col-md-6 my-2">
+            <div class="form-group col-12 my-2">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.createTemplate.secondaryApprover' | translate }}</mat-label>
                     <mat-select formControlName="secondaryApprover">
@@ -111,7 +111,7 @@
         } -->
         <div class="row m-0">
 
-            <div class="form-group col-md-6 my-2">
+            <div class="form-group col-12 my-2">
                 <label>{{ 'leave.createTemplate.isCommentMandatory' | translate }} <span
                         class="text-danger">*</span></label>
                 <div class="d-flex">
@@ -129,7 +129,7 @@
                 </div>
             </div>
 
-            <div class="form-group col-md-6 my-2">
+            <div class="form-group col-12 my-2">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>{{ 'leave.createTemplate.leaveCategories' | translate }}</mat-label>
                     <mat-select multiple formControlName="leaveCategories">
@@ -142,7 +142,7 @@
         </div>
         <div class="row m-0">
 
-            <div class="form-group col-md-6 my-2">
+            <div class="form-group col-12 my-2">
                 <label>{{ 'leave.createTemplate.clubbingRestrictions' | translate }} <span
                         class="text-danger">*</span></label>
                 <div class="d-flex">
@@ -205,7 +205,7 @@
             </div>
         </div>
         <div class="row m-0">
-            <div class="form-group col-md-6 my-2">
+            <div class="form-group col-12 my-2">
                 <label>{{ 'leave.createTemplate.weeklyOffClubTogether' | translate }}</label>
                 <div class="d-flex">
                     <mat-radio-group formControlName="weeklyOffClubTogether">
@@ -216,7 +216,7 @@
                     </mat-radio-group>
                 </div>
             </div>
-            <div class="form-group col-md-6 my-2">
+            <div class="form-group col-12 my-2">
                 <label>{{ 'leave.createTemplate.holidayClubTogether' | translate }}</label>
                 <div class="d-flex">
                     <mat-radio-group formControlName="holidayClubTogether">
