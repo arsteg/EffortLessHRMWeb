@@ -1,0 +1,65 @@
+{
+ "reports": {
+    "add_new": "Add New",
+    "menu": {
+      "timeline": "Timeline",
+      "browserHistory": "Browser History",
+      "appsAndWebsites": "Apps and Websites",
+      "productivity": "Productivity",
+      "timesheets": "Timesheets",
+      "generalReports": "General Reports",
+      "myReports": "My Reports",
+      "attendance": "Attendance",
+      "statistics": "Statistics",
+      "leave": "Leave"
+    },
+    "history": {
+      "date": "Date",
+      "browser": "Browser",
+      "title": "Title",
+      "url": "URL",
+      "visitTime": "Visit Time",
+      "visitCount": "Visit Count",
+      "refresh": "Refresh"
+    },
+    "website": {
+      "application": "Application",
+      "project": "Project",
+      "member": "Member",
+      "mouseClicks": "Mouse Clicks",
+      "mouseScroll": "Mouse Scroll",
+      "keyboardStrokes": "Keyboard Strokes",
+      "inactive": "Inactive (%)",
+      "hours": "Hours",
+      "export": "Export",
+      "export.csv": "CSV",
+      "export.xls": "XLS",
+      "export.pdf": "PDF",
+      "selectUser": "Select User",
+      "selectProject": "Select Project",
+      "date": "Date",
+      "fromDate": "From Date",
+      "toDate": "To Date",
+      "me": "Me",
+      "dateRange": "Select date range",
+      "applicationUsages": "Application Usages"
+    },
+    "timesheet" : {
+      "project": "Project",
+      "total": "Total",
+      "export": "Export",
+      "export.csv": "CSV",
+      "export.xls": "XLS",
+      "export.pdf": "PDF",
+      "dateRange": "Date Range",
+      "fromDate": "From Date",
+      "toDate": "To Date",
+      "invalidDate": "Invalid start or end date",
+      "error": "Something went wrong, please try again.",
+      "errorTitle": "Error",
+      "reportTitle": "User Timesheet Report",
+      "user": "User",
+      "noData": "No data available"
+    }
+  }
+}
