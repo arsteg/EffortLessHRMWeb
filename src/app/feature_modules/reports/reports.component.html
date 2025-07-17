@@ -1,6 +1,74 @@
 <div class="main-content contentData">
     <div class="container-fluid px-0">
         <ng-container>
+            <ng-container *ngIf="view === 'admin'">
+                <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+                    <a mat-tab-link (click)="selectTab(1)" [active]="selectedTab === 1">{{ 'reports.menu.timeline' | translate }}</a>
+                    <a mat-tab-link (click)="selectTab(2)" [active]="selectedTab === 2">{{ 'reports.menu.browserHistory' | translate }}</a>
+                    <a mat-tab-link (click)="selectTab(3)" [active]="selectedTab === 3">{{ 'reports.menu.appsAndWebsites' | translate }}</a>
+                    <a mat-tab-link (click)="selectTab(4)" [active]="selectedTab === 4">{{ 'reports.menu.productivity' | translate }}</a>
+                    <a mat-tab-link (click)="selectTab(7)" [active]="selectedTab === 7">{{ 'reports.menu.timesheets' | translate }}</a>
+                </nav>
+                <mat-tab-nav-panel #tabPanel>
+                    <div *ngIf="selectedTab === 1"><app-timeline></app-timeline></div>
+                    <div *ngIf="selectedTab === 2"><browser-history></browser-history></div>
+                    <div *ngIf="selectedTab === 3"><app-app-and-website-usage></app-app-and-website-usage></div>
+                    <div *ngIf="selectedTab === 4" class="tab-content">
+                        <app-productivity-report></app-productivity-report>
+                    </div>
+                    <div *ngIf="selectedTab === 5" class="tab-content">
+                        <app-leave-report></app-leave-report>
+                    </div>
+                    <div *ngIf="selectedTab === 6" class="tab-content">
+                        <app-ai-reports></app-ai-reports>
+                    </div>
+                    <div *ngIf="selectedTab === 7" class="tab-content">
+                        <app-admin-timesheet></app-admin-timesheet>
+                    </div>
+                </mat-tab-nav-panel>
+            </ng-container>
+
+            <ng-container *ngIf="view === 'user'">
+                <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel2">
+                    <!-- <a mat-tab-link (click)="selectTab(1)" [active]="selectedTab === 1">{{ 'reports.menu.generalReports' | translate }}</a>
+                    <a mat-tab-link (click)="selectTab(2)" [active]="selectedTab === 2">{{ 'reports.menu.myReports' | translate }}</a> -->
+                    <a mat-tab-link (click)="selectTab(3)" [active]="selectedTab === 3">{{ 'reports.menu.timeline' | translate }}</a>
+                    <!-- <a mat-tab-link (click)="selectTab(4)" [active]="selectedTab === 4">{{ 'reports.menu.attendance' | translate }}</a> -->
+                    <!-- <a mat-tab-link (click)="selectTab(5)" [active]="selectedTab === 5">{{ 'reports.menu.statistics' | translate }}</a> -->
+                    <a mat-tab-link (click)="selectTab(6)" [active]="selectedTab === 6">{{ 'reports.menu.browserHistory' | translate }}</a>
+                    <a mat-tab-link (click)="selectTab(7)" [active]="selectedTab === 7">{{ 'reports.menu.appsAndWebsites' | translate }}</a>
+                    <a mat-tab-link (click)="selectTab(8)" [active]="selectedTab === 8">{{ 'reports.menu.productivity' | translate }}</a>
+                    <!-- <a mat-tab-link (click)="selectTab(9)" [active]="selectedTab === 9">{{ 'reports.menu.leave' | translate }}</a> -->
+                    <a mat-tab-link (click)="selectTab(10)" [active]="selectedTab === 10">{{ 'reports.menu.timesheets' | translate }}</a>
+                </nav>
+                <mat-tab-nav-panel #tabPanel2>
+                    <!-- <div *ngIf="selectedTab === 1" class="tab-content"></div>
+                    <div *ngIf="selectedTab === 2" class="tab-content"></div> -->
+                    <div *ngIf="selectedTab === 3"><app-timeline></app-timeline></div>
+                    <div *ngIf="selectedTab === 4" class="tab-content">
+                        <!-- <app-attendance></app-attendance> -->
+                    </div>
+                    <!-- <div *ngIf="selectedTab === 5" class="tab-content"></div> -->
+                    <div *ngIf="selectedTab === 6"><browser-history></browser-history></div>
+                    <div *ngIf="selectedTab === 7"><app-app-and-website-usage></app-app-and-website-usage></div>
+                    <div *ngIf="selectedTab === 8" class="tab-content">
+                        <app-productivity-report></app-productivity-report>
+                    </div>
+                    <div *ngIf="selectedTab === 9" class="tab-content">
+                        <app-leave-report></app-leave-report>
+                    </div>
+                    <div *ngIf="selectedTab === 10" class="tab-content">
+                        <app-user-timesheet></app-user-timesheet>
+                    </div>
+                </mat-tab-nav-panel>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>
+
+<!-- <div class="main-content contentData">
+    <div class="container-fluid px-0">
+        <ng-container>
             <div *ngIf="view=== 'admin' ">
                 <div class="d-flex align-items-center  pb-2 ps-lg-4 ps-2 bg-white w-100 reports_panel">
                     <button class="btn rounded-pill submenuTab reports_btn" (click)="selectTab(1)"
@@ -73,7 +141,7 @@
                 <div *ngIf="selectedTab === 3"><app-timeline></app-timeline></div>
 
                 <div *ngIf="selectedTab === 4" class="tab-content">
-                    <!-- <app-attendance></app-attendance> -->
+                    
                 </div>
                 <div *ngIf="selectedTab === 5" class="tab-content">
                 </div>
@@ -91,4 +159,4 @@
             </div>
         </ng-container>
     </div>
-</div>
+</div> -->

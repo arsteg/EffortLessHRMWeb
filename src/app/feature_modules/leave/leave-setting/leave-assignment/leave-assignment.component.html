@@ -33,7 +33,7 @@
   <form [formGroup]="templateAssignmentForm" (ngSubmit)="onSubmission()">
     <div mat-dialog-content style="overflow-x: hidden; max-width: 100%;">
       <div class="row m-0">
-        <div class="form-group col-md-6 my-2">
+        <div class="form-group col-12 my-2">
           <mat-form-field class="w-100" appearance="outline">
             <mat-label>{{ 'leave.chooseEmployee' | translate }}</mat-label>
             <mat-select formControlName="user">
@@ -47,9 +47,9 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <div class="form-group col-md-6 my-2">
+        <div class="form-group col-12 my-2">
           <mat-form-field class="w-100" appearance="outline">
-            <mat-label>{{ 'leaveLabel' | translate }}</mat-label>
+            <mat-label>{{ 'leave.leaveLabel' | translate }}</mat-label>
             <mat-select formControlName="leaveTemplate">
               <mat-option value="" disabled>{{ 'leave.selectLabel' | translate }}</mat-option>
               <mat-option [value]="temp?._id" *ngFor="let temp of templates">
@@ -64,7 +64,7 @@
       </div>
       @if (showApprovers) {
         <div class="row m-0">
-          <div class="form-group col-md-6 my-2">
+          <div class="form-group col-12 my-2">
             <mat-form-field class="w-100" appearance="outline">
               <mat-label>{{ 'leave.selectPrimaryApprover' | translate }}</mat-label>
               <mat-select formControlName="primaryApprover">
@@ -78,7 +78,7 @@
               </mat-error>
             </mat-form-field>
           </div>
-          <div class="form-group col-md-6 d-none my-2">
+          <div class="form-group col-12 d-none my-2">
             <mat-form-field class="w-100" appearance="outline">
               <mat-label>{{ 'leave.selectSecondaryApprover' | translate }}</mat-label>
               <mat-select formControlName="secondaryApprover">

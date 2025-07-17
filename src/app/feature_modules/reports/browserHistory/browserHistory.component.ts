@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AppWebsiteService } from '../../../_services/appWebsite.service';
 import { first, Subscription } from 'rxjs';
 import { UtilsService } from '../../../_services/utils.service';
+import { TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'browser-history',
@@ -18,7 +20,42 @@ export class BrowserHistoryComponent implements OnInit {
   intervalDuration = 300000; 
   subscription: Subscription;
 
-  constructor(private appWebsiteService: AppWebsiteService, private utilsService:UtilsService) { }
+  columns: TableColumn[] = [
+    {
+      key: 'browser',
+      name: this.translate.instant('reports.history.browser'),
+      isHtml: true,
+      valueFn: (row: any) => {
+        if (row.browser == 1) return `<img src="assets/Browser/internet_explorer.png" alt="Edge" height="25" title="Edge">`;
+        if (row.browser == 2) return `<img src="assets/Browser/firefox_browser.png" alt="Firefox" height="25" title="Firefox">`;
+        if (row.browser == 4) return `<img src="assets/Browser/google_chrome.png" alt="Chrome" height="25" title="Chrome">`;
+        if (row.browser == 8) return `<img src="assets/Browser/safari.png" alt="Safari" height="25" title="Safari">`;
+        return '';
+      }
+    },
+    { 
+      key: 'title', 
+      name: this.translate.instant('reports.history.title'), 
+      valueFn: (row: any) => this.truncateString(row.title, 50) },
+    { 
+      key: 'uri', 
+      name: this.translate.instant('reports.history.url'), 
+      valueFn: (row: any) => this.truncateString(row.uri, 75) },
+    { 
+      key: 'lastVisitTime', 
+      name: this.translate.instant('reports.history.visitTime'), 
+      valueFn: (row: any) => this.truncateDate(row.lastVisitTime, 10) },
+    { 
+      key: 'visitCount', 
+      name: this.translate.instant('reports.history.visitCount')
+    }
+  ];
+
+  constructor(
+    private appWebsiteService: AppWebsiteService, 
+    private utilsService:UtilsService,
+    private translate: TranslateService
+  ) { }
 
   ngOnInit(): void {
     this.intervalId = setInterval(() => {

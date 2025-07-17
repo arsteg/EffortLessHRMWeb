@@ -45,6 +45,7 @@
         "errorLabel": "Please Enter label For Leave Category.",
         "duration_negative": "Value cannot be negative.",
         "label_invalid": "Label must contain at least one alphabet and can include spaces, commas, hyphens, and parentheses.",
+        "abbreviation_invalid": "Abbreviation must contain at least one alphabet and can include spaces, commas, hyphens, and parentheses.",
         "at_errorLabelDuplicate": "Leave Category with this label already exists.",
         "provideAbbreviation": "Please provide an abbreviation for this leave",
         "abbreviationPlaceholder": "Abbreviation Label",

@@ -180,12 +180,16 @@ export class AddApplicationComponent {
   validateDates() {
     const startDate = this.leaveApplication.get('startDate')?.value;
     const endDate = this.leaveApplication.get('endDate')?.value;
-
+    const halfDay = this.leaveApplication.get('date')?.value;
+    
     if (startDate && this.minSelectableDate && moment(startDate).isBefore(moment(this.minSelectableDate))) {
       this.leaveApplication.get('startDate')?.setErrors({ submitBeforeError: true });
     }
     if (endDate && this.minSelectableDate && moment(endDate).isBefore(moment(this.minSelectableDate))) {
       this.leaveApplication.get('endDate')?.setErrors({ submitBeforeError: true });
+    }
+    if (halfDay && this.minSelectableDate && moment(halfDay).isBefore(moment(this.minSelectableDate))) {
+      this.leaveApplication.get('date')?.setErrors({ submitBeforeError: true });
     }
   }
   getHolidays() {

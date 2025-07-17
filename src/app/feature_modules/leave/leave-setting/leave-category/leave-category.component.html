@@ -27,7 +27,7 @@
     <form [formGroup]="categoryForm" (ngSubmit)="onSubmission()">
         <div mat-dialog-content style="overflow-x: hidden;">
             <div class="row m-0">
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.chooseLeaveType" | translate }}</mat-label>
                         <mat-select formControlName="leaveType">
@@ -49,7 +49,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.provideLabel" | translate }}</mat-label>
                         <input matInput type="text" [placeholder]="'leave.labelPlaceholder' | translate"
@@ -69,20 +69,24 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.provideAbbreviation" | translate }}</mat-label>
                         <input matInput type="text" [placeholder]="'leave.abbreviationPlaceholder' | translate"
                             formControlName="abbreviation" />
                         <mat-error *ngIf="
                     categoryForm.get('abbreviation')?.invalid &&
-                    categoryForm.get('abbreviation')?.touched
-                    ">
-                            {{ "leave.errorAbbreviation" | translate }}
+                    (categoryForm.get('abbreviation')?.touched || categoryForm.get('label')?.dirty)">
+                            <span *ngIf="categoryForm.get('abbreviation')?.errors?.['required']">
+                                {{ "leave.errorAbbreviation" | translate }}
+                            </span>
+                            <span *ngIf="categoryForm.get('abbreviation')?.errors?.['invalidLabel']">
+                                {{ 'leave.abbreviation_invalid' | translate }}
+                            </span>
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.canEmployeeApply" | translate }}
                         <span class="text-danger">*</span></label>
                     <div class="d-flex">
@@ -104,7 +108,7 @@
                             }}</small>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.halfDayOption" | translate }}
                         <span class="text-danger">*</span></label>
                     <div class="d-flex">
@@ -126,11 +130,11 @@
                             }}</small>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.submitBeforeDays" | translate }}</mat-label>
                         <input matInput type="number" [placeholder]="'leave.daysPlaceholder' | translate"
-                            formControlName="submitBefore" />
+                            formControlName="submitBefore" min="0" />
                         <mat-error *ngIf="categoryForm.get('submitBefore')?.invalid">
                             <span *ngIf="categoryForm.get('submitBefore')?.errors?.['min']">
                                 {{ 'leave.duration_negative' | translate }}
@@ -139,7 +143,7 @@
                     </mat-form-field>
 
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.displayInPayslips" | translate }}
                         <span class="text-danger">*</span></label>
                     <div class="d-flex">
@@ -162,7 +166,7 @@
                     </div>
                 </div>
                 @if (categoryForm.value.leaveType === 'general-leave') {
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.leaveAccrualPeriod" | translate }}</mat-label>
                         <mat-select formControlName="leaveAccrualPeriod">
@@ -190,7 +194,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.accrualInAdvance" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isEmployeeAccrualLeaveInAdvance">
@@ -203,7 +207,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.weeklyOffInclusion" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken">
@@ -216,7 +220,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.annualHolidayInclusion" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken">
@@ -229,7 +233,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.leaveEncashmentRollover" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isEligibleForLeaveEncashmentDuringRollover">
@@ -242,7 +246,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.documentRequired" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isDocumentRequired">
@@ -255,7 +259,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.encashmentRecoveryFNF" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isEligibleForEncashmentRecoveryDuringFNF">
@@ -268,7 +272,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.carryoverLimits" | translate }}</mat-label>
                         <mat-select formControlName="policyWithRegardsToCarryoverLimits">
@@ -284,7 +288,7 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.negativeLeaveBalance" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isEmployeesAllowedToNegativeLeaveBalance">
@@ -297,7 +301,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.roundOffAccrual" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isRoundOffLeaveAccrualNearestPointFiveUnit">
@@ -310,7 +314,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.intraCycleLapse" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isIntraCycleLapseApplicableForThisCategory">
@@ -323,10 +327,10 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.minDaysAllowed" | translate }}</mat-label>
-                        <input matInput type="number" formControlName="minimumNumberOfDaysAllowed" />
+                        <input matInput type="number" formControlName="minimumNumberOfDaysAllowed"  min="0" />
                         <mat-error *ngIf="categoryForm.get('minimumNumberOfDaysAllowed')?.invalid">
                             <span *ngIf="categoryForm.get('minimumNumberOfDaysAllowed')?.errors?.['min']">
                                 {{ 'leave.duration_negative' | translate }}
@@ -334,7 +338,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.prorateFirstMonth" | translate }}</mat-label>
                         <mat-select formControlName="isProRateFirstMonthAccrualForNewJoinees">
@@ -347,18 +351,18 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.maxConsecutiveDays" | translate }}</mat-label>
-                        <input matInput type="number" formControlName="maximumNumberConsecutiveLeaveDaysAllowed" />
-                         <mat-error *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.invalid">
-            <span *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.errors?.['min']">
-                {{ 'leave.duration_negative' | translate }}
-            </span>
-        </mat-error>
+                        <input matInput type="number" formControlName="maximumNumberConsecutiveLeaveDaysAllowed" min="0" />
+                        <mat-error *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.invalid">
+                            <span *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.errors?.['min']">
+                                {{ 'leave.duration_negative' | translate }}
+                            </span>
+                        </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.isPaidLeave" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isPaidLeave">
@@ -372,7 +376,7 @@
                     </div>
                 </div>
                 } @if (categoryForm.value.leaveType === 'annual-non-accrual-leave') {
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.annualHolidayInclusion" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken">
@@ -385,7 +389,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.weeklyOffInclusion" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken">
@@ -398,7 +402,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.leaveEncashmentRollover" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isEligibleForLeaveEncashmentDuringRollover">
@@ -411,7 +415,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.documentRequired" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isDocumentRequired">
@@ -424,7 +428,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.encashmentRecoveryFNF" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isEligibleForEncashmentRecoveryDuringFNF">
@@ -437,7 +441,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.dateRestriction" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isEmployeesAllowedToNegativeLeaveBalance">
@@ -450,7 +454,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-md-6 my-2">
+                <div class="form-group col-12 my-2">
                     <label>{{ "leave.isPaidLeave" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isPaidLeave">
