@@ -8,6 +8,8 @@ import { throwError } from 'rxjs';
 import { PreferenceService } from '../_services/user-preference.service';
 import { PreferenceKeys } from '../constants/preference-keys.constant';
 
+import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -31,6 +33,8 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthenticationService,
     private fb: FormBuilder,
+    private toast: ToastrService,
+    private translate: TranslateService,
     private preferenceService: PreferenceService
   ) {
     this.loginForm = this.fb.group({
@@ -50,14 +54,10 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.errorMessage = null;
     if (this.loginForm.valid) {
-      this.loading = true;
-      this.authenticationService.login(this.loginForm.value).pipe(
-        catchError(err => {
-          this.loading = false;
-          this.errorMessage = err || 'An unexpected error occurred.';
-          return throwError(err);
-        })
-      ).subscribe(data => {
+      this.loading = true; 
+   
+      this.authenticationService.login(this.loginForm.value).subscribe
+      (data => {
         this.loading = true;
         if (!data) {
           this.loading = false;
@@ -100,8 +100,17 @@ export class LoginComponent implements OnInit {
             }
           });
         }
+      },
+      (err) => {
+        this.loading = false;
+        const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('login.unable_login')
+          ;
+         
+          this.toast.error(errorMessage, 'Error!');
       });
-    } else {
+    } 
+    else {
       this.loginForm.markAllAsTouched();
       this.errorMessage = 'Please fill in all required fields.';
     }

@@ -1,4 +1,4 @@
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export class CustomValidators {
   static digitsOnly(control: AbstractControl): ValidationErrors | null {
@@ -72,6 +72,40 @@ export class CustomValidators {
     }
     return null;
   }
+  static noSpacesNumbersOrSymbolsValidator(control: any) {
+    const value = control.value;
+    if (/\d/.test(value) || /\s/.test(value) || /[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+      return { invalidName: true };
+    }
+    return null;
+  }
+  static appliedLessThanMaxValidator(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const appliedControl = group.get('appliedAmount');
+      const maxControl = group.get('maximumAmount');
+
+      if (!appliedControl || !maxControl) return null;
+
+      const applied = +appliedControl.value;
+      const max = +maxControl.value;
+
+      if (applied > max) {
+        appliedControl.setErrors({ appliedExceedsMax: true });
+      } else {
+        const errors = appliedControl.errors;
+        if (errors) {
+          delete errors['appliedExceedsMax'];
+          if (!Object.keys(errors).length) {
+            appliedControl.setErrors(null);
+          } else {
+            appliedControl.setErrors(errors);
+          }
+        }
+      }
+
+      return null;
+    };
+  }
   static strongPasswordValidator(control: AbstractControl): ValidationErrors | null {
       const value = control.value;
       if (!value) return null;
@@ -84,5 +118,37 @@ export class CustomValidators {
     };
     static selectRequiredValidator(control: AbstractControl): ValidationErrors | null {
       return control.value === '' || control.value === null ? { selectRequired: true } : null;
+    }
+    static passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
+      const passwordControl = group.get('password');
+      const confirmControl = group.get('passwordConfirm');
+    
+      if (!passwordControl || !confirmControl) return null;
+    
+      const password = passwordControl.value ?? '';
+      const confirmPassword = confirmControl.value ?? '';
+    
+      
+      if (!password || !confirmPassword) {
+        confirmControl.setErrors(null); // remove stale errors
+        return null;
+      }
+    
+      if (password !== confirmPassword) {
+        confirmControl.setErrors({ notMatching: true });
+        return { notMatching: true };
+      } else {
+        // Only clear the error if no other errors exist
+        if (confirmControl.hasError('notMatching')) {
+          confirmControl.setErrors(null);
+        }
+        return null;
+      }
+    }
+    static email(control: AbstractControl): ValidationErrors | null {
+      const value = control.value;
+      if (!value) return null;
+      const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return pattern.test(value) ? null : { invalidEmail: true };
     }
 }

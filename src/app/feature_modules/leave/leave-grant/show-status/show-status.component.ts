@@ -1,5 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input } from '@angular/core';
+import { ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { UpdateStatusComponent } from '../update-status/update-status.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -7,7 +7,6 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ViewLeaveComponent } from '../view-leave/view-leave.component';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ToastrService } from 'ngx-toastr';
-import { ExportService } from 'src/app/_services/export.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
@@ -26,7 +25,6 @@ export class ShowStatusComponent {
   @Input() tab: number;
   portalView = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  public sortOrder: string = '';
   totalRecords: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
@@ -55,12 +53,12 @@ export class ShowStatusComponent {
         { label: 'Approve', 
           icon: 'check_circle', 
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.approve
+          hideCondition: (row: any) => !this.actionOptions.approve || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 7))
         },
         { label: 'Reject', 
           icon: 'person_remove', 
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.reject
+          hideCondition: (row: any) => !this.actionOptions.reject ||  ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 7))
         },
         { label: 'Delete', 
           icon: 'delete', 
@@ -77,12 +75,10 @@ export class ShowStatusComponent {
   ];
 
   constructor(
-    private modalService: NgbModal,
     private leaveService: LeaveService,
     private dialog: MatDialog,
     private commonService: CommonService,
     private toast: ToastrService,
-    private exportService: ExportService,
     private translate: TranslateService
   ) {
     this.translate.setDefaultLang('en');
@@ -112,7 +108,7 @@ export class ShowStatusComponent {
       });
     }
     if (this.portalView === 'user') {
-      if (this.tab === 4) {
+      if (this.tab === 3) {
         this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
           this.leaveGrant = res.data.filter(leave => leave.status === this.status);
         });
@@ -193,16 +189,6 @@ export class ShowStatusComponent {
     });
   }
 
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return this.translate.instant('leave.dismissByEsc');
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return this.translate.instant('leave.dismissByBackdrop');
-    } else {
-      return this.translate.instant('leave.dismissWith', { reason: reason });
-    }
-  }
-
   openSecondModal(selectedReport: any): void {
     const userName = this.getUser(selectedReport.employee);
     selectedReport.employee = userName;
@@ -230,7 +216,7 @@ export class ShowStatusComponent {
         }
         this.toast.success(
           this.translate.instant('leave.deleteSuccess'),
-          this.translate.instant('leave.deleteTitle')
+          this.translate.instant('leave.deleteGrantTitle')
         );
       },
       (err) => {

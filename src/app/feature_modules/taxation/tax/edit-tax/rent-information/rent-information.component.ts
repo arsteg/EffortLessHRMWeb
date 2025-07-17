@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ValidationErrors } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { TaxationService } from 'src/app/_services/taxation.service';
@@ -13,33 +13,34 @@ import { UserService } from 'src/app/_services/users.service';
 export class RentInformationComponent {
   incomeTaxDeclaration: any;
   isEdit: boolean = false;
-  monthsArray: number[];
+  monthsArray: string[];
 
   @Input() selectedRecord: any;
   @Input() actionType: boolean;
+  @Input() sectionId: string;
 
   incomeTaxDeclarationForm: FormGroup;
   formGroup: FormGroup;
   metroDeclaredRent: number = 0;
   nonMetroDeclaredRent: number = 0;
-  @Input() sectionId: string;
 
   constructor(
     private fb: FormBuilder,
     private taxService: TaxationService,
-    private toast: ToastrService,private translate: TranslateService,
+    private toast: ToastrService,
+    private translate: TranslateService,
     private userService: UserService
   ) {
     this.formGroup = this.fb.group({
       employeeIncomeTaxDeclaration: [''],
       employeeIncomeTaxDeclarationHRA: this.fb.array([]),
-      rentDeclared: [null, [Validators.required, this.rentValidation.bind(this)]], // Added custom validator
+      rentDeclared: [null, [Validators.required, this.rentValidation.bind(this)]],
       month: [''],
-      verifiedAmount: [0],
+      verifiedAmount: [{ value: 0, disabled: true }],
       cityType: ['', Validators.required],
-      landlordName: [''],
+      landlordName: ['', Validators.required],
       landlordPan: ['', [Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/), Validators.required]],
-      landlordAddress: [''],
+      landlordAddress: ['', Validators.required],
       approvalStatus: [''],
       documentLink: [''],
       isEditable: [false],
@@ -54,8 +55,9 @@ export class RentInformationComponent {
   }
 
   ngOnInit() {
-    console.log(this.sectionId)
+    console.log(this.sectionId);
     const months = this.getMonthsArray();
+    this.monthsArray = months;
     this.formGroup.setControl('employeeIncomeTaxDeclarationHRA', this.fb.array([]));
 
     const form = this.formGroup.get('employeeIncomeTaxDeclarationHRA') as FormArray;
@@ -65,44 +67,38 @@ export class RentInformationComponent {
       this.nonMetroDeclaredRent = (basicSalary * 0.4);
       this.validateRentDeclared();
     }, (error) => {
+      this.toast.error(this.translate.instant('taxation.failed_to_fetch_salary'), this.translate.instant('taxation.toast.error'));
     });
 
     months.forEach((month, index) => {
-      const data = this.selectedRecord?.incomeTaxDeclarationHRA.find(item => item.month === month);
-      if (data) {
-        const formGroup = this.createEmployeeIncomeTaxDeclarationComponent(month);
-        formGroup.patchValue({
-          month: month,
-          rentDeclared: data.rentDeclared,
-          verifiedAmount: data.verifiedAmount,
-          cityType: data.cityType,
-          landlordName: data.landlordName,
-          landlordPan: data.landlordPan,
-          landlordAddress: data.landlordAddress,
-          approvalStatus: data.approvalStatus,
-          documentLink: data.documentLink,
+      const data = this.selectedRecord?.incomeTaxDeclarationHRA?.find(item => item.month === month) || {};
+      const formGroup = this.createEmployeeIncomeTaxDeclarationComponent(month);
+      formGroup.patchValue({
+        month: month,
+        rentDeclared: data.rentDeclared || null,
+        verifiedAmount: data.verifiedAmount || 0,
+        cityType: data.cityType || '',
+        landlordName: data.landlordName || '',
+        landlordPan: data.landlordPan || '',
+        landlordAddress: data.landlordAddress || '',
+        approvalStatus: data.approvalStatus || 'Pending',
+        documentLink: data.documentLink || ''
+      });
+      const attachmentsArray = formGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
+      if (data.employeeIncomeTaxDeclarationAttachments && Array.isArray(data.employeeIncomeTaxDeclarationAttachments)) {
+        data.employeeIncomeTaxDeclarationAttachments.forEach(attachment => {
+          attachmentsArray.push(this.fb.group({
+            attachmentType: attachment.attachmentType || '',
+            attachmentName: attachment.attachmentName || '',
+            attachmentSize: attachment.attachmentSize || 0,
+            extention: attachment.extention || '',
+            file: attachment.file || ''
+          }));
         });
-        // Initialize attachments FormArray with data
-        const attachmentsArray = formGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
-        if (data.employeeIncomeTaxDeclarationAttachments && Array.isArray(data.employeeIncomeTaxDeclarationAttachments)) {
-          data.employeeIncomeTaxDeclarationAttachments.forEach(attachment => {
-            attachmentsArray.push(this.fb.group({
-              attachmentType: attachment.attachmentType || '',
-              attachmentName: attachment.attachmentName || '',
-              attachmentSize: attachment.attachmentSize || 0,
-              extention: attachment.extention || '',
-              file: attachment.file || ''
-            }));
-          });
-        }
-        this.employeeIncomeTaxDeclarationHRA.push(formGroup);
-      } else {
-        const formGroup = this.createEmployeeIncomeTaxDeclarationComponent(month);
-        this.employeeIncomeTaxDeclarationHRA.push(formGroup);
       }
+      this.employeeIncomeTaxDeclarationHRA.push(formGroup);
     });
 
-    // Subscribe to value changes
     this.formGroup.get('cityType')?.valueChanges.subscribe(() => {
       this.validateRentDeclared();
     });
@@ -119,7 +115,7 @@ export class RentInformationComponent {
     const cityType = this.formGroup.get('cityType')?.value;
     const rentDeclared = this.formGroup.get('rentDeclared')?.value;
     if (!cityType || rentDeclared === null || this.metroDeclaredRent === 0 || this.nonMetroDeclaredRent === 0) {
-      return; // Skip validation if data is not ready
+      return;
     }
 
     const maxRent = cityType === 'Metro' ? this.metroDeclaredRent : this.nonMetroDeclaredRent;
@@ -146,7 +142,7 @@ export class RentInformationComponent {
 
   rentValidation(control: FormControl) {
     if (!control.parent || this.metroDeclaredRent === 0 || this.nonMetroDeclaredRent === 0) {
-      return null; // Skip validation if parent form or max rents are not available
+      return null;
     }
 
     const formGroup = control.parent as FormGroup;
@@ -170,36 +166,35 @@ export class RentInformationComponent {
   }
 
   getemployeeIncomeTaxDeclarationAttachments(index: number): FormArray {
-    const attachments = this.employeeIncomeTaxDeclaration.at(index).get('employeeIncomeTaxDeclarationAttachments') as FormArray;
-    return attachments;
+    return this.employeeIncomeTaxDeclarationHRA.at(index).get('employeeIncomeTaxDeclarationAttachments') as FormArray;
   }
 
   convertToUppercase() {
     const control = this.formGroup.get('landlordPan');
     if (control) {
-      control.setValue(control.value.toUpperCase(), { emitEvent: false });
+      control.setValue(control.value?.toUpperCase(), { emitEvent: false });
     }
   }
 
   convertToUppercaseSelectedPAN(index: number) {
-    const control = (this.formGroup.get('employeeIncomeTaxDeclarationHRA') as FormArray).at(index).get('landlordPan');
+    const control = this.employeeIncomeTaxDeclarationHRA.at(index).get('landlordPan');
     if (control) {
-      control.setValue(control.value.toUpperCase(), { emitEvent: false });
+      control.setValue(control.value?.toUpperCase(), { emitEvent: false });
     }
   }
 
   createEmployeeIncomeTaxDeclarationComponent(month): FormGroup {
     return this.fb.group({
-      rentDeclared: [null, [Validators.required, this.rentValidation.bind(this)]], // Added custom validator
+      rentDeclared: [null, [Validators.required, this.rentValidation.bind(this)]],
       month: [month, Validators.required],
-      verifiedAmount: [0, [Validators.required, Validators.min(0)]],
+      verifiedAmount: [{ value: 0, disabled: true }, [Validators.min(0)]],
       cityType: ['', Validators.required],
       landlordName: ['', Validators.required],
       landlordPan: ['', [Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/), Validators.required]],
       landlordAddress: ['', Validators.required],
       approvalStatus: ['Pending', Validators.required],
       isEditable: [false],
-      documentLink: ['', Validators.required],
+      documentLink: [''],
       section: [''],
       employeeIncomeTaxDeclarationAttachments: this.fb.array([])
     });
@@ -216,10 +211,7 @@ export class RentInformationComponent {
   }
 
   removeAttachment(rowIndex: number, attachmentIndex: number) {
-    const employeeIncomeTaxDeclarationHRA = this.formGroup.get('employeeIncomeTaxDeclarationHRA') as FormArray;
-    const selectedFormGroup = employeeIncomeTaxDeclarationHRA.at(rowIndex) as FormGroup;
-    const attachmentsArray = selectedFormGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
-
+    const attachmentsArray = this.getemployeeIncomeTaxDeclarationAttachments(rowIndex);
     if (attachmentsArray.length > attachmentIndex) {
       attachmentsArray.removeAt(attachmentIndex);
       this.toast.success(this.translate.instant('taxation.attachment_removed'), this.translate.instant('taxation.toast.success'));
@@ -235,15 +227,12 @@ export class RentInformationComponent {
     }
 
     this.convertFileToBase64(file).then(base64String => {
-      const employeeIncomeTaxDeclarationHRA = this.formGroup.get('employeeIncomeTaxDeclarationHRA') as FormArray;
-      const selectedFormGroup = employeeIncomeTaxDeclarationHRA.at(index) as FormGroup;
-      const attachments = selectedFormGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
-
-      for (let i = attachments.length - 1; i >= 0; i--) {
-        const attachmentControl = attachments.at(i) as FormGroup;
+      const attachmentsArray = this.getemployeeIncomeTaxDeclarationAttachments(index);
+      for (let i = attachmentsArray.length - 1; i >= 0; i--) {
+        const attachmentControl = attachmentsArray.at(i) as FormGroup;
         const attachmentValue = attachmentControl.value;
         if (!attachmentValue.attachmentName && !attachmentValue.attachmentType) {
-          attachments.removeAt(i);
+          attachmentsArray.removeAt(i);
         }
       }
 
@@ -258,8 +247,9 @@ export class RentInformationComponent {
         file: base64String
       });
 
-      attachments.push(attachment);
+      attachmentsArray.push(attachment);
     }).catch(error => {
+      this.toast.error(this.translate.instant('taxation.attachment_upload_failed'), this.translate.instant('taxation.toast.error'));
     });
   }
 
@@ -277,7 +267,7 @@ export class RentInformationComponent {
   }
 
   downloadAttachment(attachment: any, rowIndex: number, attachmentIndex: number) {
-    const byteCharacters = atob(attachment.file); // Decode base64
+    const byteCharacters = atob(attachment.file);
     const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -291,151 +281,185 @@ export class RentInformationComponent {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    window.URL.revokeObjectURL(url); // Clean up
+    window.URL.revokeObjectURL(url);
   }
 
-  cancelEditing(i) {
-    const control = this.formGroup.get(`employeeIncomeTaxDeclarationHRA.${i}`) as FormGroup;
-    control.patchValue(this.employeeIncomeTaxDeclarationHRA[i]);
-    control.get('isEditable').setValue(false);
+  cancelEditing(index: number) {
+    const control = this.employeeIncomeTaxDeclarationHRA.at(index) as FormGroup;
+    const originalData = this.selectedRecord?.incomeTaxDeclarationHRA.find(item => item.month === control.get('month')?.value) || {};
+    control.patchValue({
+      rentDeclared: originalData.rentDeclared || null,
+      cityType: originalData.cityType || '',
+      landlordName: originalData.landlordName || '',
+      landlordPan: originalData.landlordPan || '',
+      landlordAddress: originalData.landlordAddress || '',
+      approvalStatus: originalData.approvalStatus || 'Pending',
+      verifiedAmount: originalData.verifiedAmount || 0,
+      documentLink: originalData.documentLink || ''
+    });
+    const attachmentsArray = control.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
+    attachmentsArray.clear();
+    if (originalData.employeeIncomeTaxDeclarationAttachments && Array.isArray(originalData.employeeIncomeTaxDeclarationAttachments)) {
+      originalData.employeeIncomeTaxDeclarationAttachments.forEach(attachment => {
+        attachmentsArray.push(this.fb.group({
+          attachmentType: attachment.attachmentType || '',
+          attachmentName: attachment.attachmentName || '',
+          attachmentSize: attachment.attachmentSize || 0,
+          extention: attachment.extention || '',
+          file: attachment.file || ''
+        }));
+      });
+    }
+    control.get('isEditable')?.setValue(false);
   }
 
   selectRow(index: number) {
-    const control = this.formGroup.get(`employeeIncomeTaxDeclarationHRA.${index}`) as FormGroup;
-    control.get('isEditable').setValue(true);
+    const control = this.employeeIncomeTaxDeclarationHRA.at(index) as FormGroup;
+    if (control.get('approvalStatus')?.value === 'Approved') {
+      this.toast.error(this.translate.instant('taxation.cannot_edit_approved'), this.translate.instant('taxation.toast.error'));
+      return;
+    }
+    control.get('isEditable')?.setValue(true);
+  }
+
+  getValidationErrors(formGroup: FormGroup): string[] {
+    const errors: string[] = [];
+    const controls = ['cityType', 'rentDeclared', 'landlordName', 'landlordPan', 'landlordAddress'];
+    controls.forEach(field => {
+      const control = formGroup.get(field);
+      if (control?.invalid && control?.touched) {
+        if (control.hasError('required')) {
+          errors.push(this.translate.instant(`taxation.${field}_required`));
+        }
+        if (field === 'landlordPan' && control.hasError('pattern')) {
+          errors.push(this.translate.instant('taxation.invalid_pan'));
+        }
+        if (field === 'rentDeclared' && control.hasError('exceedLimit')) {
+          errors.push(this.translate.instant('taxation.rent_exceeds_limit'));
+        }
+      }
+    });
+    return errors;
   }
 
   onSubmissionRowData(index: number) {
-    const form = this.formGroup.get(`employeeIncomeTaxDeclarationHRA.${index}`) as FormGroup;
-    this.userService.getBasicSalaryByUserId(this.selectedRecord?.user?._id).subscribe((res: any) => {
-      const basicSalary = res.data;     
-      if (form.value.cityType === 'Metro') {
-        const declaredRent = (basicSalary * 0.5);
-        this.formGroup.patchValue({ rentDeclared: declaredRent });
-      }
-      if (form.value.cityType === 'Non-Metro') {
-        const declaredRent = (basicSalary * 0.4);
-        this.formGroup.patchValue({ rentDeclared: declaredRent });
-      }
-      const rentDeclared = this.formGroup.value.rentDeclared;
-
-      let payload = {
-        employeeIncomeTaxDeclaration: this.selectedRecord._id,
-        rentDeclared: rentDeclared,
-        month: form.value.month,
-        verifiedAmount: form.value.verifiedAmount,
-        cityType: form.value.cityType,
-        landlordName: form.value.landlordName,
-        landlordPan: form.value.landlordPan,
-        landlordAddress: form.value.landlordAddress,
-        approvalStatus: form.value.approvalStatus,
-        documentLink: 'string',
-        section: this.sectionId,
-        employeeIncomeTaxDeclarationAttachments: form.value.employeeIncomeTaxDeclarationAttachments,
-      };
-      this.taxService.updateIncTaxDecHRA(payload).subscribe(
-        (res: any) => {
-           this.toast.success(this.translate.instant('taxation.rent_information_added'), this.translate.instant('taxation.toast.success'));
-           const control = this.formGroup.get(`employeeIncomeTaxDeclarationHRA.${index}`) as FormGroup;
-           control.get('isEditable').setValue(false);
-        },
-        (err) => {
-           const errorMessage = err?.error?.message || err?.message || err 
-          || this.translate.instant('taxation.failed_to_add_rent_information')
-          ;
-          this.toast.error(errorMessage, 'Error!'); 
-        }
+    const form = this.employeeIncomeTaxDeclarationHRA.at(index) as FormGroup;
+    form.markAllAsTouched();
+    if (form.invalid) {
+      const errors = this.getValidationErrors(form);
+      this.toast.error(
+        errors.length > 0 ? errors.join(', ') : this.translate.instant('taxation.validation_failed'),
+        this.translate.instant('taxation.toast.error')
       );
+      return;
+    }
+
+    const payload = {
+      employeeIncomeTaxDeclaration: this.selectedRecord._id,
+      rentDeclared: +form.value.rentDeclared,
+      month: form.value.month,
+      verifiedAmount: 0,
+      cityType: form.value.cityType,
+      landlordName: form.value.landlordName,
+      landlordPan: form.value.landlordPan,
+      landlordAddress: form.value.landlordAddress,
+      approvalStatus: form.value.approvalStatus,
+      documentLink: form.value.documentLink || '',
+      section: this.sectionId,
+      employeeIncomeTaxDeclarationAttachments: form.value.employeeIncomeTaxDeclarationAttachments
+    };
+
+    this.taxService.updateIncTaxDecHRA(payload).subscribe({
+      next: (res: any) => {
+        this.toast.success(this.translate.instant('taxation.rent_information_added'), this.translate.instant('taxation.toast.success'));
+        form.patchValue({
+          ...res.data,
+          verifiedAmount: 0,
+          isEditable: false
+        });
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.message || err?.message || this.translate.instant('taxation.failed_to_add_rent_information');
+        this.toast.error(errorMessage, this.translate.instant('taxation.toast.error'));
+      }
     });
   }
 
   onSubmission() {
-    this.userService.getBasicSalaryByUserId(this.selectedRecord?.user?._id).subscribe((res: any) => {
-      const basicSalary = res.data;     
-      if (this.formGroup.value.cityType === 'Metro') {
-        const declaredRent = (basicSalary * 0.5);
-        this.formGroup.patchValue({ rentDeclared: declaredRent });
-      }
-      if (this.formGroup.value.cityType === 'Non-Metro') {
-        const declaredRent = (basicSalary * 0.4);
-        this.formGroup.patchValue({ rentDeclared: declaredRent });
-      }
-    });
-    const rentDeclared = this.formGroup.value.rentDeclared;
-    const cityType = this.formGroup.value.cityType;
-    const landlordName = this.formGroup.value.landlordName;
-    const landlordPan = this.formGroup.value.landlordPan;
-    const landlordAddress = this.formGroup.value.landlordAddress;
-    const approvalStatus = 'Pending';
-    const documentLink = this.formGroup.value.documentLink;
-    const verifiedAmount = 0;
-    const months = this.getMonthsArray();
-
-    const section = this.sectionId;
-    
-    this.employeeIncomeTaxDeclaration.reset();
-    months.forEach((month, index) => {
-      this.employeeIncomeTaxDeclaration.push(
-        this.fb.group({
-          rentDeclared,
-          cityType,
-          landlordName,
-          landlordPan,
-          landlordAddress,
-          approvalStatus,
-          month: month,
-          verifiedAmount,
-          employeeIncomeTaxDeclarationAttachments: [],
-          documentLink,
-          section
-        })
+    this.formGroup.markAllAsTouched();
+    const topLevelControls = ['cityType', 'rentDeclared', 'landlordName', 'landlordPan', 'landlordAddress'];
+    const invalidTopLevel = topLevelControls.some(field => this.formGroup.get(field)?.invalid);
+    if (invalidTopLevel) {
+      const errors = this.getValidationErrors(this.formGroup);
+      this.toast.error(
+        errors.length > 0 ? errors.join(', ') : this.translate.instant('taxation.validation_failed'),
+        this.translate.instant('taxation.toast.error')
       );
-    });
-    let payload = {
+      return;
+    }
+
+    const payload = {
       financialYear: this.selectedRecord.financialYear,
-      employeeIncomeTaxDeclarationHRA: this.employeeIncomeTaxDeclaration.value
+      employeeIncomeTaxDeclarationHRA: this.monthsArray.map(month => ({
+        rentDeclared: +this.formGroup.value.rentDeclared,
+        cityType: this.formGroup.value.cityType,
+        landlordName: this.formGroup.value.landlordName,
+        landlordPan: this.formGroup.value.landlordPan,
+        landlordAddress: this.formGroup.value.landlordAddress,
+        approvalStatus: 'Pending',
+        month: month,
+        verifiedAmount: 0,
+        employeeIncomeTaxDeclarationAttachments: [],
+        documentLink: '',
+        section: this.sectionId
+      }))
     };
-    this.taxService.updateIncomeTax(this.selectedRecord._id, payload).subscribe(
-      (res: any) => {
-        this.formGroup.reset();
+
+    this.taxService.updateIncomeTax(this.selectedRecord._id, payload).subscribe({
+      next: (res: any) => {
+        this.toast.success(this.translate.instant('taxation.rent_information_updated'), this.translate.instant('taxation.toast.success'));
         this.getIncomeTaXDeclarationById();
-        this.toast.success(this.translate.instant('taxation.rent_information_updated'), this.translate.instant('taxation.toast.success'));       
       },
-      (err) => {
-        const errorMessage = err?.error?.message || err?.message || err 
-          || this.translate.instant('taxation.failed_to_update_rent_information')
-          ;
-          this.toast.error(errorMessage, 'Error!'); 
+      error: (err) => {
+        const errorMessage = err?.error?.message || err?.message || this.translate.instant('taxation.failed_to_update_rent_information');
+        this.toast.error(errorMessage, this.translate.instant('taxation.toast.error'));
       }
-    );
+    });
   }
 
   getIncomeTaXDeclarationById() {
     const id = this.selectedRecord._id;
     this.taxService.getIncomeTaxById(id).subscribe((res: any) => {
       const response = res.data;
-      const months = this.getMonthsArray();
       this.formGroup.setControl('employeeIncomeTaxDeclarationHRA', this.fb.array([]));
-      months.forEach((month, index) => {
-        const data = response?.incomeTaxDeclarationHRA.find(item => item.month === month);
-        if (data) {
-          const formGroup = this.createEmployeeIncomeTaxDeclarationComponent(month);
-          formGroup.patchValue({
-            month: month,
-            rentDeclared: data.rentDeclared,
-            cityType: data.cityType,
-            landlordName: data.landlordName,
-            landlordPan: data.landlordPan,
-            landlordAddress: data.landlordAddress,
-            approvalStatus: data.approvalStatus,
-            documentLink: data.documentLink,
-            employeeIncomeTaxDeclarationAttachments: data.employeeIncomeTaxDeclarationAttachments || []
+      this.monthsArray.forEach((month, index) => {
+        const data = response?.incomeTaxDeclarationHRA?.find(item => item.month === month) || {};
+        const formGroup = this.createEmployeeIncomeTaxDeclarationComponent(month);
+        formGroup.patchValue({
+          month: month,
+          rentDeclared: data.rentDeclared || null,
+          cityType: data.cityType || '',
+          landlordName: data.landlordName || '',
+          landlordPan: data.landlordPan || '',
+          landlordAddress: data.landlordAddress || '',
+          approvalStatus: data.approvalStatus || 'Pending',
+          verifiedAmount: data.verifiedAmount || 0,
+          documentLink: data.documentLink || ''
+        });
+        const attachmentsArray = formGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
+        attachmentsArray.clear();
+        if (data.employeeIncomeTaxDeclarationAttachments && Array.isArray(data.employeeIncomeTaxDeclarationAttachments)) {
+          data.employeeIncomeTaxDeclarationAttachments.forEach(attachment => {
+            attachmentsArray.push(this.fb.group({
+              attachmentType: attachment.attachmentType || '',
+              attachmentName: attachment.attachmentName || '',
+              attachmentSize: attachment.attachmentSize || 0,
+              extention: attachment.extention || '',
+              file: attachment.file || ''
+            }));
           });
-          this.employeeIncomeTaxDeclarationHRA.push(formGroup);
-        } else {
-          const formGroup = this.createEmployeeIncomeTaxDeclarationComponent(month);
-          this.employeeIncomeTaxDeclarationHRA.push(formGroup);
         }
+        this.employeeIncomeTaxDeclarationHRA.push(formGroup);
       });
     });
   }

@@ -39,14 +39,14 @@ export class ShowApplicationComponent {
   totalRecords: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  displayedColumns: string[] = ['employeeName', 'leaveCategory', 'startDate', 'endDate', 'totalLeaveDays', 'status', 'actions'];
+  displayedColumns: string[] = ['employee', 'leaveCategory', 'startDate', 'endDate', 'totalLeaveDays', 'status', 'actions'];
   dialogRef: MatDialogRef<any> | null = null;
   allData: any[] = [];
   columns: TableColumn[] = [
     {
-      key: 'employeeName',
-      name: this.translate.instant('leave.employeeName'),
-      valueFn: (row: any) => this.getUser(row.employee) || ''
+      key: 'employee',
+      name: this.translate.instant('leave.employee'),
+      valueFn: (row: any) => `${row.employee}`
     },
     {
       key: 'leaveCategory',
@@ -82,13 +82,13 @@ export class ShowApplicationComponent {
           label: 'Approve',
           icon: 'check_circle',
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.approve || !this.checkForApproval(row)
+          hideCondition: (row: any) => !this.actionOptions.approve || !this.checkForApproval(row) || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 5))
         },
         {
           label: 'Reject',
           icon: 'person_remove',
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.reject
+          hideCondition: (row: any) => !this.actionOptions.reject || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 5))
         },
         {
           label: 'Delete',
@@ -107,13 +107,11 @@ export class ShowApplicationComponent {
   ];
 
   constructor(
-    private modalService: NgbModal,
     private leaveService: LeaveService,
     private dialog: MatDialog,
     private exportService: ExportService,
     private commonService: CommonService,
     private toast: ToastrService,
-    private cdr: ChangeDetectorRef,
     private datePipe: DatePipe,
     private translate: TranslateService
   ) {
@@ -185,7 +183,6 @@ export class ShowApplicationComponent {
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
     });
   }
 
@@ -210,11 +207,6 @@ export class ShowApplicationComponent {
         this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
       }
     });
-  }
-
-  getUser(employeeId: string) {
-    const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
 
   getCategory(categoryId: string) {
@@ -258,7 +250,7 @@ export class ShowApplicationComponent {
             leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
             return {
               ...leave,
-              employeeName: this.getUser(leave.employee),
+              employee: leave.employee.firstName + ' ' + leave.employee.lastName,
               startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
               endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
             };
@@ -333,9 +325,9 @@ export class ShowApplicationComponent {
       let valueA: any = '';
       let valueB: any = '';
 
-      if (event.active === 'employeeName') {
-        valueA = this.getUser(a.employee)?.toLowerCase() || '';
-        valueB = this.getUser(b.employee)?.toLowerCase() || '';
+      if (event.active === 'employee') {
+        valueA = (a.employee.firstName)?.toLowerCase() || '';
+        valueB = (b.employee.firstName)?.toLowerCase() || '';
       } else if (event.active === 'leaveCategory') {
         valueA = this.getCategory(a.leaveCategory)?.toLowerCase() || '';
         valueB = this.getCategory(b.leaveCategory)?.toLowerCase() || '';
@@ -363,7 +355,7 @@ export class ShowApplicationComponent {
     const lowerSearch = search.toLowerCase();
     const data = this.allData.filter((row: any) => {
       const valuesToSearch = [
-        this.getUser(row.employee),
+        row.employee?.toLowerCase(),,
         this.getCategory(row.leaveCategory),
         this.datePipe.transform(row.startDate, 'mediumDate'),
         this.datePipe.transform(row.endDate, 'mediumDate'),

@@ -1,30 +1,31 @@
 <div class="main-content contentData">
     <div class="container-fluid px-0">
-        <div class=" d-flex bg-white subMenu w-100">
-            <button class="btn rounded-pill submenuTab" *ngIf="view === Role.Admin.toLowerCase()" (click)="selectTab(1)">Setup Issues</button>
-            <button class="btn rounded-pill submenuTab" *ngIf="view === Role.Admin.toLowerCase()" (click)="selectTab(2)" [class.active]="selectedTab === 2">Pending Reports</button>
-            <button class="btn rounded-pill submenuTab" *ngIf="view === Role.Admin.toLowerCase()" (click)="selectTab(3)" [class.active]="selectedTab === 3">Notification Types</button>
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(4)" [class.active]="selectedTab === 4">Notification</button>
-            <button class="btn rounded-pill submenuTab" *ngIf="view === Role.Admin.toLowerCase()" (click)="selectTab(5)" [class.active]="selectedTab === 5"
-            [class.active]="selectedTab === 5">
-            Viewer
-          </button>
-        </div>
+        <ng-container *ngIf="view === Role.Admin.toLowerCase()">
+            <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel">
+                <a mat-tab-link routerLink="notification-types" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
+                    {{ 'alerts.notification_types' | translate }}
+                </a>
+                <a mat-tab-link routerLink="notification" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
+                    {{ 'alerts.notification' | translate }}
+                </a>
+                <a mat-tab-link routerLink="viewer" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
+                    {{ 'alerts.viewer' | translate }}
+                </a>
+            </nav>
+            <mat-tab-nav-panel #tabPanel>
+                <router-outlet></router-outlet>
+            </mat-tab-nav-panel>
+        </ng-container>
 
-        <div *ngIf="selectedTab === 1 && view === Role.Admin.toLowerCase()" class="tab-content">
-        </div>
-        <div *ngIf="selectedTab === 2 && view === Role.Admin.toLowerCase()" class="tab-content">
-        </div>
-        <div *ngIf="selectedTab === 3 && view === Role.Admin.toLowerCase()" class="tab-content">
-        <app-notification-type></app-notification-type>
-        </div>
-        <div *ngIf="selectedTab === 4" class="tab-content">
-          <app-event-notification></app-event-notification>
-          </div>
-          <div *ngIf="selectedTab === 5 && view === Role.Admin.toLowerCase()" class="tab-content">
-            <app-event-notification-viewer
-              (addNotification)="goToNotificationTabFromChild()">
-            </app-event-notification-viewer>
-            </div>
+        <ng-container *ngIf="view !== Role.Admin.toLowerCase()">
+            <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel2">
+                <a mat-tab-link routerLink="notification" routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive">
+                    {{ 'alerts.notification' | translate }} 
+                </a>
+            </nav>
+            <mat-tab-nav-panel #tabPanel2>
+                <router-outlet></router-outlet>
+            </mat-tab-nav-panel>
+        </ng-container>
     </div>
 </div>

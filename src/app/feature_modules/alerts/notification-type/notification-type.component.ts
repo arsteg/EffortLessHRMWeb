@@ -3,14 +3,15 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { EventNotificationService } from 'src/app/_services/eventNotification.Service';
 import { eventNotificationType } from 'src/app/models/eventNotification/eventNotitication';
-import { SharedModule } from 'src/app/shared/shared.Module';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-notification-type',
-  standalone: true,
-  imports: [SharedModule],
   templateUrl: './notification-type.component.html',
-  styleUrl: './notification-type.component.css'
+  styleUrls: ['./notification-type.component.css']
 })
 
 export class NotificationTypeComponent implements OnInit {
@@ -21,7 +22,28 @@ export class NotificationTypeComponent implements OnInit {
   selectedNotificationType: eventNotificationType;
   p = 1;
   searchText: string = '';
-  constructor(private fb: FormBuilder, private eventNotificationService: EventNotificationService, private toast: ToastrService) { }
+  columns: TableColumn[] = [
+    { 
+      key: 'name', 
+      name: this.translate.instant('alerts.notification-type.notificationLabel')
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('alerts.notification-type.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
+
+  constructor(private fb: FormBuilder, 
+    private eventNotificationService: EventNotificationService, 
+    private toast: ToastrService,
+    private translate: TranslateService,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     this.initForm();
@@ -46,10 +68,14 @@ export class NotificationTypeComponent implements OnInit {
   async addNotificationType() {
     try {
       await this.eventNotificationService.addEventNotificationType(this.notificationTypeForm.value).toPromise();
-      this.toast.success('Notification type added successfully!');
+      this.toast.success(this.translate.instant('alerts.notification-type.addSuccess'));
       this.getNotificationTypsList();
+      this.notificationTypeForm.reset();
     } catch (err) {
-      this.toast.error('Error adding notification type', 'Error!');
+      this.toast.error(
+        err?.error?.message || 
+        err?.message || err ||
+        this.translate.instant('alerts.notification-type.addError'), this.translate.instant('alerts.notification-type.error'));
     }
   }
 
@@ -66,29 +92,49 @@ export class NotificationTypeComponent implements OnInit {
       const updatedNotificationType = this.notificationTypeList.find(notificatioType => notificatioType._id === this.selectedNotificationType._id);
       updatedNotificationType.name = this.notificationTypeForm.value.name;
       const response = await this.eventNotificationService.updateEventNotificationType(updatedNotificationType,this.selectedNotificationType._id).toPromise();
-      this.toast.success('Notification type updated successfully!');
+      this.toast.success(this.translate.instant('alerts.notification-type.updateSuccess'));
       this.getNotificationTypsList();
+      this.notificationTypeForm.reset();
       this.isEdit = false;
     } catch (err) {
-      this.toast.error('Error updating notification type', 'Error!');
+      this.toast.error(
+        err?.error?.message || 
+        err?.message || err ||
+        this.translate.instant('alerts.notification-type.updateError'), this.translate.instant('alerts.notification-type.error'));
     }
   }
   confirmAction(): boolean {
-    return window.confirm('Are you sure you want to perform this action?');
+    return window.confirm(this.translate.instant('alerts.notification-type.confirmDelete'));
   }
+
+  openDialog(row: eventNotificationType): void {
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+          width: '400px',
+          data: row,
+        });
+    
+        dialogRef.afterClosed().subscribe((result) => {
+          if (result === 'delete') {
+            this.deleteNotificationType(row);
+          }
+          (err) => {
+            this.toast.error('Can not be Deleted', 'Error!');
+          };
+        });
+      }
 
   deleteNotificationType(status: eventNotificationType) {
     try {
-      const result = this.confirmAction();
-      if (result) {
+      // const result = this.confirmAction();
+      // if (result) {
         this.eventNotificationService.deleteEventNotificationType(status._id).subscribe((response: any) => {
-          this.toast.success('Notification type has been deleted successfully!')
+          this.toast.success(this.translate.instant('alerts.notification-type.deleteSuccess'))
           this.getNotificationTypsList();
         })
-      }
+      //}
     }
     catch (err) {
-      this.toast.error('Error deleting notification type', 'Error!');
+      this.toast.error(this.translate.instant('alerts.notification-type.deleteError'), this.translate.instant('alerts.notification-type.error'));
     }
   }
 
@@ -99,5 +145,21 @@ export class NotificationTypeComponent implements OnInit {
   onEditFocus(event: FocusEvent) {
     const input = event.target as HTMLInputElement;
     input.select();
+  }
+
+  onActionClick(event: { action: { label: string }, row: eventNotificationType }) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.editNotificationType(event.row);
+        break;
+      case 'Delete':
+        this.openDialog(event.row);
+        //this.deleteNotificationType(event.row);
+        break;
+    }
+  }
+  
+  resetForm(){
+    this.notificationTypeForm.reset();
   }
 }

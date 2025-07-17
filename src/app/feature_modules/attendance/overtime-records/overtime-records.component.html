@@ -24,26 +24,35 @@
   <table class="table table-bordered table-hover">
     <thead>
       <tr>
-        <th class="text-center" *ngIf="this.view == 'admin'">Employee</th>
+        <th class="text-center first-column" *ngIf="this.view == 'admin'">Employee</th>
         <th class="text-center" *ngFor="let date of currentMonthDates">{{ date | date: 'MMM d' }}</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let data of overtimeRecords">
-        <td *ngIf="this.view == 'admin'" class="align-middle text-truncate">
-          <span class="rounded-circle bg-primary text-center text-white me-1 d-inline-block py-1"
-            style="width: 30px; height: 30px;">
-            {{data?.User[0] | uppercase}}
-          </span>
-          {{data?.User}}
-        </td>
-
-        <td *ngFor="let date of currentMonthDates; trackBy: trackByDate">
-          <ng-container *ngIf="getOvertimeForDate(date, data.overtimeRecords) as overtimeRecord">
-            {{ convertMinutesToHours(overtimeRecord.overtimeValue) }}
-          </ng-container>
-        </td>
-      </tr>
+      @if(overtimeRecords?.length > 0) {
+        <tr *ngFor="let data of overtimeRecords">
+          <td *ngIf="this.view == 'admin'" class="first-column align-middle text-truncate">
+            <span class="rounded-circle bg-primary text-center text-white me-1 d-inline-block py-1"
+              style="width: 30px; height: 30px;">
+              {{data?.User[0] | uppercase}}
+            </span>
+            {{data?.User}}
+          </td>
+  
+          <td *ngFor="let date of currentMonthDates; trackBy: trackByDate">
+            <ng-container *ngIf="getOvertimeForDate(date, data.overtimeRecords) as overtimeRecord">
+              {{ convertMinutesToHours(overtimeRecord.overtimeValue) }}
+            </ng-container>
+          </td>
+        </tr>
+      }
+      @else {
+        <tr>
+          <td colspan="31" class="text-center">
+            <img src="./assets/images/empty-data.svg" width="200px" alt="">
+          </td>
+        </tr>
+      }
     </tbody>
   </table>
 </div>

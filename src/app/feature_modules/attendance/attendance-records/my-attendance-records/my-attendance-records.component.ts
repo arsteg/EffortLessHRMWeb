@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { AttendanceService } from 'src/app/_services/attendance.service';
+import { TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-my-attendance-records',
@@ -31,6 +32,56 @@ export class MyAttendanceRecordsComponent {
   years: number[] = [];
   selectedYear: number;
 
+  attendanceRecordsColumns: TableColumn[] = [
+    {
+      key: 'date',
+      name: 'Date',
+      valueFn: (row) => row?.date ? this.datePipe.transform(row?.date, 'mediumDate') : ''
+    },
+    {
+      key: 'checkIn',
+      name: 'CheckIn',
+      valueFn: (row) => row?.checkIn ? this.datePipe.transform(row?.checkIn, 'mediumTime') : ''
+    },
+    {
+      key: 'checkOut',
+      name: 'CheckOut',
+      valueFn: (row) => row?.checkOut ? this.datePipe.transform(row?.checkOut, 'mediumTime') : ''
+    },
+    {
+      key: 'duration',
+      name: 'Working Hours'
+    },
+    {
+      key: 'ODHours',
+      name: 'OD Hours'
+    },
+    {
+      key: 'SSLHours',
+      name: 'SL Hours'
+    },
+    {
+      key: 'afterProcessing',
+      name: 'After Processing'
+    },
+    {
+      key: 'earlyLateStatus',
+      name: 'Early/Late Status'
+    },
+    {
+      key: 'deviationHour',
+      name: 'Deviation Hours'
+    },
+    {
+      key: 'shiftTiming',
+      name: 'Shift Timings'
+    },
+    {
+      key: 'lateComingRemarks',
+      name: 'Late Coming Remarks'
+    }
+  ]
+
   constructor(private attendanceService: AttendanceService,
    private datePipe: DatePipe
   ) {  }
@@ -40,7 +91,7 @@ export class MyAttendanceRecordsComponent {
     this.getAttendanceRecords();
   }
 
-  onMonthChange(event: Event) {
+  onMonthChange(event: any) {
     this.getAttendanceRecords();
   }
 
@@ -52,7 +103,6 @@ export class MyAttendanceRecordsComponent {
   }
 
   onYearChange(event: any) {
-    this.selectedYear = event.target.value;
     this.getAttendanceRecords();
   }
 

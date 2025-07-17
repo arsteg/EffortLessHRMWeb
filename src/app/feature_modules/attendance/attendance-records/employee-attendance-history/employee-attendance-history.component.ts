@@ -77,11 +77,13 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
     },
     {
       key: 'checkIn',
-      name: 'Check In'
+      name: 'Check In',
+      valueFn: (row) => row?.checkIn ? this.datePipe.transform(row?.checkIn, 'mediumTime') : ''
     },
     {
       key: 'checkOut',
-      name: 'Check Out'
+      name: 'Check Out',
+      valueFn: (row) => row?.checkOut ? this.datePipe.transform(row?.checkOut, 'mediumTime') : ''
     },
     {
       key: 'duration',

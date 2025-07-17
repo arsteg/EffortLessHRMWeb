@@ -12,7 +12,13 @@ export class ReportsComponent implements OnInit {
   constructor(
     ) { }
 
-  ngOnInit(): void {  
+  ngOnInit(): void {
+    if (this.view === 'admin') {
+      this.selectedTab = 1;
+    } else {
+      this.selectedTab = 3;
+    }
+    this.selectTab(this.selectedTab); 
   }
   selectTab(tabIndex: number) {
     this.selectedTab = tabIndex;

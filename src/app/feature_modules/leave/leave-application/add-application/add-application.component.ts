@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CompanyService } from 'src/app/_services/company.service';
 
 @Component({
   selector: 'app-add-application',
@@ -50,6 +51,8 @@ export class AddApplicationComponent {
   checkStatus: any;
   existingLeaves: any[] = [];
   minSelectableDate: Date; // New property for minimum selectable date
+  weeklyOffDates: Date[] = [];
+  holidays: any;
 
   constructor(
     private fb: FormBuilder,
@@ -57,7 +60,7 @@ export class AddApplicationComponent {
     private leaveService: LeaveService,
     private timeLogService: TimeLogService,
     private toast: ToastrService,
-    private holidayService: HolidaysService,
+    private companyService: CompanyService,
     private translate: TranslateService
   ) {
     this.translate.setDefaultLang('en');
@@ -89,11 +92,9 @@ export class AddApplicationComponent {
   ngOnInit() {
     forkJoin({
       users: this.commonService.populateUsers(),
-      leaveCategories: this.getleaveCatgeoriesByUser()
     }).subscribe({
-      next: ({ users, leaveCategories }) => {
+      next: ({ users }) => {
         this.allAssignee = users?.data?.data;
-        this.leaveCategories = leaveCategories;
       },
       error: () => {
         this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
@@ -101,7 +102,7 @@ export class AddApplicationComponent {
     });
 
     this.populateMembers();
-
+    this.getHolidays();
     this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
       this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory?.documentRequired || false;
@@ -119,9 +120,10 @@ export class AddApplicationComponent {
           this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
         }
       });
+      this.getHolidays();
     });
 
-    if (this.currentUser.id) {
+    if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
       this.leaveService.getLeaveCategoriesByUserv1(this.currentUser.id).subscribe({
         next: (res: any) => {
           this.leaveCategories = res.data;
@@ -131,10 +133,9 @@ export class AddApplicationComponent {
           this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
         }
       });
+      this.getattendanceTemplatesByUser();
+      this.getHolidays();
     }
-
-    this.getattendanceTemplatesByUser();
-
     this.leaveApplication.get('employee')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.leaveApplication.get('leaveCategory')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
@@ -147,9 +148,8 @@ export class AddApplicationComponent {
 
   getLeaveCategoryDetails(category: any) {
     this.leaveService.getLeaveCategorById(this.leaveApplication.get('leaveCategory')?.value).subscribe((res: any) => {
-      console.log('Leave Category Details:', res?.data?.submitBefore);
       this.tempLeaveCategory = res?.data;
-      this.updateMinDate(); // Update minDate when category details are fetched
+      this.updateMinDate();
     });
   }
 
@@ -164,11 +164,9 @@ export class AddApplicationComponent {
           ...this.bsConfig,
           minDate: this.minSelectableDate
         };
-        // Validate existing dates
         this.validateDates();
       }
     } else {
-      // Reset to default (today) if no submitBefore
       this.minSelectableDate = new Date();
       this.bsConfig = {
         ...this.bsConfig,
@@ -180,6 +178,7 @@ export class AddApplicationComponent {
   validateDates() {
     const startDate = this.leaveApplication.get('startDate')?.value;
     const endDate = this.leaveApplication.get('endDate')?.value;
+    const halfDay = this.leaveApplication.get('date')?.value;
 
     if (startDate && this.minSelectableDate && moment(startDate).isBefore(moment(this.minSelectableDate))) {
       this.leaveApplication.get('startDate')?.setErrors({ submitBeforeError: true });
@@ -187,6 +186,17 @@ export class AddApplicationComponent {
     if (endDate && this.minSelectableDate && moment(endDate).isBefore(moment(this.minSelectableDate))) {
       this.leaveApplication.get('endDate')?.setErrors({ submitBeforeError: true });
     }
+    if (halfDay && this.minSelectableDate && moment(halfDay).isBefore(moment(this.minSelectableDate))) {
+      this.leaveApplication.get('date')?.setErrors({ submitBeforeError: true });
+    }
+  }
+  getHolidays() {
+    const payload = {
+      next: '', skip: '', status: '', year: new Date().getFullYear()
+    };
+    this.companyService.getHolidays(payload).subscribe((res: any) => {
+      this.holidays = res.data;
+    });
   }
 
   checkForDuplicateLeave() {
@@ -240,15 +250,15 @@ export class AddApplicationComponent {
         }
       }
     }
-
+    this.getattendanceTemplatesByUser();
     this.numberOfLeaveAppliedForSelectedCategory = 0;
     this.getAppliedLeaveCount(this.leaveApplication.value.employee, this.tempLeaveCategory.leaveCategory._id);
   }
 
   addHalfDayEntry() {
-    this.halfDays.push(this.fb.group({ 
-      date: ['', Validators.required], 
-      dayHalf: ['', Validators.required] 
+    this.halfDays.push(this.fb.group({
+      date: ['', Validators.required],
+      dayHalf: ['', Validators.required]
     }));
   }
 
@@ -262,14 +272,36 @@ export class AddApplicationComponent {
     );
   }
 
+
+  weeklyOffDays: string[] = []; // Store weekly off days (e.g., ["Sunday", "Saturday"])
+
   getattendanceTemplatesByUser() {
-    this.leaveService.getattendanceTemplatesByUser(this.currentUser.id).subscribe({
+    let userId = this.portalView === 'user' ? this.currentUser.id : this.leaveApplication.get('employee')?.value;
+    if (!userId) {
+      return;
+    }
+    this.leaveService.getattendanceTemplatesByUser(userId).subscribe({
       next: (res: any) => {
-        if (res.status == "success") {
-          let attandanceData = res.data;
-          attandanceData.weeklyOfDays.forEach(day => {
-            if (day != "false") {
-              this.dayCounts[day] = 0;
+        if (res.status === 'success') {
+          let attendanceData = res.data[0].attendanceTemplate;
+          this.weeklyOffDays = [];
+          this.dayCounts = {};
+
+          // Map short day names to full names for moment.js compatibility
+          const dayNameMap: { [key: string]: string } = {
+            'Sun': 'Sunday',
+            'Sat': 'Saturday',
+            'Mon': 'Monday',
+            'Tue': 'Tuesday',
+            'Wed': 'Wednesday',
+            'Thu': 'Thursday',
+            'Fri': 'Friday'
+          };
+
+          attendanceData.weeklyOfDays.forEach((day: string) => {
+            if (day !== 'false' && dayNameMap[day]) {
+              this.weeklyOffDays.push(dayNameMap[day]);
+              this.dayCounts[dayNameMap[day]] = 0;
             }
           });
         }
@@ -280,30 +312,67 @@ export class AddApplicationComponent {
     });
   }
 
-  populateMembers() {
-    this.members = [];
-    let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    this.members.push({ id: currentUser.id, name: this.translate.instant('leave.userMe'), email: currentUser.email });
-    this.member = currentUser;
-    this.timeLogService.getTeamMembers(this.member.id).subscribe({
-      next: response => {
-        this.timeLogService.getusers(response.data).subscribe({
-          next: result => {
-            result.data.forEach(user => {
-              if (user.id != currentUser.id) {
-                this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
-              }
-            });
-          },
-          error: () => {
-            this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
-          }
-        });
-      },
-      error: () => {
-        this.toast.error(this.translate.instant('leave.errorFetchingTeamMembers'));
+  getWeeklyOffDates(startDate: Date, endDate: Date): Date[] {
+    if (!startDate || !endDate || !this.weeklyOffDays.length) {
+      return [];
+    }
+
+    const weeklyOffDates: Date[] = [];
+    const currentDate = new Date(startDate);
+    const end = new Date(endDate);
+
+    while (currentDate <= end) {
+      const dayName = moment(currentDate).format('dddd');
+      if (this.weeklyOffDays.includes(dayName)) {
+        weeklyOffDates.push(new Date(currentDate));
       }
-    });
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return weeklyOffDates;
+  }
+  weeklyOffDateFilter = (date: Date | null): boolean => {
+    if (!date) {
+      return true; // Allow if no date
+    }
+    // Check for weekly off days
+    const dayName = moment(date).format('dddd'); // e.g., "Sunday"
+    if (this.weeklyOffDays.includes(dayName)) {
+      return false; // Disable weekly off days
+    }
+    const formattedDate = this.stripTime(date);
+    const isHoliday = this.holidays.some(holiday =>
+      this.stripTime(new Date(holiday.date)) === formattedDate
+    );
+    return !isHoliday;
+  };
+
+  populateMembers() {
+    if (this.portalView === 'user') {
+      this.members = [];
+      let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      this.members.push({ id: currentUser.id, name: this.translate.instant('leave.userMe'), email: currentUser.email });
+      this.member = currentUser;
+      this.timeLogService.getTeamMembers(this.member.id).subscribe({
+        next: response => {
+          this.timeLogService.getusers(response.data).subscribe({
+            next: result => {
+              result.data.forEach(user => {
+                if (user.id != currentUser.id) {
+                  this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+                }
+              });
+            },
+            error: () => {
+              this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
+            }
+          });
+        },
+        error: () => {
+          this.toast.error(this.translate.instant('leave.errorFetchingTeamMembers'));
+        }
+      });
+    }
   }
 
   onMemberSelectionChange(member: any) {
@@ -405,20 +474,17 @@ export class AddApplicationComponent {
   }
 
   submitLeaveApplication(payload: any) {
-    this.leaveService.addLeaveApplication(payload).subscribe({
-      next: (res: any) => {
-        this.leaveApplication.reset();
-        if (res.data != null) {
-          this.toast.success(this.translate.instant('leave.successAddLeave'));
-          this.leaveApplicationRefreshed.emit(res.data);
-        } else {
-          this.toast.error(this.translate.instant('leave.errorAddLeave', { message: res.message }));
-        }
-      },
-      error: () => {
-        this.toast.error(this.translate.instant('leave.errorAddLeaveGeneric'));
+    this.leaveService.addLeaveApplication(payload).subscribe((res: any) => {
+      this.toast.success(this.translate.instant('leave.successAddLeave'));
+      this.leaveApplicationRefreshed.emit(res.data);
+      this.leaveApplication.reset();
+
+    },
+      (error) => {
+        const errorMessage = error || this.translate.instant('leave.errorAddLeaveGeneric');
+        this.toast.error(errorMessage);
       }
-    });
+    );
   }
 
   onFileSelected(event: any) {

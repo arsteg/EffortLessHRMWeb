@@ -15,7 +15,7 @@
 </div>
 
 <ng-template #addModal let-modal>
-    <app-create-leave [changeMode]="changeMode" [selectedTemplate]="selectedTemplate"
+    <app-create-leave [changeMode]="changeMode" [templates]="allData" [selectedTemplate]="selectedTemplate"
         (changeStep)="onChangeStep($event)" (close)="onClose($event)" *ngIf="step == 1"
         [isEdit]="isEdit"></app-create-leave>
     <app-add-category-leave *ngIf="step == 2" [isEdit]="isEdit" (close)="onClose($event)"

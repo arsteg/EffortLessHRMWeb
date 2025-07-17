@@ -40,6 +40,9 @@ export class AddCategoryLeaveComponent {
   ) {}
 
   ngOnInit() {
+    if(!this.isEdit) {
+      this.selectedTemplate = this.leaveService.selectedTemplate.getValue();
+    }
     this.firstForm = this._formBuilder.group({
       leaveCategories: this._formBuilder.array([]),
       leaveTemplate: [this.selectedTemplate?._id || this.leaveService.selectedTemplate.getValue()._id]
@@ -127,11 +130,11 @@ export class AddCategoryLeaveComponent {
       category.users = category.users.map(user => ({ user }));
     });
     this.leaveService.updateLeaveTemplateCategories(formData).subscribe((res: any) => {
-      this.toast.success(this.translate.instant('leave.templateCategories.successTemplateCategoriesUpdated'));
+      this.toast.success(this.translate.instant('leave.successTemplateCategoriesUpdated'));
       this.updateLeaveTemplateTable.emit();
       this.closeModal();
     }, err => {
-      this.toast.error(err?.message || this.translate.instant('leave.templateCategories.errorTemplateCategoriesUpdated'));
+      this.toast.error(err?.message || this.translate.instant('leave.errorTemplateCategoriesUpdated'));
     });
   }
 

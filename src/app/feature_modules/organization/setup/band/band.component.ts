@@ -108,7 +108,7 @@ export class BandComponent {
       if (!this.isEdit) {
         this.companyService.addBand(this.bandForm.value).subscribe(res => {
           this.getBands();
-          this.toast.success(this.translate.instant('organization.setup.band_added'), this.translate.instant('toast.success'));
+          this.toast.success(this.translate.instant('organization.setup.band_added'));
           this.isSubmitting = false;
           this.bandForm.reset();
           this.dialogRef.close(true);
@@ -123,7 +123,7 @@ export class BandComponent {
       // updateZone
       else if (this.isEdit) {
         this.companyService.updateBand(this.selectedRecord._id, this.bandForm.value).subscribe(res => {
-          this.toast.success(this.translate.instant('organization.setup.band_updated'), this.translate.instant('toast.success'));
+          this.toast.success(this.translate.instant('organization.setup.band_updated'));
       
           this.getBands();
           this.bandForm.reset();
@@ -179,7 +179,7 @@ export class BandComponent {
   deleteBand(id: string) {
     this.companyService.deleteBand(id).subscribe((res: any) => {
       this.getBands();
-      this.toast.success(this.translate.instant('organization.setup.band_deleted'), this.translate.instant('toast.success'));
+      this.toast.success(this.translate.instant('organization.setup.band_deleted'));
       
     },
       (err) => {

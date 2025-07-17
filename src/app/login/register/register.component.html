@@ -32,28 +32,34 @@
           autocomplete="off">
           <div class="row mb-2">
             <div class="col-md-6">
-              <mat-form-field class="w-100">
+              <mat-form-field class="w-100" [class.mb-3]="!registerNewUser.get('firstName').valid && registerNewUser.get('firstName').touched">
                 <mat-label>{{'login.first_name' | translate }}</mat-label>
-                <input matInput id="firstName" type="text" formControlName="firstName" name="firstName" required
+                <input matInput id="firstName" type="text" formControlName="firstName" name="firstName"   maxlength="15" required
                   autofocus>
-                <mat-error *ngIf="!registerNewUser.get('firstName').valid && registerNewUser.get('firstName').touched">
+                <mat-error class="mb-3" *ngIf="!registerNewUser.get('firstName').valid && registerNewUser.get('firstName').touched">
                   <span *ngIf="registerNewUser.get('firstName').errors?.['required']">{{ 'login.first_name_required' |
                     translate }}</span>
                   <span *ngIf="registerNewUser.get('firstName').errors?.['invalidName']">{{ 'login.first_name_invalid' |
                     translate }}</span>
-                </mat-error>
+                       <span *ngIf="registerNewUser.get('firstName')?.hasError('minlength')">
+                        {{ 'login.first_name_too_short' | translate }}
+                      </span>
+                </mat-error>  
               </mat-form-field>
             </div>
 
             <div class="col-md-6">
-              <mat-form-field class="w-100">
+              <mat-form-field class="w-100" [class.mb-3]="!registerNewUser.get('lastName').valid && registerNewUser.get('lastName').touched">
                 <mat-label>{{'login.last_name' | translate }}</mat-label>
-                <input matInput id="lastName" type="text" formControlName="lastName" name="lastName" required autofocus>
+                <input matInput id="lastName" type="text" formControlName="lastName" name="lastName"  maxlength="15" required autofocus>
                 <mat-error *ngIf="!registerNewUser.get('lastName').valid && registerNewUser.get('lastName').touched">
                   <span *ngIf="registerNewUser.get('lastName').errors?.['required']">{{ 'login.last_name_required' |
                     translate }}</span>
                   <span *ngIf="registerNewUser.get('lastName').errors?.['invalidName']">{{ 'login.last_name_invalid' |
                     translate }}</span>
+                     <span *ngIf="registerNewUser.get('lastName')?.hasError('minlength')">
+                      {{ 'login.last_name_too_short' | translate }}
+                    </span>
                 </mat-error>
               </mat-form-field>
             </div>
@@ -66,22 +72,25 @@
                 <input matInput id="email" type="email" name="email" formControlName="email" required email>
                 <mat-error *ngIf="!registerNewUser.get('email').valid && registerNewUser.get('email').touched">
                   <span *ngIf="registerNewUser.get('email').errors?.['required']">{{ 'login.email_required' | translate
-                    }}</span>
-                  <span *ngIf="registerNewUser.get('email').errors?.['email']">{{ 'login.email_invalid' | translate
-                    }}</span>
+                    }}</span>                
+                      <span *ngIf="registerNewUser.get('email')?.hasError('invalidEmail')">
+                        {{ 'login.email_invalid' | translate
+                    }}
+                      </span>
                 </mat-error>
               </mat-form-field>
             </div>
 
             <!-- Generate/Resend OTP button -->
             <div class="col-md-4">
-              <button *ngIf="!otpGenerated" type="button" mat-flat-button (click)="onGenerateOTP()">
+              <button *ngIf="!otpGenerated" type="button" mat-flat-button (click)="onGenerateOTP()"
+              [disabled]="!registerNewUser.get('email').valid">
                 <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                 {{'login.generate_otp' | translate }}
               </button>
 
-              <button *ngIf="otpGenerated && loading == false" type="button" mat-flat-button
-                (click)="onReGenerateOTP()">
+              <button *ngIf="otpGenerated && loading == false" type="button" mat-flat-button (click)="onReGenerateOTP()"
+              [disabled]="!registerNewUser.get('email').valid">
                 {{ 'login.resend_otp' | translate }}
               </button>
             </div>
@@ -125,7 +134,7 @@
           </div>
 
 
-          <mat-form-field class="w-100 mb-2">
+          <mat-form-field class="w-100 mb-2" [class.mb-4]="!registerNewUser.get('password').valid && registerNewUser.get('password').touched">
             <mat-label>{{ 'login.password' | translate }}</mat-label>
             <input matInput [type]="hidePassword ? 'password' : 'text'" id="password" formControlName="password"
               name="password" required>
@@ -136,10 +145,10 @@
             <mat-error *ngIf="registerNewUser.get('password')?.touched && registerNewUser.get('password')?.invalid">
               <span *ngIf="registerNewUser.get('password')?.errors?.['required']">
                 {{ 'login.password_required' | translate }}
-              </span>
-              <span *ngIf="registerNewUser.get('password')?.errors?.['minlength']">
-                {{ 'login.password_minlength' | translate }}
-              </span>
+              </span>             
+              <span *ngIf="registerNewUser.get('password')?.errors?.['weakPassword']">
+                {{ 'login.password_format'
+                | translate }}   </span>
             </mat-error>
           </mat-form-field>
 
@@ -151,12 +160,8 @@
               [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirmPassword" type="button">
               <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
-            <mat-error
-              *ngIf="registerNewUser.get('passwordConfirm')?.touched && registerNewUser.get('passwordConfirm')?.invalid">
-              <span *ngIf="registerNewUser.get('passwordConfirm')?.errors?.['required']">{{ 'login.password_required' |
-                translate }}</span>
-              <span *ngIf="registerNewUser.get('passwordConfirm')?.errors?.['notMatching']">{{ 'login.password_mismatch'
-                | translate }}</span>
+            <mat-error *ngIf="registerNewUser.hasError('notMatching') && registerNewUser.get('passwordConfirm')?.touched">
+              {{ 'login.password_mismatch' | translate }}
             </mat-error>
           </mat-form-field>
 

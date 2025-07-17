@@ -1,7 +1,7 @@
 import { Component, ComponentFactoryResolver, EventEmitter, Output, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { TaxCalculatorComponent } from './tax-calculator/tax-calculator.component';
 import { UserService } from 'src/app/_services/users.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
@@ -58,7 +58,7 @@ export class TaxComponent {
     private toast: ToastrService
   ) {
     this.taxDeclarationForm = this.fb.group({
-      financialYear: [''],
+      financialYear: ['', Validators.required],
       user: [''],
       employeeIncomeTaxDeclarationComponent: [],
       employeeIncomeTaxDeclarationHRA: []
@@ -72,10 +72,7 @@ export class TaxComponent {
 
   ngOnInit() {
     this.getSections();
-    this.userService.getTaxDeclarationByUserId(this.user.id, { skip: '', next: '' }).subscribe((res: any) => {
-      this.taxDeclarations = res.data;
-      this.totalRecords = res.total;
-    });
+   this.getTaxDeclarationList();
     this.userService.getStatutoryByUserId(this.user.id).subscribe((res: any) => {
       this.userTaxRegime = res?.data?.taxRegime;
       this.userStatutoryDetails = res?.data;
@@ -84,6 +81,12 @@ export class TaxComponent {
       this.userSalaryDetails = res?.data;
      });
      
+  }
+  getTaxDeclarationList(){
+    this.userService.getTaxDeclarationByUserId(this.user.id, { skip: '', next: '' }).subscribe((res: any) => {
+      this.taxDeclarations = res.data;
+      this.totalRecords = res.total;
+    });
   }
   handleAddTaxDeclaration() {
     if (this.userTaxRegime !== 'Old Regime') {
@@ -298,7 +301,13 @@ export class TaxComponent {
     });
   }
 
-  taxDeclaration() {
+  taxDeclaration() {   
+    
+    this.taxDeclarationForm.markAllAsTouched();
+  
+    if (this.taxDeclarationForm.invalid) {
+      return;
+    }
     const payload = {
       financialYear: this.taxDeclarationForm.value.financialYear,
       user: this.user.id,
@@ -308,7 +317,7 @@ export class TaxComponent {
     this.userService.getStatutoryByUserId(this.user.id).subscribe((res: any) => {
       if (res.data?.taxRegime === 'Old Regime') {
         this.taxService.addIncomeTax(payload).subscribe((res: any) => {
-            this.taxDeclarations.push(res.data);
+           this.getTaxDeclarationList();
             this.toast.success(this.translate.instant('taxation.tax_declaraton_added'), this.translate.instant('taxation.toast.success'));
             this.dialogRef.close();
           },

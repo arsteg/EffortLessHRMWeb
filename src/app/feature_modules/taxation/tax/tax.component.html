@@ -59,6 +59,10 @@
                     <mat-option value="" disabled selected> Select Years</mat-option>
                     <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
                 </mat-select>
+                <mat-error
+                *ngIf="(taxDeclarationForm.get('financialYear')?.touched || taxDeclarationForm.get('financialYear')?.dirty) && taxDeclarationForm.get('financialYear')?.invalid">
+                Please select financial year
+            </mat-error>
             </mat-form-field>
     
             <div class="d-flex justify-content-between mt-3" mat-dialog-actions>

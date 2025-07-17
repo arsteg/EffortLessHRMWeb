@@ -34,11 +34,11 @@
                                 <tr>
                                     <th>Component Name</th>
                                     <th>Applied Amount</th>
-                                    <th>Approved Amount</th>
+                                    <th>Approved Amount <span class="text-danger">*</span></th>
                                     <th>Maximum Amount</th>
                                     <th>Attachments</th>
-                                    <th>Remarks</th>
-                                    <th>Approval Status</th>
+                                    <th>Remarks <span class="text-danger">*</span></th>
+                                    <th>Approval Status <span class="text-danger">*</span></th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -48,9 +48,25 @@
                                     <td>{{component?.appliedAmount}}</td>
                                     <td>
                                         <ng-container *ngIf="editingComponent === component; else nonEditableApproved">
-                                            <mat-form-field class="densed-field" style="width: 100px">
-                                                <input matInput type="number" [(ngModel)]="component.approvedAmount">
-                                            </mat-form-field>
+                                            <form [formGroup]="componentForm">
+                                                <mat-form-field class="densed-field" style="width: 100px">
+                                                    <input matInput type="number" formControlName="approvedAmount">
+                                                    <mat-error *ngIf="componentForm.get('approvedAmount')?.touched && componentForm.get('approvedAmount')?.errors">
+                                                        <span *ngIf="componentForm.get('approvedAmount')?.hasError('required')">
+                                                            {{ 'taxation.approve_amount_required' | translate }}
+                                                        </span>
+                                                        <span *ngIf="componentForm.get('approvedAmount')?.hasError('min')">
+                                                            {{ 'taxation.approve_amount_positive' | translate }}
+                                                        </span>
+                                                        <span *ngIf="componentForm.get('approvedAmount')?.hasError('exceedsApplied')">
+                                                            {{ 'taxation.approved_less_than_applied' | translate }}
+                                                        </span>
+                                                        <span *ngIf="componentForm.get('approvedAmount')?.hasError('exceedsMaximum')">
+                                                            {{ 'taxation.approved_less_than_maximum' | translate }}
+                                                        </span>
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </form>
                                         </ng-container>
                                         <ng-template #nonEditableApproved>
                                             {{component?.approvedAmount}}
@@ -60,16 +76,22 @@
                                     <td>
                                         <ng-container
                                             *ngFor="let file of component?.employeeIncomeTaxDeclarationAttachments">
-                                            <a [href]="file?.documentLink" targer="_blank" style="cursor: pointer;">
+                                            <a [href]="file?.documentLink" target="_blank" style="cursor: pointer;">
                                                 {{ file?.attachmentName }}
                                             </a>
                                         </ng-container>
                                     </td>
                                     <td>
                                         <ng-container *ngIf="editingComponent === component; else nonEditableRemark">
-                                            <mat-form-field class="densed-field" style="width: 100px">
-                                                <input matInput type="text" [(ngModel)]="component.remark">
-                                            </mat-form-field>
+                                            <form [formGroup]="componentForm">
+                                                <mat-form-field class="densed-field" style="width: 100px">
+                                                    <input matInput type="text" formControlName="remark">                                                
+                                                    <mat-error
+                                                    *ngIf="componentForm.get('remark')?.hasError('required') && (componentForm.get('remark')?.touched || componentForm.get('remark')?.dirty)">
+                                                    {{ 'taxation.remark_required' | translate }}
+                                                  </mat-error>
+                                                </mat-form-field>
+                                            </form>
                                         </ng-container>
                                         <ng-template #nonEditableRemark>
                                             {{component?.remark}}
@@ -77,13 +99,18 @@
                                     </td>
                                     <td>
                                         <ng-container *ngIf="editingComponent === component; else nonEditableStatus">
-                                            <mat-form-field class="densed-field" style="width: 100px">
-                                                <mat-select [value]="component?.approvalStatus"
-                                                    (selectionChange)="onStatusChange(element, 'component', component, $event)">
-                                                    <mat-option value="Approved">Approved</mat-option>
-                                                    <mat-option value="Rejected">Rejected</mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
+                                            <form [formGroup]="componentForm">
+                                                <mat-form-field class="densed-field" style="width: 100px">
+                                                    <mat-select formControlName="approvalStatus">
+                                                        <mat-option value="Pending">Pending</mat-option>
+                                                        <mat-option value="Approved">Approved</mat-option>
+                                                        <mat-option value="Rejected">Rejected</mat-option>
+                                                    </mat-select>
+                                                    <mat-error *ngIf="componentForm.get('approvalStatus')?.touched && componentForm.get('approvalStatus')?.hasError('required')">
+                                                        {{ 'taxation.approval_status_required' | translate }}
+                                                    </mat-error>
+                                                </mat-form-field>
+                                            </form>
                                         </ng-container>
                                         <ng-template #nonEditableStatus>
                                             {{component?.approvalStatus}}
@@ -93,22 +120,16 @@
                                         <ng-container *ngIf="editingComponent === component; else showEdit">
                                             <button mat-icon-button (click)="saveEditing('component', component)"
                                                 class="success-btn">
-                                                <mat-icon>
-                                                    check
-                                                </mat-icon>
+                                                <mat-icon>check</mat-icon>
                                             </button>
                                             <button mat-icon-button (click)="cancelEditing('component')"
                                                 class="delete-btn">
-                                                <mat-icon>
-                                                    close
-                                                </mat-icon>
+                                                <mat-icon>close</mat-icon>
                                             </button>
                                         </ng-container>
                                         <ng-template #showEdit>
                                             <button mat-icon-button (click)="startEditing('component', component)">
-                                                <mat-icon>
-                                                    edit
-                                                </mat-icon>
+                                                <mat-icon>edit</mat-icon>
                                             </button>
                                         </ng-template>
                                     </td>
@@ -120,7 +141,6 @@
 
                     <!-- HRA Section -->
                     <div class="expandable-section mt-3" *ngIf="element.incomeTaxDeclarationHRA?.length">
-
                         <div class="d-flex align-items-center justify-content-between mb-2">
                             <button mat-stroked-button extended (click)="toggleHRA(element)" color="primary">
                                 IT Declarations HRA <mat-icon>{{expandedHRA !== element ? 'keyboard_arrow_down' :
@@ -145,11 +165,11 @@
                                         <th>Month</th>
                                         <th>CityType</th>
                                         <th>Rent Declared</th>
-                                        <th>Verified Amount</th>
+                                        <th>Verified Amount <span class="text-danger">*</span></th>
                                         <th>Landlord Name</th>
                                         <th>Landlord PAN</th>
                                         <th>Attachments</th>
-                                        <th>Approval Status</th>
+                                        <th>Approval Status <span class="text-danger">*</span></th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -160,9 +180,22 @@
                                         <td>{{hra?.rentDeclared}}</td>
                                         <td>
                                             <ng-container *ngIf="editingHRA === hra; else nonEditableVerified">
-                                                <mat-form-field class="densed-field" style="width: 100px">
-                                                    <input type="number" matInput [(ngModel)]="hra.verifiedAmount">
-                                                </mat-form-field>
+                                                <form [formGroup]="hraForm">
+                                                    <mat-form-field class="densed-field" style="width: 100px">
+                                                        <input matInput type="number" formControlName="verifiedAmount">
+                                                        <mat-error *ngIf="hraForm.get('verifiedAmount')?.touched && hraForm.get('verifiedAmount')?.errors">
+                                                            <span *ngIf="hraForm.get('verifiedAmount')?.hasError('required')">
+                                                                {{ 'taxation.verified_amount_required' | translate }}
+                                                            </span>
+                                                            <span *ngIf="hraForm.get('verifiedAmount')?.hasError('min')">
+                                                                {{ 'taxation.verified_amount_positive' | translate }}
+                                                            </span>
+                                                            <span *ngIf="hraForm.get('verifiedAmount')?.hasError('exceedsRentDeclared')">
+                                                                {{ 'taxation.verified_less_than_rent' | translate }}
+                                                            </span>
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </form>
                                             </ng-container>
                                             <ng-template #nonEditableVerified>
                                                 {{hra?.verifiedAmount}}
@@ -180,13 +213,18 @@
                                         </td>
                                         <td>
                                             <ng-container *ngIf="editingHRA === hra; else nonEditableHRAStatus">
-                                                <mat-form-field class="densed-field" style="width: 100px">
-                                                    <mat-select [value]="hra?.approvalStatus"
-                                                        (selectionChange)="onStatusChange(element, 'hra', hra, $event)">
-                                                        <mat-option value="Approved">Approved</mat-option>
-                                                        <mat-option value="Rejected">Rejected</mat-option>
-                                                    </mat-select>
-                                                </mat-form-field>
+                                                <form [formGroup]="hraForm">
+                                                    <mat-form-field class="densed-field" style="width: 100px">
+                                                        <mat-select formControlName="approvalStatus">
+                                                            <mat-option value="Pending">Pending</mat-option>
+                                                            <mat-option value="Approved">Approved</mat-option>
+                                                            <mat-option value="Rejected">Rejected</mat-option>
+                                                        </mat-select>
+                                                        <mat-error *ngIf="hraForm.get('approvalStatus')?.touched && hraForm.get('approvalStatus')?.hasError('required')">
+                                                            {{ 'taxation.approval_status_required' | translate }}
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </form>
                                             </ng-container>
                                             <ng-template #nonEditableHRAStatus>
                                                 {{hra?.approvalStatus}}
@@ -196,22 +234,16 @@
                                             <ng-container *ngIf="editingHRA === hra; else showEditHRA">
                                                 <button mat-icon-button (click)="saveEditing('hra', hra)"
                                                     class="success-btn">
-                                                    <mat-icon>
-                                                        check
-                                                    </mat-icon>
+                                                    <mat-icon>check</mat-icon>
                                                 </button>
                                                 <button mat-icon-button (click)="cancelEditing('hra')"
                                                     class="delete-btn">
-                                                    <mat-icon>
-                                                        close
-                                                    </mat-icon>
+                                                    <mat-icon>close</mat-icon>
                                                 </button>
                                             </ng-container>
                                             <ng-template #showEditHRA>
                                                 <button mat-icon-button (click)="startEditing('hra', hra)">
-                                                    <mat-icon>
-                                                        edit
-                                                    </mat-icon>
+                                                    <mat-icon>edit</mat-icon>
                                                 </button>
                                             </ng-template>
                                         </td>
@@ -220,8 +252,7 @@
                             </table>
                         </div>
                     </div>
-                    <p *ngIf="!element.incomeTaxDeclarationHRA?.length" class="p-2 fw-bold m-0">No HRA data available!
-                    </p>
+                    <p *ngIf="!element.incomeTaxDeclarationHRA?.length" class="p-2 fw-bold m-0">No HRA data available!</p>
                 </div>
             </div>
         </td>

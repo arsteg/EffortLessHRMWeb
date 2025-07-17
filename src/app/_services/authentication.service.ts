@@ -88,15 +88,11 @@ export class AuthenticationService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/forgotpassword`, { email: email }, { headers: queryHeaders });
 
   }
-  resetPassword(password, confirm_password, token) {
-    var qureyParams = new HttpParams();
-    qureyParams.append("token", token);
-    var queryHeaders = new HttpHeaders();
-    queryHeaders.append('Content-Type', 'application/json');
-    queryHeaders.append('Access-Control-Allow-Origin', '*');
-    return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetPassword/${token}`, { password: password, passwordConfirm: confirm_password }, { headers: queryHeaders });
+  resetPassword(password, confirm_password, token) : Observable<any> {
+    const httpOptions = this.defaultHttpOptions();
+    return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetPassword/${token}`, {password: password, passwordConfirm: confirm_password }, httpOptions);
   }
-  
+ 
   login(user) {
     const httpOptions = this.defaultHttpOptions();
     const loginTime = new Date().getTime();

@@ -1,545 +1,486 @@
 <div class="d-none d-md-block">
-  <div class="d-flex justify-content-end end-0">
-    <button
-      mat-flat-button
-      class="end-0"
-      color="primary"
-      (click)="isEdit = false; open(addModal)"
-    >
-      {{ "leave.addButton" | translate }}
-    </button>
-  </div>
+    <div class="d-flex justify-content-end end-0">
+        <button mat-flat-button class="end-0" color="primary" (click)="isEdit = false; open(addModal)">
+            {{ "leave.addButton" | translate }}
+        </button>
+    </div>
 </div>
-<hrm-table
-  [data]="tableService.dataSource.data"
-  [isServerSide]="true"
-  [columns]="columns"
-  [showExport]="'csv'"
-  [showSearch]="true"
-  [totalItems]="tableService.totalRecords"
-  (actionClicked)="handleAction($event, addModal)"
-  (pageChanged)="onPageChange($event)"
-  (sortChanged)="onSortChange($event)"
-  (searchChanged)="onSearchChange($event)"
->
+<hrm-table [data]="allData" [isServerSide]="true" [columns]="columns" [showExport]="'csv'" [showSearch]="true"
+    [totalItems]="totalRecords" (actionClicked)="handleAction($event, addModal)" (pageChanged)="onPageChange($event)"
+    (sortChanged)="onSortChange($event)" (searchChanged)="onSearchChange($event)">
 </hrm-table>
 
 <ng-template #addModal let-modal>
-  <div class="d-flex align-items-center justify-content-between">
-    <h1 mat-dialog-title>
-      {{
-        !isEdit
-          ? ("leave.addLeaveCategory" | translate)
-          : ("leave.updateLeaveCategory" | translate)
-      }}
-    </h1>
-    <button mat-icon-button (click)="close();" class="me-4">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-
-  <form [formGroup]="categoryForm" (ngSubmit)="onSubmission()">
-    <div mat-dialog-content style="overflow-x: hidden;">
-        <div class="row m-0">
-            <div class="form-group col-md-6 my-2">
-                <mat-form-field class="w-100">
-                <mat-label>{{ "leave.chooseLeaveType" | translate }}</mat-label>
-                <mat-select formControlName="leaveType">
-                    <mat-option value="" disabled>{{
-                    "leave.selectLeaveType" | translate
-                    }}</mat-option>
-                    <mat-option value="general-leave">{{
-                    "leave.generalLeave" | translate
-                    }}</mat-option>
-                    <mat-option value="annual-non-accrual-leave">{{
-                    "leave.annualNonAccrualLeave" | translate
-                    }}</mat-option>
-                </mat-select>
-                <mat-error
-                    *ngIf="
-                    categoryForm.get('leaveType')?.invalid &&
-                    categoryForm.get('leaveType')?.touched
-                    "
-                >
-                    {{ "leave.errorSelectLeaveType" | translate }}
-                </mat-error>
-                </mat-form-field>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <mat-form-field class="w-100">
-                <mat-label>{{ "leave.provideLabel" | translate }}</mat-label>
-                <input
-                    matInput
-                    type="text"
-                    [placeholder]="'leave.labelPlaceholder' | translate"
-                    formControlName="label"
-                />
-                <mat-error
-                    *ngIf="
-                    categoryForm.get('label')?.invalid &&
-                    categoryForm.get('label')?.touched
-                    "
-                >
-                    {{ "leave.errorLabel" | translate }}
-                </mat-error>
-                </mat-form-field>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <mat-form-field class="w-100">
-                <mat-label>{{ "leave.provideAbbreviation" | translate }}</mat-label>
-                <input
-                    matInput
-                    type="text"
-                    [placeholder]="'leave.abbreviationPlaceholder' | translate"
-                    formControlName="abbreviation"
-                />
-                <mat-error
-                    *ngIf="
-                    categoryForm.get('abbreviation')?.invalid &&
-                    categoryForm.get('abbreviation')?.touched
-                    "
-                >
-                    {{ "leave.errorAbbreviation" | translate }}
-                </mat-error>
-                </mat-form-field>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label
-                >{{ "leave.canEmployeeApply" | translate }}
-                <span class="text-danger">*</span></label
-                >
-                <div class="d-flex">
-                <mat-radio-group formControlName="canEmployeeApply">
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-                <div
-                *ngIf="
-                    categoryForm.get('canEmployeeApply')?.invalid &&
-                    categoryForm.get('canEmployeeApply')?.touched
-                "
-                >
-                <small class="text-danger">{{
-                    "leave.errorCanEmployeeApply" | translate
-                }}</small>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label
-                >{{ "leave.halfDayOption" | translate }}
-                <span class="text-danger">*</span></label
-                >
-                <div class="d-flex">
-                <mat-radio-group formControlName="isHalfDayTypeOfLeave">
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-                <div
-                *ngIf="
-                    categoryForm.get('isHalfDayTypeOfLeave')?.invalid &&
-                    categoryForm.get('isHalfDayTypeOfLeave')?.touched
-                "
-                >
-                <small class="text-danger">{{
-                    "leave.errorHalfDayType" | translate
-                }}</small>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <mat-form-field class="w-100">
-                <mat-label>{{ "leave.submitBeforeDays" | translate }}</mat-label>
-                <input
-                    matInput
-                    type="number"
-                    [placeholder]="'leave.daysPlaceholder' | translate"
-                    formControlName="submitBefore"
-                />
-                </mat-form-field>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label
-                >{{ "leave.displayInPayslips" | translate }}
-                <span class="text-danger">*</span></label
-                >
-                <div class="d-flex">
-                <mat-radio-group formControlName="displayLeaveBalanceInPayslip">
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-                <div
-                *ngIf="
-                    categoryForm.get('displayLeaveBalanceInPayslip')?.invalid &&
-                    categoryForm.get('displayLeaveBalanceInPayslip')?.touched
-                "
-                >
-                <small class="text-danger">{{
-                    "leave.errorDisplayInPayslips" | translate
-                }}</small>
-                </div>
-            </div>
-            @if (categoryForm.value.leaveType === 'general-leave') {
-            <div class="form-group col-md-6 my-2">
-                <mat-form-field class="w-100">
-                <mat-label>{{ "leave.leaveAccrualPeriod" | translate }}</mat-label>
-                <mat-select formControlName="leaveAccrualPeriod">
-                    <mat-option value="Annually">{{
-                    "leave.annually" | translate
-                    }}</mat-option>
-                    <mat-option value="Semi-Annually">{{
-                    "leave.semiAnnually" | translate
-                    }}</mat-option>
-                    <mat-option value="Quarterly">{{
-                    "leave.quarterly" | translate
-                    }}</mat-option>
-                    <mat-option value="Bi-Monthly">{{
-                    "leave.biMonthly" | translate
-                    }}</mat-option>
-                    <mat-option value="Monthly">{{
-                    "leave.monthly" | translate
-                    }}</mat-option>
-                </mat-select>
-                <mat-error
-                    *ngIf="
-                    categoryForm.get('leaveAccrualPeriod')?.invalid &&
-                    categoryForm.get('leaveAccrualPeriod')?.touched
-                    "
-                >
-                    {{ "leave.errorLeaveAccrualPeriod" | translate }}
-                </mat-error>
-                </mat-form-field>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.accrualInAdvance" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group formControlName="isEmployeeAccrualLeaveInAdvance">
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.weeklyOffInclusion" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.annualHolidayInclusion" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.leaveEncashmentRollover" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isEligibleForLeaveEncashmentDuringRollover"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.documentRequired" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group formControlName="isDocumentRequired">
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.encashmentRecoveryFNF" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isEligibleForEncashmentRecoveryDuringFNF"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <mat-form-field class="w-100">
-                <mat-label>{{ "leave.carryoverLimits" | translate }}</mat-label>
-                <mat-select formControlName="policyWithRegardsToCarryoverLimits">
-                    <mat-option value="no-carryover">{{
-                    "leave.noCarryover" | translate
-                    }}</mat-option>
-                    <mat-option value="carryover-gap">{{
-                    "leave.carryoverGap" | translate
-                    }}</mat-option>
-                    <mat-option value="no-limit">{{
-                    "leave.noLimit" | translate
-                    }}</mat-option>
-                </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.negativeLeaveBalance" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isEmployeesAllowedToNegativeLeaveBalance"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.roundOffAccrual" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isRoundOffLeaveAccrualNearestPointFiveUnit"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.intraCycleLapse" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isIntraCycleLapseApplicableForThisCategory"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <mat-form-field class="w-100">
-                <mat-label>{{ "leave.minDaysAllowed" | translate }}</mat-label>
-                <input
-                    matInput
-                    type="number"
-                    formControlName="minimumNumberOfDaysAllowed"
-                />
-                </mat-form-field>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <mat-form-field class="w-100">
-                <mat-label>{{ "leave.prorateFirstMonth" | translate }}</mat-label>
-                <mat-select formControlName="isProRateFirstMonthAccrualForNewJoinees">
-                    <mat-option value="fixed">{{
-                    "leave.fixedCutoff" | translate
-                    }}</mat-option>
-                    <mat-option value="pro-ration">{{
-                    "leave.proRationByJoining" | translate
-                    }}</mat-option>
-                </mat-select>
-                </mat-form-field>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <mat-form-field class="w-100">
-                <mat-label>{{ "leave.maxConsecutiveDays" | translate }}</mat-label>
-                <input
-                    matInput
-                    type="number"
-                    formControlName="maximumNumberConsecutiveLeaveDaysAllowed"
-                />
-                </mat-form-field>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.isPaidLeave" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group formControlName="isPaidLeave">
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            } @if (categoryForm.value.leaveType === 'annual-non-accrual-leave') {
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.annualHolidayInclusion" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.weeklyOffInclusion" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.leaveEncashmentRollover" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isEligibleForLeaveEncashmentDuringRollover"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.documentRequired" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group formControlName="isDocumentRequired">
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.encashmentRecoveryFNF" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isEligibleForEncashmentRecoveryDuringFNF"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.dateRestriction" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group
-                    formControlName="isEmployeesAllowedToNegativeLeaveBalance"
-                >
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            <div class="form-group col-md-6 my-2">
-                <label>{{ "leave.isPaidLeave" | translate }}</label>
-                <div class="d-flex">
-                <mat-radio-group formControlName="isPaidLeave">
-                    <mat-radio-button color="primary" [value]="true">{{
-                    "leave.yes" | translate
-                    }}</mat-radio-button>
-                    <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                    "leave.no" | translate
-                    }}</mat-radio-button>
-                </mat-radio-group>
-                </div>
-            </div>
-            }
-        </div>
-    </div>
-    <div
-    mat-dialog-actions
-    class="d-flex align-items-center justify-content-between"
-    >
-        <button mat-flat-button (click)="close();">
-            {{ "leave.cancelButton" | translate }}
-        </button>
-        <button
-            mat-flat-button
-            color="primary"
-            type="submit"
-            [disabled]="!categoryForm.valid"
-        >
+    <div class="d-flex align-items-center justify-content-between">
+        <h1 mat-dialog-title>
             {{
             !isEdit
-                ? ("leave.addButton" | translate)
-                : ("leave.updateButton" | translate)
+            ? ("leave.addLeaveCategory" | translate)
+            : ("leave.updateLeaveCategory" | translate)
             }}
+        </h1>
+        <button mat-icon-button (click)="close();" class="me-4">
+            <mat-icon>close</mat-icon>
         </button>
     </div>
-  </form>
+
+    <form [formGroup]="categoryForm" (ngSubmit)="onSubmission()">
+        <div mat-dialog-content style="overflow-x: hidden;">
+            <div class="row m-0">
+                <div class="form-group col-12 my-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.chooseLeaveType" | translate }}</mat-label>
+                        <mat-select formControlName="leaveType" (selectionChange)="onLeaveTypeChange()">
+                            <mat-option value="" disabled>{{
+                                "leave.selectLeaveType" | translate
+                                }}</mat-option>
+                            <mat-option value="general-leave">{{
+                                "leave.generalLeave" | translate
+                                }}</mat-option>
+                            <mat-option value="annual-non-accrual-leave">{{
+                                "leave.annualNonAccrualLeave" | translate
+                                }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="
+                    categoryForm.get('leaveType')?.invalid &&
+                    categoryForm.get('leaveType')?.touched
+                    ">
+                            {{ "leave.errorSelectLeaveType" | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.provideLabel" | translate }}</mat-label>
+                        <input matInput type="text" [placeholder]="'leave.labelPlaceholder' | translate"
+                            formControlName="label" />
+                        <mat-error
+                            *ngIf="categoryForm.get('label')?.invalid && (categoryForm.get('label')?.touched || categoryForm.get('label')?.dirty)">
+
+                            <span *ngIf="categoryForm.get('label')?.errors?.['required']">
+                                {{ "leave.errorLabel" | translate }}
+                            </span>
+                            <span *ngIf="categoryForm.get('label')?.errors?.['invalidLabel']">
+                                {{ 'leave.label_invalid' | translate }}
+                            </span>
+                            <span *ngIf="categoryForm.get('label')?.errors?.['duplicateLabel']">
+                                {{ 'leave.at_errorLabelDuplicate' | translate }}
+                            </span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.provideAbbreviation" | translate }}</mat-label>
+                        <input matInput type="text" [placeholder]="'leave.abbreviationPlaceholder' | translate"
+                            formControlName="abbreviation" />
+                        <mat-error *ngIf="
+                    categoryForm.get('abbreviation')?.invalid &&
+                    (categoryForm.get('abbreviation')?.touched || categoryForm.get('label')?.dirty)">
+                            <span *ngIf="categoryForm.get('abbreviation')?.errors?.['required']">
+                                {{ "leave.errorAbbreviation" | translate }}
+                            </span>
+                            <span *ngIf="categoryForm.get('abbreviation')?.errors?.['invalidLabel']">
+                                {{ 'leave.abbreviation_invalid' | translate }}
+                            </span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.canEmployeeApply" | translate }}
+                        <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="canEmployeeApply">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div *ngIf="
+                    categoryForm.get('canEmployeeApply')?.invalid &&
+                    categoryForm.get('canEmployeeApply')?.touched
+                ">
+                        <small class="text-danger">{{
+                            "leave.errorCanEmployeeApply" | translate
+                            }}</small>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.halfDayOption" | translate }}
+                        <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isHalfDayTypeOfLeave">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div *ngIf="
+                    categoryForm.get('isHalfDayTypeOfLeave')?.invalid &&
+                    categoryForm.get('isHalfDayTypeOfLeave')?.touched
+                ">
+                        <small class="text-danger">{{
+                            "leave.errorHalfDayType" | translate
+                            }}</small>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.submitBeforeDays" | translate }}</mat-label>
+                        <input matInput type="number" [placeholder]="'leave.daysPlaceholder' | translate"
+                            formControlName="submitBefore" min="0" />
+                        <mat-error *ngIf="categoryForm.get('submitBefore')?.invalid">
+                            <span *ngIf="categoryForm.get('submitBefore')?.errors?.['min']">
+                                {{ 'leave.duration_negative' | translate }}
+                            </span>
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.displayInPayslips" | translate }}
+                        <span class="text-danger">*</span></label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="displayLeaveBalanceInPayslip">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                    <div *ngIf="
+                    categoryForm.get('displayLeaveBalanceInPayslip')?.invalid &&
+                    categoryForm.get('displayLeaveBalanceInPayslip')?.touched
+                ">
+                        <small class="text-danger">{{
+                            "leave.errorDisplayInPayslips" | translate
+                            }}</small>
+                    </div>
+                </div>
+                @if (categoryForm.value.leaveType === 'general-leave') {
+                <div class="form-group col-12 my-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.leaveAccrualPeriod" | translate }}</mat-label>
+                        <mat-select formControlName="leaveAccrualPeriod">
+                            <mat-option value="Annually">{{
+                                "leave.annually" | translate
+                                }}</mat-option>
+                            <mat-option value="Semi-Annually">{{
+                                "leave.semiAnnually" | translate
+                                }}</mat-option>
+                            <mat-option value="Quarterly">{{
+                                "leave.quarterly" | translate
+                                }}</mat-option>
+                            <mat-option value="Bi-Monthly">{{
+                                "leave.biMonthly" | translate
+                                }}</mat-option>
+                            <mat-option value="Monthly">{{
+                                "leave.monthly" | translate
+                                }}</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="
+                    categoryForm.get('leaveAccrualPeriod')?.invalid &&
+                    categoryForm.get('leaveAccrualPeriod')?.touched
+                    ">
+                            {{ "leave.errorLeaveAccrualPeriod" | translate }}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.accrualInAdvance" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isEmployeeAccrualLeaveInAdvance">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.weeklyOffInclusion" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.annualHolidayInclusion" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.leaveEncashmentRollover" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isEligibleForLeaveEncashmentDuringRollover">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.documentRequired" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isDocumentRequired">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.encashmentRecoveryFNF" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isEligibleForEncashmentRecoveryDuringFNF">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.carryoverLimits" | translate }}</mat-label>
+                        <mat-select formControlName="policyWithRegardsToCarryoverLimits">
+                            <mat-option value="no-carryover">{{
+                                "leave.noCarryover" | translate
+                                }}</mat-option>
+                            <mat-option value="carryover-gap">{{
+                                "leave.carryoverGap" | translate
+                                }}</mat-option>
+                            <mat-option value="no-limit">{{
+                                "leave.noLimit" | translate
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.negativeLeaveBalance" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isEmployeesAllowedToNegativeLeaveBalance">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.roundOffAccrual" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isRoundOffLeaveAccrualNearestPointFiveUnit">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.intraCycleLapse" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isIntraCycleLapseApplicableForThisCategory">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.minDaysAllowed" | translate }}</mat-label>
+                        <input matInput type="number" formControlName="minimumNumberOfDaysAllowed"  min="0" />
+                        <mat-error *ngIf="categoryForm.get('minimumNumberOfDaysAllowed')?.invalid">
+                            <span *ngIf="categoryForm.get('minimumNumberOfDaysAllowed')?.errors?.['min']">
+                                {{ 'leave.duration_negative' | translate }}
+                            </span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.prorateFirstMonth" | translate }}</mat-label>
+                        <mat-select formControlName="isProRateFirstMonthAccrualForNewJoinees">
+                            <mat-option value="fixed">{{
+                                "leave.fixedCutoff" | translate
+                                }}</mat-option>
+                            <mat-option value="pro-ration">{{
+                                "leave.proRationByJoining" | translate
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.maxConsecutiveDays" | translate }}</mat-label>
+                        <input matInput type="number" formControlName="maximumNumberConsecutiveLeaveDaysAllowed" min="0" />
+                        <mat-error *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.invalid">
+                            <span *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.errors?.['min']">
+                                {{ 'leave.duration_negative' | translate }}
+                            </span>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.isPaidLeave" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isPaidLeave">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                } @if (categoryForm.value.leaveType === 'annual-non-accrual-leave') {
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.annualHolidayInclusion" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isAnnualHolidayLeavePartOfNumberOfDaysTaken">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.weeklyOffInclusion" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isWeeklyOffLeavePartOfNumberOfDaysTaken">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.leaveEncashmentRollover" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isEligibleForLeaveEncashmentDuringRollover">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.documentRequired" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isDocumentRequired">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.encashmentRecoveryFNF" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isEligibleForEncashmentRecoveryDuringFNF">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.dateRestriction" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isEmployeesAllowedToNegativeLeaveBalance">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                <div class="form-group col-12 my-2">
+                    <label>{{ "leave.isPaidLeave" | translate }}</label>
+                    <div class="d-flex">
+                        <mat-radio-group formControlName="isPaidLeave">
+                            <mat-radio-button color="primary" [value]="true">{{
+                                "leave.yes" | translate
+                                }}</mat-radio-button>
+                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
+                                "leave.no" | translate
+                                }}</mat-radio-button>
+                        </mat-radio-group>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+        <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+            <button mat-flat-button (click)="close();">
+                {{ "leave.cancelButton" | translate }}
+            </button>
+            <button mat-flat-button color="primary" type="submit">
+                {{
+                !isEdit
+                ? ("leave.addButton" | translate)
+                : ("leave.updateButton" | translate)
+                }}
+            </button>
+        </div>
+    </form>
 </ng-template>

@@ -1,133 +1,65 @@
 <div class="main-content pt-3">
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-md-8">
-        <div class="container-fluid mt-3 py-2 px-0 bg-white tableContainer">
-          <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-            <p class="mb-0">({{filteredList?.length}}) Records Found</p>
-            <div class="d-flex align-items-center">
-              <span class="bi bi-search searchIcon"></span>
-              <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-                name="searchText" aria-label="default input example">
-            </div>
-          </div>
-          <table>
-            <thead>
-              <th scope="col">Name</th>
-              <th scope="col">Description</th>
-              <th scope="col">Type</th>
-              <th scope="col">Date</th>
-              <th scope="col">Recurring</th>
-              <th scope="col">Frequency</th>
-              <th scope="col">Lead Time</th>
-              <th scope="col">Actions</th>
-            </thead>
-            <tbody>
-              <tr
-                *ngFor="let eventNotification of filteredList | search: searchText">
-                <td class="ps-1">{{ eventNotification.name }}</td>
-                <td class="ps-1">{{ eventNotification.description }}</td>
-                <td class="ps-1">{{ getNotificationTypeName(eventNotification.eventNotificationType) }}</td>
-                <td class="ps-2">{{ eventNotification.date | date:'MM-dd-yyyy' }}</td>
-                <td class="ps-1">{{ eventNotification.isRecurring ? 'Yes' : 'No' }}</td>
-                <td class="ps-2">{{ eventNotification.recurringFrequency }}</td>
-                <td class="ps-1">{{ eventNotification.leadTime }}</td>
-                <td>
-                  <button class="actions" mat-mini-fab title="Update Event"
-                    (click)="editEventNotification(eventNotification)" aria-label="Update Event">
-                    <i class="bi bi-pencil-fill"></i>
-                  </button>
-                  <button class="actions ms-2" mat-mini-fab title="Delete Event"
-                    (click)="deleteEventNotification(eventNotification)" aria-label="Delete Event">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="row me-0 py-2">
+      <div class="col-lg-8 col-12">
+        <hrm-table [data]="filteredList" [columns]="columns" [isServerSide]="false" [showExport]="'none'" [showSearch]="true"
+          (actionClicked)="onActionClick($event)"></hrm-table>
       </div>
-      <div class="col-md-4">
-        <h2 class="contentHeading">{{ isEdit ? 'Edit' : 'Add' }} Event Notification</h2>
+      <div class="col-lg-4 col-12 border-start">
+        <h2 class="contentHeading p-2">{{ 'alerts.eventNotification.addEdit' | translate }}</h2>
         <form [formGroup]="eventNotificationForm"
           (ngSubmit)="isEdit ? updateEventNotification() : addEventNotification()"
-          class="p-3 bg-light border rounded">
-          <div class="form-group row mt-2">
-            <div class="col-sm-0">
-              Name: <span class="text-danger">*</span>
-            </div>
-            <div class="col-sm-12">
-              <input type="text" formControlName="name" class="form-control" (focus)="onEditFocus($event)">
-            </div>
+          class="mt-4 p-3 me-4 bg-light border rounded">
+          <div class="form-group">
+            <label for="eventNotificationName">{{ 'alerts.eventNotification.name' | translate }} <span class="text-danger">*</span></label>
+            <input type="text" id="eventNotificationName" class="form-control" formControlName="name" required
+              (focus)="onEditFocus($event)">
           </div>
-          <div class="form-group row mt-2">
-            <div class="col-sm-0">
-              Description: <span class="text-danger">*</span>
-            </div>
-            <div class="col-sm-12">
-              <input type="text" formControlName="description" class="form-control" (focus)="onEditFocus($event)">
-            </div>
+          <div class="form-group mt-2">
+            <label for="eventNotificationDescription">{{ 'alerts.eventNotification.description' | translate }} <span class="text-danger">*</span></label>
+            <input type="text" id="eventNotificationDescription" class="form-control" formControlName="description" required
+              (focus)="onEditFocus($event)">
           </div>
-          <div class="form-group row mt-2">
-            <div class="col-sm-0">
-              Type:
-            </div>
-            <!-- <div class="col-sm-12">
-              <input type="text" formControlName="eventNotificationType" class="form-control" (focus)="onEditFocus($event)">
-            </div> -->
-            <div class="col-sm-12">
-              <select class="custom-select  p-2" formControlName="eventNotificationType">
-                <option [value]="notificationType._id" *ngFor="let notificationType of notificationTypeList ">
-                  {{notificationType.name}}</option>
-              </select>
-            </div>
+          <div class="form-group mt-2">
+            <label for="eventNotificationType">{{ 'alerts.eventNotification.type' | translate }}</label>
+            <select id="eventNotificationType" class="form-control" formControlName="eventNotificationType">
+              <option [value]="notificationType._id" *ngFor="let notificationType of notificationTypeList">
+                {{ notificationType.name }}
+              </option>
+            </select>
           </div>
-          <div class="form-group row mt-2">
-            <div class="col-sm-0">
-              Date: <span class="text-danger">*</span>
-            </div>
-            <div class="col-sm-12">
-              <input type="date" formControlName="date" class="form-control" (focus)="onEditFocus($event)">
-            </div>
+          <div class="form-group mt-2">
+            <label for="eventNotificationDate">{{ 'alerts.eventNotification.date' | translate }} <span class="text-danger">*</span></label>
+            <input type="date" id="eventNotificationDate" class="form-control" formControlName="date" required
+              (focus)="onEditFocus($event)">
           </div>
-          <div class="form-group row mt-2">
-            <div class="col-sm-0">
-              Recurring:
-            </div>
-            <div class="col-sm-12">
-              <input type="checkbox" formControlName="isRecurring" class="form-check-input">
-            </div>
+          <div class="form-group mt-2">
+            <label for="eventNotificationRecurring">{{ 'alerts.eventNotification.recurring' | translate }}</label>
+            <input type="checkbox" id="eventNotificationRecurring" class="form-check-input" formControlName="isRecurring">
           </div>
-          <div class="form-group row mt-2" *ngIf="eventNotificationForm.get('isRecurring').value">
-            <div class="col-sm-0">
-              Frequency: <span class="text-danger">*</span>
-            </div>
-            <div class="col-sm-12">
-              <select class="custom-select  p-2" formControlName="recurringFrequency" required>
-                <option [value]="frequency" *ngFor="let frequency of ['daily',  'weekly', 'monthly', 'annually'] ">
-                  {{frequency}}</option>
-              </select>
-            </div>
+          <div class="form-group mt-2" *ngIf="eventNotificationForm.get('isRecurring').value">
+            <label for="eventNotificationFrequency">{{ 'alerts.eventNotification.frequency' | translate }} <span class="text-danger">*</span></label>
+            <select id="eventNotificationFrequency" class="form-control" formControlName="recurringFrequency" required>
+              <option [value]="frequency" *ngFor="let frequency of ['daily', 'weekly', 'monthly', 'annually']">
+                {{ 'alerts.eventNotification.frequency.' + frequency | translate }}
+              </option>
+            </select>
           </div>
-          <div class="form-group row mt-2">
-            <div class="col-sm-0">
-              Lead Time: <span class="text-danger">*</span>
-            </div>
-            <div class="col-sm-12">
-              <input type="number" formControlName="leadTime" class="form-control" (focus)="onEditFocus($event)">
-            </div>
+          <div class="form-group mt-2">
+            <label for="eventNotificationLeadTime">{{ 'alerts.eventNotification.leadTime' | translate }} <span class="text-danger">*</span></label>
+            <input type="number" id="eventNotificationLeadTime" class="form-control" formControlName="leadTime" required
+              (focus)="onEditFocus($event)">
           </div>
-          <div class="d-flex justify-content-between mt-2">
-            <div class="">
-              <button type="submit" mat-flat-button class="ml-5" 
-                [disabled]="eventNotificationForm.invalid"
-                [color]="'accent'"
-                style="min-width: 100px;">{{
-                isEdit ? 'Update' : 'Add' }}</button>
+          <div class="form-group d-flex justify-content-between mt-2">
+            <div>
+              <button type="submit" mat-flat-button color="primary" [disabled]="eventNotificationForm.invalid">
+                {{ isEdit ? ('alerts.eventNotification.update' | translate) : ('alerts.eventNotification.add' | translate) }}
+              </button>
             </div>
-            <div class="">
-              <button type="button" *ngIf="isEdit" (click)="cancelEdit()" mat-flat-button
-                style="min-width: 100px;">Cancel</button>
+            <div>
+              <button type="button" *ngIf="isEdit" mat-flat-button (click)="cancelEdit()">
+                {{ 'alerts.eventNotification.cancel' | translate }}
+              </button>
             </div>
           </div>
         </form>

@@ -6,6 +6,8 @@ import { SearchAppUsagesRequest } from '../model/productivityModel';
 import { ReportsService } from '../../../_services/reports.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { UtilsService } from 'src/app/_services/utils.service';
+import { TranslateService } from '@ngx-translate/core';
+import { TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-app-and-website-usage',
@@ -30,6 +32,39 @@ export class AppAndWebsiteUsageComponent implements OnInit {
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   role: any;
   public sortOrder: string = '';
+  columns: TableColumn[] = [
+    { 
+      key: 'name', 
+      name: this.translate.instant('reports.website.application') },
+    { 
+      key: 'project', 
+      name: this.translate.instant('reports.website.project') },
+    {
+      key: 'firstName',
+      name: this.translate.instant('reports.website.member'),
+      valueFn: (row: any) => `${row.firstName} ${row.lastName}`
+    },
+    { 
+      key: 'mouseClicks', 
+      name: this.translate.instant('reports.website.mouseClicks') },
+    { 
+      key: 'scrollingNumber', 
+      name: this.translate.instant('reports.website.mouseScroll') },
+    { 
+      key: 'keyboardStrokes', 
+      name: this.translate.instant('reports.website.keyboardStrokes') },
+    {
+      key: 'inactive',
+      name: this.translate.instant('reports.website.inactive'),
+      valueFn: (row: any) => this.InactivitTime(row.inactive, row.timeSpent)
+    },
+    {
+      key: 'timeSpent',
+      name: this.translate.instant('reports.website.hours'),
+      valueFn: (row: any) => this.millisecondsToTime(row.timeSpent)
+    }
+  ];
+  
   constructor(
     private projectService: ProjectService
     , private timeLogService: TimeLogService
@@ -37,6 +72,7 @@ export class AppAndWebsiteUsageComponent implements OnInit {
     , private reportService: ReportsService
     , private commonservice: CommonService
     , private utilsService:UtilsService
+    , private translate: TranslateService
   ) {
     this.fromDate = new Date().toISOString().slice(0, 10);
     this.toDate = new Date().toISOString().slice(0, 10);

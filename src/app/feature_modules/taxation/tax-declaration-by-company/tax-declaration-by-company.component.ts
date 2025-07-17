@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -28,30 +28,60 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
   editingHRA: any | null = null;
   originalComponent: any = null;
   originalHRA: any = null;
-  taxComponentForm: FormGroup;
+  componentForm: FormGroup;
   hraForm: FormGroup;
 
   constructor(
     private taxService: TaxationService,
-    private fb: FormBuilder,   private translate: TranslateService,
+    private fb: FormBuilder,
+    private translate: TranslateService,
     private toast: ToastrService
   ) {
-    this.taxComponentForm = this.fb.group({
+    this.componentForm = this.fb.group({
       employeeIncomeTaxDeclaration: [''],
       incomeTaxComponent: [''],
-      approvedAmount: [],
-      approvalStatus: [''],
-      remark: ['']
+      approvedAmount: [null, [Validators.required, Validators.min(0), this.amountValidator.bind(this)]],
+      approvalStatus: ['', Validators.required],
+      remark: ['',  Validators.required]
     });
+
     this.hraForm = this.fb.group({
       employeeIncomeTaxDeclaration: [''],
-      verifiedAmount: [],
-      approvalStatus: ['']
+      verifiedAmount: [null, [Validators.required, Validators.min(0), this.hraAmountValidator.bind(this)]],
+      approvalStatus: ['', Validators.required],
+      month: [''],
+      rentDeclared: [null],
+      cityType: [''],
+      landlordName: [''],
+      landlordPan: [''],
+      landlordAddress: ['']
     });
   }
 
   ngOnInit() {
     this.getAlltaxDecalartions();
+  }
+
+  // Custom validator for approvedAmount
+  amountValidator(control: AbstractControl): ValidationErrors | null {
+    if (!this.editingComponent) return null;
+    const approvedAmount = +control.value;
+    const appliedAmount = +this.editingComponent.appliedAmount;
+    const maximumAmount = +this.editingComponent.maximumAmount;
+    if (isNaN(approvedAmount)) return { required: true };
+    if (approvedAmount > appliedAmount) return { exceedsApplied: true };
+    if (approvedAmount > maximumAmount) return { exceedsMaximum: true };
+    return null;
+  }
+
+  // Custom validator for HRA verifiedAmount
+  hraAmountValidator(control: AbstractControl): ValidationErrors | null {
+    if (!this.editingHRA) return null;
+    const verifiedAmount = +control.value;
+    const rentDeclared = +this.editingHRA.rentDeclared;
+    if (isNaN(verifiedAmount)) return { required: true };
+    if (verifiedAmount > rentDeclared) return { exceedsRentDeclared: true };
+    return null;
   }
 
   getAlltaxDecalartions() {
@@ -90,9 +120,27 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
     if (type === 'component') {
       this.editingComponent = item;
       this.originalComponent = { ...item };
+      this.componentForm.patchValue({
+        employeeIncomeTaxDeclaration: item.employeeIncomeTaxDeclaration,
+        incomeTaxComponent: item.incomeTaxComponent?._id,
+        approvedAmount: item.approvedAmount,
+        approvalStatus: item.approvalStatus,
+        remark: item.remark
+      });
     } else if (type === 'hra') {
       this.editingHRA = item;
       this.originalHRA = { ...item };
+      this.hraForm.patchValue({
+        employeeIncomeTaxDeclaration: item.employeeIncomeTaxDeclaration,
+        verifiedAmount: item.verifiedAmount,
+        approvalStatus: item.approvalStatus,
+        month: item.month,
+        rentDeclared: item.rentDeclared,
+        cityType: item.cityType,
+        landlordName: item.landlordName,
+        landlordPan: item.landlordPan,
+        landlordAddress: item.landlordAddress
+      });
     }
   }
 
@@ -101,56 +149,129 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
       Object.assign(this.editingComponent, this.originalComponent);
       this.editingComponent = null;
       this.originalComponent = null;
+      this.componentForm.reset();
     } else if (type === 'hra' && this.editingHRA && this.originalHRA) {
       Object.assign(this.editingHRA, this.originalHRA);
       this.editingHRA = null;
       this.originalHRA = null;
+      this.hraForm.reset();
     }
     this.dataSource.data = [...this.dataSource.data];
   }
 
   saveEditing(type: string, item: any) {
-    
     if (type === 'component') {
-      if (item?.approvalStatus === 'Approved' && (item?.approvedAmount === null || item?.approvedAmount === undefined || item?.approvedAmount === '')) {
-        this.toast.error(this.translate.instant('taxation.approve_amount_required'), this.translate.instant('taxation.toast.error')); 
-        return; // Exit early if validation fails
+      this.componentForm.markAllAsTouched();
+      if (this.componentForm.invalid) {
+        console.log('Component form invalid:', {
+          errors: this.componentForm.errors,
+          value: this.componentForm.value,
+          controls: {
+            approvedAmount: this.componentForm.get('approvedAmount')?.errors,
+            approvalStatus: this.componentForm.get('approvalStatus')?.errors,
+            remark: this.componentForm.get('remark')?.errors
+          }
+        });
+        this.toast.error(this.translate.instant('taxation.validation_failed'), this.translate.instant('taxation.toast.error'));
+        return;
       }
+
       const payload = {
-        employeeIncomeTaxDeclaration: item?.employeeIncomeTaxDeclaration,
-        incomeTaxComponent: item?.incomeTaxComponent?._id,
-        approvedAmount: item?.approvedAmount,
-        approvalStatus: item?.approvalStatus,
-        remark: item?.remark
+        employeeIncomeTaxDeclaration: this.componentForm.value.employeeIncomeTaxDeclaration,
+        incomeTaxComponent: this.componentForm.value.incomeTaxComponent,
+        approvedAmount: +this.componentForm.value.approvedAmount,
+        approvalStatus: this.componentForm.value.approvalStatus,
+        remark: this.componentForm.value.remark?.trim()
       };
-      console.log(payload);
-      this.taxService.updateIncTaxDecComponent(payload).subscribe((res: any) => {
-        this.editingComponent = null;
-        this.originalComponent = null;
+
+      this.taxService.updateIncTaxDecComponent(payload).subscribe({
+        next: (res: any) => {
+          console.log('Component update response:', res);
+          // Update item with API response data to preserve incomeTaxComponent
+          if (res.data) {
+            Object.assign(item, {
+              ...res.data,
+              incomeTaxComponent: item.incomeTaxComponent // Preserve original incomeTaxComponent
+            });
+          } else {
+            // Fallback: Merge payload while preserving incomeTaxComponent
+            Object.assign(item, {
+              approvedAmount: payload.approvedAmount,
+              approvalStatus: payload.approvalStatus,
+              remark: payload.remark
+            });
+          }
+          // Recalculate groupedComponents for the parent element
+          const parentElement = this.dataSource.data.find(e => e.incomeTaxDeclarationComponent.includes(item));
+          if (parentElement) {
+            parentElement.groupedComponents = this.groupComponentsBySection(parentElement.incomeTaxDeclarationComponent);
+          }
+          this.editingComponent = null;
+          this.originalComponent = null;
+          this.componentForm.reset();
+          this.toast.success(
+            this.translate.instant('taxation.component_updated'),
+            this.translate.instant('taxation.toast.success')
+          );
+          this.dataSource.data = [...this.dataSource.data];
+        },
+        error: (err) => {
+          console.error('Component update error:', err);
+          this.toast.error(
+            err?.message || this.translate.instant('taxation.failed_to_update_component'),
+            this.translate.instant('taxation.toast.error')
+          );
+        }
       });
     } else if (type === 'hra') {
-      
-      if (item?.approvalStatus === 'Approved' && (item?.verifiedAmount === null || item?.verifiedAmount === undefined || item?.verifiedAmount === '')) {
-        this.toast.error(this.translate.instant('taxation.verified_amount_required'), this.translate.instant('taxation.toast.error')); 
-        return; // Exit early if validation fails
+      this.hraForm.markAllAsTouched();
+      if (this.hraForm.invalid) {
+        console.log('HRA form invalid:', {
+          errors: this.hraForm.errors,
+          value: this.hraForm.value,
+          controls: {
+            verifiedAmount: this.hraForm.get('verifiedAmount')?.errors,
+            approvalStatus: this.hraForm.get('approvalStatus')?.errors
+          }
+        });
+        this.toast.error(this.translate.instant('taxation.validation_failed'), this.translate.instant('taxation.toast.error'));
+        return;
       }
+
       const payload = {
-        employeeIncomeTaxDeclaration: item?.employeeIncomeTaxDeclaration,
-        verifiedAmount: item?.verifiedAmount,
-        approvalStatus: item?.approvalStatus,
-        month: item?.month,
-        rentDeclared: item?.rentDeclared,
-        cityType: item?.cityType,
-        landlordName: item?.landlordName,
-        landlordPan: item?.landlordPan,
-        landlordAddress: item?.landlordAddress,
-      }
-      this.taxService.updateIncTaxDecHRA(payload).subscribe((res: any) => {
-        this.editingHRA = null;
-        this.originalHRA = null;
+        employeeIncomeTaxDeclaration: this.hraForm.value.employeeIncomeTaxDeclaration,
+        verifiedAmount: +this.hraForm.value.verifiedAmount,
+        approvalStatus: this.hraForm.value.approvalStatus,
+        month: this.hraForm.value.month,
+        rentDeclared: this.hraForm.value.rentDeclared,
+        cityType: this.hraForm.value.cityType,
+        landlordName: this.hraForm.value.landlordName,
+        landlordPan: this.hraForm.value.landlordPan,
+        landlordAddress: this.hraForm.value.landlordAddress
+      };
+
+      this.taxService.updateIncTaxDecHRA(payload).subscribe({
+        next: (res: any) => {
+          console.log('HRA update response:', res);
+          Object.assign(item, res.data || payload);
+          this.editingHRA = null;
+          this.originalHRA = null;
+          this.hraForm.reset();
+          this.dataSource.data = [...this.dataSource.data];
+          this.toast.success(
+            this.translate.instant('taxation.hra_updated'),
+            this.translate.instant('taxation.toast.success')
+          );
+        },
+        error: (err) => {
+          console.error('HRA update error:', err);
+          this.toast.error(
+            err?.message || this.translate.instant('taxation.failed_to_update_hra'),
+            this.translate.instant('taxation.toast.error')
+          );
+        }
       });
     }
-    this.dataSource.data = [...this.dataSource.data];
   }
 
   resetEditing() {
@@ -158,16 +279,20 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
     this.editingHRA = null;
     this.originalComponent = null;
     this.originalHRA = null;
+    this.componentForm.reset();
+    this.hraForm.reset();
   }
 
   onStatusChange(element: any, type: string, item: any, event: any) {
     const newStatus = event.value;
-    item.approvalStatus = newStatus;
-    this.dataSource.data = [...this.dataSource.data];
+    if (type === 'component') {
+      this.componentForm.patchValue({ approvalStatus: newStatus });
+    } else if (type === 'hra') {
+      this.hraForm.patchValue({ approvalStatus: newStatus });
+    }
   }
 
   onBulkHRAupdate(hraArray: any[], approvalStatus: string) {
-    console.log('HRA Array: ', hraArray);
     if (!hraArray || hraArray.length === 0) {
       this.toast.error(this.translate.instant('taxation.no_hra_entries_to_update'), this.translate.instant('taxation.toast.error'));
       return;
@@ -179,55 +304,56 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
     const payload = {
       financialYear: financialYear,
       employeeIncomeTaxDeclarationHRA: hraArray.map(hra => ({
-        verifiedAmount: hra?.verifiedAmount,
+        verifiedAmount: approvalStatus === 'Approved' ? (hra?.verifiedAmount || 0) : hra?.verifiedAmount,
         approvalStatus: approvalStatus,
         month: hra?.month,
         rentDeclared: hra?.rentDeclared,
         cityType: hra?.cityType,
         landlordName: hra?.landlordName,
         landlordPan: hra?.landlordPan,
-        landlordAddress: hra?.landlordAddress,
+        landlordAddress: hra?.landlordAddress
       }))
     };
-    this.taxService.updateIncomeTax(id, payload).subscribe(
-      (res: any) => {
-         this.toast.success(this.translate.instant('taxation.all_hra_updated'), this.translate.instant('taxation.toast.success'));
-   
+
+    this.taxService.updateIncomeTax(id, payload).subscribe({
+      next: (res: any) => {
+        console.log('Bulk HRA update response:', res);
+        this.toast.success(this.translate.instant('taxation.all_hra_updated'), this.translate.instant('taxation.toast.success'));
         if (this.expandedElement && res.data?.employeeIncomeTaxDeclarationHRA) {
           this.expandedElement.incomeTaxDeclarationHRA = res.data.employeeIncomeTaxDeclarationHRA;
         } else {
           this.expandedElement.incomeTaxDeclarationHRA = hraArray.map(hra => ({
             ...hra,
-            verifiedAmount: hra.verifiedAmount,
+            verifiedAmount: approvalStatus === 'Approved' ? (hra.verifiedAmount || 0) : hra.verifiedAmount,
             approvalStatus: approvalStatus
           }));
         }
         this.dataSource.data = [...this.dataSource.data];
       },
-      err =>    this.toast.error(this.translate.instant('taxation.failed_to_update_bulk_hra'), this.translate.instant('taxation.toast.error'))
-   
-    );
+      error: (err) => {
+        console.error('Bulk HRA update error:', err);
+        this.toast.error(
+          err?.message || this.translate.instant('taxation.failed_to_update_bulk_hra'),
+          this.translate.instant('taxation.toast.error')
+        );
+      }
+    });
   }
 
   openAttachment(url: string, attachmentName: any): void {
-    console.log(url);
-    console.log(attachmentName)
     if (url && attachmentName) {
-        // Find the index of attachmentName in the URL
-        const index = url.indexOf(attachmentName);
-        if (index !== -1) {
-            // Trim everything after attachmentName
-            const trimmedUrl = url.substring(0, index + attachmentName.length);
-            const link = document.createElement('a');
-            link.href = trimmedUrl;
-            link.download = attachmentName; // Use attachmentName as the download filename
-            link.click();
-        } else {          
-            this.toast.error(this.translate.instant('taxation.attachment_name_not_found'), this.translate.instant('taxation.toast.error'))
-        }
-    } else {       
-        this.toast.error(this.translate.instant('taxation.attachment_missing'), this.translate.instant('taxation.toast.error'))
+      const index = url.indexOf(attachmentName);
+      if (index !== -1) {
+        const trimmedUrl = url.substring(0, index + attachmentName.length);
+        const link = document.createElement('a');
+        link.href = trimmedUrl;
+        link.download = attachmentName;
+        link.click();
+      } else {
+        this.toast.error(this.translate.instant('taxation.attachment_name_not_found'), this.translate.instant('taxation.toast.error'));
+      }
+    } else {
+      this.toast.error(this.translate.instant('taxation.attachment_missing'), this.translate.instant('taxation.toast.error'));
     }
-}
-
+  }
 }

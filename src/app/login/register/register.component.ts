@@ -4,6 +4,8 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { NotificationService } from '../../_services/notification.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-register',
@@ -24,34 +26,22 @@ export class RegisterComponent implements OnInit {
     private router: Router,
     private notifyService: NotificationService,
     private toast: ToastrService,
+    private translate: TranslateService,
     private fb: FormBuilder
   ) {
     this.registerNewUser = this.fb.group({
-      firstName: ['', [Validators.required, this.noSpacesNumbersOrSymbolsValidator]],
-      lastName: ['', [this.noSpacesNumbersOrSymbolsValidator]],
-      email: ['', [Validators.required, Validators.email]],
-      otp: ['', [Validators.required, Validators.pattern('^[0-9]*$')]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      passwordConfirm: ['', [Validators.required, Validators.minLength(8)]],
+      firstName: ['', [Validators.required, CustomValidators.noSpacesNumbersOrSymbolsValidator,Validators.maxLength(15),Validators.minLength(3)]],
+      lastName: ['', [Validators.required, CustomValidators.noSpacesNumbersOrSymbolsValidator,Validators.maxLength(15),Validators.minLength(3)]],
+      email: ['', [Validators.required, CustomValidators.email]],
+      otp: ['', [Validators.required,  Validators.pattern(/^\d{4}$/)]],
+      password: ['', [Validators.required, CustomValidators.strongPasswordValidator]],
+      passwordConfirm: ['', [Validators.required]],
       companyName: ['']
-    }, { validator: this.passwordMatchValidator });
+    }, {  
+      validators: CustomValidators.passwordMatchValidator });
   }
 
-  ngOnInit(): void {}
-
-  passwordMatchValidator(group: FormGroup) {
-    const password = group.get('password')?.value;
-    const confirmPassword = group.get('passwordConfirm')?.value;
-    return password === confirmPassword ? null : { notMatching: true };
-  }
-
-  noSpacesNumbersOrSymbolsValidator(control: any) {
-    const value = control.value;
-    if (/\d/.test(value) || /\s/.test(value) || /[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-      return { invalidName: true };
-    }
-    return null;
-  }
+  ngOnInit(): void {} 
 
   onGenerateOTP() {
     let emailControl = this.registerNewUser.get('email');
@@ -60,12 +50,15 @@ export class RegisterComponent implements OnInit {
       this.authenticationService.generateOTP({ email }).subscribe(
         () => {
           this.loading = true;
-          this.toast.success('OTP sent to your email', 'Success');
+          this.notifyService.showSuccess( this.translate.instant('login.otp_sent'), 'Success');
           this.loading = false;
           this.otpGenerated = true;
         },
-        (error) => {
-          this.notifyService.showError(error.message, 'Error');
+        (err) => {
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('login.entered_wrong_otp')
+          ;
+          this.notifyService.showError( errorMessage,  "Error");         
         }
       );
     } else {
@@ -86,12 +79,16 @@ export class RegisterComponent implements OnInit {
     };
     this.authenticationService.verifyOTP(payload).subscribe(
       () => {
-        this.notifyService.showSuccess('OTP verified successfully', 'Success');
+        this.notifyService.showSuccess( this.translate.instant('login.otp_verified'), 'Success');
         this.otpVerified = true;
       },
-      (error) => {
-        this.notifyService.showError('OTP is not Verified', 'Error');
-      }
+      (err) => {
+        console.log("Heello");
+        const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('login.entered_wrong_otp')
+        ;
+        this.notifyService.showError( errorMessage,  "Error");
+    }
     );
   }
 
@@ -114,12 +111,17 @@ export class RegisterComponent implements OnInit {
   // }
 
   onSubmit() {
+    this.registerNewUser.markAllAsTouched();
+  
+    if (this.registerNewUser.invalid) {      
+      return;
+    }
     if (!this.otpVerified) {
-      this.notifyService.showWarning("Please verify the OTP before registering the Company", "Warning");
+      this.notifyService.showWarning( this.translate.instant('login.otp_not_verified'),'Warning');
       return;
     }
     if (this.registerNewUser.value.password !== this.registerNewUser.value.passwordConfirm) {
-      this.notifyService.showWarning("Passwords don't match", "Warning");
+      this.notifyService.showWarning( this.translate.instant('login.password_mismatch'), 'Warning');
       return;
     }
     if (this.registerNewUser.valid) {
@@ -127,16 +129,17 @@ export class RegisterComponent implements OnInit {
       this.authenticationService.webSignup(this.registerNewUser.value).subscribe(
         data => {
           setTimeout(() => {
-            this.notifyService.showSuccess("User Created Successfully", "Success");
+            this.notifyService.showSuccess( this.translate.instant('login.user_created'), 'Success');
             this.router.navigate(['/login']);
             this.loading = false;
           }, 300);
         },
-        err => {
-          this.notifyService.showError(err.message, "Error");
-          if (err.message) {
-            this.loading = false;
-          }
+        err => {      
+          const errorMessage = err?.error?.message || err?.message || err 
+          || this.translate.instant('login.signup_Failed')
+          ;
+          this.toast.error(errorMessage, 'Error!');     
+          this.loading = false;        
         }
       );
     } else {

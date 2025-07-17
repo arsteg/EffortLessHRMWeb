@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { CommonService } from 'src/app/_services/common.Service';
 import { TaxationService } from 'src/app/_services/taxation.service';
 import { UserService } from 'src/app/_services/users.service';
 
@@ -13,6 +15,7 @@ import { UserService } from 'src/app/_services/users.service';
 export class TaxComponentsComponent {
   selectedRecord: any;
   isEdit: boolean = false;
+  @Output() dataUpdated = new EventEmitter<void>();
   searchText: string = '';
   data: any;
   taxDecalaration = [];
@@ -34,7 +37,7 @@ export class TaxComponentsComponent {
 
   constructor(
     private taxService: TaxationService,
-    private fb: FormBuilder,
+    private fb: FormBuilder,public commonService: CommonService,
     private toast: ToastrService,private translate: TranslateService,
     private userService: UserService
   ) {
@@ -49,7 +52,7 @@ export class TaxComponentsComponent {
     }
   }
 
-  ngOnInit() {
+  ngOnInit() {  
     this.taxService.activeTab.subscribe(res => {
       this.activeTab = res;
       this.fetchAndMatchTaxComponents();
@@ -114,21 +117,30 @@ export class TaxComponentsComponent {
       incomeTaxComponent: [data._id || data.incomeTaxComponent],
       section: [data.section || ''],
       maximumAmount: [data.maximumAmount || 0],
-      appliedAmount: [data.appliedAmount || 0],
+      appliedAmount: [data.appliedAmount || 0, [Validators.required]],
       approvedAmount: [data.approvedAmount || 0],
       approvalStatus: [data.approvalStatus || 'Pending'],
       remark: [data.remark || ''],
       isEditable: [false],
       documentLink: [data.documentLink || ''],
       employeeIncomeTaxDeclarationAttachments: this.fb.array(
-        data.employeeIncomeTaxDeclarationAttachments?.map(attachment => this.fb.group(attachment)) || []
+        data.employeeIncomeTaxDeclarationAttachments?.map(att => this.fb.group(att)) || []
       )
+    }, {
+      validators: [CustomValidators.appliedLessThanMaxValidator()]
     });
-  }
-
+  }  
   onRowEdit(index: any) {
     const control = this.incomeTaxDecComponentForm.get(`incomeTaxComponent.${index}`) as FormGroup;
-    control.get('isEditable').setValue(true);
+    const status = control.get('approvalStatus')?.value;
+
+    if (status === 'Approved' || status === 'Rejected') {
+      this.translate.instant('taxation.componant_already_apprved')
+      this.toast.warning(this.translate.instant('taxation.componant_already_apprved'), this.translate.instant('taxation.toast.warning'));
+      
+      return;
+    }
+   control.get('isEditable').setValue(true);
   }
 
   selectSection(section: string) {
@@ -136,6 +148,14 @@ export class TaxComponentsComponent {
   }
 
   updateRow(i: number) {
+    const control = this.incomeTaxDecComponentForm.get(`incomeTaxComponent.${i}`) as FormGroup;
+
+    // Trigger validation manually
+    if (control.invalid) {
+      control.markAllAsTouched();
+      return;
+    }
+
     const rowData = this.incomeTaxDecComponentForm.get(`incomeTaxComponent.${i}`).value;
     if (rowData.approvalStatus === 'Approved' && (rowData.approvedAmount === null || rowData.approvedAmount === undefined || rowData.approvedAmount === '')) {
       this.toast.error(this.translate.instant('taxation.approve_amount_required'), this.translate.instant('taxation.toast.error')); 
@@ -157,6 +177,7 @@ export class TaxComponentsComponent {
         this.toast.success(this.translate.instant('taxation.tax_declaraton_componant_updated'), this.translate.instant('taxation.toast.success'));
         const control = this.incomeTaxDecComponentForm.get(`incomeTaxComponent.${i}`) as FormGroup;
         control.get('isEditable').setValue(false);
+        this.dataUpdated.emit(); // Notify parent of update
       },
       (err) => {
         const errorMessage = err?.error?.message || err?.message || err 
@@ -191,11 +212,8 @@ export class TaxComponentsComponent {
     const attachmentsArray = selectedFormGroup.get('employeeIncomeTaxDeclarationAttachments') as FormArray;
 
     if (attachmentsArray.length > attachmentIndex) {
-      attachmentsArray.removeAt(attachmentIndex);
-      this.toast.success(this.translate.instant('taxation.attachment_removed'), this.translate.instant('taxation.toast.success'));
-       } else {
-        this.toast.error(this.translate.instant('taxation.attachment_not_found'), this.translate.instant('taxation.toast.error')); 
-    }
+      attachmentsArray.removeAt(attachmentIndex);    
+        }
   }
 
   uploadAttachment(event: any, index: number) {

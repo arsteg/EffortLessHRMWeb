@@ -80,9 +80,9 @@ export class AttendanceProcessComponent {
   processAttendanceColumns: TableColumn[] = [{
     key: 'attendanceProcessPeriod',
     name: 'Attendance Process Period',
-    valueFn: (row) => { 
+    valueFn: (row) => {
       return `${row?.attendanceProcessPeriodMonth}-${row?.attendanceProcessPeriodYear}`
-     }
+    }
   },
   {
     key: 'users',
@@ -105,6 +105,33 @@ export class AttendanceProcessComponent {
     options: [
       { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
     ]
+  }];
+
+  fnfAttendanceProcessColumns: TableColumn[] = [{
+    key: 'attendanceProcessPeriod',
+    name: 'Attendance Process Period',
+    valueFn: (row) => {
+      return `${row?.attendanceProcessPeriodMonth}-${row?.attendanceProcessPeriodYear}`
+    }
+  },
+  {
+    key: 'employee',
+    name: 'Employee'
+  },
+  {
+    key: 'runDate',
+    name: 'Run Date',
+    valueFn: (row) => row?.runDate ? this.datePipe.transform(row?.runDate, 'mediumDate') : ''
+  },
+  {
+    key: 'exportToPayroll',
+    name: 'Export to Payroll',
+    valueFn: (row) => row?.exportToPayroll ? 'Yes' : 'No'
+  },
+  {
+    key: 'isFNF',
+    name: 'Full & Final Applicable',
+    valueFn: (row) => row?.isFNF ? 'Yes' : 'No'
   }]
 
 
@@ -190,18 +217,18 @@ export class AttendanceProcessComponent {
     });
     this.attendanceTemplateAssignment = [];
   }
-attendanceTemplateValidator(): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
-    const selectedUserIds: string[] = control.value;
-    if (!selectedUserIds || selectedUserIds.length === 0) {
-      return null;
-    }
-    const hasTemplateAssigned = selectedUserIds.every(userId =>
-      this.attendanceTemplateAssignment?.find(template => template.employee?._id === userId)
-    );
-    return hasTemplateAssigned ? null : { 'noAttendanceTemplate': true };
-  };
-}
+  attendanceTemplateValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const selectedUserIds: string[] = control.value;
+      if (!selectedUserIds || selectedUserIds.length === 0) {
+        return null;
+      }
+      const hasTemplateAssigned = selectedUserIds.every(userId =>
+        this.attendanceTemplateAssignment?.find(template => template.employee?._id === userId)
+      );
+      return hasTemplateAssigned ? null : { 'noAttendanceTemplate': true };
+    };
+  }
 
   async onUserSelectionChange(event: any) {
     const selectedUserIds: string[] = event.value;

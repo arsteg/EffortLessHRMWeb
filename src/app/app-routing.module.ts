@@ -95,7 +95,8 @@ const routes: Routes = [
       {
         path: 'alerts',
         loadChildren: () => import('./feature_modules/alerts/alerts.module').then(m => m.AlertsModule),
-        data: { permission: 'Alerts' },
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'alerts', permission: 'Alerts' },
       },
       {
         path: 'payroll',
@@ -118,8 +119,9 @@ const routes: Routes = [
       {
         path: 'reports',
         loadChildren: () => import('./feature_modules/reports/reports.module').then(m => m.ReportsModule),
+        resolve: { translation: TranslationResolver },
         canActivate: [AuthGuard],
-        data: { permission: 'Reports' },
+        data: { moduleKey: 'reports', permission: 'Reports' },
       },
       {
         path: 'separation',

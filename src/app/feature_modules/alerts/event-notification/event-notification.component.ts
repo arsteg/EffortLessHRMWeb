@@ -5,11 +5,16 @@ import { EventNotificationService } from 'src/app/_services/eventNotification.Se
 import { eventNotification, eventNotificationType } from 'src/app/models/eventNotification/eventNotitication';
 import { Role } from 'src/app/models/role.model';
 import { SharedModule } from 'src/app/shared/shared.Module';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
+import { CommonComponentsModule } from "src/app/common/commonComponents.module";
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-event-notification',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, CommonComponentsModule],
   templateUrl: './event-notification.component.html',
   styleUrl: './event-notification.component.css'
 })
@@ -24,7 +29,43 @@ export class EventNotificationComponent implements OnInit {
   searchText: string = '';
   view: Role | null = null;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  constructor(private fb: FormBuilder, private eventNotificationService: EventNotificationService, private toast: ToastrService) { }
+  columns: TableColumn[] = [
+    { key: 'name', name: this.translate.instant('alerts.eventNotification.name') },
+    { key: 'description', name: this.translate.instant('alerts.eventNotification.description') },
+    {
+      key: 'eventNotificationType',
+      name: this.translate.instant('alerts.eventNotification.type'),
+      valueFn: (row: eventNotification) => this.getNotificationTypeName(row.eventNotificationType)
+    },
+    {
+      key: 'date',
+      name: this.translate.instant('alerts.eventNotification.date'),
+      valueFn: (row: eventNotification) => new Date(row.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })
+    },
+    {
+      key: 'isRecurring',
+      name: this.translate.instant('alerts.eventNotification.recurring'),
+      valueFn: (row: eventNotification) => row.isRecurring ? this.translate.instant('alerts.eventNotification.yes') : this.translate.instant('alerts.eventNotification.no')
+    },
+    { key: 'recurringFrequency', name: this.translate.instant('alerts.eventNotification.frequency') },
+    { key: 'leadTime', name: this.translate.instant('alerts.eventNotification.leadTime') },
+    {
+      key: 'action',
+      name: this.translate.instant('alerts.eventNotification.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
+
+  constructor(private fb: FormBuilder, 
+    private eventNotificationService: EventNotificationService, 
+    private toast: ToastrService,
+    private translate: TranslateService ,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
     const storedRole = localStorage.getItem('adminView') as Role;
@@ -90,12 +131,12 @@ export class EventNotificationComponent implements OnInit {
         view: this.view
       };
       await this.eventNotificationService.addEventNotification(formData).toPromise();
-      this.toast.success('Event notification added successfully!');
+      this.toast.success(this.translate.instant('alerts.eventNotification.addSuccess'));
       this.resetNotificationForm();
       this.isEdit = false;
       this.getEventNotificationList();
     } catch (err) {
-      this.toast.error('Error adding event notification', 'Error!');
+      this.toast.error(this.translate.instant('alerts.eventNotification.addError'), this.translate.instant('alerts.eventNotification.error'));
     }
   }
   editEventNotification(eventNotification: eventNotification) {
@@ -127,30 +168,46 @@ export class EventNotificationComponent implements OnInit {
       updatedEventNotification.updatedBy = this.currentUser?.id;
 
       const response = await this.eventNotificationService.updateEventNotification(updatedEventNotification,this.selectedEventNotification._id).toPromise();
-      this.toast.success('Event notification updated successfully!');
+      this.toast.success(this.translate.instant('alerts.eventNotification.updateSuccess'));
       this.resetNotificationForm();
       this.getEventNotificationList();
       this.isEdit = false;
     } catch (err) {
-      this.toast.error('Error updating event notification', 'Error!');
+      this.toast.error(this.translate.instant('alerts.eventNotification.updateError'), this.translate.instant('alerts.eventNotification.error'));
     }
   }
   confirmAction(): boolean {
-    return window.confirm('Are you sure you want to perform this action?');
+    return window.confirm(this.translate.instant('alerts.eventNotification.confirmDelete'));
   }
+
+  openDialog(row: eventNotification): void {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        width: '400px',
+        data: row,
+      });
+  
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result === 'delete') {
+          this.deleteEventNotification(row);
+        }
+        (err) => {
+          this.toast.error('Can not be Deleted', 'Error!');
+        };
+      });
+    }
 
   deleteEventNotification(status: eventNotification) {
     try {
-      const result = this.confirmAction();
-      if (result) {
+      //const result = this.confirmAction();
+      //if (result) {
         this.eventNotificationService.deleteEventNotification(status._id).subscribe((response: any) => {
-          this.toast.success('Event notification has been deleted successfully!')
+          this.toast.success(this.translate.instant('alerts.eventNotification.deleteSuccess'));
           this.getEventNotificationList();
         })
-      }
+      //}
     }
     catch (err) {
-      this.toast.error('Error deleting event notification', 'Error!');
+      this.toast.error(this.translate.instant('alerts.eventNotification.deleteError'), this.translate.instant('alerts.eventNotification.error'));
     }
   }
 
@@ -179,5 +236,17 @@ export class EventNotificationComponent implements OnInit {
       recurringFrequency: '',
       leadTime: 0
     });
+  }
+
+  onActionClick(event: { action: { label: string }, row: eventNotification }) {
+    switch (event.action.label) {
+      case 'Edit':
+        this.editEventNotification(event.row);
+        break;
+      case 'Delete':
+        //this.deleteEventNotification(event.row);
+        this.openDialog(event.row);
+        break;
+    }
   }
 }
