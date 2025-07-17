@@ -50,6 +50,7 @@
         "provideAbbreviation": "Please provide an abbreviation for this leave",
         "abbreviationPlaceholder": "Abbreviation Label",
         "errorAbbreviation": "Please Enter Abbreviation for Leave Category.",
+        "submitBeforeError": "Please enter a valid number of days before which the leave application must be submitted.",
         "canEmployeeApply": "Can employee apply a leave for this category?",
         "yes": "Yes",
         "no": "No",

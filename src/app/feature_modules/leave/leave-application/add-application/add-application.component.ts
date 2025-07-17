@@ -50,9 +50,10 @@ export class AddApplicationComponent {
   showHalfDayOption: boolean = true;
   checkStatus: any;
   existingLeaves: any[] = [];
-  minSelectableDate: Date; // New property for minimum selectable date
+  minSelectableDate: Date;
   weeklyOffDates: Date[] = [];
   holidays: any;
+  weeklyOffDays: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -261,7 +262,12 @@ export class AddApplicationComponent {
       dayHalf: ['', Validators.required]
     }));
   }
-
+  removeHalfDayEntry(index: number): void {
+    this.halfDays.removeAt(index);
+  }
+   onHalfDayChange() {
+    this.leaveApplication.get('halfDays')?.reset();
+  }
   get halfDays() {
     return this.leaveApplication.get('halfDays') as FormArray;
   }
@@ -271,9 +277,6 @@ export class AddApplicationComponent {
       map((res: any) => res.data)
     );
   }
-
-
-  weeklyOffDays: string[] = []; // Store weekly off days (e.g., ["Sunday", "Saturday"])
 
   getattendanceTemplatesByUser() {
     let userId = this.portalView === 'user' ? this.currentUser.id : this.leaveApplication.get('employee')?.value;
@@ -331,19 +334,36 @@ export class AddApplicationComponent {
 
     return weeklyOffDates;
   }
+  // Assuming you have moment.js imported as 'moment'
+
+  // Modify your stripTime function to use moment.js for consistency
+  stripTime(date: Date): number {
+    // This will return the timestamp for the start of the day in local time
+    return moment(date).startOf('day').valueOf();
+  }
+
   weeklyOffDateFilter = (date: Date | null): boolean => {
     if (!date) {
       return true; // Allow if no date
     }
-    // Check for weekly off days
+
+    // Use moment to get the day name from the provided date object directly
     const dayName = moment(date).format('dddd'); // e.g., "Sunday"
+
+    // Check for weekly off days
     if (this.weeklyOffDays.includes(dayName)) {
       return false; // Disable weekly off days
     }
-    const formattedDate = this.stripTime(date);
-    const isHoliday = this.holidays.some(holiday =>
-      this.stripTime(new Date(holiday.date)) === formattedDate
-    );
+
+    // Normalize the selected date to the start of the day for consistent comparison
+    const selectedDateNormalized = this.stripTime(date); // This will be the timestamp of the start of the day (local)
+
+    const isHoliday = this.holidays.some(holiday => {
+      // Normalize the holiday date as well
+      const holidayDateNormalized = this.stripTime(new Date(holiday.date));
+      return holidayDateNormalized === selectedDateNormalized;
+    });
+
     return !isHoliday;
   };
 
@@ -375,14 +395,23 @@ export class AddApplicationComponent {
     }
   }
 
-  onMemberSelectionChange(member: any) {
-    this.member = JSON.parse(member.value);
+  onEmployeeChange(event: any) {
+    this.leaveApplication.get('employee').setValue(event.value);
+    this.leaveApplication.reset({
+      employee: event.value,
+      leaveCategory: '',
+      level1Reason: '',
+      level2Reason: '',
+      startDate: '',
+      endDate: '',
+      comment: '',
+      isHalfDayOption: false,
+      halfDays: this.fb.array([]),
+      leaveApplicationAttachments: this.fb.array([])
+    });
   }
 
-  stripTime(date: Date): string {
-    date.setUTCHours(0, 0, 0, 0);
-    return date.toISOString();
-  }
+ 
 
   onSubmission() {
     const employeeId = this.leaveApplication.get('employee')?.value;
