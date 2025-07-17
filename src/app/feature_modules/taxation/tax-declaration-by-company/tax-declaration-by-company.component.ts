@@ -42,7 +42,7 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
       incomeTaxComponent: [''],
       approvedAmount: [null, [Validators.required, Validators.min(0), this.amountValidator.bind(this)]],
       approvalStatus: ['', Validators.required],
-      remark: ['', this.remarkValidator.bind(this)]
+      remark: ['',  Validators.required]
     });
 
     this.hraForm = this.fb.group({
@@ -71,15 +71,6 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
     if (isNaN(approvedAmount)) return { required: true };
     if (approvedAmount > appliedAmount) return { exceedsApplied: true };
     if (approvedAmount > maximumAmount) return { exceedsMaximum: true };
-    return null;
-  }
-
-  // Custom validator for remark (required when approvalStatus is Approved)
-  remarkValidator(control: AbstractControl): ValidationErrors | null {
-    const approvalStatus = this.componentForm?.get('approvalStatus')?.value;
-    if (approvalStatus === 'Approved' && (!control.value || control.value.trim() === '')) {
-      return { remarkRequired: true };
-    }
     return null;
   }
 

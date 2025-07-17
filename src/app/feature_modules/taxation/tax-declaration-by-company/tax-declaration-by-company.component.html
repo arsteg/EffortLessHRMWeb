@@ -85,10 +85,11 @@
                                         <ng-container *ngIf="editingComponent === component; else nonEditableRemark">
                                             <form [formGroup]="componentForm">
                                                 <mat-form-field class="densed-field" style="width: 100px">
-                                                    <input matInput type="text" formControlName="remark">
-                                                    <mat-error *ngIf="componentForm.get('remark')?.touched && componentForm.get('remark')?.hasError('remarkRequired')">
-                                                        {{ 'taxation.remark_required' | translate }}
-                                                    </mat-error>
+                                                    <input matInput type="text" formControlName="remark">                                                
+                                                    <mat-error
+                                                    *ngIf="componentForm.get('remark')?.hasError('required') && (componentForm.get('remark')?.touched || componentForm.get('remark')?.dirty)">
+                                                    {{ 'taxation.remark_required' | translate }}
+                                                  </mat-error>
                                                 </mat-form-field>
                                             </form>
                                         </ng-container>

@@ -34,7 +34,7 @@
       "signup_Failed": "Sign UP Fialed, Please contact with Support Team",
       "otp_not_verified":  "Please verify the OTP before registering the Company",
       "entered_wrong_otp": "You have entered incorrect OTP",
-      "user_created User": "Created Successfully",    
+      "user_created": "Created Successfully",    
       "reset_password_success" : "Password change Successfully",
      "reset_form_correct_error": "Please correct the errors in the form.",
       "first_name_too_short": "First name must be at least 3 characters.",

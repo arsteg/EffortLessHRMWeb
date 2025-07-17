@@ -145,4 +145,10 @@ export class CustomValidators {
         return null;
       }
     }
+    static email(control: AbstractControl): ValidationErrors | null {
+      const value = control.value;
+      if (!value) return null;
+      const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return pattern.test(value) ? null : { invalidEmail: true };
+    }
 }

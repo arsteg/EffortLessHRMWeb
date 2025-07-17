@@ -72,9 +72,11 @@
                 <input matInput id="email" type="email" name="email" formControlName="email" required email>
                 <mat-error *ngIf="!registerNewUser.get('email').valid && registerNewUser.get('email').touched">
                   <span *ngIf="registerNewUser.get('email').errors?.['required']">{{ 'login.email_required' | translate
-                    }}</span>
-                  <span *ngIf="registerNewUser.get('email').errors?.['email']">{{ 'login.email_invalid' | translate
-                    }}</span>
+                    }}</span>                
+                      <span *ngIf="registerNewUser.get('email')?.hasError('invalidEmail')">
+                        {{ 'login.email_invalid' | translate
+                    }}
+                      </span>
                 </mat-error>
               </mat-form-field>
             </div>
