@@ -76,7 +76,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
     this.categoryForm = this.fb.group({
       leaveType: ['', Validators.required],
       label: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
-      abbreviation: ['',[ Validators.required, labelValidator] ],
+      abbreviation: ['', [Validators.required, labelValidator]],
       canEmployeeApply: [true, Validators.required],
       isHalfDayTypeOfLeave: [true, Validators.required],
       submitBefore: [0, [Validators.required, Validators.min(0)]],
@@ -174,6 +174,37 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
     });
     this.categoryForm.get('leaveAccrualPeriod')?.clearValidators();
     this.categoryForm.get('leaveAccrualPeriod')?.updateValueAndValidity();
+  }
+
+  onLeaveTypeChange() {
+    if (this.isEdit === false) {
+      const currentLeaveType = this.categoryForm.get('leaveType')?.value;
+      this.categoryForm.reset({
+        leaveType: currentLeaveType,
+        label: '',
+        abbreviation: '',
+        canEmployeeApply: false,
+        isHalfDayTypeOfLeave: false,
+        displayLeaveBalanceInPayslip: false,
+        isAnnualHolidayLeavePartOfNumberOfDaysTaken: false,
+        isWeeklyOffLeavePartOfNumberOfDaysTaken: false,
+        isEligibleForLeaveEncashmentDuringRollover: false,
+        isDocumentRequired: false,
+        isDocumentMandatory: false,
+        isEligibleForEncashmentRecoveryDuringFNF: false,
+        isWeeklyOffHolidayPartHalfDayIncludedDaTaken: false,
+        isEmployeesAllowedToNegativeLeaveBalance: false,
+        isRoundOffLeaveAccrualNearestPointFiveUnit: false,
+        isIntraCycleLapseApplicableForThisCategory: false,
+        isProRateFirstMonthAccrualForNewJoinees: false,
+        isPaidLeave: false,
+        isEmployeeAccrualLeaveInAdvance: false,
+        submitBefore: 0,
+        minimumNumberOfDaysAllowed: 0,
+        maximumNumberConsecutiveLeaveDaysAllowed: 0,
+        leaveAccrualPeriod: ''
+      });
+    }
   }
 
   open(content: any) {

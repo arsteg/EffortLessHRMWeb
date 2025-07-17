@@ -164,11 +164,9 @@ export class AddApplicationComponent {
           ...this.bsConfig,
           minDate: this.minSelectableDate
         };
-        // Validate existing dates
         this.validateDates();
       }
     } else {
-      // Reset to default (today) if no submitBefore
       this.minSelectableDate = new Date();
       this.bsConfig = {
         ...this.bsConfig,
@@ -181,7 +179,7 @@ export class AddApplicationComponent {
     const startDate = this.leaveApplication.get('startDate')?.value;
     const endDate = this.leaveApplication.get('endDate')?.value;
     const halfDay = this.leaveApplication.get('date')?.value;
-    
+
     if (startDate && this.minSelectableDate && moment(startDate).isBefore(moment(this.minSelectableDate))) {
       this.leaveApplication.get('startDate')?.setErrors({ submitBeforeError: true });
     }
@@ -342,12 +340,11 @@ export class AddApplicationComponent {
     if (this.weeklyOffDays.includes(dayName)) {
       return false; // Disable weekly off days
     }
-    // Check for holidays
-    const formattedDate = this.stripTime(date); // Normalize to YYYY-MM-DD
+    const formattedDate = this.stripTime(date);
     const isHoliday = this.holidays.some(holiday =>
       this.stripTime(new Date(holiday.date)) === formattedDate
     );
-    return !isHoliday; // Disable holiday dates
+    return !isHoliday;
   };
 
   populateMembers() {

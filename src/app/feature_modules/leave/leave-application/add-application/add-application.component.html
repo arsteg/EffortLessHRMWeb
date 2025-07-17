@@ -67,23 +67,33 @@
         <div class="row m-0 mt-2">
 
             <div class="form-group col-md-6">
-                <mat-form-field class="w-100">
+                <!-- <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.selectStartDate' | translate }}</mat-label>
                     <input matInput [matDatepicker]="startPicker" formControlName="startDate" required
                         [min]="minSelectableDate" [matDatepickerFilter]="weeklyOffDateFilter"
                         aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
                     <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
                     <mat-datepicker #startPicker></mat-datepicker>
-                    <mat-error
-                        *ngIf="leaveApplication.get('startDate')?.invalid && leaveApplication.get('startDate')?.touched && !leaveApplication.get('startDate')?.hasError('submitBeforeError')">
-                        {{ 'leave.invalidStartDate' | translate }}
-                    </mat-error>
-                    <mat-error
-                        *ngIf="leaveApplication.get('startDate')?.hasError('submitBeforeError') && leaveApplication.get('startDate')?.touched">
-                        {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
-                    </mat-error>
+                </mat-form-field> -->
+                <!--  -->
+                <mat-form-field class="w-100">
+                    <mat-label>Start Date</mat-label>
+                    <input matInput [matDatepicker]="datePicker" [min]="minSelectableDate"
+                        [matDatepickerFilter]="weeklyOffDateFilter" formControlName="startDate" required>
+                    <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #datePicker></mat-datepicker>
                 </mat-form-field>
+                <!--  -->
+                <mat-error
+                    *ngIf="leaveApplication.get('startDate')?.invalid && leaveApplication.get('startDate')?.touched && !leaveApplication.get('startDate')?.hasError('submitBeforeError')">
+                    {{ 'leave.invalidStartDate' | translate }}
+                </mat-error>
+                <mat-error
+                    *ngIf="leaveApplication.get('startDate')?.hasError('submitBeforeError') && leaveApplication.get('startDate')?.touched">
+                    {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
+                </mat-error>
             </div>
+
             <div class="form-group col-md-6">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.selectEndDate' | translate }}</mat-label>
@@ -93,18 +103,18 @@
                         aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
                     <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
                     <mat-datepicker #endPicker></mat-datepicker>
-                    <mat-error
-                        *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError') && leaveApplication.get('endDate')?.touched">
-                        {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
-                    </mat-error>
-                    <mat-error
-                        *ngIf="leaveApplication.get('endDate')?.touched && leaveApplication.get('endDate')?.invalid && !leaveApplication.get('endDate')?.hasError('dateRangeError') && !leaveApplication.get('endDate')?.hasError('submitBeforeError')">
-                        {{ 'leave.invalidEndDate' | translate }}
-                    </mat-error>
-                    <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('dateRangeError')">
-                        {{ 'leave.dateRangeError' | translate }}
-                    </mat-error>
                 </mat-form-field>
+                <mat-error
+                    *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError') && leaveApplication.get('endDate')?.touched">
+                    {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
+                </mat-error>
+                <mat-error
+                    *ngIf="leaveApplication.get('endDate')?.touched && leaveApplication.get('endDate')?.invalid && !leaveApplication.get('endDate')?.hasError('dateRangeError') && !leaveApplication.get('endDate')?.hasError('submitBeforeError')">
+                    {{ 'leave.invalidEndDate' | translate }}
+                </mat-error>
+                <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('dateRangeError')">
+                    {{ 'leave.dateRangeError' | translate }}
+                </mat-error>
             </div>
         </div>
 

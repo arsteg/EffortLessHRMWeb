@@ -30,7 +30,7 @@
                 <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.chooseLeaveType" | translate }}</mat-label>
-                        <mat-select formControlName="leaveType">
+                        <mat-select formControlName="leaveType" (selectionChange)="onLeaveTypeChange()">
                             <mat-option value="" disabled>{{
                                 "leave.selectLeaveType" | translate
                                 }}</mat-option>
