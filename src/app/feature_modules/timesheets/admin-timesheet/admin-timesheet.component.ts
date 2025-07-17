@@ -9,6 +9,7 @@ import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-admin-timesheet',
   templateUrl: './admin-timesheet.component.html',
@@ -32,6 +33,7 @@ export class AdminTimesheetComponent implements OnInit {
   @ViewChild('toDateRef') toDateRef: ElementRef;
   adminTimeSheets: any = [];
   selectAll: boolean = false;
+  public sortOrder: string = '';
 
   fromDateControl = new FormControl('', [
     Validators.required,
@@ -47,7 +49,8 @@ export class AdminTimesheetComponent implements OnInit {
     private timeLogService: TimeLogService,
     private projectService: ProjectService,
     private exportService: ExportService,
-    public commonService: CommonService
+    public commonService: CommonService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {

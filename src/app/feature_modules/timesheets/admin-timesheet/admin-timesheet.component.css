@@ -1,4 +1,71 @@
-.table-container {
+/* Sticky column for User */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 3;
+  min-width: 120px;
+  max-width: 120px;
+  white-space: nowrap;
+}
+
+/* Sticky column for Project (next to User) */
+.sticky-col-2 {
+  position: sticky;
+  left: 120px; /* match the width of .sticky-col */
+  background: #fff;
+  z-index: 2;
+  min-width: 150px;
+  max-width: 150px;
+  white-space: nowrap;
+}
+
+/* Ensure table header stays above cells */
+th {
+  z-index: 4;
+}
+
+
+/* .sticky-col {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 3;
+  min-width: 120px;
+  max-width: 120px;
+  white-space: nowrap;
+}
+
+.sticky-col-2 {
+  position: sticky;
+  left: 120px;
+  background: #fff;
+  z-index: 2;
+  min-width: 150px;
+  max-width: 150px;
+  white-space: nowrap;
+}
+
+th {
+  z-index: 4;
+}
+
+th.sticky-col, td.sticky-col {
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 1;
+}
+
+th.sticky-col-2, td.sticky-col-2 {
+  position: sticky;
+  left: 150px; 
+  background: white;
+  z-index: 1;
+} */
+
+
+/* .table-container {
   max-width: 100%;
   overflow-x: auto;
 }
@@ -36,4 +103,4 @@
 }
 .bold-text {
   font-weight: bold;
-}
+} */
