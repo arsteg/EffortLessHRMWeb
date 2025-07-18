@@ -14,7 +14,7 @@
             <div class="form-group col-md-12">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.selectEmployee' | translate }}</mat-label>
-                    <mat-select formControlName="employee" required>
+                    <mat-select formControlName="employee" required (selectionChange)="onEmployeeChange($event)">
                         <mat-option *ngFor="let member of allAssignee" [value]="member.id">
                             {{ member?.firstName | titlecase }} {{ member?.lastName }}
                         </mat-option>
@@ -68,22 +68,22 @@
 
             <div class="form-group col-md-6">
                 <mat-form-field class="w-100">
-                    <mat-label>{{ 'leave.selectStartDate' | translate }}</mat-label>
-                    <input matInput [matDatepicker]="startPicker" formControlName="startDate" required
-                        [min]="minSelectableDate" [matDatepickerFilter]="weeklyOffDateFilter"
-                        aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
-                    <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-                    <mat-datepicker #startPicker></mat-datepicker>
-                    <mat-error
-                        *ngIf="leaveApplication.get('startDate')?.invalid && leaveApplication.get('startDate')?.touched && !leaveApplication.get('startDate')?.hasError('submitBeforeError')">
-                        {{ 'leave.invalidStartDate' | translate }}
-                    </mat-error>
-                    <mat-error
-                        *ngIf="leaveApplication.get('startDate')?.hasError('submitBeforeError') && leaveApplication.get('startDate')?.touched">
-                        {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
-                    </mat-error>
+                    <mat-label>Start Date</mat-label>
+                    <input matInput [matDatepicker]="datePicker" [min]="minSelectableDate"
+                        [matDatepickerFilter]="weeklyOffDateFilter" formControlName="startDate" required>
+                    <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #datePicker></mat-datepicker>
                 </mat-form-field>
+                <mat-error
+                    *ngIf="leaveApplication.get('startDate')?.invalid && leaveApplication.get('startDate')?.touched && !leaveApplication.get('startDate')?.hasError('submitBeforeError')">
+                    {{ 'leave.invalidStartDate' | translate }}
+                </mat-error>
+                <mat-error
+                    *ngIf="leaveApplication.get('startDate')?.hasError('submitBeforeError') && leaveApplication.get('startDate')?.touched">
+                    {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
+                </mat-error>
             </div>
+
             <div class="form-group col-md-6">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.selectEndDate' | translate }}</mat-label>
@@ -93,18 +93,18 @@
                         aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
                     <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
                     <mat-datepicker #endPicker></mat-datepicker>
-                    <mat-error
-                        *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError') && leaveApplication.get('endDate')?.touched">
-                        {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
-                    </mat-error>
-                    <mat-error
-                        *ngIf="leaveApplication.get('endDate')?.touched && leaveApplication.get('endDate')?.invalid && !leaveApplication.get('endDate')?.hasError('dateRangeError') && !leaveApplication.get('endDate')?.hasError('submitBeforeError')">
-                        {{ 'leave.invalidEndDate' | translate }}
-                    </mat-error>
-                    <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('dateRangeError')">
-                        {{ 'leave.dateRangeError' | translate }}
-                    </mat-error>
                 </mat-form-field>
+                <mat-error
+                    *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError') && leaveApplication.get('endDate')?.touched">
+                    {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
+                </mat-error>
+                <mat-error
+                    *ngIf="leaveApplication.get('endDate')?.touched && leaveApplication.get('endDate')?.invalid && !leaveApplication.get('endDate')?.hasError('dateRangeError') && !leaveApplication.get('endDate')?.hasError('submitBeforeError')">
+                    {{ 'leave.invalidEndDate' | translate }}
+                </mat-error>
+                <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('dateRangeError')">
+                    {{ 'leave.dateRangeError' | translate }}
+                </mat-error>
             </div>
         </div>
 
@@ -114,7 +114,7 @@
 
         <div class="form-group col-md-12">
             <label>{{ 'leave.halfDayOptionPrompt' | translate }} <span class="text-danger">*</span></label>
-            <mat-radio-group formControlName="isHalfDayOption" class="d-flex">
+            <mat-radio-group formControlName="isHalfDayOption" (change)="onHalfDayChange()" class="d-flex">
                 <mat-radio-button color="primary" [value]="true">{{ 'leave.yesOption' | translate
                     }}</mat-radio-button>
                 <mat-radio-button color="primary" [value]="false">{{ 'leave.noOption' | translate
@@ -130,7 +130,7 @@
                 <div formArrayName="halfDays">
                     <div *ngFor="let halfDay of halfDays.controls; let i=index" [formGroupName]="i"
                         class="row m-0 mt-2">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-5">
                             <mat-form-field class="w-100">
                                 <mat-label>{{ 'leave.dateLabel' | translate }}</mat-label>
                                 <input matInput [matDatepicker]="halfDayPicker"
@@ -140,7 +140,7 @@
                                 <mat-datepicker #halfDayPicker></mat-datepicker>
                             </mat-form-field>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-5">
                             <mat-form-field class="w-100">
                                 <mat-label>{{ 'leave.dayHalfLabel' | translate }}</mat-label>
                                 <mat-select formControlName="dayHalf">
@@ -150,6 +150,12 @@
                                         }}</mat-option>
                                 </mat-select>
                             </mat-form-field>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-center justify-content-end">
+                            <button type="button" mat-icon-button color="warn" (click)="removeHalfDayEntry(i)"
+                                aria-label="Remove half-day entry">
+                                <mat-icon>delete</mat-icon>
+                            </button>
                         </div>
                     </div>
                 </div>

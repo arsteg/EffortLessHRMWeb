@@ -193,7 +193,7 @@ getSelectedUserNames(): Promise<string> {
   }
 
   getProjectName(id:string){
-    return this.projectList.find(p=>p.id==id).projectName;
+    return this.projectList.find(p=>p.id==id)?.projectName;
   }
 
   getFirstDayOfWeek(){
