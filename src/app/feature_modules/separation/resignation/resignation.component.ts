@@ -269,7 +269,8 @@ export class ResignationComponent implements OnInit {
       this.resignationForm.reset();
     }
     this.dialogRef = this.dialog.open(this.dialogTemplate, {
-      disableClose: true
+      disableClose: true,
+      width: "50%"
     });
   }
 

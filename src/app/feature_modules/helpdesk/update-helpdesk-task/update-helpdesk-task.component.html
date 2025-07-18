@@ -1,29 +1,49 @@
-<h2 mat-dialog-title>Update Ticket</h2>
-<mat-dialog-content>
-  <form #updateForm="ngForm">
-    <mat-form-field appearance="fill" style="width: 100%;">
-      <mat-label>Status</mat-label>
-      <mat-select [(ngModel)]="status" name="status" required>
-        <mat-option value="" disabled>Select a status</mat-option>
-        <mat-option value="Open">Open</mat-option>
-        <mat-option value="In Progress">In Progress</mat-option>
-        <mat-option value="Resolved">Resolved</mat-option>
-        <mat-option value="Closed">Closed</mat-option>
-      </mat-select>
-      <mat-error *ngIf="updateForm.submitted && !status">Status is required</mat-error>
-    </mat-form-field>
+<div class="d-flex align-items-center justify-content-between">
+  <h1 mat-dialog-title>
+    {{ 'helpdesk.update_ticket' | translate }}
+  </h1>
+  <button mat-icon-button mat-dialog-close="" class="me-4">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+<div>
+  <mat-dialog-content>
+    <form #updateForm="ngForm" (ngSubmit)="onSubmit(updateForm)">
+      <div class="row m-0">
+        <div class="form-group col-12 mb-3">
+          <mat-form-field class="w-100">
+            <mat-label>{{ 'helpdesk.status_label' | translate }}</mat-label>
+            <mat-select [(ngModel)]="status" #statusModel="ngModel" name="status" required>
+              <mat-option value="" disabled>{{ 'helpdesk.status_placeholder' | translate }}</mat-option>
+              <mat-option value="Open">{{ 'helpdesk.status_open' | translate }}</mat-option>
+              <mat-option value="In Progress">{{ 'helpdesk.status_in_progress' | translate }}</mat-option>
+              <mat-option value="Resolved">{{ 'helpdesk.status_resolved' | translate }}</mat-option>
+              <mat-option value="Closed">{{ 'helpdesk.status_closed' | translate }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="statusModel.invalid && (statusModel.touched || updateForm.submitted)">
+              {{ 'helpdesk.status_required' | translate }}
+            </mat-error>
+          </mat-form-field>
 
-    <mat-form-field appearance="fill" style="width: 100%;">
-      <mat-label>Remark</mat-label>
-      <textarea matInput [(ngModel)]="remark" name="remark" required></textarea>
-      <mat-error *ngIf="updateForm.submitted && !remark">Remarks is required</mat-error>
-    </mat-form-field>
-  </form>
-</mat-dialog-content>
+          <mat-form-field style="width: 100%;">
+            <mat-label>{{ 'helpdesk.remark_label' | translate }}</mat-label>
+            <textarea matInput [(ngModel)]="remark" #remarkModel="ngModel" maxlength="2000" minlength="1" name="remark" required></textarea>
+             <mat-error *ngIf="remarkModel.invalid && (remarkModel.touched || updateForm.submitted)">
+              <span *ngIf="remarkModel.errors?.['required']">
+                {{ 'helpdesk.remark_required' | translate }}
+              </span>
+              <span *ngIf="remarkModel.errors?.['minlength']">
+                {{ 'helpdesk.remark_minlength' | translate }}
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
 
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-flat-button color="primary" 
-          [disabled]="!status || !remark"
-          (click)="onSubmit()">Submit</button>
-</mat-dialog-actions>
+  <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+    <button mat-flat-button (click)="onCancel()">{{ 'helpdesk.cancel' | translate }}</button>
+    <button type="submit" color="primary" mat-flat-button (click)="updateForm.ngSubmit.emit()">{{ 'helpdesk.submit_request' | translate }}</button>
+  </div>
+</div>

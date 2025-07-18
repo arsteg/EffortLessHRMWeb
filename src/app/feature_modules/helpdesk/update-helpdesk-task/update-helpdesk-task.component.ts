@@ -1,4 +1,5 @@
 import { Component, Inject } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -22,8 +23,16 @@ export class UpdateHelpdeskTaskComponent {
     }
   }
 
-  onSubmit() {
-    if (!this.status || !this.remark) return;
+  // onSubmit() {
+  //   if (!this.status || !this.remark) return;
+  //   this.dialogRef.close({ status: this.status, remark: this.remark });
+  // }
+  onSubmit(form: NgForm) {
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      return;
+    }
+
     this.dialogRef.close({ status: this.status, remark: this.remark });
   }
 

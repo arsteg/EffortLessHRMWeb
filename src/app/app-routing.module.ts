@@ -185,7 +185,8 @@ const routes: Routes = [
       {
         path: 'helpdesk', component: HelpdeskDashboardComponent,
         canActivate: [AuthGuard],
-        data: { permission: 'Helpdesk' }
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'helpdesk', permission: 'Helpdesk' }
       },
       { path: 'tasks', component: TasksComponent,
         canActivate: [AuthGuard],

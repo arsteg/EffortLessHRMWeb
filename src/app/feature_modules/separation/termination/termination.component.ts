@@ -46,17 +46,6 @@ export class TerminationComponent {
   totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  // displayedColumns: string[] = [
-  //   'user',
-  //   'termination_date', 'termination_reason', 'notice_given',
-  //   'performance_warnings', 'severance_paid', 'final_pay_processed',
-  //   'company_property_returned', 'exit_interview_date', 'legal_compliance',
-  //   'unemployment_claim', 'termination_status', 'actions'
-  // ];
-  // userTerminationColumns: string[] = ['termination_date', 'termination_reason', 'notice_given',
-  //   'performance_warnings', 'severance_paid', 'final_pay_processed',
-  //   'company_property_returned', 'exit_interview_date', 'legal_compliance',
-  //   'unemployment_claim', 'actions'];
   adminColumns = [
     {
       key: 'user',
@@ -294,7 +283,8 @@ export class TerminationComponent {
       this.terminationForm.reset();
     }
     this.dialogRef = this.dialog.open(this.dialogTemplate, {
-      disableClose: true
+      disableClose: true,
+      width: "50%"
     });
   }
 

@@ -26,6 +26,8 @@
         "appeal_review_success": "Appeal reviewed successfully", 
         "termination_add_fail": "Termination cannot be added.",
         "termination_add_success": "Termination Added",  
-        "termination_update_success": "Termination Updated"
+        "termination_update_success": "Termination Updated",
+        "resignation": "Resignation",
+        "termination": "Termination"
       }
 }
