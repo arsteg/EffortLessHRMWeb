@@ -114,13 +114,13 @@ export class ResignationComponent implements OnInit {
           label: 'Edit',
           visibility: ActionVisibility.LABEL,
           icon: 'edit',
-          hideCondition: (row: any) => row.resignation_status !== this.resignationStatuses.Completed
+          hideCondition: (row: any) => row.resignation_status != this.resignationStatuses.Pending
         },
         {
           label: 'Delete',
           visibility: ActionVisibility.LABEL,
           icon: 'delete',
-          hideCondition: (row: any) => row.resignation_status !== this.resignationStatuses.Completed
+          hideCondition: (row: any) => row.resignation_status != this.resignationStatuses.Pending
         }
       ]
     }
