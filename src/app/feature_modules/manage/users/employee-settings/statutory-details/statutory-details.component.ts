@@ -38,7 +38,7 @@ export class StatutoryDetailsComponent {
       providentFundJoiningDate: [],
       providentFundNumber: ['', [Validators.pattern(/^[a-zA-Z0-9]{1,22}$/)]],
       UANNumber: ['', [Validators.pattern(/^\d{12}$/)]],
-      fixedAmountForYourProvidentFundWage: [0],
+      fixedAmountForYourProvidentFundWage: [0,[Validators.pattern(/^\d*\.?\d+$/)]],
       additionalPFContributionInPercentage: [
         0,
         [Validators.pattern(/^\d*\.?\d+$/)] // Accepts integers or decimals, no + - or characters
