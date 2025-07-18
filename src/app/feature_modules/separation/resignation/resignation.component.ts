@@ -188,16 +188,16 @@ export class ResignationComponent implements OnInit {
       isAction: true,
       options: [
         {
-          label: 'Completed',
+          label: 'Pending',
           visibility: ActionVisibility.LABEL,
           icon: 'check_circle',
-          hideCondition: (row: any) => (row.resignation_status === this.resignationStatuses.Completed)
+          hideCondition: (row: any) => (row.resignation_status === this.resignationStatuses.Pending)
         },
         {
           label: 'In-Progress',
           visibility: ActionVisibility.LABEL,
           icon: 'hourglass_empty',
-          hideCondition: (row: any) => (row.resignation_status === "In-Progress")
+          hideCondition: (row: any) => (row.resignation_status === this.resignationStatuses.InProgress)
         },
         {
           label: 'Approved',
@@ -283,10 +283,14 @@ export class ResignationComponent implements OnInit {
 
   onSubmit(): void {
     this.resignationForm.get('notice_period')?.enable();
+    this.resignationForm.get('last_working_day')?.enable();
     this.resignationForm.patchValue({
       user: this.currentUser.id
     });
-
+    if (this.resignationForm.invalid) {
+      this.toast.error('Please fill all required fields', 'Error!');
+      return;
+    }
     const companyPropertyReturned = this.resignationForm.get('company_property_returned')?.value;
     const userId = this.currentUser.id;
 
@@ -316,8 +320,11 @@ export class ResignationComponent implements OnInit {
       this.saveResignation(); // Skip asset check if not marked as returned
     }
     this.resignationForm.get('notice_period')?.disable();
+    this.resignationForm.get('last_working_day')?.disable();
+  
   }
-  saveResignation() {
+  saveResignation() {   
+  
     if (this.resignationForm.valid) {
       if (this.isEditMode) {
         this.separationService.updateResignationById(this.selectedRecord._id, this.resignationForm.value).subscribe(
@@ -402,10 +409,9 @@ export class ResignationComponent implements OnInit {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Removed';
   }
 
-  updateResignationStatus(resignation: string, status: string) {
-    status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  updateResignationStatus(resignation: string, status: string) {    
     // If status is being changed to Completed, check the company_property_returned flag
-  if (status === this.resignationStatuses.Completed && this.selectedRecord && !this.selectedRecord.company_property_returned) {
+  if (status === this.resignationStatuses.Approved && this.selectedRecord && !this.selectedRecord.company_property_returned) {
     this.toast.error(
       this.translate.instant('separation.company_property_not_returned'),
       this.translate.instant('common.error')
@@ -457,9 +463,9 @@ export class ResignationComponent implements OnInit {
       this.openDialog(row);
     } else if (action.label === 'Delete') {
       this.deleteDialog(row._id);
-    } else if (['Completed', 'In-Progress', 'Approved'].includes(action.label)) {
+    } else if (['In-Progress', 'Approved', 'Pending'].includes(action.label)) {
       this.selectedStatus = row._id;
-      this.changedStatus = action.label.toLowerCase() as string;
+      this.changedStatus = action.label as string;
       this.openUpdateStatusDialog();
     }
   }
