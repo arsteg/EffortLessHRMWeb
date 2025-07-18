@@ -151,4 +151,11 @@ export class CustomValidators {
       const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       return pattern.test(value) ? null : { invalidEmail: true };
     }
+    static noLeadingOrTrailingSpaces(control: AbstractControl): { [key: string]: any } | null {
+      const value = control.value;
+      if (typeof value === 'string' && (value.startsWith(' ') || value.endsWith(' '))) {
+        return { spacesNotAllowed: true };
+      }
+      return null;
+    }
 }

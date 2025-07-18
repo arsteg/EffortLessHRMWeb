@@ -50,9 +50,9 @@
                 </td>
                 <td style="width: 100px;">
                     <ng-container [ngSwitch]="group.get('approvalStatus')?.value"  [readonly]="true" >
-                        <mat-icon *ngSwitchCase="'Pending'" color="primary">hourglass_empty</mat-icon>
-                        <mat-icon *ngSwitchCase="'Approved'" color="accent">check_circle</mat-icon>
-                        <mat-icon *ngSwitchCase="'Rejected'" color="warn">cancel</mat-icon>
+                        <mat-icon *ngSwitchCase="'Pending'" matTooltip="Pending" color="primary">hourglass_empty</mat-icon>
+                        <mat-icon *ngSwitchCase="'Approved'" matTooltip="Approved" color="accent">check_circle</mat-icon>
+                        <mat-icon *ngSwitchCase="'Rejected'" matTooltip="Rejected"  color="warn">cancel</mat-icon>
                         <span *ngSwitchDefault>{{ group.get('approvalStatus')?.value }}</span>
                     </ng-container>
                 </td>
@@ -103,11 +103,11 @@
                         <mat-icon>edit</mat-icon>
                     </button>
                     } @else {
-                    <button mat-icon-button matTooltip="Update" matTooltipPosition="below" type="button"
+                    <button mat-icon-button matTooltip="Update" matTooltipPosition="below" type="button"  matTooltip="Update"
                         (click)="selectedComponent = taxComponents[i]?._id; updateRow(i)" class="success-btn"> 
                         <mat-icon>check</mat-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Close" matTooltipPosition="below" type="button"
+                    <button mat-icon-button matTooltip="Close" matTooltipPosition="below" type="button" matTooltip="Close"
                         (click)="cancelEditing(i)" class="delete-btn"> 
                         <mat-icon>close</mat-icon>
                     </button>

@@ -188,6 +188,12 @@ export class ResignationComponent implements OnInit {
       isAction: true,
       options: [
         {
+          label: 'Edit',
+          visibility: ActionVisibility.LABEL,
+          icon: 'edit',
+          hideCondition: (row: any) => row.resignation_status != this.resignationStatuses.Pending
+        },
+        {
           label: 'Pending',
           visibility: ActionVisibility.LABEL,
           icon: 'check_circle',
