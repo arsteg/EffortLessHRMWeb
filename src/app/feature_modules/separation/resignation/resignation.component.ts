@@ -48,6 +48,7 @@ export class ResignationComponent implements OnInit {
   totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  minDate: Date;
   columns = [
     {
       key: 'user',
@@ -218,7 +219,7 @@ export class ResignationComponent implements OnInit {
     this.resignationForm = this.fb.group({
       user: [''],
       resignation_date: [''],
-      last_working_day: [''],
+      last_working_day: [{ value: '', disabled: true }],
       notice_period: [{ value: '', disabled: true }],
       resignation_reason: [''],
       exit_interview_date: [''],
@@ -227,6 +228,9 @@ export class ResignationComponent implements OnInit {
       final_pay_processed: [false],
       exit_feedback: ['']
     });
+    const today = new Date();
+    // Set minDate to tomorrow
+    this.minDate = new Date(today.setDate(today.getDate() + 1));
   }
 
   ngOnInit(): void {
@@ -234,6 +238,19 @@ export class ResignationComponent implements OnInit {
       this.users = res.data['data'];      
       this.getallResignationStatusList();
       this.getResignationByUser();
+      this.resignationForm.get('resignation_date')?.valueChanges.subscribe((resignationDate: Date) => {
+        const noticePeriod = +this.resignationForm.get('notice_period')?.value;
+      
+        if (resignationDate && noticePeriod && !isNaN(noticePeriod)) {
+          const lastWorkingDay = new Date(resignationDate);
+          lastWorkingDay.setDate(lastWorkingDay.getDate() + noticePeriod);
+      
+          this.resignationForm.patchValue({
+            last_working_day: lastWorkingDay
+          });
+        }
+      });
+      
     });
   }
 
@@ -307,7 +324,7 @@ export class ResignationComponent implements OnInit {
           (res: any) => {
             this.getResignationByUser();
             this.resignationForm.reset();
-            this.toast.success( this.translate.instant('separation.update_success'),  this.translate.instant('separation.success'));
+            this.toast.success( this.translate.instant('separation.update_success'));
             this.dialogRef.close();
           },
           err => {
@@ -321,7 +338,7 @@ export class ResignationComponent implements OnInit {
           (res: any) => {
             this.getResignationByUser();
             this.resignationForm.reset();
-            this.toast.success(this.translate.instant('separation.add_success'), this.translate.instant('separation.success'));
+            this.toast.success(this.translate.instant('separation.add_success'));
             this.dialogRef.close();
           },
           err => {
@@ -342,6 +359,7 @@ export class ResignationComponent implements OnInit {
             this.resignationForm.patchValue({
               notice_period: res.data[0].noticePeriod || 'N/A'
             });
+            
            }
           else{
             this.toast.error(

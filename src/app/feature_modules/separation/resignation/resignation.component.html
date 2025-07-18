@@ -194,7 +194,11 @@
           <div class="col-md-6 mt-3">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Resignation Date</mat-label>
-              <input matInput [matDatepicker]="picker1" formControlName="resignation_date" required>
+              <input matInput 
+              [matDatepicker]="picker1" 
+              formControlName="resignation_date" 
+              [min]="minDate" 
+              required>            
               <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
               <mat-datepicker #picker1></mat-datepicker>
               <mat-error *ngIf="resignationForm.controls['resignation_date'].hasError('required') && resignationForm.controls['resignation_date'].touched">
@@ -202,20 +206,6 @@
               </mat-error>
             </mat-form-field>
           </div>
-          <div class="col-md-6 mt-3">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Last Working Day</mat-label>
-              <input matInput [matDatepicker]="picker2" formControlName="last_working_day" required>
-              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-              <mat-datepicker #picker2></mat-datepicker>
-              <mat-error *ngIf="resignationForm.controls['last_working_day'].hasError('required') && resignationForm.controls['last_working_day'].touched">
-                Last Working Day is required.
-              </mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <div class="row mt-3">
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Notice Period</mat-label>
@@ -225,10 +215,25 @@
               </mat-error>
             </mat-form-field>
           </div>
+        </div>
+
+        <div class="row mt-3">
+          
+          <div class="col-md-6 mt-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Last Working Day</mat-label>
+              <input matInput [matDatepicker]="picker2" formControlName="last_working_day" [min]="minDate"  required >
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+              <mat-error *ngIf="resignationForm.controls['last_working_day'].hasError('required') && resignationForm.controls['last_working_day'].touched">
+                Last Working Day is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
           <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Exit Interview Date</mat-label>
-              <input matInput [matDatepicker]="picker3" formControlName="exit_interview_date">
+              <input matInput [matDatepicker]="picker3" formControlName="exit_interview_date" [min]="minDate" >
               <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
               <mat-datepicker #picker3></mat-datepicker>
             </mat-form-field>
