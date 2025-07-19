@@ -57,7 +57,7 @@
           <div class="col-md-12 mt-3">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Termination Date</mat-label>
-              <input matInput [matDatepicker]="picker1" formControlName="termination_date" required>
+              <input matInput [matDatepicker]="picker1" formControlName="termination_date"  [min]="minDate" required>
               <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
               <mat-datepicker #picker1></mat-datepicker>
               <mat-error *ngIf="terminationForm.controls['termination_date'].hasError('required') && terminationForm.controls['termination_date'].touched">
@@ -68,7 +68,7 @@
           <div class="col-md-12 mt-3">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Exit Interview Date</mat-label>
-              <input matInput [matDatepicker]="picker2" formControlName="exit_interview_date">
+              <input matInput [matDatepicker]="picker2" formControlName="exit_interview_date"  [min]="minDate" >
               <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
               <mat-datepicker #picker2></mat-datepicker>
             </mat-form-field>

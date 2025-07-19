@@ -49,6 +49,7 @@ export class ResignationComponent implements OnInit {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   minDate: Date;
+  isAdminView = false;
   columns = [
     {
       key: 'user',
@@ -234,9 +235,7 @@ export class ResignationComponent implements OnInit {
       final_pay_processed: [false],
       exit_feedback: ['']
     });
-    const today = new Date();
-    // Set minDate to tomorrow
-    this.minDate = new Date(today.setDate(today.getDate() + 1));
+   
   }
 
   ngOnInit(): void {
@@ -258,15 +257,25 @@ export class ResignationComponent implements OnInit {
       });
       
     });
+    this.isAdminView = localStorage.getItem('adminView') == 'admin';
+    console.log( this.isAdminView);
   }
 
   openDialog(resignation?: any): void { 
     this.isEditMode = !!resignation;
+    const today = new Date();
+    this.minDate = this.isEditMode ? null : new Date(today.setDate(today.getDate() + 1));
     if (this.isEditMode) {
       this.resignationForm.patchValue(resignation);
     } else {
       this.loadNoticePeriod();
       this.resignationForm.reset();
+    }
+    if (this.isAdminView) {
+      this.resignationForm.get('resignation_date')?.disable();
+      this.resignationForm.get('resignation_reason')?.disable();
+    } else {
+      this.resignationForm.get('exit_feedback')?.disable();
     }
     this.dialogRef = this.dialog.open(this.dialogTemplate, {
       disableClose: true,
@@ -305,7 +314,6 @@ export class ResignationComponent implements OnInit {
       this.assetManagementService.getEmployeeAssets(userId).subscribe(
         (response) => {
           const assignedAssets = response?.data ?? [];
-
           if (assignedAssets.length > 0) {
             this.toast.error(
               this.translate.instant('separation.assest_return_warning'),
@@ -330,7 +338,7 @@ export class ResignationComponent implements OnInit {
     this.resignationForm.get('last_working_day')?.disable();
   
   }
-  saveResignation() {   
+  saveResignation() {
   
     if (this.resignationForm.valid) {
       if (this.isEditMode) {

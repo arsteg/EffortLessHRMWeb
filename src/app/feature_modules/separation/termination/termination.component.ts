@@ -38,7 +38,7 @@ export class TerminationComponent {
   userTerminations:  any[] = [];
   terminationStatuses: TerminationStatus;    
   terminationAppealStatuses: TerminationAppealStatus;  
-  
+  minDate: Date;
   selectedRecord: any;
   appealForm: FormGroup;
   reviewAppealForm: FormGroup;
@@ -277,6 +277,9 @@ export class TerminationComponent {
 
   openDialog(termination?: any): void {
     this.isEditMode = !!termination;
+    const today = new Date();
+    this.minDate = this.isEditMode ? null : new Date(today.setDate(today.getDate() + 1));
+  
     if (this.isEditMode) {
       this.terminationForm.patchValue(termination);
     } else {
@@ -331,6 +334,10 @@ export class TerminationComponent {
   }
     
   onSubmit() {
+    if (this.terminationForm.invalid) {
+      this.toast.error('Please fill all required fields', 'Error!');
+      return;
+    }
     if (this.terminationForm.valid) {
       const companyPropertyReturned = this.terminationForm.get('company_property_returned')?.value;
       const userId = this.terminationForm.get('user')?.value;
