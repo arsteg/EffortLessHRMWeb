@@ -9,9 +9,6 @@
       <mat-error *ngIf="addTemplateForm.get('label')?.errors?.['invalidLabel']">
         {{ 'attendance.at_errorLabelInvalid' | translate }}
       </mat-error>
-      <mat-error *ngIf="addTemplateForm.get('label')?.errors?.['duplicateLabel']">
-        {{ 'attendance.at_errorLabelDuplicate' | translate }}
-      </mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-100">
@@ -30,6 +27,9 @@
       </mat-error>
     <mat-error *ngIf="addTemplateForm.get('minimumHoursRequiredPerWeek')?.errors?.['min'] && addTemplateForm.get('minimumHoursRequiredPerWeek')?.touched">
       {{ 'attendance.at_negativeMinimumHours' | translate }}
+    </mat-error>
+    <mat-error *ngIf="addTemplateForm.get('minimumHoursRequiredPerWeek')?.errors?.['max'] && addTemplateForm.get('minimumHoursRequiredPerWeek')?.touched">
+      {{ 'attendance.minimumHoursExceeded' | translate }}
     </mat-error>
   </mat-form-field>
 

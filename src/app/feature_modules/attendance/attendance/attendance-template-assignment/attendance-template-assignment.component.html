@@ -80,20 +80,7 @@
                 <mat-error *ngIf="attendanceTemplateAssignmentForm.get('primaryApprover')?.hasError('required') && attendanceTemplateAssignmentForm.get('primaryApprover')?.touched">
                     {{ 'attendance.ata_primary_approver_required' | translate }}
                 </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-100">
-                <mat-label>{{ 'attendance.ata_secondary_approver' | translate }}</mat-label>
-                <mat-select id="member" name="secondary" formControlName="secondaryApprover"> 
-                    <mat-option value="" disabled>{{ 'attendance.ata_select_secondary_approver' | translate }}</mat-option>
-                    <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                    {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
-                    </mat-option>
-                </mat-select>
-                <mat-error *ngIf="attendanceTemplateAssignmentForm.get('secondaryApprover')?.hasError('required') && attendanceTemplateAssignmentForm.get('secondaryApprover')?.touched">
-                    {{ 'attendance.ata_secondary_approver_required' | translate }}
-                </mat-error>
-            </mat-form-field>
+            </mat-form-field>           
         </div>
         <div mat-dialog-actions class="d-flex align-items-center justify-content-between">  
             <button mat-button type="reset" mat-dialog-close>

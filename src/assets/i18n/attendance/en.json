@@ -54,6 +54,22 @@
     "at_minimumHoursPerWeek": "No. of minimum hours required per Week",
     "at_errorMinimumHours": "Minimum Hours per Week is required.",
     "at_negativeMinimumHours": "Minimum hours cannot be negative.",
+    "minimumHoursExceeded": "Minimum hours per week cannot exceed 60.",
+    "loadAssignmentsError": "Failed to load attendance assignments.",
+    "loadTemplatesError": "Failed to load attendance templates.",
+    "templateTitle": "Attendance Template",
+    "deleteError": "Failed to delete attendance template.",
+    "templateAssignedSuccess": "Attendance Template Assigned",
+    "templateAssignmentUpdateSuccess": "Successfully Updated!!!",
+    "templateAssignmentUpdateError": "Attendance Template Assignment can not be updated",
+    "templateAssignmentError": "Attendance Template Assignment cannot be created",
+    "templateAssignmentDeleteSuccess": "Successfully Deleted!!!",
+    "templateAssignmentDeleteError": "This Template Assignment Can not be deleted",
+    "templateAssignmentDeleteErrorGeneric": "Can not be Deleted",
+    "deleteSuccess": "Shift deleted successfully!",
+    "deleteRestricted": "This shift cannot be deleted because it is assigned.",
+    "createSuccess": "Shift created successfully!",
+    "updateSuccess": "Shift updated successfully!",
     "at_notifyEmployeeMinHours": "Do you want to notify employee if Min Hours not accomplished?",
     "at_errorNotifyEmployeeMinHours": "Notify Employee minimum hour is required.",
     "at_weeklyOffDays": "Which days should be considered as weekly off?",
@@ -228,6 +244,16 @@
   "sta_error.assign_failed": "Shift Template Cannot be Assigned",
   "sta_error.update_failed": "Shift Template Assignment Cannot be Updated",
   "sta_error.delete_failed": "Shift Template Assignment Cannot be Deleted",
-  "sta_error.required_fields": "Please fill the required fields"
+  "sta_error.required_fields": "Please fill the required fields",
+  "successCreate": "Attendance Template created successfully.",
+  "successUpdate": "Attendance Template updated successfully.",
+  "createError": "Attendance Template could not be created.",
+  "updateError": "Attendance Template could not be updated."
+  },
+  "common": {
+    "error": "Error!",
+    "success": "Success!",
+    "missingParams": "Required parameters are missing."
   }
+  
 }

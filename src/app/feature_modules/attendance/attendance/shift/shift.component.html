@@ -35,10 +35,7 @@
               </span>
               <span *ngIf="shiftForm.get('name')?.errors?.['invalidLabel']">
                 {{ 'attendance.shift.name_invalid' | translate }}
-              </span>
-              <span *ngIf="shiftForm.get('name')?.errors?.['duplicateLabel']">
-                {{ 'attendance.at_errorLabelDuplicate' | translate }}
-              </span>
+              </span>             
             </mat-error>
           </mat-form-field>
         </div>

@@ -158,4 +158,14 @@ export class CustomValidators {
       }
       return null;
     }
+  // Custom validator for shift name
+ 
+  static labelValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value as string;
+    if (!value || /^\s*$/.test(value)) {
+      return { required: true };
+    }
+    const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
+    return valid ? null : { invalidLabel: true };
+  }
 }

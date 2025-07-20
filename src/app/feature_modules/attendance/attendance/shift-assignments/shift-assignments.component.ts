@@ -197,7 +197,7 @@ export class ShiftAssignmentsComponent {
 
       if (!this.isEdit) {
         this.attendanceService.addShiftAssignment(this.shiftForm.value).subscribe((res: any) => {
-          this.isSubmitting = true;
+          this.isSubmitting = false;
           this.loadRecords();
           this.toast.success(this.translate.instant('attendance.sta_success.assigned'), this.translate.instant('attendance.sta_success_alert'));
           this.shiftForm.reset({
@@ -210,12 +210,16 @@ export class ShiftAssignmentsComponent {
           this.isEdit = false;
         },
           err => {
-            this.toast.error(this.translate.instant('attendance.sta_error.assign_failed'), 'ERROR')
+            const errorMessage = err?.error?.message || err?.message || err 
+            ||  this.translate.instant('attendance.templateAssignmentError')
+            ;
+            this.toast.error(errorMessage, this.translate.instant('common.error'));
+             this.isSubmitting = false;
           })
       }
       else if (this.isEdit) {
         this.attendanceService.updateShiftAssignment(this.selectedShift, this.shiftForm.value).subscribe((res: any) => {
-          this.isSubmitting = true;
+          this.isSubmitting = false;
           this.loadRecords();
           this.shiftForm.reset();
           this.closeModal();
@@ -224,7 +228,11 @@ export class ShiftAssignmentsComponent {
           this.toast.success(this.translate.instant('attendance.sta_success.updated'), 'Succesfully')
         },
           err => {
-            this.toast.error(this.translate.instant('attendance.sta_error.update_failed'), 'ERROR')
+            const errorMessage = err?.error?.message || err?.message || err 
+            ||  this.translate.instant('attendance.update_failed')
+            ;
+            this.toast.error(errorMessage, this.translate.instant('common.error')); 
+            this.isSubmitting = false;
           })
       }
     }
@@ -250,7 +258,12 @@ export class ShiftAssignmentsComponent {
       this.toast.success(this.translate.instant('attendance.sta_success.deleted'));
     },
       (err) => {
-        this.toast.error(this.translate.instant('attendance.sta_error.delete_failed'), 'Error')
+      const errorMessage = err?.error?.message || err?.message || err 
+            ||  this.translate.instant('attendance.delete_failed')
+            ;
+            this.toast.error(errorMessage, this.translate.instant('common.error'));  
+            
+      this.isSubmitting = false;
       })
   }
 
@@ -263,7 +276,11 @@ export class ShiftAssignmentsComponent {
         this.deleteTemplate(id);
       }
       err => {
-        this.toast.error(this.translate.instant('attendance.sta_error.delete_failed'), 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('attendance.delete_failed')
+        ;
+        this.toast.error(errorMessage, this.translate.instant('common.error')); 
+        this.isSubmitting = false;
       }
     });
   }
