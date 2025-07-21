@@ -8,7 +8,7 @@
             </mat-form-field>
             <button mat-flat-button color="primary" class="me-1"
                 (click)="isEdit = false; clearselectedRequest(); open(addModal)">
-                <mat-icon>add</mat-icon>{{'expenses.add_new' | translate}}
+                {{'expenses.add_new' | translate}}
             </button>
         </div>
         <table mat-table [dataSource]="dataSource" matSort class="hrm-table">
@@ -54,9 +54,16 @@
 
 <ng-template #addModal let-modal>
 
-    <h1 mat-dialog-title>{{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}} {{'expenses.advance_template' | translate}}</h1>
-    <div mat-dialog-content>
-        <form action="" [formGroup]="addAdvanceTempForm" (ngSubmit)="addAdvanceTemplate()">
+    <div class="d-flex align-items-center justify-content-between">
+        <h1 mat-dialog-title>
+            {{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}} {{'expenses.advance_template' | translate}}
+        </h1>
+        <button mat-icon-button mat-dialog-close="" class="me-4">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <form action="" [formGroup]="addAdvanceTempForm" (ngSubmit)="addAdvanceTemplate()">
+        <div mat-dialog-content>
 
             <mat-form-field class="w-100">
                 <mat-label>{{'expenses.advance_template_label' | translate}}</mat-label>
@@ -84,7 +91,7 @@
             <div class="mt-2">
                 <mat-label>{{'expenses.levels_of_approvals' | translate}}</mat-label>
                 <br>
-                <mat-radio-group formControlName="approvalLevel" required>
+                <mat-radio-group color="primary" formControlName="approvalLevel" required>
                     <mat-radio-button value="1">{{'expenses.level_1' | translate}}</mat-radio-button>
                     <mat-radio-button value="2">{{'expenses.level_2' | translate}}</mat-radio-button>
                 </mat-radio-group>
@@ -96,7 +103,7 @@
             <div class="mt-2">
                 <mat-label>{{'expenses.add_approvers' | translate}}</mat-label>
                 <br>
-                <mat-radio-group formControlName="approvalType" required>
+                <mat-radio-group color="primary" formControlName="approvalType" required>
                     <mat-radio-button value="template-wise">{{'expenses.template_wise' | translate}}</mat-radio-button>
                     <mat-radio-button value="employee-wise">{{'expenses.employee_wise' | translate}}</mat-radio-button>
                 </mat-radio-group>
@@ -131,20 +138,14 @@
                     </mat-form-field>
                 </div>
             </div>
-
-            <div class="mt-2">
-                <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-                    <div>
-                        <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
-                        <button mat-stroked-button type="button" (click)="editadvanceCategory()">{{'expenses.reset' | translate}}</button>
-                    </div>
-                    <button mat-flat-button color="accent" type="submit"
-                        [disabled]="!addAdvanceTempForm.valid">
-                        {{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}}
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-
+        </div>
+        <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+            <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
+            <!-- <button mat-stroked-button type="button" (click)="editadvanceCategory()">{{'expenses.reset' | translate}}</button> -->
+            <button mat-flat-button color="primary" type="submit"
+                [disabled]="!addAdvanceTempForm.valid">
+                {{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}}
+            </button>
+        </div>
+    </form>
 </ng-template>

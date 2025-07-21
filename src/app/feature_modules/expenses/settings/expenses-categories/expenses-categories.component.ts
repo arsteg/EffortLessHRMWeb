@@ -62,7 +62,7 @@ export class ExpensesCategoriesComponent implements OnInit {
 
   open(content: any) {
     this.dialogRef = this.dialog.open(content, {
-      width: '600px',
+      width: '50%',
       disableClose: true
     });
 
@@ -154,6 +154,7 @@ export class ExpensesCategoriesComponent implements OnInit {
       })
     }
     else if (!this.isEdit) { this.addCategoryForm.reset(); }
+    this.dialogRef.close();
   }
 
   addExpenseCategory() {
@@ -273,6 +274,7 @@ export class ExpensesCategoriesComponent implements OnInit {
         this.toast.success(this.translate.instant('expenses.category_applicable_field_added_success'))
       }
       this.getAllExpensesCategories();
+      this.dialogRef.close();
     })
   }
 

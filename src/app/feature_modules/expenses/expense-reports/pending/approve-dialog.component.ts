@@ -5,19 +5,24 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-approve-dialog',
   template: `
-    <h2 mat-dialog-title>{{'expenses.approve' | translate}} {{'expenses.expense_report' | translate}}</h2>
-    <mat-dialog-content>
+    <div class="d-flex align-items-center justify-content-between">
+      <h1 mat-dialog-title>{{'expenses.approve' | translate}} {{'expenses.expense_report' | translate}}</h1>
+      <button mat-icon-button mat-dialog-close="" class="me-4">
+        <mat-icon>close</mat-icon>
+      </button>
+  </div>
       <form [formGroup]="form">
+        <mat-dialog-content>
         <mat-form-field class="w-100">
           <mat-label>{{'reason' | translate}}</mat-label>
           <textarea matInput formControlName="reason"></textarea>
         </mat-form-field>
+        </mat-dialog-content>
       </form>
-      <mat-dialog-actions class="d-flex justify-content-between px-0">
+      <mat-dialog-actions class="d-flex align-items-center justify-content-between">
         <button mat-flat-button (click)="onCancel()">{{'expenses.cancel' | translate}}</button>
-        <button mat-flat-button (click)="onApprove()" color="accent">{{'expenses.approve' | translate}}</button>
+        <button mat-flat-button (click)="onApprove()" color="primary">{{'expenses.approve' | translate}}</button>
       </mat-dialog-actions>
-    </mat-dialog-content>
   `
 })
 export class ApproveDialogComponent {

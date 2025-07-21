@@ -8,7 +8,7 @@
       </mat-form-field>
       <button mat-flat-button color="primary" class="me-1"
         (click)="isEdit = false; clearselectedRequest(); open(addModal)">
-        <mat-icon>add</mat-icon>{{'expenses.add_new' | translate}}
+        {{'expenses.add_new' | translate}}
       </button>
     </div>
     <table mat-table [dataSource]="advanceCategories" matSort class="hrm-table">
@@ -47,9 +47,16 @@
 <!-- Add/Update Advance category -->
 <ng-template #addModal let-modal>
 
-  <h1 mat-dialog-title>{{isEdit ? ('expenses.update' | translate) : ('expenses.add' | translate)}} {{'expenses.advance_category' | translate}}</h1>
-  <div mat-dialog-content>
-    <form [formGroup]="addCategory" (ngSubmit)="onSubmit()">
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      {{isEdit ? ('expenses.update' | translate) : ('expenses.add' | translate)}} {{'expenses.advance_category' | translate}}
+    </h1>
+    <button mat-icon-button mat-dialog-close="" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <form [formGroup]="addCategory" (ngSubmit)="onSubmit()">
+    <div mat-dialog-content>
       <div class="form-group">
         <mat-form-field class="w-100">
           <mat-label>{{'expenses.category_label' | translate}}</mat-label>
@@ -58,17 +65,15 @@
             {{'expenses.category_label_required' | translate}}
           </mat-error>
         </mat-form-field>
-
-        <div class="mt-2">
-          <div class="d-flex border-top mt-4 pb-2 pt-4 justify-content-between">
-            <div>
-              <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
-              <button mat-stroked-button type="button" (click)="editAdvanceCategory()">{{'expenses.reset' | translate}}</button>
-            </div>
-            <button mat-flat-button class="addBtn" type="submit">{{isEdit ? ('expenses.update' | translate) : ('expenses.add' | translate)}}</button>
-          </div>
-        </div>
       </div>
-    </form>
-  </div>
+    </div>
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+      <button mat-flat-button type="button" (click)="addCategory.reset(); dialogRef.close()">{{'expenses.cancel' | translate}}</button>
+      <!-- <div>
+        <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
+        <button mat-stroked-button type="button" (click)="editAdvanceCategory()">{{'expenses.reset' | translate}}</button>
+      </div> -->
+      <button mat-flat-button color="primary" type="submit">{{isEdit ? ('expenses.update' | translate) : ('expenses.add' | translate)}}</button>
+    </div>
+  </form>
 </ng-template>
