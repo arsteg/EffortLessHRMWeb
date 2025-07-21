@@ -367,7 +367,7 @@
         "uploadDocumentLabel": "Upload document",
         "uploadDocumentButton": "Upload document",
         "errorFetchingTeamMembers": "Error fetching team members",
-        "errorFetchingAttendanceTemplates": "Error fetching attendance templates",
+        "errorFetchingAttendanceTemplates": "Attendance templates is not available, for Off days",
         "errorFetchingLeaveCount": "Error fetching applied leave count",
         "successAddLeave": "Leave Application Added Successfully",
         "errorAddLeave": "Failed to add leave application: {{ message }}",
