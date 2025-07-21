@@ -56,6 +56,7 @@
     "at_negativeMinimumHours": "Minimum hours cannot be negative.",
     "minimumHoursExceeded": "Minimum hours per week cannot exceed 60.",
     "loadAssignmentsError": "Failed to load attendance assignments.",
+    "spacenotallowed": "start and end spaces are not allowed.",
     "loadTemplatesError": "Failed to load attendance templates.",
     "templateTitle": "Attendance Template",
     "deleteError": "Failed to delete attendance template.",

@@ -35,6 +35,9 @@
               </span>
               <span *ngIf="shiftForm.get('name')?.errors?.['invalidLabel']">
                 {{ 'attendance.shift.name_invalid' | translate }}
+              </span>
+              <span *ngIf="shiftForm.get('name')?.errors?.['spacesNotAllowed']">      
+                {{ 'attendance.spacenotallowed' | translate }}
               </span>             
             </mat-error>
           </mat-form-field>

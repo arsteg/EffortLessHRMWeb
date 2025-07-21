@@ -464,7 +464,10 @@ export class AttendanceService {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance-lop`, payload, this.httpOptions);
     return response;
   }
-
+  ValidateMonthlyAttendanceByUser(payload: any): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/validate-user-monthly-days-for-attendance`, payload, this.httpOptions);
+    return response;
+  }
   getProcessAttendanceLOPByMonth(payload: any): Observable<response<any>> {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance-lop-by-month`, payload, this.httpOptions);
     return response;

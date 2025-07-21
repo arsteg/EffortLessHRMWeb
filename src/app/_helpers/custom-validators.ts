@@ -168,4 +168,22 @@ export class CustomValidators {
     const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
     return valid ? null : { invalidLabel: true };
   }
+  static atLeastOneDaySelected(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const days = control.value as string[];
+      return days && days.length > 0 ? null : { atLeastOneDayRequired: true };
+    };
+  }
+  static  minHoursValidator() : ValidatorFn {
+      return (control: AbstractControl): ValidationErrors | null => {
+        if (!control.value) {
+          return null; // If the field is empty, the 'required' validator will handle it
+        }
+        const [hours, minutes] = control.value.split(':').map(Number);
+        if (hours < 1 || hours > 8 || (hours === 8 && minutes > 0)) {
+          return { invalidTime: true };
+        }
+        return null;
+      };
+    }
 }

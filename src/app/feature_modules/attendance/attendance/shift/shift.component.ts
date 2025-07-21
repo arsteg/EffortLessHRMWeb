@@ -61,7 +61,7 @@ export class ShiftComponent {
     private fb: FormBuilder,
   ) {
     this.shiftForm = this.fb.group({
-      name: ['', [Validators.required, CustomValidators.labelValidator]],
+      name: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       shiftType: ['', Validators.required],
       startTime: ['', Validators.required],
       endTime: ['', Validators.required],
@@ -83,7 +83,7 @@ export class ShiftComponent {
       enterNumberOfDaysForEarlyGoing: [0],
       graceTimeLimitForEarlyGoing: [0],
       isHalfDayApplicable: [false],
-      minHoursPerDayToGetCreditforHalfDay: ['',  [Validators.min(1), this.minHoursValidator()]], // Added min validator
+      minHoursPerDayToGetCreditforHalfDay: ['',  [Validators.min(1), CustomValidators.minHoursValidator()]], // Added min validator
       maxLateComingAllowedMinutesFirstHalfAttendance: [0],
     }, {
       validators: this.timeComparisonValidator // Apply the custom validator at the form group level
@@ -228,25 +228,14 @@ export class ShiftComponent {
     return Object.keys(errors).length > 0 ? errors : null;
   };
 
-  minHoursValidator() {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (!control.value) {
-        return null; // If the field is empty, the 'required' validator will handle it
-      }
-      const [hours, minutes] = control.value.split(':').map(Number);
-      if (hours < 1 || hours > 8 || (hours === 8 && minutes > 0)) {
-        return { invalidTime: true };
-      }
-      return null;
-    };
-  }
+
 
   setupShiftTypeListener() {
     this.shiftForm.get('shiftType')?.valueChanges.subscribe((shiftType) => {
       const minHoursControl = this.shiftForm.get('minHoursPerDayToGetCreditForFullDay');
 
       if (shiftType === 'fixed duration' || shiftType === 'flexi') {
-        minHoursControl?.setValidators([Validators.required, this.minHoursValidator()]);
+        minHoursControl?.setValidators([Validators.required, CustomValidators.minHoursValidator()]);
       } else {
         minHoursControl?.clearValidators();
       }

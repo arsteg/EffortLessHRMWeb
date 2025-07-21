@@ -5,21 +5,10 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
-function atLeastOneDaySelected(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const days = control.value as string[];
-    return days && days.length > 0 ? null : { atLeastOneDayRequired: true };
-  };
-}
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true };
-  }
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
+
+
 @Component({
   selector: 'app-general-template-settings',
   templateUrl: './general-template-settings.component.html',
@@ -58,7 +47,7 @@ export class GeneralTemplateSettingsComponent {
     private toast: ToastrService
   ) {
     this.addTemplateForm = this.fb.group({
-      label: ['', [Validators.required, labelValidator]],
+      label: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       attendanceMode: [[], Validators.required],
       minimumHoursRequiredPerWeek: [40, [Validators.required, Validators.min(0),Validators.max(60)]],
       minimumMinutesRequiredPerWeek: [0, [Validators.required, Validators.min(0)]],
@@ -94,7 +83,7 @@ export class GeneralTemplateSettingsComponent {
     this.addTemplateForm.get('alternateWeekOffRoutine').valueChanges.subscribe(value => {
       const daysControl = this.addTemplateForm.get('daysForAlternateWeekOffRoutine');
       if (value === 'odd' || value === 'even') {
-        daysControl.setValidators([atLeastOneDaySelected()]);
+        daysControl.setValidators([CustomValidators.atLeastOneDaySelected()]);
       } else {
         daysControl.clearValidators();
       }
