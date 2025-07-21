@@ -11,15 +11,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true };
-  }
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
 @Component({
   selector: 'app-leave-category',
   templateUrl: './leave-category.component.html',
@@ -75,8 +68,8 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   ) {
     this.categoryForm = this.fb.group({
       leaveType: ['', Validators.required],
-      label: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
-      abbreviation: ['', [Validators.required, labelValidator]],
+      label: ['', [Validators.required,  CustomValidators.labelValidator, this.duplicateLabelValidator()]],
+      abbreviation: ['', [Validators.required,  CustomValidators.labelValidator]],
       canEmployeeApply: [true, Validators.required],
       isHalfDayTypeOfLeave: [true, Validators.required],
       submitBefore: [0, [Validators.required, Validators.min(0)]],

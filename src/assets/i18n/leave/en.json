@@ -426,6 +426,8 @@
         "dismissByEsc": "by pressing ESC",
         "dismissByBackdrop": "by clicking on a backdrop",
         "dismissWith": "with: {{reason}}",
+        "dayHalfRequired": "Please select a day half",
+        "dateRequired": "Please select a date",
         "template": {
             "successDeleted": "Successfully Deleted!",
             "errorCannotDelete": "This leave is already being used! Leave template cannot be deleted.",

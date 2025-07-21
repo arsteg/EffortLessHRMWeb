@@ -4,15 +4,7 @@ import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
-
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true };
-  }
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 @Component({
   selector: 'app-create-leave',
   templateUrl: './create-leave.component.html',
@@ -40,7 +32,7 @@ export class CreateLeaveComponent {
     private translate: TranslateService
   ) {
     this.addTemplateForm = this.fb.group({
-      label: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
+      label: ['', [Validators.required,  CustomValidators.labelValidator, this.duplicateLabelValidator()]],
       approvalLevel: ['1-level'],
       approvalType: ['employee-wise', Validators.required],
       primaryApprover: [''],

@@ -1,15 +1,13 @@
-import { Component, EventEmitter, Input, Output, ViewEncapsulation, OnDestroy } from '@angular/core'; // Import OnDestroy
+import { Component, EventEmitter, Input, Output, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
-import { HolidaysService } from 'src/app/_services/holidays.service';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
-import { forkJoin, Subscription } from 'rxjs'; // Import Subscription
+import { forkJoin, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CompanyService } from 'src/app/_services/company.service';
 
@@ -19,7 +17,7 @@ import { CompanyService } from 'src/app/_services/company.service';
   styleUrl: './add-application.component.css',
   encapsulation: ViewEncapsulation.None,
 })
-export class AddApplicationComponent implements OnDestroy { // Implement OnDestroy
+export class AddApplicationComponent implements OnDestroy {
   leaveApplication: FormGroup;
   allAssignee: any;
   bsValue = new Date();
@@ -44,7 +42,7 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
   bsConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD-MM-YYYY',
     showWeekNumbers: false,
-    minDate: new Date() // Default to today
+    minDate: new Date()
   };
   today: Date = new Date();
   showHalfDayOption: boolean = true;
@@ -54,8 +52,7 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
   weeklyOffDates: Date[] = [];
   holidays: any;
   weeklyOffDays: string[] = [];
-
-  // Add subscriptions to manage lifecycle
+  attachments: '';
   private employeeValueChangesSubscription: Subscription;
   private leaveCategoryValueChangesSubscription: Subscription;
   private startDateValueChangesSubscription: Subscription;
@@ -83,8 +80,9 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
       status: [''],
       isHalfDayOption: [false],
       halfDays: this.fb.array([]),
-      leaveApplicationAttachments: this.fb.array([])
+      leaveApplicationAttachments: [this.attachments]
     }, { validators: this.dateValidator });
+    this.leaveApplication.get('halfDays')?.setValidators([this.halfDayRequiredValidator(this.leaveApplication)]);
     this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => this.updateHalfDayValidation());
     this.leaveApplication.get('endDate')?.valueChanges.subscribe(() => this.updateHalfDayValidation());
   }
@@ -121,7 +119,6 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
       this.updateMinDate();
     });
 
-    // Store the employee valueChanges subscription
     this.employeeValueChangesSubscription = this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
       this.leaveService.getLeaveCategoriesByUserv1(employee).subscribe({
         next: (res: any) => {
@@ -132,17 +129,16 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
           this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
         }
       });
-      this.getHolidays(); // This also gets called, so it needs consideration
-      // Also reset related fields to prevent stale data
+      this.getHolidays();
       this.leaveApplication.patchValue({
         leaveCategory: '',
         startDate: '',
         endDate: '',
         isHalfDayOption: false,
       });
-      (this.leaveApplication.get('halfDays') as FormArray).clear(); // Clear halfDays array
-      this.selectedFiles = []; // Clear selected files
-      this.leaveDocumentUpload = false; // Reset document upload requirement
+      (this.leaveApplication.get('halfDays') as FormArray).clear();
+      this.selectedFiles = [];
+      this.leaveDocumentUpload = false;
     });
 
 
@@ -160,20 +156,14 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
       this.getHolidays();
     }
 
-    // Store duplicate leave check subscriptions
     this.startDateValueChangesSubscription = this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.endDateValueChangesSubscription = this.leaveApplication.get('endDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
-    // The employee and leaveCategory valueChanges already have other subscriptions,
-    // so you can call checkForDuplicateLeave() within those existing subscriptions
-    // or chain them with .pipe(tap(() => this.checkForDuplicateLeave()))
-    // For simplicity, I'll keep them separate for now but note the redundancy.
     this.leaveApplication.get('employee')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.leaveApplication.get('leaveCategory')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
 
   }
 
   ngOnDestroy() {
-    // Unsubscribe from all subscriptions to prevent memory leaks
     if (this.employeeValueChangesSubscription) {
       this.employeeValueChangesSubscription.unsubscribe();
     }
@@ -224,32 +214,22 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
   validateDates() {
     const startDate = this.leaveApplication.get('startDate')?.value;
     const endDate = this.leaveApplication.get('endDate')?.value;
-    const halfDay = this.leaveApplication.get('date')?.value; // This refers to a half-day date, which isn't a direct form control but part of the halfDays FormArray
 
-    // Apply the validation error if startDate is before minSelectableDate
     if (startDate && this.minSelectableDate && moment(startDate).isBefore(moment(this.minSelectableDate), 'day')) {
       this.leaveApplication.get('startDate')?.setErrors({ submitBeforeError: true });
     } else {
-      // Clear the error if the condition is no longer met
       if (this.leaveApplication.get('startDate')?.hasError('submitBeforeError')) {
-        this.leaveApplication.get('startDate')?.updateValueAndValidity(); // Re-evaluate all validators
+        this.leaveApplication.get('startDate')?.updateValueAndValidity();
       }
     }
 
-    // Apply the validation error if endDate is before minSelectableDate
     if (endDate && this.minSelectableDate && moment(endDate).isBefore(moment(this.minSelectableDate), 'day')) {
       this.leaveApplication.get('endDate')?.setErrors({ submitBeforeError: true });
     } else {
-      // Clear the error if the condition is no longer met
       if (this.leaveApplication.get('endDate')?.hasError('submitBeforeError')) {
         this.leaveApplication.get('endDate')?.updateValueAndValidity();
       }
     }
-    // Note: The 'date' control for half-days is within a FormArray,
-    // so its validation would typically be handled within the halfDayValidator or by
-    // updating each individual control's validity when minSelectableDate changes.
-    // The current `halfDay` check here is likely not directly effective for FormArray controls.
-    // The `updateHalfDayValidation()` already calls `updateValueAndValidity()` on halfDays, which is good.
   }
 
   getHolidays() {
@@ -268,8 +248,8 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
     const endDate = this.leaveApplication.get('endDate')?.value;
 
     if (!employeeId || !leaveCategory || !startDate || !endDate) {
-      this.leaveApplication.setErrors(null); // Clear duplicate leave error if inputs are incomplete
-      this.showHalfDayOption = true; // Re-enable half-day option if no dates/category
+      this.leaveApplication.setErrors(null);
+      this.showHalfDayOption = true;
       return;
     }
 
@@ -292,7 +272,6 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
           this.leaveApplication.setErrors({ duplicateLeave: true });
           this.showHalfDayOption = false;
         } else {
-          // Only clear duplicateLeave error, preserve other errors like dateRangeError
           if (this.leaveApplication.hasError('duplicateLeave')) {
             const errors = { ...this.leaveApplication.errors };
             delete errors['duplicateLeave'];
@@ -321,26 +300,30 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
     }
     this.getattendanceTemplatesByUser();
     this.numberOfLeaveAppliedForSelectedCategory = 0;
-    // Ensure tempLeaveCategory is available before calling getAppliedLeaveCount
     if (this.leaveApplication.value.employee && this.tempLeaveCategory?.leaveCategory?._id) {
       this.getAppliedLeaveCount(this.leaveApplication.value.employee, this.tempLeaveCategory.leaveCategory._id);
     }
   }
 
-  halfDayValidator() {
+  halfDayRequiredValidator(formGroup: FormGroup) {
     return (formArray: FormArray): { [key: string]: any } | null => {
-      const startDate = this.leaveApplication?.get('startDate')?.value;
-      const endDate = this.leaveApplication?.get('endDate')?.value;
+      const isHalfDayOption = formGroup.get('isHalfDayOption')?.value;
+      if (!isHalfDayOption) {
+        console.log('Half day option is not selected, no validation needed.');
+        return null;
+      }
 
-      if (!startDate || !endDate) {
-        return null; // No validation if dates aren't set
+      if (formArray.length === 0) {
+        console.log('Half day entries are required but none found.');
+        return { halfDayRequired: true };
       }
 
       for (let i = 0; i < formArray.length; i++) {
         const halfDayDate = formArray.at(i).get('date')?.value;
-        if (halfDayDate && (halfDayDate < startDate || halfDayDate > endDate)) {
-          formArray.at(i).get('date')?.setErrors({ dateOutOfRange: true });
-          return { dateOutOfRange: true };
+        const dayHalf = formArray.at(i).get('dayHalf')?.value;
+        if (!halfDayDate || !dayHalf) {
+          console.log(`Half day entry at index ${i} is incomplete.`);
+          return { halfDayRequired: true };
         }
       }
       return null;
@@ -361,9 +344,7 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
     this.halfDays.removeAt(index);
   }
   onHalfDayChange() {
-    // Only reset the halfDays FormArray, not the entire 'halfDays' control (which would clear the array)
     (this.leaveApplication.get('halfDays') as FormArray).clear();
-    // Re-add one empty half-day entry if half-day option is true, for better UX
     if (this.leaveApplication.get('isHalfDayOption')?.value) {
       this.addHalfDayEntry();
     }
@@ -390,7 +371,6 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
           this.weeklyOffDays = [];
           this.dayCounts = {};
 
-          // Map short day names to full names for moment.js compatibility
           const dayNameMap: { [key: string]: string } = {
             'Sun': 'Sunday',
             'Sat': 'Saturday',
@@ -424,7 +404,7 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
     const currentDate = new Date(startDate);
     const end = new Date(endDate);
 
-    while (moment(currentDate).isSameOrBefore(end, 'day')) { // Use moment for date comparison
+    while (moment(currentDate).isSameOrBefore(end, 'day')) {
       const dayName = moment(currentDate).format('dddd');
       if (this.weeklyOffDays.includes(dayName)) {
         weeklyOffDates.push(new Date(currentDate));
@@ -434,32 +414,24 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
 
     return weeklyOffDates;
   }
-  // Assuming you have moment.js imported as 'moment'
-
-  // Modify your stripTime function to use moment.js for consistency
   stripTime(date: Date): number {
-    // This will return the timestamp for the start of the day in local time
     return moment(date).startOf('day').valueOf();
   }
 
   weeklyOffDateFilter = (date: Date | null): boolean => {
     if (!date) {
-      return true; // Allow if no date
+      return true;
     }
 
-    // Use moment to get the day name from the provided date object directly
-    const dayName = moment(date).format('dddd'); // e.g., "Sunday"
+    const dayName = moment(date).format('dddd');
 
-    // Check for weekly off days
     if (this.weeklyOffDays.includes(dayName)) {
-      return false; // Disable weekly off days
+      return false;
     }
 
-    // Normalize the selected date to the start of the day for consistent comparison
-    const selectedDateNormalized = this.stripTime(date); // This will be the timestamp of the start of the day (local)
+    const selectedDateNormalized = this.stripTime(date);
 
     const isHoliday = this.holidays.some(holiday => {
-      // Normalize the holiday date as well
       const holidayDateNormalized = this.stripTime(new Date(holiday.date));
       return holidayDateNormalized === selectedDateNormalized;
     });
@@ -495,29 +467,10 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
     }
   }
 
-  onEmployeeChange(event: any) {
-    // This method is called from the template's mat-select (selectionChange).
-    // The value is already patched by formControlName="employee".
-    // The console logs are for debugging and can be removed.
-    // console.log(this.leaveApplication.get('employee').setValue(event.value));
-    // console.log(event);
-
-    // If you explicitly want to reset other fields when the employee changes,
-    // ensure you do it here, but remember that the valueChanges subscription
-    // on 'employee' already handles some of this.
-    // The logic below from your original commented code is good if you want a full reset
-    // but ensure it doesn't conflict with or redundantly trigger the valueChanges listener.
-    // Given the `employee` valueChanges listener now includes a `patchValue`
-    // to reset related fields, this `onEmployeeChange` method might become redundant
-    // unless you have other specific logic for the `selectionChange` event.
-  }
-
-
   onSubmission() {
-    // Before submission, ensure the form is valid.
     if (this.leaveApplication.invalid) {
-      this.leaveApplication.markAllAsTouched(); // Mark all fields as touched to show validation errors
-      this.toast.error(this.translate.instant('leave.validationError')); // Generic error for invalid form
+      this.leaveApplication.markAllAsTouched();
+      this.toast.error(this.translate.instant('leave.validationError'));
       return;
     }
 
@@ -526,39 +479,29 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
     let startDate = this.leaveApplication.get('startDate')?.value;
     let endDate = this.leaveApplication.get('endDate')?.value;
 
-    // Convert dates to timestamps (stripped of time)
     startDate = this.stripTime(new Date(startDate));
     endDate = this.stripTime(new Date(endDate));
 
-    // Prepare the leave application payload
     const leaveApplicationPayload = {
       employee: employeeId,
       leaveCategory: leaveCategory,
       startDate: startDate,
       endDate: endDate,
       status: 'Level 1 Approval Pending',
-      level1Reason: this.leaveApplication.get('level1Reason')?.value || '', // Use empty string for optional fields
-      level2Reason: this.leaveApplication.get('level2Reason')?.value || '', // Use empty string for optional fields
+      level1Reason: this.leaveApplication.get('level1Reason')?.value || '',
+      level2Reason: this.leaveApplication.get('level2Reason')?.value || '',
       leaveApplicationAttachments: [],
       isHalfDayOption: this.leaveApplication.get('isHalfDayOption')?.value,
-      halfDays: this.leaveApplication.get('isHalfDayOption')?.value ? this.leaveApplication.get('halfDays')?.value : [], // Only include halfDays if option is true
+      halfDays: this.leaveApplication.get('isHalfDayOption')?.value ? this.leaveApplication.get('halfDays')?.value : [],
       comment: this.leaveApplication.get('comment')?.value
     };
-
-    // The duplicate leave check is already performed by valueChanges subscription.
-    // However, it's good to have a final check before the actual submission API call.
-    // The current `checkForDuplicateLeave` sets form errors. So we can check for them here.
     if (this.leaveApplication.hasError('duplicateLeave')) {
       this.toast.error(this.translate.instant('leave.duplicateLeaveError'));
       return;
     }
-
-
-    // If no files are selected, call the API immediately
     if (!this.selectedFiles || this.selectedFiles.length === 0) {
       this.submitLeaveApplication(leaveApplicationPayload);
     } else {
-      // Process files and then call the API
       this.processFiles(this.selectedFiles).then((attachments) => {
         leaveApplicationPayload.leaveApplicationAttachments = attachments;
         this.submitLeaveApplication(leaveApplicationPayload);
@@ -609,7 +552,7 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
       next: (res: any) => {
         this.toast.success(this.translate.instant('leave.successAddLeave'));
         this.leaveApplicationRefreshed.emit(res.data);
-        this.leaveApplication.reset({}, { emitEvent: false });
+        this.leaveApplication.reset();
         this.selectedFiles = [];
         (this.leaveApplication.get('halfDays') as FormArray).clear();
         this.leaveDocumentUpload = false;
@@ -620,7 +563,6 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
       }
     });
   }
-
   onFileSelected(event: any) {
     const files: FileList = event.target.files;
     if (files) {
@@ -635,7 +577,7 @@ export class AddApplicationComponent implements OnDestroy { // Implement OnDestr
   }
 
   closeModal() {
-    this.leaveApplication.reset(); // Reset form when closing, which is fine as it's typically destroyed
+    this.leaveApplication.reset();
     this.close.emit(true);
   }
 
