@@ -1,11 +1,8 @@
 <div class="container-fluid">
-  <div class="d-flex align-items-center justify-content-between pt-0 pb-3 mb-0 border-bottom">
-    <h3 class="mb-0" translate>
+  <div class="d-flex align-items-center justify-content-between border-bottom">
+    <h3 class="mb-0">
       {{ view === 'admin' ? ('preferences.userSettings' | translate) : ('preferences.userPreferences' | translate) }}
     </h3>
-    <button mat-flat-button color="primary" type="submit" [disabled]="!formValid" translate (click)="onSubmit()">
-      {{ 'preferences.save' | translate }}
-    </button>
   </div>
 
   <div class="row mt-3">
@@ -14,11 +11,13 @@
         <mat-progress-spinner mode="indeterminate" diameter="40"></mat-progress-spinner>
         <p class="mt-3">{{ 'preferences.loading' | translate }}</p>
       </div>
+
       <ng-template #preferencesForm>
-        <form class="bg-white" *ngIf="explicitPreferences | async as explicitPreferences; else noPreferences">
+        <form class="bg-white" (ngSubmit)="onSubmit()" *ngIf="explicitPreferences | async as explicitPreferences; else noPreferences">
+
           <div class="row">
-            <div *ngIf="view === 'admin'" class="col-12 mb-3">
-              <mat-form-field class="w-100">
+            <div *ngIf="view === 'admin'" class="col-auto">
+              <mat-form-field class="w-100 m-0">
                 <mat-label>{{ 'preferences.selectUser' | translate }}</mat-label>
                 <mat-select 
                   [(ngModel)]="selectedUsersByAdmin"
@@ -30,6 +29,14 @@
                 </mat-select>
               </mat-form-field>
             </div>
+          </div>
+          <div class="row mb-3">
+            <em class="text-muted small" *ngIf="view === 'admin'">
+                {{ 'preferences.settingsInstruction' | translate }}
+              </em>
+          </div>
+
+          <div class="row">
             <ng-container *ngFor="let pref of explicitPreferences">
               <div class="col-md-6 mb-3">
                 <div class="form-group">
@@ -41,6 +48,7 @@
                   >
                     {{ pref.metadata?.label || pref.key }}
                   </mat-checkbox>
+
                   <mat-form-field *ngIf="pref.metadata?.inputType === 'number'" appearance="outline" class="w-100">
                     <mat-label>{{ pref.metadata?.label || pref.key }}</mat-label>
                     <input matInput
@@ -59,7 +67,14 @@
               </div>
             </ng-container>
           </div>
+
+          <div class="d-flex justify-content-end mt-3">
+            <button mat-flat-button color="primary" type="submit" [disabled]="!formValid">
+              {{ 'preferences.save' | translate }}
+            </button>
+          </div>
         </form>
+
         <ng-template #noPreferences>
           <p class="text-muted">{{ 'preferences.noExplicitPreferences' | translate }}</p>
         </ng-template>

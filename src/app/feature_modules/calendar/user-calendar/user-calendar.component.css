@@ -10,16 +10,16 @@
 
 .fc .fc-button:hover,
 ::ng-deep .fc .fc-button:hover {
-  background-color: var(--orange-70) !important; /* Darker orange */
+  background-color: var(--orange-50) !important; /* Darker orange */
   color: var(--white) !important;
-  border-color: var(--orange-70) !important;   /* Darker orange */
+  border-color: var(--orange-50) !important;   /* Darker orange */
 }
 
 /* Active button */
 .fc .fc-button-active,
 ::ng-deep .fc .fc-button-active {
-  background-color: var(--orange-50) !important; /* Medium orange */
-  color: var(--white) !important;
+  background-color: var(--white) !important; /* Medium orange */
+  color: var(--orange-50) !important;
   border-color: var(--orange-50) !important;   /* Medium orange */
 }
 
@@ -29,3 +29,27 @@
   color: var(--grey) !important;                 /* Project dark grey */
 }
 
+.fc-h-event,
+::ng-deep .fc .fc-h-event {
+  background-color: var(--orange-50) !important;
+  border: 1px solid var(--orange-50) !important;
+}
+
+::ng-deep .fc-theme-standard th,
+::ng-deep .fc-theme-standard td {
+  padding: 0px !important;
+}
+
+::ng-deep .fc-daygrid-day-top {
+    padding: 5px !important;
+}
+
+::ng-deep .fc-day:hover {
+    background-color: var(--orange-10) !important;
+}
+
+/* Remove box shadow / focus outline */
+::ng-deep .fc .fc-button {
+  box-shadow: none !important;
+  outline: none !important;
+}
