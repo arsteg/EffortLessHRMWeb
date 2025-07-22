@@ -1,0 +1,31 @@
+/* Use project color variables from :root in styles.scss */
+
+/* Previous/Next and View buttons */
+.fc .fc-button,
+::ng-deep .fc .fc-button {
+  background-color: var(--primary) !important;   /* Orange (primary) */
+  color: var(--white) !important;
+  border-color: var(--primary) !important;   /* Orange (primary) */
+}
+
+.fc .fc-button:hover,
+::ng-deep .fc .fc-button:hover {
+  background-color: var(--orange-70) !important; /* Darker orange */
+  color: var(--white) !important;
+  border-color: var(--orange-70) !important;   /* Darker orange */
+}
+
+/* Active button */
+.fc .fc-button-active,
+::ng-deep .fc .fc-button-active {
+  background-color: var(--orange-50) !important; /* Medium orange */
+  color: var(--white) !important;
+  border-color: var(--orange-50) !important;   /* Medium orange */
+}
+
+/* Weekday header text */
+.fc .fc-col-header-cell-cushion,
+::ng-deep .fc .fc-col-header-cell-cushion {
+  color: var(--grey) !important;                 /* Project dark grey */
+}
+

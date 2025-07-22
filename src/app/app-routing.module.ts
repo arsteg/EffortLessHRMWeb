@@ -66,7 +66,8 @@ const routes: Routes = [
         path: 'calendar',
         loadChildren: () => import('./feature_modules/calendar/calendar.module').then(m => m.CalendarModule),
         canActivate: [AuthGuard],
-        data: { permission: 'Calendar' }
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'calendar', permission: 'Calendar' }
       },
       {
         path: 'attendance',
@@ -133,7 +134,8 @@ const routes: Routes = [
         path: 'settings',
         loadChildren: () => import('./feature_modules/settings/settings.module').then(m => m.SettingsModule),
         canActivate: [AuthGuard],
-        data: { permission: 'Settings' },        
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'settings', permission: 'Settings' },        
       },
       {
         path: 'permissions',
