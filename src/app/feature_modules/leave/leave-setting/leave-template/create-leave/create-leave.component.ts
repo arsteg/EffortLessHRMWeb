@@ -32,7 +32,7 @@ export class CreateLeaveComponent {
     private translate: TranslateService
   ) {
     this.addTemplateForm = this.fb.group({
-      label: ['', [Validators.required,  CustomValidators.labelValidator, this.duplicateLabelValidator()]],
+      label: ['', [Validators.required,  CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this), this.duplicateLabelValidator()]],
       approvalLevel: ['1-level'],
       approvalType: ['employee-wise', Validators.required],
       primaryApprover: [''],
