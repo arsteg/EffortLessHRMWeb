@@ -38,9 +38,8 @@
                       <mat-form-field class="ms-auto w-100" appearance="outline">
                         <mat-label>{{ 'leave.templateCategories.newlyJoinedQuestion' | translate }}</mat-label>
                         <mat-select formControlName="dealWithNewlyJoinedEmployee" required>
-                          <mat-option value="1">{{ 'leave.templateCategories.eligibleImmediately' | translate }}</mat-option>
-                          <mat-option value="2">{{ 'leave.templateCategories.eligibleAfterTenure' | translate }}</mat-option>
-                          <mat-option value="3">{{ 'leave.templateCategories.eligibleAfterConfirmation' | translate }}</mat-option>
+                          <mat-option value="eligibleImmediately">{{ 'leave.templateCategories.eligibleImmediately' | translate }}</mat-option>
+                          <mat-option value="eligibleAfterConfirmation">{{ 'leave.templateCategories.eligibleAfterConfirmation' | translate }}</mat-option>
                         </mat-select>
                         @if (categoryCtrl.get('dealWithNewlyJoinedEmployee').invalid &&
                              categoryCtrl.get('dealWithNewlyJoinedEmployee').touched) {

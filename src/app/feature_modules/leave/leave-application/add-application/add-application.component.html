@@ -48,8 +48,7 @@
             <div class="form-group col-md-12">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.selectCategory' | translate }}</mat-label>
-                    <mat-select formControlName="leaveCategory" required
-                        (selectionChange)="getLeaveCategoryDetails($event)">
+                    <mat-select formControlName="leaveCategory" required>
                         <mat-option *ngIf="checkStatus == 'failure'" disabled>{{ 'leave.noCategoryAssigned' | translate
                             }}</mat-option>
                         <mat-option *ngFor="let category of leaveCategories" [value]="category?.leaveCategory?._id">

@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import { forkJoin, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CompanyService } from 'src/app/_services/company.service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-add-application',
@@ -53,6 +54,7 @@ export class AddApplicationComponent implements OnDestroy {
   holidays: any;
   weeklyOffDays: string[] = [];
   attachments: '';
+  appointmentDetail: any;
   private employeeValueChangesSubscription: Subscription;
   private leaveCategoryValueChangesSubscription: Subscription;
   private startDateValueChangesSubscription: Subscription;
@@ -66,7 +68,8 @@ export class AddApplicationComponent implements OnDestroy {
     private timeLogService: TimeLogService,
     private toast: ToastrService,
     private companyService: CompanyService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private userService: UserService
   ) {
     this.translate.setDefaultLang('en');
     this.leaveApplication = this.fb.group({
@@ -110,13 +113,21 @@ export class AddApplicationComponent implements OnDestroy {
     });
 
     this.populateMembers();
-    // this.getHolidays();
 
     this.leaveCategoryValueChangesSubscription = this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
       this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory?.documentRequired || false;
       this.handleLeaveCategoryChange();
-      this.updateMinDate();
+      // this.updateMinDate();
+
+      this.leaveCategories.map((category: any) => {
+        if (category.leaveCategory._id === leaveCategory) {
+          this.tempLeaveCategory = category;
+          this.getSelectedUserAppointment();
+
+          console.log(this.tempLeaveCategory)
+        }
+      })
     });
 
     this.employeeValueChangesSubscription = this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
@@ -129,7 +140,6 @@ export class AddApplicationComponent implements OnDestroy {
           this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
         }
       });
-      // this.getHolidays();
       this.leaveApplication.patchValue({
         leaveCategory: '',
         startDate: '',
@@ -143,6 +153,7 @@ export class AddApplicationComponent implements OnDestroy {
 
 
     if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
+      // this.getSelectedUserAppointment();
       this.leaveService.getLeaveCategoriesByUserv1(this.currentUser.id).subscribe({
         next: (res: any) => {
           this.leaveCategories = res.data;
@@ -153,6 +164,7 @@ export class AddApplicationComponent implements OnDestroy {
         }
       });
     }
+
 
     this.startDateValueChangesSubscription = this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.endDateValueChangesSubscription = this.leaveApplication.get('endDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
@@ -180,34 +192,79 @@ export class AddApplicationComponent implements OnDestroy {
     this.handleLeaveCategoryChange();
   }
 
-  getLeaveCategoryDetails(category: any) {
-    this.leaveService.getLeaveCategorById(this.leaveApplication.get('leaveCategory')?.value).subscribe((res: any) => {
-      this.tempLeaveCategory = res?.data;
-      this.updateMinDate();
-    });
+  getSelectedUserAppointment() {
+  let userId: string | undefined;
+
+  if (this.portalView === 'user' && this.tab === 1) {
+    userId = this.currentUser?.id;
+  } else if (this.portalView === 'admin' || (this.portalView === 'user' && this.tab === 5)) {
+    userId = this.leaveApplication.get('employee')?.value;
   }
 
-  updateMinDate() {
-    if (this.tempLeaveCategory?.submitBefore) {
-      const submitBeforeDays = parseInt(this.tempLeaveCategory.submitBefore, 10);
-      if (!isNaN(submitBeforeDays)) {
-        const minDate = new Date();
-        minDate.setDate(minDate.getDate() + submitBeforeDays);
-        this.minSelectableDate = minDate;
-        this.bsConfig = {
-          ...this.bsConfig,
-          minDate: this.minSelectableDate
-        };
-        this.validateDates();
-      }
-    } else {
-      this.minSelectableDate = new Date();
-      this.bsConfig = {
-        ...this.bsConfig,
-        minDate: this.minSelectableDate
-      };
+  if (!userId) return;
+
+  this.userService.getAppointmentByUserId(userId).subscribe((res: any) => {
+    this.appointmentDetail = res.data;
+
+    const joiningDate = new Date(this.appointmentDetail.joiningDate);
+    const confirmationDate = new Date(this.appointmentDetail.confirmationDate);
+
+    const eligibilityType = this.tempLeaveCategory?.dealWithNewlyJoinedEmployee;
+
+    if (eligibilityType === 'eligibleImmediately') {
+      this.updateMinDate(joiningDate);
+    } else if (eligibilityType === 'eligibleAfterConfirmation') {
+      this.updateMinDate(confirmationDate);
+    } 
+  });
+}
+
+
+  updateMinDate(baseDate: Date) {
+  let minDate = new Date(baseDate); // clone base date
+
+  // Apply submitBefore offset if present
+  if (this.tempLeaveCategory?.submitBefore) {
+    const submitBeforeDays = parseInt(this.tempLeaveCategory.submitBefore, 10);
+    if (!isNaN(submitBeforeDays)) {
+      minDate.setDate(minDate.getDate() + submitBeforeDays);
     }
   }
+
+  this.minSelectableDate = minDate;
+  this.bsConfig = {
+    ...this.bsConfig,
+    minDate: this.minSelectableDate
+  };
+
+  this.validateDates();
+}
+
+  // updateMinDate(joiningDate: Date) {
+  //   let minDate = joiningDate;
+
+  //   // If submitBefore is defined, add those many days to joiningDate
+  //   if (this.tempLeaveCategory?.submitBefore) {
+  //     const submitBeforeDays = parseInt(this.tempLeaveCategory.submitBefore, 10);
+  //     if (!isNaN(submitBeforeDays)) {
+  //       minDate = new Date(joiningDate); // clone the date
+  //       minDate.setDate(minDate.getDate() + submitBeforeDays);
+  //     }
+  //   }
+
+  //   // If eligibleImmediately, allow from joining date itself
+  //   if (this.tempLeaveCategory?.dealWithNewlyJoinedEmployee === 'eligibleImmediately') {
+  //     minDate = joiningDate;
+  //   }
+
+  //   this.minSelectableDate = minDate;
+  //   this.bsConfig = {
+  //     ...this.bsConfig,
+  //     minDate: this.minSelectableDate
+  //   };
+
+  //   this.validateDates();
+  // }
 
   validateDates() {
     const startDate = this.leaveApplication.get('startDate')?.value;
@@ -296,7 +353,7 @@ export class AddApplicationComponent implements OnDestroy {
       }
     }
     this.getattendanceTemplatesByUser();
-      this.getHolidays();
+    this.getHolidays();
 
     this.numberOfLeaveAppliedForSelectedCategory = 0;
     if (this.leaveApplication.value.employee && this.tempLeaveCategory?.leaveCategory?._id) {
