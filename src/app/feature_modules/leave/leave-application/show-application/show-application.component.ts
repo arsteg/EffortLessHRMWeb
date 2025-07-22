@@ -51,7 +51,7 @@ export class ShowApplicationComponent {
     {
       key: 'leaveCategory',
       name: this.translate.instant('leave.leaveCategory'),
-      valueFn: (row: any) => this.getCategory(row.leaveCategory) || ''
+      valueFn: (row: any) => `${row.leaveCategory}`
     },
     {
       key: 'startDate',
@@ -110,7 +110,6 @@ export class ShowApplicationComponent {
     private leaveService: LeaveService,
     private dialog: MatDialog,
     private exportService: ExportService,
-    private commonService: CommonService,
     private toast: ToastrService,
     private datePipe: DatePipe,
     private translate: TranslateService
@@ -120,7 +119,6 @@ export class ShowApplicationComponent {
 
   ngOnInit() {
     this.getLeaveApplication()
-    this.getleaveCatgeories();
   }
 
   onPageChange(event: any) {
@@ -240,6 +238,7 @@ export class ShowApplicationComponent {
           return {
             ...leave,
             employee: leave.employee.firstName + ' ' + leave.employee.lastName,
+            leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
           };
@@ -324,8 +323,8 @@ export class ShowApplicationComponent {
         valueA = (a.employee.firstName)?.toLowerCase() || '';
         valueB = (b.employee.firstName)?.toLowerCase() || '';
       } else if (event.active === 'leaveCategory') {
-        valueA = this.getCategory(a.leaveCategory)?.toLowerCase() || '';
-        valueB = this.getCategory(b.leaveCategory)?.toLowerCase() || '';
+        valueA = a.leaveCategory?.toLowerCase() || '';
+        valueB = b.leaveCategory?.toLowerCase() || '';
       } else if (event.active === 'startDate' || event.active === 'endDate') {
         valueA = new Date(a[event.active]).getTime();
         valueB = new Date(b[event.active]).getTime();
@@ -351,7 +350,7 @@ export class ShowApplicationComponent {
     const data = this.allData.filter((row: any) => {
       const valuesToSearch = [
         row.employee?.toLowerCase(), ,
-        this.getCategory(row.leaveCategory),
+        row.leaveCategory.label?.toLowerCase(),
         this.datePipe.transform(row.startDate, 'mediumDate'),
         this.datePipe.transform(row.endDate, 'mediumDate'),
         row.totalLeaveDays?.toString(),

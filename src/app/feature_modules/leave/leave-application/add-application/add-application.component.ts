@@ -76,7 +76,7 @@ export class AddApplicationComponent implements OnDestroy {
       level2Reason: [''],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      comment: [''],
+      comment: ['', Validators.required],
       status: [''],
       isHalfDayOption: [false],
       halfDays: this.fb.array([]),
@@ -110,7 +110,7 @@ export class AddApplicationComponent implements OnDestroy {
     });
 
     this.populateMembers();
-    this.getHolidays();
+    // this.getHolidays();
 
     this.leaveCategoryValueChangesSubscription = this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
@@ -129,7 +129,7 @@ export class AddApplicationComponent implements OnDestroy {
           this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
         }
       });
-      this.getHolidays();
+      // this.getHolidays();
       this.leaveApplication.patchValue({
         leaveCategory: '',
         startDate: '',
@@ -152,8 +152,6 @@ export class AddApplicationComponent implements OnDestroy {
           this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
         }
       });
-      this.getattendanceTemplatesByUser();
-      this.getHolidays();
     }
 
     this.startDateValueChangesSubscription = this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
@@ -214,7 +212,6 @@ export class AddApplicationComponent implements OnDestroy {
   validateDates() {
     const startDate = this.leaveApplication.get('startDate')?.value;
     const endDate = this.leaveApplication.get('endDate')?.value;
-
     if (startDate && this.minSelectableDate && moment(startDate).isBefore(moment(this.minSelectableDate), 'day')) {
       this.leaveApplication.get('startDate')?.setErrors({ submitBeforeError: true });
     } else {
@@ -299,6 +296,8 @@ export class AddApplicationComponent implements OnDestroy {
       }
     }
     this.getattendanceTemplatesByUser();
+      this.getHolidays();
+
     this.numberOfLeaveAppliedForSelectedCategory = 0;
     if (this.leaveApplication.value.employee && this.tempLeaveCategory?.leaveCategory?._id) {
       this.getAppliedLeaveCount(this.leaveApplication.value.employee, this.tempLeaveCategory.leaveCategory._id);
@@ -470,7 +469,6 @@ export class AddApplicationComponent implements OnDestroy {
   onSubmission() {
     if (this.leaveApplication.invalid) {
       this.leaveApplication.markAllAsTouched();
-      this.toast.error(this.translate.instant('leave.validationError'));
       return;
     }
 
@@ -577,7 +575,6 @@ export class AddApplicationComponent implements OnDestroy {
   }
 
   closeModal() {
-    this.leaveApplication.reset();
     this.close.emit(true);
   }
 
