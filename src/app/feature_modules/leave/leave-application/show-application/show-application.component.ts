@@ -222,6 +222,7 @@ export class ShowApplicationComponent {
   }
 
   getLeaveApplication() {
+    console.log(this.portalView, this.tab)
     const requestBody = {
       status: this.status,
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -258,6 +259,7 @@ export class ShowApplicationComponent {
           return {
             ...leave,
             employee: leave.employee.firstName + ' ' + leave.employee.lastName,
+            leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
           };
@@ -268,11 +270,19 @@ export class ShowApplicationComponent {
     }
     if (this.portalView === 'user' && this.tab === 5) {
       let payload = { skip: '', next: '' };
-      return this.leaveService.getLeaveApplicationByTeam(payload).subscribe((res: any) => {
-        this.leaveApplication.data = res.data.filter((leave: any) => leave.status === this.status);
-        this.totalLeaveDays = 0;
-        this.leaveApplication.data.forEach((leave: any) => {
+     this.leaveService.getLeaveApplicationByTeam(payload).subscribe((res: any) => {
+        this.leaveApplication.data = res.data;
+        this.allData = res.data;
+        this.totalRecords = res.total;
+        this.leaveApplication.data = res.data.map((leave: any) => {
           leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
+          return {
+            ...leave,
+            employee: leave.employee.firstName + ' ' + leave.employee.lastName,
+            leaveCategory: leave?.leaveCategory?.label,
+            startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
+            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
+          };
         });
         this.allData = this.leaveApplication.data;
         return res;
@@ -285,11 +295,7 @@ export class ShowApplicationComponent {
   deleteLeaveApplication(_id: string) {
     this.leaveService.deleteLeaveApplication(_id).subscribe({
       next: (res: any) => {
-        const index = this.leaveApplication.data.findIndex(temp => temp._id === _id);
-        if (index !== -1) {
-          this.leaveApplication.data.splice(index, 1);
-          this.leaveApplication._updateChangeSubscription();
-        }
+        this.getLeaveApplication();
         this.toast.success(this.translate.instant('leave.successDelete'));
       },
       error: () => {

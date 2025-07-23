@@ -104,17 +104,6 @@ export class AddApplicationComponent implements OnDestroy {
   }
 
   ngOnInit() {
-    forkJoin({
-      users: this.commonService.populateUsers(),
-    }).subscribe({
-      next: ({ users }) => {
-        this.allAssignee = users?.data?.data;
-      },
-      error: () => {
-        this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
-      }
-    });
-
     this.populateMembers();
 
     this.leaveCategoryValueChangesSubscription = this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
@@ -385,12 +374,7 @@ export class AddApplicationComponent implements OnDestroy {
       control.get('date')?.updateValueAndValidity();
     });
   }
-  // addHalfDayEntry() {
-  //   this.halfDays.push(this.fb.group({
-  //     date: ['', Validators.required],
-  //     dayHalf: ['', Validators.required]
-  //   }));
-  // }
+  
   addHalfDayEntry() {
     if (this.halfDays.length < this.maxHalfDaysAllowed) {
       this.halfDays.push(this.fb.group({
@@ -502,7 +486,7 @@ export class AddApplicationComponent implements OnDestroy {
   };
 
   populateMembers() {
-    if (this.portalView === 'user') {
+    if (this.portalView === 'user' && this.tab === 5) {
       this.members = [];
       let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
       this.members.push({ id: currentUser.id, name: this.translate.instant('leave.userMe'), email: currentUser.email });
@@ -526,6 +510,11 @@ export class AddApplicationComponent implements OnDestroy {
           this.toast.error(this.translate.instant('leave.errorFetchingTeamMembers'));
         }
       });
+    }
+    if (this.portalView === 'admin'){
+      this.commonService.populateUsers().subscribe((res: any)=>{
+        this.allAssignee = res.data.data;
+      })
     }
   }
 
