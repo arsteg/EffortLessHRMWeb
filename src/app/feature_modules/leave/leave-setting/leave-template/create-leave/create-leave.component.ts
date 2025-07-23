@@ -54,9 +54,11 @@ export class CreateLeaveComponent {
     // this.addTemplateForm.get('approvalLevel')?.valueChanges.subscribe((value: any) => {
     //   this.validateApprovers(this.addTemplateForm.get('approvalType')?.value, value);
     // });
-    // this.addTemplateForm.get('approvalType')?.valueChanges.subscribe((value: any) => {
-    //   this.validateApprovers(value, this.addTemplateForm.get('approvalLevel')?.value);
-    // });
+    this.addTemplateForm.get('approvalType')?.valueChanges.subscribe((value: any) => {
+      this.addTemplateForm.patchValue({
+        primaryApprover: null
+      })
+    });
   }
 
   
