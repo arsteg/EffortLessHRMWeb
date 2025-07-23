@@ -37,10 +37,10 @@ export class AddCategoryLeaveComponent {
     private _formBuilder: FormBuilder,
     private commonService: CommonService,
     private toast: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    if(!this.isEdit) {
+    if (!this.isEdit) {
       this.selectedTemplate = this.leaveService.selectedTemplate.getValue();
     }
     this.firstForm = this._formBuilder.group({
@@ -86,6 +86,7 @@ export class AddCategoryLeaveComponent {
               });
               leaveCategoriesArray.push(leaveCategoryGroup);
               this.toggleControl(leaveCategoryGroup, 'limitNumberOfTimesApply', 'maximumNumbersEmployeeCanApply');
+              this.bindCategoryApplicableChange(leaveCategoryGroup);
             }, err => {
               this.toast.error(this.translate.instant('leave.templateCategories.errorLoadingCategoryDetails'));
             });
@@ -110,6 +111,13 @@ export class AddCategoryLeaveComponent {
         formGroup.get(control).enable();
       } else {
         formGroup.get(control).disable();
+      }
+    });
+  }
+  bindCategoryApplicableChange(categoryGroup: FormGroup) {
+    categoryGroup.get('categoryApplicable')?.valueChanges.subscribe(value => {
+      if (value === 'all-employees') {
+        categoryGroup.get('users')?.setValue([]);
       }
     });
   }
