@@ -50,27 +50,9 @@
                   </div>
                 </div>
 
-                @if (categoryCtrl.get('dealWithNewlyJoinedEmployee').value === '2') {
- 
-                  <div class="row m-0">
-                    <div class="form-group col-md-12 my-2">
-                      <div class="d-flex align-items-center">
-                        <mat-label class="w-50">{{ 'leave.templateCategories.daysToBecomeEligible' | translate }}</mat-label>
-                        <mat-form-field class="ms-auto w-100">
-                          <mat-label>{{ 'leave.templateCategories.numberOfDaysPlaceholder' | translate }}</mat-label>
-                          <input type="number" matInput formControlName="daysToCompleteToBecomeEligibleForLeave">
-                          @if (categoryCtrl.get('daysToCompleteToBecomeEligibleForLeave').invalid &&
-                               categoryCtrl.get('daysToCompleteToBecomeEligibleForLeave').touched) {
-                            <mat-error>{{ 'leave.templateCategories.errorDaysEligible' | translate }}</mat-error>
-                          }
-                        </mat-form-field>
-                      </div>
-                    </div>
-                  </div>
-                }
+                
 
-                @if (categoryCtrl.get('dealWithNewlyJoinedEmployee').value === '2' ||
-                     categoryCtrl.get('dealWithNewlyJoinedEmployee').value === '3') {
+                @if (categoryCtrl.get('dealWithNewlyJoinedEmployee').value === 'eligibleAfterConfirmation') {
 
                   <div class="row m-0">
                     <div class="form-group col-md-12 my-2">

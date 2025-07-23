@@ -121,6 +121,8 @@
         "leaveErrorAssignmentDeleted": "Cannot delete leave template assignment!",
         "successTemplateCategoriesUpdated": "Leave Template Categories updated successfully!",
         "errorTemplateCategoriesUpdated": "Failed to update leave template categories",
+        "endDateValidate": "Please first select Start Date",
+        "halfDayLimitReachedError": "You can only select up to {{limit}} half-day entries based on your leave duration.",
         "templateCategories": {
             "title": "Leave Template Applicable Categories",
             "done": "Done",

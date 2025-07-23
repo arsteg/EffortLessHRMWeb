@@ -11,10 +11,11 @@ import { forkJoin, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CompanyService } from 'src/app/_services/company.service';
 import { UserService } from 'src/app/_services/users.service';
-
+import { provideNativeDateAdapter } from '@angular/material/core';
 @Component({
   selector: 'app-add-application',
   templateUrl: './add-application.component.html',
+  providers: [provideNativeDateAdapter()],
   styleUrl: './add-application.component.css',
   encapsulation: ViewEncapsulation.None,
 })
@@ -23,7 +24,7 @@ export class AddApplicationComponent implements OnDestroy {
   allAssignee: any;
   bsValue = new Date();
   @Output() close: any = new EventEmitter();
-  leaveCategories: any;
+  leaveCategories: any[] = [];
   selectedDates: Date[] = [];
   @Output() leaveApplicationRefreshed: EventEmitter<void> = new EventEmitter<void>();
   portalView = localStorage.getItem('adminView');
@@ -55,6 +56,8 @@ export class AddApplicationComponent implements OnDestroy {
   weeklyOffDays: string[] = [];
   attachments: '';
   appointmentDetail: any;
+  maxHalfDaysAllowed = 0;
+  halfDayLimitReached = false;
   private employeeValueChangesSubscription: Subscription;
   private leaveCategoryValueChangesSubscription: Subscription;
   private startDateValueChangesSubscription: Subscription;
@@ -115,17 +118,22 @@ export class AddApplicationComponent implements OnDestroy {
     this.populateMembers();
 
     this.leaveCategoryValueChangesSubscription = this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
-      this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
+      this.leaveApplication.patchValue({
+        startDate: null,
+        endDate: null,
+        halfDays: []
+      });
+      this.halfDays.clear?.();
       this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory?.documentRequired || false;
       this.handleLeaveCategoryChange();
-      // this.updateMinDate();
 
-      this.leaveCategories.map((category: any) => {
+
+      this.leaveCategories?.map((category: any) => {
         if (category.leaveCategory._id === leaveCategory) {
-          this.tempLeaveCategory = category;
           this.getSelectedUserAppointment();
-
-          console.log(this.tempLeaveCategory)
+          this.leaveApplication.patchValue({
+            isHalfDayOption: category?.leaveCategory?.isHalfDayTypeOfLeave
+          });
         }
       })
     });
@@ -151,9 +159,7 @@ export class AddApplicationComponent implements OnDestroy {
       this.leaveDocumentUpload = false;
     });
 
-
     if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
-      // this.getSelectedUserAppointment();
       this.leaveService.getLeaveCategoriesByUserv1(this.currentUser.id).subscribe({
         next: (res: any) => {
           this.leaveCategories = res.data;
@@ -165,9 +171,15 @@ export class AddApplicationComponent implements OnDestroy {
       });
     }
 
+    this.startDateValueChangesSubscription = this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => {
+      this.checkForDuplicateLeave();
+      this.calculateDateRangeAndLimitHalfDays();
+    });
+    this.endDateValueChangesSubscription = this.leaveApplication.get('endDate')?.valueChanges.subscribe(() => {
+      this.checkForDuplicateLeave();
+      this.calculateDateRangeAndLimitHalfDays();
+    });
 
-    this.startDateValueChangesSubscription = this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
-    this.endDateValueChangesSubscription = this.leaveApplication.get('endDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.leaveApplication.get('employee')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.leaveApplication.get('leaveCategory')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
 
@@ -193,78 +205,64 @@ export class AddApplicationComponent implements OnDestroy {
   }
 
   getSelectedUserAppointment() {
-  let userId: string | undefined;
+    let userId: string | undefined;
 
-  if (this.portalView === 'user' && this.tab === 1) {
-    userId = this.currentUser?.id;
-  } else if (this.portalView === 'admin' || (this.portalView === 'user' && this.tab === 5)) {
-    userId = this.leaveApplication.get('employee')?.value;
+    if (this.portalView === 'user' && this.tab === 1) {
+      userId = this.currentUser?.id;
+    } else if (this.portalView === 'admin' || (this.portalView === 'user' && this.tab === 5)) {
+      userId = this.leaveApplication.get('employee')?.value;
+    }
+
+    if (!userId) return;
+
+    this.userService.getAppointmentByUserId(userId).subscribe((res: any) => {
+      this.appointmentDetail = res.data;
+
+      const joiningDate = new Date(this.appointmentDetail.joiningDate);
+      const confirmationDate = new Date(this.appointmentDetail.confirmationDate);
+
+      const eligibilityType = this.tempLeaveCategory?.dealWithNewlyJoinedEmployee;
+
+      if (eligibilityType === 'eligibleImmediately') {
+        this.updateMinDate(joiningDate);
+      } else if (eligibilityType === 'eligibleAfterConfirmation') {
+        this.updateMinDate(confirmationDate);
+      }
+    });
   }
-
-  if (!userId) return;
-
-  this.userService.getAppointmentByUserId(userId).subscribe((res: any) => {
-    this.appointmentDetail = res.data;
-
-    const joiningDate = new Date(this.appointmentDetail.joiningDate);
-    const confirmationDate = new Date(this.appointmentDetail.confirmationDate);
-
-    const eligibilityType = this.tempLeaveCategory?.dealWithNewlyJoinedEmployee;
-
-    if (eligibilityType === 'eligibleImmediately') {
-      this.updateMinDate(joiningDate);
-    } else if (eligibilityType === 'eligibleAfterConfirmation') {
-      this.updateMinDate(confirmationDate);
-    } 
-  });
-}
-
 
   updateMinDate(baseDate: Date) {
-  let minDate = new Date(baseDate); // clone base date
+    let minDate = new Date(baseDate);
 
-  // Apply submitBefore offset if present
-  if (this.tempLeaveCategory?.submitBefore) {
-    const submitBeforeDays = parseInt(this.tempLeaveCategory.submitBefore, 10);
-    if (!isNaN(submitBeforeDays)) {
-      minDate.setDate(minDate.getDate() + submitBeforeDays);
+    if (this.tempLeaveCategory?.submitBefore) {
+      const submitBeforeDays = parseInt(this.tempLeaveCategory.submitBefore, 10);
+      if (!isNaN(submitBeforeDays)) {
+        minDate.setDate(minDate.getDate() + submitBeforeDays);
+      }
     }
+
+    this.minSelectableDate = minDate;
+    this.bsConfig = {
+      ...this.bsConfig,
+      minDate: this.minSelectableDate
+    };
+
+    this.validateDates();
   }
 
-  this.minSelectableDate = minDate;
-  this.bsConfig = {
-    ...this.bsConfig,
-    minDate: this.minSelectableDate
-  };
+  calculateDateRangeAndLimitHalfDays() {
+    const start = this.leaveApplication.get('startDate')?.value;
+    const end = this.leaveApplication.get('endDate')?.value;
 
-  this.validateDates();
-}
+    if (start && end) {
+      const startDate = moment(start);
+      const endDate = moment(end);
+      const duration = endDate.diff(startDate, 'days') + 1; // +1 to include the end day
+      this.maxHalfDaysAllowed = duration;
 
-  // updateMinDate(joiningDate: Date) {
-  //   let minDate = joiningDate;
-
-  //   // If submitBefore is defined, add those many days to joiningDate
-  //   if (this.tempLeaveCategory?.submitBefore) {
-  //     const submitBeforeDays = parseInt(this.tempLeaveCategory.submitBefore, 10);
-  //     if (!isNaN(submitBeforeDays)) {
-  //       minDate = new Date(joiningDate); // clone the date
-  //       minDate.setDate(minDate.getDate() + submitBeforeDays);
-  //     }
-  //   }
-
-  //   // If eligibleImmediately, allow from joining date itself
-  //   if (this.tempLeaveCategory?.dealWithNewlyJoinedEmployee === 'eligibleImmediately') {
-  //     minDate = joiningDate;
-  //   }
-
-  //   this.minSelectableDate = minDate;
-  //   this.bsConfig = {
-  //     ...this.bsConfig,
-  //     minDate: this.minSelectableDate
-  //   };
-
-  //   this.validateDates();
-  // }
+      this.halfDayLimitReached = this.halfDays.length > this.maxHalfDaysAllowed;
+    }
+  }
 
   validateDates() {
     const startDate = this.leaveApplication.get('startDate')?.value;
@@ -365,12 +363,10 @@ export class AddApplicationComponent implements OnDestroy {
     return (formArray: FormArray): { [key: string]: any } | null => {
       const isHalfDayOption = formGroup.get('isHalfDayOption')?.value;
       if (!isHalfDayOption) {
-        console.log('Half day option is not selected, no validation needed.');
         return null;
       }
 
       if (formArray.length === 0) {
-        console.log('Half day entries are required but none found.');
         return { halfDayRequired: true };
       }
 
@@ -378,7 +374,6 @@ export class AddApplicationComponent implements OnDestroy {
         const halfDayDate = formArray.at(i).get('date')?.value;
         const dayHalf = formArray.at(i).get('dayHalf')?.value;
         if (!halfDayDate || !dayHalf) {
-          console.log(`Half day entry at index ${i} is incomplete.`);
           return { halfDayRequired: true };
         }
       }
@@ -390,14 +385,25 @@ export class AddApplicationComponent implements OnDestroy {
       control.get('date')?.updateValueAndValidity();
     });
   }
+  // addHalfDayEntry() {
+  //   this.halfDays.push(this.fb.group({
+  //     date: ['', Validators.required],
+  //     dayHalf: ['', Validators.required]
+  //   }));
+  // }
   addHalfDayEntry() {
-    this.halfDays.push(this.fb.group({
-      date: ['', Validators.required],
-      dayHalf: ['', Validators.required]
-    }));
+    if (this.halfDays.length < this.maxHalfDaysAllowed) {
+      this.halfDays.push(this.fb.group({
+        date: [null, Validators.required],
+        dayHalf: [null, Validators.required]
+      }));
+      this.halfDayLimitReached = this.halfDays.length >= this.maxHalfDaysAllowed;
+    }
   }
+
   removeHalfDayEntry(index: number): void {
     this.halfDays.removeAt(index);
+    this.halfDayLimitReached = this.halfDays.length >= this.maxHalfDaysAllowed;
   }
   onHalfDayChange() {
     (this.leaveApplication.get('halfDays') as FormArray).clear();

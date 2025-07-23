@@ -62,6 +62,7 @@
                 </mat-form-field>
             </div>
         </div>
+
         @if(leaveApplication.get('leaveCategory').value) {
         <div class="row m-0 mt-2">
             <div class="form-group col-md-6">
@@ -81,7 +82,6 @@
                     </mat-error>
                 </mat-form-field>
             </div>
-
             <div class="form-group col-md-6">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.selectEndDate' | translate }}</mat-label>
@@ -89,10 +89,12 @@
                         [min]="leaveApplication.get('startDate')?.value ? leaveApplication.get('startDate')?.value : null"
                         [matDatepickerFilter]="weeklyOffDateFilter"
                         aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
-                    <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                    <mat-datepicker-toggle matSuffix [for]="endPicker"
+                    disabled="{{!leaveApplication.get('startDate').value}}"></mat-datepicker-toggle>
                     <mat-datepicker #endPicker></mat-datepicker>
+                    <mat-error *ngIf="!leaveApplication.get('startDate').value && leaveApplication.get('endDate').touched">{{'leave.endDateValidate' | translate}}</mat-error>
                     <mat-error
-                        *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError') && leaveApplication.get('endDate')?.touched">
+                        *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError')">
                         {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
                     </mat-error>
                     <mat-error
@@ -131,21 +133,16 @@
         <div *ngIf="leaveApplication.errors?.['duplicateLeave']" class="text-danger error pt-0">
             {{ 'leave.duplicateLeaveError' | translate }}
         </div>
-        <div class="form-group col-md-12">
-            <label>{{ 'leave.halfDayOptionPrompt' | translate }} <span class="text-danger">*</span></label>
-            <mat-radio-group formControlName="isHalfDayOption" (change)="onHalfDayChange()" class="d-flex">
-                <mat-radio-button color="primary" [value]="true">{{ 'leave.yesOption' | translate
-                    }}</mat-radio-button>
-                <mat-radio-button color="primary" [value]="false">{{ 'leave.noOption' | translate
-                    }}</mat-radio-button>
-            </mat-radio-group>
-        </div>
         }
         <div class="row m-0 mt-2">
             <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value === true">
-                <button type="button" mat-raised-button color="primary" class="mt-2" (click)="addHalfDayEntry()">
+                <button type="button" mat-raised-button color="primary" class="mt-2" (click)="addHalfDayEntry()"
+                    [disabled]="halfDayLimitReached">
                     {{ 'leave.addHalfDayButton' | translate }}
                 </button>
+                <div *ngIf="halfDayLimitReached" class="text-danger mt-2">
+                    {{ 'leave.halfDayLimitReachedError' | translate:{ limit: maxHalfDaysAllowed } }}
+                </div>
                 <div formArrayName="halfDays">
                     <div *ngFor="let halfDay of halfDays.controls; let i=index" [formGroupName]="i"
                         class="row m-0 mt-2">
