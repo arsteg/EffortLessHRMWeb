@@ -196,9 +196,9 @@
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.commentLabel' | translate }}</mat-label>
                     <textarea matInput formControlName="comment" rows="3"
-                        aria-label="{{ 'leave.commentAriaLabel' | translate }}" required></textarea>
+                        aria-label="{{ 'leave.commentAriaLabel' | translate }}"></textarea>
                 </mat-form-field>
-                <mat-error *ngIf="leaveApplication.get('comment')?.invalid && leaveApplication.get('comment')?.touched">
+                <mat-error *ngIf="reasonMandatory && leaveApplication.get('comment')?.invalid && leaveApplication.get('comment')?.touched">
                     {{ 'leave.commentRequired' | translate }}
                 </mat-error>
             </div>

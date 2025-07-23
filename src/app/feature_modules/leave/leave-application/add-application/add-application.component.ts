@@ -82,7 +82,7 @@ export class AddApplicationComponent implements OnDestroy {
       level2Reason: [''],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      comment: ['', Validators.required],
+      comment: [''],
       status: [''],
       isHalfDayOption: [false],
       halfDays: this.fb.array([]),
@@ -102,7 +102,7 @@ export class AddApplicationComponent implements OnDestroy {
     }
     return null;
   }
-
+  reasonMandatory: boolean;
   ngOnInit() {
     this.populateMembers();
 
@@ -114,10 +114,17 @@ export class AddApplicationComponent implements OnDestroy {
       });
       this.halfDays.clear?.();
       this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory?.documentRequired || false;
-      this.handleLeaveCategoryChange();
-
 
       this.leaveCategories?.map((category: any) => {
+        this.reasonMandatory = category?.leaveTemplate?.isCommentMandatory;
+        if (this.reasonMandatory) {
+          this.leaveApplication.get('comment')?.setValidators([Validators.required]);
+        } else {
+          this.leaveApplication.get('comment')?.clearValidators();
+        }
+
+        this.leaveApplication.get('comment')?.updateValueAndValidity();
+
         if (category.leaveCategory._id === leaveCategory) {
           this.getSelectedUserAppointment();
           this.leaveApplication.patchValue({
@@ -374,7 +381,7 @@ export class AddApplicationComponent implements OnDestroy {
       control.get('date')?.updateValueAndValidity();
     });
   }
-  
+
   addHalfDayEntry() {
     if (this.halfDays.length < this.maxHalfDaysAllowed) {
       this.halfDays.push(this.fb.group({
@@ -511,8 +518,8 @@ export class AddApplicationComponent implements OnDestroy {
         }
       });
     }
-    if (this.portalView === 'admin'){
-      this.commonService.populateUsers().subscribe((res: any)=>{
+    if (this.portalView === 'admin') {
+      this.commonService.populateUsers().subscribe((res: any) => {
         this.allAssignee = res.data.data;
       })
     }
