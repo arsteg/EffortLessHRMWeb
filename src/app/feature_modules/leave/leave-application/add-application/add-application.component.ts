@@ -113,8 +113,8 @@ export class AddApplicationComponent implements OnDestroy {
         halfDays: []
       });
       this.halfDays.clear?.();
+      this.tempLeaveCategory = this.leaveCategories.find(category => category.leaveCategory._id === leaveCategory);
       this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory?.documentRequired || false;
-
       this.leaveCategories?.map((category: any) => {
         this.reasonMandatory = category?.leaveTemplate?.isCommentMandatory;
         if (this.reasonMandatory) {
@@ -124,13 +124,14 @@ export class AddApplicationComponent implements OnDestroy {
         }
 
         this.leaveApplication.get('comment')?.updateValueAndValidity();
-
         if (category.leaveCategory._id === leaveCategory) {
           this.getSelectedUserAppointment();
           this.leaveApplication.patchValue({
             isHalfDayOption: category?.leaveCategory?.isHalfDayTypeOfLeave
           });
         }
+        this.updateMinDate(new Date());
+        this.handleLeaveCategoryChange();
       })
     });
 
@@ -227,11 +228,11 @@ export class AddApplicationComponent implements OnDestroy {
     });
   }
 
-  updateMinDate(baseDate: Date) {
+  updateMinDate(baseDate: Date): void {
     let minDate = new Date(baseDate);
 
-    if (this.tempLeaveCategory?.submitBefore) {
-      const submitBeforeDays = parseInt(this.tempLeaveCategory.submitBefore, 10);
+    if (this.tempLeaveCategory?.leaveCategory?.submitBefore) {
+      const submitBeforeDays = parseInt(this.tempLeaveCategory.leaveCategory.submitBefore, 10);
       if (!isNaN(submitBeforeDays)) {
         minDate.setDate(minDate.getDate() + submitBeforeDays);
       }
@@ -246,6 +247,7 @@ export class AddApplicationComponent implements OnDestroy {
     this.validateDates();
   }
 
+
   calculateDateRangeAndLimitHalfDays() {
     const start = this.leaveApplication.get('startDate')?.value;
     const end = this.leaveApplication.get('endDate')?.value;
@@ -253,7 +255,7 @@ export class AddApplicationComponent implements OnDestroy {
     if (start && end) {
       const startDate = moment(start);
       const endDate = moment(end);
-      const duration = endDate.diff(startDate, 'days') + 1; // +1 to include the end day
+      const duration = endDate.diff(startDate, 'days') + 1;
       this.maxHalfDaysAllowed = duration;
 
       this.halfDayLimitReached = this.halfDays.length > this.maxHalfDaysAllowed;

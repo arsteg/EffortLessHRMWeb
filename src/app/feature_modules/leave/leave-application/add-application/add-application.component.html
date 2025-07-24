@@ -98,7 +98,7 @@
                         {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
                     </mat-error>
                     <mat-error
-                        *ngIf="leaveApplication.get('endDate')?.touched && leaveApplication.get('endDate')?.invalid && !leaveApplication.get('endDate')?.hasError('dateRangeError') && !leaveApplication.get('endDate')?.hasError('submitBeforeError')">
+                        *ngIf="leaveApplication.get('endDate')?.dirty && leaveApplication.get('endDate')?.invalid && !leaveApplication.get('endDate')?.hasError('dateRangeError') && !leaveApplication.get('endDate')?.hasError('submitBeforeError')">
                         {{ 'leave.invalidEndDate' | translate }}
                     </mat-error>
                     <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('dateRangeError')">
