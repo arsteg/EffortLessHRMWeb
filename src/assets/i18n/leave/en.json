@@ -114,7 +114,7 @@
         "errorDeleted": "Leave Category cannot be deleted as it is already in use!",
         "leaveCategories": "Leave Categories",
         "leaveTemplates": "Leave Templates",
-        "leaveAssignment": "Leave Assignment",
+        "leaveAssignment": "Leave Template Assignment",
         "leaveSuccessfulAssignmentDeleted": "Successfully deleted leave template assignment!",
         "leaveErrorAssigned": "Cannot assign employee to the template!",
         "leaveErrorAssignmentUpdated": "Cannot update leave assignment!",

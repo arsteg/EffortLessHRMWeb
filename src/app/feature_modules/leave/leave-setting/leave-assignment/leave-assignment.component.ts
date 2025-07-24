@@ -17,7 +17,7 @@ import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
   templateUrl: './leave-assignment.component.html',
   styleUrls: ['./leave-assignment.component.css']
 })
-export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
+export class LeaveAssignmentComponent implements OnInit {
   closeResult: string = '';
   selectedLeaveAssignment: any;
   isEdit: boolean = false;
@@ -27,14 +27,12 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
   showApprovers: boolean = false;
   displayedColumns: string[] = ['user', 'leaveTemplate', 'primaryApprover', 'secondaryApprover', 'actions'];
   recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
-  allData: any[]= [];
+  allData: any[] = [];
   dialogRef: MatDialogRef<any> | null = null;
   columns: TableColumn[] = [
     { key: this.translate.instant('leave.leaveassignment.employee'), name: 'Employee', valueFn: (row) => this.getUser(row?.user) },
-    { key: this.translate.instant('leave.leaveassignment.leaveTemplate'), name: 'Current Leave Policy', valueFn: (row) => this.getTemplateLabel(row?.leaveTemplate) },
+    { key: this.translate.instant('leave.leaveassignment.leaveTemplate'), name: 'Current Leave Policy', valueFn: (row) => row?.leaveTemplate?.label },
     { key: this.translate.instant('leave.leaveassignment.primaryApprover'), name: 'Approver', valueFn: (row) => this.getUser(row.primaryApprover) },
-    // { key: this.translate.instant('leave.leaveassignment.primaryApprover'), name: 'Primary Approver', valueFn: (row) => this.getUser(row.primaryApprover) },
-    // { key: this.translate.instant('leave.leaveassignment.secondaryApprover'), name: 'Secondary Approver', valueFn: (row) => this.getUser(row.secondaryApprover) },
     {
       key: 'action',
       name: 'Action',
@@ -68,33 +66,14 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.getAllUsers();
-    this.getAllTemplates();
-    this.initializeFilterPredicate();
+    this.getTemplateAssignments();
     this.templateAssignmentForm.get('leaveTemplate')?.valueChanges.subscribe(value => {
       this.onTemplateChange(value);
     });
   }
 
-  ngAfterViewInit() {
-    this.tableService.dataSource.paginator = this.paginator;
-    this.getTemplateAssignments();
-  }
-
-  initializeFilterPredicate() {
-    this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
-      const searchString = filter.trim().toLowerCase();
-      const userName = this.getUser(data.user)?.toLowerCase() || '';
-      const templateLabel = this.getTemplateLabel(data.leaveTemplate)?.toLowerCase() || '';
-      const primaryApproverName = this.getUser(data.primaryApprover)?.toLowerCase() || '';
-      const secondaryApproverName = this.getUser(data.secondaryApprover)?.toLowerCase() || '';
-      return userName.includes(searchString) ||
-             templateLabel.includes(searchString) ||
-             primaryApproverName.includes(searchString) ||
-             secondaryApproverName.includes(searchString);
-    });
-  }
-
   open(content: any) {
+    this.getAllTemplates();
     this.dialogRef = this.dialog.open(content, {
       width: '600px',
     });
@@ -102,16 +81,6 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
       this.resetForm();
       this.getTemplateAssignments();
     });
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
   }
 
   resetForm() {
@@ -132,14 +101,15 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    this.templateAssignmentForm.get('primaryApprover').enable();
+    this.templateAssignmentForm.get('user').enable();
+
     const payload = {
       user: this.templateAssignmentForm.value.user,
       leaveTemplate: this.templateAssignmentForm.value.leaveTemplate,
-      primaryApprover: this.showApprovers ? this.templateAssignmentForm.value.primaryApprover || null : null,
+      primaryApprover: this.templateAssignmentForm.value.primaryApprover,
       secondaryApprover: null
-      // secondaryApprover: this.showApprovers ? this.templateAssignmentForm.value.secondaryApprover || null : null
     };
-
     if (!this.isEdit) {
       this.leaveService.addLeaveTemplateAssignment(payload).subscribe({
         next: (res: any) => {
@@ -148,7 +118,7 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
             this.tableService.setData([...currentData, res.data]);
             this.toast.success(this.translate.instant('leave.successAssigned'), this.translate.instant('leave.templateAssignment.title'));
             this.resetForm();
-            this.dialogRef.close(true);
+            this.closeModal();
           }
         },
         error: (err) => {
@@ -156,7 +126,6 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
         }
       });
     } else {
-      const id = this.selectedLeaveAssignment._id;
       this.leaveService.addLeaveTemplateAssignment(payload).subscribe({
         next: (res: any) => {
           if (res.status === 'success') {
@@ -166,7 +135,8 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
             this.tableService.setData(updatedData);
             this.toast.success(this.translate.instant('leave.successAssignmentUpdated'), this.translate.instant('leave.templateAssignment.title'));
             this.resetForm();
-            this.modalService.dismissAll();
+            this.closeModal();
+
           }
         },
         error: (err) => {
@@ -180,7 +150,6 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
     this.commonService.populateUsers().subscribe({
       next: (res: any) => {
         this.users = res.data.data || [];
-        this.initializeFilterPredicate();
       },
       error: (err) => {
         console.error('Error fetching users:', err);
@@ -193,7 +162,6 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
     this.leaveService.getLeavetemplates(requestBody).subscribe({
       next: (res: any) => {
         this.templates = res.data || [];
-        this.initializeFilterPredicate();
       },
       error: (err) => {
         console.error('Error fetching templates:', err);
@@ -222,22 +190,39 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getTemplateLabel(leaveTemplate: string): string {
-    const matchingCategory = this.templates.find(template => template?._id === leaveTemplate);
-    return matchingCategory?.label || '';
-  }
-
   onTemplateChange(templateId: string): void {
     const selectedTemplate = this.templates.find(temp => temp._id === templateId);
-    if (selectedTemplate?.approvalType === 'template-wise') {
-      this.showApprovers = false;
+    const primaryApproverControl = this.templateAssignmentForm.get('primaryApprover');
+    if (selectedTemplate) {
+      if (selectedTemplate.approvalType === 'template-wise') {
+        primaryApproverControl?.disable();
+        primaryApproverControl?.clearValidators();
+        this.templateAssignmentForm.patchValue({
+          primaryApprover: selectedTemplate.primaryApprover || null,
+          secondaryApprover: null
+        });
+      } else {
+        this.showApprovers = true;
+        primaryApproverControl?.enable();
+        primaryApproverControl?.setValidators(Validators.required);
+
+        if (!this.isEdit || (this.isEdit && this.selectedLeaveAssignment?.leaveTemplate?._id !== templateId)) {
+          this.templateAssignmentForm.patchValue({
+            primaryApprover: '',
+            secondaryApprover: ''
+          });
+        }
+      }
+    } else {
+      this.showApprovers = true;
+      primaryApproverControl?.enable();
+      primaryApproverControl?.setValidators(Validators.required);
       this.templateAssignmentForm.patchValue({
         primaryApprover: '',
         secondaryApprover: ''
       });
-    } else {
-      this.showApprovers = true;
     }
+    primaryApproverControl?.updateValueAndValidity();
   }
 
   getUser(employeeId: string): string {
@@ -246,16 +231,29 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
 
+
   editTemplateAssignment(templateAssignment: any) {
     this.isEdit = true;
     this.selectedLeaveAssignment = templateAssignment;
-    this.onTemplateChange(templateAssignment.leaveTemplate);
     this.templateAssignmentForm.patchValue({
       user: templateAssignment.user || '',
-      leaveTemplate: templateAssignment.leaveTemplate || '',
-      primaryApprover: templateAssignment.primaryApprover || '',
-      secondaryApprover: templateAssignment.secondaryApprover || ''
+      leaveTemplate: templateAssignment?.leaveTemplate?.label || '',
     });
+    this.templateAssignmentForm.get('user').disable();
+    this.onTemplateChange(templateAssignment?.leaveTemplate?._id);
+    if (this.selectedLeaveAssignment?.primaryApprover && this.selectedLeaveAssignment?.leaveTemplate?.approvalType === 'template-wise') {
+      this.templateAssignmentForm.patchValue({
+        primaryApprover: templateAssignment.primaryApprover || '',
+        secondaryApprover: null
+      });
+      this.templateAssignmentForm.get('primaryApprover').disable();
+    }
+    else{
+      this.templateAssignmentForm.patchValue({
+        primaryApprover: templateAssignment.primaryApprover || '',
+        secondaryApprover: null
+      })
+    }
   }
 
   deleteTemplateAssignment(_id: string) {
@@ -286,7 +284,7 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
       this.isEdit = true;
       this.editTemplateAssignment(event?.row);
       this.open(addModal);
-    } 
+    }
     if (event.action.label === 'Delete') {
       this.deleteDialog(event?.row._id);
     }
@@ -311,16 +309,16 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
       const found = this.columns.some(col => {
         if (col.key !== 'actions') {
           var value = row[col.key];
-          if(col.key === this.translate.instant('leave.leaveassignment.employee')) {
+          if (col.key === this.translate.instant('leave.leaveassignment.employee')) {
             value = this.getUser(row[col.key]);
           }
-          else if(col.key === this.translate.instant('leave.leaveassignment.leaveTemplate')) {
-            value = this.getTemplateLabel(row[col.key]);
+          else if (col.key === this.translate.instant('leave.leaveassignment.leaveTemplate')) {
+            value = row[col.key];
           }
-          else if(col.key === this.translate.instant('leave.leaveassignment.primaryApprover')) {
+          else if (col.key === this.translate.instant('leave.leaveassignment.primaryApprover')) {
             value = this.getUser(row[col.key]);
           }
-          else if(col.key === this.translate.instant('leave.leaveassignment.secondaryApprover')) {
+          else if (col.key === this.translate.instant('leave.leaveassignment.secondaryApprover')) {
             value = this.getUser(row[col.key]);
           }
           return value?.toString().toLowerCase().includes(event.toLowerCase());
@@ -331,7 +329,7 @@ export class LeaveAssignmentComponent implements OnInit, AfterViewInit {
     });
   }
 
-  closeModal(){
+  closeModal() {
     this.resetForm();
     this.dialogRef.close(true);
   }
