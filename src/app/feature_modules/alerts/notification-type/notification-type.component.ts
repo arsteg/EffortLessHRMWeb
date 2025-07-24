@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { EventNotificationService } from 'src/app/_services/eventNotification.Service';
 import { eventNotificationType } from 'src/app/models/eventNotification/eventNotitication';
@@ -52,7 +52,7 @@ export class NotificationTypeComponent implements OnInit {
 
   initForm() {
     this.notificationTypeForm = this.fb.group({
-      name: ['', Validators.required]
+      name: ['', [Validators.required, this.noWhitespaceValidator]]
     });
   }
 
@@ -161,5 +161,11 @@ export class NotificationTypeComponent implements OnInit {
   
   resetForm(){
     this.notificationTypeForm.reset();
+  }
+
+  noWhitespaceValidator(control: FormControl) {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { whitespace: true };
   }
 }
