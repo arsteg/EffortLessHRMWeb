@@ -23,6 +23,7 @@ export class CreateLeaveComponent {
   skip: string = '0';
   next = '10000';
   @Input() templates: any;
+  @Output() updateLeaveTemplateTable: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -179,6 +180,7 @@ export class CreateLeaveComponent {
           next: (res: any) => {
             this.leaveService.selectedTemplate.next(res.data);
             this.leaveService.categories.next(res.categories);
+            this.updateLeaveTemplateTable.emit();
             this.changeStep.emit(2);
             this.toast.success(this.translate.instant('leave.successTemplateCreated'));
           },
@@ -191,6 +193,7 @@ export class CreateLeaveComponent {
         this.leaveService.updateLeaveTemplate(id, this.addTemplateForm.value).subscribe((res: any) => {
           // this.leaveService.selectedTemplate.next(res.data);
           // this.leaveService.categories.next(res.categories);
+           this.updateLeaveTemplateTable.emit();
           this.changeStep.emit(2);
           this.toast.success(this.translate.instant('leave.successTemplateUpdated'));
         },

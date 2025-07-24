@@ -100,10 +100,12 @@ export class LeaveAssignmentComponent implements OnInit {
       return;
     }
 
+    this.templateAssignmentForm.get('user').enable();
+    this.templateAssignmentForm.get('primaryApprover').enable();
     const payload = {
       user: this.templateAssignmentForm.value.user,
       leaveTemplate: this.templateAssignmentForm.value.leaveTemplate,
-      primaryApprover: this.templateAssignmentForm.value.primaryApprover || null,
+      primaryApprover: this.templateAssignmentForm.value.primaryApprover,
       secondaryApprover: null
     };
 
@@ -196,7 +198,7 @@ export class LeaveAssignmentComponent implements OnInit {
         primaryApprover: selectedTemplate.primaryApprover || null,
         secondaryApprover: null
       });
-      
+
        primaryApproverControl?.disable();
       primaryApproverControl?.clearValidators();
       this.showApprovers = false;

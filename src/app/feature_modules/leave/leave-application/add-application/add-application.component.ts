@@ -609,7 +609,9 @@ export class AddApplicationComponent implements OnDestroy {
   submitLeaveApplication(payload: any) {
     this.leaveService.addLeaveApplication(payload).subscribe({
       next: (res: any) => {
-        this.toast.success(this.translate.instant('leave.successAddLeave'));
+        if (res.data) { this.toast.success(this.translate.instant('leave.successAddLeave')); }
+        else if (res.data === null) { this.toast.warning(res.message); }
+        
         this.leaveApplicationRefreshed.emit(res.data);
         this.leaveApplication.reset();
         this.selectedFiles = [];

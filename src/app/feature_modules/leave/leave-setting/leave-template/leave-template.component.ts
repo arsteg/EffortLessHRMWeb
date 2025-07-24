@@ -29,17 +29,17 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
   dialogRef: MatDialogRef<any> | null = null;
 
   columns: TableColumn[] = [
-    { 
-      key: 'label', 
-      name: 'Leave Label' 
+    {
+      key: 'label',
+      name: 'Leave Label'
     },
-    { 
-      key: 'numberOfEmployeesCovered', 
+    {
+      key: 'numberOfEmployeesCovered',
       name: 'Number Of Employees Covered',
-      valueFn: (row: any) => this.calculateTotalEmployees(row)
+      valueFn: (row: any) => row?.leaveTemplateAssignmentCount
     },
-    { 
-      key: 'numberOfLeaveCategories', 
+    {
+      key: 'numberOfLeaveCategories',
       name: 'Number Of Leave Categories',
       valueFn: (row: any) => row?.applicableCategories?.length
     },
@@ -55,7 +55,6 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
   ];
 
   constructor(
-    private modalService: NgbModal,
     private leaveService: LeaveService,
     private dialog: MatDialog,
     private toast: ToastrService,
@@ -71,7 +70,7 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.tableService.dataSource.paginator = this.paginator;
-    // this.getLeaveTemplates();
+    this.getLeaveTemplates();
   }
 
   initializeFilterPredicate() {
@@ -81,8 +80,8 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
       const employeesCovered = this.calculateTotalEmployees(data)?.toString().toLowerCase() || '';
       const leaveCategories = (data.applicableCategories?.length || 0).toString();
       return label.includes(searchString) ||
-             employeesCovered.includes(searchString) ||
-             leaveCategories.includes(searchString);
+        employeesCovered.includes(searchString) ||
+        leaveCategories.includes(searchString);
     });
   }
 
@@ -181,10 +180,10 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
     }
   }
 
- calculateTotalEmployees(leaveTemp: any) {
-  if (!leaveTemp || !leaveTemp.applicableCategories || !Array.isArray(leaveTemp.applicableCategories)) {
-    return 0;
-  }
+  calculateTotalEmployees(leaveTemp: any) {
+    if (!leaveTemp || !leaveTemp.applicableCategories || !Array.isArray(leaveTemp.applicableCategories)) {
+      return 0;
+    }
     let totalEmployees: any;
     for (const category of leaveTemp?.applicableCategories) {
       if (!category?.templateApplicableCategoryEmployee.length) {
@@ -198,14 +197,20 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
 
   handleAction(event: any, addModal: any) {
     if (event.action.label === 'Edit') {
-      this.changeMode='Next'; 
-      this.isEdit = true; 
-      this.selectedTemplate= event?.row; 
-      this.setFormValues(event?.row); 
+      this.changeMode = 'Next';
+      this.isEdit = true;
+      this.selectedTemplate = event?.row;
+      this.setFormValues(event?.row);
       this.open(addModal);
-    } 
+    }
     if (event.action.label === 'Delete') {
-      this.deleteDialog(event.row._id);
+      console.log(event.row?.leaveTemplateAssignmentCount)
+      if (event.row?.leaveTemplateAssignmentCount < 0) {
+        this.deleteDialog(event.row._id);
+      }
+      else {
+        this.toast.warning(this.translate.instant('leave.nonDeletable'))
+      }
     }
   }
 
