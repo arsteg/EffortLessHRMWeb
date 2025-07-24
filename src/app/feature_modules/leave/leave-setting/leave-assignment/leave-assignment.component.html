@@ -63,37 +63,13 @@
             <mat-label>{{ 'leave.selectPrimaryApprover' | translate }}</mat-label>
             <mat-select formControlName="primaryApprover">
               <mat-option value="" disabled>{{ 'leave.selectLabel' | translate }}</mat-option>
-             
-              <ng-container *ngIf="this.selectedLeaveAssignment.primaryApprover && this.selectedLeaveAssignment?.leaveTemplate?.approvalType === 'template-wise'">
-                <mat-option [value]="templateAssignmentForm.get('primaryApprover')?.value">
-                  {{ getUser(templateAssignmentForm.get('primaryApprover')?.value) }}
-                </mat-option>
-              </ng-container>
-              <ng-container *ngIf="showApprovers">
-                <mat-option [value]="user?._id" *ngFor="let user of users"> <!-- Corrected to user?._id -->
-                  {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
-                </mat-option>
-              </ng-container>
-            </mat-select>
-            <mat-error
-              *ngIf="templateAssignmentForm.get('primaryApprover')?.invalid && templateAssignmentForm.get('primaryApprover')?.touched">
-              {{ 'leave.errorChoosePrimaryApprover' | translate }}
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="form-group col-12 d-none my-2">
-          <mat-form-field class="w-100" appearance="outline">
-            <mat-label>{{ 'leave.selectSecondaryApprover' | translate }}</mat-label>
-            <mat-select formControlName="secondaryApprover">
-              <mat-option value="" disabled>{{ 'leave.selectLabel' | translate }}</mat-option>
-              <mat-option [value]="user?.id" *ngFor="let user of users">
+              <mat-option [value]="user?._id" *ngFor="let user of users">
                 {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
               </mat-option>
             </mat-select>
             <mat-error
-              *ngIf="templateAssignmentForm.get('secondaryApprover')?.invalid && templateAssignmentForm.get('secondaryApprover')?.touched">
-              {{ 'leave.errorChooseSecondaryApprover' | translate }}
+              *ngIf="templateAssignmentForm.get('primaryApprover')?.invalid && templateAssignmentForm.get('primaryApprover')?.touched">
+              {{ 'leave.errorChoosePrimaryApprover' | translate }}
             </mat-error>
           </mat-form-field>
         </div>
