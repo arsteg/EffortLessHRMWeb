@@ -203,4 +203,21 @@ export class CustomValidators {
       return exitDate > resDate ? null : { exitBeforeResignation: true };
     };
   }
+  static exitInterviewAfterTerminationValidator(): ValidatorFn {
+    return  (group: AbstractControl): ValidationErrors | null => {
+    const terminationDate = group.get('termination_date')?.value;
+    const exitInterviewDate = group.get('exit_interview_date')?.value;
+ 
+    if (!terminationDate || !exitInterviewDate) return null;
+  
+    const resDate = new Date(terminationDate);
+    const exitDate = new Date(exitInterviewDate);
+  
+    // Normalize dates (remove time part)
+    resDate.setHours(0, 0, 0, 0);
+    exitDate.setHours(0, 0, 0, 0);
+  
+    return exitDate > resDate ? null : { exitBeforeTermination: true };
+  };
+}
 }

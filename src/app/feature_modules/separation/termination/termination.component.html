@@ -63,6 +63,7 @@
               <mat-error *ngIf="terminationForm.controls['termination_date'].hasError('required') && terminationForm.controls['termination_date'].touched">
                 Termination Date is required.
               </mat-error>
+            
             </mat-form-field>
           </div>
           <div class="col-md-12 mt-3">
@@ -72,6 +73,10 @@
               <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
               <mat-datepicker #picker2></mat-datepicker>
             </mat-form-field>
+            <mat-error
+            *ngIf="terminationForm.hasError('exitBeforeTermination')">
+            Exit Interview Date must be after Termination Date.
+          </mat-error>
           </div>
           <div class="col-md-12 mt-3">
             <mat-form-field appearance="outline" class="w-100">
@@ -107,7 +112,7 @@
     </mat-dialog-content>
     <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
       <button mat-flat-button type="button" (click)="isEditMode ? closeDialog() : resetForm()">Cancel</button>
-      <button mat-flat-button color="primary" type="submit" [disabled]="terminationForm.invalid">
+      <button mat-flat-button color="primary" type="submit" [disabled]="terminationForm.invalid || isSubmitting">
         {{isEditMode ? 'Update' : 'Create'}} Termination
       </button>
     </div>    

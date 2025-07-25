@@ -4,6 +4,7 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { SeparationService } from 'src/app/_services/separation.service';
@@ -46,6 +47,7 @@ export class TerminationComponent {
   totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  isSubmitting: boolean = false;
   adminColumns = [
     {
       key: 'user',
@@ -144,8 +146,8 @@ export class TerminationComponent {
           visibility: ActionVisibility.LABEL,
           icon: 'delete',
           hideCondition: (row: any) =>
-            row.termination_status !== this.terminationStatuses.Completed ||
-            row.termination_status !== this.terminationStatuses.Reinstated,
+              row.termination_status === this.terminationStatuses.Completed ||
+              row.termination_status === this.terminationStatuses.Reinstated,
         },
       ],
     },
@@ -255,7 +257,8 @@ export class TerminationComponent {
       exit_interview_date: [''],
       legal_compliance: [true],
       unemployment_claim: [true]
-    });
+    }, { validators: CustomValidators.exitInterviewAfterTerminationValidator()});
+
     this.appealForm = this.fb.group({
       appeal_reason: ['']
     });
@@ -276,12 +279,15 @@ export class TerminationComponent {
   }
 
   openDialog(termination?: any): void {
+    this.terminationForm.get('user')?.enable();
     this.isEditMode = !!termination;
+    this.isSubmitting = false;
     const today = new Date();
-    this.minDate = this.isEditMode ? null : new Date(today.setDate(today.getDate() + 1));
+    this.minDate = new Date(today.setDate(today.getDate()));
   
     if (this.isEditMode) {
       this.terminationForm.patchValue(termination);
+      this.terminationForm.get('user')?.disable();
     } else {
       this.terminationForm.reset();
     }
@@ -299,6 +305,7 @@ export class TerminationComponent {
 
   resetForm(): void {
     this.terminationForm.reset();
+    this.isSubmitting = false;
   }
 
   closeDialog(): void {
@@ -334,6 +341,8 @@ export class TerminationComponent {
   }
     
   onSubmit() {
+    this.isSubmitting = true;
+    this.terminationForm.get('user')?.enable();
     if (this.terminationForm.invalid) {
       this.toast.error('Please fill all required fields', 'Error!');
       return;
@@ -351,6 +360,7 @@ export class TerminationComponent {
                 this.translate.instant('separation.assest_return_warning'),
                 this.translate.instant('Error!')
               );
+              this.isSubmitting = false;
               return;
             } else {
               this.saveTermination(); // If assets are fine, proceed
@@ -366,6 +376,7 @@ export class TerminationComponent {
         this.saveTermination(); // If company_property_returned is not checked, no need to validate
       }
     }
+   
   }
   saveTermination() {
     if (this.isEditMode) {
@@ -504,6 +515,12 @@ export class TerminationComponent {
   
     this.separationService.getTerminationAppealByTerminationId(termination).subscribe({
       next: (appeal: any) => {
+        if(appeal.data===null){
+          this.toast.success(
+            appeal.message, 
+            this.translate.instant('Success')
+          );
+        }
         this.reviewAppealForm.patchValue({
           appeal_status: appeal.data.appeal_status,
           decision_notes: appeal.data.decision_notes,

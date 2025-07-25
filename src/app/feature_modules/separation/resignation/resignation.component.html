@@ -134,7 +134,7 @@
       <button mat-flat-button class="mx-2" type="button" mat-dialog-close (click)="isEditMode ? closeDialog() : resetForm()">
         Cancel
       </button>
-      <button mat-flat-button color="primary" type="submit" [disabled]="resignationForm.invalid">
+      <button mat-flat-button color="primary" type="submit" [disabled]="resignationForm.invalid || isSubmitting">
         {{isEditMode ? 'Update' : 'Create'}} Resignation
       </button>
     </div>

@@ -50,6 +50,7 @@ export class ResignationComponent implements OnInit {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   minDate: Date;
+  isSubmitting: boolean = false;
   isAdminView = false;
   columns = [
     {
@@ -235,7 +236,7 @@ export class ResignationComponent implements OnInit {
         company_property_returned: [false],
         final_pay_processed: [false],
         exit_feedback: ['']
-      }, { validators: CustomValidators.exitInterviewAfterResignationValidator() });
+      }, { validators: CustomValidators.exitInterviewAfterTerminationValidator() });
       
    
   }
@@ -263,6 +264,7 @@ export class ResignationComponent implements OnInit {
   }
 
   openDialog(resignation?: any): void { 
+    this.isSubmitting = false;
     this.isEditMode = !!resignation;
     const today = new Date();
     this.minDate = new Date(today.setDate(today.getDate()));
@@ -302,7 +304,7 @@ export class ResignationComponent implements OnInit {
   }
 
   onSubmit(): void {
-   
+    this.isSubmitting = true;
     this.resignationForm.markAllAsTouched();
     this.resignationForm.updateValueAndValidity();
     this.resignationForm.get('notice_period')?.enable();
@@ -349,9 +351,10 @@ export class ResignationComponent implements OnInit {
         }
       );
     } else {
-      this.saveResignation(); // Skip asset check if not marked as returned
+      this.saveResignation();
+       // Skip asset check if not marked as returned
     } 
-  
+    this.isSubmitting = false;
   }
   saveResignation() {
   
