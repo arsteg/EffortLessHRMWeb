@@ -186,4 +186,21 @@ export class CustomValidators {
         return null;
       };
     }
+    static exitInterviewAfterResignationValidator(): ValidatorFn {
+      return  (group: AbstractControl): ValidationErrors | null => {
+      const resignationDate = group.get('resignation_date')?.value;
+      const exitInterviewDate = group.get('exit_interview_date')?.value;
+    
+      if (!resignationDate || !exitInterviewDate) return null;
+    
+      const resDate = new Date(resignationDate);
+      const exitDate = new Date(exitInterviewDate);
+    
+      // Normalize dates (remove time part)
+      resDate.setHours(0, 0, 0, 0);
+      exitDate.setHours(0, 0, 0, 0);
+    
+      return exitDate > resDate ? null : { exitBeforeResignation: true };
+    };
+  }
 }
