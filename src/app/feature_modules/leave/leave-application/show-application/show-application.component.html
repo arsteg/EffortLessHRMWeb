@@ -5,11 +5,11 @@
   </button>
 </div>
 <hrm-table 
-  [data]="leaveApplication.data" 
-  [isServerSide]="true" 
-  [columns]="columns" 
-  [showExport]="'csv'" 
-  [showSearch]="true" 
+  [data]="leaveApplication.data"
+  [isServerSide]="true"
+  [columns]="columns"
+  [showExport]="'csv'"
+  [showSearch]="true"
   [totalItems]="totalRecords"
   (actionClicked)="handleAction($event)"
   (pageChanged)="onPageChange($event)"

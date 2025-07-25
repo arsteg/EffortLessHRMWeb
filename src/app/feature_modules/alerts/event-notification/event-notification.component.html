@@ -9,6 +9,86 @@
         <h2 class="contentHeading p-2">{{ 'alerts.eventNotification.addEdit' | translate }}</h2>
         <form [formGroup]="eventNotificationForm"
           (ngSubmit)="isEdit ? updateEventNotification() : addEventNotification()"
+          class="mt-4 p-2 me-4 bg-light border rounded">
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'alerts.eventNotification.name' | translate }}</mat-label>
+            <input matInput type="text" formControlName="name" required (focus)="onEditFocus($event)">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'alerts.eventNotification.description' | translate }}</mat-label>
+            <input matInput type="text" formControlName="description" required (focus)="onEditFocus($event)">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'alerts.eventNotification.type' | translate }}</mat-label>
+            <mat-select formControlName="eventNotificationType">
+              <mat-option [value]="notificationType._id" *ngFor="let notificationType of notificationTypeList">
+                {{ notificationType.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'alerts.eventNotification.channels' | translate }}</mat-label>
+            <mat-select id="eventNotificationChannels" formControlName="notificationChannel" multiple>
+              <mat-option value="email">{{ 'alerts.eventNotification.channel_email' | translate }}</mat-option>
+              <!-- <mat-option value="sms">{{ 'alerts.eventNotification.channel_sms' | translate }}</mat-option> -->
+              <mat-option value="ui">{{ 'alerts.eventNotification.channel_ui' | translate }}</mat-option>
+              <!-- <mat-option value="app">{{ 'alerts.eventNotification.channel_app' | translate }}</mat-option> -->
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'alerts.eventNotification.date' | translate }}</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date" required (focus)="onEditFocus($event)">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-checkbox color="primary" formControlName="isRecurring" class="mb-1">
+            {{ 'alerts.eventNotification.recurring' | translate }}
+          </mat-checkbox>
+
+          <mat-form-field *ngIf="eventNotificationForm.get('isRecurring').value" appearance="outline" class="w-100 mb-3">
+            <mat-label>{{ 'alerts.eventNotification.frequency' | translate }}</mat-label>
+            <mat-select formControlName="recurringFrequency" required>
+              <mat-option [value]="frequency" *ngFor="let frequency of ['daily', 'weekly', 'monthly', 'annually']">
+                {{ 'alerts.eventNotification.frequency.' + frequency | translate }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'alerts.eventNotification.leadTime' | translate }}</mat-label>
+            <input matInput type="number" formControlName="leadTime" required (focus)="onEditFocus($event)">
+          </mat-form-field>
+
+          <div class="d-flex justify-content-between mt-2">
+            <button type="submit" mat-flat-button color="primary" [disabled]="eventNotificationForm.invalid">
+              {{ isEdit ? ('alerts.eventNotification.update' | translate) : ('alerts.eventNotification.add' | translate) }}
+            </button>
+            <button type="button" *ngIf="isEdit" mat-flat-button (click)="cancelEdit()">
+              {{ 'alerts.eventNotification.cancel' | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="main-content pt-3">
+  <div class="container-fluid">
+    <div class="row me-0 py-2">
+      <div class="col-lg-8 col-12">
+        <hrm-table [data]="filteredList" [columns]="columns" [isServerSide]="false" [showExport]="'none'" [showSearch]="true"
+          (actionClicked)="onActionClick($event)"></hrm-table>
+      </div>
+      <div class="col-lg-4 col-12 border-start">
+        <h2 class="contentHeading p-2">{{ 'alerts.eventNotification.addEdit' | translate }}</h2>
+        <form [formGroup]="eventNotificationForm"
+          (ngSubmit)="isEdit ? updateEventNotification() : addEventNotification()"
           class="mt-4 p-3 me-4 bg-light border rounded">
           <div class="form-group">
             <label for="eventNotificationName">{{ 'alerts.eventNotification.name' | translate }} <span class="text-danger">*</span></label>
@@ -27,6 +107,15 @@
                 {{ notificationType.name }}
               </option>
             </select>
+          </div>
+          <div class="form-group mt-2">
+            <label for="eventNotificationChannels">{{ 'alerts.eventNotification.channels' | translate }}</label>
+            <mat-form-field class="w-100">
+              <mat-select id="eventNotificationChannels" formControlName="channels" multiple>
+                <mat-option value="email">{{ 'alerts.eventNotification.channel_email' | translate }}</mat-option>
+                <mat-option value="ui">{{ 'alerts.eventNotification.channel_ui' | translate }}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
           <div class="form-group mt-2">
             <label for="eventNotificationDate">{{ 'alerts.eventNotification.date' | translate }} <span class="text-danger">*</span></label>
@@ -66,4 +155,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->

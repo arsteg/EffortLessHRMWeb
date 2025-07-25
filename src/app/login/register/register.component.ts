@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['../login.component.css']
+  styleUrls: ['../login.component.css', './register.component.css']
 })
 export class RegisterComponent implements OnInit {
   loading = false;

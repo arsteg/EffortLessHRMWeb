@@ -1,30 +1,30 @@
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
-import { HolidaysService } from 'src/app/_services/holidays.service';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CompanyService } from 'src/app/_services/company.service';
-
+import { UserService } from 'src/app/_services/users.service';
+import { provideNativeDateAdapter } from '@angular/material/core';
 @Component({
   selector: 'app-add-application',
   templateUrl: './add-application.component.html',
+  providers: [provideNativeDateAdapter()],
   styleUrl: './add-application.component.css',
   encapsulation: ViewEncapsulation.None,
 })
-export class AddApplicationComponent {
+export class AddApplicationComponent implements OnDestroy {
   leaveApplication: FormGroup;
   allAssignee: any;
   bsValue = new Date();
   @Output() close: any = new EventEmitter();
-  leaveCategories: any;
+  leaveCategories: any[] = [];
   selectedDates: Date[] = [];
   @Output() leaveApplicationRefreshed: EventEmitter<void> = new EventEmitter<void>();
   portalView = localStorage.getItem('adminView');
@@ -44,7 +44,7 @@ export class AddApplicationComponent {
   bsConfig: Partial<BsDatepickerConfig> = {
     dateInputFormat: 'DD-MM-YYYY',
     showWeekNumbers: false,
-    minDate: new Date() // Default to today
+    minDate: new Date()
   };
   today: Date = new Date();
   showHalfDayOption: boolean = true;
@@ -54,6 +54,15 @@ export class AddApplicationComponent {
   weeklyOffDates: Date[] = [];
   holidays: any;
   weeklyOffDays: string[] = [];
+  attachments: '';
+  appointmentDetail: any;
+  maxHalfDaysAllowed = 0;
+  halfDayLimitReached = false;
+  private employeeValueChangesSubscription: Subscription;
+  private leaveCategoryValueChangesSubscription: Subscription;
+  private startDateValueChangesSubscription: Subscription;
+  private endDateValueChangesSubscription: Subscription;
+
 
   constructor(
     private fb: FormBuilder,
@@ -62,7 +71,8 @@ export class AddApplicationComponent {
     private timeLogService: TimeLogService,
     private toast: ToastrService,
     private companyService: CompanyService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private userService: UserService
   ) {
     this.translate.setDefaultLang('en');
     this.leaveApplication = this.fb.group({
@@ -76,8 +86,11 @@ export class AddApplicationComponent {
       status: [''],
       isHalfDayOption: [false],
       halfDays: this.fb.array([]),
-      leaveApplicationAttachments: this.fb.array([])
+      leaveApplicationAttachments: [this.attachments]
     }, { validators: this.dateValidator });
+    this.leaveApplication.get('halfDays')?.setValidators([this.halfDayRequiredValidator(this.leaveApplication)]);
+    this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => this.updateHalfDayValidation());
+    this.leaveApplication.get('endDate')?.valueChanges.subscribe(() => this.updateHalfDayValidation());
   }
 
   dateValidator(group: AbstractControl) {
@@ -89,29 +102,40 @@ export class AddApplicationComponent {
     }
     return null;
   }
-
+  reasonMandatory: boolean;
   ngOnInit() {
-    forkJoin({
-      users: this.commonService.populateUsers(),
-    }).subscribe({
-      next: ({ users }) => {
-        this.allAssignee = users?.data?.data;
-      },
-      error: () => {
-        this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
-      }
-    });
-
     this.populateMembers();
-    this.getHolidays();
-    this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
-      this.tempLeaveCategory = this.leaveCategories.find(l => l.leaveCategory._id === leaveCategory);
+
+    this.leaveCategoryValueChangesSubscription = this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
+      this.leaveApplication.patchValue({
+        startDate: null,
+        endDate: null,
+        halfDays: []
+      });
+      this.halfDays.clear?.();
+      this.tempLeaveCategory = this.leaveCategories.find(category => category.leaveCategory._id === leaveCategory);
       this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory?.documentRequired || false;
-      this.handleLeaveCategoryChange();
-      this.updateMinDate(); // Update minimum date when leave category changes
+      this.leaveCategories?.map((category: any) => {
+        this.reasonMandatory = category?.leaveTemplate?.isCommentMandatory;
+        if (this.reasonMandatory) {
+          this.leaveApplication.get('comment')?.setValidators([Validators.required]);
+        } else {
+          this.leaveApplication.get('comment')?.clearValidators();
+        }
+
+        this.leaveApplication.get('comment')?.updateValueAndValidity();
+        if (category.leaveCategory._id === leaveCategory) {
+          this.getSelectedUserAppointment();
+          this.leaveApplication.patchValue({
+            isHalfDayOption: category?.leaveCategory?.isHalfDayTypeOfLeave
+          });
+        }
+        this.updateMinDate(new Date());
+        this.handleLeaveCategoryChange();
+      })
     });
 
-    this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
+    this.employeeValueChangesSubscription = this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
       this.leaveService.getLeaveCategoriesByUserv1(employee).subscribe({
         next: (res: any) => {
           this.leaveCategories = res.data;
@@ -121,7 +145,15 @@ export class AddApplicationComponent {
           this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
         }
       });
-      this.getHolidays();
+      this.leaveApplication.patchValue({
+        leaveCategory: '',
+        startDate: '',
+        endDate: '',
+        isHalfDayOption: false,
+      });
+      (this.leaveApplication.get('halfDays') as FormArray).clear();
+      this.selectedFiles = [];
+      this.leaveDocumentUpload = false;
     });
 
     if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
@@ -134,63 +166,122 @@ export class AddApplicationComponent {
           this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
         }
       });
-      this.getattendanceTemplatesByUser();
-      this.getHolidays();
     }
+
+    this.startDateValueChangesSubscription = this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => {
+      this.checkForDuplicateLeave();
+      this.calculateDateRangeAndLimitHalfDays();
+    });
+    this.endDateValueChangesSubscription = this.leaveApplication.get('endDate')?.valueChanges.subscribe(() => {
+      this.checkForDuplicateLeave();
+      this.calculateDateRangeAndLimitHalfDays();
+    });
+
     this.leaveApplication.get('employee')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
     this.leaveApplication.get('leaveCategory')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
-    this.leaveApplication.get('startDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
-    this.leaveApplication.get('endDate')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
+
+  }
+
+  ngOnDestroy() {
+    if (this.employeeValueChangesSubscription) {
+      this.employeeValueChangesSubscription.unsubscribe();
+    }
+    if (this.leaveCategoryValueChangesSubscription) {
+      this.leaveCategoryValueChangesSubscription.unsubscribe();
+    }
+    if (this.startDateValueChangesSubscription) {
+      this.startDateValueChangesSubscription.unsubscribe();
+    }
+    if (this.endDateValueChangesSubscription) {
+      this.endDateValueChangesSubscription.unsubscribe();
+    }
   }
 
   ngOnChanges() {
     this.handleLeaveCategoryChange();
   }
 
-  getLeaveCategoryDetails(category: any) {
-    this.leaveService.getLeaveCategorById(this.leaveApplication.get('leaveCategory')?.value).subscribe((res: any) => {
-      this.tempLeaveCategory = res?.data;
-      this.updateMinDate();
+  getSelectedUserAppointment() {
+    let userId: string | undefined;
+
+    if (this.portalView === 'user' && this.tab === 1) {
+      userId = this.currentUser?.id;
+    } else if (this.portalView === 'admin' || (this.portalView === 'user' && this.tab === 5)) {
+      userId = this.leaveApplication.get('employee')?.value;
+    }
+
+    if (!userId) return;
+
+    this.userService.getAppointmentByUserId(userId).subscribe((res: any) => {
+      this.appointmentDetail = res.data;
+
+      const joiningDate = new Date(this.appointmentDetail.joiningDate);
+      const confirmationDate = new Date(this.appointmentDetail.confirmationDate);
+
+      const eligibilityType = this.tempLeaveCategory?.dealWithNewlyJoinedEmployee;
+
+      if (eligibilityType === 'eligibleImmediately') {
+        this.updateMinDate(joiningDate);
+      } else if (eligibilityType === 'eligibleAfterConfirmation') {
+        this.updateMinDate(confirmationDate);
+      }
     });
   }
 
-  updateMinDate() {
-    if (this.tempLeaveCategory?.submitBefore) {
-      const submitBeforeDays = parseInt(this.tempLeaveCategory.submitBefore, 10);
+  updateMinDate(baseDate: Date): void {
+    let minDate = new Date(baseDate);
+
+    if (this.tempLeaveCategory?.leaveCategory?.submitBefore) {
+      const submitBeforeDays = parseInt(this.tempLeaveCategory.leaveCategory.submitBefore, 10);
       if (!isNaN(submitBeforeDays)) {
-        const minDate = new Date();
         minDate.setDate(minDate.getDate() + submitBeforeDays);
-        this.minSelectableDate = minDate;
-        this.bsConfig = {
-          ...this.bsConfig,
-          minDate: this.minSelectableDate
-        };
-        this.validateDates();
       }
-    } else {
-      this.minSelectableDate = new Date();
-      this.bsConfig = {
-        ...this.bsConfig,
-        minDate: this.minSelectableDate
-      };
+    }
+
+    this.minSelectableDate = minDate;
+    this.bsConfig = {
+      ...this.bsConfig,
+      minDate: this.minSelectableDate
+    };
+
+    this.validateDates();
+  }
+
+
+  calculateDateRangeAndLimitHalfDays() {
+    const start = this.leaveApplication.get('startDate')?.value;
+    const end = this.leaveApplication.get('endDate')?.value;
+
+    if (start && end) {
+      const startDate = moment(start);
+      const endDate = moment(end);
+      const duration = endDate.diff(startDate, 'days') + 1;
+      this.maxHalfDaysAllowed = duration;
+
+      this.halfDayLimitReached = this.halfDays.length > this.maxHalfDaysAllowed;
     }
   }
 
   validateDates() {
     const startDate = this.leaveApplication.get('startDate')?.value;
     const endDate = this.leaveApplication.get('endDate')?.value;
-    const halfDay = this.leaveApplication.get('date')?.value;
-
-    if (startDate && this.minSelectableDate && moment(startDate).isBefore(moment(this.minSelectableDate))) {
+    if (startDate && this.minSelectableDate && moment(startDate).isBefore(moment(this.minSelectableDate), 'day')) {
       this.leaveApplication.get('startDate')?.setErrors({ submitBeforeError: true });
+    } else {
+      if (this.leaveApplication.get('startDate')?.hasError('submitBeforeError')) {
+        this.leaveApplication.get('startDate')?.updateValueAndValidity();
+      }
     }
-    if (endDate && this.minSelectableDate && moment(endDate).isBefore(moment(this.minSelectableDate))) {
+
+    if (endDate && this.minSelectableDate && moment(endDate).isBefore(moment(this.minSelectableDate), 'day')) {
       this.leaveApplication.get('endDate')?.setErrors({ submitBeforeError: true });
-    }
-    if (halfDay && this.minSelectableDate && moment(halfDay).isBefore(moment(this.minSelectableDate))) {
-      this.leaveApplication.get('date')?.setErrors({ submitBeforeError: true });
+    } else {
+      if (this.leaveApplication.get('endDate')?.hasError('submitBeforeError')) {
+        this.leaveApplication.get('endDate')?.updateValueAndValidity();
+      }
     }
   }
+
   getHolidays() {
     const payload = {
       next: '', skip: '', status: '', year: new Date().getFullYear()
@@ -207,6 +298,8 @@ export class AddApplicationComponent {
     const endDate = this.leaveApplication.get('endDate')?.value;
 
     if (!employeeId || !leaveCategory || !startDate || !endDate) {
+      this.leaveApplication.setErrors(null);
+      this.showHalfDayOption = true;
       return;
     }
 
@@ -229,7 +322,11 @@ export class AddApplicationComponent {
           this.leaveApplication.setErrors({ duplicateLeave: true });
           this.showHalfDayOption = false;
         } else {
-          this.leaveApplication.setErrors(null);
+          if (this.leaveApplication.hasError('duplicateLeave')) {
+            const errors = { ...this.leaveApplication.errors };
+            delete errors['duplicateLeave'];
+            this.leaveApplication.setErrors(Object.keys(errors).length > 0 ? errors : null);
+          }
           this.showHalfDayOption = true;
         }
       },
@@ -240,7 +337,7 @@ export class AddApplicationComponent {
   }
 
   handleLeaveCategoryChange() {
-    if (!this.tempLeaveCategory || !this.tab) {
+    if (!this.tab) {
       return;
     }
 
@@ -252,21 +349,60 @@ export class AddApplicationComponent {
       }
     }
     this.getattendanceTemplatesByUser();
+    this.getHolidays();
+
     this.numberOfLeaveAppliedForSelectedCategory = 0;
-    this.getAppliedLeaveCount(this.leaveApplication.value.employee, this.tempLeaveCategory.leaveCategory._id);
+    if (this.leaveApplication.value.employee && this.tempLeaveCategory?.leaveCategory?._id) {
+      this.getAppliedLeaveCount(this.leaveApplication.value.employee, this.tempLeaveCategory.leaveCategory._id);
+    }
+  }
+
+  halfDayRequiredValidator(formGroup: FormGroup) {
+    return (formArray: FormArray): { [key: string]: any } | null => {
+      const isHalfDayOption = formGroup.get('isHalfDayOption')?.value;
+      if (!isHalfDayOption) {
+        return null;
+      }
+
+      if (formArray.length === 0) {
+        return { halfDayRequired: true };
+      }
+
+      for (let i = 0; i < formArray.length; i++) {
+        const halfDayDate = formArray.at(i).get('date')?.value;
+        const dayHalf = formArray.at(i).get('dayHalf')?.value;
+        if (!halfDayDate || !dayHalf) {
+          return { halfDayRequired: true };
+        }
+      }
+      return null;
+    };
+  }
+  updateHalfDayValidation() {
+    this.halfDays.controls.forEach((control) => {
+      control.get('date')?.updateValueAndValidity();
+    });
   }
 
   addHalfDayEntry() {
-    this.halfDays.push(this.fb.group({
-      date: ['', Validators.required],
-      dayHalf: ['', Validators.required]
-    }));
+    if (this.halfDays.length < this.maxHalfDaysAllowed) {
+      this.halfDays.push(this.fb.group({
+        date: [null, Validators.required],
+        dayHalf: [null, Validators.required]
+      }));
+      this.halfDayLimitReached = this.halfDays.length >= this.maxHalfDaysAllowed;
+    }
   }
+
   removeHalfDayEntry(index: number): void {
     this.halfDays.removeAt(index);
+    this.halfDayLimitReached = this.halfDays.length >= this.maxHalfDaysAllowed;
   }
-   onHalfDayChange() {
-    this.leaveApplication.get('halfDays')?.reset();
+  onHalfDayChange() {
+    (this.leaveApplication.get('halfDays') as FormArray).clear();
+    if (this.leaveApplication.get('isHalfDayOption')?.value) {
+      this.addHalfDayEntry();
+    }
   }
   get halfDays() {
     return this.leaveApplication.get('halfDays') as FormArray;
@@ -290,7 +426,6 @@ export class AddApplicationComponent {
           this.weeklyOffDays = [];
           this.dayCounts = {};
 
-          // Map short day names to full names for moment.js compatibility
           const dayNameMap: { [key: string]: string } = {
             'Sun': 'Sunday',
             'Sat': 'Saturday',
@@ -310,7 +445,7 @@ export class AddApplicationComponent {
         }
       },
       error: () => {
-        this.toast.error(this.translate.instant('leave.errorFetchingAttendanceTemplates'));
+        this.toast.warning(this.translate.instant('leave.errorFetchingAttendanceTemplates'));
       }
     });
   }
@@ -324,7 +459,7 @@ export class AddApplicationComponent {
     const currentDate = new Date(startDate);
     const end = new Date(endDate);
 
-    while (currentDate <= end) {
+    while (moment(currentDate).isSameOrBefore(end, 'day')) {
       const dayName = moment(currentDate).format('dddd');
       if (this.weeklyOffDays.includes(dayName)) {
         weeklyOffDates.push(new Date(currentDate));
@@ -334,32 +469,24 @@ export class AddApplicationComponent {
 
     return weeklyOffDates;
   }
-  // Assuming you have moment.js imported as 'moment'
-
-  // Modify your stripTime function to use moment.js for consistency
   stripTime(date: Date): number {
-    // This will return the timestamp for the start of the day in local time
     return moment(date).startOf('day').valueOf();
   }
 
   weeklyOffDateFilter = (date: Date | null): boolean => {
     if (!date) {
-      return true; // Allow if no date
+      return true;
     }
 
-    // Use moment to get the day name from the provided date object directly
-    const dayName = moment(date).format('dddd'); // e.g., "Sunday"
+    const dayName = moment(date).format('dddd');
 
-    // Check for weekly off days
     if (this.weeklyOffDays.includes(dayName)) {
-      return false; // Disable weekly off days
+      return false;
     }
 
-    // Normalize the selected date to the start of the day for consistent comparison
-    const selectedDateNormalized = this.stripTime(date); // This will be the timestamp of the start of the day (local)
+    const selectedDateNormalized = this.stripTime(date);
 
     const isHoliday = this.holidays.some(holiday => {
-      // Normalize the holiday date as well
       const holidayDateNormalized = this.stripTime(new Date(holiday.date));
       return holidayDateNormalized === selectedDateNormalized;
     });
@@ -368,7 +495,7 @@ export class AddApplicationComponent {
   };
 
   populateMembers() {
-    if (this.portalView === 'user') {
+    if (this.portalView === 'user' && this.tab === 5) {
       this.members = [];
       let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
       this.members.push({ id: currentUser.id, name: this.translate.instant('leave.userMe'), email: currentUser.email });
@@ -393,81 +520,54 @@ export class AddApplicationComponent {
         }
       });
     }
+    if (this.portalView === 'admin') {
+      this.commonService.populateUsers().subscribe((res: any) => {
+        this.allAssignee = res.data.data;
+      })
+    }
   }
-
-  onEmployeeChange(event: any) {
-    this.leaveApplication.get('employee').setValue(event.value);
-    this.leaveApplication.reset({
-      employee: event.value,
-      leaveCategory: '',
-      level1Reason: '',
-      level2Reason: '',
-      startDate: '',
-      endDate: '',
-      comment: '',
-      isHalfDayOption: false,
-      halfDays: this.fb.array([]),
-      leaveApplicationAttachments: this.fb.array([])
-    });
-  }
-
- 
 
   onSubmission() {
+    if (this.leaveApplication.invalid) {
+      this.leaveApplication.markAllAsTouched();
+      return;
+    }
+
     const employeeId = this.leaveApplication.get('employee')?.value;
     const leaveCategory = this.leaveApplication.get('leaveCategory')?.value;
     let startDate = this.leaveApplication.get('startDate')?.value;
     let endDate = this.leaveApplication.get('endDate')?.value;
+
     startDate = this.stripTime(new Date(startDate));
     endDate = this.stripTime(new Date(endDate));
 
-    // Prepare the leave application payload
     const leaveApplicationPayload = {
       employee: employeeId,
       leaveCategory: leaveCategory,
       startDate: startDate,
       endDate: endDate,
       status: 'Level 1 Approval Pending',
-      level1Reason: this.leaveApplication.get('level1Reason')?.value || 'string',
-      level2Reason: this.leaveApplication.get('level2Reason')?.value || 'string',
+      level1Reason: this.leaveApplication.get('level1Reason')?.value || '',
+      level2Reason: this.leaveApplication.get('level2Reason')?.value || '',
       leaveApplicationAttachments: [],
       isHalfDayOption: this.leaveApplication.get('isHalfDayOption')?.value,
-      halfDays: this.leaveApplication.get('halfDays')?.value,
+      halfDays: this.leaveApplication.get('isHalfDayOption')?.value ? this.leaveApplication.get('halfDays')?.value : [],
       comment: this.leaveApplication.get('comment')?.value
     };
-
-    // Check for duplicate leave applications
-    let payload = { skip: '', next: '' };
-    this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe({
-      next: (res: any) => {
-        this.existingLeaves = res.data;
-        const isDuplicate = this.existingLeaves.some((leave: any) =>
-          leave.employee === employeeId &&
-          leave.leaveCategory === leaveCategory &&
-          leave.startDate === startDate &&
-          leave.endDate === endDate
-        );
-
-        if (isDuplicate) {
-          this.toast.error(this.translate.instant('leave.duplicateLeaveError'));
-          return;
-        } else {
-          // If no files are selected, call the API immediately
-          if (!this.selectedFiles || this.selectedFiles.length === 0) {
-            this.submitLeaveApplication(leaveApplicationPayload);
-          } else {
-            // Process files and then call the API
-            this.processFiles(this.selectedFiles).then((attachments) => {
-              leaveApplicationPayload.leaveApplicationAttachments = attachments;
-              this.submitLeaveApplication(leaveApplicationPayload);
-            });
-          }
-        }
-      },
-      error: () => {
-        this.toast.error(this.translate.instant('leave.errorFetchingLeaves'));
-      }
-    });
+    if (this.leaveApplication.hasError('duplicateLeave')) {
+      this.toast.error(this.translate.instant('leave.duplicateLeaveError'));
+      return;
+    }
+    if (!this.selectedFiles || this.selectedFiles.length === 0) {
+      this.submitLeaveApplication(leaveApplicationPayload);
+    } else {
+      this.processFiles(this.selectedFiles).then((attachments) => {
+        leaveApplicationPayload.leaveApplicationAttachments = attachments;
+        this.submitLeaveApplication(leaveApplicationPayload);
+      }).catch(error => {
+        this.toast.error(this.translate.instant('leave.fileProcessingError') + ': ' + error.message);
+      });
+    }
   }
 
   async processFiles(files: File[]): Promise<any[]> {
@@ -495,27 +595,35 @@ export class AddApplicationComponent {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
-        const base64String = reader.result.toString().split(',')[1];
-        resolve(base64String);
+        const base64String = reader.result?.toString().split(',')[1];
+        if (base64String) {
+          resolve(base64String);
+        } else {
+          reject(new Error("Failed to read file as Base64."));
+        }
       };
       reader.onerror = (error) => reject(error);
     });
   }
 
   submitLeaveApplication(payload: any) {
-    this.leaveService.addLeaveApplication(payload).subscribe((res: any) => {
-      this.toast.success(this.translate.instant('leave.successAddLeave'));
-      this.leaveApplicationRefreshed.emit(res.data);
-      this.leaveApplication.reset();
-
-    },
-      (error) => {
+    this.leaveService.addLeaveApplication(payload).subscribe({
+      next: (res: any) => {
+        if (res.data) { this.toast.success(this.translate.instant('leave.successAddLeave')); }
+        else if (res.data === null) { this.toast.warning(res.message); }
+        
+        this.leaveApplicationRefreshed.emit(res.data);
+        this.leaveApplication.reset();
+        this.selectedFiles = [];
+        (this.leaveApplication.get('halfDays') as FormArray).clear();
+        this.leaveDocumentUpload = false;
+      },
+      error: (error) => {
         const errorMessage = error || this.translate.instant('leave.errorAddLeaveGeneric');
         this.toast.error(errorMessage);
       }
-    );
+    });
   }
-
   onFileSelected(event: any) {
     const files: FileList = event.target.files;
     if (files) {
@@ -530,7 +638,6 @@ export class AddApplicationComponent {
   }
 
   closeModal() {
-    //this.leaveApplication.reset();
     this.close.emit(true);
   }
 

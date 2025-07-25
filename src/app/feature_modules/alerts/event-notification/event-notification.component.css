@@ -1,0 +1,9 @@
+/* ::ng-deep .mat-form-field-appearance-fill .mat-select-trigger,
+::ng-deep .mat-form-field-appearance-outline .mat-select-trigger,
+::ng-deep .mat-select-panel {
+  background: #fff !important;
+} */
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  background-color: white !important;
+}

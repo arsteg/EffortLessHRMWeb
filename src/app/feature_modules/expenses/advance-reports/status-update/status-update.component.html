@@ -1,10 +1,15 @@
-<h1 mat-dialog-title *ngIf="data.status === 'Rejected'">{{'expenses.reject_msg' | translate}}</h1>
-<h1 mat-dialog-title *ngIf="data.status === 'Approved'">{{'expenses.approve_msg' | translate}}</h1>
-<h1 mat-dialog-title *ngIf="data.status === 'Cancelled'">{{'expenses.cancel_msg' | translate}}</h1>
+<div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title *ngIf="data.status === 'Rejected'">{{'expenses.reject_msg' | translate}}</h1>
+    <h1 mat-dialog-title *ngIf="data.status === 'Approved'">{{'expenses.approve_msg' | translate}}</h1>
+    <h1 mat-dialog-title *ngIf="data.status === 'Cancelled'">{{'expenses.cancel_msg' | translate}}</h1>
+    <button mat-icon-button mat-dialog-close="" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 
 
-<div mat-dialog-content>
-    <form [formGroup]="updateExpenseReport" (ngSubmit)="updateApprovedReport()">
+<form [formGroup]="updateExpenseReport" (ngSubmit)="updateApprovedReport()">
+    <div mat-dialog-content>
         <mat-form-field class="w-100 mt-1">
             <mat-label>{{'comment' | translate}}</mat-label>
             <textarea matInput formControlName="primaryApprovalReason" rows="3" maxlength="200" 
@@ -14,10 +19,11 @@
                 {{ 'expenses.comment_required' | translate }}
             </mat-error>
         </mat-form-field>
+    </div>
 
-        <div class="d-flex justify-content-between">
+        <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
             <button mat-flat-button type="button" mat-dialog-close>{{'expenses.no' | translate}}</button>
-            <button mat-flat-button type="submit" [disabled]="updateExpenseReport.invalid" [color]="data.status==='Rejected'?'warn':'accent'">
+            <button mat-flat-button type="submit" [disabled]="updateExpenseReport.invalid" color="primary">
                 @switch(data.status){
                 @case('Rejected'){
                     {{'expenses.reject' | translate}}
@@ -31,5 +37,4 @@
                 }
             </button>
         </div>
-    </form>
-</div>
+</form>

@@ -1,11 +1,30 @@
-<div class="main-content contentData">
+<!-- <div class="main-content px-2">
+    <div>
+        <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel" class="child-tabs">
+            <a mat-tab-link routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive" routerLink="user-preferences">
+                {{ view === 'admin' ? 'User Settings' : 'User Preferences' }}
+            </a>
+            
+            <a mat-tab-link routerLinkActive #rla2="routerLinkActive"
+                [active]="rla2.isActive">App/Website</a>
+
+            <a mat-tab-link routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
+                Generic Settings
+            </a>
+        </nav>
+        <mat-tab-nav-panel #tabPanel>
+            <router-outlet></router-outlet>
+        </mat-tab-nav-panel>
+    </div>
+</div> -->
+<!-- <div class="main-content contentData">
     <div class="container-fluid px-0">
-        <div class=" d-flex bg-white subMenu w-100">
+        <div class=" d-flex bg-white subMenu w-100"> -->
             <!-- <button class="btn rounded-pill submenuTab" (click)="selectTab(1)"
                 [class.active]="selectedTab === 1">App/Website</button>
             <button class="btn rounded-pill submenuTab" (click)="selectTab(2)" [class.active]="selectedTab === 2">
                 Generic Settings</button> -->
-            <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3">
+            <!-- <button class="btn rounded-pill submenuTab" (click)="selectTab(3)" [class.active]="selectedTab === 3">
                 {{ view === 'admin' ? 'User Settings' : 'User Preferences' }}</button>
 
 
@@ -20,4 +39,4 @@
             <app-user-preferences></app-user-preferences>
         </div>
     </div>
-</div>
+</div> -->

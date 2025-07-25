@@ -10,16 +10,16 @@
         <form [formGroup]="notificationTypeForm" (ngSubmit)="isEdit ? updateNotificationType() : addNotificationType()"
           class="mt-4 p-3 me-4 bg-light border rounded">
           <div class="row">
-            <div class="form-group">
+            <!-- <div class="form-group">
               <mat-label for="notificationTypeName">{{ 'alerts.notification-type.name' | translate }} <span class="text-danger">*</span> </mat-label>
               <input type="text" id="notificationTypeName" class="form-control" formControlName="name" required
                 (focus)="onEditFocus($event)">
-            </div>
-            <!-- <mat-form-field class="w-100">
+            </div> -->
+            <mat-form-field class="w-100">
                 <mat-label>{{ 'alerts.notification-type.name' | translate }} </mat-label>
                 <input matInput id="notificationTypeName" formControlName="name" required
                   (focus)="onEditFocus($event)">
-              </mat-form-field> -->
+            </mat-form-field>
           </div>
           <div class="form-group d-flex justify-content-between mt-2">
             <div>

@@ -1,0 +1,15 @@
+{
+    "preferences": {
+      "userSettings": "User Settings",
+      "userPreferences": "User Preferences",
+      "save": "Save",
+      "loading": "Loading preferences...",
+      "selectUser": "Select User",
+      "invalid": "Invalid",
+      "noExplicitPreferences": "No explicit preferences available.",
+      "updateSuccess": "Preferences updated successfully",
+      "updateError": "Failed to update preferences",
+      "settingsInstruction": "Configure individual preferences for the selected user. These settings are saved separately for each user.",
+      "settingsInstructionUser": "Configure individual preferences for you."
+  }
+}

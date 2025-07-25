@@ -32,7 +32,8 @@
           autocomplete="off">
           <div class="row mb-2">
             <div class="col-md-6">
-              <mat-form-field class="w-100" [class.mb-3]="!registerNewUser.get('firstName').valid && registerNewUser.get('firstName').touched">
+              <mat-form-field class="w-100" [class.mb-3]="!registerNewUser.get('firstName').valid && registerNewUser.get('firstName').touched"
+              [class.namemargin]="registerNewUser.get('firstName').errors?.['invalidName'] && registerNewUser.get('firstName').touched">
                 <mat-label>{{'login.first_name' | translate }}</mat-label>
                 <input matInput id="firstName" type="text" formControlName="firstName" name="firstName"   maxlength="15" required
                   autofocus>
@@ -49,7 +50,8 @@
             </div>
 
             <div class="col-md-6">
-              <mat-form-field class="w-100" [class.mb-3]="!registerNewUser.get('lastName').valid && registerNewUser.get('lastName').touched">
+              <mat-form-field class="w-100" [class.mb-3]="!registerNewUser.get('lastName').valid && registerNewUser.get('lastName').touched"
+              [class.namemargin]="registerNewUser.get('lastName').errors?.['invalidName'] && registerNewUser.get('lastName').touched">
                 <mat-label>{{'login.last_name' | translate }}</mat-label>
                 <input matInput id="lastName" type="text" formControlName="lastName" name="lastName"  maxlength="15" required autofocus>
                 <mat-error *ngIf="!registerNewUser.get('lastName').valid && registerNewUser.get('lastName').touched">
