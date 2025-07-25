@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { EventNotificationService } from 'src/app/_services/eventNotification.Service';
 import { eventNotification, eventNotificationType } from 'src/app/models/eventNotification/eventNotitication';
@@ -76,13 +76,14 @@ export class EventNotificationComponent implements OnInit {
 
   initForm() {
     this.eventNotificationForm = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
+      name: ['', [Validators.required, this.noWhitespaceValidator]],
+      description: ['', [Validators.required, this.noWhitespaceValidator]],
       eventNotificationType: [null],
       date: ['', Validators.required],
       isRecurring: [false, Validators.required],
       recurringFrequency: [''],
-      leadTime: [0, Validators.required]
+      leadTime: [0, Validators.required],
+      notificationChannel: [[], [Validators.required, Validators.minLength(1)]]
     });
 
     this.eventNotificationForm.get('isRecurring')?.valueChanges.subscribe((isRecurring) => {
@@ -123,6 +124,11 @@ export class EventNotificationComponent implements OnInit {
         delete formValue.recurringFrequency;
       }
 
+      if (!formValue.notificationChannel || formValue.notificationChannel.length === 0) {
+        this.toast.error(this.translate.instant('alerts.eventNotification.channelRequired'));
+        return;
+      }
+
       const formData = {
         ...formValue,
         status: 'scheduled',
@@ -150,7 +156,8 @@ export class EventNotificationComponent implements OnInit {
       date: formattedDate,
       isRecurring: eventNotification.isRecurring,
       recurringFrequency: eventNotification.recurringFrequency,
-      leadTime: eventNotification.leadTime
+      leadTime: eventNotification.leadTime,
+      notificationChannel: eventNotification.notificationChannel || []
     });
   }
 
@@ -158,6 +165,10 @@ export class EventNotificationComponent implements OnInit {
     try {
       const updatedEventNotification = this.eventNotificationList.find(eventNotification => eventNotification._id === this.selectedEventNotification._id);
       if (!updatedEventNotification) return;
+      if (!this.eventNotificationForm.value.notificationChannel || this.eventNotificationForm.value.notificationChannel.length === 0) {
+        this.toast.error(this.translate.instant('alerts.eventNotification.channelRequired'));
+        return;
+      }
       updatedEventNotification.description = this.eventNotificationForm.value.description;
       updatedEventNotification.eventNotificationType = this.eventNotificationForm.value.eventNotificationType;
       updatedEventNotification.isRecurring = this.eventNotificationForm.value.isRecurring;
@@ -166,6 +177,7 @@ export class EventNotificationComponent implements OnInit {
       updatedEventNotification.leadTime = this.eventNotificationForm.value.leadTime;
       updatedEventNotification.status = "scheduled";
       updatedEventNotification.updatedBy = this.currentUser?.id;
+      updatedEventNotification.notificationChannel = this.eventNotificationForm.value.notificationChannel;
 
       const response = await this.eventNotificationService.updateEventNotification(updatedEventNotification,this.selectedEventNotification._id).toPromise();
       this.toast.success(this.translate.instant('alerts.eventNotification.updateSuccess'));
@@ -234,7 +246,8 @@ export class EventNotificationComponent implements OnInit {
       date: '',
       isRecurring: false,
       recurringFrequency: '',
-      leadTime: 0
+      leadTime: 0,
+      notificationChannel: []
     });
   }
 
@@ -248,5 +261,11 @@ export class EventNotificationComponent implements OnInit {
         this.openDialog(event.row);
         break;
     }
+  }
+
+  noWhitespaceValidator(control: FormControl) {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : { whitespace: true };
   }
 }

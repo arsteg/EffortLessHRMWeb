@@ -7,7 +7,7 @@
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
             <button mat-flat-button color="primary" class="me-1" (click)="changeMode='Add'; open(addModal);">
-                <mat-icon>add</mat-icon>{{'expenses.add_new' | translate}}
+                {{'expenses.add_new' | translate}}
             </button>
         </div>
         <table mat-table [dataSource]="dataSource" class="hrm-table">

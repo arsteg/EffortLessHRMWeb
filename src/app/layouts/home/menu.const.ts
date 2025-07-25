@@ -237,7 +237,7 @@ export const SideBarUserMenu = [
   {
     id: '16',
     title: 'Settings',
-    url: 'settings/user-preferences',
+    url: 'settings',
     svgIcon: 'settings',
   },
   {

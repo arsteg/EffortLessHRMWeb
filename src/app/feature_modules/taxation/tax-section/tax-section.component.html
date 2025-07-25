@@ -23,11 +23,17 @@
             <mat-form-field class="w-100">
                 <mat-label>Enter Section Name</mat-label>
                 <input type="text" matInput formControlName="section">
-                <div
-                *ngIf="taxSectionForm.get('section').invalid && 
-                      (taxSectionForm.get('section').dirty || taxSectionForm.get('section').touched)">
-                <small class="text-danger">Section Name is required.</small>
-            </div>
+               
+          
+            <mat-error *ngIf="taxSectionForm.get('section')?.invalid && (taxSectionForm.get('section')?.touched || taxSectionForm.get('section')?.dirty)">
+            
+                <span *ngIf="taxSectionForm.get('section')?.errors?.['required']">
+                    Section Name is required
+                  </span>
+                  <span *ngIf="taxSectionForm.get('section')?.errors?.['spacesNotAllowed']">
+                    start and end spaces are not allowed
+                  </span>
+            </mat-error>
             </mat-form-field>
             </div>
 
@@ -46,7 +52,7 @@
 
         <div mat-dialog-actions class="d-flex justify-content-between mt-2 pt-2">
             <button mat-dialog-close="" mat-flat-button>Cancel</button>
-            <button type="submit" color="primary" mat-flat-button>Save</button>
+            <button type="submit" color="primary" mat-flat-button  [disabled]="isSubmitting">Save</button>
         </div>
     </form>
 </ng-template>

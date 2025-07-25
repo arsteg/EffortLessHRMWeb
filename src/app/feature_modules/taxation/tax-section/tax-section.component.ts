@@ -48,7 +48,7 @@ export class TaxSectionComponent {
     private fb: FormBuilder,
     private dialog: MatDialog) {   
     this.taxSectionForm = this.fb.group({
-      section:['', Validators.required],
+      section: ['', [Validators.required, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       isHRA: [false],
       maximumAmount: ['0', [Validators.required, CustomValidators.digitsOnly]]
     })
@@ -88,7 +88,9 @@ export class TaxSectionComponent {
       maximumAmount: 0
     });
     this.isEdit = false;
+    this.isSubmitting = false;   
     this.selectedRecord = null;
+    this.getAllsections();
   }
   onSubmit() {
     this.isSubmitting = true;
@@ -96,6 +98,7 @@ export class TaxSectionComponent {
   
     if (this.taxSectionForm.invalid) {
       this.isSubmitting = false;
+      this.toast.error('Please fill all required fields', 'Error!');
       return;
     }
     const formValue = this.taxSectionForm.value;
@@ -104,9 +107,9 @@ export class TaxSectionComponent {
       this.taxService.addTaxSection(formValue).subscribe((res: any) => {
         this.dialogRef.close();
         this.toast.success(this.translate.instant('taxation.tax_section_added'), this.translate.instant('taxation.toast.success'));
-        this.isSubmitting = false;   
+       
         this.resetForm(); 
-        this.getAllsections();
+       
       },
         err => {
           const errorMessage = err?.error?.message || err?.message || err 
@@ -117,11 +120,8 @@ export class TaxSectionComponent {
         })
     }
     else if (this.isEdit) {
-      this.taxService.updateTaxSection(this.selectedRecord._id, formValue).subscribe((res: any) => {
-        this.isSubmitting = false;
+      this.taxService.updateTaxSection(this.selectedRecord._id, formValue).subscribe((res: any) => {       
         this.toast.success(this.translate.instant('taxation.tax_section_updated'), this.translate.instant('taxation.toast.success'));
-        this.isEdit = false;
-        this.getAllsections();
         this.resetForm(); 
       },
         err => {

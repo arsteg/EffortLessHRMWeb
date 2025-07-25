@@ -4,15 +4,7 @@ import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
-
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true };
-  }
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 @Component({
   selector: 'app-create-leave',
   templateUrl: './create-leave.component.html',
@@ -31,6 +23,7 @@ export class CreateLeaveComponent {
   skip: string = '0';
   next = '10000';
   @Input() templates: any;
+  @Output() updateLeaveTemplateTable: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
     private fb: FormBuilder,
@@ -40,7 +33,7 @@ export class CreateLeaveComponent {
     private translate: TranslateService
   ) {
     this.addTemplateForm = this.fb.group({
-      label: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
+      label: ['', [Validators.required,  CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this), this.duplicateLabelValidator()]],
       approvalLevel: ['1-level'],
       approvalType: ['employee-wise', Validators.required],
       primaryApprover: [''],
@@ -62,9 +55,11 @@ export class CreateLeaveComponent {
     // this.addTemplateForm.get('approvalLevel')?.valueChanges.subscribe((value: any) => {
     //   this.validateApprovers(this.addTemplateForm.get('approvalType')?.value, value);
     // });
-    // this.addTemplateForm.get('approvalType')?.valueChanges.subscribe((value: any) => {
-    //   this.validateApprovers(value, this.addTemplateForm.get('approvalLevel')?.value);
-    // });
+    this.addTemplateForm.get('approvalType')?.valueChanges.subscribe((value: any) => {
+      this.addTemplateForm.patchValue({
+        primaryApprover: null
+      })
+    });
   }
 
   
@@ -185,6 +180,7 @@ export class CreateLeaveComponent {
           next: (res: any) => {
             this.leaveService.selectedTemplate.next(res.data);
             this.leaveService.categories.next(res.categories);
+            this.updateLeaveTemplateTable.emit();
             this.changeStep.emit(2);
             this.toast.success(this.translate.instant('leave.successTemplateCreated'));
           },
@@ -197,6 +193,7 @@ export class CreateLeaveComponent {
         this.leaveService.updateLeaveTemplate(id, this.addTemplateForm.value).subscribe((res: any) => {
           // this.leaveService.selectedTemplate.next(res.data);
           // this.leaveService.categories.next(res.categories);
+           this.updateLeaveTemplateTable.emit();
           this.changeStep.emit(2);
           this.toast.success(this.translate.instant('leave.successTemplateUpdated'));
         },

@@ -151,4 +151,73 @@ export class CustomValidators {
       const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       return pattern.test(value) ? null : { invalidEmail: true };
     }
+    static noLeadingOrTrailingSpaces(control: AbstractControl): { [key: string]: any } | null {
+      const value = control.value;
+      if (typeof value === 'string' && (value.startsWith(' ') || value.endsWith(' '))) {
+        return { spacesNotAllowed: true };
+      }
+      return null;
+    }
+  // Custom validator for shift name
+ 
+  static labelValidator(control: AbstractControl): ValidationErrors | null {
+    const value = control.value as string;
+    if (!value || /^\s*$/.test(value)) {
+      return { required: true };
+    }
+    const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
+    return valid ? null : { invalidLabel: true };
+  }
+  static atLeastOneDaySelected(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const days = control.value as string[];
+      return days && days.length > 0 ? null : { atLeastOneDayRequired: true };
+    };
+  }
+  static  minHoursValidator() : ValidatorFn {
+      return (control: AbstractControl): ValidationErrors | null => {
+        if (!control.value) {
+          return null; // If the field is empty, the 'required' validator will handle it
+        }
+        const [hours, minutes] = control.value.split(':').map(Number);
+        if (hours < 1 || hours > 8 || (hours === 8 && minutes > 0)) {
+          return { invalidTime: true };
+        }
+        return null;
+      };
+    }
+    static exitInterviewAfterResignationValidator(): ValidatorFn {
+      return  (group: AbstractControl): ValidationErrors | null => {
+      const resignationDate = group.get('resignation_date')?.value;
+      const exitInterviewDate = group.get('exit_interview_date')?.value;
+    
+      if (!resignationDate || !exitInterviewDate) return null;
+    
+      const resDate = new Date(resignationDate);
+      const exitDate = new Date(exitInterviewDate);
+    
+      // Normalize dates (remove time part)
+      resDate.setHours(0, 0, 0, 0);
+      exitDate.setHours(0, 0, 0, 0);
+    
+      return exitDate > resDate ? null : { exitBeforeResignation: true };
+    };
+  }
+  static exitInterviewAfterTerminationValidator(): ValidatorFn {
+    return  (group: AbstractControl): ValidationErrors | null => {
+    const terminationDate = group.get('termination_date')?.value;
+    const exitInterviewDate = group.get('exit_interview_date')?.value;
+ 
+    if (!terminationDate || !exitInterviewDate) return null;
+  
+    const resDate = new Date(terminationDate);
+    const exitDate = new Date(exitInterviewDate);
+  
+    // Normalize dates (remove time part)
+    resDate.setHours(0, 0, 0, 0);
+    exitDate.setHours(0, 0, 0, 0);
+  
+    return exitDate > resDate ? null : { exitBeforeTermination: true };
+  };
+}
 }

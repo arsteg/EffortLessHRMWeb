@@ -1,0 +1,22 @@
+<div class="main-content px-2">
+    <div class="container-fluid px-0">
+        <ng-container>
+            <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel" class="child-tabs">
+                <a mat-tab-link (click)="selectTab(1)" [active]="selectedTab === 1">
+                    {{ 'reports.timeline.project' | translate }}
+                </a>
+                <a mat-tab-link (click)="selectTab(2)" [active]="selectedTab === 2">
+                    {{ 'reports.timeline.member' | translate }}
+                </a>
+            </nav>
+            <mat-tab-nav-panel #tabPanel>
+                <div *ngIf="selectedTab === 1">
+                    <app-timeline [tab]="selectedTab"></app-timeline>
+                </div>
+                <div *ngIf="selectedTab === 2">
+                    <app-timeline [tab] = "selectedTab"></app-timeline>
+                </div>
+            </mat-tab-nav-panel>
+        </ng-container>
+    </div>
+</div>

@@ -47,7 +47,12 @@
       "updateError": "Error updating event notification",
       "deleteSuccess": "Event notification deleted successfully!",
       "deleteError": "Error deleting event notification",
-      "error": "Error!"
+      "error": "Error!",
+      "channel_email": "Email",
+      "channel_sms": "SMS",
+      "channel_ui": "UI",
+      "channel_app": "App",
+      "channels": "Channels"
     },
     "eventviewer": {
       "notifications": "Notifications",

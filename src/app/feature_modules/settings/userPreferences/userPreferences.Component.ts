@@ -5,6 +5,7 @@ import { map, Observable } from 'rxjs';
 import { UserService } from 'src/app/_services/users.service';
 import { ToastrService } from 'ngx-toastr';
 import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-preferences',
@@ -24,6 +25,7 @@ export class UserPreferencesComponent implements OnInit {
   constructor(private http: HttpClient, 
     private preferenceService: PreferenceService, 
     private userService: UserService,
+    private translate: TranslateService,
     private toastr: ToastrService) {
       this.explicitPreferences = this.preferenceService.getExplicitPreferenceStructure();
       this.isLoading = this.preferenceService.isLoading;
@@ -121,10 +123,10 @@ export class UserPreferencesComponent implements OnInit {
 
       Promise.all(updateRequests.map(req => req.toPromise())).then(
         () => {
-          this.toastr.success('Preferences updated successfully');
+          this.toastr.success(this.translate.instant('preferences.updateSuccess'));
         },
         (error) => {
-          this.toastr.error(`Failed to update preferences: ${error}`);
+          this.toastr.error(this.translate.instant('preferences.updateError'), error);
         }
       );
     });

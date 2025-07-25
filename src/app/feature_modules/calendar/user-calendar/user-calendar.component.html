@@ -1,13 +1,13 @@
-<div class="main-content">
-    <div class="container-fluid">
-        <h1 class="mt-5 pt-5">User Calendar</h1>
-            <full-calendar *ngIf="calendarOptions" [options]="calendarOptions">
-            </full-calendar>
-            <!-- <div *ngIf="selectedEvent" class="mt-4 p-3 border rounded shadow-sm bg-light">
-                <h4>Event Details</h4>
-                <p><strong>Title:</strong> {{ selectedEvent.title }}</p>
-                <p><strong>Date:</strong> {{ selectedEvent.start | date: 'fullDate' }}</p>
-                <p><strong>Event ID:</strong> {{ selectedEvent.id }}</p>
-            </div> -->
+<div class="container-fluid">
+  <h3 class="mb-3">
+    {{ 'settings.calendar_title' | translate }}
+  </h3>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="p-3 mb-3">
+        <full-calendar *ngIf="calendarOptions" [options]="calendarOptions"></full-calendar>
+      </div>
     </div>
+  </div>
 </div>

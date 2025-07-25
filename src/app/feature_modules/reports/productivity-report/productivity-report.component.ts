@@ -6,6 +6,8 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { UtilsService } from 'src/app/_services/utils.service';
 import { PreferenceService } from 'src/app/_services/user-preference.service';
 import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
+import { TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-productivity-report',
@@ -28,6 +30,37 @@ export class ProductivityReportComponent implements OnInit {
   showAllMembers: boolean = true;
   public sortOrder: string = ''; // 'asc' or 'desc'
   activeButton: string = 'Members';
+  activeTabIndex: number = 0;
+  columns: TableColumn[] = [
+    {
+      key: 'fullName',
+      name: this.translate.instant('reports.productivity.users'),
+      valueFn: (row) => `${row.firstName} ${row.lastName}`
+    },
+    {
+      key: 'total',
+      name: this.translate.instant('reports.productivity.tracked_time'),
+      valueFn: (row) => this.millisecondsToTime(row.total)
+    },
+    {
+      key: 'mouseClicks',
+      name: this.translate.instant('reports.productivity.avg_mouse'),
+    },
+    {
+      key: 'keyboardStrokes',
+      name: this.translate.instant('reports.productivity.avg_key_pressed'),
+    },
+    {
+      key: 'productive',
+      name: this.translate.instant('reports.productivity.productive'),
+      valueFn: (row) => `${this.getProductiveProgressValueAllMember(row)} %`
+    },
+    {
+      key: 'nonProductive',
+      name: this.translate.instant('reports.productivity.non_productive'),
+      valueFn: (row) => `${this.getNonProductiveProgressValueAllMember(row)} %`
+    }
+  ];
 
 
   constructor(
@@ -35,7 +68,8 @@ export class ProductivityReportComponent implements OnInit {
     private reportService: ReportsService,
     public commonservice: CommonService,
     private utilsService:UtilsService,
-    private preferenceService: PreferenceService
+    private preferenceService: PreferenceService,
+    private translate: TranslateService
   ) {
     this.fromDate = new Date().toISOString().slice(0, 10);
     this.toDate = new Date().toISOString().slice(0, 10);
@@ -43,25 +77,25 @@ export class ProductivityReportComponent implements OnInit {
 
   ngOnInit(): void {
     
-    this.preferenceService.getPreferenceByKey(PreferenceKeys.ReportsProductivityReportsBy, this.currentUser?.id)
-      .subscribe({
-        next: (response: any) => {
-          const preferences = response?.data?.preferences || [];
-          const match = preferences.find((pref: any) =>
-            pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ReportsProductivityReportsBy
-          );
-          const prefvalue = match?.preferenceOptionId?.preferenceValue || '';
-          if (prefvalue === 'Single') {
-            this.toggleSingleMember();
-          } else if (prefvalue === 'Members') {
-            this.toggleAllMembers();
-          }
-        },
-        error: (err) => {
-          console.error('Failed to load language preference', err);
-          this.toggleSingleMember();
-        }
-      });
+    // this.preferenceService.getPreferenceByKey(PreferenceKeys.ReportsProductivityReportsBy, this.currentUser?.id)
+    //   .subscribe({
+    //     next: (response: any) => {
+    //       const preferences = response?.data?.preferences || [];
+    //       const match = preferences.find((pref: any) =>
+    //         pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ReportsProductivityReportsBy
+    //       );
+    //       const prefvalue = match?.preferenceOptionId?.preferenceValue || '';
+    //       if (prefvalue === 'Single') {
+    //         this.toggleSingleMember();
+    //       } else if (prefvalue === 'Members') {
+    //         this.toggleAllMembers();
+    //       }
+    //     },
+    //     error: (err) => {
+    //       console.error('Failed to load language preference', err);
+    //       this.toggleSingleMember();
+    //     }
+    //   });
     this.populateUsers();
   }
 
@@ -70,22 +104,22 @@ export class ProductivityReportComponent implements OnInit {
     this.showAllMembers = false;
     this.activeButton = 'Single';
 
-    this.preferenceService.createOrUpdatePreference(
-          this.currentUser.id,
-          PreferenceKeys.ReportsProductivityReportsBy,
-          'Single'
-        ).subscribe();
+    // this.preferenceService.createOrUpdatePreference(
+    //       this.currentUser.id,
+    //       PreferenceKeys.ReportsProductivityReportsBy,
+    //       'Single'
+    //     ).subscribe();
   }
   toggleAllMembers() {
     this.showSingleMember = false;
     this.showAllMembers = true;
     this.activeButton = 'Members';
 
-    this.preferenceService.createOrUpdatePreference(
-          this.currentUser.id,
-          PreferenceKeys.ReportsProductivityReportsBy,
-          'Members'
-        ).subscribe();
+    // this.preferenceService.createOrUpdatePreference(
+    //       this.currentUser.id,
+    //       PreferenceKeys.ReportsProductivityReportsBy,
+    //       'Members'
+    //     ).subscribe();
   }
 
   populateUsers() {
@@ -200,5 +234,21 @@ export class ProductivityReportComponent implements OnInit {
   selectedUsersChanged($event: string): void {
     this.selectedUser = $event;
     this.getProductivityPerMem();
+  }
+
+  selectTab(tabIndex: number) {
+    this.fromDate = new Date().toISOString().slice(0, 10);
+    this.toDate = new Date().toISOString().slice(0, 10);
+    this.activeTabIndex = tabIndex;
+    if(tabIndex === 0){
+      this.showAllMembers = true;  
+      this.showSingleMember = false;
+      this.getProductivityAllMem();
+    }
+    else{
+      this.showAllMembers = false;  
+      this.showSingleMember = true;
+      this.getProductivityPerMem();
+    }
   }
 }

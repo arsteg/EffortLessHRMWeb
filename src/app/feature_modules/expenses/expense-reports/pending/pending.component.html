@@ -8,7 +8,7 @@
       </mat-form-field>
       <div>
         <button mat-flat-button color="primary" class="me-1" (click)="open(addModal);clearform(); changeMode === 'Add'; step=1">
-          <mat-icon>add</mat-icon>{{'expenses.add_expense' | translate}}
+          {{'expenses.add_expense' | translate}}
         </button>
         <button mat-flat-button class="me-1 border" (click)="exportToCsv()">
           <mat-icon>download</mat-icon> {{'download' | translate}}

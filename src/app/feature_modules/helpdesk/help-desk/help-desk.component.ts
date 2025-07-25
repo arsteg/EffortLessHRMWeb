@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HelpdeskService } from 'src/app/_services/helpdeskService';
 import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 interface HelpRequest {
   id: string;
@@ -25,20 +26,19 @@ interface UploadedFile {
   styleUrls: ['./help-desk.component.css'],
 })
 export class HelpDeskComponent {
-  // Recording related properties
   isRecording = false;
   mediaRecorder: MediaRecorder | null = null;
   recordedChunks: Blob[] = [];
   recordedVideoUrl: string | null = null;
-
-  // Form related properties
   description: string = '';
   uploadedFiles: UploadedFile[] = [];
   previousRequests: HelpRequest[] = [];
+  isSubmitting: boolean = false;
 
   constructor(private helpdeskService: HelpdeskService,
      private router: Router,
-     public dialogRef: MatDialogRef<HelpDeskComponent>
+     public dialogRef: MatDialogRef<HelpDeskComponent>,
+     private translate: TranslateService
     ) {}
 
   ngOnInit() {
@@ -143,11 +143,19 @@ export class HelpDeskComponent {
   }
 
   submitRequest() {
-    
-    if (!this.description || this.description.trim() === '') {
-      alert('Description is required.');
+    const descControl = document.getElementById('description');
+    if (descControl) {
+      descControl.focus();
+      descControl.blur();
+    }
+    if (!this.description || this.description.trim().length === 0) {
       return;
     }
+    
+    if(this.isSubmitting){
+        return;
+    }
+    this.isSubmitting = true;
 
     const payload: any = {
       description: this.description,
@@ -156,6 +164,7 @@ export class HelpDeskComponent {
     };
   
     const handleResponse = (res: any) => {
+      this.isSubmitting = false;
       const tickets = res.data;  
       this.previousRequests = tickets.map((ticket: any) => ({
         createdOn: new Date(ticket.createdOn),
@@ -172,11 +181,12 @@ export class HelpDeskComponent {
       this.uploadedFiles = [];
       this.recordedVideoUrl = null;
       this.recordedChunks = [];
+      this.isSubmitting = false;
 
       this.dialogRef.close();
-      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-        this.router.navigate(['/home/helpdesk']);
-      });
+      // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      //   this.router.navigate(['/home/helpdesk']);
+      // });
     };
   
     if (this.recordedChunks.length > 0) {
@@ -188,6 +198,7 @@ export class HelpDeskComponent {
         this.helpdeskService.createHelpdeskTicket(payload).subscribe({
           next: handleResponse,
           error: (err) => {
+            this.isSubmitting = false;
             console.error('Failed to submit helpdesk ticket:', err);
           },
         });
@@ -197,6 +208,7 @@ export class HelpDeskComponent {
       this.helpdeskService.createHelpdeskTicket(payload).subscribe({
         next: handleResponse,
         error: (err) => {
+          this.isSubmitting = false;
           console.error('Failed to submit helpdesk ticket:', err);
         },
       });
@@ -215,7 +227,7 @@ export class HelpDeskComponent {
   }
 
   deleteRequest(request: HelpRequest): void {
-    if (confirm('Are you sure you want to delete this request?')) {
+    if (confirm(this.translate.instant('helpdesk.delete_confirmation'))) {
       this.helpdeskService.deleteHelpdeskById(request.id).subscribe({
         next: () => {
           this.previousRequests = this.previousRequests.filter(r => r !== request);

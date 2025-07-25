@@ -168,6 +168,7 @@
                                         <th>Verified Amount <span class="text-danger">*</span></th>
                                         <th>Landlord Name</th>
                                         <th>Landlord PAN</th>
+                                        <th>Landlord Address</th>
                                         <th>Attachments</th>
                                         <th>Approval Status <span class="text-danger">*</span></th>
                                         <th>Actions</th>
@@ -203,6 +204,7 @@
                                         </td>
                                         <td>{{hra?.landlordName}}</td>
                                         <td>{{hra?.landlordPan}}</td>
+                                        <td>{{hra?.landlordAddress}}</td>
                                         <td>
                                             <ng-container
                                                 *ngFor="let file of hra?.employeeIncomeTaxDeclarationAttachments">

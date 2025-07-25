@@ -63,9 +63,6 @@
                             <span *ngIf="categoryForm.get('label')?.errors?.['invalidLabel']">
                                 {{ 'leave.label_invalid' | translate }}
                             </span>
-                            <span *ngIf="categoryForm.get('label')?.errors?.['duplicateLabel']">
-                                {{ 'leave.at_errorLabelDuplicate' | translate }}
-                            </span>
                         </mat-error>
                     </mat-form-field>
                 </div>

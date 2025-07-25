@@ -90,7 +90,8 @@
     },
     "settings": {
       "language": "Language",
-      "select_language": "Select Language"
+      "select_language": "Select Language",
+      "calendar_title": "User Calendar"
     },
     "landing": {
       "title": "WE ARE EFFORTLESS HRM",

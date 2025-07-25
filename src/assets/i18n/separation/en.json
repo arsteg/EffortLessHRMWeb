@@ -13,7 +13,7 @@
         "assest_return_warning": "Assets are still assigned. Please release them before marking company property as returned.",
         "notice_period_fetch_fail": "Unable to fetch Notice Period. Job information is missing. Please ask Admin to complete your job details first.",
         "notice_period_load_fail": "Failed to load notice period.",
-        "company_property_not_returned": "Cannot mark as Completed. Company property has not been returned.",
+        "company_property_not_returned": "Cannot mark as Approved. Company property has not been returned.",
         "status_update_success": "Status Updated Successfully",
         "status_update_fail": "Status Update Failed",
         "cannot_be_deleted": "Cannot be Deleted",
@@ -26,6 +26,8 @@
         "appeal_review_success": "Appeal reviewed successfully", 
         "termination_add_fail": "Termination cannot be added.",
         "termination_add_success": "Termination Added",  
-        "termination_update_success": "Termination Updated"
+        "termination_update_success": "Termination Updated",
+        "resignation": "Resignation",
+        "termination": "Termination"
       }
 }

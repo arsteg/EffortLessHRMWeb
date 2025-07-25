@@ -99,11 +99,16 @@
         <div class="form-group col-md-6 mb-2">
           <label for="">Would you like to set a fixed amount for your Provident Fund Wage?</label>
           <input class="form-control" type="text" formControlName="fixedAmountForYourProvidentFundWage" placeholder="Enter PF Wage">
-        </div>
+          <div *ngIf="statutoryDetailsForm.get('fixedAmountForYourProvidentFundWage')?.invalid && (statutoryDetailsForm.get('additionalPFContributionInPercentage')?.dirty || statutoryDetailsForm.get('fixedAmountForYourProvidentFundWage')?.touched)" class="text-danger small">
+            <div *ngIf="statutoryDetailsForm.get('fixedAmountForYourProvidentFundWage')?.errors?.['pattern']" translate>
+            manage.users.employee-settings.invalid_amount
+            </div>
+            
+          </div></div>
   
         <!-- Additional PF Contribution -->
         <div class="form-group col-md-6 mb-2">
-          <label for="">What additional contribution % would this employee voluntarily contribute, above and beyond the mandatory 12%? <span class="text-danger">*</span></label>
+          <label for="">What additional contribution % would this employee voluntarily contribute, above and beyond the mandatory 12%? </label>
           <input class="form-control" type="text" placeholder="Enter PF Wage" maxlength="5" formControlName="additionalPFContributionInPercentage">
           <div *ngIf="statutoryDetailsForm.get('additionalPFContributionInPercentage')?.invalid && (statutoryDetailsForm.get('additionalPFContributionInPercentage')?.dirty || statutoryDetailsForm.get('additionalPFContributionInPercentage')?.touched)" class="text-danger small">
             <div *ngIf="statutoryDetailsForm.get('additionalPFContributionInPercentage')?.errors?.['pattern']" translate>

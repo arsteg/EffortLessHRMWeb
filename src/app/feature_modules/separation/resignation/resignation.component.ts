@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SeparationService } from 'src/app/_services/separation.service';
@@ -11,6 +11,7 @@ import { AssetManagementService } from 'src/app/_services/assetManagement.servic
 
 import { TranslateService } from '@ngx-translate/core';
 import { ActionVisibility } from 'src/app/models/table-column';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 interface ResignationStatus {
   Pending: string,
   Completed: string,
@@ -48,6 +49,9 @@ export class ResignationComponent implements OnInit {
   totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  minDate: Date;
+  isSubmitting: boolean = false;
+  isAdminView = false;
   columns = [
     {
       key: 'user',
@@ -113,13 +117,13 @@ export class ResignationComponent implements OnInit {
           label: 'Edit',
           visibility: ActionVisibility.LABEL,
           icon: 'edit',
-          hideCondition: (row: any) => row.resignation_status !== this.resignationStatuses.Completed
+          hideCondition: (row: any) => row.resignation_status != this.resignationStatuses.Pending
         },
         {
           label: 'Delete',
           visibility: ActionVisibility.LABEL,
           icon: 'delete',
-          hideCondition: (row: any) => row.resignation_status !== this.resignationStatuses.Completed
+          hideCondition: (row: any) => row.resignation_status != this.resignationStatuses.Pending
         }
       ]
     }
@@ -187,16 +191,22 @@ export class ResignationComponent implements OnInit {
       isAction: true,
       options: [
         {
-          label: 'Completed',
+          label: 'Edit',
+          visibility: ActionVisibility.LABEL,
+          icon: 'edit',
+          hideCondition: (row: any) => row.resignation_status != this.resignationStatuses.Pending
+        },
+        {
+          label: 'Pending',
           visibility: ActionVisibility.LABEL,
           icon: 'check_circle',
-          hideCondition: (row: any) => (row.resignation_status === this.resignationStatuses.Completed)
+          hideCondition: (row: any) => (row.resignation_status === this.resignationStatuses.Pending)
         },
         {
           label: 'In-Progress',
           visibility: ActionVisibility.LABEL,
           icon: 'hourglass_empty',
-          hideCondition: (row: any) => (row.resignation_status === "In-Progress")
+          hideCondition: (row: any) => (row.resignation_status === this.resignationStatuses.InProgress)
         },
         {
           label: 'Approved',
@@ -215,18 +225,20 @@ export class ResignationComponent implements OnInit {
      private assetManagementService: AssetManagementService,
      private translate: TranslateService,
     private commonService: CommonService) {
-    this.resignationForm = this.fb.group({
-      user: [''],
-      resignation_date: [''],
-      last_working_day: [''],
-      notice_period: [{ value: '', disabled: true }],
-      resignation_reason: [''],
-      exit_interview_date: [''],
-      handover_complete: [false],
-      company_property_returned: [false],
-      final_pay_processed: [false],
-      exit_feedback: ['']
-    });
+      this.resignationForm = this.fb.group({
+        user: [''],
+        resignation_date: ['', Validators.required],
+        last_working_day: ['', Validators.required],
+        notice_period: ['', Validators.required],
+        resignation_reason: ['', Validators.required],
+        exit_interview_date: [''],
+        handover_complete: [false],
+        company_property_returned: [false],
+        final_pay_processed: [false],
+        exit_feedback: ['']
+      }, { validators: CustomValidators.exitInterviewAfterTerminationValidator() });
+      
+   
   }
 
   ngOnInit(): void {
@@ -234,19 +246,46 @@ export class ResignationComponent implements OnInit {
       this.users = res.data['data'];      
       this.getallResignationStatusList();
       this.getResignationByUser();
+      this.resignationForm.get('resignation_date')?.valueChanges.subscribe((resignationDate: Date) => {
+        const noticePeriod = +this.resignationForm.get('notice_period')?.value;
+      
+        if (resignationDate && noticePeriod && !isNaN(noticePeriod)) {
+          const lastWorkingDay = new Date(resignationDate);
+          lastWorkingDay.setDate(lastWorkingDay.getDate() + noticePeriod);
+      
+          this.resignationForm.patchValue({
+            last_working_day: lastWorkingDay
+          });
+        }
+      });
+      
     });
+    this.isAdminView = localStorage.getItem('adminView') == 'admin';    
   }
 
   openDialog(resignation?: any): void { 
+    this.isSubmitting = false;
     this.isEditMode = !!resignation;
+    const today = new Date();
+    this.minDate = new Date(today.setDate(today.getDate()));
     if (this.isEditMode) {
       this.resignationForm.patchValue(resignation);
     } else {
       this.loadNoticePeriod();
       this.resignationForm.reset();
     }
+    
+    if (this.isAdminView) {
+      this.resignationForm.get('resignation_date')?.disable();
+      this.resignationForm.get('resignation_reason')?.disable();
+    } else {
+      this.resignationForm.get('exit_feedback')?.disable();
+    }
+    this.resignationForm.get('notice_period')?.disable();
+    this.resignationForm.get('last_working_day')?.disable();
     this.dialogRef = this.dialog.open(this.dialogTemplate, {
-      disableClose: true
+      disableClose: true,
+      width: "50%"
     });
   }
 
@@ -265,19 +304,35 @@ export class ResignationComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.isSubmitting = true;
+    this.resignationForm.markAllAsTouched();
+    this.resignationForm.updateValueAndValidity();
     this.resignationForm.get('notice_period')?.enable();
-    this.resignationForm.patchValue({
-      user: this.currentUser.id
-    });
+    this.resignationForm.get('last_working_day')?.enable();
 
+    if (this.isEditMode) {
+      console.log(this.selectedRecord.user);
+      this.resignationForm.patchValue({
+        user: this.resignationForm.get('user')?.value
+      });
+    }
+    else
+    {
+      this.resignationForm.patchValue({
+        user: this.currentUser.id
+      });
+    }
+    if (this.resignationForm.invalid) {
+      this.toast.error('Please fill all required fields', 'Error!');
+      return;
+    }
     const companyPropertyReturned = this.resignationForm.get('company_property_returned')?.value;
-    const userId = this.currentUser.id;
+    const userId =  this.resignationForm.get('user')?.value;
 
     if (companyPropertyReturned) {
       this.assetManagementService.getEmployeeAssets(userId).subscribe(
         (response) => {
           const assignedAssets = response?.data ?? [];
-
           if (assignedAssets.length > 0) {
             this.toast.error(
               this.translate.instant('separation.assest_return_warning'),
@@ -296,18 +351,20 @@ export class ResignationComponent implements OnInit {
         }
       );
     } else {
-      this.saveResignation(); // Skip asset check if not marked as returned
-    }
-    this.resignationForm.get('notice_period')?.disable();
+      this.saveResignation();
+       // Skip asset check if not marked as returned
+    } 
+    this.isSubmitting = false;
   }
   saveResignation() {
+  
     if (this.resignationForm.valid) {
       if (this.isEditMode) {
         this.separationService.updateResignationById(this.selectedRecord._id, this.resignationForm.value).subscribe(
           (res: any) => {
             this.getResignationByUser();
             this.resignationForm.reset();
-            this.toast.success( this.translate.instant('separation.update_success'),  this.translate.instant('separation.success'));
+            this.toast.success( this.translate.instant('separation.update_success'));
             this.dialogRef.close();
           },
           err => {
@@ -321,7 +378,7 @@ export class ResignationComponent implements OnInit {
           (res: any) => {
             this.getResignationByUser();
             this.resignationForm.reset();
-            this.toast.success(this.translate.instant('separation.add_success'), this.translate.instant('separation.success'));
+            this.toast.success(this.translate.instant('separation.add_success'));
             this.dialogRef.close();
           },
           err => {
@@ -342,6 +399,7 @@ export class ResignationComponent implements OnInit {
             this.resignationForm.patchValue({
               notice_period: res.data[0].noticePeriod || 'N/A'
             });
+            
            }
           else{
             this.toast.error(
@@ -384,13 +442,11 @@ export class ResignationComponent implements OnInit {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'User Removed';
   }
 
-  updateResignationStatus(resignation: string, status: string) {
-    status = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  updateResignationStatus(resignation: string, status: string) {    
     // If status is being changed to Completed, check the company_property_returned flag
-  if (status === this.resignationStatuses.Completed && this.selectedRecord && !this.selectedRecord.company_property_returned) {
+  if (status === this.resignationStatuses.Approved && this.selectedRecord && !this.selectedRecord.company_property_returned) {
     this.toast.error(
-      this.translate.instant('separation.company_property_not_returned'),
-      this.translate.instant('common.error')
+      this.translate.instant('separation.company_property_not_returned')
     );
       return;
   }
@@ -439,9 +495,9 @@ export class ResignationComponent implements OnInit {
       this.openDialog(row);
     } else if (action.label === 'Delete') {
       this.deleteDialog(row._id);
-    } else if (['Completed', 'In-Progress', 'Approved'].includes(action.label)) {
+    } else if (['In-Progress', 'Approved', 'Pending'].includes(action.label)) {
       this.selectedStatus = row._id;
-      this.changedStatus = action.label.toLowerCase() as string;
+      this.changedStatus = action.label as string;
       this.openUpdateStatusDialog();
     }
   }

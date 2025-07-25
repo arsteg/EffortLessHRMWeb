@@ -2,21 +2,15 @@ import { Component, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true };
-  }
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
 @Component({
   selector: 'app-shift',
   templateUrl: './shift.component.html',
@@ -63,10 +57,11 @@ export class ShiftComponent {
     private dialog: MatDialog,
     private exportService: ExportService,
     private toast: ToastrService,
+    private translate: TranslateService,
     private fb: FormBuilder,
   ) {
     this.shiftForm = this.fb.group({
-      name: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
+      name: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       shiftType: ['', Validators.required],
       startTime: ['', Validators.required],
       endTime: ['', Validators.required],
@@ -88,7 +83,7 @@ export class ShiftComponent {
       enterNumberOfDaysForEarlyGoing: [0],
       graceTimeLimitForEarlyGoing: [0],
       isHalfDayApplicable: [false],
-      minHoursPerDayToGetCreditforHalfDay: ['',  [Validators.min(1), this.minHoursValidator()]], // Added min validator
+      minHoursPerDayToGetCreditforHalfDay: ['',  [Validators.min(1), CustomValidators.minHoursValidator()]], // Added min validator
       maxLateComingAllowedMinutesFirstHalfAttendance: [0],
     }, {
       validators: this.timeComparisonValidator // Apply the custom validator at the form group level
@@ -114,17 +109,7 @@ export class ShiftComponent {
     if (this.isEarlyGoingAllowedSubscription) {
       this.isEarlyGoingAllowedSubscription.unsubscribe();
     }
-  }
-
-  duplicateLabelValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: boolean } | null => {
-      const name = control.value;
-      if (name && this.shift.some(template => template.name.toLowerCase() === name.toLowerCase())) {
-        return { duplicateLabel: true };
-      }
-      return null;
-    };
-  }
+  } 
 
   setupConditionalValidation(): void {
     this.isLateComingAllowedSubscription = this.shiftForm.get('isLateComingAllowed').valueChanges.subscribe(value => {
@@ -211,28 +196,8 @@ export class ShiftComponent {
       minHoursHalfDayControl.updateValueAndValidity();
       minHoursFullDayControl.updateValueAndValidity();
     });
-  }
-   
+  }  
 
-
-  // Custom validator for shift name
-  labelValidator(): ValidatorFn {
-    return (control: AbstractControl): {
-      [key: string]: any
-    } | null => {
-      const value = control.value as string;
-      if (!value || /^\s*$/.test(value)) {
-        return {
-          required: true
-        };
-      }
-      // Allows letters, spaces, commas, hyphens, forward slashes, and parentheses
-      const valid = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s(),\-/]*$/.test(value);
-      return valid ? null : {
-        invalidLabel: true
-      };
-    };
-  }
 
   // Custom validator for start and end times
   timeComparisonValidator: ValidatorFn = (control: AbstractControl): { [key: string]: boolean } | null => {
@@ -263,25 +228,14 @@ export class ShiftComponent {
     return Object.keys(errors).length > 0 ? errors : null;
   };
 
-  minHoursValidator() {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (!control.value) {
-        return null; // If the field is empty, the 'required' validator will handle it
-      }
-      const [hours, minutes] = control.value.split(':').map(Number);
-      if (hours < 1 || hours > 8 || (hours === 8 && minutes > 0)) {
-        return { invalidTime: true };
-      }
-      return null;
-    };
-  }
+
 
   setupShiftTypeListener() {
     this.shiftForm.get('shiftType')?.valueChanges.subscribe((shiftType) => {
       const minHoursControl = this.shiftForm.get('minHoursPerDayToGetCreditForFullDay');
 
       if (shiftType === 'fixed duration' || shiftType === 'flexi') {
-        minHoursControl?.setValidators([Validators.required, this.minHoursValidator()]);
+        minHoursControl?.setValidators([Validators.required, CustomValidators.minHoursValidator()]);
       } else {
         minHoursControl?.clearValidators();
       }
@@ -374,8 +328,16 @@ export class ShiftComponent {
       if (!this.isEdit) {
         this.attendanceService.addShift(this.shiftForm.value).subscribe((res: any) => {
           this.loadRecords();
-          this.toast.success('Shift Created', 'Successfully');
+          this.toast.success(
+            this.translate.instant('attendance.createSuccess'),
+            this.translate.instant('common.success')
+          );
           this.shiftForm.reset();
+        }, (err) => {         
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('attendance.createError')
+          ;
+          this.toast.error(errorMessage, this.translate.instant('common.error'));
         })
       }
       else {
@@ -383,8 +345,16 @@ export class ShiftComponent {
           this.changeMode = 'Add';
           this.isEdit = false;
           this.loadRecords();
-          this.toast.success('Shift Updated', 'Successfully');
+          this.toast.success(
+            this.translate.instant('attendance.updateError'),
+            this.translate.instant('common.success')
+          );
           this.shiftForm.reset();
+        }, (err) => {         
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('attendance.createError')
+          ;
+          this.toast.error(errorMessage, this.translate.instant('common.error'));
         })
       }
     }
@@ -396,10 +366,16 @@ export class ShiftComponent {
   deleteTemplate(id: string) {
     this.attendanceService.deleteShift(id).subscribe((res: any) => {
       this.loadRecords();
-      this.toast.success('Successfully Deleted!!!', 'Shift');
+      this.toast.success(
+        this.translate.instant('shift.deleteSuccess'),
+        this.translate.instant('common.success')
+      );
     },
       (err) => {
-        this.toast.error('This Shift Can not be deleted', 'Error')
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('attendance.deleteError')
+        ;
+        this.toast.error(errorMessage, this.translate.instant('common.error'));
       })
   }
 
@@ -412,7 +388,10 @@ export class ShiftComponent {
         this.deleteTemplate(id);
       }
       err => {
-        this.toast.error('Can not be Deleted', 'Error!')
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('attendance.deleteError')
+        ;
+        this.toast.error(errorMessage, this.translate.instant('common.error'));
       }
     });
   }

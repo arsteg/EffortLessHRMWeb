@@ -1,7 +1,14 @@
-<h1 mat-dialog-title>{{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}} {{'expenses.expense_report' | translate}}</h1>
+<div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+        {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}} {{'expenses.expense_report' | translate}}
+    </h1>
+    <button mat-icon-button mat-dialog-close="" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 
-<div mat-dialog-content>
-    <form [formGroup]="addExpenseForm" (ngSubmit)="createReport()">
+<form [formGroup]="addExpenseForm" (ngSubmit)="createReport()">
+    <div mat-dialog-content>
         @if(!selfExpense){
         <mat-form-field class="w-100">
             <mat-label>{{'expenses.expense_template_for' | translate}}</mat-label>
@@ -119,12 +126,12 @@
                 <mat-icon>add</mat-icon>{{'expenses.add_expense' | translate}}</button>
         </div>
         }
-        <div mat-dialog-actions class="d-flex justify-content-between px-0">
-            <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-            <button mat-flat-button type="submit" color="accent"
-                [disabled]="addExpenseForm.invalid">
-                {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
-            </button>
-        </div>
-    </form>
-</div>
+    </div>
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+        <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
+        <button mat-flat-button type="submit" color="primary"
+            [disabled]="addExpenseForm.invalid">
+            {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
+        </button>
+    </div>
+</form>

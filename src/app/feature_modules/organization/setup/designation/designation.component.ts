@@ -95,7 +95,10 @@ export class DesignationComponent {
   onSubmission() {
     this.isSubmitting = true;
     this.designationForm.markAllAsTouched();
-
+    if (this.designationForm.invalid) {      
+      this.toast.error('Please fill all required fields', 'Error!');
+      return;
+    }
     // Prevent submission if form is invalid
     if (this.designationForm.invalid) {
       this.isSubmitting = false;

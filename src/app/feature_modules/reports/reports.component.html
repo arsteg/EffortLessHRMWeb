@@ -10,10 +10,10 @@
                     <a mat-tab-link (click)="selectTab(7)" [active]="selectedTab === 7">{{ 'reports.menu.timesheets' | translate }}</a>
                 </nav>
                 <mat-tab-nav-panel #tabPanel>
-                    <div *ngIf="selectedTab === 1"><app-timeline></app-timeline></div>
+                    <div *ngIf="selectedTab === 1"><app-timeline-management></app-timeline-management></div>
                     <div *ngIf="selectedTab === 2"><browser-history></browser-history></div>
                     <div *ngIf="selectedTab === 3"><app-app-and-website-usage></app-app-and-website-usage></div>
-                    <div *ngIf="selectedTab === 4" class="tab-content">
+                    <div *ngIf="selectedTab === 4">
                         <app-productivity-report></app-productivity-report>
                     </div>
                     <div *ngIf="selectedTab === 5" class="tab-content">
@@ -22,7 +22,7 @@
                     <div *ngIf="selectedTab === 6" class="tab-content">
                         <app-ai-reports></app-ai-reports>
                     </div>
-                    <div *ngIf="selectedTab === 7" class="tab-content">
+                    <div *ngIf="selectedTab === 7">
                         <app-admin-timesheet></app-admin-timesheet>
                     </div>
                 </mat-tab-nav-panel>
@@ -51,13 +51,13 @@
                     <!-- <div *ngIf="selectedTab === 5" class="tab-content"></div> -->
                     <div *ngIf="selectedTab === 6"><browser-history></browser-history></div>
                     <div *ngIf="selectedTab === 7"><app-app-and-website-usage></app-app-and-website-usage></div>
-                    <div *ngIf="selectedTab === 8" class="tab-content">
+                    <div *ngIf="selectedTab === 8">
                         <app-productivity-report></app-productivity-report>
                     </div>
                     <div *ngIf="selectedTab === 9" class="tab-content">
                         <app-leave-report></app-leave-report>
                     </div>
-                    <div *ngIf="selectedTab === 10" class="tab-content">
+                    <div *ngIf="selectedTab === 10">
                         <app-user-timesheet></app-user-timesheet>
                     </div>
                 </mat-tab-nav-panel>

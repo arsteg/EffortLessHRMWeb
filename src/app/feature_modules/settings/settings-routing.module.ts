@@ -4,8 +4,7 @@ import { SettingsComponent } from './settings.component';
 import { UserPreferencesComponent } from './userPreferences/userPreferences.Component';
 
 const routes: Routes = [
-    {path: '', component: SettingsComponent},
-    {path: 'user-preferences', component: UserPreferencesComponent}
+    {path: '', component: UserPreferencesComponent}
 ];
 
 @NgModule({

@@ -1,4 +1,31 @@
-.table-container {
+/* Sticky column for User */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 3;
+  min-width: 120px;
+  max-width: 120px;
+  white-space: nowrap;
+}
+
+/* Sticky column for Project (next to User) */
+.sticky-col-2 {
+  position: sticky;
+  left: 120px; /* match the width of .sticky-col */
+  background: #fff;
+  z-index: 2;
+  min-width: 150px;
+  max-width: 150px;
+  white-space: nowrap;
+}
+
+/* Ensure table header stays above cells */
+th {
+  z-index: 4;
+}
+
+/* .table-container {
   max-width: 100%;
   overflow-x: auto;
 }
@@ -14,4 +41,4 @@
 
 .align-center {
   vertical-align: center;
-}
+} */

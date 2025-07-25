@@ -8,6 +8,8 @@ import { HelpdeskService } from 'src/app/_services/helpdeskService';
 import { HelpDeskComponent } from '../help-desk/help-desk.component';
 import { UpdateHelpdeskTaskComponent } from '../update-helpdesk-task/update-helpdesk-task.component';
 import { MatSort } from '@angular/material/sort';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-helpdesk-dashboard',
@@ -30,6 +32,7 @@ export class HelpdeskDashboardComponent implements OnInit {
   currentPage: number = 1;
   displayedColumns: string[] = ['createdOn', 'description', 'files', 'video', 'status', 'remarks', 'actions'];
   dialogRef: MatDialogRef<any>;
+  allData: any[] = [];
   expenseTypes = {
     perDay: 'Per Day',
     time: 'Time',
@@ -38,6 +41,49 @@ export class HelpdeskDashboardComponent implements OnInit {
     other: 'Other'
   }
   isAdminView = false;
+  columns: TableColumn[] = [
+    { 
+      key: 'createdOn', name: this.translate.instant('helpdesk.date'),
+      valueFn: (row: any) => new Date(row.createdOn).toLocaleDateString() 
+    },
+    { key: 'description', name: this.translate.instant('helpdesk.description') },
+    { key: 'files', 
+      name: this.translate.instant('helpdesk.files'),
+      isHtml: true,
+      valueFn: (row: any) => {
+        if (row.files) {
+          return row.files.split(',').map((file: string, index: number) => 
+            `<a href="${file.trim()}" target="_blank">File ${index + 1}</a>`
+          ).join(', ');
+        }
+        return '';
+      } 
+    },
+    { 
+      key: 'video', 
+      name: this.translate.instant('helpdesk.videos'),
+      isHtml: true,
+      valueFn: (row: any) => {
+        if (row.video) {
+          return row.video.split(',').map((video: string, index: number) => 
+            `<a href="${video.trim()}" target="_blank">Video ${index + 1}</a>`
+          ).join(', ');
+        }
+        return '';
+      }
+    },
+    { key: 'status', name: this.translate.instant('helpdesk.status') },
+    { key: 'remarks', name: this.translate.instant('helpdesk.remarks') },
+    {
+      key: 'action',
+      name: this.translate.instant('helpdesk.actions'),
+      isAction: true,
+      options: [
+        { label: 'Update', icon: 'edit', visibility: ActionVisibility.LABEL, hideCondition: (row: any) => !this.isAdminView },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL, hideCondition: (row: any) => this.isAdminView }
+      ]
+    }
+  ];
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
@@ -94,6 +140,21 @@ export class HelpdeskDashboardComponent implements OnInit {
       this.helpdeskData.data = res.data;
       console.log('Helpdesk Data:', this.helpdeskData.data);
       this.totalRecords = res.total;
+      this.allData = res.data;
+    });
+  }
+
+  deleteDialog(id: string): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.deleteHelpdesk(id);
+      }
+      err => {
+        this.toast.error(err || this.translate.instant('helpdesk.delete_error'))
+      }
     });
   }
 
@@ -119,7 +180,7 @@ export class HelpdeskDashboardComponent implements OnInit {
 
     openUpdateDialog(helpdesk: any): void {
       const dialogRef = this.dialog.open(UpdateHelpdeskTaskComponent, {
-        width: '400px',
+        width: '50%',
         data: { helpdesk }
       });
     
@@ -135,4 +196,32 @@ export class HelpdeskDashboardComponent implements OnInit {
         this.getAllHelpdeskData();
       });
     }
+
+    handleAction(event: any) {
+      if (event.action.label === 'Update') {
+        this.openUpdateDialog(event.row);
+      }
+      if (event.action.label === 'Delete') {
+        this.deleteDialog(event.row._id);
+      }
+    }
+
+  onSortChange(event: any) {
+    const sorted = this.helpdeskData.data.slice().sort((a: any, b: any) => {
+      const valueA = a[event.active];
+      const valueB = b[event.active];
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.helpdeskData.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.helpdeskData.data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    }
+    );
+  }
 }
