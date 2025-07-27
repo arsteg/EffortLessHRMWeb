@@ -41,6 +41,11 @@ export class UserPreferencesComponent implements OnInit {
           .subscribe({
             next: (response: any) => {
               const preferences = response?.data?.preferences || [];
+              if (!preferences || preferences.length === 0) {
+                this.selectedUsersByAdmin = this.userList[0]._id;
+                this.loadUserPreferences(this.selectedUsersByAdmin);
+                return;
+              }
               const match = preferences.find((pref: any) =>
                 pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.SettingsUserSettingsSelectedMember
               );

@@ -405,6 +405,9 @@ export class TimelineComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           const preferences = response?.data?.preferences || [];
+          if (!preferences || preferences.length === 0) {
+            return;
+          }
           const match = preferences.find((pref: any) =>
             pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ReportsTimelineColumnBy
           );

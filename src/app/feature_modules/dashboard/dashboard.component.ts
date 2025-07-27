@@ -452,6 +452,10 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     this.preferenceService.getPreferenceByKey(PreferenceKeys.DashboardTimeSpent, this.currentUser?.id).subscribe({
       next: (response: any) => {
         const preferences = response?.data?.preferences || [];
+        if (!preferences || preferences.length === 0) {
+          this.selectedTabIndex = 0;
+          return;
+        }
         const match = preferences.find((pref: any) =>
           pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.DashboardTimeSpent
         );

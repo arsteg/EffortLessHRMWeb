@@ -168,6 +168,11 @@ export class ProjectListComponent implements OnInit {
     ).subscribe({
       next: (response: any) => {
         const preferences = response?.data?.preferences || [];
+        if (!preferences || preferences.length === 0) {
+          this.userId = '';
+          this.getProjectList();
+          return;
+        }
         const match = preferences.find((pref: any) =>
           pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ManageProjectsSelectedMember
         );

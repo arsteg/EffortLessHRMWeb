@@ -456,6 +456,12 @@ export class ScreenshotsComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           const preferences = response?.data?.preferences || [];
+          if (!preferences || preferences.length === 0) {
+            this.selectedMember = currentUser;
+            this.member = this.selectedMember;
+            this.showScreenShots();
+            return;
+          }
           const match = preferences.find((pref: any) =>
             pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ScreenshotSelectedMember
           );
@@ -467,6 +473,7 @@ export class ScreenshotsComponent implements OnInit {
         error: (err) => {
           console.error('Failed to load language preference', err);
           this.selectedMember = currentUser;
+          this.member = this.selectedMember;
           this.showScreenShots();
         }
     });

@@ -694,6 +694,12 @@ export class TasksComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           const preferences = response?.data?.preferences || [];
+          if (!preferences || preferences.length === 0) {
+            const queryParams = this.route.snapshot.queryParamMap;
+            this.isListView = queryParams.get('view') !== 'board';
+            this.updateViewModeQueryParam(this.isListView);
+            return;
+          }
           const match = preferences.find((pref: any) =>
             pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.TaskSelectedTasksView
           );
