@@ -4,7 +4,7 @@
             <button class="btn rounded-pill submenuTab active mb-2" type="button" (click)="backToSalaryDetails.emit()">
                 <i class="bi bi-arrow-left"></i> Salary Details
             </button>
-            <button *ngIf="!edit" class="addBtn mb-2 ms-auto" mat-flat-button type="submit">Save</button>
+            <button *ngIf="!edit" color="primary" class="mb-2 ms-auto" mat-flat-button type="submit">Save</button>
         </div>
         <!-- Display validation error -->
         <div *ngIf="salaryDetailsForm.errors?.['exceedsGrossSalary']" class="alert alert-danger">
@@ -50,8 +50,8 @@
             <div class="col-md-6 my-2 border-bottom">
                 <mat-label>Is employer part inclusive in salary structure</mat-label>
                 <mat-radio-group formControlName="isEmployerPartInclusiveInSalaryStructure" [disabled]="edit">
-                    <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                    <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                    <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
+                    <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                 </mat-radio-group>
             </div>
         </div>
@@ -66,22 +66,22 @@
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>PF Deduction</mat-label>
                             <mat-radio-group formControlName="isPFDeduction" [disabled]="edit">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>                        
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Employee Provident Fund Capped At PF Ceiling</mat-label>
                             <mat-radio-group formControlName="isEmployeePFCappedAtPFCeiling" [disabled]="edit">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Employer Provident Fund Capped At PF Ceiling</mat-label>
                             <mat-radio-group formControlName="isEmployerPFCappedAtPFCeiling" [disabled]="edit">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
@@ -104,43 +104,43 @@
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>ESIC Deduction</mat-label>
                             <mat-radio-group formControlName="isESICDeduction" [disabled]="edit">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>PT Deduction</mat-label>
                             <mat-radio-group formControlName="isPTDeduction" [disabled]="edit">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>LWF Deduction</mat-label>
                             <mat-radio-group formControlName="isLWFDeduction" [disabled]="edit">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Gratuity Applicable</mat-label>
                             <mat-radio-group formControlName="isGratuityApplicable" [disabled]="edit">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Income Tax Deduction</mat-label>
                             <mat-radio-group formControlName="isIncomeTaxDeduction" [disabled]="edit">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                         <div class="col-md-6 my-2 border-bottom">
                             <mat-label>Round Off Applicable</mat-label>
                             <mat-radio-group formControlName="isRoundOffApplicable" [disabled]="edit">
-                                <mat-radio-button class="example-margin" [value]="true">Yes</mat-radio-button>
-                                <mat-radio-button class="example-margin" [value]="false">No</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
+                                <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
                     </div>
