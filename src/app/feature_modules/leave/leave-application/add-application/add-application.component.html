@@ -55,8 +55,7 @@
                             {{ category?.leaveCategory?.label | titlecase }}
                         </mat-option>
                     </mat-select>
-                    <mat-error
-                        *ngIf="leaveApplication.get('leaveCategory')?.touched">
+                    <mat-error *ngIf="leaveApplication.get('leaveCategory')?.touched">
                         {{ 'leave.categoryRequired' | translate }}
                     </mat-error>
                 </mat-form-field>
@@ -112,8 +111,10 @@
 
             <div class="col-12 mt-3">
                 <label for="">{{'leave.attachments' | translate}}</label>
-                <div class="attachment flex-wrap mt-1"><label class="attach"><input style="display: none;"
-                            formControlName="leaveApplicationAttachments"
+                <div class="attachment flex-wrap mt-1">
+                    <label class="attach">
+                        <input style="display: none;" [attr.required]="documentMandatory ? true : null"
+                            [required]="documentMandatory" formControlName="leaveApplicationAttachments"
                             accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
                             type="file" multiple (change)="onFileSelected($event)">
                         <div class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
@@ -121,7 +122,10 @@
                             </span>
                         </div>
                     </label>
-
+                    <small class="text-danger"
+                        *ngIf="documentMandatory && leaveApplication.get('leaveApplicationAttachments')?.invalid && leaveApplication.get('leaveApplicationAttachments')?.touched">
+                        {{ 'leave.attachmentRequired' | translate }}
+                    </small>
                 </div>
             </div>
             <div>

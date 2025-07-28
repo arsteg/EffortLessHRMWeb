@@ -60,6 +60,7 @@ export class AddApplicationComponent implements OnDestroy {
   maxHalfDaysAllowed = 0;
   halfDayLimitReached = false;
   reasonMandatory: boolean;
+  documentMandatory: boolean;
   maximumLimit: number;
   private employeeValueChangesSubscription: Subscription;
   private leaveCategoryValueChangesSubscription: Subscription;
@@ -67,7 +68,6 @@ export class AddApplicationComponent implements OnDestroy {
   private endDateValueChangesSubscription: Subscription;
   private lastFetchedEmployeeId: string | null = null;
   private holidaysFetchedYear: number | null = null;
-  private isFetchingLeaves: boolean = false; // Prevent multiple concurrent API calls
 
   constructor(
     private fb: FormBuilder,
@@ -121,6 +121,14 @@ export class AddApplicationComponent implements OnDestroy {
       this.checkForDuplicateLeave();
       if (this.leaveCategories?.length) {
         this.tempLeaveCategory = this.leaveCategories.find(category => category?.leaveCategory?._id === leaveCategory);
+        if (this.tempLeaveCategory?.leaveCategory?.isDocumentRequired) {
+          this.documentMandatory = this.tempLeaveCategory?.leaveCategory?.isDocumentRequired;
+          
+          this.leaveApplication.get('leaveApplicationAttachments').setValidators([Validators.required]);
+        }else {
+          this.leaveApplication.get('leaveApplicationAttachments')?.clearValidators();
+        }
+
         if (this.tempLeaveCategory?.limitNumberOfTimesApply) {
           this.maximumLimit = this.tempLeaveCategory?.maximumNumbersEmployeeCanApply;
           this.validateMaxLeaveLimit();
@@ -349,14 +357,12 @@ export class AddApplicationComponent implements OnDestroy {
     }
 
     // Only fetch leaves if the employee ID has changed
-    if (employeeId !== this.lastFetchedEmployeeId && employeeId && !this.isFetchingLeaves) {
-      this.isFetchingLeaves = true;
+    if (employeeId !== this.lastFetchedEmployeeId && employeeId) {
       let payload = { skip: '', next: '' };
       this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe({
         next: (res: any) => {
           this.existingLeaves = res.data;
           this.lastFetchedEmployeeId = employeeId;
-          this.isFetchingLeaves = false;
           this.validateMaxLeaveLimit(); // Validate max limit after fetching leaves
 
           if (!leaveCategory || !startDate || !endDate) {
@@ -390,11 +396,10 @@ export class AddApplicationComponent implements OnDestroy {
           }
         },
         error: () => {
-          this.isFetchingLeaves = false;
           this.toast.error(this.translate.instant('leave.errorFetchingLeaves'));
         }
       });
-    } else if (!this.isFetchingLeaves) {
+    } else {
       // Use cached existingLeaves for validation
       this.validateMaxLeaveLimit();
 
