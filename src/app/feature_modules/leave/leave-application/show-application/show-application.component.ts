@@ -66,7 +66,7 @@ export class ShowApplicationComponent {
     {
       key: 'totalLeaveDays',
       name: this.translate.instant('leave.totalLeaveDays'),
-      valueFn: (row: any) => row.totalLeaveDays || ''
+      valueFn: (row: any) => row.leaveCount || '0'
     },
     {
       key: 'status',
@@ -150,7 +150,6 @@ export class ShowApplicationComponent {
   }
 
   refreshLeaveApplicationTable(data: any) {
-    data.totalLeaveDays = this.calculateTotalLeaveDays(data);
     this.leaveApplication.data.push(data);
     this.leaveApplication._updateChangeSubscription();
   }
@@ -206,23 +205,7 @@ export class ShowApplicationComponent {
     return leave._id;
   }
 
-  calculateTotalLeaveDays(leave: any) {
-    const startDate = new Date(leave.startDate);
-    const endDate = new Date(leave.endDate);
-    const timeDifference = endDate.getTime() - startDate.getTime();
-    let totalDays = Math.abs(Math.round(timeDifference / (1000 * 3600 * 24))) + 1;
-    if (leave.isHalfDayOption) {
-      if (startDate.toDateString() === endDate.toDateString()) {
-        totalDays = 0.5;
-      } else {
-        totalDays -= 0.5;
-      }
-    }
-    return totalDays;
-  }
-
   getLeaveApplication() {
-    console.log(this.portalView, this.tab)
     const requestBody = {
       status: this.status,
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -235,13 +218,13 @@ export class ShowApplicationComponent {
         this.allData = res.data;
         this.totalRecords = res.total;
         this.leaveApplication.data = res.data.map((leave: any) => {
-          leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
           return {
             ...leave,
             employee: leave.employee.firstName + ' ' + leave.employee.lastName,
             leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
-            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
+            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
+            leaveCount: leave?.calculatedLeaveDays
           };
         });
         this.allData = this.leaveApplication.data;
@@ -255,13 +238,13 @@ export class ShowApplicationComponent {
         this.allData = res.data;
         this.totalRecords = res.total;
         this.leaveApplication.data = res.data.map((leave: any) => {
-          leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
           return {
             ...leave,
             employee: leave.employee.firstName + ' ' + leave.employee.lastName,
             leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
-            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
+            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
+            leaveCount: leave?.calculatedLeaveDays
           };
         });
         this.allData = this.leaveApplication.data;
@@ -275,13 +258,13 @@ export class ShowApplicationComponent {
         this.allData = res.data;
         this.totalRecords = res.total;
         this.leaveApplication.data = res.data.map((leave: any) => {
-          leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
           return {
             ...leave,
             employee: leave.employee.firstName + ' ' + leave.employee.lastName,
             leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
-            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
+            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
+            leaveCount: leave?.calculatedLeaveDays
           };
         });
         this.allData = this.leaveApplication.data;

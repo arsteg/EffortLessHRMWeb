@@ -6,12 +6,13 @@ import { TimeLogService } from 'src/app/_services/timeLogService';
 import { BsDatepickerConfig } from 'ngx-bootstrap/datepicker';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
-import * as moment from 'moment';
-import { forkJoin, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { CompanyService } from 'src/app/_services/company.service';
 import { UserService } from 'src/app/_services/users.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import * as moment from 'moment';
+
 @Component({
   selector: 'app-add-application',
   templateUrl: './add-application.component.html',
@@ -58,11 +59,15 @@ export class AddApplicationComponent implements OnDestroy {
   appointmentDetail: any;
   maxHalfDaysAllowed = 0;
   halfDayLimitReached = false;
+  reasonMandatory: boolean;
+  maximumLimit: number;
   private employeeValueChangesSubscription: Subscription;
   private leaveCategoryValueChangesSubscription: Subscription;
   private startDateValueChangesSubscription: Subscription;
   private endDateValueChangesSubscription: Subscription;
-
+  private lastFetchedEmployeeId: string | null = null;
+  private holidaysFetchedYear: number | null = null;
+  private isFetchingLeaves: boolean = false; // Prevent multiple concurrent API calls
 
   constructor(
     private fb: FormBuilder,
@@ -102,7 +107,7 @@ export class AddApplicationComponent implements OnDestroy {
     }
     return null;
   }
-  reasonMandatory: boolean;
+
   ngOnInit() {
     this.populateMembers();
 
@@ -113,47 +118,61 @@ export class AddApplicationComponent implements OnDestroy {
         halfDays: []
       });
       this.halfDays.clear?.();
-      this.tempLeaveCategory = this.leaveCategories.find(category => category.leaveCategory._id === leaveCategory);
-      this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory?.documentRequired || false;
-      this.leaveCategories?.map((category: any) => {
-        this.reasonMandatory = category?.leaveTemplate?.isCommentMandatory;
-        if (this.reasonMandatory) {
-          this.leaveApplication.get('comment')?.setValidators([Validators.required]);
-        } else {
-          this.leaveApplication.get('comment')?.clearValidators();
+      this.checkForDuplicateLeave();
+      if (this.leaveCategories?.length) {
+        this.tempLeaveCategory = this.leaveCategories.find(category => category?.leaveCategory?._id === leaveCategory);
+        if (this.tempLeaveCategory?.limitNumberOfTimesApply) {
+          this.maximumLimit = this.tempLeaveCategory?.maximumNumbersEmployeeCanApply;
+          this.validateMaxLeaveLimit();
         }
+        this.leaveDocumentUpload = this.tempLeaveCategory?.leaveCategory?.documentRequired || false;
+        this.leaveCategories?.map((category: any) => {
+          this.reasonMandatory = category?.leaveTemplate?.isCommentMandatory;
+          if (this.reasonMandatory) {
+            this.leaveApplication.get('comment')?.setValidators([Validators.required]);
+          } else {
+            this.leaveApplication.get('comment')?.clearValidators();
+          }
 
-        this.leaveApplication.get('comment')?.updateValueAndValidity();
-        if (category.leaveCategory._id === leaveCategory) {
-          this.getSelectedUserAppointment();
-          this.leaveApplication.patchValue({
-            isHalfDayOption: category?.leaveCategory?.isHalfDayTypeOfLeave
-          });
-        }
-        this.updateMinDate(new Date());
-        this.handleLeaveCategoryChange();
-      })
+          this.leaveApplication.get('comment')?.updateValueAndValidity();
+          if (category.leaveCategory._id === leaveCategory) {
+            this.getSelectedUserAppointment();
+            this.leaveApplication.patchValue({
+              isHalfDayOption: category?.leaveCategory?.isHalfDayTypeOfLeave
+            });
+          }
+        });
+      }
+
+      this.updateMinDate(new Date());
+      this.handleLeaveCategoryChange();
     });
 
     this.employeeValueChangesSubscription = this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
-      this.leaveService.getLeaveCategoriesByUserv1(employee).subscribe({
-        next: (res: any) => {
-          this.leaveCategories = res.data;
-          this.checkStatus = res.status;
-        },
-        error: () => {
-          this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
-        }
-      });
+      if (!employee) {
+        return; // Skip if resetting or employee is empty
+      }
+      else {
+        this.leaveService.getLeaveCategoriesByUserv1(employee).subscribe({
+          next: (res: any) => {
+            this.leaveCategories = res.data;
+            this.checkStatus = res.status;
+          },
+          error: () => {
+            this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
+          }
+        });
+      }
       this.leaveApplication.patchValue({
-        leaveCategory: '',
-        startDate: '',
-        endDate: '',
+        leaveCategory: null,
+        startDate: null,
+        endDate: null,
         isHalfDayOption: false,
       });
       (this.leaveApplication.get('halfDays') as FormArray).clear();
       this.selectedFiles = [];
       this.leaveDocumentUpload = false;
+      this.checkForDuplicateLeave();
     });
 
     if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
@@ -176,10 +195,6 @@ export class AddApplicationComponent implements OnDestroy {
       this.checkForDuplicateLeave();
       this.calculateDateRangeAndLimitHalfDays();
     });
-
-    this.leaveApplication.get('employee')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
-    this.leaveApplication.get('leaveCategory')?.valueChanges.subscribe(() => this.checkForDuplicateLeave());
-
   }
 
   ngOnDestroy() {
@@ -197,9 +212,7 @@ export class AddApplicationComponent implements OnDestroy {
     }
   }
 
-  ngOnChanges() {
-    this.handleLeaveCategoryChange();
-  }
+  ngOnChanges() { }
 
   getSelectedUserAppointment() {
     let userId: string | undefined;
@@ -247,7 +260,6 @@ export class AddApplicationComponent implements OnDestroy {
     this.validateDates();
   }
 
-
   calculateDateRangeAndLimitHalfDays() {
     const start = this.leaveApplication.get('startDate')?.value;
     const end = this.leaveApplication.get('endDate')?.value;
@@ -283,12 +295,45 @@ export class AddApplicationComponent implements OnDestroy {
   }
 
   getHolidays() {
+    const currentYear = new Date().getFullYear();
+    if (this.holidaysFetchedYear === currentYear) {
+      return; // Skip if holidays for the current year are already fetched
+    }
+
     const payload = {
-      next: '', skip: '', status: '', year: new Date().getFullYear()
+      next: '', skip: '', status: '', year: currentYear
     };
-    this.companyService.getHolidays(payload).subscribe((res: any) => {
-      this.holidays = res.data;
+    this.companyService.getHolidays(payload).subscribe({
+      next: (res: any) => {
+        this.holidays = res.data;
+        this.holidaysFetchedYear = currentYear;
+      },
+      error: () => {
+        this.toast.error(this.translate.instant('leave.errorFetchingHolidays'));
+      }
     });
+  }
+  validateMaxLeaveLimit() {
+    const employeeId = this.leaveApplication.get('employee')?.value;
+    const leaveCategory = this.leaveApplication.get('leaveCategory')?.value;
+
+    if (!employeeId || !leaveCategory || !this.tempLeaveCategory?.limitNumberOfTimesApply) {
+      return;
+    }
+
+    // Count existing leave applications for the same category
+    const existingLeaveApplications = this.existingLeaves.filter(leave => leave.leaveCategory?._id === leaveCategory).length;
+    const totalLeaveApplications = existingLeaveApplications + 1; // +1 for the new application
+
+    if (totalLeaveApplications > this.maximumLimit) {
+      this.leaveApplication.get('leaveCategory')?.setErrors({ maxLeaveLimitExceeded: true });
+    } else {
+      if (this.leaveApplication.get('leaveCategory')?.hasError('maxLeaveLimitExceeded')) {
+        const errors = { ...this.leaveApplication.get('leaveCategory')?.errors };
+        delete errors['maxLeaveLimitExceeded'];
+        this.leaveApplication.get('leaveCategory')?.setErrors(Object.keys(errors).length > 0 ? errors : null);
+      }
+    }
   }
 
   checkForDuplicateLeave() {
@@ -297,45 +342,93 @@ export class AddApplicationComponent implements OnDestroy {
     const startDate = this.leaveApplication.get('startDate')?.value;
     const endDate = this.leaveApplication.get('endDate')?.value;
 
-    if (!employeeId || !leaveCategory || !startDate || !endDate) {
+    if (!employeeId) {
       this.leaveApplication.setErrors(null);
       this.showHalfDayOption = true;
       return;
     }
 
-    let payload = { skip: '', next: '' };
-    this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe({
-      next: (res: any) => {
-        this.existingLeaves = res.data;
-        const formattedStartDate = this.stripTime(new Date(startDate));
-        const formattedEndDate = this.stripTime(new Date(endDate));
+    // Only fetch leaves if the employee ID has changed
+    if (employeeId !== this.lastFetchedEmployeeId && employeeId && !this.isFetchingLeaves) {
+      this.isFetchingLeaves = true;
+      let payload = { skip: '', next: '' };
+      this.leaveService.getLeaveApplicationbyUser(payload, employeeId).subscribe({
+        next: (res: any) => {
+          this.existingLeaves = res.data;
+          this.lastFetchedEmployeeId = employeeId;
+          this.isFetchingLeaves = false;
+          this.validateMaxLeaveLimit(); // Validate max limit after fetching leaves
 
-        const isOverlappingLeave = this.existingLeaves.some((leave: any) => {
-          const leaveStartDate = this.stripTime(new Date(leave.startDate));
-          const leaveEndDate = this.stripTime(new Date(leave.endDate));
-          return leave.employee === employeeId &&
-            leave.leaveCategory === leaveCategory &&
-            (formattedStartDate <= leaveEndDate && formattedEndDate >= leaveStartDate);
-        });
-
-        if (isOverlappingLeave) {
-          this.leaveApplication.setErrors({ duplicateLeave: true });
-          this.showHalfDayOption = false;
-        } else {
-          if (this.leaveApplication.hasError('duplicateLeave')) {
-            const errors = { ...this.leaveApplication.errors };
-            delete errors['duplicateLeave'];
-            this.leaveApplication.setErrors(Object.keys(errors).length > 0 ? errors : null);
+          if (!leaveCategory || !startDate || !endDate) {
+            this.leaveApplication.setErrors(null);
+            this.showHalfDayOption = true;
+            return;
           }
-          this.showHalfDayOption = true;
-        }
-      },
-      error: () => {
-        this.toast.error(this.translate.instant('leave.errorFetchingLeaves'));
-      }
-    });
-  }
 
+          const formattedStartDate = this.stripTime(new Date(startDate));
+          const formattedEndDate = this.stripTime(new Date(endDate));
+
+          const isOverlappingLeave = this.existingLeaves.some((leave: any) => {
+            const leaveStartDate = this.stripTime(new Date(leave.startDate));
+            const leaveEndDate = this.stripTime(new Date(leave.endDate));
+            return leave.employee === employeeId &&
+              leave.leaveCategory === leaveCategory &&
+              (formattedStartDate <= leaveEndDate && formattedEndDate >= leaveStartDate);
+          });
+
+          if (isOverlappingLeave) {
+            this.leaveApplication.setErrors({ duplicateLeave: true });
+            this.showHalfDayOption = false;
+            this.toast.error(this.translate.instant('leave.duplicateLeaveError'));
+          } else {
+            if (this.leaveApplication.hasError('duplicateLeave')) {
+              const errors = { ...this.leaveApplication.errors };
+              delete errors['duplicateLeave'];
+              this.leaveApplication.setErrors(Object.keys(errors).length > 0 ? errors : null);
+            }
+            this.showHalfDayOption = true;
+          }
+        },
+        error: () => {
+          this.isFetchingLeaves = false;
+          this.toast.error(this.translate.instant('leave.errorFetchingLeaves'));
+        }
+      });
+    } else if (!this.isFetchingLeaves) {
+      // Use cached existingLeaves for validation
+      this.validateMaxLeaveLimit();
+
+      if (!leaveCategory || !startDate || !endDate) {
+        this.leaveApplication.setErrors(null);
+        this.showHalfDayOption = true;
+        return;
+      }
+
+      const formattedStartDate = this.stripTime(new Date(startDate));
+      const formattedEndDate = this.stripTime(new Date(endDate));
+
+      const isOverlappingLeave = this.existingLeaves.some((leave: any) => {
+        const leaveStartDate = this.stripTime(new Date(leave.startDate));
+        const leaveEndDate = this.stripTime(new Date(leave.endDate));
+        return leave.employee === employeeId &&
+          leave.leaveCategory === leaveCategory &&
+          (formattedStartDate <= leaveEndDate && formattedEndDate >= leaveStartDate);
+      });
+
+      if (isOverlappingLeave) {
+        this.leaveApplication.setErrors({ duplicateLeave: true });
+        this.showHalfDayOption = false;
+        this.toast.error(this.translate.instant('leave.duplicateLeaveError'));
+      } else {
+        if (this.leaveApplication.hasError('duplicateLeave')) {
+          const errors = { ...this.leaveApplication.errors };
+          delete errors['duplicateLeave'];
+          this.leaveApplication.setErrors(Object.keys(errors).length > 0 ? errors : null);
+        }
+        this.showHalfDayOption = true;
+      }
+    }
+  }
   handleLeaveCategoryChange() {
     if (!this.tab) {
       return;
@@ -348,8 +441,10 @@ export class AddApplicationComponent implements OnDestroy {
         }
       }
     }
-    this.getattendanceTemplatesByUser();
-    this.getHolidays();
+    if (this.leaveApplication.get('employee')?.value) {
+      this.getattendanceTemplatesByUser();
+      this.getHolidays();
+    }
 
     this.numberOfLeaveAppliedForSelectedCategory = 0;
     if (this.leaveApplication.value.employee && this.tempLeaveCategory?.leaveCategory?._id) {
@@ -378,6 +473,7 @@ export class AddApplicationComponent implements OnDestroy {
       return null;
     };
   }
+
   updateHalfDayValidation() {
     this.halfDays.controls.forEach((control) => {
       control.get('date')?.updateValueAndValidity();
@@ -398,12 +494,14 @@ export class AddApplicationComponent implements OnDestroy {
     this.halfDays.removeAt(index);
     this.halfDayLimitReached = this.halfDays.length >= this.maxHalfDaysAllowed;
   }
+
   onHalfDayChange() {
     (this.leaveApplication.get('halfDays') as FormArray).clear();
     if (this.leaveApplication.get('isHalfDayOption')?.value) {
       this.addHalfDayEntry();
     }
   }
+
   get halfDays() {
     return this.leaveApplication.get('halfDays') as FormArray;
   }
@@ -469,6 +567,7 @@ export class AddApplicationComponent implements OnDestroy {
 
     return weeklyOffDates;
   }
+
   stripTime(date: Date): number {
     return moment(date).startOf('day').valueOf();
   }
@@ -526,9 +625,28 @@ export class AddApplicationComponent implements OnDestroy {
       })
     }
   }
-
+  resetForm() {
+    this.leaveApplication.reset({
+      employee: '',
+      leaveCategory: '',
+      level1Reason: '',
+      level2Reason: '',
+      startDate: null,
+      endDate: null,
+      comment: '',
+      status: '',
+      isHalfDayOption: false,
+      halfDays: [],
+      leaveApplicationAttachments: []
+    });
+    this.selectedFiles = [];
+    (this.leaveApplication.get('halfDays') as FormArray).clear();
+    this.leaveDocumentUpload = false;
+    this.existingLeaves = []; // Clear cached leaves
+    this.lastFetchedEmployeeId = null; // Reset cached employee ID
+  }
   onSubmission() {
-    if (this.leaveApplication.invalid) {
+    if (this.leaveApplication.invalid || this.leaveApplication.hasError('maxLeaveLimitExceeded') || this.leaveApplication.hasError('maxLeaveLimitExceeded')) {
       this.leaveApplication.markAllAsTouched();
       return;
     }
@@ -609,14 +727,14 @@ export class AddApplicationComponent implements OnDestroy {
   submitLeaveApplication(payload: any) {
     this.leaveService.addLeaveApplication(payload).subscribe({
       next: (res: any) => {
-        if (res.data) { this.toast.success(this.translate.instant('leave.successAddLeave')); }
-        else if (res.data === null) { this.toast.warning(res.message); }
-        
+        if (res.data) {
+          this.toast.success(this.translate.instant('leave.successAddLeave'));
+        } else if (res.data === null) {
+          this.toast.warning(res.message);
+        }
+
         this.leaveApplicationRefreshed.emit(res.data);
-        this.leaveApplication.reset();
-        this.selectedFiles = [];
-        (this.leaveApplication.get('halfDays') as FormArray).clear();
-        this.leaveDocumentUpload = false;
+        this.resetForm();
       },
       error: (error) => {
         const errorMessage = error || this.translate.instant('leave.errorAddLeaveGeneric');
@@ -638,6 +756,7 @@ export class AddApplicationComponent implements OnDestroy {
   }
 
   closeModal() {
+    this.resetForm();
     this.close.emit(true);
   }
 
@@ -649,6 +768,7 @@ export class AddApplicationComponent implements OnDestroy {
         if (res.status == "success") {
           this.appliedLeave = res.data;
           this.numberOfLeaveAppliedForSelectedCategory = this.appliedLeave.filter((leave: any) => leave.leaveCategory == category && new Date(leave.addedBy).getFullYear() === currentYear).length;
+          this.validateMaxLeaveLimit(); // Validate after getting leave count
         }
       },
       error: () => {
