@@ -72,7 +72,11 @@ export class TimeLogService{
    return response;
 
   }
+  getManagers(): any {
+    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getManagers`, this.httpOptions);
+   return response;
 
+  }
   getusers(ids): any {
   var response  = this.http.post<any>(`${environment.apiUrlDotNet}/users/getUsers`,{"userId":ids}, this.httpOptions);
   return response;

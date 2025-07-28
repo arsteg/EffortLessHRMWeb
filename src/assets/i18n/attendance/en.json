@@ -68,6 +68,7 @@
     "templateAssignmentDeleteError": "This Template Assignment Can not be deleted",
     "templateAssignmentDeleteErrorGeneric": "Can not be Deleted",
     "deleteSuccess": "Shift deleted successfully!",
+    "deleteAttendanceTemplateSuccess": "Attendance Template deleted successfully!",
     "deleteRestricted": "This shift cannot be deleted because it is assigned.",
     "createSuccess": "Shift created successfully!",
     "updateSuccess": "Shift updated successfully!",
@@ -103,6 +104,7 @@
     "at_add_template": "Attendance Template",
     "at_attendance_template": "Attendance Template",
     "at_attendance_template_close": "Close",
+    "at_errorAtLeastOneWeeklyOffRequired": "At least one day must be selected as a weekly off.",
     "admin": {
       "settings": "Settings",
       "attendanceRecords": "Attendance Records",

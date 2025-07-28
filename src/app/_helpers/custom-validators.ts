@@ -220,4 +220,40 @@ export class CustomValidators {
     return exitDate > resDate ? null : { exitBeforeTermination: true };
   };
 }
+static mutuallyExclusiveDays(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const weeklyOfDays = control.get('weeklyOfDays')?.value || [];
+    const weklyofHalfDay = control.get('weklyofHalfDay')?.value || [];
+    const alternateDays = control.get('daysForAlternateWeekOffRoutine')?.value || [];
+    const alternateRoutine = control.get('alternateWeekOffRoutine')?.value;
+
+    const errors: any = {};
+
+    const overlap = (a: string[], b: string[]) => a.filter(day => b.includes(day));
+
+    const weeklyAndHalfDayOverlap = overlap(weeklyOfDays, weklyofHalfDay);
+    const weeklyAndAlternateOverlap = overlap(weeklyOfDays, alternateDays);
+    const halfDayAndAlternateOverlap = overlap(weklyofHalfDay, alternateDays);
+
+    if (weeklyAndHalfDayOverlap.length) {
+      errors.weeklyAndHalfDayOverlap = { days: weeklyAndHalfDayOverlap };
+    }
+
+    if (weeklyAndAlternateOverlap.length) {
+      errors.weeklyAndAlternateOverlap = { days: weeklyAndAlternateOverlap };
+    }
+
+    if (halfDayAndAlternateOverlap.length) {
+      errors.halfDayAndAlternateOverlap = { days: halfDayAndAlternateOverlap };
+    }
+
+    // ✅ NEW: Alternate week off requires at least one day
+    if ((alternateRoutine === 'odd' || alternateRoutine === 'even') && alternateDays.length === 0) {
+      errors.alternateDaysRequired = true;
+    }
+
+    return Object.keys(errors).length ? errors : null;
+  };
+}
+
 }

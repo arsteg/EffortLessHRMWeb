@@ -8,7 +8,6 @@ import { ToastrService } from 'ngx-toastr';
 import { ActionVisibility } from 'src/app/models/table-column';
 import { forkJoin } from 'rxjs'; // Import forkJoin
 import { TranslateService } from '@ngx-translate/core';
-
 @Component({
   selector: 'app-attendance-template',
   templateUrl: './attendance-template.component.html',
@@ -69,6 +68,7 @@ export class AttendanceTemplateComponent {
     private exportService: ExportService,
     private toast: ToastrService,
      private translate: TranslateService,
+    
     private attendanceService: AttendanceService
   ) {}
 
@@ -252,7 +252,7 @@ export class AttendanceTemplateComponent {
       (res: any) => {
         this.loadAllData(); // Reload all data after deletion to update counts
         this.toast.success(
-          this.translate.instant('attendance.deleteSuccess'),
+          this.translate.instant('attendance.deleteAttendanceTemplateSuccess'),
           this.translate.instant('attendance.templateTitle')
         );
       },
