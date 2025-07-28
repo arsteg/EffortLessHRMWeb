@@ -56,13 +56,15 @@
                         </mat-option>
                     </mat-select>
                     <mat-error
-                        *ngIf="leaveApplication.get('leaveCategory')?.invalid && leaveApplication.get('leaveCategory')?.touched">
+                        *ngIf="leaveApplication.get('leaveCategory')?.touched">
                         {{ 'leave.categoryRequired' | translate }}
                     </mat-error>
                 </mat-form-field>
             </div>
         </div>
-
+        @if (leaveApplication.get('leaveCategory').hasError('maxLeaveLimitExceeded')) {
+        <mat-error>Maximum Limit Exceeds! Cannot apply for this leave category.</mat-error>
+        }
         @if(leaveApplication.get('leaveCategory').value) {
         <div class="row m-0 mt-2">
             <div class="form-group col-md-6">
@@ -90,11 +92,12 @@
                         [matDatepickerFilter]="weeklyOffDateFilter"
                         aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
                     <mat-datepicker-toggle matSuffix [for]="endPicker"
-                    disabled="{{!leaveApplication.get('startDate').value}}"></mat-datepicker-toggle>
+                        disabled="{{!leaveApplication.get('startDate').value}}"></mat-datepicker-toggle>
                     <mat-datepicker #endPicker></mat-datepicker>
-                    <mat-error *ngIf="!leaveApplication.get('startDate').value && leaveApplication.get('endDate').touched">{{'leave.endDateValidate' | translate}}</mat-error>
                     <mat-error
-                        *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError')">
+                        *ngIf="!leaveApplication.get('startDate').value && leaveApplication.get('endDate').touched">{{'leave.endDateValidate'
+                        | translate}}</mat-error>
+                    <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError')">
                         {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
                     </mat-error>
                     <mat-error
@@ -198,7 +201,8 @@
                     <textarea matInput formControlName="comment" rows="3"
                         aria-label="{{ 'leave.commentAriaLabel' | translate }}"></textarea>
                 </mat-form-field>
-                <mat-error *ngIf="reasonMandatory && leaveApplication.get('comment')?.invalid && leaveApplication.get('comment')?.touched">
+                <mat-error
+                    *ngIf="reasonMandatory && leaveApplication.get('comment')?.invalid && leaveApplication.get('comment')?.touched">
                     {{ 'leave.commentRequired' | translate }}
                 </mat-error>
             </div>
