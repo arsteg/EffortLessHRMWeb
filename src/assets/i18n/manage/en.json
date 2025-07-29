@@ -149,5 +149,47 @@
         "overtime_eligible": "Is this employee eligible for Overtime?"
       }
     }
+  },
+  "loans-advances": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "update": "Update",
+    "add": "Add",
+    "category": "Category",
+    "total_installments": "Total Installments",
+    "installment_amount": "Installment Amount",
+    "remaining_installment": "Remaining Installment",
+    "total_amount": "Total Amount",
+    "status": "Status",
+    "actions": "Actions",
+    "failed_loan_advance_delete": "Failed to delete loan/advance",
+    "loan_advance_deleted": "Loan/advance deleted successfully",
+    "installments_exceed": "Number of installments exceeds the maximum allowed",
+    "installments_increased": "Number of installments increased to {{noOfInstallment}} to keep EMI affordable",
+    "failed_loan_advance_add": "Failed to add loan/advance",
+    "loan_advance_added": "Loan/advance added successfully",
+    "failed_loan_advance_updated": "Failed to update loan/advance",
+    "loan_advance_updated": "Loan/advance updated successfully",
+    "loan_advance_load_failed": "Failed to load loan/advance data",
+    "unknown": "Unknown",
+    "form": {
+      "add_title": "Add Loan/Advance",
+      "update_title": "Update Loan/Advance",
+      "category": "Select Category",
+      "category_placeholder": "Select Category",
+      "no_of_installments": "Number of Installments",
+      "monthly_installment": "Monthly Installment Amount",
+      "total_amount": "Total Amount",
+      "error": {
+        "category_required": "Category is required",
+        "no_of_installments_required": "Number of installments is required",
+        "no_of_installments_min": "Minimum 1 installment required",
+        "no_of_installments_max": "Maximum 36 installments allowed",
+        "exceed_salary": "Total loan amount exceeds annual salary. Increase installments or reduce EMI.",
+        "monthly_installment_required": "Monthly installment amount is required",
+        "monthly_installment_min": "Minimum monthly installment is 100",
+        "high_emi": "Monthly EMI exceeds 50% of monthly salary. Increase number of installments."
+      }
+    }
   }
 }

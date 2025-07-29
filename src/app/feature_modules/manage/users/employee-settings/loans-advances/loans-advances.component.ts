@@ -9,6 +9,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { forkJoin } from 'rxjs';
 import { AuthenticationService } from 'src/app/_services/authentication.service';      
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-loans-advances',
@@ -28,8 +29,54 @@ export class UserLoansAdvancesComponent {
   loansAdvancesCategories: any;
   annualSalary: number = 0;
   selectedUserSalary: any;
+  allData: any[] = [];
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
+  columns: TableColumn[] = [
+    { key: 'loanAdvancesCategory', 
+      name: this.translate.instant('loans-advances.category'), 
+      valueFn: (row: any) => row.loanAdvancesCategory?.name 
+    },
+    { 
+      key: 'noOfInstallment', 
+      name: this.translate.instant('loans-advances.total_installments') 
+    },
+    { 
+      key: 'monthlyInstallment', 
+      name: this.translate.instant('loans-advances.installment_amount') 
+    },
+    { 
+      key: 'remainingInstallment', 
+      name: this.translate.instant('loans-advances.remaining_installment') 
+    },
+    { 
+      key: 'amount', 
+      name: this.translate.instant('loans-advances.total_amount') 
+    },
+    { 
+      key: 'status', 
+      name: this.translate.instant('loans-advances.status') 
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('loans-advances.actions'),
+      isAction: true,
+      options: [
+        { 
+          label: 'Edit', 
+          icon: 'edit', 
+          visibility: ActionVisibility.LABEL, 
+          hideCondition: (row: any) => row.status !== 'Requested' 
+        },
+        { 
+          label: 'Delete', 
+          icon: 'delete', 
+          visibility: ActionVisibility.LABEL
+        }
+      ]
+    }
+  ];
+  
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -218,8 +265,9 @@ export class UserLoansAdvancesComponent {
     this.loansAdvancesForm.get('amount').disable();
   }
 
-  onPageChange(page: number) {
-    this.currentPage = page;
+  onPageChange(event: any) {
+    this.currentPage = event.pageIndex + 1;
+    this.recordsPerPage = event.pageSize;
     this.loadRecords();
   }
 
@@ -251,6 +299,7 @@ export class UserLoansAdvancesComponent {
           this.loansAdvancesCategories = results[2].data;
           this.loansAdvancesForm.setValidators(this.validateLoanConstraints(() => this.annualSalary));
           this.loansAdvancesForm.updateValueAndValidity();
+          this.allData = this.loansAdvances;
         }, err => {
         
           this.toast.error(this.translate.instant('manage.users.employee-settings.loan_advance_load_failed'), this.translate.instant('common.error'))
@@ -272,6 +321,7 @@ export class UserLoansAdvancesComponent {
       this.loansAdvances = results[0].data;
       this.totalRecords = results[0].total;
       this.loansAdvancesCategories = results[1].data;
+      this.allData = this.loansAdvances;
     }, err => {
       this.toast.error(this.translate.instant('manage.users.employee-settings.loan_advance_load_failed'), this.translate.instant('common.error'))
     });
@@ -280,5 +330,66 @@ export class UserLoansAdvancesComponent {
   getRecord(categoryId: string) {
     const matchingRecord = this.loansAdvancesCategories?.find(rec => rec._id === categoryId);
     return matchingRecord?.name || 'Unknown';
+  }
+
+  handleAction(event: any) {
+    if (event.action.label === 'Edit') {
+      this.isEdit = true;
+      this.selectedRecord = event.row;
+      this.edit();
+      this.openDialog();
+    } 
+    if (event.action.label === 'Delete') {
+      this.deleteLoansAdvances(event.row._id);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.allData.slice().sort((a: any, b: any) => {
+      var valueA = '';
+      var valueB = '';
+      if (event.active === 'loanAdvancesCategory') {
+        valueA = `${a.loanAdvancesCategory.name || ''}`.toLowerCase();
+        valueB = `${b.loanAdvancesCategory.name || ''}`.toLowerCase();
+      } else {
+        valueA = this.getNestedValue(a, event.active);
+        valueB = this.getNestedValue(b, event.active);
+      }
+
+      // Handle nulls and undefined
+      valueA = valueA ?? '';
+      valueB = valueB ?? '';
+
+      if (valueA < valueB) return event.direction === 'asc' ? -1 : 1;
+      if (valueA > valueB) return event.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    this.loansAdvances = sorted;
+  }
+
+  private getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((o, key) => (o ? o[key] : undefined), obj);
+  }
+
+  onSearchChange(search: string) {
+    const lowerSearch = search.toLowerCase();
+
+    const data = this.allData?.filter(row => {
+      const valuesToSearch = [
+        `${row?.loanAdvancesCategory?.name}`,
+        row?.noOfInstallment,
+        row?.monthlyInstallment,
+        row?.remainingInstallment,
+        row?.amount,
+        row?.status
+      ];
+
+      return valuesToSearch.some(value =>
+        value?.toString().toLowerCase().includes(lowerSearch)
+      );
+    });
+
+    this.loansAdvances = data;
   }
 }
