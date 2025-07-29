@@ -88,6 +88,7 @@
                     <mat-label>{{ 'leave.selectEndDate' | translate }}</mat-label>
                     <input matInput [matDatepicker]="endPicker" formControlName="endDate" required
                         [min]="leaveApplication.get('startDate')?.value ? leaveApplication.get('startDate')?.value : null"
+                        [max]="maxSelectableEndDate"
                         [matDatepickerFilter]="weeklyOffDateFilter"
                         aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
                     <mat-datepicker-toggle matSuffix [for]="endPicker"
@@ -106,7 +107,13 @@
                     <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('dateRangeError')">
                         {{ 'leave.dateRangeError' | translate }}
                     </mat-error>
+                    <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('maxConsecutiveDaysExceeded')">
+                        Maximum consecutive leave days exceeded. You can only apply for {{ maxConsecutiveLeaveDays }} consecutive days.
+                    </mat-error>
                 </mat-form-field>
+                <div *ngIf="maxConsecutiveLeaveDays > 0" class="text-muted small mt-1">
+                    Maximum consecutive days allowed: {{ maxConsecutiveLeaveDays }} days
+                </div>
             </div>
 
             <div class="col-12 mt-3">
@@ -123,7 +130,7 @@
                         </div>
                     </label>
                     <small class="text-danger"
-                        *ngIf="documentMandatory && leaveApplication.get('leaveApplicationAttachments')?.invalid && leaveApplication.get('leaveApplicationAttachments')?.touched">
+                        *ngIf="documentMandatory && (!selectedFiles || selectedFiles.length === 0) && (leaveApplication.get('leaveApplicationAttachments')?.touched || leaveApplication.get('leaveApplicationAttachments')?.dirty)">
                         {{ 'leave.attachmentRequired' | translate }}
                     </small>
                 </div>
