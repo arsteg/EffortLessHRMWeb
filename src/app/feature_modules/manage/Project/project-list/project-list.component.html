@@ -35,7 +35,7 @@
 <div>
     <hrm-table [data]="projectList" [columns]="columns" (actionClicked)="onActionClick($event)" [isServerSide]="true"
         [showSearch]="true" [totalItems]="totalRecords" [pageSize]="recordsPerPage" (pageChanged)="onPageChange($event)"
-        (searchChanged)="onSearchChange($event)"></hrm-table>
+        (searchChanged)="onSearchChange($event)" (sortChanged)="onSortChange($event)"></hrm-table>
 </div>
 
 
@@ -43,25 +43,33 @@
 <!-- Manage user modal -->
 <ng-template #manageUsersModal>
     <div class="d-flex justify-content-between p-1">
-        <h4 mat-dialog-title>Manage Members</h4>
-        <button type="button" mat-dialog-close mat-icon-button><mat-icon>close</mat-icon></button>
+         <h4 mat-dialog-title>
+            {{ 'manage.project.manage_member_title' | translate }}
+         </h4>
+        <button type="button" mat-dialog-close mat-icon-button>
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
-    <div mat-dialog-content>
-        @if(selectedProject){
+    @if(selectedProject){
         <form (ngSubmit)="saveProjectUsers()">
+        <div mat-dialog-content>
             <div *ngFor="let assignee of allAssignee" class="mt-2">
                 <mat-checkbox color="primary" [checked]="isUserSelected(assignee.id)"
                     (change)="onCheckboxChange(assignee, $event.checked)">
                     {{ assignee.firstName | titlecase }} {{ assignee.lastName | titlecase }}
                 </mat-checkbox>
             </div>
-            <div mat-dialog-actions class="d-flex justify-content-between mt-3">
-                <button mat-flat-button class="mx-2" mat-dialog-close type="button">Cancel</button>
-                <button mat-flat-button color="primary" type="submit">Save</button>
-            </div>
-        </form>
-        }
-    </div>
+        </div>
+        <div mat-dialog-actions class="d-flex justify-content-between mt-3">
+            <button mat-flat-button class="mx-2" mat-dialog-close type="button">
+                {{ 'manage.project.cancel' | translate }}
+            </button>
+            <button mat-flat-button color="primary" type="submit">
+                {{ 'manage.project.save' | translate }}
+            </button>
+        </div>
+    </form>
+}
 </ng-template>
 
 
@@ -151,221 +159,255 @@
 
 <!-- Add -->
 <ng-template #addModal>
-    <div class="d-flex justify-content-between p-1">
-        <h4 mat-dialog-title>Add New Project</h4>
-        <button type="button" mat-dialog-close mat-icon-button><mat-icon>close</mat-icon></button>
+    <div class="d-flex align-items-center justify-content-between">
+        <h1 mat-dialog-title>
+        {{ 'manage.project.modal.add_title' | translate }}
+        </h1>
+        <button mat-icon-button mat-dialog-close="" class="me-4">
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
-    <mat-dialog-content>
-        <form class="pt-2" [formGroup]="form" (ngSubmit)="addProject()">
+    <form class="pt-2" [formGroup]="form" (ngSubmit)="addProject()">
+        <mat-dialog-content>
             <div class="row d-flex justify-content-center">
                 <div class="col-md-12">
                     <div class="row">
                         <div class="col-md-6">
-                            <label for="projectName" class="text-start">Project Name <span
-                                    class="text-danger">*</span></label>
-
-                            <input type="text" name="projectName" id="projectName" formControlName="projectName"
-                                class="form-control input pt-0" required>
-                            <div *ngIf="form.controls['projectName'].invalid && form.controls['projectName'].touched"
-                                class="alert alert-danger error">
-                                <div *ngIf="form.controls['projectName'].errors['required']">
-                                    Project Name is required.
-                                </div>
-                            </div>
+                            <mat-form-field class="w-100">
+                                <mat-label>{{ 'manage.project.form.project_name' | translate }}</mat-label>
+                                <input matInput type="text" formControlName="projectName">
+                                <mat-error *ngIf="form.get('projectName')?.invalid && (form.get('projectName')?.touched || form.get('projectName')?.dirty)">
+                                    <ng-container *ngIf="form.get('projectName')?.errors?.['required']; else spaceError">
+                                    {{ 'manage.project.form.error.project_name_required' | translate }}
+                                    </ng-container>
+                                    <ng-template #spaceError>
+                                    <ng-container *ngIf="form.get('projectName')?.errors?.['spacesNotAllowed']">
+                                        {{ 'manage.project.form.error.whitespace_error' | translate }}
+                                    </ng-container>
+                                    </ng-template>
+                                </mat-error>
+                            </mat-form-field>
                         </div>
 
                         <div class="col-md-6">
-                            <label for="estimatedTime" class="text-start d-flex justify-content-between"><span>
-                                    Estimated Time <span class="text-danger">*</span></span><span class="text-muted"
-                                    style="font-size: 12px">(In hours)</span></label>
-
-                            <input type="number" name="estimatedTime" id="estimatedTime" class="form-control input pt-0"
-                                formControlName="estimatedTime" required>
-                            <div *ngIf="form.controls['estimatedTime'].invalid && form.controls['estimatedTime'].touched"
-                                class="alert alert-danger error">
-                                <div *ngIf="form.controls['estimatedTime'].errors['required']">
-                                    Estimated Time is required.
-                                </div>
-                            </div>
+                            <mat-form-field class="w-100">
+                                <mat-label>
+                                {{ 'manage.project.form.estimated_time' | translate }}
+                                <span class="text-muted" style="font-size: 12px"> ({{ 'manage.project.form.in_hours' | translate }})</span>
+                                </mat-label>
+                                <input matInput type="number" formControlName="estimatedTime">
+                                <mat-error
+                                *ngIf="form.get('estimatedTime')?.invalid && (form.get('estimatedTime')?.touched || form.get('estimatedTime')?.dirty)">
+                                <span *ngIf="form.get('estimatedTime')?.errors?.['required']">
+                                    {{ 'manage.project.form.error.estimated_time_required' | translate }}
+                                </span>
+                                </mat-error>
+                            </mat-form-field>
                         </div>
                     </div>
 
 
                     <div class="row mt-2">
                         <div class="col-md-6">
-                            <label for="startDate" class="text-start">Start Date <span
-                                    class="text-danger">*</span></label>
-
-                            <div class="row">
-                                <div class="col-12 form-group ">
-                                    <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                                        [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                        formControlName="startDate" />
-                                </div>
-                            </div>
-                            <div *ngIf="form.controls['startDate'].invalid && form.controls['startDate'].touched"
-                                class="alert alert-danger error">
-                                <div *ngIf="form.controls['startDate'].errors['required']">
-                                    Start Date is required.
-                                </div>
-                            </div>
+                            <mat-form-field class="w-100">
+                                <mat-label>{{ 'manage.project.form.start_date' | translate }}</mat-label>
+                                <input matInput [matDatepicker]="picker" formControlName="startDate">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                                <mat-error
+                                *ngIf="form.get('startDate')?.invalid && (form.get('startDate')?.touched || form.get('startDate')?.dirty)">
+                                <span *ngIf="form.get('startDate')?.errors?.['required']">
+                                    {{ 'manage.project.form.error.start_date_required' | translate }}
+                                </span>
+                                </mat-error>
+                            </mat-form-field>
                         </div>
 
 
                         <div class="col-md-6">
-                            <label for="endDate" class="text-start">End Date <span class="text-danger">*</span></label>
-
-                            <div class="row">
-                                <div class="col-12 form-group">
-                                    <input type="text" class="form-control" #dp="bsDatepicker" bsDatepicker
-                                        [bsValue]="bsValue" [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                        formControlName="endDate" />
-                                </div>
-                            </div>
-                            <div *ngIf="form.controls['endDate'].invalid && form.controls['endDate'].touched"
-                                class="alert alert-danger error">
-                                <div *ngIf="form.controls['endDate'].errors['required']">
-                                    End Date is required.
-                                </div>
-                            </div>
+                            <mat-form-field class="w-100">
+                                <mat-label>{{ 'manage.project.form.end_date' | translate }}</mat-label>
+                                <input matInput [matDatepicker]="pickerend" formControlName="endDate">
+                                <mat-datepicker-toggle matSuffix [for]="pickerend"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerend></mat-datepicker>
+                                <mat-error
+                                *ngIf="form.get('endDate')?.invalid && (form.get('endDate')?.touched || form.get('endDate')?.dirty)">
+                                <span *ngIf="form.get('endDate')?.errors?.['required']">
+                                    {{ 'manage.project.form.error.end_date_required' | translate }}
+                                </span>
+                                </mat-error>
+                            </mat-form-field>
                         </div>
                     </div>
-
-
-                    <div class="row mt-2">
-                        <label for="notes" class="text-start">Notes <span class="text-danger">*</span></label>
-                    </div>
-                    <input type="text" name="notes" id="notes" class="form-control input  pt-0" formControlName="notes"
-                        required>
-                    <div *ngIf="form.controls['notes'].invalid && form.controls['notes'].touched"
-                        class="alert alert-danger error">
-                        <div *ngIf="form.controls['notes'].errors['required']">
-                            Note is required.
-                        </div>
+                    <div class="form-group mt-2 col-md-12">
+                        <mat-form-field class="w-100">
+                        <mat-label>{{ 'manage.project.form.notes' | translate }}</mat-label>
+                        <input matInput type="text" formControlName="notes">
+                        <mat-error *ngIf="form.get('notes')?.invalid && (form.get('notes')?.touched || form.get('notes')?.dirty)">
+                            <ng-container *ngIf="form.get('notes')?.errors?.['required']; else spaceError">
+                                {{ 'manage.project.form.error.notes_required' | translate }}
+                            </ng-container>
+                            <ng-template #spaceError>
+                                <ng-container *ngIf="form.get('notes')?.errors?.['spacesNotAllowed']">
+                                {{ 'manage.project.form.error.whitespace_error' | translate }}
+                                </ng-container>
+                            </ng-template>
+                        </mat-error>
+                        </mat-form-field>
                     </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-between mt-3">
-                <button mat-flat-button mat-dialog-close>Cancel</button>
-                <button mat-flat-button color="primary" type="submit">Add</button>
-            </div>
+        </mat-dialog-content>
+        <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+            <button mat-flat-button mat-dialog-close>
+            {{ 'manage.project.cancel' | translate }}
+            </button>
+            <button mat-flat-button color="primary" type="submit">
+            {{ 'manage.project.add' | translate }}
+            </button>
+        </div>
         </form>
-    </mat-dialog-content>
 </ng-template>
 
 <!-- Update -->
 <ng-template #updateModal>
-
-    <div class="d-flex justify-content-between p-1">
-        <h4 mat-dialog-title>Update Project <b style="color: #76bc21">{{selectedProject.projectName | titlecase}}</b>
-        </h4>
-        <button type="button" mat-icon-button mat-dialog-close><mat-icon>close</mat-icon></button>
+    <div class="d-flex align-items-center justify-content-between">
+        <h1 mat-dialog-title>
+            {{ 'manage.project.modal.update_title' | translate }} <b style="color: var(--orange-60);">{{selectedProject.projectName | titlecase}}</b>
+        </h1>
+        <button mat-icon-button mat-dialog-close="" class="me-4">
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
-    <div mat-dialog-content>
-        @if(selectedProject){
+    @if(selectedProject){
         <form [formGroup]="updateForm" (ngSubmit)="updateProject(updateForm.value)">
-            <div class="row d-flex justify-content-center">
+        <div mat-dialog-content>
+            <div class="row m-0">
                 <div class="col-md-12">
+                    <div class="form-group col-12">
+                        <mat-form-field class="w-100">
+                        <mat-label>{{ 'manage.project.form.project_name' | translate }}</mat-label>
+                        <input matInput type="text" [(ngModel)]="selectedProject.projectName" formControlName="projectName">
+                        <mat-error *ngIf="updateForm.get('projectName')?.invalid && (updateForm.get('projectName')?.touched || updateForm.get('projectName')?.dirty)">
+                            <ng-container *ngIf="updateForm.get('projectName')?.errors?.['required']; else spaceError">
+                                {{ 'manage.project.form.error.project_name_required' | translate }}
+                            </ng-container>
+                            <ng-template #spaceError>
+                                <ng-container *ngIf="updateForm.get('projectName')?.errors?.['spacesNotAllowed']">
+                                    {{ 'manage.project.form.error.whitespace_error' | translate }}
+                                </ng-container>
+                            </ng-template>
+                        </mat-error>
+                        </mat-form-field>
+                    </div>
+
                     <div class="row">
-                        <label for="projectName" class="text-start">Project Name</label>
-                    </div>
-                    <input type="text" name="projectName" id="projectName" class="form-control input pt-0"
-                        [(ngModel)]="selectedProject.projectName" formControlName="projectName" required>
-                    <div *ngIf="updateForm.controls['projectName'].invalid && updateForm.controls['projectName'].touched"
-                        class="alert alert-danger error">
-                        <div *ngIf="updateForm.controls['projectName'].errors['required']">
-                            Project Name is required.
+                        <div class="form-group col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>{{ 'manage.project.form.start_date' | translate }}</mat-label>
+                             <input [(ngModel)]="selectedProject.startDate" matInput [matDatepicker]="picker" formControlName="startDate">
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-datepicker #picker></mat-datepicker>
+                            <mat-error
+                            *ngIf="updateForm.get('startDate')?.invalid && (updateForm.get('startDate')?.touched || updateForm.get('startDate')?.dirty)">
+                            <span *ngIf="updateForm.get('startDate')?.errors?.['required']">
+                                {{ 'manage.project.error.start_date_required' | translate }}
+                            </span>
+                            </mat-error>
+                        </mat-form-field>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="row mt-3">
-                                <label for="startDate" class="text-start">Start Date</label>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 form-group mb-3">
-                                    <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker"
-                                        bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                        formControlName="startDate" [(ngModel)]="selectedProject.startDate" required>
-                                </div>
-                            </div>
-                            <div *ngIf="updateForm.controls['startDate'].invalid && updateForm.controls['startDate'].touched"
-                                class="alert alert-danger error">
-                                <div *ngIf="updateForm.controls['startDate'].errors['required']">
-                                    Start Date is required.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="row mt-3">
-                                <label for="endDate" class="text-start">End Date</label>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 form-group mb-3">
-                                    <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker"
-                                        bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
-                                        formControlName="endDate" [(ngModel)]="selectedProject.endDate" required>
-                                </div>
-                            </div>
-                            <div *ngIf="updateForm.controls['endDate'].invalid && updateForm.controls['endDate'].touched"
-                                class="alert alert-danger error">
-                                <div *ngIf="updateForm.controls['endDate'].errors['required']">
-                                    End Date is required.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <label for="estimatedTime" class="text-start d-flex justify-content-between"><span>
-                                Estimated Time </span><span class="text-muted" style="font-size: 12px">(In
-                                hours)</span></label>
-                    </div>
-                    <input type="text" name="estimatedTime" id="estimatedTime" class="form-control input pt-0"
-                        [(ngModel)]="selectedProject.estimatedTime" formControlName="estimatedTime" required
-                        pattern="^[0-9]*$">
-                    <div *ngIf="updateForm.controls['estimatedTime'].invalid && updateForm.controls['estimatedTime'].touched"
-                        class="alert alert-danger error">
-                        <div *ngIf="updateForm.controls['estimatedTime'].errors['required']">
-                            Estimated Time is required.
-                        </div>
-                        <div *ngIf="updateForm.controls['estimatedTime'].errors['pattern']">
-                            Estimated Time must be in Number.
+
+                        <div class="form-group col-md-6">
+                        <mat-form-field class="w-100">
+                            <mat-label>{{ 'manage.project.form.end_date' | translate }}</mat-label>
+                             <input [(ngModel)]="selectedProject.endDate" matInput [matDatepicker]="pickerenddate" formControlName="endDate">
+                                <mat-datepicker-toggle matSuffix [for]="pickerenddate"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerenddate></mat-datepicker>
+                            <mat-error
+                            *ngIf="updateForm.get('endDate')?.invalid && (updateForm.get('endDate')?.touched || updateForm.get('endDate')?.dirty)">
+                            <span *ngIf="updateForm.get('endDate')?.errors?.['required']">
+                                {{ 'manage.project.form.error.end_date_required' | translate }}
+                            </span>
+                            </mat-error>
+                        </mat-form-field>
                         </div>
                     </div>
 
-                    <div class="row mt-3">
-                        <label for="notes" class="text-start">Notes</label>
+                    <div class="form-group col-12">
+                        <mat-form-field class="w-100">
+                        <mat-label>
+                            {{ 'manage.project.form.estimated_time' | translate }}
+                            <span class="text-muted" style="font-size: 12px"> ({{ 'manage.project.form.in_hours' | translate }})</span>
+                        </mat-label>
+                        <input matInput [(ngModel)]="selectedProject.estimatedTime" type="number" formControlName="estimatedTime">
+                        <mat-error
+                            *ngIf="updateForm.get('estimatedTime')?.invalid && (updateForm.get('estimatedTime')?.touched || updateForm.get('estimatedTime')?.dirty)">
+                            <span *ngIf="updateForm.get('estimatedTime')?.errors?.['required']">
+                            {{ 'manage.project.form.error.estimated_time_required' | translate }}
+                            </span>
+                            <span *ngIf="updateForm.get('estimatedTime')?.errors?.['pattern']">
+                            {{ 'manage.project.form.error.estimated_time_pattern' | translate }}
+                            </span>
+                        </mat-error>
+                        </mat-form-field>
                     </div>
-                    <input type="text" name="notes" id="notes" class="form-control input  pt-0"
-                        [(ngModel)]="selectedProject.notes" formControlName="notes">
 
+                    <div class="form-group col-12">
+                        <mat-form-field class="w-100">
+                        <mat-label>{{ 'manage.project.form.notes' | translate }}</mat-label>
+                        <input [(ngModel)]="selectedProject.notes" matInput type="text" formControlName="notes">
+                        <mat-error *ngIf="updateForm.get('notes')?.invalid && (updateForm.get('notes')?.touched || updateForm.get('notes')?.dirty)">
+                            <ng-container *ngIf="updateForm.get('notes')?.errors?.['required']; else spaceError">
+                                {{ 'manage.project.form.error.notes_required' | translate }}
+                            </ng-container>
+                            <ng-template #spaceError>
+                                <ng-container *ngIf="updateForm.get('notes')?.errors?.['spacesNotAllowed']">
+                                    {{ 'manage.project.form.error.whitespace_error' | translate }}
+                                </ng-container>
+                            </ng-template>
+                        </mat-error>
+                        <!-- <mat-error
+                            *ngIf="updateForm.get('notes')?.invalid && (updateForm.get('notes')?.touched || updateForm.get('notes')?.dirty)">
+                            <span *ngIf="updateForm.get('notes')?.errors?.['required']">
+                            {{ 'manage.project.form.error.notes_required' | translate }}
+                            </span>
+                        </mat-error> -->
+                        </mat-form-field>
+                    </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-between mt-3" mat-dialog-actions>
-                <button mat-flat-button mat-dialog-close>Cancel</button>
-                <button mat-flat-button color="primary" type="submit">Update</button>
-            </div>
+        </div>
+        <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+            <button mat-flat-button mat-dialog-close>
+                {{ 'manage.project.cancel' | translate }}
+            </button>
+            <button mat-flat-button color="primary" type="submit">
+                {{ 'manage.project.update' | translate }}
+            </button>
+        </div>
         </form>
-        }
-    </div>
+    }
 
 </ng-template>
 
 <!-- Delete -->
 <ng-template #deleteModal>
-
-    <div class="d-flex justify-content-between p-1">
-        <h4 mat-dialog-title>Delete Project</h4>
-        <button type="button" mat-icon-button mat-dialog-close><mat-icon>close</mat-icon></button>
+    <div>
+        <h2 mat-dialog-title class="d-flex align-items-center mb-0 p-2 border border-bottom text-danger">
+            <mat-icon>warning</mat-icon>
+            {{'confirm_deletion' | translate}}
+        </h2>
     </div>
-    <mat-dialog-content>
-
-        <p>Are you sure you want to delete <b>{{selectedProject.projectName | titlecase}}</b>?</p>
-        <div class="d-flex justify-content-between mt-3" mat-dialog-actions>
-            <button mat-flat-button mat-dialog-close type="button">Cancel</button>
-            <button mat-flat-button color="warn" (click)="deleteProject()" mat-dialog-close
-                type="submit">Delete</button>
-        </div>
-    </mat-dialog-content>
+    <div mat-dialog-content>
+        <p translate>deletion_warning_msg</p>
+    </div>
+    <mat-dialog-actions class="d-flex justify-content-between">
+        <button mat-flat-button mat-dialog-close>
+            {{'cancel' | translate}}
+        </button>
+        <button mat-flat-button cdkFocusInitial color="warn" (click)="deleteProject()" mat-dialog-close>
+            <mat-icon>delete</mat-icon>  {{'delete' | translate}}
+        </button>
+    </mat-dialog-actions>
 
 </ng-template>

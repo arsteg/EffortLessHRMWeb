@@ -1,42 +1,36 @@
-<div class="main-content" [ngClass]="{'pt-5': view === 'user'}">
-  <div class="container-fluid">
-    <div class="py-2 px-0">
-      <div>
-        <div class="position-relative d-none d-md-block">
-          <button mat-flat-button class="position-absolute end-0" color="primary" data-bs-toggle="offcanvas"
-            (click)="clearselectedRequest();changeMode='Add'; isEdit = false;openModal(requestModal)">
-              New Request
-          </button>
-        </div>
-
-        <hrm-table
-            [data]="filteredManualTimeRequests" 
-            [columns]="columns" 
-            (actionClicked)="onActionClick($event)" 
-            [isServerSide]="false"
-            [showSearch]="true" 
-            [totalItems]="totalRecords" 
-            [pageSize]="recordsPerPage" 
-            (pageChanged)="onPageChangev1($event)"
-            (searchChanged)="onSearchChange($event)">
-        </hrm-table>
-    </div>
-    </div>
+<div>
+  <div class="position-relative d-none d-md-block">
+    <button mat-flat-button class="position-absolute end-0" color="primary" data-bs-toggle="offcanvas"
+      (click)="clearselectedRequest();changeMode='Add'; isEdit = false;openModal(requestModal)">
+        Add New
+    </button>
   </div>
 </div>
+<hrm-table
+    [data]="filteredManualTimeRequests" 
+    [columns]="columns" 
+    (actionClicked)="onActionClick($event)" 
+    [isServerSide]="false"
+    [showSearch]="true" 
+    [totalItems]="totalRecords" 
+    [pageSize]="recordsPerPage" 
+    (pageChanged)="onPageChangev1($event)"
+    (searchChanged)="onSearchChange($event)">
+</hrm-table>
+
 <ng-template #requestModal>
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>{{changeMode}} Manual Time Request</h1>
-    <button type="button" mat-icon-button mat-dialog-close>
+    <button type="button" class="me-3" mat-icon-button mat-dialog-close>
       <mat-icon>close</mat-icon>
     </button>
   </div>
 
-  <mat-dialog-content>
-    <form [formGroup]="addRequestForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="addRequestForm" (ngSubmit)="onSubmit()">
+    <mat-dialog-content>
       <div class="row d-flex justify-content-center">
         <div class="row">
-          <div class="col-md-6 mt-3">
+          <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Project</mat-label>
               <mat-select formControlName="project" (selectionChange)="onProjectChange($event)">
@@ -51,7 +45,7 @@
             </mat-form-field>
           </div>
 
-          <div class="col-md-6 mt-3">
+          <div class="col-md-6">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Manager</mat-label>
               <mat-select formControlName="manager">
@@ -126,16 +120,15 @@
       <div *ngIf="dateMismatchError" class="alert alert-danger error text-end pe-4">
         Start Date and End Date should be Similar!
       </div>
-      
-      <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
-        <button mat-flat-button class="mx-2" type="button" *ngIf="changeMode == 'Add'"
-          (click)="clearselectedRequest()">Cancel</button>
-        <button mat-flat-button class="mx-2" type="button" *ngIf="changeMode == 'Update'"
-          (click)="getManualById()">Cancel</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="addRequestForm.invalid">{{changeMode}} Request</button>
-      </div>
-    </form>
-  </mat-dialog-content>
+    </mat-dialog-content>
+    <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
+      <button mat-flat-button class="mx-2" type="button" *ngIf="changeMode == 'Add'"
+        (click)="clearselectedRequest()">Cancel</button>
+      <button mat-flat-button class="mx-2" type="button" *ngIf="changeMode == 'Update'"
+        (click)="getManualById()">Cancel</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="addRequestForm.invalid">{{changeMode}} Request</button>
+    </div>
+  </form>
 </ng-template>
 <!-- <ng-template #requestModal>
 

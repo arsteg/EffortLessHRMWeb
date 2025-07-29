@@ -45,6 +45,66 @@
       "user_delete_fail": "Failed to delete user",
       "user_added": "User added successfully",
       "user_deleted": "User deleted successfully"
+    },
+    "project": {
+      "modal": {
+        "add_title": "Add New Project",
+        "update_title": "Update Project"
+      },
+      "form": {
+        "project_name": "Project Name",
+        "estimated_time": "Estimated Time",
+        "in_hours": "In hours",
+        "start_date": "Start Date",
+        "end_date": "End Date",
+        "notes": "Notes",
+        "error": {
+          "project_name_required": "Project Name is required.",
+          "estimated_time_required": "Estimated Time is required.",
+          "start_date_required": "Start Date is required.",
+          "end_date_required": "End Date is required.",
+          "notes_required": "Note is required.",
+          "whitespace_error": "Leading or trailing spaces are not allowed"
+        }
+      },
+      "cancel": "Cancel",
+      "add": "Add",
+      "update": "Update",
+      "save": "Save",
+      "manage_member_title": "Manage Members",
+
+      "list": {
+        "projectName": "Project Name",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "estimatedTime": "Estimated Time",
+        "notes": "Notes",
+        "status": "Status",
+        "members": "Members",
+        "action": "Action",
+        "success": {
+          "newProject": "New Project",
+          "added": "Successfully Added!",
+          "deleted": "Successfully Deleted!",
+          "updatedProject": "Existing Project Updated",
+          "updated": "Successfully Updated!",
+          "newMemberAdded": "New Member Added",
+          "newMembersAdded": "New Members Added",
+          "removed": "{{name}} Removed",
+          "title": "Success"
+        },
+        "error": {
+          "cannotAdd": "Can not be Added",
+          "cannotDelete": "Can not be Deleted",
+          "cannotUpdate": "Can not be Updated",
+          "memberExists": "Member Already Exist",
+          "allUsersExist": "All selected users already exist",
+          "cannotRemove": "{{name}} Can not be Removed",
+          "addingMembers": "Error Adding Members",
+          "removingMember": "Error Removing Member",
+          "title": "ERROR!"
+        }
+      }
     }
   },
   "email-template": {
