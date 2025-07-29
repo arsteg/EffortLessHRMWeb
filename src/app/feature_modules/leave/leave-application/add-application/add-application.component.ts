@@ -68,6 +68,7 @@ export class AddApplicationComponent implements OnDestroy {
   documentMandatory: boolean;
   maximumLimit: number;
   maxConsecutiveLeaveDays: number = 0;
+  minimumNumberOfDaysAllowed: number = 0;
   maxSelectableEndDate: Date;
   formSubmitted: boolean = false;
   private employeeValueChangesSubscription: Subscription;
@@ -140,6 +141,18 @@ export class AddApplicationComponent implements OnDestroy {
         }
       }
 
+      // Check if the date range meets minimum number of days required
+      if (startDate && endDate && this.minimumNumberOfDaysAllowed) {
+        const start = moment(startDate);
+        const end = moment(endDate);
+        const daysDiff = end.diff(start, 'days') + 1; // +1 because start date counts as day 1
+        
+        if (daysDiff < this.minimumNumberOfDaysAllowed) {
+          group.get('endDate')?.setErrors({ minDaysRequired: true });
+          return null;
+        }
+      }
+
       return null;
     };
   }
@@ -176,6 +189,9 @@ export class AddApplicationComponent implements OnDestroy {
         
         // Set maximum consecutive leave days from the selected category
         this.maxConsecutiveLeaveDays = this.tempLeaveCategory?.leaveCategory?.maximumNumberConsecutiveLeaveDaysAllowed || 0;
+        
+        // Set minimum number of days allowed from the selected category
+        this.minimumNumberOfDaysAllowed = this.tempLeaveCategory?.leaveCategory?.minimumNumberOfDaysAllowed || 0;
         
         // Update form validators to include the new max consecutive days limit
         this.updateFormValidators();
@@ -246,6 +262,7 @@ export class AddApplicationComponent implements OnDestroy {
       
       // Reset max end date configuration when employee changes
       this.maxConsecutiveLeaveDays = 0;
+      this.minimumNumberOfDaysAllowed = 0;
       this.maxSelectableEndDate = null;
       this.endDateBsConfig = {
         ...this.endDateBsConfig,
@@ -289,6 +306,17 @@ export class AddApplicationComponent implements OnDestroy {
         
         if (daysDiff > this.maxConsecutiveLeaveDays) {
           this.leaveApplication.get('endDate')?.setErrors({ maxConsecutiveDaysExceeded: true });
+        }
+      }
+      
+      // Validate end date against minimum days requirement
+      if (endDate && this.leaveApplication.get('startDate')?.value && this.minimumNumberOfDaysAllowed) {
+        const startDate = moment(this.leaveApplication.get('startDate')?.value);
+        const endDateMoment = moment(endDate);
+        const daysDiff = endDateMoment.diff(startDate, 'days') + 1;
+        
+        if (daysDiff < this.minimumNumberOfDaysAllowed) {
+          this.leaveApplication.get('endDate')?.setErrors({ minDaysRequired: true });
         }
       }
       
@@ -766,6 +794,7 @@ export class AddApplicationComponent implements OnDestroy {
     
     // Reset max end date configuration
     this.maxConsecutiveLeaveDays = 0;
+    this.minimumNumberOfDaysAllowed = 0;
     this.maxSelectableEndDate = null;
     this.endDateBsConfig = {
       ...this.endDateBsConfig,
@@ -790,6 +819,21 @@ export class AddApplicationComponent implements OnDestroy {
       this.leaveApplication.get('leaveApplicationAttachments')?.markAsTouched();
       this.toast.error(this.translate.instant('leave.attachmentRequired'));
       return;
+    }
+
+    // Check if minimum days requirement is met
+    const minStartDate = this.leaveApplication.get('startDate')?.value;
+    const minEndDate = this.leaveApplication.get('endDate')?.value;
+    if (minStartDate && minEndDate && this.minimumNumberOfDaysAllowed) {
+      const start = moment(minStartDate);
+      const end = moment(minEndDate);
+      const daysDiff = end.diff(start, 'days') + 1;
+      
+      if (daysDiff < this.minimumNumberOfDaysAllowed) {
+        this.leaveApplication.get('endDate')?.markAsTouched();
+        this.toast.error(`Minimum ${this.minimumNumberOfDaysAllowed} days required for this leave category.`);
+        return;
+      }
     }
 
     const employeeId = this.leaveApplication.get('employee')?.value;
