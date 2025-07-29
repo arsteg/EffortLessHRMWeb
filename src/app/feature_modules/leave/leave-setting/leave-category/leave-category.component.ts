@@ -226,6 +226,11 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   }
 
   onSubmission() {
+    if(this.categoryForm.invalid){
+      this.markFormGroupTouched(this.categoryForm);
+      return;
+    }
+    else{
     if (!this.isEdit) {
       this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe(
         (res: any) => {
@@ -233,6 +238,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
           this.toast.success(res.message);
           this.dialogRef.close(true);
           this.reset();
+          this.getAllLeaveCategories(); // <-- Refresh list after add
         },
         (err) => {
           this.toast.error(err || this.translate.instant('leave.leaveErrorAssignment'));
@@ -249,6 +255,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
           this.toast.success(res.message);
           this.dialogRef.close(true);
           this.reset();
+          this.getAllLeaveCategories(); // <-- Refresh list after update
         },
         (err) => {
           this.toast.error(err || this.translate.instant('leave.leaveErrorAssignmentUpdated'));
@@ -256,6 +263,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
         }
       );
     }
+  }
 
   }
 
@@ -314,8 +322,8 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   deleteTemplate(_id: string) {
     this.leaveService.deleteLeaveCategory(_id).subscribe(
       (res: any) => {
-        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
         this.toast.success(this.translate.instant('leave.leaveSuccessfulAssignmentDeleted'));
+        this.getAllLeaveCategories(); // <-- Refresh list after delete
       },
       (err) => {
         const errorMessage = err || this.translate.instant('leave.leaveErrorAssignmentDeleted');
