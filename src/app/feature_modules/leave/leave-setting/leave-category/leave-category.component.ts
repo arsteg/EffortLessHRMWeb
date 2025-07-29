@@ -85,12 +85,12 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isEmployeesAllowedToNegativeLeaveBalance: [true],
       isRoundOffLeaveAccrualNearestPointFiveUnit: [true],
       isIntraCycleLapseApplicableForThisCategory: [true],
-      minimumNumberOfDaysAllowed: [0, [Validators.required, Validators.min(0)]], // Add min(0)
+      minimumNumberOfDaysAllowed: [0, [Validators.required, Validators.min(0)]],
       isProRateFirstMonthAccrualForNewJoinees: [''],
-      maximumNumberConsecutiveLeaveDaysAllowed: [0, [Validators.required, Validators.min(0)]], // Add min(0)
+      maximumNumberConsecutiveLeaveDaysAllowed: [0, [Validators.required, Validators.min(0)]],
       isPaidLeave: [true],
       isEmployeeAccrualLeaveInAdvance: [true]
-    });
+    }, { validators: this.minLessThanMaxValidator });
     this.leaveTypeSubscription = this.categoryForm.get('leaveType')?.valueChanges.subscribe(value => {
       const leaveAccrualPeriodControl = this.categoryForm.get('leaveAccrualPeriod');
       if (value === 'general-leave') {
@@ -109,6 +109,29 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
         (data.leaveAccrualPeriod?.toLowerCase().includes(searchString) || false);
     });
   }
+
+  minLessThanMaxValidator: ValidatorFn = (group: AbstractControl) => {
+    const min = group.get('minimumNumberOfDaysAllowed')?.value;
+    const max = group.get('maximumNumberConsecutiveLeaveDaysAllowed')?.value;
+    if (
+      min !== null && min !== undefined &&
+      max !== null && max !== undefined &&
+      min > 0 && max > 0 &&
+      min > max
+    ) {
+      group.get('minimumNumberOfDaysAllowed')?.setErrors({ minNotLessThanMax: true });
+      return { minNotLessThanMax: true };
+    } else {
+      // Only clear this specific error, not others
+      const minCtrl = group.get('minimumNumberOfDaysAllowed');
+      if (minCtrl?.hasError('minNotLessThanMax')) {
+        const errors = { ...minCtrl.errors };
+        delete errors['minNotLessThanMax'];
+        minCtrl.setErrors(Object.keys(errors).length ? errors : null);
+      }
+      return null;
+    }
+  };
 
   ngOnInit(): void {
     this.getAllLeaveCategories();
