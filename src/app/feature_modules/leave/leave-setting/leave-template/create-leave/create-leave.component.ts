@@ -5,6 +5,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { ManageTeamService } from 'src/app/_services/manage-team.service';
 @Component({
   selector: 'app-create-leave',
   templateUrl: './create-leave.component.html',
@@ -30,7 +31,8 @@ export class CreateLeaveComponent {
     private commonService: CommonService,
     private leaveService: LeaveService,
     private toast: ToastrService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private teamService: ManageTeamService
   ) {
     this.addTemplateForm = this.fb.group({
       label: ['', [Validators.required,  CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this), this.duplicateLabelValidator()]],
@@ -49,13 +51,13 @@ export class CreateLeaveComponent {
 
   ngOnInit() {
     this.setFormValues();
-    this.getAllUsers();
+    this.getManagers();
     this.getLeaveCategories();
-
-    // this.addTemplateForm.get('approvalLevel')?.valueChanges.subscribe((value: any) => {
-    //   this.validateApprovers(this.addTemplateForm.get('approvalType')?.value, value);
-    // });
     this.addTemplateForm.get('approvalType')?.valueChanges.subscribe((value: any) => {
+      console.log(value)
+     if(value === 'template-wise') {
+      this.addTemplateForm.get('primaryApprover')?.setValidators([Validators.required]);
+     }
       this.addTemplateForm.patchValue({
         primaryApprover: null
       })
@@ -155,11 +157,9 @@ export class CreateLeaveComponent {
     );
   }
 
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe({
-      next: (res: any) => {
-        this.users = res.data.data;
-      },
+  getManagers() {
+    this.teamService.getManagers().subscribe((res: any) =>{
+      this.users = res.data;
       error: () => {
         this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
       }

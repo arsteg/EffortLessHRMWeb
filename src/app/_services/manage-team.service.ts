@@ -37,4 +37,11 @@ export class ManageTeamService extends baseService {
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.delete<any>(`${environment.apiUrlDotNet}/auth/roles/deleteSubordinate/${userId.id}/${subordinateUserId}`, this.httpOptions);
   }
+
+  public getManagers(): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getManagers`, this.httpOptions);
+  }
+
 }

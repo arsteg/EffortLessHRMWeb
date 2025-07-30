@@ -71,6 +71,7 @@ export class AddApplicationComponent implements OnDestroy {
   minimumNumberOfDaysAllowed: number = 0;
   maxSelectableEndDate: Date;
   formSubmitted: boolean = false;
+  isResettingForm: boolean = false;
   private employeeValueChangesSubscription: Subscription;
   private leaveCategoryValueChangesSubscription: Subscription;
   private startDateValueChangesSubscription: Subscription;
@@ -177,6 +178,11 @@ export class AddApplicationComponent implements OnDestroy {
     this.populateMembers();
 
     this.leaveCategoryValueChangesSubscription = this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
+      // Skip if we're in the middle of resetting the form
+      if (this.isResettingForm) {
+        return;
+      }
+      
       this.leaveApplication.patchValue({
         startDate: null,
         endDate: null,
@@ -248,6 +254,10 @@ export class AddApplicationComponent implements OnDestroy {
           }
         });
       }
+      
+      // Set flag to prevent API calls during reset
+      this.isResettingForm = true;
+      
       this.leaveApplication.patchValue({
         leaveCategory: null,
         startDate: null,
@@ -258,7 +268,6 @@ export class AddApplicationComponent implements OnDestroy {
       this.selectedFiles = [];
       this.leaveDocumentUpload = false;
       this.documentMandatory = false;
-      this.checkForDuplicateLeave();
       
       // Reset max end date configuration when employee changes
       this.maxConsecutiveLeaveDays = 0;
@@ -273,6 +282,11 @@ export class AddApplicationComponent implements OnDestroy {
       this.updateFormValidators();
       this.updateAttachmentValidation();
       this.formSubmitted = false;
+      
+      // Reset flag after a short delay to allow form updates to complete
+      setTimeout(() => {
+        this.isResettingForm = false;
+      }, 100);
     });
 
     if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
@@ -288,6 +302,11 @@ export class AddApplicationComponent implements OnDestroy {
     }
 
     this.startDateValueChangesSubscription = this.leaveApplication.get('startDate')?.valueChanges.subscribe((startDate) => {
+      // Skip if we're in the middle of resetting the form
+      if (this.isResettingForm) {
+        return;
+      }
+      
       // Clear end date when start date changes
       this.leaveApplication.patchValue({ endDate: null });
       
@@ -298,6 +317,11 @@ export class AddApplicationComponent implements OnDestroy {
       this.calculateDateRangeAndLimitHalfDays();
     });
     this.endDateValueChangesSubscription = this.leaveApplication.get('endDate')?.valueChanges.subscribe((endDate) => {
+      // Skip if we're in the middle of resetting the form
+      if (this.isResettingForm) {
+        return;
+      }
+      
       // Validate end date against maximum consecutive days limit
       if (endDate && this.leaveApplication.get('startDate')?.value && this.maxConsecutiveLeaveDays) {
         const startDate = moment(this.leaveApplication.get('startDate')?.value);
@@ -772,6 +796,9 @@ export class AddApplicationComponent implements OnDestroy {
     }
   }
   resetForm() {
+    // Set flag to prevent API calls during reset
+    this.isResettingForm = true;
+    
     this.leaveApplication.reset({
       employee: '',
       leaveCategory: '',
@@ -805,10 +832,14 @@ export class AddApplicationComponent implements OnDestroy {
     this.updateFormValidators();
     this.updateAttachmentValidation();
     this.formSubmitted = false;
+    
+    // Reset flag after a short delay to allow form updates to complete
+    setTimeout(() => {
+      this.isResettingForm = false;
+    }, 100);
   }
   onSubmission() {
     this.formSubmitted = true;
-    
     if (this.leaveApplication.invalid || this.leaveApplication.hasError('maxLeaveLimitExceeded') || this.leaveApplication.hasError('maxLeaveLimitExceeded')) {
       this.leaveApplication.markAllAsTouched();
       return;
@@ -910,6 +941,7 @@ export class AddApplicationComponent implements OnDestroy {
   }
 
   submitLeaveApplication(payload: any) {
+    console.log(payload);
     this.leaveService.addLeaveApplication(payload).subscribe({
       next: (res: any) => {
         if (res.data) {
