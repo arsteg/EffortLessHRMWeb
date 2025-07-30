@@ -40,7 +40,7 @@ export class RequestManualTimeComponent implements OnInit {
   color: string;
   dateMismatchError: boolean = false;
   filteredManualTimeRequests: any[] = [];
-  totalRecords: number
+  totalRecords: number = 0;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   isEdit: boolean = false;
@@ -48,6 +48,7 @@ export class RequestManualTimeComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
   @ViewChild('requestModal') requestModal: TemplateRef<any>;
   @ViewChild('deleteModal') deleteModal: TemplateRef<any>;
+  allData: any[] = [];
 
   // Define columns for hrm-table
   columns = [
@@ -321,6 +322,8 @@ export class RequestManualTimeComponent implements OnInit {
       task: record?.task
     }));
     this.filteredManualTimeRequests = [...this.manualTimeRequests];
+    this.totalRecords = this.filteredManualTimeRequests.length;
+    this.allData = this.filteredManualTimeRequests;
   }
 
   filterRecords() {
@@ -343,6 +346,8 @@ export class RequestManualTimeComponent implements OnInit {
         });
       });
     });
+    this.totalRecords = this.filteredManualTimeRequests.length;
+    this.allData = this.filteredManualTimeRequests;
   }
 
   clearselectedRequest() {
@@ -411,9 +416,39 @@ export class RequestManualTimeComponent implements OnInit {
     this.fetchManualTimeRequests();
   }
 
-  onSearchChange(searchText: string) {
-    this.searchText = searchText;
-    this.currentPage = 1;
-    this.fetchManualTimeRequests();
+  // onSearchChange(searchText: string) {
+  //   this.searchText = searchText;
+  //   this.currentPage = 1;
+  //   this.fetchManualTimeRequests();
+  // }
+
+  onSearchChange(event) {
+    this.filteredManualTimeRequests = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    }
+    );
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.allData.slice().sort((a: any, b: any) => {
+      var valueA = this.getNestedValue(a, event.active);
+      var valueB = this.getNestedValue(b, event.active);
+
+      valueA = valueA ?? '';
+      valueB = valueB ?? '';
+
+      if (valueA < valueB) return event.direction === 'asc' ? -1 : 1;
+      if (valueA > valueB) return event.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    this.filteredManualTimeRequests = sorted;
+  }
+
+  private getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((o, key) => (o ? o[key] : undefined), obj);
   }
 }
