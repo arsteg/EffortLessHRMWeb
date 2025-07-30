@@ -72,6 +72,7 @@ export class AddApplicationComponent implements OnDestroy {
   maxSelectableEndDate: Date;
   formSubmitted: boolean = false;
   isResettingForm: boolean = false;
+  tabIndex = parseInt(localStorage.getItem('selectedTab'));
   private employeeValueChangesSubscription: Subscription;
   private leaveCategoryValueChangesSubscription: Subscription;
   private startDateValueChangesSubscription: Subscription;
@@ -135,7 +136,7 @@ export class AddApplicationComponent implements OnDestroy {
         const start = moment(startDate);
         const end = moment(endDate);
         const daysDiff = end.diff(start, 'days') + 1; // +1 because start date counts as day 1
-        
+
         if (daysDiff > this.maxConsecutiveLeaveDays) {
           group.get('endDate')?.setErrors({ maxConsecutiveDaysExceeded: true });
           return null;
@@ -147,7 +148,7 @@ export class AddApplicationComponent implements OnDestroy {
         const start = moment(startDate);
         const end = moment(endDate);
         const daysDiff = end.diff(start, 'days') + 1; // +1 because start date counts as day 1
-        
+
         if (daysDiff < this.minimumNumberOfDaysAllowed) {
           group.get('endDate')?.setErrors({ minDaysRequired: true });
           return null;
@@ -164,12 +165,12 @@ export class AddApplicationComponent implements OnDestroy {
       if (!this.documentMandatory) {
         return null;
       }
-      
+
       // If documents are mandatory, check if files are selected
       if (!this.selectedFiles || this.selectedFiles.length === 0) {
         return { attachmentRequired: true };
       }
-      
+
       return null;
     };
   }
@@ -182,7 +183,7 @@ export class AddApplicationComponent implements OnDestroy {
       if (this.isResettingForm) {
         return;
       }
-      
+
       this.leaveApplication.patchValue({
         startDate: null,
         endDate: null,
@@ -192,22 +193,22 @@ export class AddApplicationComponent implements OnDestroy {
       this.checkForDuplicateLeave();
       if (this.leaveCategories?.length) {
         this.tempLeaveCategory = this.leaveCategories.find(category => category?.leaveCategory?._id === leaveCategory);
-        
+
         // Set maximum consecutive leave days from the selected category
         this.maxConsecutiveLeaveDays = this.tempLeaveCategory?.leaveCategory?.maximumNumberConsecutiveLeaveDaysAllowed || 0;
-        
+
         // Set minimum number of days allowed from the selected category
         this.minimumNumberOfDaysAllowed = this.tempLeaveCategory?.leaveCategory?.minimumNumberOfDaysAllowed || 0;
-        
+
         // Update form validators to include the new max consecutive days limit
         this.updateFormValidators();
-        
+
         if (this.tempLeaveCategory?.leaveCategory?.isDocumentRequired) {
           this.documentMandatory = this.tempLeaveCategory?.leaveCategory?.isDocumentRequired;
-        }else {
+        } else {
           this.documentMandatory = false;
         }
-        
+
         // Update attachment validation based on document requirement
         this.updateAttachmentValidation();
 
@@ -238,61 +239,64 @@ export class AddApplicationComponent implements OnDestroy {
       this.handleLeaveCategoryChange();
       this.formSubmitted = false;
     });
+    if (this.portalView === 'admin' || (this.portalView === 'user' && this.tabIndex === 5)) {
+      this.employeeValueChangesSubscription = this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
+        if (!employee) {
+          return;
+        }
+        else {
+          this.leaveService.getLeaveCategoriesByUserv1(employee).subscribe({
+            next: (res: any) => {
+              const records = res.data;
+              this.leaveCategories = records.filter(category => category.leaveCategory?.canEmployeeApply === true);
+              this.checkStatus = res.status;
+            },
+            error: () => {
+              this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
+            }
+          });
+        }
 
-    this.employeeValueChangesSubscription = this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
-      if (!employee) {
-        return; // Skip if resetting or employee is empty
-      }
-      else {
-        this.leaveService.getLeaveCategoriesByUserv1(employee).subscribe({
-          next: (res: any) => {
-            this.leaveCategories = res.data;
-            this.checkStatus = res.status;
-          },
-          error: () => {
-            this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
-          }
+        // Set flag to prevent API calls during reset
+        this.isResettingForm = true;
+
+        this.leaveApplication.patchValue({
+          leaveCategory: null,
+          startDate: null,
+          endDate: null,
+          isHalfDayOption: false,
         });
-      }
-      
-      // Set flag to prevent API calls during reset
-      this.isResettingForm = true;
-      
-      this.leaveApplication.patchValue({
-        leaveCategory: null,
-        startDate: null,
-        endDate: null,
-        isHalfDayOption: false,
-      });
-      (this.leaveApplication.get('halfDays') as FormArray).clear();
-      this.selectedFiles = [];
-      this.leaveDocumentUpload = false;
-      this.documentMandatory = false;
-      
-      // Reset max end date configuration when employee changes
-      this.maxConsecutiveLeaveDays = 0;
-      this.minimumNumberOfDaysAllowed = 0;
-      this.maxSelectableEndDate = null;
-      this.endDateBsConfig = {
-        ...this.endDateBsConfig,
-        maxDate: null
-      };
-      
-      // Update form validators after reset
-      this.updateFormValidators();
-      this.updateAttachmentValidation();
-      this.formSubmitted = false;
-      
-      // Reset flag after a short delay to allow form updates to complete
-      setTimeout(() => {
-        this.isResettingForm = false;
-      }, 100);
-    });
+        (this.leaveApplication.get('halfDays') as FormArray).clear();
+        this.selectedFiles = [];
+        this.leaveDocumentUpload = false;
+        this.documentMandatory = false;
 
+        // Reset max end date configuration when employee changes
+        this.maxConsecutiveLeaveDays = 0;
+        this.minimumNumberOfDaysAllowed = 0;
+        this.maxSelectableEndDate = null;
+        this.endDateBsConfig = {
+          ...this.endDateBsConfig,
+          maxDate: null
+        };
+
+        // Update form validators after reset
+        this.updateFormValidators();
+        this.updateAttachmentValidation();
+        this.formSubmitted = false;
+
+        // Reset flag after a short delay to allow form updates to complete
+        setTimeout(() => {
+          this.isResettingForm = false;
+        }, 100);
+      });
+    }
     if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
       this.leaveService.getLeaveCategoriesByUserv1(this.currentUser.id).subscribe({
         next: (res: any) => {
-          this.leaveCategories = res.data;
+          const records = res.data;
+          this.leaveCategories = records.filter(category => category.leaveCategory?.canEmployeeApply === true);
+          console.log(this.leaveCategories)
           this.checkStatus = res.status;
         },
         error: () => {
@@ -306,13 +310,13 @@ export class AddApplicationComponent implements OnDestroy {
       if (this.isResettingForm) {
         return;
       }
-      
+
       // Clear end date when start date changes
       this.leaveApplication.patchValue({ endDate: null });
-      
+
       // Update maximum end date based on start date and consecutive days limit
       this.updateMaxEndDate(startDate);
-      
+
       this.checkForDuplicateLeave();
       this.calculateDateRangeAndLimitHalfDays();
     });
@@ -321,29 +325,29 @@ export class AddApplicationComponent implements OnDestroy {
       if (this.isResettingForm) {
         return;
       }
-      
+
       // Validate end date against maximum consecutive days limit
       if (endDate && this.leaveApplication.get('startDate')?.value && this.maxConsecutiveLeaveDays) {
         const startDate = moment(this.leaveApplication.get('startDate')?.value);
         const endDateMoment = moment(endDate);
         const daysDiff = endDateMoment.diff(startDate, 'days') + 1;
-        
+
         if (daysDiff > this.maxConsecutiveLeaveDays) {
           this.leaveApplication.get('endDate')?.setErrors({ maxConsecutiveDaysExceeded: true });
         }
       }
-      
+
       // Validate end date against minimum days requirement
       if (endDate && this.leaveApplication.get('startDate')?.value && this.minimumNumberOfDaysAllowed) {
         const startDate = moment(this.leaveApplication.get('startDate')?.value);
         const endDateMoment = moment(endDate);
         const daysDiff = endDateMoment.diff(startDate, 'days') + 1;
-        
+
         if (daysDiff < this.minimumNumberOfDaysAllowed) {
           this.leaveApplication.get('endDate')?.setErrors({ minDaysRequired: true });
         }
       }
-      
+
       this.checkForDuplicateLeave();
       this.calculateDateRangeAndLimitHalfDays();
     });
@@ -764,31 +768,30 @@ export class AddApplicationComponent implements OnDestroy {
   };
 
   populateMembers() {
-    if (this.portalView === 'user' && this.tab === 5) {
+    if (this.portalView === 'user' && this.tabIndex === 5) {
       this.members = [];
       let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
       this.members.push({ id: currentUser.id, name: this.translate.instant('leave.userMe'), email: currentUser.email });
-      this.member = currentUser;
-      this.timeLogService.getTeamMembers(this.member.id).subscribe({
-        next: response => {
-          this.timeLogService.getusers(response.data).subscribe({
-            next: result => {
-              result.data.forEach(user => {
-                if (user.id != currentUser.id) {
-                  this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
-                }
-              });
-            },
-            error: () => {
-              this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
-            }
-          });
-        },
-        error: () => {
+      this.timeLogService.getTeamMembers(currentUser.id).subscribe((res: any) => {
+        this.members = res.data;
+        // next: response => {
+        // this.timeLogService.getusers(response.data).subscribe({
+        //   next: result => {
+        //     result.data.forEach(user => {
+        //       if (user.id != currentUser.id) {
+        //         this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+        //       }
+        //     });
+        //   },
+        //   error: () => {
+        //     this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
+        // }
+      },
+        // },
+        error => {
           this.toast.error(this.translate.instant('leave.errorFetchingTeamMembers'));
-        }
-      });
-    }
+        });
+    };
     if (this.portalView === 'admin') {
       this.commonService.populateUsers().subscribe((res: any) => {
         this.allAssignee = res.data.data;
@@ -798,7 +801,7 @@ export class AddApplicationComponent implements OnDestroy {
   resetForm() {
     // Set flag to prevent API calls during reset
     this.isResettingForm = true;
-    
+
     this.leaveApplication.reset({
       employee: '',
       leaveCategory: '',
@@ -818,7 +821,7 @@ export class AddApplicationComponent implements OnDestroy {
     this.documentMandatory = false;
     this.existingLeaves = []; // Clear cached leaves
     this.lastFetchedEmployeeId = null; // Reset cached employee ID
-    
+
     // Reset max end date configuration
     this.maxConsecutiveLeaveDays = 0;
     this.minimumNumberOfDaysAllowed = 0;
@@ -827,12 +830,12 @@ export class AddApplicationComponent implements OnDestroy {
       ...this.endDateBsConfig,
       maxDate: null
     };
-    
+
     // Update form validators after reset
     this.updateFormValidators();
     this.updateAttachmentValidation();
     this.formSubmitted = false;
-    
+
     // Reset flag after a short delay to allow form updates to complete
     setTimeout(() => {
       this.isResettingForm = false;
@@ -859,7 +862,7 @@ export class AddApplicationComponent implements OnDestroy {
       const start = moment(minStartDate);
       const end = moment(minEndDate);
       const daysDiff = end.diff(start, 'days') + 1;
-      
+
       if (daysDiff < this.minimumNumberOfDaysAllowed) {
         this.leaveApplication.get('endDate')?.markAsTouched();
         this.toast.error(`Minimum ${this.minimumNumberOfDaysAllowed} days required for this leave category.`);

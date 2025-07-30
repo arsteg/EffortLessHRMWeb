@@ -103,17 +103,27 @@ export class AddCategoryLeaveComponent {
   }
 
   toggleControl(formGroup: FormGroup, toggler: string, control: string) {
-    if (!formGroup.get(toggler).value) {
-      formGroup.get(control).disable();
-    }
-    formGroup.get(toggler).valueChanges.subscribe(value => {
-      if (value) {
-        formGroup.get(control).enable();
-      } else {
-        formGroup.get(control).disable();
-      }
-    });
+  const toggleControl = formGroup.get(toggler);
+  const dependentControl = formGroup.get(control);
+
+  // Set initial state
+  if (!toggleControl.value) {
+    dependentControl.setValue(0); // Reset to 0 when toggle is initially false
+    dependentControl.disable();
+  } else {
+    dependentControl.enable();
   }
+
+  // Listen for value changes on the toggle
+  toggleControl.valueChanges.subscribe(value => {
+    if (value) {
+      dependentControl.enable();
+    } else {
+      dependentControl.setValue(0); // Reset to 0 when toggle is set to false
+      dependentControl.disable();
+    }
+  });
+}
   bindCategoryApplicableChange(categoryGroup: FormGroup) {
     categoryGroup.get('categoryApplicable')?.valueChanges.subscribe(value => {
       if (value === 'all-employees') {
