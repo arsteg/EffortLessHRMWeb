@@ -1,4 +1,4 @@
-.tagContainer {
+/* .tagContainer {
   margin-left: 2rem;
 }
 
@@ -6,4 +6,9 @@
   background: #76bc21 !important;
   border: transparent !important;
   border-radius: 20px !important;
+}
+ */
+
+::ng-deep .mat-mdc-text-field-wrapper {
+  background-color: white !important;
 }

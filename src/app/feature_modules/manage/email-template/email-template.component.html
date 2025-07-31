@@ -1,202 +1,199 @@
-<div class="main-content">
-  <div class="row px-2">
-    <div class="col-md-8">
-
-      <div class="container-fluid mt-3 py-2 px-0 bg-white tableContainer">
-        <div class="d-flex justify-content-between align-items-center mb-2 px-3">
-          <p class="mb-0">({{emailList?.length}}) Records Found</p>
-          <div class="d-flex align-items-center">
-            <span class="bi bi-search searchIcon"></span>
-
-            <input class="form-control search" type="text" placeholder="Search..." [(ngModel)]="searchText"
-              name="searchText" aria-label="default input example"
-             >
-          </div>
-        </div>
-        <table class="px-4">
-          <thead>
-            <tr>
-              <th class="ps-2">Template&nbsp;Type</th>
-              <th>Template Name</th>
-              <th style="width:200px">Subject</th>
-              <th>Content</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let data of emailList  | search: searchText">
-              <td class="ps-2">{{data?.templateType}}</td>
-              <td class="">{{data?.Name}}</td>
-              <td class="" [innerHTML]="data?.contentData"></td>
-              <td class="">{{data?.subject}}</td>
-              <td class="">
-                <button class="actions" mat-mini-fab  matTooltip="Edit" matTooltipPosition="before" data-bs-toggle="modal" data-bs-target="#updateModal"
-                  (click)="selectedEmail=data;" aria-label="Example icon button with a menu icon">
-                  <i class="bi bi-pencil-fill"></i>
-                </button>
-                <button class="actions ms-2" mat-mini-fab matTooltip="Delete" matTooltipPosition="after" (click)="deleteEmail(data._id)"
-                  aria-label="Example icon button with a menu icon">
-                  <i class="bi bi-trash"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="d-flex justify-content-center">
-
-      </div>
-    </div>
-
-    <div class="col-md-4">
-      <div style="margin-top: 14px;">
-        <div>
-          <span>Add Email Template</span>
-        </div>
-        <form class="mt-4 p-3 bg-light border rounded" [formGroup]="form" (ngSubmit)="addEmail(form.value)">
-          <div class="form-group row">
-            
-            <!-- Name -->
-            <div class="col-sm-12">
-              <label>Name: <span class="text-danger">*</span></label>
-              <input type="text" formControlName="Name" class="form-control">
-              <div *ngIf="form.get('Name').touched && form.get('Name').invalid" class="text-danger">
-                Name is required.
-              </div>
-            </div>
-        
-            <!-- Subject -->
-            <div class="col-sm-12 mt-3">
-              <label>Subject: <span class="text-danger">*</span></label>
-              <input type="text" formControlName="subject" class="form-control">
-              <div *ngIf="form.get('subject').touched && form.get('subject').invalid" class="text-danger">
-                Subject is required.
-              </div>
-            </div>
-        
-            <!-- Template Type / Id -->
-            <div class="col-sm-12 mt-3">
-              <label>Id: <span class="text-danger">*</span></label>
-              <input type="text" formControlName="templateType" class="form-control">
-              <div *ngIf="form.get('templateType').touched && form.get('templateType').invalid" class="text-danger">
-                Id is required.
-              </div>
-            </div>
-        
-            <!-- Dropdown (optional: show error if needed) -->
-            <div class="col-sm-12 mt-3">
-              <label>Content Data: <span class="text-danger">*</span></label>
-              <select (change)="onDropdownChange($event)" class="my-2 py-2 form-control">
-                <option selected disabled>- Select -</option>
-                <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
-              </select>
-            </div>
-        
-            <!-- Quill Editor -->
-            <div class="col-sm-12">
-              <quill-editor #editor [styles]="{height: 'auto'}" formControlName="contentData"
-                [(ngModel)]="editorContent">
-              </quill-editor>
-              <div *ngIf="form.get('contentData').touched && form.get('contentData').invalid" class="text-danger">
-                Content is required.
-              </div>
-            </div>
-        
-            <!-- Submit Button -->
-            <div class="col-sm-12 mt-4">
-              <button type="submit" class="rounded-pill btn addBtn" style="min-width: 100px;" [disabled]="isSubmitting">
-                Add
-              </button>
-            </div>
-        
-          </div>
-        </form>
-        
-      </div>
-    </div>
-
-
-
-    <div class="modal" id="updateModal">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-body">
-            <div class="d-flex justify-content-between">
-              <div class="">
-                <h4 class="modal-title text-start">Update Email Template<b style="color: #76bc21"></b></h4>
-              </div>
-              <div class="">
-                <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
-              </div>
-            </div>
-            <div class="row" *ngIf="selectedEmail">
-              <form class="row" [formGroup]="updateForm" (ngSubmit)="updateEmail(updateForm.value)">
-                <div class="row d-flex justify-content-center">
-                  <div class="col-md-8">
-              
-                    <!-- Name -->
-                    <div class="row">
-                      <label for="Name" class="text-start">Name <span class="text-danger">*</span></label>
-                    </div>
-                    <input type="text" id="Name" class="form-control input pt-0"
-                           formControlName="Name">
-                    <div *ngIf="updateForm.get('Name').touched && updateForm.get('Name').invalid" class="text-danger">
-                      Name is required.
-                    </div>
-              
-                    <!-- Subject -->
-                    <div class="row mt-3">
-                      <label for="Subject" class="text-start">Subject <span class="text-danger">*</span></label>
-                    </div>
-                    <input type="text" id="Subject" class="form-control"
-                           formControlName="subject">
-                    <div *ngIf="updateForm.get('subject').touched && updateForm.get('subject').invalid" class="text-danger">
-                      Subject is required.
-                    </div>
-              
-                    <!-- Id -->
-                    <div class="row mt-3">
-                      <label for="templateType" class="text-start">Id <span class="text-danger">*</span></label>
-                    </div>
-                    <input type="text" id="templateType" class="form-control"
-                           formControlName="templateType">
-                    <div *ngIf="updateForm.get('templateType').touched && updateForm.get('templateType').invalid" class="text-danger">
-                      Id is required.
-                    </div>
-              
-                    <!-- Dropdown (optional field) -->
-                    <div class="row mt-3">
-                      <label for="dropdown" class="text-start">Insert Variable:</label>
-                    </div>
-                    <select (change)="onUpdate($event)" class="form-control w-100 my-2">
-                      <option selected disabled>- Select -</option>
-                      <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
-                    </select>
-              
-                    <!-- Quill Editor -->
-                    <div class="row mt-2">
-                      <label for="contentData" class="text-start">Content Data <span class="text-danger">*</span></label>
-                    </div>
-                    <quill-editor #editor [styles]="{height: '100px'}" formControlName="contentData">
-                    </quill-editor>
-                    <div *ngIf="updateForm.get('contentData').touched && updateForm.get('contentData').invalid" class="text-danger">
-                      Content is required.
-                    </div>
-              
-                  </div>
-                </div>
-              
-                <!-- Buttons -->
-                <div class="d-flex justify-content-between m-3">
-                  <button mat-flat-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
-                  <button mat-flat-button class="addBtn" type="submit">Update</button>
-                </div>
-              </form>
-              
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
+<div class="row pt-3">
+  <div class="col-md-8">
+    <hrm-table [data]="emailList"
+      [isServerSide]="false"
+      [columns]="columns" 
+      [showSearch]="true" 
+      (actionClicked)="handleAction($event, updateModal)">
+    </hrm-table>
   </div>
+
+  <div class="col-md-4">
+      <h1 mat-dialog-title>
+        {{ 'manage.email-template.add_email_template_title' | translate }}
+      </h1>
+      <form class="mt-4 p-3 bg-light border rounded" [formGroup]="form" (ngSubmit)="addEmail(form.value)">
+        <div class="row">
+          
+          <!-- Name -->
+          <div class="col-sm-12">
+            <!-- <label>Name: <span class="text-danger">*</span></label>
+            <input type="text" formControlName="Name" class="form-control">
+            <div *ngIf="form.get('Name').touched && form.get('Name').invalid" class="text-danger">
+              Name is required.
+            </div> -->
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'manage.email-template.form.name' | translate }}</mat-label>
+              <input matInput type="text" formControlName="Name">
+              <mat-error
+                *ngIf="form.get('Name')?.invalid && (form.get('Name')?.touched || form.get('Name')?.dirty)">
+                <span *ngIf="form.get('Name')?.errors?.['required']">
+                  {{ 'manage.email-template.form.error.name_required' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+      
+          <!-- Subject -->
+          <div class="col-sm-12 mt-3">
+            <!-- <label>Subject: <span class="text-danger">*</span></label>
+            <input type="text" formControlName="subject" class="form-control">
+            <div *ngIf="form.get('subject').touched && form.get('subject').invalid" class="text-danger">
+              Subject is required.
+            </div> -->
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'manage.email-template.form.subject' | translate }}</mat-label>
+              <input matInput type="text" formControlName="subject">
+              <mat-error
+                *ngIf="form.get('subject')?.invalid && (form.get('subject')?.touched || form.get('subject')?.dirty)">
+                <span *ngIf="form.get('subject')?.errors?.['required']">
+                  {{ 'manage.email-template.form.error.subject_required' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+      
+          <!-- Template Type / Id -->
+          <div class="col-sm-12 mt-3">
+            <!-- <label>Id: <span class="text-danger">*</span></label>
+            <input type="text" formControlName="templateType" class="form-control">
+            <div *ngIf="form.get('templateType').touched && form.get('templateType').invalid" class="text-danger">
+              Id is required.
+            </div> -->
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'manage.email-template.form.id' | translate }}</mat-label>
+              <input matInput type="text" formControlName="templateType">
+              <mat-error
+                *ngIf="form.get('templateType')?.invalid && (form.get('templateType')?.touched || form.get('templateType')?.dirty)">
+                <span *ngIf="form.get('templateType')?.errors?.['required']">
+                  {{ 'manage.email-template.form.error.id_required' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+      
+          <!-- Dropdown (optional: show error if needed) -->
+          <div class="col-sm-12 mt-3">
+            <!-- <label>Content Data: <span class="text-danger">*</span></label>
+            <select (change)="onDropdownChange($event)" class="my-2 py-2 form-control">
+              <option selected disabled>- Select -</option>
+              <option *ngFor="let option of dropdownOptions" [value]="option.label">{{ option.label }}</option>
+            </select> -->
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'manage.email-template.form.insert_variable' | translate }}</mat-label>
+              <mat-select (selectionChange)="onDropdownChange($event)">
+                <mat-option value="" disabled>- Select -</mat-option>
+                <mat-option *ngFor="let option of dropdownOptions" [value]="option.label">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+      
+          <!-- Quill Editor -->
+          <div class="col-sm-12">
+            <quill-editor #editor [styles]="{height: 'auto'}" formControlName="contentData"
+              [(ngModel)]="editorContent">
+            </quill-editor>
+            <div *ngIf="form.get('contentData').touched && form.get('contentData').invalid" class="text-danger">
+              {{ 'manage.email-template.form.error.content_required' | translate }}
+            </div>
+          </div>
+      
+          <!-- Submit Button -->
+          <div class="col-sm-12 mt-4">
+            <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting">
+              {{ 'manage.email-template.add' | translate }}
+            </button>
+          </div>
+      
+        </div>
+      </form>
+  </div>
+
+<ng-template #updateModal let-modal>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      {{ 'manage.email-template.modal.update_title' | translate }}
+    </h1>
+    <button mat-icon-button mat-dialog-close="" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="updateForm" (ngSubmit)="updateEmail(updateForm.value)">
+    <div mat-dialog-content>
+      <div class="row m-0">
+        <div class="col-12">
+          <div class="form-group">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'manage.email-template.form.name' | translate }}</mat-label>
+              <input matInput type="text" formControlName="Name">
+              <mat-error
+                *ngIf="updateForm.get('Name')?.invalid && (updateForm.get('Name')?.touched || updateForm.get('Name')?.dirty)">
+                <span *ngIf="updateForm.get('Name')?.errors?.['required']">
+                  {{ 'manage.email-template.form.error.name_required' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group mt-2">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'manage.email-template.form.subject' | translate }}</mat-label>
+              <input matInput type="text" formControlName="subject">
+              <mat-error
+                *ngIf="updateForm.get('subject')?.invalid && (updateForm.get('subject')?.touched || updateForm.get('subject')?.dirty)">
+                <span *ngIf="updateForm.get('subject')?.errors?.['required']">
+                  {{ 'manage.email-template.form.error.subject_required' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group mt-2">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'manage.email-template.form.id' | translate }}</mat-label>
+              <input matInput type="text" formControlName="templateType">
+              <mat-error
+                *ngIf="updateForm.get('templateType')?.invalid && (updateForm.get('templateType')?.touched || updateForm.get('templateType')?.dirty)">
+                <span *ngIf="updateForm.get('templateType')?.errors?.['required']">
+                  {{ 'manage.email-template.form.error.id_required' | translate }}
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group mt-2">
+            <mat-form-field class="w-100">
+              <mat-label>{{ 'manage.email-template.form.insert_variable' | translate }}</mat-label>
+              <mat-select (selectionChange)="onUpdate($event)">
+                <mat-option value="" disabled>- Select -</mat-option>
+                <mat-option *ngFor="let option of dropdownOptions" [value]="option.label">
+                  {{ option.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="form-group mt-2">
+            <label>{{ 'manage.email-template.form.content_data' | translate }}</label>
+            <quill-editor #editor [styles]="{height: '100px'}" formControlName="contentData"></quill-editor>
+            <div *ngIf="updateForm.get('contentData')?.invalid && (updateForm.get('contentData')?.touched || updateForm.get('contentData')?.dirty)" class="text-danger">
+              {{ 'manage.email-template.form.error.content_required' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+      <button mat-flat-button mat-dialog-close="">
+        {{ 'email-template.cancel' | translate }}
+      </button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="!updateForm.valid">
+        {{ 'email-template.update' | translate }}
+      </button>
+    </div>
+  </form>
+</ng-template>

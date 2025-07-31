@@ -105,7 +105,44 @@
           "title": "ERROR!"
         }
       }
-    }
+    },
+
+  "email-template.modal.add_title": "Add Email Template",
+  "email-template.modal.update_title": "Update Email Template",
+
+  "email-template.form.name": "Name",
+  "email-template.form.subject": "Subject",
+  "email-template.form.id": "Id",
+  "email-template.form.insert_variable": "Insert Variable",
+  "email-template.form.content_data": "Content Data",
+
+  "email-template.form.error.name_required": "Name is required",
+  "email-template.form.error.subject_required": "Subject is required",
+  "email-template.form.error.id_required": "Id is required",
+  "email-template.form.error.content_required": "Content is required",
+
+  "email-template.email_template_added": "Email template added successfully",
+  "email-template.email_template_add_fail": "Failed to add email template",
+  "email-template.email_template_updated": "Email template updated successfully",
+  "email-template.email_template_update_fail": "Failed to update email template",
+  "email-template.email_template_deleted": "Email template deleted successfully",
+  "email-template.email_template_delete_fail": "Failed to delete email template",
+  "email-template.add_email_template_title": "Add Email Template",
+  "email-template.add": "Add",
+
+  "common.missing_required_Field": "Please fill all required fields",
+  "common.validation_error": "Validation Error",
+  "common.success": "Success",
+  "common.error": "Error",
+
+  "emails.templateType": "Template Type",
+  "emails.templateName": "Template Name",
+  "emails.subject": "Subject",
+  "emails.content": "Content",
+  "emails.actions": "Actions",
+  "emails.edit": "Edit",
+  "emails.delete": "Delete"
+
   },
   "email-template": {
     "email_template_add_fail": "Failed to add Email Template",
@@ -113,7 +150,9 @@
     "email_template_update_fail": "Failed to update Email Template",
     "email_template_updated": "Email Template updated successfully",
     "email_template_delete_fail": "This Email Template cannot be deleted!",
-    "email_template_deleted": "Email Template deleted successfully"
+    "email_template_deleted": "Email Template deleted successfully",
+    "update": "Update",
+    "cancel": "Cancel"
   },
   "common": {
     "warning": "Warning",
@@ -251,5 +290,30 @@
         "high_emi": "Monthly EMI exceeds 50% of monthly salary. Increase number of installments."
       }
     }
+  },
+
+  "tags": {
+    "title": "Title",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add_edit_tag": "Add/Edit Tag",
+    "name": "Name",
+    "error_required": "Tag name is required",
+    "error_no_spaces": "Tag name cannot have leading or trailing spaces",
+    "add": "Add",
+    "update": "Update",
+    "cancel": "Cancel",
+    "error_invalid_input": "Please enter a valid tag name without leading or trailing spaces",
+    "error": "Error!",
+    "add_success": "Tag added successfully!",
+    "error_add": "Failed to add tag. Please try again.",
+    "update_success": "Tag updated successfully!",
+    "error_update": "Failed to update tag. Please try again.",
+    "confirm_action": "Are you sure you want to perform this action?",
+    "delete_success": "Tag has been deleted successfully!",
+    "error_delete": "Error deleting tag",
+    "error_comments": "Something went wrong, Please try again.",
+    "error_delete_dialog": "Cannot be deleted"
   }
 }
