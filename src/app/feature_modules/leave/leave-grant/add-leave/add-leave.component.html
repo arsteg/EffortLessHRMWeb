@@ -25,13 +25,14 @@
         </div>
         </div>
 
-        <div *ngIf="portalView === 'user' && tab === 7" class="row m-0">
+        <div *ngIf="portalView === 'user' && tabIndex === 7" class="row m-0">
         <div class="form-group col-md-12">
             <mat-form-field class="w-100">
             <mat-label>{{ 'leave.selectEmployee' | translate }}</mat-label>
             <mat-select name="users" multiple formControlName="users" required>
                 <mat-option *ngFor="let member of members" [value]="member.id">
-                {{ member?.name | titlecase }}
+                {{ member?.firstName | titlecase }}
+                {{ member?.lastName | titlecase }}
                 </mat-option>
             </mat-select>
             <mat-error *ngIf="leaveGrant.get('users')?.invalid && leaveGrant.get('users')?.touched">
