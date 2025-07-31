@@ -97,8 +97,8 @@ export class ShowStatusComponent {
       "next": this.recordsPerPage.toString(),
       "status": this.status
     };
+    const storedTabValue = localStorage.getItem('selectedTab');
     if (this.portalView === 'admin') {
-      console.log(this.portalView);
       this.leaveService.getLeaveGrant(requestBody).subscribe((res: any) => {
         if (res.status == 'success') {
           this.totalRecords = res.total;
@@ -112,8 +112,9 @@ export class ShowStatusComponent {
         this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
           this.leaveGrant = res.data.filter(leave => leave.status === this.status);
         });
-      } else if (this.tab === 7) {
+      } else if (parseInt(storedTabValue) === 7) {
         this.leaveService.getLeaveGrantByTeam(requestBody).subscribe((res: any) => {
+          this.leaveGrant = res.data.filter(leave => leave.status === this.status);
           if (res.status == 'success') {
             this.totalRecords = res.total;
             this.leaveGrant = res.data;
@@ -132,7 +133,6 @@ export class ShowStatusComponent {
 
   openStatusModal(report: any, status: string): void {
     report.status = status;
-    console.log(report);
     this.leaveService.leave.next(report);
     const dialogRef = this.dialog.open(UpdateStatusComponent, {
       width: '50%',
@@ -140,7 +140,6 @@ export class ShowStatusComponent {
     });
     dialogRef.afterClosed().subscribe(result => {
       this.refreshLeaveGrantTable();
-      console.log('The modal was closed');
     });
   }
 
@@ -164,7 +163,6 @@ export class ShowStatusComponent {
       );
     }
     if (this.portalView === 'user') {
-      console.log(this.portalView, this.tab);
       if (this.tab === 4) {
         this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
           this.leaveGrant = res.data.filter(leave => leave.status === this.status);

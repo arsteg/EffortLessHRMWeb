@@ -1,4 +1,16 @@
-<mat-tab-group mat-align-tabs="start" mat-stretch-tabs="false" [(selectedIndex)]="selectedTab" (selectedTabChange)="selectTab($event.index)">
+<mat-tab-group
+  mat-align-tabs="start"
+  mat-stretch-tabs="false"
+  [selectedIndex]="selectedTab"
+  (selectedIndexChange)="onTabChange($event)"
+>
+  <mat-tab label="{{ 'separation.resignation' | translate }}"></mat-tab>
+  <mat-tab label="{{ 'separation.termination' | translate }}"></mat-tab>
+</mat-tab-group>
+
+<router-outlet></router-outlet>
+
+<!-- <mat-tab-group mat-align-tabs="start" mat-stretch-tabs="false" [(selectedIndex)]="selectedTab" (selectedTabChange)="selectTab($event.index)">
   <mat-tab label="Resignation">
     <div class="py-3">
       <app-resignation></app-resignation>
@@ -10,4 +22,4 @@
       <app-termination></app-termination>
     </div>
   </mat-tab>
-</mat-tab-group>
+</mat-tab-group> -->

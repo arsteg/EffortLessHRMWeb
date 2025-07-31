@@ -40,6 +40,11 @@ export class HeaderComponent {
     .subscribe({
       next: (response: any) => {
         const preferences = response?.data?.preferences || [];
+        if (!preferences || preferences.length === 0) {
+          this.isMenuCollapsed = false;
+          this.onMenuToggled.emit(false);
+          return;
+        }
         const match = preferences.find((pref: any) =>
           pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.MenuCollapseOrExpand
         );

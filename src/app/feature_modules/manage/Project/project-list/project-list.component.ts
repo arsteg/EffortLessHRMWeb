@@ -10,6 +10,8 @@ import { DatePipe } from '@angular/common';
 import { PreferenceService } from 'src/app/_services/user-preference.service';
 import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
@@ -40,7 +42,7 @@ export class ProjectListComponent implements OnInit {
   formDate = new FormGroup({ dateYMD: new FormControl(new Date()) });
   public sortOrder: string = '';
   bsValue = new Date();
-  totalRecords: number // example total records
+  totalRecords: number =0; // example total records
   recordsPerPage: number = 10;
   currentPage: number = 1;
   dialogRef: MatDialogRef<any>;
@@ -51,33 +53,33 @@ export class ProjectListComponent implements OnInit {
   columns: TableColumn[] = [
     {
       key: 'projectName',
-      name: 'Project Name',
+      name: this.translate.instant('manage.project.list.projectName'),
     },
     {
       key: 'startDate',
-      name: 'Start Date',
+      name: this.translate.instant('manage.project.list.startDate'),
       valueFn: (row: any) => row.startDate ? this.datePipe.transform(row.startDate, 'mediumDate') : row.startDate
     },
     {
       key: 'endDate',
-      name: 'End Date',
+      name: this.translate.instant('manage.project.list.endDate'),
       valueFn: (row: any) => row.startDate ? this.datePipe.transform(row.startDate, 'mediumDate') : row.startDate
     },
     {
       key: 'estimatedTime',
-      name: 'Estimated Time'
+      name: this.translate.instant('manage.project.list.estimatedTime')
     },
     {
       key: 'notes',
-      name: 'Notes'
+      name: this.translate.instant('manage.project.list.notes')
     },
     {
       key: 'status',
-      name: 'Status'
+      name: this.translate.instant('manage.project.list.status')
     },
     {
       key: 'ProjectUser',
-      name: 'Members',
+      name: this.translate.instant('manage.project.list.members'),
       isHtml: true,
       valueFn: (row: any) => {
         return !this.userId ? ('<div class="d-flex">' +
@@ -111,23 +113,24 @@ export class ProjectListComponent implements OnInit {
     public commonservice: CommonService,
     public datePipe: DatePipe,
     private dialog: MatDialog,
-    private preferenceService: PreferenceService
+    private preferenceService: PreferenceService,
+    private translate: TranslateService
   ) {
     this.form = this.fb.group({
-      projectName: ['', Validators.required],
+      projectName: ['', [Validators.required, CustomValidators.noLeadingOrTrailingSpaces]],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       estimatedTime: [0, Validators.required],
-      notes: ['', Validators.required]
+      notes: ['', [Validators.required, CustomValidators.noLeadingOrTrailingSpaces]]
     });
 
     this.updateForm = this.fb.group({
-      projectName: ['', Validators.required],
+      projectName: ['', [Validators.required, CustomValidators.noLeadingOrTrailingSpaces]],
       startDate: ['', Validators.required],
-      endDate: [''],
-      estimatedTime: [''],
-      notes: [''],
-      firstName: ['', Validators.required]
+      endDate: ['', Validators.required],
+      estimatedTime: [0, Validators.required],
+      notes: ['', [Validators.required, CustomValidators.noLeadingOrTrailingSpaces]],
+      //firstName: ['', Validators.required]
     });
 
     this.addUserForm = this.fb.group({
@@ -148,7 +151,7 @@ export class ProjectListComponent implements OnInit {
         this.openModal(this.updateModal, event.row);
         break;
       case 'Delete Project':
-        this.openModal(this.deleteModal, event.row, '300px');
+        this.openModal(this.deleteModal, event.row, '400px');
         break;
     }
   }
@@ -168,6 +171,11 @@ export class ProjectListComponent implements OnInit {
     ).subscribe({
       next: (response: any) => {
         const preferences = response?.data?.preferences || [];
+        if (!preferences || preferences.length === 0) {
+          this.userId = '';
+          this.getProjectList();
+          return;
+        }
         const match = preferences.find((pref: any) =>
           pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ManageProjectsSelectedMember
         );
@@ -231,6 +239,7 @@ export class ProjectListComponent implements OnInit {
     this.projectService.getProjectByUserId(this.userId).subscribe(response => {
       this.projectList = response && response.data && response.data['projectList'];
       this.allData = structuredClone(this.projectList);
+      this.totalRecords = this.projectList.length;
     });
   }
 
@@ -255,10 +264,12 @@ export class ProjectListComponent implements OnInit {
       this.projectService.addproject(this.form.value).subscribe((result: any) => {
         const projects = result && result.data && result.data.newProject;
         this.projectList.push(projects);
-        this.toastr.success('New Project', 'Successfully Added!');
+        this.toastr.success(this.translate.instant('manage.project.list.success.newProject'), this.translate.instant('manage.project.list.success.added'));
         this.form.reset();
+        this.dialogRef.close(true);
+        this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
       }, err => {
-        this.toastr.error('Can not be Added', 'ERROR!')
+        this.toastr.error(this.translate.instant('manage.project.list.error.cannotAdd'), this.translate.instant('manage.project.list.error.title'))
       })
     } else {
       this.markFormGroupTouched(this.form);
@@ -278,28 +289,33 @@ export class ProjectListComponent implements OnInit {
     this.projectService.deleteproject(this.selectedProject._id)
       .subscribe(response => {
         this.ngOnInit();
-        this.toastr.success('Successfully Deleted!')
+        this.toastr.success(this.translate.instant('manage.project.list.success.deleted'))
       }, err => {
-        this.toastr.error('Can not be Deleted', 'ERROR!')
+        this.toastr.error(this.translate.instant('manage.project.list.error.cannotDelete'), this.translate.instant('manage.project.list.error.title'))
       })
   }
 
   updateProject(updateForm: FormGroup) {
-    // if (this.updateForm.valid) {
-    const updatedProjectData = this.updateForm.value;
+    if (this.updateForm.valid) {
+      const updatedProjectData = this.updateForm.value;
 
-    this.projectService.updateproject(this.selectedProject._id, updatedProjectData).subscribe(response => {
-      this.toastr.success('Existing Project Updated', 'Successfully Updated!');
+      this.projectService.updateproject(this.selectedProject._id, updatedProjectData).subscribe(response => {
+        this.toastr.success(this.translate.instant('manage.project.list.success.updatedProject'), this.translate.instant('manage.project.list.success.updated'));
+        this.dialogRef.close(true);
 
-      // Delay the ngOnInit() call to ensure the toast message is displayed
-      setTimeout(() => {
-        this.getProjectList();
-        this.selectedProject = this.projectList.find(p => p._id === this.selectedProject._id);
-      }, 500);
-    }, err => {
-      console.error('Error updating project:', err); // Debugging
-      this.toastr.error('Can not be Updated', 'ERROR!')
-    })
+        // Delay the ngOnInit() call to ensure the toast message is displayed
+        setTimeout(() => {
+          this.getProjectList();
+          this.selectedProject = this.projectList.find(p => p._id === this.selectedProject._id);
+        }, 500);
+      }, err => {
+        console.error('Error updating project:', err); // Debugging
+        this.toastr.error(this.translate.instant('manage.project.list.error.cannotUpdate'), this.translate.instant('manage.project.list.error.title'))
+      })
+    }
+    else{
+      this.markFormGroupTouched(this.updateForm);
+    }
   }
 
   addUserToProject(addUserForm) {
@@ -309,12 +325,12 @@ export class ProjectListComponent implements OnInit {
     if (project_Users.length > 0) {
       this.projectService.addUserToProject(this.selectedProject.id, project_Users).subscribe(result => {
         this.ngOnInit();
-        this.toastr.success('New Member Added', 'Successfully Added!')
+        this.toastr.success(this.translate.instant('manage.project.list.success.newMemberAdded'), this.translate.instant('manage.project.list.success.added'))
       }, err => {
-        this.toastr.error('Member Already Exist', 'ERROR!')
+        this.toastr.error(this.translate.instant('manage.project.list.error.memberExists'), this.translate.instant('manage.project.list.error.title'))
       })
     } else {
-      this.toastr.error('All selected users already exist', 'ERROR!')
+      this.toastr.error(this.translate.instant('manage.project.list.error.allUsersExist'), this.translate.instant('manage.project.list.error.title'))
     }
   }
 
@@ -335,9 +351,9 @@ export class ProjectListComponent implements OnInit {
     this.projectService.deleteprojectUser(projectUserList.id).subscribe(response => {
       this.projectUserList.splice(index, 1);
       this.ngOnInit();
-      this.toastr.success(projectUserList.user.firstName.toUpperCase(), 'Successfully Removed!')
+      this.toastr.success(projectUserList.user.firstName.toUpperCase(), this.translate.instant('manage.project.list.success.title'))
     }, err => {
-      this.toastr.error(projectUserList.user.firstName.toUpperCase(), 'ERROR! Can not be Removed')
+      this.toastr.error(projectUserList.user.firstName.toUpperCase(), this.translate.instant('manage.project.list.error.title'))
     })
   }
 
@@ -386,10 +402,12 @@ export class ProjectListComponent implements OnInit {
       const newUsers = usersToAdd.map((id) => ({ user: id }));
       this.projectService.addUserToProject(this.selectedProject.id, newUsers).subscribe(
         () => {
-          this.toastr.success('New Members Added', 'Success');
+          this.toastr.success(this.translate.instant('manage.project.list.success.newMembersAdded'), this.translate.instant('manage.project.list.success.title'));
           this.getProjectUser(this.selectedProject.id);
+          this.dialogRef.close(true);
+          this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
         },
-        (error) => this.toastr.error('Error Adding Members', 'Error')
+        (error) => this.toastr.error(this.translate.instant('manage.project.list.error.addingMembers'), this.translate.instant('manage.project.list.error.title'))
       );
     }
 
@@ -399,13 +417,33 @@ export class ProjectListComponent implements OnInit {
       if (user) {
         this.projectService.deleteprojectUser(user.id).subscribe(
           () => {
-            this.toastr.success(`${user.user.firstName} Removed`, 'Success');
+            this.toastr.success(`${user.user.firstName} Removed`, this.translate.instant('manage.project.list.success.title'));
             this.getProjectUser(this.selectedProject.id);
           },
-          (error) => this.toastr.error('Error Removing Member', 'Error')
+          (error) => this.toastr.error(this.translate.instant('manage.project.list.error.removingMember'), this.translate.instant('manage.project.list.error.title'))
         );
       }
     });
   }
 
+  onSortChange(event: any) {
+    const sorted = this.allData.slice().sort((a: any, b: any) => {
+      var valueA = this.getNestedValue(a, event.active);
+      var valueB = this.getNestedValue(b, event.active);
+
+      // Handle nulls and undefined
+      valueA = valueA ?? '';
+      valueB = valueB ?? '';
+
+      if (valueA < valueB) return event.direction === 'asc' ? -1 : 1;
+      if (valueA > valueB) return event.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    this.projectList = sorted;
+  }
+
+  private getNestedValue(obj: any, path: string): any {
+    return path.split('.').reduce((o, key) => (o ? o[key] : undefined), obj);
+  }
 }

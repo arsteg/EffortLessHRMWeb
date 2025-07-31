@@ -1,206 +1,134 @@
-<div class="main-content">
-  <div class="container-fluid mt-3 px-lg-4 px-2">
-    <!-- date selection -->
-    <div class="col-lg-3 col-md-6 d-flex align-items-baseline">
-      <label class="pt-2">Date</label>
-      <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
-      <input type="date" name="fromDate" class="form-control calendar mx-1" id="fromDate" (change)="filterData()"
-        [(ngModel)]="selectedDate" />
-      <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
-    </div>
+<div class="row mt-2">
+  <div class="col-auto">
+    <subordinateSelection (selectedUsersChange)="selectedUser = $event; filterData()"></subordinateSelection>
+  </div>
 
-    <!-- filters option - Desktop and Tablet -->
-    <div class="d-md-flex d-none col-lg-12 col-md-11 mt-4">
-      <label class="pt-3 text-muted me-3">Filter&nbsp;by: </label>
-      <!-- select user -->
-      <mat-form-field appearance="outline" class="w-25 mx-1">
-        <mat-label>Select User</mat-label>
-        <mat-select multiple [(ngModel)]="selectedUser">
-          <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
-            [selected]="selectedUser?.includes(member?.id)">
-            {{member.name | titlecase}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+  <div class="col-auto">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'reports.timeline.select_project' | translate }}</mat-label>
+      <mat-select multiple [(ngModel)]="selectedProject">
+        <mat-option *ngFor="let project of projectList" [value]="project?.id" (click)="filterData()"
+          [selected]="selectedProject?.includes(project?.id)">
+          {{project?.projectName | titlecase}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-      <!-- select project -->
-      <mat-form-field appearance="outline" class="w-25 mx-1">
-        <mat-label>Select Project</mat-label>
-        <mat-select multiple [(ngModel)]="selectedProject">
-          <mat-option *ngFor="let project of projectList" [value]="project?.id" (click)="filterData()"
-            [selected]="selectedProject?.includes(project?.id)">
-            {{project?.projectName | titlecase}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+  <div class="col-auto d-flex align-items-baseline">
+    <label class="pt-2">{{ 'reports.timeline.date' | translate }}</label>
+    <span (click)="SetPreviousDay()" class="fa fa-angle-left fa-lg p-3"></span>
+    <input type="date" name="fromDate" class="form-control calendar mx-1" id="fromDate" (change)="filterData()"
+      [(ngModel)]="selectedDate" />
+    <span (click)="SetNextDay()" class="fa fa-angle-right fa-lg p-3"></span>
+  </div>
 
-      <!-- project/members toggle option -->
-      <div class="d-flex align-items-baseline mt-1 mx-2">
-        <button class=" rounded-pill mx-3 py-2" [class.active]="showProjectsColumn" [class.shadow]="showProjectsColumn"
-          (click)="toggleColumns('projects')">Project</button>
-        <button class=" rounded-pill py-2" [class.active]="showMembersColumn" [class.shadow]="showMembersColumn"
-          (click)="toggleColumns('members')">Members</button>
-      </div>
+  <div class="col-auto">
+    <button mat-icon-button (click)="refresh()" title="Refresh Timeline">
+      <mat-icon>refresh</mat-icon>
+    </button>
+  </div>
 
-      <!-- refersh button -->
-      <div class="ms-auto">
-        <button mat-flat-button id="btnRefresh" class="mt-2 bi bi-arrow-repeat header-icons contentHeading"
-          title="Refresh Timeline" (click)="refresh()"></button>
-      </div>
-    </div>
-
-    <!-- filters option - mobile device -->
-    <div class="d-block d-md-none col-lg-12 col-md-11 mt-2 mb-4">
-      <label class="pt-3 text-muted mb-2">Filter&nbsp;by: </label>
-      <div class="d-flex">
-        <!-- select user -->
-        <mat-form-field appearance="outline" class="mx-1 flex-row">
-          <mat-label>Select User</mat-label>
-          <mat-select multiple [(ngModel)]="selectedUser">
-            <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
-              [selected]="selectedUser?.includes(member?.id)">
-              {{member.name | titlecase}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- select project -->
-        <mat-form-field appearance="outline" class="mx-1 flex-row">
-          <mat-label>Select Project</mat-label>
-          <mat-select multiple [(ngModel)]="selectedProject">
-            <mat-option *ngFor="let project of projectList" [value]="project?.id" (click)="filterData()"
-              [selected]="selectedProject?.includes(project?.id)">
-              {{project?.projectName | titlecase}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <!-- project/members toggle option & refersh button -->
-      <div class="d-flex">
-        <div class="d-flex align-items-baseline mt-1 mx-2">
-          <button class="rounded-pill me-1 py-2" [class.active]="showProjectsColumn" [class.shadow]="showProjectsColumn"
-            (click)="toggleColumns('projects')">Project</button>
-          <button class=" rounded-pill py-2" [class.active]="showMembersColumn" [class.shadow]="showMembersColumn"
-            (click)="toggleColumns('members')">Members</button>
-        </div>
-
-        <div class="ms-auto">
-          <button mat-flat-button id="btnRefresh" class="mt-2 bi bi-arrow-repeat header-icons contentHeading"
-            title="Refresh Timeline" (click)="refresh()"></button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Legends -->
-    <div class="d-flex mb-3">
-      <div class="col-md-10 d-flex flex-wrap gap-md-3 gap-1">
-        <div class="d-flex align-items-center gap-1">
-          <label class="type-tracked d-flex align-items-center">
-            <input type="checkbox" checked="" value="tracked" (change)="toggleLogsVisibility('tracked')">
-            <span class="type-tracked__control tracked"></span>
-            <span class="type-tracked__label">Tracked</span>
-          </label>
-        </div>
-
-        <div class="d-flex align-items-center gap-1">
-          <label class="type-tracked d-flex align-items-center">
-            <input type="checkbox" checked="" value="medium" (change)="toggleLogsVisibility('medium')">
-            <span class="type-tracked__control medium"></span>
-            <span class="type-tracked__label ">Medium Activity </span>
-          </label>
-        </div>
-
-        <div class="d-flex align-items-center gap-1">
-          <label class="type-tracked d-flex align-items-center">
-            <input type="checkbox" checked="" value="manual" (change)="toggleLogsVisibility('manual')">
-            <span class="type-tracked__control manual"></span>
-            <span class="type-tracked__label ">Manual </span>
-          </label>
-        </div>
-
-        <div class="d-flex align-items-center gap-1">
-          <label class="type-tracked d-flex align-items-center">
-            <input type="checkbox" checked="" value="low" (change)="toggleLogsVisibility('low')">
-            <span class="type-tracked__control low"></span>
-            <span class="type-tracked__label ">Low Activity </span>
-          </label>
-        </div>
-      </div>
-
-      <!-- export button -->
-      <div class="ms-auto">
-        <div class="dropdown order-first order-sm-last d-flex">
-          <button class="dropdown-toggle formrow-inputState form-select select-styled active export_btn"
-            type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            <p class="mb-0 text-muted"> Export </p>
-          </button>
-          <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
-            <li><a class="export-button" (click)="exportToCsv()">CSV</a></li>
-            <li><a class="export-button" (click)="exportToExcel()">XLS</a></li>
-            <li><a class="export-button" (click)="exportToPdf()">PDF</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Table Reports Data -->
-    <div class="tableContainer table-responsive">
-      <table class="p-2 rounded" id="timeSheet" #timeSheet>
-        <thead>
-          <tr>
-            <th class="pe-lg-0 pe-5" scope="col" *ngIf="showMembersColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
-              data-name="logs" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-              Users&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-            </th>
-
-            <th class="pe-lg-0 pe-5" scope="col" *ngIf="showProjectsColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
-              data-name="logs" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-              Projects&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-            </th>
-
-            <th class="pe-lg-0 pe-5" scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="logs"
-              (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
-              Time&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
-            </th>
-
-            <th class="pe-lg-0 pe-4 text-center" *ngFor="let hour of hours" scope="col" width="60">
-              {{ formattedStartTimeHour(hour) }}
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr *ngFor="let data of timeline;  let i = index;">
-            <td *ngIf="showMembersColumn">
-              <span class="letter d-lg-inline d-none mx-1"
-                [style.background-color]="commonservice.getRandomColor(data?.logs[0]?.user?.lastName)">{{data?.logs[0]?.user?.firstName.slice(0,1)
-                | uppercase}}{{data?.logs[0]?.user?.lastName.slice(0,1) | uppercase}}</span>
-              {{data?.logs[0]?.user?.firstName | titlecase}}&nbsp;{{data?.logs[0]?.user?.lastName | titlecase}}
-            </td>
-
-            <td *ngIf="showProjectsColumn">{{data?.logs[0]?.project?.projectName}}</td>
-
-            <td>
-              {{ minutesToTime(data?.logs.length * 10) }}
-            </td>
-
-            <td *ngFor="let hour of hours" [style.padding]="0" class="hour report_time">
-              <ng-container *ngFor="let log of data.logs">
-                <div class="hour-container" *ngIf="isLogInHour(log, startTime.getHours() + hour) &&
-                  ((trackedChecked && getLogColor(log) === '#2ECD6F') ||
-                    (mediumChecked && getLogColor(log) === '#FFC107') ||
-                    (lowChecked && getLogColor(log) === '#ff0000') ||
-                    (manualChecked && getLogColor(log) === '#f87a3b'))" [style.height.px]="35"
-                  [style.width.px]="getLogWidth(log)" [style.background-color]="getLogColor(log)"
-                  [tooltip]="getLogTitle(log)" [style.margin-left.px]="getLogMarginLeft(log)"
-                  [style.background-color]="getLogColor(log)">
-                </div>
-              </ng-container>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="col-auto">
+    <div class="dropdown">
+      <button mat-icon-button matTooltip="Download" matTooltipPosition="below"
+          class="me-2" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+          <mat-icon>download</mat-icon>
+        </button>
+      <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
+        <li><a class="export-button" (click)="exportToCsv()">{{ 'reports.timeline.csv' | translate }}</a></li>
+        <li><a class="export-button" (click)="exportToExcel()">{{ 'reports.timeline.xls' | translate }}</a></li>
+        <li><a class="export-button" (click)="exportToPdf()">{{ 'reports.timeline.pdf' | translate }}</a></li>
+      </ul>
     </div>
   </div>
 </div>
+
+<div class="row py-2">
+  <div class="col-md-10 d-flex flex-wrap gap-md-3 gap-1">
+    <div class="d-flex align-items-center gap-1">
+      <label class="type-tracked d-flex align-items-center">
+        <input type="checkbox" checked="" value="tracked" (change)="toggleLogsVisibility('tracked')">
+        <span class="type-tracked__control tracked"></span>
+        <span class="type-tracked__label">{{ 'reports.timeline.tracked' | translate }}</span>
+      </label>
+    </div>
+    <div class="d-flex align-items-center gap-1">
+      <label class="type-tracked d-flex align-items-center">
+        <input type="checkbox" checked="" value="medium" (change)="toggleLogsVisibility('medium')">
+        <span class="type-tracked__control medium"></span>
+        <span class="type-tracked__label">{{ 'reports.timeline.medium_activity' | translate }}</span>
+      </label>
+    </div>
+    <div class="d-flex align-items-center gap-1">
+      <label class="type-tracked d-flex align-items-center">
+        <input type="checkbox" checked="" value="manual" (change)="toggleLogsVisibility('manual')">
+        <span class="type-tracked__control manual"></span>
+        <span class="type-tracked__label">{{ 'reports.timeline.manual' | translate }}</span>
+      </label>
+    </div>
+    <div class="d-flex align-items-center gap-1">
+      <label class="type-tracked d-flex align-items-center">
+        <input type="checkbox" checked="" value="low" (change)="toggleLogsVisibility('low')">
+        <span class="type-tracked__control low"></span>
+        <span class="type-tracked__label">{{ 'reports.timeline.low_activity' | translate }}</span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<table class="hrm-table" id="timeSheet" #timeSheet>
+  <thead>
+    <tr>
+      <th class="pe-lg-0 pe-5" scope="col" *ngIf="showMembersColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
+        data-name="logs" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+        {{ 'reports.timeline.users' | translate }}&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+      </th>
+
+      <th class="pe-lg-0 pe-5" scope="col" *ngIf="showProjectsColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
+        data-name="logs" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+        {{ 'reports.timeline.projects' | translate }}&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+      </th>
+
+      <th class="pe-lg-0 pe-5" scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="logs"
+        (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
+        {{ 'reports.timeline.time' | translate }}&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
+      </th>
+
+      <th class="pe-lg-0 pe-4 text-center" *ngFor="let hour of hours" scope="col" width="60">
+        {{ formattedStartTimeHour(hour) }}
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let data of timeline;  let i = index;">
+      <td *ngIf="showMembersColumn">
+        <span class="letter d-lg-inline d-none mx-1"
+          [style.background-color]="commonservice.getRandomColor(data?.logs[0]?.user?.lastName)">{{data?.logs[0]?.user?.firstName.slice(0,1)
+          | uppercase}}{{data?.logs[0]?.user?.lastName.slice(0,1) | uppercase}}</span>
+        {{data?.logs[0]?.user?.firstName | titlecase}}&nbsp;{{data?.logs[0]?.user?.lastName | titlecase}}
+      </td>
+
+      <td *ngIf="showProjectsColumn">{{data?.logs[0]?.project?.projectName}}</td>
+
+      <td>
+        {{ minutesToTime(data?.logs.length * 10) }}
+      </td>
+
+      <td *ngFor="let hour of hours" [style.padding]="0" class="hour report_time">
+        <ng-container *ngFor="let log of data.logs">
+          <div class="hour-container" *ngIf="isLogInHour(log, startTime.getHours() + hour) &&
+            ((trackedChecked && getLogColor(log) === '#2ECD6F') ||
+              (mediumChecked && getLogColor(log) === '#FFC107') ||
+              (lowChecked && getLogColor(log) === '#ff0000') ||
+              (manualChecked && getLogColor(log) === '#f87a3b'))" [style.height.px]="35"
+            [style.width.px]="getLogWidth(log)" [style.background-color]="getLogColor(log)"
+            [tooltip]="getLogTitle(log)" [style.margin-left.px]="getLogMarginLeft(log)"
+            [style.background-color]="getLogColor(log)">
+          </div>
+        </ng-container>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -11,15 +11,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true };
-  }
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
 @Component({
   selector: 'app-leave-category',
   templateUrl: './leave-category.component.html',
@@ -64,7 +57,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private modalService: NgbModal,
     private leaveService: LeaveService,
     private fb: FormBuilder,
     private dialog: MatDialog,
@@ -75,8 +67,8 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   ) {
     this.categoryForm = this.fb.group({
       leaveType: ['', Validators.required],
-      label: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
-      abbreviation: ['', [Validators.required, labelValidator]],
+      label: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
+      abbreviation: ['', [Validators.required, CustomValidators.labelValidator]],
       canEmployeeApply: [true, Validators.required],
       isHalfDayTypeOfLeave: [true, Validators.required],
       submitBefore: [0, [Validators.required, Validators.min(0)]],
@@ -93,12 +85,12 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isEmployeesAllowedToNegativeLeaveBalance: [true],
       isRoundOffLeaveAccrualNearestPointFiveUnit: [true],
       isIntraCycleLapseApplicableForThisCategory: [true],
-      minimumNumberOfDaysAllowed: [0, [Validators.required, Validators.min(0)]], // Add min(0)
+      minimumNumberOfDaysAllowed: [0, [Validators.required, Validators.min(0)]],
       isProRateFirstMonthAccrualForNewJoinees: [''],
-      maximumNumberConsecutiveLeaveDaysAllowed: [0, [Validators.required, Validators.min(0)]], // Add min(0)
+      maximumNumberConsecutiveLeaveDaysAllowed: [0, [Validators.required, Validators.min(0)]],
       isPaidLeave: [true],
       isEmployeeAccrualLeaveInAdvance: [true]
-    });
+    }, { validators: this.minLessThanMaxValidator });
     this.leaveTypeSubscription = this.categoryForm.get('leaveType')?.valueChanges.subscribe(value => {
       const leaveAccrualPeriodControl = this.categoryForm.get('leaveAccrualPeriod');
       if (value === 'general-leave') {
@@ -118,6 +110,29 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
     });
   }
 
+  minLessThanMaxValidator: ValidatorFn = (group: AbstractControl) => {
+    const min = group.get('minimumNumberOfDaysAllowed')?.value;
+    const max = group.get('maximumNumberConsecutiveLeaveDaysAllowed')?.value;
+    if (
+      min !== null && min !== undefined &&
+      max !== null && max !== undefined &&
+      min > 0 && max > 0 &&
+      min > max
+    ) {
+      group.get('minimumNumberOfDaysAllowed')?.setErrors({ minNotLessThanMax: true });
+      return { minNotLessThanMax: true };
+    } else {
+      // Only clear this specific error, not others
+      const minCtrl = group.get('minimumNumberOfDaysAllowed');
+      if (minCtrl?.hasError('minNotLessThanMax')) {
+        const errors = { ...minCtrl.errors };
+        delete errors['minNotLessThanMax'];
+        minCtrl.setErrors(Object.keys(errors).length ? errors : null);
+      }
+      return null;
+    }
+  };
+
   ngOnInit(): void {
     this.getAllLeaveCategories();
   }
@@ -126,23 +141,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
     if (this.leaveTypeSubscription) {
       this.leaveTypeSubscription.unsubscribe();
     }
-  }
-
-  duplicateLabelValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: boolean } | null => {
-      const label = control.value;
-      if (label && this.allData.length) {
-        if (this.isEdit && this.selectedLeaveCategory?.label.toLowerCase() === label.toLowerCase()) {
-          return null;
-        }
-        const isDuplicate = this.allData.some(template =>
-          template._id !== (this.isEdit ? this.selectedLeaveCategory?._id : '') &&
-          template.label.toLowerCase() === label.toLowerCase()
-        );
-        return isDuplicate ? { duplicateLabel: true } : null;
-      }
-      return null;
-    };
   }
 
   reset() {
@@ -228,39 +226,45 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   }
 
   onSubmission() {
-    if (this.categoryForm.valid) {
-      if (!this.isEdit) {
-        this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe(
-          (res: any) => {
-            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
-            this.toast.success(this.translate.instant('leave.leaveSuccessfulAssigned'));
-            this.dialogRef.close(true);
-            this.reset();
-          },
-          (err) => {
-            this.toast.error(this.translate.instant('leave.leaveErrorAssigned'));
-          }
-        );
-      } else if (this.isEdit) {
-        const id = this.selectedLeaveCategory._id;
-        this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe(
-          (res: any) => {
-            const updatedData = this.tableService.dataSource.data.map(item =>
-              item._id === res.data._id ? res.data : item
-            );
-            this.tableService.setData(updatedData);
-            this.toast.success(this.translate.instant('leave.leaveSuccessfulAssignmentUpdated'));
-            this.dialogRef.close(true);
-            this.reset();
-          },
-          (err) => {
-            this.toast.error(this.translate.instant('leave.leaveErrorAssignmentUpdated'));
-          }
-        );
-      }
-    } else {
+    if(this.categoryForm.invalid){
       this.markFormGroupTouched(this.categoryForm);
+      return;
     }
+    else{
+    if (!this.isEdit) {
+      this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe(
+        (res: any) => {
+          this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+          this.toast.success(res.message);
+          this.dialogRef.close(true);
+          this.reset();
+          this.getAllLeaveCategories(); // <-- Refresh list after add
+        },
+        (err) => {
+          this.toast.error(err || this.translate.instant('leave.leaveErrorAssignment'));
+        }
+      );
+    } else if (this.isEdit) {
+      const id = this.selectedLeaveCategory._id;
+      this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe(
+        (res: any) => {
+          const updatedData = this.tableService.dataSource.data.map(item =>
+            item._id === res.data._id ? res.data : item
+          );
+          this.tableService.setData(updatedData);
+          this.toast.success(res.message);
+          this.dialogRef.close(true);
+          this.reset();
+          this.getAllLeaveCategories(); // <-- Refresh list after update
+        },
+        (err) => {
+          this.toast.error(err || this.translate.instant('leave.leaveErrorAssignmentUpdated'));
+
+        }
+      );
+    }
+  }
+
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
@@ -318,8 +322,8 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   deleteTemplate(_id: string) {
     this.leaveService.deleteLeaveCategory(_id).subscribe(
       (res: any) => {
-        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
         this.toast.success(this.translate.instant('leave.leaveSuccessfulAssignmentDeleted'));
+        this.getAllLeaveCategories(); // <-- Refresh list after delete
       },
       (err) => {
         const errorMessage = err || this.translate.instant('leave.leaveErrorAssignmentDeleted');

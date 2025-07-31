@@ -94,7 +94,7 @@ export class LoginComponent implements OnInit {
               this.createUserPreference(this.user.id, PreferenceKeys.AppMode, this.selectedAppMode);
             },
             error: (error) => {
-              console.error('Error fetching preferences:', error);
+              //console.error('Error fetching preferences:', error);
               this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
               this.createUserPreference(this.user.id, PreferenceKeys.AppMode, this.selectedAppMode);
             }

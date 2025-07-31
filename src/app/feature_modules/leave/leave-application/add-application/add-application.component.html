@@ -27,13 +27,13 @@
             </div>
         </div>
 
-        <div *ngIf="portalView === 'user' && tab === 5" class="row m-0">
+        <div *ngIf="portalView === 'user' && this.tabIndex === 5" class="row m-0">
             <div class="form-group col-md-12">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.selectEmployeeForLeave' | translate }}</mat-label>
                     <mat-select formControlName="employee" required>
                         <mat-option *ngFor="let member of members" [value]="member.id">
-                            {{ member?.name | titlecase }}
+                            {{ member?.firstName | titlecase }} {{ member?.lastName | titlecase }}
                         </mat-option>
                     </mat-select>
                     <mat-error
@@ -48,109 +48,146 @@
             <div class="form-group col-md-12">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.selectCategory' | translate }}</mat-label>
-                    <mat-select formControlName="leaveCategory" required
-                        (selectionChange)="getLeaveCategoryDetails($event)">
+                    <mat-select formControlName="leaveCategory" required>
                         <mat-option *ngIf="checkStatus == 'failure'" disabled>{{ 'leave.noCategoryAssigned' | translate
                             }}</mat-option>
                         <mat-option *ngFor="let category of leaveCategories" [value]="category?.leaveCategory?._id">
                             {{ category?.leaveCategory?.label | titlecase }}
                         </mat-option>
                     </mat-select>
-                    <mat-error
-                        *ngIf="leaveApplication.get('leaveCategory')?.invalid && leaveApplication.get('leaveCategory')?.touched">
+                    <mat-error *ngIf="leaveApplication.get('leaveCategory')?.touched">
                         {{ 'leave.categoryRequired' | translate }}
                     </mat-error>
                 </mat-form-field>
             </div>
         </div>
+        @if (leaveApplication.get('leaveCategory').hasError('maxLeaveLimitExceeded')) {
+        <mat-error>Maximum Limit Exceeds! Cannot apply for this leave category.</mat-error>
+        }
         @if(leaveApplication.get('leaveCategory').value) {
         <div class="row m-0 mt-2">
-
             <div class="form-group col-md-6">
-                <!-- <mat-form-field class="w-100">
-                    <mat-label>{{ 'leave.selectStartDate' | translate }}</mat-label>
-                    <input matInput [matDatepicker]="startPicker" formControlName="startDate" required
-                        [min]="minSelectableDate" [matDatepickerFilter]="weeklyOffDateFilter"
-                        aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
-                    <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
-                    <mat-datepicker #startPicker></mat-datepicker>
-                </mat-form-field> -->
-                <!--  -->
                 <mat-form-field class="w-100">
                     <mat-label>Start Date</mat-label>
                     <input matInput [matDatepicker]="datePicker" [min]="minSelectableDate"
                         [matDatepickerFilter]="weeklyOffDateFilter" formControlName="startDate" required>
                     <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
                     <mat-datepicker #datePicker></mat-datepicker>
+                    <mat-error
+                        *ngIf="leaveApplication.get('startDate')?.invalid && leaveApplication.get('startDate')?.touched && !leaveApplication.get('startDate')?.hasError('submitBeforeError')">
+                        {{ 'leave.invalidStartDate' | translate }}
+                    </mat-error>
+                    <mat-error
+                        *ngIf="leaveApplication.get('startDate')?.hasError('submitBeforeError') && leaveApplication.get('startDate')?.touched">
+                        {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
+                    </mat-error>
                 </mat-form-field>
-                <!--  -->
-                <mat-error
-                    *ngIf="leaveApplication.get('startDate')?.invalid && leaveApplication.get('startDate')?.touched && !leaveApplication.get('startDate')?.hasError('submitBeforeError')">
-                    {{ 'leave.invalidStartDate' | translate }}
-                </mat-error>
-                <mat-error
-                    *ngIf="leaveApplication.get('startDate')?.hasError('submitBeforeError') && leaveApplication.get('startDate')?.touched">
-                    {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
-                </mat-error>
             </div>
-
             <div class="form-group col-md-6">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.selectEndDate' | translate }}</mat-label>
                     <input matInput [matDatepicker]="endPicker" formControlName="endDate" required
                         [min]="leaveApplication.get('startDate')?.value ? leaveApplication.get('startDate')?.value : null"
-                        [matDatepickerFilter]="weeklyOffDateFilter"
+                        [max]="maxSelectableEndDate" [matDatepickerFilter]="weeklyOffDateFilter"
                         aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
-                    <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+                    <mat-datepicker-toggle matSuffix [for]="endPicker"
+                        disabled="{{!leaveApplication.get('startDate').value}}"></mat-datepicker-toggle>
                     <mat-datepicker #endPicker></mat-datepicker>
+                    <mat-error
+                        *ngIf="!leaveApplication.get('startDate').value && leaveApplication.get('endDate').touched">{{'leave.endDateValidate'
+                        | translate}}</mat-error>
+                    <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError')">
+                        {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
+                    </mat-error>
+                    <mat-error
+                        *ngIf="leaveApplication.get('endDate')?.dirty && leaveApplication.get('endDate')?.invalid && !leaveApplication.get('endDate')?.hasError('dateRangeError') && !leaveApplication.get('endDate')?.hasError('submitBeforeError')">
+                        {{ 'leave.invalidEndDate' | translate }}
+                    </mat-error>
+                    <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('dateRangeError')">
+                        {{ 'leave.dateRangeError' | translate }}
+                    </mat-error>
+                    <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('maxConsecutiveDaysExceeded')">
+                        Maximum consecutive leave days exceeded. You can only apply for {{ maxConsecutiveLeaveDays }}
+                        consecutive days.
+                    </mat-error>
+                    <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('minDaysRequired')">
+                        Minimum days required. You must apply for at least {{ minimumNumberOfDaysAllowed }} consecutive
+                        days.
+                    </mat-error>
                 </mat-form-field>
-                <mat-error
-                    *ngIf="leaveApplication.get('endDate')?.hasError('submitBeforeError') && leaveApplication.get('endDate')?.touched">
-                    {{ 'leave.submitBeforeError' | translate: { days: tempLeaveCategory?.submitBefore } }}
-                </mat-error>
-                <mat-error
-                    *ngIf="leaveApplication.get('endDate')?.touched && leaveApplication.get('endDate')?.invalid && !leaveApplication.get('endDate')?.hasError('dateRangeError') && !leaveApplication.get('endDate')?.hasError('submitBeforeError')">
-                    {{ 'leave.invalidEndDate' | translate }}
-                </mat-error>
-                <mat-error *ngIf="leaveApplication.get('endDate')?.hasError('dateRangeError')">
-                    {{ 'leave.dateRangeError' | translate }}
-                </mat-error>
+
+            </div>
+            <div *ngIf="maxConsecutiveLeaveDays > 0" class="text-muted small mt-1">
+                Maximum consecutive days allowed: {{ maxConsecutiveLeaveDays }} days
+            </div>
+            <div *ngIf="minimumNumberOfDaysAllowed > 0" class="text-muted small mt-1">
+                Minimum consecutive days required: {{ minimumNumberOfDaysAllowed }} days
+            </div>
+
+            <div class="col-12 mt-3">
+                <label for="">{{'leave.attachments' | translate}}</label>
+                <div class="attachment flex-wrap mt-1">
+                    <label class="attach">
+                        <input style="display: none;" [attr.required]="documentMandatory ? true : null"
+                            [required]="documentMandatory" formControlName="leaveApplicationAttachments"
+                            accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
+                            type="file" multiple (change)="onFileSelected($event)">
+                        <div class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
+                            <span class="fa fa-paperclip text-secondary"> Add files to Attach
+                            </span>
+                        </div>
+                    </label>
+                    <small class="text-danger"
+                        *ngIf="documentMandatory && (!selectedFiles || selectedFiles.length === 0) && (leaveApplication.get('leaveApplicationAttachments')?.touched || leaveApplication.get('leaveApplicationAttachments')?.dirty)">
+                        {{ 'leave.attachmentRequired' | translate }}
+                    </small>
+                </div>
+            </div>
+            <div>
+                <ul type="none" class="d-flex ps-0">
+                    <li class="contentHeading p-2" *ngFor="let files of selectedFiles; let i = index"
+                        (click)="removeFile(i)">
+                        {{files.name}} <i class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
+                    </li>
+                </ul>
             </div>
         </div>
-
         <div *ngIf="leaveApplication.errors?.['duplicateLeave']" class="text-danger error pt-0">
             {{ 'leave.duplicateLeaveError' | translate }}
-        </div>
-
-        <div class="form-group col-md-12">
-            <label>{{ 'leave.halfDayOptionPrompt' | translate }} <span class="text-danger">*</span></label>
-            <mat-radio-group formControlName="isHalfDayOption" class="d-flex">
-                <mat-radio-button color="primary" [value]="true">{{ 'leave.yesOption' | translate
-                    }}</mat-radio-button>
-                <mat-radio-button color="primary" [value]="false">{{ 'leave.noOption' | translate
-                    }}</mat-radio-button>
-            </mat-radio-group>
         </div>
         }
         <div class="row m-0 mt-2">
             <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value === true">
-                <button type="button" mat-raised-button color="primary" class="mt-2" (click)="addHalfDayEntry()">
+                <button type="button" mat-raised-button color="primary" class="mt-2" (click)="addHalfDayEntry()"
+                    [disabled]="halfDayLimitReached">
                     {{ 'leave.addHalfDayButton' | translate }}
                 </button>
+                <div *ngIf="halfDayLimitReached" class="text-danger mt-2">
+                    {{ 'leave.halfDayLimitReachedError' | translate:{ limit: maxHalfDaysAllowed } }}
+                </div>
                 <div formArrayName="halfDays">
                     <div *ngFor="let halfDay of halfDays.controls; let i=index" [formGroupName]="i"
                         class="row m-0 mt-2">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-5">
                             <mat-form-field class="w-100">
                                 <mat-label>{{ 'leave.dateLabel' | translate }}</mat-label>
                                 <input matInput [matDatepicker]="halfDayPicker"
-                                    [matDatepickerFilter]="weeklyOffDateFilter" [min]="minSelectableDate"
-                                    formControlName="date" aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
+                                    [matDatepickerFilter]="weeklyOffDateFilter"
+                                    [min]="leaveApplication.get('startDate')?.value"
+                                    [max]="leaveApplication.get('endDate')?.value" formControlName="date"
+                                    aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
                                 <mat-datepicker-toggle matSuffix [for]="halfDayPicker"></mat-datepicker-toggle>
                                 <mat-datepicker #halfDayPicker></mat-datepicker>
+                                <mat-error
+                                    *ngIf="halfDay.get('date')?.hasError('required') && halfDay.get('date')?.touched">
+                                    {{ 'leave.dateRequired' | translate }}
+                                </mat-error>
+                                <mat-error *ngIf="halfDay.get('date')?.hasError('dateOutOfRange')">
+                                    {{ 'leave.halfDayDateOutOfRange' | translate }}
+                                </mat-error>
                             </mat-form-field>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-5">
                             <mat-form-field class="w-100">
                                 <mat-label>{{ 'leave.dayHalfLabel' | translate }}</mat-label>
                                 <mat-select formControlName="dayHalf">
@@ -159,25 +196,21 @@
                                     <mat-option value="second half">{{ 'leave.secondHalfOption' | translate
                                         }}</mat-option>
                                 </mat-select>
+                                <mat-error
+                                    *ngIf="halfDay.get('dayHalf')?.hasError('required') && halfDay.get('dayHalf')?.touched">
+                                    {{ 'leave.dayHalfRequired' | translate }}
+                                </mat-error>
                             </mat-form-field>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-center justify-content-end">
+                            <button type="button" mat-icon-button color="warn" (click)="removeHalfDayEntry(i)"
+                                aria-label="Remove half-day entry">
+                                <mat-icon>delete</mat-icon>
+                            </button>
                         </div>
                     </div>
                 </div>
             </ng-container>
-        </div>
-
-        <div class="row m-0 mt-2" *ngIf="leaveDocumentUpload">
-            <div class="form-group col-md-12">
-                <label>{{ 'leave.uploadDocumentLabel' | translate }}</label>
-                <input type="file" class="form-control" (change)="onFileSelected($event)" multiple
-                    aria-label="{{ 'leave.uploadDocumentButton' | translate }}">
-                <ul class="list-unstyled d-flex flex-wrap mt-2">
-                    <li class="contentHeading p-2" *ngFor="let file of selectedFiles; let i = index"
-                        (click)="removeFile(i)">
-                        {{ file.name }} <mat-icon class="text-danger">cancel</mat-icon>
-                    </li>
-                </ul>
-            </div>
         </div>
 
         <div class="row m-0 mt-2">
@@ -187,6 +220,10 @@
                     <textarea matInput formControlName="comment" rows="3"
                         aria-label="{{ 'leave.commentAriaLabel' | translate }}"></textarea>
                 </mat-form-field>
+                <mat-error
+                    *ngIf="reasonMandatory && leaveApplication.get('comment')?.invalid && leaveApplication.get('comment')?.touched">
+                    {{ 'leave.commentRequired' | translate }}
+                </mat-error>
             </div>
         </div>
     </div>

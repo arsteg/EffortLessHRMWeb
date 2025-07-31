@@ -20,9 +20,15 @@
             <mat-form-field class="w-100">
                 <mat-label>Component Name</mat-label>
                 <input type="text" matInput formControlName="componantName">
-                <mat-error *ngIf="taxComponentForm.get('componantName')?.hasError('required') && taxComponentForm.get('componantName')?.touched">
-                    componant Name is required
-                  </mat-error> 
+                <mat-error *ngIf="taxComponentForm.get('componantName')?.invalid && (taxComponentForm.get('componantName')?.touched || taxComponentForm.get('componantName')?.dirty)">
+            
+                    <span *ngIf="taxComponentForm.get('componantName')?.errors?.['required']">
+                        componant Name is required
+                      </span>
+                      <span *ngIf="taxComponentForm.get('componantName')?.errors?.['spacesNotAllowed']">
+                        start and end spaces are not allowed
+                      </span>
+                </mat-error>
             </mat-form-field>
 
             <mat-form-field class="w-100">
@@ -60,7 +66,7 @@
 
         <div mat-dialog-actions class="d-flex justify-content-between mt-2 pt-2">
             <button type="reset" mat-flat-button>Cancel</button>
-            <button type="submit" color="primary" mat-flat-button>Save</button>
+            <button type="submit" color="primary" mat-flat-button  [disabled]="isSubmitting">Save</button>
         </div>
     </form>
 </ng-template>

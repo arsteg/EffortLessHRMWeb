@@ -76,7 +76,8 @@
                         <mat-option disabled value="">{{ 'leave.createTemplate.selectPrimaryApprover' | translate
                             }}</mat-option>
                         <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">
-                            {{ getUserName(user?.id) | titlecase }}
+                            {{ user?.firstName | titlecase }}
+                            {{ user?.lastName | titlecase }}
                         </mat-option>
                     </mat-select>
                     <mat-error
@@ -88,27 +89,6 @@
             }
         </div>
 
-        <!-- @if (addTemplateForm.get('approvalType')?.value === 'template-wise' &&
-        addTemplateForm.get('approvalLevel')?.value === '2-level') {
-        <div class="row m-0">
-            <div class="form-group col-12 my-2">
-                <mat-form-field class="w-100">
-                    <mat-label>{{ 'leave.createTemplate.secondaryApprover' | translate }}</mat-label>
-                    <mat-select formControlName="secondaryApprover">
-                        <mat-option disabled value="">{{ 'leave.createTemplate.selectSecondaryApprover' | translate
-                            }}</mat-option>
-                        <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">
-                            {{ getUserName(user?.id) | titlecase }}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error
-                        *ngIf="addTemplateForm.get('secondaryApprover')?.invalid && addTemplateForm.get('secondaryApprover')?.touched">
-                        {{ 'leave.createTemplate.errorSecondaryApproverRequired' | translate }}
-                    </mat-error>
-                </mat-form-field>
-            </div>
-        </div>
-        } -->
         <div class="row m-0">
 
             <div class="form-group col-12 my-2">
@@ -141,7 +121,6 @@
             </div>
         </div>
         <div class="row m-0">
-
             <div class="form-group col-12 my-2">
                 <label>{{ 'leave.createTemplate.clubbingRestrictions' | translate }} <span
                         class="text-danger">*</span></label>

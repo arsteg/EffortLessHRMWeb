@@ -50,7 +50,7 @@ export class TaxComponentBySectionComponent {
     private dialog: MatDialog
   ) {   
     this.taxComponentForm = this.fb.group({
-      componantName:['', Validators.required],
+      componantName: ['', [Validators.required, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       section:['', Validators.required],
       maximumAmount: ['0', [Validators.required, CustomValidators.digitsOnly]],
       order:  ['0', [Validators.required, CustomValidators.digitsOnly]]
@@ -93,40 +93,35 @@ export class TaxComponentBySectionComponent {
       order: 0
     });
     this.edit = false;
-    this.selectedRecord = null;
+    this.isSubmitting = false;
+    this.selectedRecord = null;    
+    this.getTaxComponents();
   }
   onSubmission() {
     this.isSubmitting = true;
     this.taxComponentForm.markAllAsTouched();
     if (this.taxComponentForm.invalid) {
       this.isSubmitting = false;
-      return;
+      this.toast.error('Please fill all required fields', 'Error!');  return;
     }
     const formValue = this.taxComponentForm.value;
     if (!this.edit) {
-      this.taxService.addTaxComponent(this.taxComponentForm.value).subscribe((res: any) => {
-        this.isSubmitting = false;
+      this.taxService.addTaxComponent(this.taxComponentForm.value).subscribe((res: any) => {       
         this.toast.success(this.translate.instant('taxation.tax_componant_added'), this.translate.instant('taxation.toast.success'));
         this.resetForm();
-        this.getTaxComponents();
       },
         err => {
           const errorMessage = err?.error?.message || err?.message || err 
           || this.translate.instant('taxation.taxcomponant_add_fail')
           ;
-          this.toast.error(errorMessage, 'Error!'); 
-        
+          this.toast.error(errorMessage, 'Error!');         
           this.isSubmitting = false;
         })
     }
     else if (this.edit) {
-      this.taxService.updateTaxComponent(this.selectedRecord._id, this.taxComponentForm.value).subscribe((res: any) => {
-        this.getTaxComponents();
-        this.edit = false;
-        this.isSubmitting = false;
+      this.taxService.updateTaxComponent(this.selectedRecord._id, this.taxComponentForm.value).subscribe((res: any) => {           
         this.resetForm();
         this.toast.success(this.translate.instant('taxation.tax_componant_updated'), this.translate.instant('taxation.toast.success'));
-        this.getTaxComponents();
       },
         err => {
           const errorMessage = err?.error?.message || err?.message || err 

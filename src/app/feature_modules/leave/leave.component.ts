@@ -7,7 +7,7 @@ import { LeaveService } from 'src/app/_services/leave.service';
   styleUrls: ['./leave.component.css']
 })
 export class LeaveComponent implements OnInit {
-  selectedTab: number = Number(localStorage.getItem('leaveSelectedTab')) || 1;
+  selectedTab: any = 1;
   view= localStorage.getItem('adminView');
   constructor(
     private leaveService :LeaveService
@@ -20,8 +20,9 @@ export class LeaveComponent implements OnInit {
     });
   }
   
-  selectTab(tabIndex: number) {
+  selectTab(tabIndex: any) {
     this.selectedTab = tabIndex;
     this.leaveService.setSelectedTab(tabIndex);
+    localStorage.setItem('selectedTab', tabIndex)
   }
 }

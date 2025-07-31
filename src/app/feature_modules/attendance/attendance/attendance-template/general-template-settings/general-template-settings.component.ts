@@ -1,24 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { LeaveService } from 'src/app/_services/leave.service';
 import { CommonService } from 'src/app/_services/common.Service';
+import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { TimeLogService } from 'src/app/_services/timeLogService';
 
-function atLeastOneDaySelected(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const days = control.value as string[];
-    return days && days.length > 0 ? null : { atLeastOneDayRequired: true };
-  };
-}
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true };
-  }
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
 @Component({
   selector: 'app-general-template-settings',
   templateUrl: './general-template-settings.component.html',
@@ -46,25 +35,27 @@ export class GeneralTemplateSettingsComponent {
   modes: any;
   @Output() expenseTemplateReportRefreshed: any = new EventEmitter();
   @Input() templates: any;
-  submitted: boolean = true;
+  submitted: boolean = false;
 
   constructor(
     private commonService: CommonService,
     private leaveService: LeaveService,
+    private translate: TranslateService,
     private fb: FormBuilder,
     private attendanceService: AttendanceService,
+    private timelog: TimeLogService,
     private toast: ToastrService
   ) {
     this.addTemplateForm = this.fb.group({
-      label: ['', [Validators.required, labelValidator, this.duplicateLabelValidator()]],
+      label: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces]],
       attendanceMode: [[], Validators.required],
-      minimumHoursRequiredPerWeek: [40, [Validators.required, Validators.min(0)]],
+      minimumHoursRequiredPerWeek: [40, [Validators.required, Validators.min(0), Validators.max(60)]],
       minimumMinutesRequiredPerWeek: [0, [Validators.required, Validators.min(0)]],
       notifyEmployeeMinHours: [true, Validators.required],
-      weeklyOfDays: [[]],
-      weklyofHalfDay: [null],
+      weeklyOfDays: [[], CustomValidators.atLeastOneDaySelected()],
+      weklyofHalfDay: [[]],
       alternateWeekOffRoutine: ['none', Validators.required],
-      daysForAlternateWeekOffRoutine: [null],
+      daysForAlternateWeekOffRoutine: [[]],
       isNotificationToSupervisors: [true],
       isCommentMandatoryForRegularisation: [true],
       departmentDesignations: ['Software Developer', Validators.required],
@@ -73,11 +64,11 @@ export class GeneralTemplateSettingsComponent {
       primaryApprover: [null],
       secondaryApprover: [null],
       leveCategoryHierarchyForAbsentHalfDay: [[''], Validators.required]
-    });
+    }, { validators: CustomValidators.mutuallyExclusiveDays() });
   }
 
   ngOnInit() {
-    console.log(this.templates)
+    console.log(this.templates);
     this.getModes();
     this.getAllUsers();
     this.getLeaveCatgeories();
@@ -89,59 +80,56 @@ export class GeneralTemplateSettingsComponent {
       });
     }
 
-    this.addTemplateForm.get('alternateWeekOffRoutine').valueChanges.subscribe(value => {
+    this.addTemplateForm.get('alternateWeekOffRoutine')?.valueChanges.subscribe(value => {
       const daysControl = this.addTemplateForm.get('daysForAlternateWeekOffRoutine');
       if (value === 'odd' || value === 'even') {
-        daysControl.setValidators([atLeastOneDaySelected()]);
+        daysControl?.setValidators([CustomValidators.atLeastOneDaySelected()]);
       } else {
-        daysControl.clearValidators();
+        daysControl?.clearValidators();
+        daysControl?.setValue([]);
+        this.selectedAlternateWeekDays = [];
       }
-      daysControl.updateValueAndValidity();
+      daysControl?.updateValueAndValidity();
+      this.addTemplateForm.updateValueAndValidity();
+      console.log('Alternate Week Off Routine Changed:', value, 'Form Errors:', this.addTemplateForm.errors);
     });
 
-    // this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
-    //   this.validateApprovers(this.addTemplateForm.get('approversType').value, value);
-    // });
-    // this.addTemplateForm.get('approversType').valueChanges.subscribe((value: any) => {
-    //   this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value);
-    // });
-  }
-  duplicateLabelValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: boolean } | null => {
-      const label = control.value;
-      if (label && this.templates.some(template => template.label.toLowerCase() === label.toLowerCase())) {
-        return { duplicateLabel: true };
-      }
-      return null;
-    };
+    this.addTemplateForm.get('approversType')?.valueChanges.subscribe(value => {
+      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel')?.value);
+    });
+
+    this.addTemplateForm.get('approvalLevel')?.valueChanges.subscribe(value => {
+      this.validateApprovers(this.addTemplateForm.get('approversType')?.value, value);
+    });
+
+    // Debug form value changes
+    this.addTemplateForm.valueChanges.subscribe(() => {
+      console.log('Form Values:', this.addTemplateForm.value);
+      console.log('Form Errors:', this.addTemplateForm.errors);
+    });
   }
 
   validateApprovers(approversType: string, approverLevel: string) {
     const primaryApproverControl = this.addTemplateForm.get('primaryApprover');
     const secondaryApproverControl = this.addTemplateForm.get('secondaryApprover');
 
-    // Always clear validators and reset values before setting new ones,
-    // to ensure a clean state when switching approver types.
-    primaryApproverControl.clearValidators();
-    secondaryApproverControl.clearValidators();
-    primaryApproverControl.setValue(null);
-    secondaryApproverControl.setValue(null);
+    primaryApproverControl?.clearValidators();
+    secondaryApproverControl?.clearValidators();
+    primaryApproverControl?.setValue(null);
+    secondaryApproverControl?.setValue(null);
 
     if (approversType === 'template-wise') {
       if (approverLevel === '1') {
-        primaryApproverControl.setValidators([Validators.required]);
+        primaryApproverControl?.setValidators([Validators.required]);
       } else if (approverLevel === '2') {
-        primaryApproverControl.setValidators([Validators.required]);
-        secondaryApproverControl.setValidators([Validators.required]);
+        primaryApproverControl?.setValidators([Validators.required]);
+        secondaryApproverControl?.setValidators([Validators.required]);
       }
     }
-    // No explicit validators for 'employee-wise' as per your logic,
-    // but the clearValidators and setValue(null) above handle the reset.
 
-    primaryApproverControl.updateValueAndValidity();
-    secondaryApproverControl.updateValueAndValidity();
+    primaryApproverControl?.updateValueAndValidity();
+    secondaryApproverControl?.updateValueAndValidity();
   }
-
 
   setFormValues() {
     if (this.isEdit) {
@@ -149,49 +137,56 @@ export class GeneralTemplateSettingsComponent {
         const templateData = res;
         this.addTemplateForm.patchValue({
           label: templateData?.label,
-          attendanceMode: templateData?.attendanceMode,
+          attendanceMode: templateData?.attendanceMode || [],
           minimumHoursRequiredPerWeek: templateData?.minimumHoursRequiredPerWeek,
           minimumMinutesRequiredPerWeek: templateData?.minimumMinutesRequiredPerWeek,
           notifyEmployeeMinHours: templateData?.notifyEmployeeMinHours,
-          weeklyOfDays: templateData?.weeklyOfDays,
-          weklyofHalfDay: templateData?.weklyofHalfDay,
-          alternateWeekOffRoutine: templateData?.alternateWeekOffRoutine,
-          daysForAlternateWeekOffRoutine: templateData?.daysForAlternateWeekOffRoutine,
+          weeklyOfDays: templateData?.weeklyOfDays || [],
+          weklyofHalfDay: templateData?.weklyofHalfDay || [],
+          alternateWeekOffRoutine: templateData?.alternateWeekOffRoutine || 'none',
+          daysForAlternateWeekOffRoutine: templateData?.daysForAlternateWeekOffRoutine || [],
           isNotificationToSupervisors: templateData?.isNotificationToSupervisors,
           isCommentMandatoryForRegularisation: templateData?.isCommentMandatoryForRegularisation,
           departmentDesignations: templateData?.departmentDesignations,
-          approversType: templateData?.approversType,
-          approvalLevel: templateData?.approvalLevel,
+          approversType: templateData?.approversType || 'template-wise',
+          approvalLevel: templateData?.approvalLevel || '1',
           primaryApprover: templateData?.primaryApprover,
           secondaryApprover: templateData?.secondaryApprover,
-          leveCategoryHierarchyForAbsentHalfDay: templateData?.leveCategoryHierarchyForAbsentHalfDay
+          leveCategoryHierarchyForAbsentHalfDay: templateData?.leveCategoryHierarchyForAbsentHalfDay || ['loss-of-pay', 'present']
         });
         this.selectedWeeklyDays = templateData?.weeklyOfDays || [];
         this.selectedHalfDays = templateData?.weklyofHalfDay || [];
         this.selectedAlternateWeekDays = templateData?.daysForAlternateWeekOffRoutine || [];
         this.selectedCategory = templateData?.leveCategoryHierarchyForAbsentHalfDay || ['loss-of-pay', 'present'];
-        this.capturingAttendance = templateData?.attendanceMode || [''];
+        this.capturingAttendance = templateData?.attendanceMode || [];
+        // Trigger validation after setting values
+        this.addTemplateForm.updateValueAndValidity();
+        console.log('Form Values after setFormValues:', this.addTemplateForm.value);
+        console.log('Form Errors after setFormValues:', this.addTemplateForm.errors);
       });
     } else {
       this.addTemplateForm.reset({
         label: '',
+        attendanceMode: [],
         minimumHoursRequiredPerWeek: 40,
         minimumMinutesRequiredPerWeek: 0,
         notifyEmployeeMinHours: true,
-        weeklyOfDays: null,
-        weklyofHalfDay: null,
+        weeklyOfDays: [],
+        weklyofHalfDay: [],
         alternateWeekOffRoutine: 'none',
-        daysForAlternateWeekOffRoutine: null,
+        daysForAlternateWeekOffRoutine: [],
         isNotificationToSupervisors: true,
         isCommentMandatoryForRegularisation: true,
-        approversType: '',
+         approversType: '',
         approvalLevel: '',
-        primaryApprover: '',
-        secondaryApprover: ''
+        primaryApprover: null,
+        secondaryApprover: null,
       });
       this.selectedWeeklyDays = [];
       this.selectedHalfDays = [];
       this.selectedAlternateWeekDays = [];
+      this.capturingAttendance = [];
+      this.addTemplateForm.updateValueAndValidity();
     }
   }
 
@@ -216,6 +211,13 @@ export class GeneralTemplateSettingsComponent {
       const index = this.selectedWeeklyDays.indexOf(day);
       if (event.checked && index === -1) {
         this.selectedWeeklyDays.push(day);
+        // Remove from weklyofHalfDay and daysForAlternateWeekOffRoutine
+        this.selectedHalfDays = this.selectedHalfDays.filter(d => d !== day);
+        this.selectedAlternateWeekDays = this.selectedAlternateWeekDays.filter(d => d !== day);
+        this.addTemplateForm.patchValue({
+          weklyofHalfDay: this.selectedHalfDays,
+          daysForAlternateWeekOffRoutine: this.selectedAlternateWeekDays
+        });
       } else if (!event.checked && index > -1) {
         this.selectedWeeklyDays.splice(index, 1);
       }
@@ -223,39 +225,69 @@ export class GeneralTemplateSettingsComponent {
       this.addTemplateForm.get('weeklyOfDays')?.setValue(this.selectedWeeklyDays);
       this.addTemplateForm.get('weeklyOfDays')?.markAsTouched();
       this.addTemplateForm.get('weeklyOfDays')?.updateValueAndValidity();
-    }
-
-    else if (type === 'weklyofHalfDay') {
+      } else if (type === 'weklyofHalfDay') {
       const selectedDays = this.addTemplateForm.get('weklyofHalfDay')?.value || [];
       const index = selectedDays.indexOf(day);
 
       if (event.checked && index === -1) {
         selectedDays.push(day);
+        // Remove from weeklyOfDays and daysForAlternateWeekOffRoutine
+        this.selectedWeeklyDays = this.selectedWeeklyDays.filter(d => d !== day);
+        this.selectedAlternateWeekDays = this.selectedAlternateWeekDays.filter(d => d !== day);
+        this.addTemplateForm.patchValue({
+          weeklyOfDays: this.selectedWeeklyDays,
+          daysForAlternateWeekOffRoutine: this.selectedAlternateWeekDays
+        });
       } else if (!event.checked && index !== -1) {
         selectedDays.splice(index, 1);
       }
 
       this.addTemplateForm.patchValue({ weklyofHalfDay: selectedDays });
-    }
-
-    else if (type === 'daysForAlternateWeekOffRoutine') {
+      this.addTemplateForm.get('weklyofHalfDay')?.markAsTouched();
+      this.addTemplateForm.get('weklyofHalfDay')?.updateValueAndValidity();
+      } else if (type === 'daysForAlternateWeekOffRoutine') {
       const selectedDays = this.addTemplateForm.get('daysForAlternateWeekOffRoutine')?.value || [];
       const index = selectedDays.indexOf(day);
 
       if (event.checked && index === -1) {
         selectedDays.push(day);
+        // Remove from weeklyOfDays and weklyofHalfDay
+        this.selectedWeeklyDays = this.selectedWeeklyDays.filter(d => d !== day);
+        this.selectedHalfDays = this.selectedHalfDays.filter(d => d !== day);
+        this.addTemplateForm.patchValue({
+          weeklyOfDays: this.selectedWeeklyDays,
+          weklyofHalfDay: this.selectedHalfDays
+        });
       } else if (!event.checked && index !== -1) {
         selectedDays.splice(index, 1);
       }
 
       this.addTemplateForm.patchValue({ daysForAlternateWeekOffRoutine: selectedDays });
+      this.addTemplateForm.get('daysForAlternateWeekOffRoutine')?.markAsTouched();
       this.addTemplateForm.get('daysForAlternateWeekOffRoutine')?.updateValueAndValidity();
-    }
-  }
+      }
+
+    this.addTemplateForm.updateValueAndValidity();
+   }
 
   getAllUsers() {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
+    this.users = [];
+    this.timelog.getManagers().subscribe({
+      next: response => {
+        this.timelog.getusers(response.data).subscribe({
+          next: result => {
+            result.data.forEach(user => {
+              this.users.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+            });
+          },
+          error: error => {
+            console.log('Error fetching users:', error);
+          }
+        });
+      },
+      error: error => {
+        console.log('Error fetching managers:', error);
+      }
     });
   }
 
@@ -264,61 +296,66 @@ export class GeneralTemplateSettingsComponent {
     this.leaveService.getAllLeaveCategories(requestBody).subscribe((res: any) => {
       const categories = res.data;
       this.leaveCategories = categories.filter((leaveType: { leaveType: string; }) => leaveType.leaveType === 'general-leave');
+      console.log('Leave Categories:', this.leaveCategories);
+    }, error => {
+      console.log('Error fetching leave categories:', error);
     });
   }
 
   onSubmission() {
-  if (this.addTemplateForm.valid) {
-    this.submitted = true;
-
-    this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
-    this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
-    this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays;
-    this.addTemplateForm.value.weeklyOfDays = this.selectedWeeklyDays;
-
-    if (!this.isEdit) {
-      this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe(
-        (res: any) => {
-          this.attendanceService.selectedTemplate.next(res.data);
-          this.toast.success('Attendance Template created', 'Successfully!!!');
-          this.expenseTemplateReportRefreshed.emit(res.data);
-          this.closeModal();
-          this.submitted = false;
-        },
-        (err) => {
-          this.toast.error('Attendance Template cannot be created', 'Error!!!');
-          this.submitted = false;
-        }
-      );
-    } else {
-      const templateId = this.attendanceService.selectedTemplate.getValue()._id;
-      this.attendanceService.updateAttendanceTemplate(templateId, this.addTemplateForm.value).subscribe(
-        (res: any) => {
-          // On success:
-          this.toast.success('Attendance Template Updated', 'Successfully!');
-          this.expenseTemplateReportRefreshed.emit(res.data);
-          this.closeModal();
-          // Re-enable the button after the operation is complete
-          this.submitted = false; // Important: Re-enable the button
-        },
-        (err) => {
-          // On error:
-          this.toast.error('Attendance Template cannot be Updated', 'Error!');
-          // Re-enable the button even on error, so the user can try again
-          this.submitted = false; // Important: Re-enable the button
-        }
-      );
-    }
-  } else {
-    // If the form is invalid, mark all as touched and keep submitted false
-    this.submitted = false; // Ensure submitted is false if form is invalid
     this.addTemplateForm.markAllAsTouched();
+    this.addTemplateForm.updateValueAndValidity();
+  
+    if (this.addTemplateForm.valid) {
+      this.submitted = true;
+
+      this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
+      this.addTemplateForm.value.daysForAlternateWeekOffRoutine = this.selectedAlternateWeekDays;
+      this.addTemplateForm.value.weklyofHalfDay = this.selectedHalfDays;
+      this.addTemplateForm.value.weeklyOfDays = this.selectedWeeklyDays;
+
+      if (!this.isEdit) {
+        this.attendanceService.addAttendanceTemplate(this.addTemplateForm.value).subscribe(
+          (res: any) => {
+            this.attendanceService.selectedTemplate.next(res.data);
+            this.toast.success(this.translate.instant('attendance.successCreate'), this.translate.instant('common.success'));
+            this.expenseTemplateReportRefreshed.emit(res.data);
+            this.closeModal();
+            this.submitted = false;
+          },
+          (err) => {
+            const errorMessage = err?.error?.message || err?.message || this.translate.instant('attendance.createError');
+            this.toast.error(errorMessage, this.translate.instant('common.error'));
+            this.submitted = false;
+          }
+        );
+      } else {
+        const templateId = this.attendanceService.selectedTemplate.getValue()._id;
+        this.attendanceService.updateAttendanceTemplate(templateId, this.addTemplateForm.value).subscribe(
+          (res: any) => {
+            this.toast.success(this.translate.instant('attendance.successUpdate'), this.translate.instant('common.success'));
+            this.expenseTemplateReportRefreshed.emit(res.data);
+            this.closeModal();
+            this.submitted = false;
+          },
+          (err) => {
+            const errorMessage = err?.error?.message || err?.message || this.translate.instant('attendance.updateError');
+            this.toast.error(errorMessage, this.translate.instant('common.error'));
+            this.submitted = false;
+          }
+        );
+      }
+    } else {
+      this.submitted = false;
+      }
   }
-}
 
   getModes() {
     this.attendanceService.getModes().subscribe((res: any) => {
       this.modes = res.data;
+      console.log('Modes:', this.modes);
+    }, error => {
+      console.log('Error fetching modes:', error);
     });
   }
 }

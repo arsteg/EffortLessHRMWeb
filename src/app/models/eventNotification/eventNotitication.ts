@@ -13,7 +13,8 @@ isRecurring:boolean
 recurringFrequency:string,
 leadTime:number,
 status: string,
-updatedBy: string
+updatedBy: string,
+notificationChannel: []
 }
 
 export interface UserNotification {

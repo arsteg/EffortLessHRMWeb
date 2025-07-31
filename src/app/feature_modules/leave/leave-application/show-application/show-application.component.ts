@@ -51,7 +51,7 @@ export class ShowApplicationComponent {
     {
       key: 'leaveCategory',
       name: this.translate.instant('leave.leaveCategory'),
-      valueFn: (row: any) => this.getCategory(row.leaveCategory) || ''
+      valueFn: (row: any) => `${row.leaveCategory}`
     },
     {
       key: 'startDate',
@@ -66,7 +66,7 @@ export class ShowApplicationComponent {
     {
       key: 'totalLeaveDays',
       name: this.translate.instant('leave.totalLeaveDays'),
-      valueFn: (row: any) => row.totalLeaveDays || ''
+      valueFn: (row: any) => row.leaveCount || '0'
     },
     {
       key: 'status',
@@ -110,7 +110,6 @@ export class ShowApplicationComponent {
     private leaveService: LeaveService,
     private dialog: MatDialog,
     private exportService: ExportService,
-    private commonService: CommonService,
     private toast: ToastrService,
     private datePipe: DatePipe,
     private translate: TranslateService
@@ -119,18 +118,7 @@ export class ShowApplicationComponent {
   }
 
   ngOnInit() {
-    forkJoin({
-      users: this.commonService.populateUsers(),
-      leaveApplications: this.getLeaveApplication()
-    }).subscribe({
-      next: ({ users, leaveApplications }) => {
-        this.allAssignee = users?.data?.data || [];
-      },
-      error: () => {
-        this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
-      }
-    });
-    this.getleaveCatgeories();
+    this.getLeaveApplication()
   }
 
   onPageChange(event: any) {
@@ -162,7 +150,6 @@ export class ShowApplicationComponent {
   }
 
   refreshLeaveApplicationTable(data: any) {
-    data.totalLeaveDays = this.calculateTotalLeaveDays(data);
     this.leaveApplication.data.push(data);
     this.leaveApplication._updateChangeSubscription();
   }
@@ -218,21 +205,6 @@ export class ShowApplicationComponent {
     return leave._id;
   }
 
-  calculateTotalLeaveDays(leave: any) {
-    const startDate = new Date(leave.startDate);
-    const endDate = new Date(leave.endDate);
-    const timeDifference = endDate.getTime() - startDate.getTime();
-    let totalDays = Math.abs(Math.round(timeDifference / (1000 * 3600 * 24))) + 1;
-    if (leave.isHalfDayOption) {
-      if (startDate.toDateString() === endDate.toDateString()) {
-        totalDays = 0.5;
-      } else {
-        totalDays -= 0.5;
-      }
-    }
-    return totalDays;
-  }
-
   getLeaveApplication() {
     const requestBody = {
       status: this.status,
@@ -241,48 +213,63 @@ export class ShowApplicationComponent {
     };
 
     if (this.portalView === 'admin') {
-      return this.leaveService.getLeaveApplication(requestBody).pipe(
-        map((res: any) => {
-          this.leaveApplication.data = res.data;
-          this.allData = res.data;
-          this.totalRecords = res.total;
-          this.leaveApplication.data = res.data.map((leave: any) => {
-            leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-            return {
-              ...leave,
-              employee: leave.employee.firstName + ' ' + leave.employee.lastName,
-              startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
-              endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy')
-            };
-          });
-          this.allData = this.leaveApplication.data;
-          return res;
-        })
-      );
-    } else if (this.portalView === 'user') {
+      this.leaveService.getLeaveApplication(requestBody).subscribe((res: any) => {
+        this.leaveApplication.data = res.data;
+        this.allData = res.data;
+        this.totalRecords = res.total;
+        this.leaveApplication.data = res.data.map((leave: any) => {
+          return {
+            ...leave,
+            employee: leave.employee.firstName + ' ' + leave.employee.lastName,
+            leaveCategory: leave?.leaveCategory?.label,
+            startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
+            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
+            leaveCount: leave?.calculatedLeaveDays
+          };
+        });
+        this.allData = this.leaveApplication.data;
+        return res;
+      })
+    }
+    if (this.portalView === 'user' && this.tab === 1) {
       const employeeId = this.currentUser.id;
-      return this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).pipe(
-        map((res: any) => {
-          this.leaveApplication.data = res.data.filter((leave: any) => leave.status === this.status);
-          this.leaveApplication.data.forEach((leave: any) => {
-            leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-          });
-          this.allData = this.leaveApplication.data;
-          return res;
-        })
-      );
-    } else if (this.tab === 5) {
-      return this.leaveService.getLeaveApplicationByTeam().pipe(
-        map((res: any) => {
-          this.leaveApplication.data = res.data.filter((leave: any) => leave.status === this.status);
-          this.totalLeaveDays = 0;
-          this.leaveApplication.data.forEach((leave: any) => {
-            leave.totalLeaveDays = this.calculateTotalLeaveDays(leave);
-          });
-          this.allData = this.leaveApplication.data;
-          return res;
-        })
-      );
+      this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).subscribe((res: any) => {
+       this.leaveApplication.data = res.data;
+        this.allData = res.data;
+        this.totalRecords = res.total;
+        this.leaveApplication.data = res.data.map((leave: any) => {
+          return {
+            ...leave,
+            employee: leave.employee.firstName + ' ' + leave.employee.lastName,
+            leaveCategory: leave?.leaveCategory?.label,
+            startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
+            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
+            leaveCount: leave?.calculatedLeaveDays
+          };
+        });
+        this.allData = this.leaveApplication.data;
+        return res;
+      })
+    }
+    if (this.portalView === 'user' && this.tab === 5) {
+      let payload = { skip: '', next: '' };
+     this.leaveService.getLeaveApplicationByTeam(payload).subscribe((res: any) => {
+        this.leaveApplication.data = res.data;
+        this.allData = res.data;
+        this.totalRecords = res.total;
+        this.leaveApplication.data = res.data.map((leave: any) => {
+          return {
+            ...leave,
+            employee: leave.employee.firstName + ' ' + leave.employee.lastName,
+            leaveCategory: leave?.leaveCategory?.label,
+            startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
+            endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
+            leaveCount: leave?.calculatedLeaveDays
+          };
+        });
+        this.allData = this.leaveApplication.data;
+        return res;
+      })
     }
 
     return of(null);
@@ -291,11 +278,7 @@ export class ShowApplicationComponent {
   deleteLeaveApplication(_id: string) {
     this.leaveService.deleteLeaveApplication(_id).subscribe({
       next: (res: any) => {
-        const index = this.leaveApplication.data.findIndex(temp => temp._id === _id);
-        if (index !== -1) {
-          this.leaveApplication.data.splice(index, 1);
-          this.leaveApplication._updateChangeSubscription();
-        }
+        this.getLeaveApplication();
         this.toast.success(this.translate.instant('leave.successDelete'));
       },
       error: () => {
@@ -329,8 +312,8 @@ export class ShowApplicationComponent {
         valueA = (a.employee.firstName)?.toLowerCase() || '';
         valueB = (b.employee.firstName)?.toLowerCase() || '';
       } else if (event.active === 'leaveCategory') {
-        valueA = this.getCategory(a.leaveCategory)?.toLowerCase() || '';
-        valueB = this.getCategory(b.leaveCategory)?.toLowerCase() || '';
+        valueA = a.leaveCategory?.toLowerCase() || '';
+        valueB = b.leaveCategory?.toLowerCase() || '';
       } else if (event.active === 'startDate' || event.active === 'endDate') {
         valueA = new Date(a[event.active]).getTime();
         valueB = new Date(b[event.active]).getTime();
@@ -355,8 +338,8 @@ export class ShowApplicationComponent {
     const lowerSearch = search.toLowerCase();
     const data = this.allData.filter((row: any) => {
       const valuesToSearch = [
-        row.employee?.toLowerCase(),,
-        this.getCategory(row.leaveCategory),
+        row.employee?.toLowerCase(), ,
+        row.leaveCategory.label?.toLowerCase(),
         this.datePipe.transform(row.startDate, 'mediumDate'),
         this.datePipe.transform(row.endDate, 'mediumDate'),
         row.totalLeaveDays?.toString(),

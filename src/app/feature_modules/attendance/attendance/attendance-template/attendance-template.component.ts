@@ -7,7 +7,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { ToastrService } from 'ngx-toastr';
 import { ActionVisibility } from 'src/app/models/table-column';
 import { forkJoin } from 'rxjs'; // Import forkJoin
-
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-attendance-template',
   templateUrl: './attendance-template.component.html',
@@ -67,6 +67,8 @@ export class AttendanceTemplateComponent {
     private dialog: MatDialog,
     private exportService: ExportService,
     private toast: ToastrService,
+     private translate: TranslateService,
+    
     private attendanceService: AttendanceService
   ) {}
 
@@ -92,7 +94,8 @@ export class AttendanceTemplateComponent {
       },
       (error) => {
         console.error('Error loading attendance data:', error);
-        this.toast.error('Failed to load attendance data.', 'Error');
+        const errorMessage = error?.error?.message || this.translate.instant('attendance.loadTemplatesError');
+          this.toast.error(errorMessage, this.translate.instant('common.error'));
       }
     );
   }
@@ -118,7 +121,8 @@ export class AttendanceTemplateComponent {
         },
         (error) => {
           console.error('Error loading attendance templates:', error);
-          this.toast.error('Failed to load attendance templates.', 'Error');
+          const errorMessage = error?.error?.message || this.translate.instant('attendance.loadTemplatesError');
+          this.toast.error(errorMessage, this.translate.instant('common.error'));
         }
       );
   }
@@ -130,7 +134,8 @@ export class AttendanceTemplateComponent {
         this.updateTemplateAssignmentCount(); // Call after assignments are populated
       },
       (error) => {
-        console.error('Error loading attendance assignments:', error);
+        const errorMessage = error?.error?.message || this.translate.instant('attendance.loadAssignmentsError');
+        this.toast.error(errorMessage, this.translate.instant('common.error'));
         // Handle error if needed
       }
     );
@@ -246,10 +251,17 @@ export class AttendanceTemplateComponent {
     this.attendanceService.deleteAttendanceTemplate(id).subscribe(
       (res: any) => {
         this.loadAllData(); // Reload all data after deletion to update counts
-        this.toast.success('Successfully Deleted!!!', 'Attendance Template');
+        this.toast.success(
+          this.translate.instant('attendance.deleteAttendanceTemplateSuccess'),
+          this.translate.instant('attendance.templateTitle')
+        );
       },
       (err) => {
-        this.toast.error('Error deleting attendance template.', 'Error');
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('attendance.deleteError')
+        ;
+        this.toast.error(errorMessage, this.translate.instant('common.error'));
+  
         console.error('Delete error:', err); // Log the full error for debugging
       }
     );
@@ -259,8 +271,7 @@ export class AttendanceTemplateComponent {
     // Check if the template has assignments before opening the confirmation dialog
     if (this.templateAssignmentCount && this.templateAssignmentCount[templateId] > 0) {
       this.toast.error(
-        'This template cannot be deleted because it is assigned to employees.',
-        'Deletion Restricted'
+        this.translate.instant('attendance.deleteRestricted')
       );
       return; // Stop the deletion process
     }

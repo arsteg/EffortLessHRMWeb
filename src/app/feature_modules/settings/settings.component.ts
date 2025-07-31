@@ -6,16 +6,23 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  selectedTab: number = 3;
+  //selectedTab: number = 1;
   view = localStorage.getItem('adminView');
   
   constructor(
     ) { }
 
-  ngOnInit(): void {  
+  ngOnInit(): void {
+    //this.selectTab(this.selectedTab);
   }
-  selectTab(tabIndex: number) {
-    this.selectedTab = tabIndex;
-  }
+  // selectTab(tabIndex: number) {
+  //   this.selectedTab = tabIndex;
+  // }
+
+  // onTabChange(index: number): void {
+  //   this.selectedTab = index;
+  //   const path = index === 0 ? 'resignation' : 'termination';
+  //   this.router.navigate([path], { relativeTo: this.route });
+  // }
 
 }

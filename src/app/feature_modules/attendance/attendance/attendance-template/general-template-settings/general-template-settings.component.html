@@ -9,8 +9,8 @@
       <mat-error *ngIf="addTemplateForm.get('label')?.errors?.['invalidLabel']">
         {{ 'attendance.at_errorLabelInvalid' | translate }}
       </mat-error>
-      <mat-error *ngIf="addTemplateForm.get('label')?.errors?.['duplicateLabel']">
-        {{ 'attendance.at_errorLabelDuplicate' | translate }}
+      <mat-error *ngIf="addTemplateForm.get('label')?.errors?.['spacesNotAllowed']">      
+        {{ 'attendance.spacenotallowed' | translate }}
       </mat-error>
     </mat-form-field>
 
@@ -30,6 +30,9 @@
       </mat-error>
     <mat-error *ngIf="addTemplateForm.get('minimumHoursRequiredPerWeek')?.errors?.['min'] && addTemplateForm.get('minimumHoursRequiredPerWeek')?.touched">
       {{ 'attendance.at_negativeMinimumHours' | translate }}
+    </mat-error>
+    <mat-error *ngIf="addTemplateForm.get('minimumHoursRequiredPerWeek')?.errors?.['max'] && addTemplateForm.get('minimumHoursRequiredPerWeek')?.touched">
+      {{ 'attendance.minimumHoursExceeded' | translate }}
     </mat-error>
   </mat-form-field>
 
@@ -56,8 +59,7 @@
       <mat-error *ngIf="addTemplateForm.get('weeklyOfDays')?.touched && addTemplateForm.get('weeklyOfDays')?.invalid">
         At least one day must be selected as Weekly Off.
       </mat-error>
-    </div>
-
+   </div>
     <div class="my-3">
       <label class="mb-1">{{ 'attendance.at_weeklyOffHalfDay' | translate }}</label>
       <div class="d-flex flex-wrap gap-2">
@@ -91,9 +93,9 @@
             {{ weekday }}
           </mat-checkbox>
         </div>
-        <mat-error *ngIf="addTemplateForm.get('daysForAlternateWeekOffRoutine')?.invalid">
-          {{ 'attendance.at_errorDaysForAlternateWeekOffRoutine' | translate }}
-        </mat-error>
+        <mat-error *ngIf="addTemplateForm.hasError('alternateDaysRequired')">
+       {{ 'attendance.at_errorDaysForAlternateWeekOffRoutine' | translate }}
+        </mat-error>      
       </div>
 
       <div class="my-3">

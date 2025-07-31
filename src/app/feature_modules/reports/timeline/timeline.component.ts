@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { TimeLogService } from 'src/app/_services/timeLogService';
 import { TimeLine } from '../model/productivityModel';
 import { ReportsService } from '../../../_services/reports.service';
@@ -9,6 +9,7 @@ import * as moment from 'moment';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PreferenceService } from 'src/app/_services/user-preference.service';
 import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-timeline',
@@ -18,6 +19,7 @@ import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
 })
 
 export class TimelineComponent implements OnInit {
+  @Input() tab: number = 1;
   projectList: any;
   projectId: string;
   members: any;
@@ -55,6 +57,7 @@ export class TimelineComponent implements OnInit {
   showProjectsColumn: boolean = true;
   showMembersColumn: boolean = true;
   view = localStorage.getItem('adminView');
+  selectedTab: number = 1;
 
   constructor(
     private projectService: ProjectService,
@@ -63,7 +66,8 @@ export class TimelineComponent implements OnInit {
     private reportService: ReportsService,
     public datepipe: DatePipe,
     public commonservice: CommonService,
-    private preferenceService: PreferenceService
+    private preferenceService: PreferenceService,
+    private translate: TranslateService
   ) {
     this.fromDate = this.datepipe.transform(new Date(this.currentDate), 'yyyy-MM-dd');
     this.toDate = this.datepipe.transform(new Date(this.currentDate), 'yyyy-MM-dd');
@@ -71,8 +75,9 @@ export class TimelineComponent implements OnInit {
 
   ngOnInit(): void {
     this.populateUsers();
-
-    this.getUserPrefereces();
+    this.selectedTab = this.tab;
+    this.toggleColumns();
+    //this.getUserPrefereces();
 
     setTimeout(() => {
       this.getProjectList();
@@ -116,7 +121,7 @@ export class TimelineComponent implements OnInit {
 
   populateUsers() {
     this.members = [];
-    this.members.push({ id: this.currentUser.id, name: "Me", email: this.currentUser.email });
+    this.members.push({ id: this.currentUser.id, name: this.translate.instant('reports.timeline.me'), email: this.currentUser.email });
     this.member = this.currentUser;
     this.timeLogService.getTeamMembers(this.member.id).subscribe({
       next: (response: { data: any; }) => {
@@ -376,22 +381,22 @@ export class TimelineComponent implements OnInit {
 
 
 
-  toggleColumns(column: string) {
-    if (column === 'projects') {
+  toggleColumns() {
+    if (this.selectedTab === 1) {
       this.showProjectsColumn = this.showProjectsColumn;
       this.showMembersColumn = false;
       this.showProjectsColumn = true
-    } else if (column === 'members') {
+    } else if (this.selectedTab === 2) {
       this.showMembersColumn = this.showMembersColumn;
       this.showProjectsColumn = false;
       this.showMembersColumn = true
     }
 
-    this.preferenceService.createOrUpdatePreference(
-      this.currentUser.id,
-      PreferenceKeys.ReportsTimelineColumnBy,
-      column
-    ).subscribe();
+    // this.preferenceService.createOrUpdatePreference(
+    //   this.currentUser.id,
+    //   PreferenceKeys.ReportsTimelineColumnBy,
+    //   column
+    // ).subscribe();
 
   }
 
@@ -400,6 +405,9 @@ export class TimelineComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           const preferences = response?.data?.preferences || [];
+          if (!preferences || preferences.length === 0) {
+            return;
+          }
           const match = preferences.find((pref: any) =>
             pref?.preferenceOptionId?.preferenceKey === PreferenceKeys.ReportsTimelineColumnBy
           );

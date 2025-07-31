@@ -8,6 +8,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { forkJoin } from 'rxjs';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-salary-details',
@@ -25,6 +26,41 @@ export class SalaryDetailsComponent {
   selectedUser: any;
   public sortOrder: string = '';
   showAddButton: boolean = true; // New property to control button visibility
+
+  columns: TableColumn[] = [
+    { 
+      key: 'enteringAmount', 
+      name: this.translate.instant('employee.frequency') 
+    },
+    { 
+      key: 'payrollEffectiveFrom', 
+      name: this.translate.instant('employee.ctcEffectiveFrom'),
+      valueFn: (row: any) => new Date(row.payrollEffectiveFrom).toLocaleDateString()
+    },
+    { 
+      key: 'grossSalary', 
+      name: this.translate.instant('employee.grossSalaryYearly'),
+      valueFn: (row: any) => this.calculateTotalAmount(row.enteringAmount, row.Amount)
+    },
+    {
+      key: 'action',
+      name: 'Action',
+      isAction: true,
+      options: [
+        { 
+          label: 'View', 
+          icon: 'eye', 
+          visibility: ActionVisibility.LABEL
+        },
+        { 
+          label: 'Delete', 
+          icon: 'delete', 
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.showAddButton
+        }
+      ]
+    }
+  ];
 
   constructor(
     private modalService: NgbModal,
@@ -133,5 +169,16 @@ export class SalaryDetailsComponent {
       this.salaryDetails = results[0].data;
       this.showViewSalaryDetails = true;
     });
+  }
+
+  handleAction(event: any) {
+    if (event.action.label === 'View') {
+      this.isEdit = true ;
+      this.selectedRecord = event.row;
+      this.showAddSalaryDetails = true;
+    } 
+    if (event.action.label === 'Delete') {
+      this.deleteSalaryDetail(event.row._id);
+    }
   }
 }

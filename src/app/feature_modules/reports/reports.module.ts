@@ -18,11 +18,13 @@ import { ReportsRoutingModule } from './reports-routing.module';
 import { AiReportsComponent } from './AI-Reporting/ai-reports/ai-reports.component';
 import { UserTimesheetComponent } from '../timesheets/user-timesheet/user-timesheet.component';
 import { AdminTimesheetComponent } from '../timesheets/admin-timesheet/admin-timesheet.component';
+import { TimelineManagementComponent } from './timeline/timeline-management/timeline-management/timeline-management.component';
 
 @NgModule({
   declarations: [
     ReportsComponent,
     TimelineComponent,
+    TimelineManagementComponent,
     ProductivityReportComponent,
     LeaveReportComponent,
     AppAndWebsiteUsageComponent,
