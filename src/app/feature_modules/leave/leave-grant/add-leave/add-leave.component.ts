@@ -90,37 +90,27 @@ export class AddLeaveComponent {
       date: this.leaveGrant.value.date,
       status: 'Pending',
       comment: this.leaveGrant.value.comment,
-      users: this.leaveGrant.value.users.map(user => ({ user: user }))
+      users: this.leaveGrant.value.users
     };
 
-    if (this.portalView === 'user') {
-      let users: any[] = [];
-      if (this.tabIndex === 3) {
-        users = [this.currentUser?.id].filter(id => id);
-        payload.users = users.map(id => ({ user: id }));
-      } else if (this.tabIndex === 7) {
-        users = [this.member?.id].filter(id => id);
-        payload.users = users.map(id => ({ user: id }));
-      }
-      this.leaveGrant.get('users')?.setValue(users);
+    if (this.portalView === 'user' && this.tabIndex === 3) {
+      payload.users = [this.currentUser?.id];
     }
 
-    this.leaveGrant.markAllAsTouched();
-    if (this.leaveGrant.invalid) {
-      this.toast.error(this.translate.instant('leave.formInvalidError'));
-      return;
+    if (!this.leaveGrant.valid) {
+      this.leaveGrant.markAllAsTouched();
     }
-
-    this.leaveService.addLeaveGrant(payload).subscribe({
-      next: (res: any) => {
+    else {
+      this.leaveService.addLeaveGrant(payload).subscribe((res: any) => {
         this.leaveGrantRefreshed.emit();
         this.leaveGrant.reset();
-        this.toast.success(this.translate.instant('leave.leaveCreatedSuccessfully'));
+        console.log(res.message)
+        this.toast.success(res.message || this.translate.instant('leave.leaveCreatedSuccessfully'));
         this.close.emit(true);
       },
-      error: (err: any) => {
-        this.toast.error(err.error?.message || this.translate.instant('leave.leaveCreationFailed'));
-      }
-    });
+        error => {
+          this.toast.error(error || this.translate.instant('leave.leaveCreationFailed'));
+        });
+    }
   }
 }

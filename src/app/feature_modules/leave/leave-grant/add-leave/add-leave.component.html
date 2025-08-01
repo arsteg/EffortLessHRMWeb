@@ -30,7 +30,7 @@
             <mat-form-field class="w-100">
             <mat-label>{{ 'leave.selectEmployee' | translate }}</mat-label>
             <mat-select name="users" multiple formControlName="users" required>
-                <mat-option *ngFor="let member of members" [value]="member.id">
+                <mat-option *ngFor="let member of members" [value]="member._id">
                 {{ member?.firstName | titlecase }}
                 {{ member?.lastName | titlecase }}
                 </mat-option>
