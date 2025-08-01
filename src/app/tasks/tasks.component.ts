@@ -19,6 +19,8 @@ import { Location } from '@angular/common';
 import { PreferenceService } from '../_services/user-preference.service';
 import { PreferenceKeys } from '../constants/preference-keys.constant';
 import { PageEvent } from '@angular/material/paginator';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-tasks',
@@ -101,6 +103,8 @@ export class TasksComponent implements OnInit {
   status = new FormControl([]);
   toppingList: string[] = ['ToDo', 'In-Progress', 'Done', 'Close'];
   domain: string;
+  dialogRef: MatDialogRef<any> | null = null;
+  isSubmitting: boolean = false;
 
   constructor(
     private tasksService: TasksService,
@@ -113,7 +117,8 @@ export class TasksComponent implements OnInit {
     private timelog: TimeLogService,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private preferenceService: PreferenceService,
+    private dialog: MatDialog,
+    private preferenceService: PreferenceService
   ) {
     this.addForm = this.fb.group({
       taskName: [''],
@@ -392,6 +397,15 @@ export class TasksComponent implements OnInit {
 
   onSubmit() {
     if (this.addForm.valid) {
+
+      if(this.isSubmitting){
+        this.toast.info('You have already clicked on submit.', 'Info!');
+        return;
+      }
+      else{
+        this.isSubmitting = true;
+      }
+
       const newTask: Task = {
         _id: '',
         taskName: this.addForm.value.title,
@@ -451,6 +465,7 @@ export class TasksComponent implements OnInit {
                     endDate: moment().format('YYYY-MM-DD'),
                     taskAttachments: []
                   });
+                  this.dialogRef.close(true);
                   this.selectedFiles = [];
                   this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
                 }, (err) => {
@@ -481,8 +496,11 @@ export class TasksComponent implements OnInit {
               taskAttachments: []
             });
             this.selectedFiles = [];
+            this.dialogRef.close(true);
+            this.isSubmitting = false;
             this.toast.success('New Task Successfully Created!', `Task Number: ${newTask.newTask.taskNumber}`);
           }, (err) => {
+            this.isSubmitting = false;
             this.toast.error('Choose a different, unique title for your task', 'Error!');
           }
         );
@@ -523,6 +541,16 @@ export class TasksComponent implements OnInit {
     this.selectedFiles = [];
   }
 
+  openDialog(addModal: any): void {
+    this.clearForm();
+    this.isSubmitting = false;
+    this.dialogRef = this.dialog.open(addModal, {
+      width: '50%',
+    });
+    this.dialogRef.afterClosed().subscribe(result => {
+    });
+  }
+
   onFileSelect(event) {
     const files: FileList = event.target.files;
     if (files) {
@@ -541,6 +569,21 @@ export class TasksComponent implements OnInit {
     }
   }
 
+  deleteDialog(task: any): void {
+      this.dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        width: '400px',
+      });
+      this.dialogRef.afterClosed().subscribe(result => {
+        if (result === 'delete') {
+          this.selectedTask = task;
+          this.deleteTask();
+        }
+        err => {
+          this.toast.error('Can not be Deleted', 'Error!')
+        }
+      });
+    }
+
   deleteTask() {
     if (!this.selectedTask.project) {
       this.toast.error('Task Cannot be Deleted: Please update Project', 'Error!');
@@ -553,7 +596,7 @@ export class TasksComponent implements OnInit {
       }
       this.toast.success('New Task Successfully Deleted!', `Task Number: ${this.selectedTask.taskNumber}`);
     }, err => {
-      this.toast.error('Task Cannot be Deleted', 'Error!');
+      this.toast.error(`Task Cannot be Deleted ${err}`, 'Error!');
     });
   }
 
