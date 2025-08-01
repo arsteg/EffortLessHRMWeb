@@ -191,19 +191,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-12 my-2">
-                    <label>{{ "leave.accrualInAdvance" | translate }}</label>
-                    <div class="d-flex">
-                        <mat-radio-group formControlName="isEmployeeAccrualLeaveInAdvance">
-                            <mat-radio-button color="primary" [value]="true">{{
-                                "leave.yes" | translate
-                                }}</mat-radio-button>
-                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                                "leave.no" | translate
-                                }}</mat-radio-button>
-                        </mat-radio-group>
-                    </div>
-                </div>
+                
                 <div class="form-group col-12 my-2">
                     <label>{{ "leave.weeklyOffInclusion" | translate }}</label>
                     <div class="d-flex">
@@ -276,9 +264,7 @@
                             <mat-option value="no-carryover">{{
                                 "leave.noCarryover" | translate
                                 }}</mat-option>
-                            <mat-option value="carryover-gap">{{
-                                "leave.carryoverGap" | translate
-                                }}</mat-option>
+                            
                             <mat-option value="no-limit">{{
                                 "leave.noLimit" | translate
                                 }}</mat-option>

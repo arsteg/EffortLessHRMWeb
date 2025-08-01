@@ -31,6 +31,7 @@ export class AddCategoryLeaveComponent {
   loader: boolean = true;
   defaultCatSkip = "0";
   defaultCatNext = "100000";
+  category: any;
 
   constructor(
     private leaveService: LeaveService,
@@ -68,6 +69,7 @@ export class AddCategoryLeaveComponent {
           if (matchingCategory) {
             const categoryId = matchingCategory._id;
             this.leaveService.getLeaveCategorById(categoryId).subscribe((categoryDetails: any) => {
+              const category = categoryDetails?.data;
               const leaveCategoryGroup = this._formBuilder.group({
                 leaveCategory: [categoryId, Validators.required],
                 limitNumberOfTimesApply: [step.limitNumberOfTimesApply ?? true, Validators.required],
@@ -80,10 +82,12 @@ export class AddCategoryLeaveComponent {
                 extendMaximumDayNumber: [step.extendMaximumDayNumber ?? 0, [Validators.min(0)]],
                 extendFromCategory: [step.extendFromCategory || ''],
                 negativeBalanceCap: [step.negativeBalanceCap ?? 0, [Validators.min(0)]],
-                accrualRatePerPeriod: [step.accrualRatePerPeriod ?? 1, [Validators.required, Validators.min(1)]],
-                categoryApplicable: [step.categoryApplicable || 'all-employees', Validators.required],
-                users: [step.templateApplicableCategoryEmployee?.map(user => user.user) || []]
+                accrualRatePerPeriod: [step?.accrualRatePerPeriod],
+                categoryApplicable: [{ value: step.categoryApplicable || 'all-employees', disabled: true }, Validators.required],
+                users: [step.templateApplicableCategoryEmployee?.map(user => user.user) || []],
+                leaveAccrualPeriod: [category?.leaveAccrualPeriod]
               });
+
               leaveCategoriesArray.push(leaveCategoryGroup);
               this.toggleControl(leaveCategoryGroup, 'limitNumberOfTimesApply', 'maximumNumbersEmployeeCanApply');
               this.bindCategoryApplicableChange(leaveCategoryGroup);
@@ -103,27 +107,27 @@ export class AddCategoryLeaveComponent {
   }
 
   toggleControl(formGroup: FormGroup, toggler: string, control: string) {
-  const toggleControl = formGroup.get(toggler);
-  const dependentControl = formGroup.get(control);
+    const toggleControl = formGroup.get(toggler);
+    const dependentControl = formGroup.get(control);
 
-  // Set initial state
-  if (!toggleControl.value) {
-    dependentControl.setValue(0); // Reset to 0 when toggle is initially false
-    dependentControl.disable();
-  } else {
-    dependentControl.enable();
-  }
-
-  // Listen for value changes on the toggle
-  toggleControl.valueChanges.subscribe(value => {
-    if (value) {
-      dependentControl.enable();
-    } else {
-      dependentControl.setValue(0); // Reset to 0 when toggle is set to false
+    // Set initial state
+    if (!toggleControl.value) {
+      dependentControl.setValue(0); // Reset to 0 when toggle is initially false
       dependentControl.disable();
+    } else {
+      dependentControl.enable();
     }
-  });
-}
+
+    // Listen for value changes on the toggle
+    toggleControl.valueChanges.subscribe(value => {
+      if (value) {
+        dependentControl.enable();
+      } else {
+        dependentControl.setValue(0); // Reset to 0 when toggle is set to false
+        dependentControl.disable();
+      }
+    });
+  }
   bindCategoryApplicableChange(categoryGroup: FormGroup) {
     categoryGroup.get('categoryApplicable')?.valueChanges.subscribe(value => {
       if (value === 'all-employees') {
@@ -143,8 +147,9 @@ export class AddCategoryLeaveComponent {
   }
 
   onSubmit() {
-    const formData = { ...this.firstForm.value };
+    const formData = { ...this.firstForm.getRawValue() };
     formData.leaveCategories.forEach(category => {
+      category.categoryApplicable = 'all-employees'; // Force set to 'all-employees' on submission
       category.users = category.users.map(user => ({ user }));
     });
     this.leaveService.updateLeaveTemplateCategories(formData).subscribe((res: any) => {

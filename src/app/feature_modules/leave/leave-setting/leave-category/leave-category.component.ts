@@ -89,7 +89,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isProRateFirstMonthAccrualForNewJoinees: [''],
       maximumNumberConsecutiveLeaveDaysAllowed: [0, [Validators.required, Validators.min(0)]],
       isPaidLeave: [true],
-      isEmployeeAccrualLeaveInAdvance: [true]
     }, { validators: this.minLessThanMaxValidator });
     this.leaveTypeSubscription = this.categoryForm.get('leaveType')?.valueChanges.subscribe(value => {
       const leaveAccrualPeriodControl = this.categoryForm.get('leaveAccrualPeriod');
@@ -164,7 +163,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isIntraCycleLapseApplicableForThisCategory: false,
       isProRateFirstMonthAccrualForNewJoinees: false,
       isPaidLeave: false,
-      isEmployeeAccrualLeaveInAdvance: false,
       submitBefore: 0,
       minimumNumberOfDaysAllowed: 0,
       maximumNumberConsecutiveLeaveDaysAllowed: 0,
@@ -196,7 +194,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
         isIntraCycleLapseApplicableForThisCategory: false,
         isProRateFirstMonthAccrualForNewJoinees: false,
         isPaidLeave: false,
-        isEmployeeAccrualLeaveInAdvance: false,
         submitBefore: 0,
         minimumNumberOfDaysAllowed: 0,
         maximumNumberConsecutiveLeaveDaysAllowed: 0,
@@ -303,7 +300,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isProRateFirstMonthAccrualForNewJoinees: this.selectedLeaveCategory.isProRateFirstMonthAccrualForNewJoinees,
       maximumNumberConsecutiveLeaveDaysAllowed: this.selectedLeaveCategory.maximumNumberConsecutiveLeaveDaysAllowed,
       isPaidLeave: this.selectedLeaveCategory.isPaidLeave,
-      isEmployeeAccrualLeaveInAdvance: this.selectedLeaveCategory.isEmployeeAccrualLeaveInAdvance
     });
     const leaveAccrualPeriodControl = this.categoryForm.get('leaveAccrualPeriod');
     if (this.selectedLeaveCategory.leaveType === 'general-leave') {

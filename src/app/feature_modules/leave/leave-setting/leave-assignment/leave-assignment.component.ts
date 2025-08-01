@@ -4,11 +4,12 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { LeaveService } from 'src/app/_services/leave.service';
-import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { ManageTeamService } from 'src/app/_services/manage-team.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-leave-assignment',
@@ -25,12 +26,13 @@ export class LeaveAssignmentComponent implements OnInit {
   showApprovers: boolean = false;
   displayedColumns: string[] = ['user', 'leaveTemplate', 'primaryApprover', 'secondaryApprover', 'actions'];
   recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
+  leaveApplication = new MatTableDataSource<any>();
   allData: any[] = [];
   dialogRef: MatDialogRef<any> | null = null;
   columns: TableColumn[] = [
-    { key: this.translate.instant('leave.leaveassignment.employee'), name: 'Employee', valueFn: (row) => this.getUser(row?.user) },
+    { key: this.translate.instant('leave.leaveassignment.employee'), name: 'Employee', valueFn: (row) => row?.user },
     { key: this.translate.instant('leave.leaveassignment.leaveTemplate'), name: 'Current Leave Policy', valueFn: (row) => row?.leaveTemplate?.label },
-    { key: this.translate.instant('leave.leaveassignment.primaryApprover'), name: 'Approver', valueFn: (row) => this.getUser(row.primaryApprover) },
+    { key: this.translate.instant('leave.leaveassignment.primaryApprover'), name: 'Approver', valueFn: (row) => row.primaryApprover },
     {
       key: 'action',
       name: 'Action',
@@ -45,7 +47,7 @@ export class LeaveAssignmentComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
-    private commonService: CommonService,
+    private teamService: ManageTeamService,
     private leaveService: LeaveService,
     private fb: FormBuilder,
     private toast: ToastrService,
@@ -62,7 +64,7 @@ export class LeaveAssignmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getAllUsers();
+    this.getManagers();
     this.getTemplateAssignments();
     this.templateAssignmentForm.get('leaveTemplate')?.valueChanges.subscribe(value => {
       this.onTemplateChange(value);
@@ -144,13 +146,11 @@ export class LeaveAssignmentComponent implements OnInit {
     }
   }
 
-  getAllUsers() {
-    this.commonService.populateUsers().subscribe({
-      next: (res: any) => {
-        this.users = res.data.data || [];
-      },
-      error: (err) => {
-        console.error('Error fetching users:', err);
+  getManagers() {
+    this.teamService.getManagers().subscribe((res: any) => {
+      this.users = res.data;
+      error: () => {
+        this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
       }
     });
   }
@@ -172,20 +172,21 @@ export class LeaveAssignmentComponent implements OnInit {
       skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
       next: this.tableService.recordsPerPage.toString()
     };
-    this.leaveService.getLeaveTemplateAssignment(pagination).subscribe({
-      next: (res: any) => {
-        if (res.status === 'success') {
-          this.tableService.setData(res.data || []);
-          this.allData = res.data;
-          this.tableService.totalRecords = res.total || 0;
-        }
-      },
-      error: (err) => {
-        console.error('Error fetching template assignments:', err);
-        this.tableService.setData([]);
-        this.tableService.totalRecords = 0;
+    this.leaveService.getLeaveTemplateAssignment(pagination).subscribe((res: any) => {
+      if (res.status === 'success') {
+        this.leaveApplication.data = res.data.map((leave: any) => {
+          return {
+            ...leave,
+            primaryApprover: leave.primaryApprover.firstName + ' ' + leave.primaryApprover.lastName,
+            user: leave.user.firstName + ' ' + leave.user.lastName
+          }
+        });
+        console.log(this.leaveApplication.data);
       }
-    });
+    },
+      error => {
+        this.toast.error(error.message)
+      })
   }
 
   onTemplateChange(templateId: string): void {
@@ -193,13 +194,13 @@ export class LeaveAssignmentComponent implements OnInit {
     const primaryApproverControl = this.templateAssignmentForm.get('primaryApprover');
     console.log(selectedTemplate)
     if (selectedTemplate?.approvalType === 'template-wise') {
-     
+
       this.templateAssignmentForm.patchValue({
         primaryApprover: selectedTemplate.primaryApprover || null,
         secondaryApprover: null
       });
 
-       primaryApproverControl?.disable();
+      primaryApproverControl?.disable();
       primaryApproverControl?.clearValidators();
       this.showApprovers = false;
     } else {
@@ -278,28 +279,24 @@ export class LeaveAssignmentComponent implements OnInit {
     this.tableService.dataSource.data = sorted;
   }
 
-  onSearchChange(event: any) {
-    this.tableService.dataSource.data = this.allData?.filter(row => {
-      const found = this.columns.some(col => {
-        if (col.key !== 'actions') {
-          var value = row[col.key];
-          if (col.key === this.translate.instant('leave.leaveassignment.employee')) {
-            value = this.getUser(row.user);
-          } else if (col.key === this.translate.instant('leave.leaveassignment.leaveTemplate')) {
-            value = row.leaveTemplate?.label;
-          } else if (col.key === this.translate.instant('leave.leaveassignment.primaryApprover')) {
-            value = this.getUser(row.primaryApprover);
-          } else if (col.key === this.translate.instant('leave.leaveassignment.secondaryApprover')) {
-            value = this.getUser(row.secondaryApprover);
-          }
-          return value?.toString().toLowerCase().includes(event.toLowerCase());
-        }
-        return false;
-      });
-      return found;
-    });
-  }
+ 
+  onSearchChange(search: string) {
+    const lowerSearch = search.toLowerCase();
+    const data = this.allData.filter((row: any) => {
+      const valuesToSearch = [
+        row.user?.toLowerCase(), ,
+        row.primaryApprover?.toLowerCase(),
+        row.leaveTemplate?.label?.toLowerCase()
+      ];
 
+      return valuesToSearch.some(value =>
+        value?.toString().toLowerCase().includes(lowerSearch)
+      );
+    });
+
+    this.leaveApplication.data = data;
+    this.leaveApplication._updateChangeSubscription();
+  }
   closeModal() {
     this.resetForm();
     this.dialogRef.close(true);

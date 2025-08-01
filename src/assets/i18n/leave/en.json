@@ -138,7 +138,7 @@
             "eligibleAfterConfirmation": "Make the employee eligible for leave after getting confirmed",
             "daysToBecomeEligible": "How many days does the employee need to complete to become eligible for leave?",
             "creditEntireAmountQuestion": "Upon becoming eligible, does the employee get credited the entire amount of leave that he/she earned during the period of ineligibility?",
-            "accrualRateQuestion": "Please provide the accrual rate per period?(Annually)",
+            "accrualRateQuestion": "Please provide the accrual rate per period?",
             "errorAccrualRequired": "Accrual rate is required.",
             "errorAccrualMin": "Accrual rate must be greater than 0.",
             "applicableToQuestion": "Who is this category applicable to?",

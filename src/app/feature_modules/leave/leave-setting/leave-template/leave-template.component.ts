@@ -64,9 +64,7 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
     this.initializeFilterPredicate();
   }
 
-  ngOnInit(): void {
-    this.getLeaveTemplates();
-  }
+  ngOnInit(): void { }
 
   ngAfterViewInit() {
     this.tableService.dataSource.paginator = this.paginator;

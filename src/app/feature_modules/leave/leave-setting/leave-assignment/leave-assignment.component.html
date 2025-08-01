@@ -7,7 +7,7 @@
       </button>
     </div>
 
-    <hrm-table [data]="tableService.dataSource.data" [isServerSide]="true" [columns]="columns" [showSearch]="true"
+    <hrm-table [data]="leaveApplication.data" [isServerSide]="true" [columns]="columns" [showSearch]="true"
       [totalItems]="tableService.totalRecords" (actionClicked)="handleAction($event, addModal)"
       (pageChanged)="onPageChange($event)" (sortChanged)="onSortChange($event)"
       (searchChanged)="onSearchChange($event)">
@@ -63,8 +63,9 @@
             <mat-label>{{ 'leave.selectPrimaryApprover' | translate }}</mat-label>
             <mat-select formControlName="primaryApprover">
               <mat-option value="" disabled>{{ 'leave.selectLabel' | translate }}</mat-option>
-              <mat-option [value]="user?._id" *ngFor="let user of users">
-                {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
+              <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">
+                {{ user?.firstName | titlecase }}
+                {{ user?.lastName | titlecase }}
               </mat-option>
             </mat-select>
             <mat-error
