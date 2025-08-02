@@ -182,6 +182,7 @@ export class LeaveAssignmentComponent implements OnInit {
           }
         });
         console.log(this.leaveApplication.data);
+        this.allData = this.leaveApplication.data || [];
       }
     },
       error => {
@@ -271,32 +272,43 @@ export class LeaveAssignmentComponent implements OnInit {
   }
 
   onSortChange(event: any) {
-    const sorted = this.tableService.dataSource.data.slice().sort((a: any, b: any) => {
+    const sorted = this.leaveApplication.data.slice().sort((a: any, b: any) => {
       const valueA = a[event.active];
       const valueB = b[event.active];
       return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
     });
-    this.tableService.dataSource.data = sorted;
+    this.leaveApplication.data = sorted;
   }
 
- 
-  onSearchChange(search: string) {
-    const lowerSearch = search.toLowerCase();
-    const data = this.allData.filter((row: any) => {
-      const valuesToSearch = [
-        row.user?.toLowerCase(), ,
-        row.primaryApprover?.toLowerCase(),
-        row.leaveTemplate?.label?.toLowerCase()
-      ];
-
-      return valuesToSearch.some(value =>
-        value?.toString().toLowerCase().includes(lowerSearch)
-      );
+  onSearchChange(event: string) { // CHANGED: Updated to match reference
+    this.leaveApplication.data = this.allData.filter(row => {
+      return this.columns.some(col => {
+        if (col.key !== 'actions') {
+          const value = row[col.key];
+          return value?.toString().toLowerCase().includes(event.toLowerCase());
+        }
+        return false;
+      });
     });
-
-    this.leaveApplication.data = data;
-    this.leaveApplication._updateChangeSubscription();
   }
+ 
+  // onSearchChange(search: string) {
+  //   const lowerSearch = search.toLowerCase();
+  //   const data = this.allData?.filter((row: any) => {
+  //     const valuesToSearch = [
+  //       row.user?.toLowerCase(), ,
+  //       row.primaryApprover?.toLowerCase(),
+  //       row.leaveTemplate?.label?.toLowerCase()
+  //     ];
+
+  //     return valuesToSearch.some(value =>
+  //       value?.toString().toLowerCase().includes(lowerSearch)
+  //     );
+  //   });
+
+  //   this.leaveApplication.data = data;
+  //   this.leaveApplication._updateChangeSubscription();
+  // }
   closeModal() {
     this.resetForm();
     this.dialogRef.close(true);

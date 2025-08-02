@@ -27,6 +27,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
   closeResult: string = '';
   allData: any[] = [];
+  allDatatemp: any[] = [];
   dialogRef: MatDialogRef<any> | null = null;
   private leaveTypeSubscription: Subscription;
   totalRecords: any = 0;
@@ -218,6 +219,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
     };
     this.leaveService.getAllLeaveCategories(pagination).subscribe((res: any) => {
       this.allData = res.data;
+      this.allDatatemp = res.data;
       this.totalRecords = res.total;
     });
   }
@@ -357,16 +359,16 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   }
 
   onSortChange(event: any) { // CHANGED: Updated to match reference
-    const sorted = this.tableService.dataSource.data.slice().sort((a: any, b: any) => {
+    const sorted = this.allData.slice().sort((a: any, b: any) => {
       const valueA = a[event.active];
       const valueB = b[event.active];
       return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
     });
-    this.tableService.dataSource.data = sorted;
+    this.allData = sorted;
   }
 
   onSearchChange(event: string) { // CHANGED: Updated to match reference
-    this.tableService.dataSource.data = this.allData.filter(row => {
+    this.allData = this.allDatatemp.filter(row => {
       return this.columns.some(col => {
         if (col.key !== 'actions') {
           const value = row[col.key];
