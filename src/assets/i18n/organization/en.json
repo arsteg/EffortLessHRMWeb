@@ -46,7 +46,7 @@
       "update": "Update",
       "selected_file": "Selected file: ",
       "invalid_image_file": "Please select a valid image file.",
-      "no_file_selected": "No file selected or company ID missing.",
+      "no_file_selected": "Company Logo is Required!",
       "company_added": "Company added successfully",
       "company_updated": "Company updated successfully",
       "company_update_failed": "Failed to update company",

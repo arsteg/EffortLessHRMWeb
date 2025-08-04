@@ -788,3 +788,17 @@ option:hover {
   width: 240mm;
   margin: auto;
 }
+
+.attachment {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px;
+  border: 1px solid #f7d3b6;
+  border-radius: 9px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.details-attach-file{
+  cursor: pointer;
+}
