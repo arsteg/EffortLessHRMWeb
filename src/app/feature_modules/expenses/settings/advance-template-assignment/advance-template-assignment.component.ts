@@ -8,6 +8,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { ManageTeamService } from 'src/app/_services/manage-team.service';
 @Component({
   selector: 'app-advance-template-assignment',
   templateUrl: './advance-template-assignment.component.html',
@@ -18,7 +19,7 @@ export class AdvanceTemplateAssignmentComponent {
   private readonly translate = inject(TranslateService);
   searchText: '';
   isEdit = false;
-  changeMode: 'Add' | 'View' | 'Update' = 'Add';
+  changeMode: 'Add' | 'Update' = 'Add';
   addTemplateAssignmentForm: FormGroup;
   closeResult: string = '';
   advanceTemplates: any;
@@ -35,14 +36,17 @@ export class AdvanceTemplateAssignmentComponent {
   templateById: any;
   @ViewChild('primaryApproverField') primaryApproverField: ElementRef;
   @ViewChild('secondaryApproverField') secondaryApproverField: ElementRef;
-  displayedColumns: string[] = ['employeeName', 'advanceTemplate', 'primaryApprover', 'secondaryApprover', 'actions'];
+  displayedColumns: string[] = ['employeeName', 'advanceTemplate', 'primaryApprover', 'effectiveDate', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
   dialogRef: MatDialogRef<any>;
+  managers: any;
+
   constructor(private fb: FormBuilder,
     private expenseService: ExpensesService,
     private commonService: CommonService,
     private toast: ToastrService,
     private dialog: MatDialog,
+    private manageService: ManageTeamService
   ) {
     this.addTemplateAssignmentForm = this.fb.group({
       user: ['', Validators.required],
@@ -54,6 +58,7 @@ export class AdvanceTemplateAssignmentComponent {
   }
 
   ngOnInit() {
+    this.getManagers();
     forkJoin({
       users: this.commonService.populateUsers(),
       templates: this.expenseService.getAdvanceTemplates({ next: '', skip: '' }),
@@ -77,6 +82,12 @@ export class AdvanceTemplateAssignmentComponent {
       });
       this.totalRecords = assignments?.total || 0;
     });
+  }
+
+  getManagers() {
+    this.manageService?.getManagers().subscribe((res: any) => {
+      this.managers = res.data;
+    })
   }
 
   getUser(employeeId: string) {
@@ -187,7 +198,7 @@ export class AdvanceTemplateAssignmentComponent {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
       next: this.recordsPerPage.toString()
     };
-   
+
     this.expenseService.getAdvanceTemplateAssignment(pagination).subscribe((res: any) => {
       this.dataSource.data = res.data.map((report) => {
         const expenseAdvanceTemplateDetails = this.getTemplateDetails(report?.advanceTemplate);
@@ -196,7 +207,7 @@ export class AdvanceTemplateAssignmentComponent {
           employeeName: this.getUser(report?.user),
           advanceTemplate: this.getAdvanceTemplate(report?.advanceTemplate),
           primaryApprover: this.getUser(report?.primaryApprover),
-          secondaryApprover: this.getUser(report?.secondaryApprover),
+          effectiveDate: report.effectiveDate,
           approvalType: expenseAdvanceTemplateDetails?.approvalType
         };
       });
@@ -237,6 +248,7 @@ export class AdvanceTemplateAssignmentComponent {
         this.isEdit = false;
         this.addTemplateAssignmentForm.enable();
         this.addTemplateAssignmentForm.reset();
+        this.dialogRef.close();
       },
         (err) => {
           this.toast.error(err || this.translate.instant('expenses.template_assigned_update_error'));
@@ -244,10 +256,10 @@ export class AdvanceTemplateAssignmentComponent {
     }
     if (this.changeMode === 'Add') {
       this.expenseService.addAdvanceTemplateAssignment(payload).subscribe((res: any) => {
-        const newTemplateAssignment = res.data;
-        this.templateAssignments.push(newTemplateAssignment);
+        this.getAssignments();
         this.toast.success(this.translate.instant('expenses.template_assigned_success'))
         this.addTemplateAssignmentForm.reset();
+        this.dialogRef.close();
       },
         (err) => {
           this.toast.error(this.translate.instant('expenses.template_assigned_error'));
@@ -272,37 +284,22 @@ export class AdvanceTemplateAssignmentComponent {
           primaryApprover: templateAssignment.primaryApprover,
           advanceTemplate: templateAssignment.advanceTemplate,
           effectiveDate: templateAssignment.effectiveDate,
-          secondaryApprover: templateAssignment.secondaryApprover
         });
         this.expenseService.getAdvanceTemplateById(templateAssignment.advanceTemplate).subscribe((res: any) => {
           this.templateById = res.data;
           if (this.templateById.approvalType === 'template-wise') {
-            if (this.templateById.approvalLevel === '1') {
-              this.addTemplateAssignmentForm.patchValue({
-                primaryApprover: templateAssignment?.primaryApprover,
-                secondaryApprover: null,
-                user: templateAssignment.user,
-                advanceTemplate: templateAssignment.advanceTemplate,
-                effectiveDate: templateAssignment.effectiveDate
-              });
-              this.addTemplateAssignmentForm.get('user').disable();
-              this.addTemplateAssignmentForm.get('effectiveDate').disable();
-              this.addTemplateAssignmentForm.get('advanceTemplate').disable();
-              this.addTemplateAssignmentForm.get('primaryApprover').disable();
-            } else if (this.templateById.approvalLevel === '2') {
-              this.addTemplateAssignmentForm.patchValue({
-                primaryApprover: templateAssignment.primaryApprover,
-                secondaryApprover: templateAssignment.secondaryApprover,
-                user: templateAssignment.user,
-                advanceTemplate: templateAssignment.advanceTemplate,
-                effectiveDate: templateAssignment.effectiveDate
-              });
-            }
+
+            this.addTemplateAssignmentForm.patchValue({
+              primaryApprover: templateAssignment?.primaryApprover,
+              secondaryApprover: null,
+              user: templateAssignment.user,
+              advanceTemplate: templateAssignment.advanceTemplate,
+              effectiveDate: templateAssignment.effectiveDate
+            });
             this.addTemplateAssignmentForm.get('user').disable();
             this.addTemplateAssignmentForm.get('effectiveDate').disable();
             this.addTemplateAssignmentForm.get('advanceTemplate').disable();
             this.addTemplateAssignmentForm.get('primaryApprover').disable();
-            this.addTemplateAssignmentForm.get('secondaryApprover').disable();
           }
 
           else if (this.templateById.approvalType === 'employee-wise') {
@@ -317,7 +314,6 @@ export class AdvanceTemplateAssignmentComponent {
             this.addTemplateAssignmentForm.get('effectiveDate').disable();
             this.addTemplateAssignmentForm.get('advanceTemplate').disable();
             this.addTemplateAssignmentForm.get('primaryApprover').enable();
-            this.addTemplateAssignmentForm.get('secondaryApprover').enable();
           }
         });
       });
@@ -335,7 +331,7 @@ export class AdvanceTemplateAssignmentComponent {
   deleteAdvanceTemplateAssignment(id, index: number) {
     let _id = id._id;
     this.expenseService.deleteAdvanceTemplateAssignment(_id).subscribe((res: any) => {
-      this.templateAssignments.splice(index)
+      this.ngOnInit();
       this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {

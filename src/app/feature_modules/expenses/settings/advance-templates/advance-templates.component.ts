@@ -9,6 +9,7 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
+import { ManageTeamService } from 'src/app/_services/manage-team.service';
 
 @Component({
   selector: 'app-advance-templates',
@@ -46,50 +47,38 @@ export class AdvanceTemplatesComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private expenseService: ExpensesService,
     private toast: ToastrService,
-    private commonService: CommonService,
-    private dialog: MatDialog) {
+    private dialog: MatDialog,
+    private manageService: ManageTeamService) {
     this.addAdvanceTempForm = this.fb.group({
       policyLabel: ['', Validators.required],
-      approvalType: ['', Validators.required],
-      approvalLevel: ['', Validators.required],
+      approvalType: ['employee-wise', Validators.required],
       advanceCategories: [[]],
       firstApprovalEmployee: ['', Validators.required],
       secondApprovalEmployee: ['', Validators.required]
     });
   }
 
-
-
   ngOnInit(): void {
-    this.commonService.populateUsers().subscribe((res: any) => {
-      this.users = res.data.data;
-    })
+    this.getManagers();
     this.getAllTemplates();
     this.getAlladvanceCategories();
-    this.addAdvanceTempForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(this.addAdvanceTempForm.get('approvalType').value, value)
-    });
     this.addAdvanceTempForm.get('approvalType').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(value, this.addAdvanceTempForm.get('approvalLevel').value)
+      if (value === 'template-wise') {
+        this.addAdvanceTempForm.get('firstApprovalEmployee')?.setValidators([Validators.required]);
+      }
+      this.addAdvanceTempForm.patchValue({
+        firstApprovalEmployee: null
+      })
     });
     this.dataSource = new MatTableDataSource(this.list);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 
-  validateApprovers(approverType, approverLevel) {
-    if (approverLevel == 1 && approverType == 'template-wise') {
-      this.addAdvanceTempForm.get('firstApprovalEmployee').setValidators([Validators.required]);
-      this.addAdvanceTempForm.get('secondApprovalEmployee').clearValidators();
-    } else if (approverLevel == 2 && approverType == 'template-wise') {
-      this.addAdvanceTempForm.get('firstApprovalEmployee').setValidators([Validators.required]);
-      this.addAdvanceTempForm.get('secondApprovalEmployee').setValidators([Validators.required]);
-    } else {
-      this.addAdvanceTempForm.get('firstApprovalEmployee').clearValidators();
-      this.addAdvanceTempForm.get('secondApprovalEmployee').clearValidators();
-    }
-    this.addAdvanceTempForm.get('firstApprovalEmployee').updateValueAndValidity();
-    this.addAdvanceTempForm.get('secondApprovalEmployee').updateValueAndValidity();
+  getManagers() {
+    this.manageService?.getManagers().subscribe((res: any) => {
+      this.users = res.data;
+    })
   }
 
   onCancel() {
@@ -131,7 +120,6 @@ export class AdvanceTemplatesComponent implements OnInit {
     })
   }
 
-
   getAlladvanceCategories() {
     let payload = {
       next: '',
@@ -149,13 +137,11 @@ export class AdvanceTemplatesComponent implements OnInit {
   }
 
   addAdvanceTemplate() {
-
     if (this.addAdvanceTempForm.valid) {
       if (this.changeMode === 'Add') {
         let payload = {
           policyLabel: this.addAdvanceTempForm.value['policyLabel'],
           approvalType: this.addAdvanceTempForm.value['approvalType'],
-          approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
           firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
           secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
           advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
@@ -183,7 +169,6 @@ export class AdvanceTemplatesComponent implements OnInit {
         let payload = {
           policyLabel: this.addAdvanceTempForm.value['policyLabel'],
           approvalType: this.addAdvanceTempForm.value['approvalType'],
-          approvalLevel: this.addAdvanceTempForm.value['approvalLevel'],
           firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
           secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
           advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
@@ -225,7 +210,6 @@ export class AdvanceTemplatesComponent implements OnInit {
           firstApprovalEmployee: res.data.firstApprovalEmployee,
           secondApprovalEmployee: res.data.secondApprovalEmployee,
           approvalType: res.data.approvalType,
-          approvalLevel: res.data.approvalLevel,
           advanceCategories: res.data.advanceCategories.map((advanceCategory: any) => advanceCategory.advanceCategory)
         });
         console.log(this.addAdvanceTempForm.value)

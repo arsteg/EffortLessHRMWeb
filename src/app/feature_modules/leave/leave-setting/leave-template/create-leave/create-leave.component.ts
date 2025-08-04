@@ -53,7 +53,6 @@ export class CreateLeaveComponent {
     this.getManagers();
     this.getLeaveCategories();
     this.addTemplateForm.get('approvalType')?.valueChanges.subscribe((value: any) => {
-      console.log(value)
       if (value === 'template-wise') {
         this.addTemplateForm.get('primaryApprover')?.setValidators([Validators.required]);
       }
