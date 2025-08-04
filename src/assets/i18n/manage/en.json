@@ -186,9 +186,9 @@
       "phone_placeholder": "Enter Phone Number",
       "error": {
         "first_name_required": "First Name is required",
-        "first_name_pattern": "Must contain at least 2 alphabetic characters",
+        "first_name_pattern": "Must contain at least 2 letters. No numbers or special characters.",
         "last_name_required": "Last Name is required",
-        "last_name_pattern": "Must contain at least 2 alphabetic characters",
+        "last_name_pattern": "Must contain at least 2 letters. No numbers or special characters.",
         "email_required": "Email is required",
         "email_invalid": "Enter a valid email address",
         "email_exists": "This email is already in use",
