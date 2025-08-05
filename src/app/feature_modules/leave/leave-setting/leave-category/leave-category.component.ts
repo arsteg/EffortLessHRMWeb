@@ -30,6 +30,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   dialogRef: MatDialogRef<any> | null = null;
   private leaveTypeSubscription: Subscription;
   totalRecords: any = 0;
+  isSubmitting: boolean = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   columns: TableColumn[] = [
@@ -208,6 +209,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       disableClose: true
     });
     this.dialogRef.afterClosed().subscribe(result => {
+      this.isSubmitting = false;
     });
   }
 
@@ -224,45 +226,45 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   }
 
   onSubmission() {
-    if(this.categoryForm.invalid){
+    this.isSubmitting = true;
+    if (this.categoryForm.invalid) {
       this.markFormGroupTouched(this.categoryForm);
       return;
     }
-    else{
-    if (!this.isEdit) {
-      this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe(
-        (res: any) => {
-          this.tableService.setData([...this.tableService.dataSource.data, res.data]);
-          this.toast.success(res.message);
-          this.dialogRef.close(true);
-          this.reset();
-          this.getAllLeaveCategories(); // <-- Refresh list after add
-        },
-        (err) => {
-          this.toast.error(err || this.translate.instant('leave.leaveErrorAssignment'));
-        }
-      );
-    } else if (this.isEdit) {
-      const id = this.selectedLeaveCategory._id;
-      this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe(
-        (res: any) => {
-          const updatedData = this.tableService.dataSource.data.map(item =>
-            item._id === res.data._id ? res.data : item
-          );
-          this.tableService.setData(updatedData);
-          this.toast.success(res.message);
-          this.dialogRef.close(true);
-          this.reset();
-          this.getAllLeaveCategories(); // <-- Refresh list after update
-        },
-        (err) => {
-          this.toast.error(err || this.translate.instant('leave.leaveErrorAssignmentUpdated'));
+    else {
+      if (!this.isEdit) {
+        this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe(
+          (res: any) => {
+            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+            this.toast.success(res.message);
+            this.dialogRef.close(true);
+            this.reset();
+            this.getAllLeaveCategories(); // <-- Refresh list after add
+          },
+          (err) => {
+            this.toast.error(err || this.translate.instant('leave.leaveErrorAssignment'));
+          }
+        );
+      } else if (this.isEdit) {
+        const id = this.selectedLeaveCategory._id;
+        this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe(
+          (res: any) => {
+            const updatedData = this.tableService.dataSource.data.map(item =>
+              item._id === res.data._id ? res.data : item
+            );
+            this.tableService.setData(updatedData);
+            this.toast.success(res.message);
+            this.dialogRef.close(true);
+            this.reset();
+            this.getAllLeaveCategories(); // <-- Refresh list after update
+          },
+          (err) => {
+            this.toast.error(err || this.translate.instant('leave.leaveErrorAssignmentUpdated'));
 
-        }
-      );
+          }
+        );
+      }
     }
-  }
-
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
