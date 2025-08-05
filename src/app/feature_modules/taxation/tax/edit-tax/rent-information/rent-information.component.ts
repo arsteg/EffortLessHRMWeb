@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ValidationErrors } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators, ValidationErrors, AbstractControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { TaxationService } from 'src/app/_services/taxation.service';
@@ -462,5 +462,18 @@ export class RentInformationComponent {
         this.employeeIncomeTaxDeclarationHRA.push(formGroup);
       });
     });
+  }
+
+  getFirstInvalidControlName(group: AbstractControl): string | null {
+    if (!group || !(group instanceof FormGroup)) return null;
+    const controls = group.controls;
+    const fieldOrder = ['landlordAddress', 'landlordPan', 'landlordName', 'rentDeclared', 'cityType'];
+    for (const field of fieldOrder) {
+      const control = controls[field];
+      if (control?.touched && control.invalid) {
+        return field;
+      }
+    }
+    return null;
   }
 }
