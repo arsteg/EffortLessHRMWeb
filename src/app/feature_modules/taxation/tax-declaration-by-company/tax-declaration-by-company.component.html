@@ -43,7 +43,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr *ngFor="let component of group.components">
+                                <tr *ngFor="let component of group.components"
+                                    [ngClass]="'error-' + getInvalidControlName(component)"
+                                    >
                                     <td>{{component?.incomeTaxComponent?.componantName}}</td>
                                     <td>{{component?.appliedAmount}}</td>
                                     <td>
@@ -85,7 +87,7 @@
                                         <ng-container *ngIf="editingComponent === component; else nonEditableRemark">
                                             <form [formGroup]="componentForm">
                                                 <mat-form-field class="densed-field" style="width: 100px">
-                                                    <input matInput type="text" formControlName="remark">                                                
+                                                    <input matInput type="text" formControlName="remark" maxlength="500">                                                
                                                     <mat-error
                                                     *ngIf="componentForm.get('remark')?.hasError('required') && (componentForm.get('remark')?.touched || componentForm.get('remark')?.dirty)">
                                                     {{ 'taxation.remark_required' | translate }}
@@ -100,7 +102,7 @@
                                     <td>
                                         <ng-container *ngIf="editingComponent === component; else nonEditableStatus">
                                             <form [formGroup]="componentForm">
-                                                <mat-form-field class="densed-field" style="width: 100px">
+                                                <mat-form-field class="densed-field" style="width: 130px">
                                                     <mat-select formControlName="approvalStatus">
                                                         <mat-option value="Pending">Pending</mat-option>
                                                         <mat-option value="Approved">Approved</mat-option>
@@ -119,16 +121,16 @@
                                     <td width="100px">
                                         <ng-container *ngIf="editingComponent === component; else showEdit">
                                             <button mat-icon-button (click)="saveEditing('component', component)"
-                                                class="success-btn">
+                                                class="success-btn" matTooltip="Update" >
                                                 <mat-icon>check</mat-icon>
                                             </button>
                                             <button mat-icon-button (click)="cancelEditing('component')"
-                                                class="delete-btn">
+                                                class="delete-btn" matTooltip="Close">
                                                 <mat-icon>close</mat-icon>
                                             </button>
                                         </ng-container>
                                         <ng-template #showEdit>
-                                            <button mat-icon-button (click)="startEditing('component', component)">
+                                            <button mat-icon-button (click)="startEditing('component', component)" matTooltip="Edit">
                                                 <mat-icon>edit</mat-icon>
                                             </button>
                                         </ng-template>
@@ -175,7 +177,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor="let hra of element.incomeTaxDeclarationHRA">
+                                    <tr *ngFor="let hra of element.incomeTaxDeclarationHRA"
+                                    [ngClass]="'error-' + getInvalidHRAControlName(hra)">
                                         <td>{{hra?.month}}</td>
                                         <td>{{hra?.cityType}}</td>
                                         <td>{{hra?.rentDeclared}}</td>
@@ -216,7 +219,7 @@
                                         <td>
                                             <ng-container *ngIf="editingHRA === hra; else nonEditableHRAStatus">
                                                 <form [formGroup]="hraForm">
-                                                    <mat-form-field class="densed-field" style="width: 100px">
+                                                    <mat-form-field class="densed-field" style="width: 130px">
                                                         <mat-select formControlName="approvalStatus">
                                                             <mat-option value="Pending">Pending</mat-option>
                                                             <mat-option value="Approved">Approved</mat-option>
@@ -235,16 +238,16 @@
                                         <td>
                                             <ng-container *ngIf="editingHRA === hra; else showEditHRA">
                                                 <button mat-icon-button (click)="saveEditing('hra', hra)"
-                                                    class="success-btn">
+                                                    class="success-btn" matTooltip="Update">
                                                     <mat-icon>check</mat-icon>
                                                 </button>
                                                 <button mat-icon-button (click)="cancelEditing('hra')"
-                                                    class="delete-btn">
+                                                    class="delete-btn" matTooltip="Close">
                                                     <mat-icon>close</mat-icon>
                                                 </button>
                                             </ng-container>
                                             <ng-template #showEditHRA>
-                                                <button mat-icon-button (click)="startEditing('hra', hra)">
+                                                <button mat-icon-button (click)="startEditing('hra', hra)" matTooltip="Edit">
                                                     <mat-icon>edit</mat-icon>
                                                 </button>
                                             </ng-template>

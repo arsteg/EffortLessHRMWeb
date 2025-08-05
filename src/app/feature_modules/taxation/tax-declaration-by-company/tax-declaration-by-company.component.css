@@ -1,3 +1,11 @@
 .expand-row{
     height: auto;
 }
+
+.hrm-table tr.error-approvedAmount td {
+  padding-bottom: 70px !important;
+}
+
+.hrm-table tr.error-verifiedAmount td {
+  padding-bottom: 70px !important;
+}
