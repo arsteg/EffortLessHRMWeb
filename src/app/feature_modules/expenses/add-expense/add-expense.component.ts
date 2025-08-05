@@ -222,7 +222,6 @@ export class AddExpenseComponent {
   deleteReport(id: string) {
     this.expenseService.deleteExpenseReportExpenses(id).subscribe((res: any) => {
       this.expenseReportExpenses = this.expenseReportExpenses.filter(report => report._id !== id);
-      this.ngOnInit();
       this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {

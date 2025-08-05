@@ -20,19 +20,6 @@
             <div class="row mb-4">
                 <div class="col-12 col-md-6">
                     <div class="d-flex flex-column">
-                        <mat-label>{{'expenses.levels_of_approvals' | translate}}</mat-label>
-                        <mat-radio-group formControlName="approvalLevel" required>
-                            <mat-radio-button color="primary" value="1">{{'expenses.level_1' | translate}}</mat-radio-button>
-                            <mat-radio-button color="primary" value="2">{{'expenses.level_2' | translate}}</mat-radio-button>
-                        </mat-radio-group>
-                        <div *ngIf="addTemplateForm.get('approvalLevel').invalid && addTemplateForm.get('approvalLevel').touched"
-                            class="text-danger error">
-                            {{ 'expenses.levels_of_approvals_error' | translate }}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-md-6">
-                    <div class="d-flex flex-column">
                         <mat-label>{{'expenses.add_approvers' | translate}}<span class="text-danger">*</span></mat-label>
                         <mat-radio-group formControlName="approvalType" required>
                             <mat-radio-button color="primary" value="template-wise">{{'expenses.template_wise' | translate}}</mat-radio-button>
@@ -53,19 +40,8 @@
                     <mat-form-field class="w-100">
                         <mat-label>{{'expenses.first_approver' | translate}}</mat-label>
                         <mat-select formControlName="firstApprovalEmployee" required>
-                            <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
+                            <mat-option [value]="user?.id" *ngFor="let user of managers; let i = index">{{user?.firstName |
                                 titlecase}} {{user.lastName | titlecase}}</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div class="col-md-6" *ngIf="addTemplateForm.get('approvalLevel').value === '2'">
-                    <mat-form-field class="w-100">
-                        <mat-label>{{'expenses.second_approver' | translate}}</mat-label>
-                        <mat-select formControlName="secondApprovalEmployee" required>
-                            <mat-option [value]="user?.id" *ngFor="let user of users; let i = index"
-                                [disabled]="user?.id === addTemplateForm.get('firstApprovalEmployee').value">
-                                {{user?.firstName | titlecase}} {{user.lastName | titlecase}}
-                            </mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>

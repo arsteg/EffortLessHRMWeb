@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild, inject  } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { ManageTeamService } from 'src/app/_services/manage-team.service';
 @Component({
   selector: 'app-expenses-template-assignment',
   templateUrl: './expenses-template-assignment.component.html',
@@ -34,25 +35,25 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   public sortOrder: string = '';
   templateById: any;
   @ViewChild('primaryApproverField') primaryApproverField: ElementRef;
-  @ViewChild('secondaryApproverField') secondaryApproverField: ElementRef;
   showApproverFields = true;
   totalRecords: number
   recordsPerPage: number = 10;
   currentPage: number = 1;
-  displayedColumns: string[] = ['employeeName', 'expenseTemplate', 'primaryApprover', 'secondaryApprover', 'effectiveDate', 'actions'];
+  displayedColumns: string[] = ['employeeName', 'expenseTemplate', 'primaryApprover', 'effectiveDate', 'actions'];
   dataSource = new MatTableDataSource<any>([]);
   dialogRef: MatDialogRef<any>;
+  managers: any;
 
   constructor(
     private dialog: MatDialog,
     private expenseService: ExpensesService,
     private fb: FormBuilder,
     private commonService: CommonService,
-    private toast: ToastrService) {
+    private toast: ToastrService,
+    private manageService: ManageTeamService) {
     this.templateAssignmentForm = this.fb.group({
       user: [''],
       primaryApprover: [''],
-      secondaryApprover: [''],
       expenseTemplate: [''],
       effectiveDate: []
     });
@@ -62,6 +63,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.getManagers();
     forkJoin({
       users: this.commonService.populateUsers(),
       templates: this.expenseService.getAllTemplates({ next: '', skip: '' }),
@@ -79,13 +81,18 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
           employeeName: this.getUser(report?.user),
           expenseTemplate: this.getTemplate(report?.expenseTemplate),
           primaryApprover: this.getUser(report?.primaryApprover),
-          secondaryApprover: this.getUser(report?.secondaryApprover),
           approvalType: expenseTemplateDetails?.approvalType
         };
       });
       this.dataSource.data = this.templateAssignments;
       this.totalRecords = assignments?.total || 0;
     });
+  }
+
+  getManagers() {
+    this.manageService.getManagers().subscribe((res: any) => {
+      this.managers = res.data;
+    })
   }
 
   setFormValues(template: any, modal: any, changeMode: any) {
@@ -101,8 +108,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
         user: templateAssignment.user,
         primaryApprover: templateAssignment.primaryApprover,
         expenseTemplate: templateAssignment.expenseTemplate,
-        effectiveDate: templateAssignment.effectiveDate,
-        secondaryApprover: templateAssignment.secondaryApprover
+        effectiveDate: templateAssignment.effectiveDate
       });
       this.expenseService.getTemplateById(templateAssignment.expenseTemplate).subscribe((res: any) => {
         this.templateById = res.data;
@@ -110,36 +116,24 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
           if (this.templateById.approvalLevel === '1') {
             this.templateAssignmentForm.patchValue({
               primaryApprover: templateAssignment?.primaryApprover,
-              secondaryApprover: null,
               user: templateAssignment.user,
               expenseTemplate: templateAssignment.expenseTemplate,
               effectiveDate: data.effectiveDate
             });
-            console.log(this.templateAssignmentForm.value)
             this.templateAssignmentForm.get('user').disable();
             this.templateAssignmentForm.get('effectiveDate').disable();
             this.templateAssignmentForm.get('expenseTemplate').disable();
             this.templateAssignmentForm.get('primaryApprover').disable();
-          } else if (this.templateById.approvalLevel === '2') {
-            this.templateAssignmentForm.patchValue({
-              primaryApprover: templateAssignment.primaryApprover,
-              secondaryApprover: templateAssignment.secondaryApprover,
-              user: templateAssignment.user,
-              expenseTemplate: templateAssignment.expenseTemplate,
-              effectiveDate: templateAssignment.effectiveDate
-            });
           }
           this.templateAssignmentForm.get('user').disable();
           this.templateAssignmentForm.get('effectiveDate').disable();
           this.templateAssignmentForm.get('expenseTemplate').disable();
           this.templateAssignmentForm.get('primaryApprover').disable();
-          this.templateAssignmentForm.get('secondaryApprover').disable();
         }
 
         else if (this.templateById.approvalType === 'employee-wise') {
           this.templateAssignmentForm.patchValue({
             primaryApprover: templateAssignment.primaryApprover,
-            secondaryApprover: templateAssignment.secondaryApprover,
             user: templateAssignment.user,
             expenseTemplate: templateAssignment.expenseTemplate,
             effectiveDate: templateAssignment.effectiveDate
@@ -148,7 +142,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
           this.templateAssignmentForm.get('effectiveDate').disable();
           this.templateAssignmentForm.get('expenseTemplate').disable();
           this.templateAssignmentForm.get('primaryApprover').enable();
-          this.templateAssignmentForm.get('secondaryApprover').enable();
         }
       });
     });
@@ -166,56 +159,31 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
         if (this.templateById.approvalLevel === '1') {
           this.templateAssignmentForm.patchValue({
             primaryApprover: this.templateById.firstApprovalEmployee,
-            secondaryApprover: null
           });
           this.templateAssignmentForm.get('primaryApprover').disable();
           this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
-          this.templateAssignmentForm.get('secondaryApprover').disable();
-          this.templateAssignmentForm.get('secondaryApprover').updateValueAndValidity();
 
           this.primaryApproverField.nativeElement.disabled = true;
-          this.secondaryApproverField.nativeElement.disabled = true;
 
-        } else if (this.templateById.approvalLevel === '2') {
-          this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.firstApprovalEmployee,
-            secondaryApprover: this.templateById.secondApprovalEmployee
-          });
-          this.templateAssignmentForm.get('primaryApprover').disable();
-          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
-          this.templateAssignmentForm.get('secondaryApprover').disable();
-          this.templateAssignmentForm.get('secondaryApprover').updateValueAndValidity();
-
-          // Disable the fields
-          // this.primaryApproverField.nativeElement.disabled = true;
-          // this.secondaryApproverField.nativeElement.disabled = true;
         }
       } else if (this.templateById.approvalType === 'employee-wise') {
         if (this.templateById.approvalLevel === '1') {
           this.templateAssignmentForm.patchValue({
             primaryApprover: this.templateById.firstApprovalEmployee,
-            secondaryApprover: null
           });
           this.templateAssignmentForm.get('primaryApprover').enable();
           this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
-          this.templateAssignmentForm.get('secondaryApprover').enable();
-          this.templateAssignmentForm.get('secondaryApprover').updateValueAndValidity();
 
           // Enable the fields
           this.primaryApproverField.nativeElement.disabled = false;
-          this.secondaryApproverField.nativeElement.disabled = false;
 
         } else if (this.templateById.approvalLevel === '2') {
           this.templateAssignmentForm.patchValue({
             primaryApprover: this.templateById.firstApprovalEmployee,
-            secondaryApprover: this.templateById.secondApprovalEmployee
           });
           this.templateAssignmentForm.get('primaryApprover').enable();
           this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
-          this.templateAssignmentForm.get('secondaryApprover').enable();
-          this.templateAssignmentForm.get('secondaryApprover').updateValueAndValidity();
           this.primaryApproverField.nativeElement.disabled = false;
-          this.secondaryApproverField.nativeElement.disabled = false;
         }
       }
     });
@@ -251,7 +219,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       this.templateAssignmentForm.reset();
     }
     if (this.changeMode == 'Update') {
-      this.setFormValues(null, modal ,this.changeMode);
+      this.setFormValues(null, modal, this.changeMode);
     }
   }
 
@@ -315,7 +283,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
           employeeName: this.getUser(report?.user),
           expenseTemplate: this.getTemplate(report?.expenseTemplate),
           primaryApprover: this.getUser(report?.primaryApprover),
-          secondaryApprover: this.getUser(report?.secondaryApprover),
           approvalType: expenseTemplateDetails?.approvalType
         };
       });
@@ -323,9 +290,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       this.dataSource.data = this.templateAssignments;
       this.dataSource.filterPredicate = (data: any, filter: string) => {
         return data.employeeName.toLowerCase().includes(filter) ||
-               data.expenseTemplate.toLowerCase().includes(filter) ||
-               data.primaryApprover.toLowerCase().includes(filter) ||
-               data.secondaryApprover.toLowerCase().includes(filter);
+          data.expenseTemplate.toLowerCase().includes(filter) ||
+          data.primaryApprover.toLowerCase().includes(filter)
       };
     });
   }
@@ -347,7 +313,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     let payload = {
       user: this.templateAssignmentForm.value.user || null,
       primaryApprover: this.templateAssignmentForm.value.primaryApprover,
-      secondaryApprover: this.templateAssignmentForm.value.secondaryApprover,
       expenseTemplate: this.templateAssignmentForm.value.expenseTemplate || null,
       effectiveDate: this.templateAssignmentForm.value.effectiveDate
     }
@@ -373,9 +338,9 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
         if (this.changeMode == 'Update') { this.toast.error(err || this.translate.instant('expenses.template_assigned_update_error')) }
       });
 
-    this.templateAssignmentForm.get('user').disable();
-    this.templateAssignmentForm.get('expenseTemplate').disable();
-    this.templateAssignmentForm.get('effectiveDate').disable();
+    // this.templateAssignmentForm.get('user').disable();
+    // this.templateAssignmentForm.get('expenseTemplate').disable();
+    // this.templateAssignmentForm.get('effectiveDate').disable();
   }
 
 
@@ -387,7 +352,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     const formValues = {
       user: templateAssignment.user,
       primaryApprover: templateAssignment.primaryApprover,
-      secondaryApprover: templateAssignment.secondaryApprover,
       expenseTemplate: templateAssignment.expenseTemplate,
       effectiveDate: templateAssignment.effectiveDate
     };

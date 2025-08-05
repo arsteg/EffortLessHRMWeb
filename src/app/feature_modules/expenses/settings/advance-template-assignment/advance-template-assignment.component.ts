@@ -109,6 +109,7 @@ export class AdvanceTemplateAssignmentComponent {
       this.advanceTemplates = res.data;
     })
   }
+  
   onCancel() {
     this.isEdit = false;
     this.addTemplateAssignmentForm.reset();
@@ -119,6 +120,12 @@ export class AdvanceTemplateAssignmentComponent {
       width: '600px',
       disableClose: true
     });
+    if (this.changeMode === 'Add') { 
+      this.addTemplateAssignmentForm.get('user').enable();
+      this.addTemplateAssignmentForm.get('advanceTemplate').enable();
+      this.addTemplateAssignmentForm.get('primaryApprover').enable();
+      this.addTemplateAssignmentForm.get('effectiveDate').enable();
+    }
   }
 
   onTemplateSelectionChange(event: any) {

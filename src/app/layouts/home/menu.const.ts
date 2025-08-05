@@ -59,7 +59,7 @@ export const SideBarAdminMenu = [
   {
     id: '10',
     title: 'Expenses',
-    url: 'expense',
+    url: 'expense/settings/expense-category',
     svgIcon: 'expenses',
   },
   {
