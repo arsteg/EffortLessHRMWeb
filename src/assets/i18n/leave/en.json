@@ -117,6 +117,8 @@
         "leaveTemplates": "Leave Templates",
         "leaveAssignment": "Leave Template Assignment",
         "leaveSuccessfulAssignmentDeleted": "Successfully deleted leave template assignment!",
+        "leaveCategoryDelete": "Leave Category Deleted, Successfully!",
+        "leaveCategoryDeleteError": "Leave category can not be  Deleted, Error!",
         "leaveErrorAssigned": "Cannot assign employee to the template!",
         "leaveErrorAssignmentUpdated": "Cannot update leave assignment!",
         "leaveErrorAssignmentDeleted": "Cannot delete leave template assignment!",

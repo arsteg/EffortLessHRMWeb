@@ -321,11 +321,11 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   deleteTemplate(_id: string) {
     this.leaveService.deleteLeaveCategory(_id).subscribe(
       (res: any) => {
-        this.toast.success(this.translate.instant('leave.leaveSuccessfulAssignmentDeleted'));
+        this.toast.success(this.translate.instant('leave.leaveCategoryDelete'));
         this.getAllLeaveCategories(); // <-- Refresh list after delete
       },
       (err) => {
-        const errorMessage = err || this.translate.instant('leave.leaveErrorAssignmentDeleted');
+        const errorMessage = err || this.translate.instant('leave.leaveCategoryDeleteError');
         this.toast.error(errorMessage);
       }
     );
