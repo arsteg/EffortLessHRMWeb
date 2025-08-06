@@ -1,6 +1,5 @@
 <h1 mat-dialog-title>{{ 'leave.templateCategories.title' | translate }} {{ selectedTemplate?.label }}</h1>
 <div mat-dialog-content style="overflow-x: hidden; max-width: 100%;">
-  @if (!loader) {
   <mat-vertical-stepper #stepper [formGroup]="firstForm" [linear]="true">
     <ng-container formArrayName="leaveCategories">
       <ng-container *ngFor="let categoryCtrl of firstForm?.get('leaveCategories')?.['controls']; let i = index">
@@ -212,10 +211,6 @@
       </div>
     </mat-step>
   </mat-vertical-stepper>
-  } @else {
-  <h2>{{ 'leave.templateCategories.loading' | translate }}</h2>
-  <p>{{ 'leave.templateCategories.loadingMessage' | translate }}</p>
-  }
 </div>
 
 <div mat-dialog-actions class="d-flex align-items-center justify-content-between">

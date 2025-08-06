@@ -23,11 +23,11 @@
                         <span *ngIf="addTemplateForm.get('label')?.errors?.['required']">
                             {{ "leave.createTemplate.errorLabelRequired" | translate }}
                         </span>
+                        <span *ngIf="addTemplateForm.get('label')?.errors?.['spacesNotAllowed']">
+                                {{ 'leave.labelNoLeadingOrTrailingSpaces' | translate }}
+                            </span>
                         <span *ngIf="addTemplateForm.get('label')?.errors?.['invalidLabel']">
                             {{ 'leave.label_invalid' | translate }}
-                        </span>
-                        <span *ngIf="addTemplateForm.get('label')?.errors?.['duplicateLabel']">
-                            {{ 'leave.at_errorLabelDuplicate' | translate }}
                         </span>
                     </mat-error>
                 </mat-form-field>

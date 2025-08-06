@@ -33,7 +33,7 @@ export class CreateLeaveComponent {
     private teamService: ManageTeamService
   ) {
     this.addTemplateForm = this.fb.group({
-      label: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this), this.duplicateLabelValidator()]],
+      label: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       approvalLevel: ['1-level'],
       approvalType: ['employee-wise', Validators.required],
       primaryApprover: [''],
@@ -60,24 +60,6 @@ export class CreateLeaveComponent {
         primaryApprover: null
       })
     });
-  }
-
-
-  duplicateLabelValidator(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: boolean } | null => {
-      const label = control.value;
-      if (label && this.templates?.length) {
-        if (this.isEdit && this.selectedTemplate?.label.toLowerCase() === label.toLowerCase()) {
-          return null;
-        }
-        const isDuplicate = this.templates.some(template =>
-          template._id !== (this.isEdit ? this.selectedTemplate?._id : '') &&
-          template.label.toLowerCase() === label.toLowerCase()
-        );
-        return isDuplicate ? { duplicateLabel: true } : null;
-      }
-      return null;
-    };
   }
 
   validateApprovers(approverType: string, approverLevel: string) {
@@ -175,29 +157,26 @@ export class CreateLeaveComponent {
     this.addTemplateForm.value.leaveCategories = this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }))
     if (this.addTemplateForm.valid) {
       if (this.changeMode === 'Add') {
-        this.leaveService.addLeaveTemplate(this.addTemplateForm.value).subscribe({
-          next: (res: any) => {
-            this.leaveService.selectedTemplate.next(res.data);
-            this.leaveService.categories.next(res.categories);
-            this.updateLeaveTemplateTable.emit();
-            this.changeStep.emit(2);
-            this.toast.success(this.translate.instant('leave.successTemplateCreated'));
-          },
-          error: () => {
-            this.toast.error(this.translate.instant('leave.errorCreatingTemplate'));
+        this.leaveService.addLeaveTemplate(this.addTemplateForm.value).subscribe((res: any) => {
+          this.leaveService.selectedTemplate.next(res.data);
+          this.leaveService.categories.next(res.categories);
+          this.updateLeaveTemplateTable.emit();
+          this.changeStep.emit(2);
+          this.toast.success(this.translate.instant('leave.successTemplateCreated'));
+        },
+          error => {
+            this.toast.error(error || this.translate.instant('leave.errorCreatingTemplate'));
           }
-        });
+        );
       } else if (this.changeMode === 'Next') {
         const id = this.leaveService.selectedTemplate.getValue()._id;
         this.leaveService.updateLeaveTemplate(id, this.addTemplateForm.value).subscribe((res: any) => {
-          // this.leaveService.selectedTemplate.next(res.data);
-          // this.leaveService.categories.next(res.categories);
           this.updateLeaveTemplateTable.emit();
           this.changeStep.emit(2);
           this.toast.success(this.translate.instant('leave.successTemplateUpdated'));
         },
           error => {
-            this.toast.error(this.translate.instant('leave.errorUpdatingTemplate'));
+            this.toast.error(error || this.translate.instant('leave.errorUpdatingTemplate'));
           }
         );
       }
