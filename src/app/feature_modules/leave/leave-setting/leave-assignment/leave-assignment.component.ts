@@ -10,6 +10,7 @@ import { TableService } from 'src/app/_services/table.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-leave-assignment',
@@ -22,6 +23,7 @@ export class LeaveAssignmentComponent implements OnInit {
   isEdit: boolean = false;
   templateAssignmentForm: FormGroup;
   users: any[] = [];
+  managers: any
   templates: any[] = [];
   showApprovers: boolean = false;
   displayedColumns: string[] = ['user', 'leaveTemplate', 'primaryApprover', 'secondaryApprover', 'actions'];
@@ -53,6 +55,7 @@ export class LeaveAssignmentComponent implements OnInit {
     private toast: ToastrService,
     private dialog: MatDialog,
     private translate: TranslateService,
+    private commonService: CommonService,
     public tableService: TableService<any>
   ) {
     this.templateAssignmentForm = this.fb.group({
@@ -65,6 +68,9 @@ export class LeaveAssignmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.getManagers();
+    this.commonService.populateUsers().subscribe((res: any)=>{
+      this.users = res.data.data;
+    })
     this.getTemplateAssignments();
     this.templateAssignmentForm.get('leaveTemplate')?.valueChanges.subscribe(value => {
       this.onTemplateChange(value);
@@ -148,7 +154,7 @@ export class LeaveAssignmentComponent implements OnInit {
 
   getManagers() {
     this.teamService.getManagers().subscribe((res: any) => {
-      this.users = res.data;
+      this.managers = res.data;
       error: () => {
         this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
       }

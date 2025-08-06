@@ -63,7 +63,7 @@
             <mat-label>{{ 'leave.selectPrimaryApprover' | translate }}</mat-label>
             <mat-select formControlName="primaryApprover">
               <mat-option value="" disabled>{{ 'leave.selectLabel' | translate }}</mat-option>
-              <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">
+              <mat-option [value]="user?.id" *ngFor="let user of managers; let i = index">
                 {{ user?.firstName | titlecase }}
                 {{ user?.lastName | titlecase }}
               </mat-option>
