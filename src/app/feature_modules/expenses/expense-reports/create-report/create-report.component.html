@@ -153,7 +153,7 @@
                 <label class="attach">
                     <input style="display: none;" formControlName="expenseAttachments"
                         accept=".jpeg,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt"
-                        type="file" multiple (change)="onFileSelect($event)">
+                        type="file" (change)="onFileSelect($event)">
                     <div class="details-attach-file p-2 d-flex align-items-center justify-content-center me-2 pointer">
                         <mat-icon class="text-secondary">attach_file</mat-icon>
                         <span class="ms-1">Add files to Attach</span>
@@ -161,12 +161,21 @@
                 </label>
             </div>
             <ul type="none" class="d-flex flex-wrap ps-0">
-                <li class="contentHeading p-2 d-flex align-items-center"
-                    *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
-                    {{ files.name }}
-                    <mat-icon class="text-danger ms-2">cancel</mat-icon>
-                </li>
-            </ul>
+    <li class="contentHeading p-2 d-flex align-items-center"
+        *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
+        {{ files.name }}
+        <mat-icon class="text-danger ms-2">cancel</mat-icon>
+    </li>
+</ul>
+
+@if(this.isEdit && expenseReportform.get('expenseAttachments').value && selectedFiles.length === 0){
+    <ul type="none" class="d-flex flex-wrap ps-0">
+        <li class="contentHeading p-2 d-flex align-items-center">
+            <span (click)="openAttachment()">{{ documentName }}</span>
+            <mat-icon class="text-danger ms-2" (click)="removeExistingAttachment()">cancel</mat-icon>
+        </li>
+    </ul>
+}
         </div>
         <small class="text-muted">Accepted attachments type:
             jpeg, .glb, .svg, .blend, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx,
@@ -175,7 +184,8 @@
     </div>
     <div mat-dialog-actions class="d-flex justify-content-between">
         <button mat-flat-button type="button" mat-dialog-close="'close'">{{'expenses.cancel' | translate}}</button>
-        <button mat-flat-button type="submit" color="primary" [disabled]="expenseReportform.invalid">{{'expenses.submit'
+        <button mat-flat-button type="submit" color="primary"
+            [disabled]="expenseReportform.invalid || isSubmitting">{{'expenses.submit'
             | translate}}</button>
     </div>
 </form>
