@@ -109,7 +109,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
         (data.leaveAccrualPeriod?.toLowerCase().includes(searchString) || false);
     });
   }
-
   minLessThanMaxValidator: ValidatorFn = (group: AbstractControl) => {
     const min = group.get('minimumNumberOfDaysAllowed')?.value;
     const max = group.get('maximumNumberConsecutiveLeaveDaysAllowed')?.value;
@@ -239,7 +238,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
             this.toast.success(res.message);
             this.dialogRef.close(true);
             this.reset();
-            this.getAllLeaveCategories(); // <-- Refresh list after add
+            this.getAllLeaveCategories();
           },
           (err) => {
             this.toast.error(err || this.translate.instant('leave.leaveErrorAssignment'));
@@ -256,11 +255,10 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
             this.toast.success(res.message);
             this.dialogRef.close(true);
             this.reset();
-            this.getAllLeaveCategories(); // <-- Refresh list after update
+            this.getAllLeaveCategories();
           },
           (err) => {
             this.toast.error(err || this.translate.instant('leave.leaveErrorAssignmentUpdated'));
-
           }
         );
       }
