@@ -241,7 +241,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
             this.getAllLeaveCategories();
           },
           (err) => {
-            this.toast.error(err || this.translate.instant('leave.leaveErrorAssignment'));
+            this.toast.error(err);
           }
         );
       } else if (this.isEdit) {
