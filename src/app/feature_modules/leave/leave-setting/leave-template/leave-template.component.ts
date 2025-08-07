@@ -203,8 +203,8 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
   }
 
   onPageChange(event: any) {
-    this.paginator.pageIndex = event.pageIndex;
-    this.paginator.pageSize = event.pageSize;
+    this.tableService.currentPage = event.pageIndex + 1;
+    this.tableService.recordsPerPage = event.pageSize
     this.getLeaveTemplates();
   }
 
