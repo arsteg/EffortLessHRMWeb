@@ -18,7 +18,7 @@
                     <mat-form-field class="ms-4 w-100">
                       <mat-label>{{ 'leave.templateCategories.numberOfDaysPlaceholder' | translate }}</mat-label>
                       <input type="number" matInput formControlName="maximumNumbersEmployeeCanApply"
-                        [attr.disabled]="!categoryCtrl.get('limitNumberOfTimesApply').value ? true : null">
+                        [attr.disabled]="!categoryCtrl.get('limitNumberOfTimesApply').value ? true : null" min="0">
                       @if (categoryCtrl.get('maximumNumbersEmployeeCanApply').invalid &&
                       categoryCtrl.get('maximumNumbersEmployeeCanApply').touched) {
                       <mat-error>{{ 'leave.templateCategories.errorMaxApply' | translate }}</mat-error>
