@@ -53,7 +53,7 @@ export class ShiftAssignmentsComponent {
       valueFn: (row: any) => new Date(row.startDate).toLocaleDateString()
     },
     {
-      key: 'action',
+      key: 'actions',
       name: 'Action',
       isAction: true,
       options: [

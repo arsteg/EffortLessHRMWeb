@@ -26,10 +26,10 @@
 }
 
 .modal-fixed-size {
-    max-width: 80vw !important;
+    max-width: 60vw !important;
 }
 .modal-image{
-    max-width: 100%;
+    max-width: 80%;
     max-height: 80vh;
     margin: auto !important;
     display: block !important;

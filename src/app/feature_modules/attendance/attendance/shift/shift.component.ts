@@ -37,7 +37,7 @@ export class ShiftComponent {
     { key: 'startTime', name: 'Starts From' },
     { key: 'endTime', name: 'Ends At' },
     {
-      key: 'action',
+      key: 'actions',
       name: 'Action',
       isAction: true,
       options: [
@@ -415,7 +415,7 @@ export class ShiftComponent {
     this.searchText = event;
     this.shift = this.allData?.filter(row => {
       return this.columns.some(col => {
-        if (col.key !== 'action') {
+        if (col.key !== 'actions') {
           return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
         }
         return false;

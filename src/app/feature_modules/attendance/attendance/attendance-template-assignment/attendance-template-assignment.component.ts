@@ -156,7 +156,8 @@ export class AttendanceTemplateAssignmentComponent {
   }
 
   onPageChange(page: any) {
-    this.currentPage = page;
+    this.currentPage = page.pageIndex + 1;
+    this.recordsPerPage = page.pageSize;
     this.loadRecords();
   }
 

@@ -61,7 +61,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
       name: 'App/Website'
     },
     {
-      key: 'action',
+      key: 'actions',
       name: 'Action',
       options: [
         {
