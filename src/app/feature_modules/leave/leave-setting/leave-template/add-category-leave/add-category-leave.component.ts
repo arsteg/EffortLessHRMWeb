@@ -141,11 +141,6 @@ export class AddCategoryLeaveComponent {
     return matchingCategory ? matchingCategory.label : 'Unknown Category';
   }
 
-  getUserName(userId: string): string {
-    const user = this.members.find(member => member.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
-  }
-
   onSubmit() {
     const formData = { ...this.firstForm.getRawValue() };
     formData.leaveCategories.forEach(category => {

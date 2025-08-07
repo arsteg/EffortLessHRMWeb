@@ -102,6 +102,7 @@
         "selectPrimaryEmployee": "Please select an employee",
         "errorChooseEmployee": "Please Choose an Employee to Assign the Leave Template!",
         "selectTemplate": "Please Select a Template",
+        "leaveTemplate": "Select Leave Template",
         "selectPrimaryApprover": "Please select the Approver",
         "errorChooseTemplate": "Please Choose a Leave Template!",
         "errorChoosePrimaryApprover": "Please Choose Approver!",
@@ -447,13 +448,14 @@
         "templateAssignment": {
             "title": "Leave template"
         },
-        "successAssigned": "Leave template assinged successfully.",
+        "successAssigned": "Leave template assigned successfully.",
         "errorAssigned": "Leave template not assigned successfully.",
         "successAssignmentUpdated": "Leave template updated successfully.",
         "errorAssignmentUpdated": "Error occured in leave template assignment.",
         "leaveassignment": {
             "employee": "user",
             "leaveTemplate": "leaveTemplate",
+            "leaveTemplateLabel": "Leave Template",
             "primaryApprover": "primaryApprover",
             "secondaryApprover": "secondaryApprover"
         },

@@ -45,7 +45,7 @@
         </div>
         <div class="form-group col-12 my-2">
           <mat-form-field class="w-100" appearance="outline">
-            <mat-label>{{ 'leave.leaveLabel' | translate }}</mat-label>
+            <mat-label>{{ 'leave.leaveassignment.leaveTemplateLabel' | translate }}</mat-label>
             <mat-select formControlName="leaveTemplate">
               <mat-option value="" disabled>{{ 'leave.selectLabel' | translate }}</mat-option>
               <mat-option [value]="temp?._id" *ngFor="let temp of templates">
@@ -62,7 +62,8 @@
           <mat-form-field class="w-100" appearance="outline">
             <mat-label>{{ 'leave.selectPrimaryApprover' | translate }}</mat-label>
             <mat-select formControlName="primaryApprover">
-              <mat-option value="" disabled>{{ 'leave.selectLabel' | translate }}</mat-option>
+              <mat-option disabled value="">{{ 'leave.createTemplate.selectPrimaryApprover' | translate
+                }}</mat-option>
               <mat-option [value]="user?.id" *ngFor="let user of managers; let i = index">
                 {{ user?.firstName | titlecase }}
                 {{ user?.lastName | titlecase }}
@@ -81,7 +82,7 @@
       <button mat-flat-button (click)="closeModal()">
         {{ 'leave.cancelButton' | translate }}
       </button>
-      <button mat-flat-button color="primary" type="submit" [disabled]="templateAssignmentForm.invalid">
+      <button mat-flat-button color="primary" type="submit" [disabled]="templateAssignmentForm.invalid || isSubmitting">
         {{ (isEdit ? 'leave.updateButton' : 'leave.addButton') | translate }}
       </button>
     </div>

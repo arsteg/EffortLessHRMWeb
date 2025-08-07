@@ -23,7 +23,7 @@ export class LeaveAssignmentComponent implements OnInit {
   isEdit: boolean = false;
   templateAssignmentForm: FormGroup;
   users: any[] = [];
-  managers: any
+  managers: any[];
   templates: any[] = [];
   showApprovers: boolean = false;
   displayedColumns: string[] = ['user', 'leaveTemplate', 'primaryApprover', 'secondaryApprover', 'actions'];
@@ -31,6 +31,8 @@ export class LeaveAssignmentComponent implements OnInit {
   leaveApplication = new MatTableDataSource<any>();
   allData: any[] = [];
   dialogRef: MatDialogRef<any> | null = null;
+  isSubmitting: boolean = false;
+
   columns: TableColumn[] = [
     { key: this.translate.instant('leave.leaveassignment.employee'), name: 'Employee', valueFn: (row) => row?.user },
     { key: this.translate.instant('leave.leaveassignment.leaveTemplate'), name: 'Current Leave Policy', valueFn: (row) => row?.leaveTemplate?.label },
@@ -68,7 +70,7 @@ export class LeaveAssignmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.getManagers();
-    this.commonService.populateUsers().subscribe((res: any)=>{
+    this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
     })
     this.getTemplateAssignments();
@@ -103,6 +105,7 @@ export class LeaveAssignmentComponent implements OnInit {
   }
 
   onSubmission() {
+    this.isSubmitting = true;
     if (this.templateAssignmentForm.invalid) {
       this.templateAssignmentForm.markAllAsTouched();
       return;
@@ -123,6 +126,7 @@ export class LeaveAssignmentComponent implements OnInit {
           if (res.status === 'success') {
             const currentData = this.tableService.dataSource.data;
             this.tableService.setData([...currentData, res.data]);
+            
             this.toast.success(this.translate.instant('leave.successAssigned'), this.translate.instant('leave.templateAssignment.title'));
             this.resetForm();
             this.closeModal();
@@ -184,10 +188,11 @@ export class LeaveAssignmentComponent implements OnInit {
           return {
             ...leave,
             primaryApprover: leave.primaryApprover.firstName + ' ' + leave.primaryApprover.lastName,
-            user: leave.user.firstName + ' ' + leave.user.lastName
+            primaryAproverId: leave.primaryApprover._id,
+            user: leave.user.firstName + ' ' + leave.user.lastName,
+            userId: leave.user._id
           }
         });
-        console.log(this.leaveApplication.data);
         this.allData = this.leaveApplication.data || [];
       }
     },
@@ -199,7 +204,6 @@ export class LeaveAssignmentComponent implements OnInit {
   onTemplateChange(templateId: string): void {
     const selectedTemplate = this.templates.find(temp => temp._id === templateId);
     const primaryApproverControl = this.templateAssignmentForm.get('primaryApprover');
-    console.log(selectedTemplate)
     if (selectedTemplate?.approvalType === 'template-wise') {
 
       this.templateAssignmentForm.patchValue({
@@ -222,27 +226,23 @@ export class LeaveAssignmentComponent implements OnInit {
     primaryApproverControl?.updateValueAndValidity();
   }
 
-  getUser(employeeId: string): string {
-    if (!employeeId) return '';
-    const matchingUser = this.users.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
-  }
-
   editTemplateAssignment(templateAssignment: any) {
     this.isEdit = true;
     this.selectedLeaveAssignment = templateAssignment;
+    console.log(templateAssignment)
     this.templateAssignmentForm.patchValue({
-      user: templateAssignment.user || '',
-      leaveTemplate: templateAssignment.leaveTemplate?._id || ''
+      user: templateAssignment.userId || '',
+      leaveTemplate: templateAssignment.leaveTemplate?._id || '',
+      primaryApprover: templateAssignment.primaryAproverId
     });
     this.templateAssignmentForm.get('user').disable();
-    this.onTemplateChange(templateAssignment.leaveTemplate?._id);
+    // this.onTemplateChange(templateAssignment.leaveTemplate?._id);
   }
 
   deleteTemplateAssignment(_id: string) {
     this.leaveService.deleteTemplateAssignment(_id).subscribe({
       next: (res: any) => {
-        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
+        this.getTemplateAssignments();
         this.toast.success(this.translate.instant('leave.successAssignmentDeleted'), this.translate.instant('leave.templateAssignment.title'));
       },
       error: () => {
@@ -297,24 +297,6 @@ export class LeaveAssignmentComponent implements OnInit {
       });
     });
   }
- 
-  // onSearchChange(search: string) {
-  //   const lowerSearch = search.toLowerCase();
-  //   const data = this.allData?.filter((row: any) => {
-  //     const valuesToSearch = [
-  //       row.user?.toLowerCase(), ,
-  //       row.primaryApprover?.toLowerCase(),
-  //       row.leaveTemplate?.label?.toLowerCase()
-  //     ];
-
-  //     return valuesToSearch.some(value =>
-  //       value?.toString().toLowerCase().includes(lowerSearch)
-  //     );
-  //   });
-
-  //   this.leaveApplication.data = data;
-  //   this.leaveApplication._updateChangeSubscription();
-  // }
   closeModal() {
     this.resetForm();
     this.dialogRef.close(true);

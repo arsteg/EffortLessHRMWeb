@@ -33,7 +33,6 @@
               <div class="form-group col-md-12 my-2">
                 <div class="d-flex align-items-center">
                   <mat-label class="w-50">{{ 'leave.templateCategories.newlyJoinedQuestion' | translate }}</mat-label>
-
                   <mat-form-field class="ms-auto w-100" appearance="outline">
                     <mat-label>{{ 'leave.templateCategories.newlyJoinedQuestion' | translate }}</mat-label>
                     <mat-select formControlName="dealWithNewlyJoinedEmployee" required>
@@ -50,11 +49,7 @@
                 </div>
               </div>
             </div>
-
-
-
             @if (categoryCtrl.get('dealWithNewlyJoinedEmployee').value === 'eligibleAfterConfirmation') {
-
             <div class="row m-0">
               <div class="form-group col-md-12 my-2">
                 <div class="d-flex align-items-center">
