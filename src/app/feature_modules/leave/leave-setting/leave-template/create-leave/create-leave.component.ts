@@ -32,9 +32,9 @@ export class CreateLeaveComponent {
     private translate: TranslateService,
     private teamService: ManageTeamService
   ) {
+
     this.addTemplateForm = this.fb.group({
       label: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
-      approvalLevel: ['1-level'],
       approvalType: ['employee-wise', Validators.required],
       primaryApprover: [''],
       secondaryApprover: [''],
@@ -81,7 +81,6 @@ export class CreateLeaveComponent {
     if (this.changeMode === 'Add') {
       this.addTemplateForm.reset({
         label: '',
-        approvalLevel: '1-level',
         approvalType: 'employee-wise',
         primaryApprover: '',
         secondaryApprover: '',
@@ -101,7 +100,6 @@ export class CreateLeaveComponent {
 
       this.addTemplateForm.patchValue({
         label: templateData.label,
-        approvalLevel: templateData.approvalLevel,
         approvalType: templateData.approvalType,
         primaryApprover: templateData.primaryApprover,
         secondaryApprover: templateData.secondaryApprover,
@@ -154,7 +152,14 @@ export class CreateLeaveComponent {
     this.addTemplateForm.get('clubbingRestrictions').enable();
     this.addTemplateForm.value.clubbingRestrictions = false;
 
-    this.addTemplateForm.value.leaveCategories = this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }))
+    const categories = this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }));
+    if (this.addTemplateForm.value.approvalType === 'employee-wise') {
+      this.addTemplateForm.patchValue({
+        primaryApprover: null,
+        secondaryApprover: null,
+        leaveCategories : categories
+      })
+    
     if (this.addTemplateForm.valid) {
       if (this.changeMode === 'Add') {
         this.leaveService.addLeaveTemplate(this.addTemplateForm.value).subscribe((res: any) => {
@@ -185,6 +190,7 @@ export class CreateLeaveComponent {
       this.addTemplateForm.get('clubbingRestrictions').disable();
       this.toast.warning(this.translate.instant('leave.invalidForm'));
     }
+  }
     this.addTemplateForm.get('clubbingRestrictions').disable();
   }
 
@@ -195,7 +201,6 @@ export class CreateLeaveComponent {
   removeCategory(index: number) {
     const category = this.clubbingRestrictionCategories.at(index);
     if (category.value.id) {
-      console.log(category.value.id);
       this.clubbingRestrictionCategories.removeAt(index);
       this.toast.success(this.translate.instant('leave.categoryRemoved'));
     } else {
