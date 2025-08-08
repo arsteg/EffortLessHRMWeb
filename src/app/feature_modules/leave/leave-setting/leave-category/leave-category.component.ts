@@ -173,6 +173,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   }
 
   onLeaveTypeChange() {
+    this.isSubmitting = false;
     if (this.isEdit === false) {
       const currentLeaveType = this.categoryForm.get('leaveType')?.value;
       this.categoryForm.reset({
@@ -223,7 +224,12 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       this.totalRecords = res.total;
     });
   }
-
+  onLabelChange() {
+    this.categoryForm.get('label').valueChanges.subscribe(() => {
+      this.isSubmitting = false;
+    });
+  }
+  
   onSubmission() {
     this.isSubmitting = true;
     if (this.categoryForm.invalid) {

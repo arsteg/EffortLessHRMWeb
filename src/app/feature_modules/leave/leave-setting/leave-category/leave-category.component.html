@@ -57,7 +57,7 @@
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.provideLabel" | translate }}</mat-label>
                         <input matInput type="text" [placeholder]="'leave.labelPlaceholder' | translate"
-                            formControlName="label" />
+                            formControlName="label" (change)="onLabelChange()" />
                         <mat-error
                             *ngIf="categoryForm.get('label')?.invalid && (categoryForm.get('label')?.touched || categoryForm.get('label')?.dirty)">
                             <span *ngIf="categoryForm.get('label')?.errors?.['required']">
@@ -467,7 +467,7 @@
             <button mat-flat-button (click)="close();">
                 {{ "leave.cancelButton" | translate }}
             </button>
-            <button mat-flat-button color="primary" [disabled]="categoryForm.invalid || isSubmitting" type="submit">
+            <button mat-flat-button color="primary" [disabled]="isSubmitting" type="submit">
                 {{
                 !isEdit
                 ? ("leave.addButton" | translate)

@@ -192,8 +192,7 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
       this.open(addModal);
     }
     if (event.action.label === 'Delete') {
-      console.log(event.row?.leaveTemplateAssignmentCount)
-      if (event.row?.leaveTemplateAssignmentCount < 0) {
+      if (event?.row?.leaveTemplateAssignmentCount <= 0) {
         this.deleteDialog(event.row._id);
       }
       else {
