@@ -183,9 +183,10 @@
           </div>
           <div class="d-flex justify-content-between py-1">
             <span>{{ 'leave.templateCategories.applicableToQuestion' | translate }}</span>
-            <b>{{ categoryCtrl.value.categoryApplicable === 'all-employees' ?
+            <b>{{'leave.templateCategories.allEmployees' | translate}}</b>
+            <!-- <b>{{ categoryCtrl.value.categoryApplicable === 'all-employees' ?
               ('leave.templateCategories.allEmployees' | translate) :
-              ('leave.templateCategories.specificEmployees' | translate) }}</b>
+              ('leave.templateCategories.specificEmployees' | translate) }}</b> -->
           </div>
           @if (categoryCtrl.value.categoryApplicable === 'specific-employees' &&
           categoryCtrl.value.users.length) {

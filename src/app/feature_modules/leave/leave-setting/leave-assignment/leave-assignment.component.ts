@@ -32,6 +32,8 @@ export class LeaveAssignmentComponent implements OnInit {
   allData: any[] = [];
   dialogRef: MatDialogRef<any> | null = null;
   isSubmitting: boolean = false;
+  alreadyExist: boolean = false;
+
 
   columns: TableColumn[] = [
     { key: this.translate.instant('leave.leaveassignment.employee'), name: 'Employee', valueFn: (row) => row?.user },
@@ -104,6 +106,14 @@ export class LeaveAssignmentComponent implements OnInit {
     this.templateAssignmentForm.get('primaryApprover').enable();
   }
 
+  isUserAlreadyAssigned(userId: any) {
+    this.alreadyExist = false;
+    if (this.allData.some(assignment => assignment.userId === userId)) {
+      this.alreadyExist = true;
+      this.toast.warning(this.translate.instant('leave.leaveAssignmentAlreadyExist'))
+    }
+  }
+
   onSubmission() {
     this.isSubmitting = true;
     if (this.templateAssignmentForm.invalid) {
@@ -126,7 +136,7 @@ export class LeaveAssignmentComponent implements OnInit {
           if (res.status === 'success') {
             const currentData = this.tableService.dataSource.data;
             this.tableService.setData([...currentData, res.data]);
-            
+
             this.toast.success(this.translate.instant('leave.successAssigned'), this.translate.instant('leave.templateAssignment.title'));
             this.resetForm();
             this.closeModal();

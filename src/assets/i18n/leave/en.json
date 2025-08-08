@@ -155,6 +155,7 @@
             "submit": "Submit",
             "review": "Review"
         },
+        "leaveAssignmentAlreadyExist": "This user already has a leave template assigned.",
         "successTemplateCreated": "Leave template created successfully",
         "successTemplateUpdated": "Leave template updated successfully",
         "errorCreatingTemplate": "Failed to create leave template",

@@ -31,7 +31,7 @@
         <div class="form-group col-12 my-2">
           <mat-form-field class="w-100" appearance="outline">
             <mat-label>{{ 'leave.chooseEmployee' | translate }}</mat-label>
-            <mat-select formControlName="user">
+            <mat-select formControlName="user" (selectionChange)="isUserAlreadyAssigned($event.value)">
               <mat-option value="" disabled>{{ 'leave.selectLabel' | translate }}</mat-option>
               <mat-option [value]="user?.id" *ngFor="let user of users">
                 {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
@@ -82,7 +82,7 @@
       <button mat-flat-button (click)="closeModal()">
         {{ 'leave.cancelButton' | translate }}
       </button>
-      <button mat-flat-button color="primary" type="submit" [disabled]="templateAssignmentForm.invalid || isSubmitting">
+      <button mat-flat-button color="primary" type="submit" [disabled]="templateAssignmentForm.invalid || isSubmitting || alreadyExist">
         {{ (isEdit ? 'leave.updateButton' : 'leave.addButton') | translate }}
       </button>
     </div>
