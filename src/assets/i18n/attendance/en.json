@@ -70,8 +70,7 @@
     "deleteSuccess": "Shift deleted successfully!",
     "deleteAttendanceTemplateSuccess": "Attendance Template deleted successfully!",
     "deleteRestricted": "This shift cannot be deleted because it is assigned.",
-    "createSuccess": "Shift created successfully!",
-    "updateSuccess": "Shift updated successfully!",
+   
     "at_notifyEmployeeMinHours": "Do you want to notify employee if Min Hours not accomplished?",
     "at_errorNotifyEmployeeMinHours": "Notify Employee minimum hour is required.",
     "at_weeklyOffDays": "Which days should be considered as weekly off?",
@@ -218,7 +217,8 @@
   "shift.number_of_days_early_going_required": "Number of days for early going is required.",
   "shift.grace_time_early_going_required": "Grace time limit for early going is required.",
   "shift.min_hours_full_day_required": "Minimum hours for full day is required.",
-  "shift.min_hours_invalid": "Minimum hours must be between 1 and 8.",
+  "shift.min_fd_hours_invalid": "Minimum hours must be between 6 and 8.",
+  "shift.min_hd_hours_invalid": "Minimum hours must be between 1 and 6.",
   "shift.half_day_applicable_required": "Please select whether half day is applicable.",
   "shift.min_hours_half_day_required": "Minimum hours for half day is required.",
   "shift.min_hours_half_day_invalid": "Minimum hours must be at least 1.",
@@ -251,7 +251,12 @@
   "successCreate": "Attendance Template created successfully.",
   "successUpdate": "Attendance Template updated successfully.",
   "createError": "Attendance Template could not be created.",
-  "updateError": "Attendance Template could not be updated."
+  "updateError": "Attendance Template could not be updated.",
+  "createShiftError": "Shift could not be created.",
+  "updateShiftError": "Shift could not be updated.",
+  "successShiftCreate": "Shift created successfully.",
+  "successShiftUpdate": "Shift updated successfully."
+
   },
   "common": {
     "error": "Error!",

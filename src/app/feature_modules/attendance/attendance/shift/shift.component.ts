@@ -62,15 +62,14 @@ export class ShiftComponent {
   ) {
     this.shiftForm = this.fb.group({
       name: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
-      shiftType: ['', Validators.required],
-      startTime: ['', Validators.required],
-      endTime: ['', Validators.required],
-      minHoursPerDayToGetCreditForFullDay: ['', [Validators.required, Validators.min(1),
-      Validators.max(8)]],
+      shiftType: ['fixed duration', Validators.required],
+      startTime: ['10:00', Validators.required], // Default to 10 AM
+      endTime: ['18:00', Validators.required], // Default to 6 PM
+      minHoursPerDayToGetCreditForFullDay: ['', [Validators.required, Validators.min(1), Validators.max(8), CustomValidators.minHoursFullDayValidator()]], 
       earliestArrival: ['', Validators.required],
       latestDeparture: ['', Validators.required],
-      firstHalfDuration: ['', [Validators.required, Validators.min(1)]], // Added min
-      secondHalfDuration: ['', [Validators.required, Validators.min(1)]], // Added min
+      firstHalfDuration: ['', [Validators.required, Validators.min(0)]], // Added min
+      secondHalfDuration: ['', [Validators.required, Validators.min(0)]], // Added min
       company: [''],
       isLateComingAllowed: [false],
       noOfDaysLateComing: [0],
@@ -83,8 +82,8 @@ export class ShiftComponent {
       enterNumberOfDaysForEarlyGoing: [0],
       graceTimeLimitForEarlyGoing: [0],
       isHalfDayApplicable: [false],
-      minHoursPerDayToGetCreditforHalfDay: ['',  [Validators.min(1), CustomValidators.minHoursValidator()]], // Added min validator
-      maxLateComingAllowedMinutesFirstHalfAttendance: [0],
+      minHoursPerDayToGetCreditforHalfDay: ['0', [Validators.min(0), Validators.max(8), CustomValidators.minHoursHalfDayValidator()]],  // Added min validator
+      maxLateComingAllowedMinutesFirstHalfAttendance:['0', Validators.min(0)], 
     }, {
       validators: this.timeComparisonValidator // Apply the custom validator at the form group level
     });
@@ -189,8 +188,8 @@ export class ShiftComponent {
         minHoursHalfDayControl.clearValidators();
         minHoursFullDayControl.clearValidators();
         isHalfDayApplicableControl.setValue(false); // Reset if not fixed duration
-        minHoursHalfDayControl.setValue(''); // Clear value if not applicable
-        minHoursFullDayControl.setValue(''); // Clear value if not applicable
+        minHoursHalfDayControl?.setValidators([Validators.required, CustomValidators.minHoursHalfDayValidator()]);
+        minHoursFullDayControl?.setValidators([Validators.required, CustomValidators.minHoursFullDayValidator()]);
       }
       isHalfDayApplicableControl.updateValueAndValidity();
       minHoursHalfDayControl.updateValueAndValidity();
@@ -235,9 +234,9 @@ export class ShiftComponent {
       const minHoursControl = this.shiftForm.get('minHoursPerDayToGetCreditForFullDay');
 
       if (shiftType === 'fixed duration' || shiftType === 'flexi') {
-        minHoursControl?.setValidators([Validators.required, CustomValidators.minHoursValidator()]);
+        minHoursControl?.setValidators([Validators.required, CustomValidators.minHoursFullDayValidator()]);
       } else {
-        minHoursControl?.clearValidators();
+        minHoursControl?.setValidators([CustomValidators.minHoursFullDayValidator()]);
       }
 
       minHoursControl?.updateValueAndValidity(); // Ensure validation updates
@@ -262,7 +261,31 @@ export class ShiftComponent {
   }
 
   clearForm() {
-    this.shiftForm.reset();
+    this.shiftForm.reset({
+      name: '',
+      shiftType: 'fixed duration', // Reset to 'fixed duration'
+      startTime: '10:00', // Default to 10 AM
+      endTime: '18:00', // Default to 6 PM
+      minHoursPerDayToGetCreditForFullDay: '',
+      earliestArrival: '',
+      latestDeparture: '',
+      firstHalfDuration: '',
+      secondHalfDuration: '',
+      company: '',
+      isLateComingAllowed: false,
+      noOfDaysLateComing: 0,
+      graceTimeLimitForLateComing: 0,
+      willLateComingDeductfromPresentDays: false,
+      numberOflateComingDaysAllowed: 0,
+      numberOfDaysToBeDeducted: '',
+      maximumTimeLimitForLateComing: 0,
+      isEarlyGoingAllowed: false,
+      enterNumberOfDaysForEarlyGoing: 0,
+      graceTimeLimitForEarlyGoing: 0,
+      isHalfDayApplicable: false,
+      minHoursPerDayToGetCreditforHalfDay: 0,
+      maxLateComingAllowedMinutesFirstHalfAttendance: 0
+    });
   }
   closeModal() {
     this.clearForm();
@@ -329,13 +352,13 @@ export class ShiftComponent {
         this.attendanceService.addShift(this.shiftForm.value).subscribe((res: any) => {
           this.loadRecords();
           this.toast.success(
-            this.translate.instant('attendance.createSuccess'),
+            this.translate.instant('attendance.successShiftCreate'),
             this.translate.instant('common.success')
           );
           this.shiftForm.reset();
         }, (err) => {         
           const errorMessage = err?.error?.message || err?.message || err 
-          ||  this.translate.instant('attendance.createError')
+          ||  this.translate.instant('attendance.createShiftError')
           ;
           this.toast.error(errorMessage, this.translate.instant('common.error'));
         })
@@ -346,13 +369,13 @@ export class ShiftComponent {
           this.isEdit = false;
           this.loadRecords();
           this.toast.success(
-            this.translate.instant('attendance.updateError'),
+            this.translate.instant('attendance.successShiftUpdate'),
             this.translate.instant('common.success')
           );
           this.shiftForm.reset();
         }, (err) => {         
           const errorMessage = err?.error?.message || err?.message || err 
-          ||  this.translate.instant('attendance.createError')
+          ||  this.translate.instant('attendance.updateShiftError')
           ;
           this.toast.error(errorMessage, this.translate.instant('common.error'));
         })
@@ -367,7 +390,7 @@ export class ShiftComponent {
     this.attendanceService.deleteShift(id).subscribe((res: any) => {
       this.loadRecords();
       this.toast.success(
-        this.translate.instant('shift.deleteSuccess'),
+        this.translate.instant('attendance.deleteSuccess'),
         this.translate.instant('common.success')
       );
     },

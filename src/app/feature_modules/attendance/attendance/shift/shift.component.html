@@ -333,12 +333,15 @@
               <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['required']">
                 {{ 'attendance.shift.min_hours_full_day_required' | translate }}
               </span>
-              <span
-                *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['min'] || shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['max']">
-                {{ 'attendance.shift.min_hours_invalid' | translate }}
+              <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['min'] || shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['max']">
+                {{ 'attendance.shift.min_fd_hours_invalid' | translate }}
+              </span>
+              <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditForFullDay')?.errors?.['invalidTime']">
+                {{ 'attendance.shift.min_fd_hours_invalid' | translate }}
               </span>
             </mat-error>
           </mat-form-field>
+         
         </div>
 
         <div class="form-group my-2 col-md-12" *ngIf="shiftForm.get('shiftType')?.value === 'fixed duration'">
@@ -367,8 +370,8 @@
               <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['required']">
                 {{ 'attendance.shift.min_hours_half_day_required' | translate }}
               </span>
-              <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['min']">
-                {{ 'attendance.shift.min_hours_half_day_invalid' | translate }}
+              <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['invalidTime']">
+                {{ 'attendance.shift.min_hd_hours_invalid' | translate }}
               </span>
             </mat-error>
           </mat-form-field>

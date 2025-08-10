@@ -46,7 +46,7 @@
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
             <mat-label>{{ 'attendance.sta_employee' | translate }}</mat-label>
-            <mat-select formControlName="user" (selectionChange)="onEmployeeChange($event)">
+            <mat-select formControlName="user" (selectionChange)="onEmployeeChange($event)" [disabled]="isEdit">
               <mat-option value="" disabled>{{ 'attendance.sta_employee_placeholder' | translate }}</mat-option>
               <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
                 {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}

@@ -66,7 +66,7 @@
 
             <mat-form-field appearance="outline" class="w-100">
                 <mat-label>{{ 'attendance.ata_effective_date' | translate }}</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="effectiveFrom">
+                <input matInput [matDatepicker]="picker" formControlName="effectiveFrom"  [min]="minDate" readonly>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
                 <mat-error *ngIf="attendanceTemplateAssignmentForm.get('effectiveFrom')?.hasError('required') && attendanceTemplateAssignmentForm.get('effectiveFrom')?.touched">
@@ -78,8 +78,8 @@
                 <mat-label>{{ 'attendance.ata_primary_approver' | translate }}</mat-label>
                 <mat-select id="member" name="primary" formControlName="primaryApprover">
                     <mat-option value="" disabled>{{ 'attendance.ata_select_primary_approver' | translate }}</mat-option>
-                    <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                    {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
+                    <mat-option *ngFor="let assignee of managers" [value]="assignee.id">
+                    {{ assignee?.name | titlecase }}
                     </mat-option>
                 </mat-select>
                 <mat-error *ngIf="attendanceTemplateAssignmentForm.get('primaryApprover')?.hasError('required') && attendanceTemplateAssignmentForm.get('primaryApprover')?.touched">
@@ -110,7 +110,7 @@
         </button>
     </div>
     <div class="ms-4">
-        <small>{{ 'attendance.template_assignment.employee_label' | translate }}: <span class="small-text">{{getUser(selectedTemplate?.employee)}}</span></small><br>
+        <small>{{ 'attendance.template_assignment.employee_label' | translate }}: <span class="small-text">{{selectedTemplate?.employee?.firstName}} {{selectedTemplate?.employee?.lastName}}</span></small><br>
         <small>{{ 'attendance.template_assignment.template_label' | translate }}: <span class="small-text">{{selectedTemplate?.attendanceTemplate?.label}}</span></small>
     </div>
     <form [formGroup]="updateTemplateAssignForm" (ngSubmit)="onUpdate()">
@@ -127,20 +127,7 @@
                     <mat-error *ngIf="updateTemplateAssignForm.get('primaryApprovar')?.hasError('required') && updateTemplateAssignForm.get('primaryApprovar')?.touched">
                         {{ 'attendance.template_assignment.primary_approver_required' | translate }}
                     </mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{ 'attendance.template_assignment.secondary_approver_label' | translate }}</mat-label>
-                    <mat-select id="member" name="secondary" formControlName="secondaryApprovar">
-                        <mat-option value="" disabled>{{ 'attendance.template_assignment.select_secondary_approver' | translate }}</mat-option>
-                        <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                            {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="updateTemplateAssignForm.get('secondaryApprovar')?.hasError('required') && updateTemplateAssignForm.get('secondaryApprovar')?.touched">
-                        {{ 'attendance.template_assignment.secondary_approver_required' | translate }}
-                    </mat-error>
-                </mat-form-field>
+                </mat-form-field>         
             </div>
 
             <div *ngIf="templateById?.approversType === 'template-wise' && templateById?.approvalLevel === '1'">
@@ -170,20 +157,7 @@
                     <mat-error *ngIf="updateTemplateAssignForm.get('primaryApprovar')?.hasError('required') && updateTemplateAssignForm.get('primaryApprovar')?.touched">
                         {{ 'attendance.template_assignment.primary_approver_required' | translate }}
                     </mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="w-100">
-                    <mat-label>{{ 'attendance.template_assignment.secondary_approver_label' | translate }}</mat-label>
-                    <mat-select id="member" name="secondary" formControlName="secondaryApprovar" [disabled]="true">
-                        <mat-option value="" disabled>{{ 'attendance.template_assignment.select_secondary_approver' | translate }}</mat-option>
-                        <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                            {{assignee?.firstName | titlecase}} {{assignee?.lastName | titlecase}}
-                        </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="updateTemplateAssignForm.get('secondaryApprovar')?.hasError('required') && updateTemplateAssignForm.get('secondaryApprovar')?.touched">
-                        {{ 'attendance.template_assignment.secondary_approver_required' | translate }}
-                    </mat-error>
-                </mat-form-field>
+                </mat-form-field>                
             </div>
         </div>
         <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
