@@ -44,7 +44,7 @@
                     {{'expenses.amount' | translate}}
                 }
             </mat-label>
-            <input type="number" matInput formControlName="amount" required>
+            <input type="number" matInput formControlName="amount" min="0" required>
             <mat-error *ngIf="addExpenseForm.get('amount').invalid && addExpenseForm.get('amount').touched">
                 @if(addExpenseForm.get('amount').errors['required']){
                 {{'expenses.amount_error' | translate}}
