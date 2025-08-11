@@ -299,8 +299,8 @@ export class GeneralTemplateSettingsComponent {
             this.closeModal();
             this.submitted = false;
           },
-          (err) => {
-            const errorMessage = err?.error?.message || err?.message || this.translate.instant('attendance.createError');
+          err => {
+            const errorMessage = err?.error?.message || err?.message || err || this.translate.instant('attendance.createError');
             this.toast.error(errorMessage, this.translate.instant('common.error'));
             this.submitted = false;
           }
@@ -314,8 +314,8 @@ export class GeneralTemplateSettingsComponent {
             this.closeModal();
             this.submitted = false;
           },
-          (err) => {
-            const errorMessage = err?.error?.message || err?.message || this.translate.instant('attendance.updateError');
+          err => {
+            const errorMessage = err?.error?.message || err?.message || err || this.translate.instant('attendance.updateError');
             this.toast.error(errorMessage, this.translate.instant('common.error'));
             this.submitted = false;
           }
