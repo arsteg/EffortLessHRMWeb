@@ -43,6 +43,7 @@ export class AttendanceProcessComponent {
   fnfAttendanceProcess: any;
   fnfAttendanceProcessUsers: any;
   allAssignee: any[];
+  failedUsers: any[];
   activeTabIndex: number = 0;
   usersForFNF: any;
   selectedFnfUser: string;
@@ -448,7 +449,9 @@ export class AttendanceProcessComponent {
         this.attendancePeriodError = true;
       } else {
         this.attendancePeriodError = false;
-        this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((lopRes: any) => {
+        console.log("hello");
+       this.validateAttendanceForAllAssignees();
+        this.attendanceService.ValidateMonthlyAttendanceByUser(payload).subscribe((lopRes: any) => {
           if (lopRes.data.length === 0) {
             this.lopNotCreatedError = true;
           } else {
@@ -459,6 +462,50 @@ export class AttendanceProcessComponent {
     });
   }
 
+
+  validateAttendanceForAllAssignees() {
+    const month = this.attendanceProcessForm.value.attendanceProcessPeriodMonth;
+    const year = this.attendanceProcessForm.value.attendanceProcessPeriodYear;
+  
+    const validationRequests = this.allAssignee.map((user: any) => {
+      const payload = {
+        user: user._id,
+        month,
+        year
+      };
+  
+      return this.attendanceService.ValidateMonthlyAttendanceByUser(payload).pipe(
+        map((lopRes: any) => ({
+          user,
+          isValid: lopRes.data
+        }))
+      );
+    });
+  
+    forkJoin(validationRequests).subscribe((results: any[]) => {
+      const failedUsers = results
+        .filter(result => !result.isValid)
+        .map(result => ({
+          firstName: result.user.firstName,
+          lastName: result.user.lastName,
+          id: result.user._id
+        }));
+  
+      if (failedUsers.length > 0) {
+        this.lopNotCreatedError = true;
+  
+        // You can bind this to your UI to show the failed users
+        this.failedUsers = failedUsers;
+  
+        console.warn('LOP not created for:', failedUsers);
+      } else {
+        this.lopNotCreatedError = false;
+        this.failedUsers = [];
+        console.log('All users passed LOP validation.');
+      }
+    });
+  }
+  
   getProcessAttendance() {
     let payload = {
       skip: '',

@@ -3,6 +3,9 @@ import { ToastrService } from 'ngx-toastr';
 import { EmailtemplateService } from 'src/app/_services/emailtemplate.service';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-email-template',
@@ -19,6 +22,7 @@ export class EmailTemplateComponent implements OnInit {
   searchText: string = "";
   selectedOption: string;
   editorContent: string = '';
+  dialogRef: MatDialogRef<any> | null = null; 
 
   isSubmitting: boolean = false;
   dropdownOptions = [
@@ -39,8 +43,29 @@ export class EmailTemplateComponent implements OnInit {
   showEditor = false;
   isFormLoaded = false;
   
+  columns: TableColumn[] = [
+    { key: 'templateType', name: this.translate.instant('manage.emails.templateType') },
+    { key: 'Name', name: this.translate.instant('manage.emails.templateName') },
+    { key: 'subject', name: this.translate.instant('manage.emails.subject') },
+    { 
+      key: 'contentData',
+      isHtml: true, 
+      name: this.translate.instant('manage.emails.content') 
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('manage.emails.actions'),
+      isAction: true,
+      options: [
+        { label: this.translate.instant('manage.emails.edit'), icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: this.translate.instant('manage.emails.delete'), icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
+  
   constructor(private emailservice: EmailtemplateService, private fb: FormBuilder,
     private translate: TranslateService,
+    private dialog: MatDialog,
     private toast: ToastrService) {
     this.form = this.fb.group({
       Name: ['', Validators.required],
@@ -153,7 +178,9 @@ export class EmailTemplateComponent implements OnInit {
       .subscribe(
         response => {
           this.toast.success(this.translate.instant('manage.email-template.email_template_updated'), this.translate.instant('common.success'));
-          this.ngOnInit();
+          //this.ngOnInit();
+          this.dialogRef.close(true);
+          this.getEmailList();
         },
         err => {
           const errorMessage = err?.error?.message || err?.message || err 
@@ -162,4 +189,46 @@ export class EmailTemplateComponent implements OnInit {
         this.toast.error(errorMessage, 'Error!'); 
         })
   }
+
+  handleAction(event: any, model: any) {
+    if (event.action.label === this.translate.instant('manage.emails.edit')) {
+      this.selectedEmail = event.row;
+      this.openDialog(model);
+    } 
+    if (event.action.label === this.translate.instant('manage.emails.delete')) {
+      this.deleteDialog(event.row._id);
+    }
+  }
+
+  openDialog(updatedialog: any): void {
+    this.updateForm.patchValue({
+      Name: this.selectedEmail.Name,
+      subject: this.selectedEmail.subject,
+      templateType: this.selectedEmail.templateType,
+      contentData: this.selectedEmail.contentData
+    });
+
+    this.dialogRef = this.dialog.open(updatedialog, {
+      width: '50%',
+      disableClose: true
+    });
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.updateForm.reset();
+      this.selectedEmail = null;
+    });
+  }
+
+  deleteDialog(id: string): void {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        width: '400px',
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        if (result === 'delete') {
+          this.deleteEmail(id);
+        }
+        err => {
+          this.toast.error('Can not be Deleted', 'Error!')
+        }
+      });
+    }
 }

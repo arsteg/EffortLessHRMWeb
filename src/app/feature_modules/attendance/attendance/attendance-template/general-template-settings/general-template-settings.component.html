@@ -115,37 +115,19 @@
       </mat-radio-group>
     </div>
 
-    <div class="my-3 d-none" *ngIf="addTemplateForm.get('approversType')?.value === 'template-wise'">
-      <label class="mb-1">{{ 'attendance.at_approvalLevel' | translate }}</label>
-      <mat-radio-group formControlName="approvalLevel" class="d-flex flex-row gap-3">
-        <mat-radio-button color="primary" value="1">{{ 'attendance.at_level1' | translate }}</mat-radio-button>
-        <mat-radio-button color="primary" value="2">{{ 'attendance.at_level2' | translate }}</mat-radio-button>
-      </mat-radio-group>
-    </div>
-
     <div class="row mt-2" *ngIf="addTemplateForm.get('approversType')?.value === 'template-wise'">
       <div class="col-md-6">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>{{ 'attendance.at_primaryApprover' | translate }}</mat-label>
           <mat-select formControlName="primaryApprover" required>
             <mat-option value="" disabled>{{ 'attendance.at_selectPrimaryApprover' | translate }}</mat-option>
-            <mat-option *ngFor="let user of users" [value]="user?.id">
-              {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
+            <mat-option *ngFor="let user of managers" [value]="user?.id">
+              {{ user?.name | titlecase }}
             </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
-      <div class="col-md-6 d-none" *ngIf="addTemplateForm.get('approvalLevel')?.value === '2'">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'attendance.at_secondaryApprover' | translate }}</mat-label>
-          <mat-select formControlName="secondaryApprover" required>
-            <mat-option value="" disabled>{{ 'attendance.at_selectSecondaryApprover' | translate }}</mat-option>
-            <mat-option *ngFor="let user of users" [value]="user?.id">
-              {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+   
     </div>
   </mat-dialog-content>
 

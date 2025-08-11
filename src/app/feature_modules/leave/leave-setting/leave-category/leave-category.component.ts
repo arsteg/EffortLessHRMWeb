@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { ExportService } from 'src/app/_services/export.service';
@@ -27,9 +26,11 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   recordsPerPageOptions: number[] = [5, 10, 25, 50, 100];
   closeResult: string = '';
   allData: any[] = [];
+  allDatatemp: any[] = [];
   dialogRef: MatDialogRef<any> | null = null;
   private leaveTypeSubscription: Subscription;
   totalRecords: any = 0;
+  isSubmitting: boolean = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   columns: TableColumn[] = [
@@ -89,7 +90,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isProRateFirstMonthAccrualForNewJoinees: [''],
       maximumNumberConsecutiveLeaveDaysAllowed: [0, [Validators.required, Validators.min(0)]],
       isPaidLeave: [true],
-      isEmployeeAccrualLeaveInAdvance: [true]
     }, { validators: this.minLessThanMaxValidator });
     this.leaveTypeSubscription = this.categoryForm.get('leaveType')?.valueChanges.subscribe(value => {
       const leaveAccrualPeriodControl = this.categoryForm.get('leaveAccrualPeriod');
@@ -109,7 +109,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
         (data.leaveAccrualPeriod?.toLowerCase().includes(searchString) || false);
     });
   }
-
   minLessThanMaxValidator: ValidatorFn = (group: AbstractControl) => {
     const min = group.get('minimumNumberOfDaysAllowed')?.value;
     const max = group.get('maximumNumberConsecutiveLeaveDaysAllowed')?.value;
@@ -164,7 +163,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isIntraCycleLapseApplicableForThisCategory: false,
       isProRateFirstMonthAccrualForNewJoinees: false,
       isPaidLeave: false,
-      isEmployeeAccrualLeaveInAdvance: false,
       submitBefore: 0,
       minimumNumberOfDaysAllowed: 0,
       maximumNumberConsecutiveLeaveDaysAllowed: 0,
@@ -175,6 +173,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   }
 
   onLeaveTypeChange() {
+    this.isSubmitting = false;
     if (this.isEdit === false) {
       const currentLeaveType = this.categoryForm.get('leaveType')?.value;
       this.categoryForm.reset({
@@ -196,7 +195,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
         isIntraCycleLapseApplicableForThisCategory: false,
         isProRateFirstMonthAccrualForNewJoinees: false,
         isPaidLeave: false,
-        isEmployeeAccrualLeaveInAdvance: false,
         submitBefore: 0,
         minimumNumberOfDaysAllowed: 0,
         maximumNumberConsecutiveLeaveDaysAllowed: 0,
@@ -211,6 +209,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       disableClose: true
     });
     this.dialogRef.afterClosed().subscribe(result => {
+      this.isSubmitting = false;
     });
   }
 
@@ -221,50 +220,55 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
     };
     this.leaveService.getAllLeaveCategories(pagination).subscribe((res: any) => {
       this.allData = res.data;
+      this.allDatatemp = res.data;
       this.totalRecords = res.total;
     });
   }
-
+  onLabelChange() {
+    this.categoryForm.get('label').valueChanges.subscribe(() => {
+      this.isSubmitting = false;
+    });
+  }
+  
   onSubmission() {
-    if(this.categoryForm.invalid){
+    this.isSubmitting = true;
+    if (this.categoryForm.invalid) {
       this.markFormGroupTouched(this.categoryForm);
       return;
     }
-    else{
-    if (!this.isEdit) {
-      this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe(
-        (res: any) => {
-          this.tableService.setData([...this.tableService.dataSource.data, res.data]);
-          this.toast.success(res.message);
-          this.dialogRef.close(true);
-          this.reset();
-          this.getAllLeaveCategories(); // <-- Refresh list after add
-        },
-        (err) => {
-          this.toast.error(err || this.translate.instant('leave.leaveErrorAssignment'));
-        }
-      );
-    } else if (this.isEdit) {
-      const id = this.selectedLeaveCategory._id;
-      this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe(
-        (res: any) => {
-          const updatedData = this.tableService.dataSource.data.map(item =>
-            item._id === res.data._id ? res.data : item
-          );
-          this.tableService.setData(updatedData);
-          this.toast.success(res.message);
-          this.dialogRef.close(true);
-          this.reset();
-          this.getAllLeaveCategories(); // <-- Refresh list after update
-        },
-        (err) => {
-          this.toast.error(err || this.translate.instant('leave.leaveErrorAssignmentUpdated'));
-
-        }
-      );
+    else {
+      if (!this.isEdit) {
+        this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe(
+          (res: any) => {
+            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+            this.toast.success(res.message);
+            this.dialogRef.close(true);
+            this.reset();
+            this.getAllLeaveCategories();
+          },
+          (err) => {
+            this.toast.error(err);
+          }
+        );
+      } else if (this.isEdit) {
+        const id = this.selectedLeaveCategory._id;
+        this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe(
+          (res: any) => {
+            const updatedData = this.tableService.dataSource.data.map(item =>
+              item._id === res.data._id ? res.data : item
+            );
+            this.tableService.setData(updatedData);
+            this.toast.success(res.message);
+            this.dialogRef.close(true);
+            this.reset();
+            this.getAllLeaveCategories();
+          },
+          (err) => {
+            this.toast.error(err || this.translate.instant('leave.leaveErrorAssignmentUpdated'));
+          }
+        );
+      }
     }
-  }
-
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
@@ -303,7 +307,6 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isProRateFirstMonthAccrualForNewJoinees: this.selectedLeaveCategory.isProRateFirstMonthAccrualForNewJoinees,
       maximumNumberConsecutiveLeaveDaysAllowed: this.selectedLeaveCategory.maximumNumberConsecutiveLeaveDaysAllowed,
       isPaidLeave: this.selectedLeaveCategory.isPaidLeave,
-      isEmployeeAccrualLeaveInAdvance: this.selectedLeaveCategory.isEmployeeAccrualLeaveInAdvance
     });
     const leaveAccrualPeriodControl = this.categoryForm.get('leaveAccrualPeriod');
     if (this.selectedLeaveCategory.leaveType === 'general-leave') {
@@ -322,11 +325,11 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   deleteTemplate(_id: string) {
     this.leaveService.deleteLeaveCategory(_id).subscribe(
       (res: any) => {
-        this.toast.success(this.translate.instant('leave.leaveSuccessfulAssignmentDeleted'));
+        this.toast.success(this.translate.instant('leave.leaveCategoryDelete'));
         this.getAllLeaveCategories(); // <-- Refresh list after delete
       },
       (err) => {
-        const errorMessage = err || this.translate.instant('leave.leaveErrorAssignmentDeleted');
+        const errorMessage = err || this.translate.instant('leave.leaveCategoryDeleteError');
         this.toast.error(errorMessage);
       }
     );
@@ -361,16 +364,16 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
   }
 
   onSortChange(event: any) { // CHANGED: Updated to match reference
-    const sorted = this.tableService.dataSource.data.slice().sort((a: any, b: any) => {
+    const sorted = this.allData.slice().sort((a: any, b: any) => {
       const valueA = a[event.active];
       const valueB = b[event.active];
       return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
     });
-    this.tableService.dataSource.data = sorted;
+    this.allData = sorted;
   }
 
   onSearchChange(event: string) { // CHANGED: Updated to match reference
-    this.tableService.dataSource.data = this.allData.filter(row => {
+    this.allData = this.allDatatemp.filter(row => {
       return this.columns.some(col => {
         if (col.key !== 'actions') {
           const value = row[col.key];

@@ -1,9 +1,14 @@
-
-<div class="d-flex justify-content-end end-0">
-  <button mat-flat-button color="primary" class="me-2" (click)="open(addModal)">
+<div class="position-relative d-none d-md-block">
+  <button mat-flat-button color="primary" class="position-absolute end-0" (click)="open(addModal)">
     {{ 'leave.addButton' | translate }}
   </button>
 </div>
+<div class="d-block d-md-none mt-2">
+  <button mat-flat-button color="primary" class="end-0" (click)="open(addModal)">
+    {{ 'leave.addButton' | translate }}
+  </button>
+</div>
+
 <hrm-table 
   [data]="leaveApplication.data"
   [isServerSide]="true"
@@ -14,7 +19,9 @@
   (actionClicked)="handleAction($event)"
   (pageChanged)="onPageChange($event)"
   (sortChanged)="onSortChange($event)"
-  (searchChanged)="onSearchChange($event)">
+  (searchChanged)="onSearchChange($event)"
+  [pageTitle]="'Leave applications'"
+  [mdColumns]="4">
 </hrm-table>
 
 <ng-template #addModal let-modal>

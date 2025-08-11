@@ -1,6 +1,7 @@
 <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>
-        {{expenseService.isEdit.getValue()? ('expenses.update' | translate): ('expenses.add' | translate)}} {{'expenses.expense' | translate}}
+        {{expenseService.isEdit.getValue()? ('expenses.update' | translate): ('expenses.add' | translate)}}
+        {{'expenses.expense' | translate}}
     </h1>
     <button mat-icon-button mat-dialog-close="" class="me-4">
         <mat-icon>close</mat-icon>
@@ -55,15 +56,16 @@
             <div class="col-md-6 col-12">
                 <mat-form-field class="w-100">
                     <mat-label>{{'expenses.quantity' | translate}}</mat-label>
-                    <input matInput type="number" formControlName="quantity" (input)="updateTotalRate()">
-                    <mat-hint>{{'expenses.rate_per' | translate}} {{categoryType?.type}} {{'expenses.category' | translate}} {{ selectedRate }}</mat-hint>
+                    <input matInput type="number"  min="0" formControlName="quantity" (input)="updateTotalRate()">
+                    <mat-hint>{{'expenses.rate_per' | translate}} {{categoryType?.type}} {{'expenses.category' |
+                        translate}} {{ selectedRate }}</mat-hint>
                 </mat-form-field>
             </div>
 
             <div class="col-md-6 col-12">
                 <mat-form-field class="w-100">
                     <mat-label>{{'expenses.amount' | translate}}</mat-label>
-                    <input matInput type="number" formControlName="amount" [value]="totalRate"
+                    <input matInput type="number"  min="0" formControlName="amount" [value]="totalRate"
                         (change)="setPermissions()">
                     @if(expenseReportform.get('amount').errors && expenseReportform.get('amount').touched){
                     <mat-error>
@@ -103,7 +105,7 @@
 
                         <mat-form-field class="w-100" *ngSwitchCase="'Number'">
                             <mat-label>{{ applicationfields[i]?.fieldName | titlecase}}</mat-label>
-                            <input matInput type="number" formControlName="value">
+                            <input matInput type="number"  min="0" formControlName="value">
                         </mat-form-field>
 
                         <mat-form-field class="w-100" *ngSwitchCase="'DateRange'">
@@ -130,9 +132,11 @@
         <section class="example-section">
             <mat-radio-group (change)="toggleIsReimbursable($event)">
                 <mat-radio-button color="primary" class="example-margin" value="true"
-                    [checked]="expenseReportform.get('isReimbursable').value === true">{{'expenses.reimbursable' | translate}}</mat-radio-button>
+                    [checked]="expenseReportform.get('isReimbursable').value === true">{{'expenses.reimbursable' |
+                    translate}}</mat-radio-button>
                 <mat-radio-button color="primary" class="example-margin" value="false"
-                    [checked]="expenseReportform.get('isBillable').value === true">{{'expenses.billable' | translate}}</mat-radio-button>
+                    [checked]="expenseReportform.get('isBillable').value === true">{{'expenses.billable' |
+                    translate}}</mat-radio-button>
             </mat-radio-group>
         </section>
 
@@ -143,24 +147,45 @@
             </mat-form-field>
         </div>
 
-        @if(expenseReportform.get('expenseAttachments').value){
-        <a [href]="expenseReportform.get('expenseAttachments').value" target="_blank" translate>expenses.view_attachment</a>
-        }
+        <div class="form-group col-md-12 mt-2">
+            <mat-label>Attachment</mat-label>
+            <div class="attachment flex-wrap mt-1">
+                <label class="attach">
+                    <input style="display: none;" formControlName="expenseAttachments"
+                        accept=".jpeg,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt"
+                        type="file" (change)="onFileSelect($event)">
+                    <div class="details-attach-file p-2 d-flex align-items-center justify-content-center me-2 pointer">
+                        <mat-icon class="text-secondary">attach_file</mat-icon>
+                        <span class="ms-1">Add files to Attach</span>
+                    </div>
+                </label>
+            </div>
+            <ul type="none" class="d-flex flex-wrap ps-0">
+    <li class="contentHeading p-2 d-flex align-items-center"
+        *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
+        {{ files.name }}
+        <mat-icon class="text-danger ms-2">cancel</mat-icon>
+    </li>
+</ul>
 
-        <div class="input-group mb-3">
-            <label class="input-group-text" for="inputGroupFile01" translate>expenses.upload</label>
-            <input type="file" class="form-control" formControlName="expenseAttachments" (change)="onFileSelect($event)"
-                id="inputGroupFile01">
+@if(this.isEdit && expenseReportform.get('expenseAttachments').value && selectedFiles.length === 0){
+    <ul type="none" class="d-flex flex-wrap ps-0">
+        <li class="contentHeading p-2 d-flex align-items-center">
+            <span (click)="openAttachment()">{{ documentName }}</span>
+            <mat-icon class="text-danger ms-2" (click)="removeExistingAttachment()">cancel</mat-icon>
+        </li>
+    </ul>
+}
         </div>
-        @if(expenseReportform.get('expenseAttachments').errors &&
-        expenseReportform.get('expenseAttachments').errors['required']){
-        <div>
-            <small class="text-danger" translate>expenses.upload_error</small>
-        </div>
-        }
+        <small class="text-muted">Accepted attachments type:
+            jpeg, .glb, .svg, .blend, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx,
+            .odt, .fodt, .ods, .fods, .odp, .fodp, .odg, .fodg, .odf, .csv, .html, .css, .txt</small>
+
     </div>
     <div mat-dialog-actions class="d-flex justify-content-between">
         <button mat-flat-button type="button" mat-dialog-close="'close'">{{'expenses.cancel' | translate}}</button>
-        <button mat-flat-button type="submit" color="primary" [disabled]="expenseReportform.invalid">{{'expenses.submit' | translate}}</button>
+        <button mat-flat-button type="submit" color="primary"
+            [disabled]="expenseReportform.invalid || isSubmitting">{{'expenses.submit'
+            | translate}}</button>
     </div>
 </form>

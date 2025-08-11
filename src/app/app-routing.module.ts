@@ -201,9 +201,12 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: { permission: 'Tasks' }
        }, // TODO: Shared Component
-      { path: 'tags', component: TagComponent,
+      { 
+        path: 'tags', 
+        component: TagComponent,
         canActivate: [AuthGuard],
-        data: { permission: 'Tags' }
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'manage', permission: 'Tags' }
        }, // TODO: Shared Component
       { path: 'comments', component: TaskCommentComponent,
         canActivate: [AuthGuard],

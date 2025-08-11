@@ -89,18 +89,6 @@
             </mat-form-field>
 
             <div class="mt-2">
-                <mat-label>{{'expenses.levels_of_approvals' | translate}}</mat-label>
-                <br>
-                <mat-radio-group color="primary" formControlName="approvalLevel" required>
-                    <mat-radio-button value="1">{{'expenses.level_1' | translate}}</mat-radio-button>
-                    <mat-radio-button value="2">{{'expenses.level_2' | translate}}</mat-radio-button>
-                </mat-radio-group>
-                <mat-error *ngIf="addAdvanceTempForm.get('approvalLevel').invalid && addAdvanceTempForm.get('approvalLevel').touched">
-                    {{'expenses.levels_of_approvals_error'| translate}}
-                </mat-error>
-            </div>
-
-            <div class="mt-2">
                 <mat-label>{{'expenses.add_approvers' | translate}}</mat-label>
                 <br>
                 <mat-radio-group color="primary" formControlName="approvalType" required>
@@ -121,19 +109,7 @@
                                 titlecase}} {{user.lastName | titlecase}}</mat-option>
                         </mat-select>
                         <mat-error *ngIf="addAdvanceTempForm.get('firstApprovalEmployee').invalid && addAdvanceTempForm.get('firstApprovalEmployee').touched">
-                           {{'expeses.first_approver_error' | translate}}
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-md-6" *ngIf="addAdvanceTempForm.get('approvalLevel').value === '2'">
-                    <mat-form-field class="w-100">
-                        <mat-label>{{'expenses.second_approver' | translate}}</mat-label>
-                        <mat-select formControlName="secondApprovalEmployee" required>
-                            <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
-                                titlecase}} {{user.lastName | titlecase}}</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="addAdvanceTempForm.get('secondApprovalEmployee').invalid && addAdvanceTempForm.get('secondApprovalEmployee').touched">
-                            {{'expeses.second_approver_error' | translate}}
+                           {{'expenses.first_approver_error' | translate}}
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -141,7 +117,6 @@
         </div>
         <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
             <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
-            <!-- <button mat-stroked-button type="button" (click)="editadvanceCategory()">{{'expenses.reset' | translate}}</button> -->
             <button mat-flat-button color="primary" type="submit"
                 [disabled]="!addAdvanceTempForm.valid">
                 {{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}}

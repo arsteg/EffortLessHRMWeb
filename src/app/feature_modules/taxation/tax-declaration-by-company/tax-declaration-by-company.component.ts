@@ -356,4 +356,21 @@ export class TaxDeclarationByCompanyComponent implements OnInit {
       this.toast.error(this.translate.instant('taxation.attachment_missing'), this.translate.instant('taxation.toast.error'));
     }
   }
+
+
+  getInvalidControlName(component: any): string {
+    if (this.editingComponent === component && this.componentForm.get('approvedAmount')?.invalid && 
+        (this.componentForm.get('approvedAmount')?.touched)) {
+      return 'approvedAmount';
+    }
+    return '';
+  }
+
+  getInvalidHRAControlName(hra: any): string {
+    if (this.editingHRA === hra && this.hraForm.get('verifiedAmount')?.invalid && 
+        (this.hraForm.get('verifiedAmount')?.touched)) {
+      return 'verifiedAmount';
+    }
+    return '';
+    }
 }

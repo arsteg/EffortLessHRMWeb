@@ -168,10 +168,10 @@ export class LeaveService extends baseService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-grant-list`, requestBody, this.httpOptions);
   }
 
-  public getLeaveGrantByUser(userId: string): any {
+  public getLeaveGrantByUser(userId: string, payload: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.get<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-grant-by-user/${userId}`, this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/Leave/employee-leave-grant-by-user/${userId}`, payload, this.httpOptions);
   }
 
   public getLeaveGrantByTeam(requestBody): any {

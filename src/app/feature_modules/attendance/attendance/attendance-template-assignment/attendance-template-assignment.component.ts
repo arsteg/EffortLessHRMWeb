@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ActionVisibility } from 'src/app/models/table-column';
 import { TranslateService } from '@ngx-translate/core';
+import { TimeLogService } from 'src/app/_services/timeLogService';
 
 @Component({
   selector: 'app-attendance-template-assignment',
@@ -26,12 +27,14 @@ export class AttendanceTemplateAssignmentComponent {
   changeMode: 'Add' | 'Update' = 'Add';
   attendanceTemplateAssignmentForm: FormGroup;
   allAssignee: any[];
+  managers: any = [];
   bsValue = new Date();
   templates: any;
   updateTemplateAssignForm: FormGroup;
   templateById: any;
   selectedTemp: any;
-  totalRecords: number = 0;
+  totalRecords: number = 0;  
+  minDate: Date;
   recordsPerPage: number = 10;
   currentPage: number = 1;
   public sortOrder: string = '';
@@ -103,6 +106,7 @@ export class AttendanceTemplateAssignmentComponent {
     private translate: TranslateService,
     private commonService: CommonService,
     private dialog: MatDialog,
+    private timelog: TimeLogService,
     private toast: ToastrService
   ) {
     this.attendanceTemplateAssignmentForm = this.fb.group({
@@ -112,25 +116,41 @@ export class AttendanceTemplateAssignmentComponent {
       primaryApprover: ['', Validators.required]
     });
     this.updateTemplateAssignForm = this.fb.group({
-      primaryApprovar: [{ value: '', disabled: true }, Validators.required],
-      secondaryApprovar: [{ value: '', disabled: true }, Validators.required]
+      primaryApprovar: [{ value: '', disabled: true }, Validators.required]
     })
   }
 
   ngOnInit() {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
-    });
+    }); 
+    this.getAllManagers();
+    const today = new Date();
+    this.minDate = new Date(today.setDate(today.getDate()));
     this.getAllTemplates();
     this.loadRecords();
   }
 
-  // onEmployeeChange(event: any) {
-  //   const selectedEmployeeId = event.value;
-  //   this.userHasTemplateError = this.attendanceTemplateAssignment.some(
-  //     (assignment: any) => assignment.employee === selectedEmployeeId
-  //   );
-  // }
+  getAllManagers() {
+    this.managers = [];
+    this.timelog.getManagers().subscribe({
+      next: response => {
+        this.timelog.getusers(response.data).subscribe({
+          next: result => {
+            result.data.forEach(user => {
+              this.managers.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+            });
+          },
+          error: error => {
+            console.log('Error fetching users:', error);
+          }
+        });
+      },
+      error: error => {
+        console.log('Error fetching managers:', error);
+      }
+    });
+  }
   onEmployeeChange(event: any) {
     const selectedEmployeeId = event.value;
     const employeeControl = this.attendanceTemplateAssignmentForm.get('employee');
@@ -156,7 +176,8 @@ export class AttendanceTemplateAssignmentComponent {
   }
 
   onPageChange(page: any) {
-    this.currentPage = page;
+    this.currentPage = page.pageIndex + 1;
+    this.recordsPerPage = page.pageSize;
     this.loadRecords();
   }
 
@@ -234,33 +255,14 @@ export class AttendanceTemplateAssignmentComponent {
     this.isEdit = true;
     this.attendanceService.getAttendanceTemplateById(this.selectedTemplate.attendanceTemplate?._id).subscribe((res: any) => {
       this.templateById = res.data;
-
-      if (this.templateById.approversType === 'template-wise') {
-        if (this.templateById.approvalLevel === '1') {
-          this.updateTemplateAssignForm.patchValue({
-            primaryApprovar: this.templateById.primaryApprover,
-            secondaryApprovar: null
-          });
-          this.updateTemplateAssignForm.get('primaryApprovar').disable();
-
-        } else if (this.templateById.approvalLevel === '2') {
-          this.updateTemplateAssignForm.patchValue({
-            primaryApprovar: this.templateById.primaryApprover
-          });
-        }
-        this.updateTemplateAssignForm.get('primaryApprovar').disable();
-     
-      }
-      else if (this.templateById.approversType === 'employee-wise') {
+      if (this.templateById.approversType === 'employee-wise') {
         this.attendanceService.getAttendanceAssignmentById(this.selectedTemplate._id).subscribe((res: any) => {
           const response = res.data;
           this.updateTemplateAssignForm.patchValue({
-            primaryApprovar: response.primaryApprover
+            primaryApprovar: response.primaryApprover._id
           });
         })
-        console.log(this.templateById, this.updateTemplateAssignForm.value)
-        this.updateTemplateAssignForm.get('primaryApprovar').enable();
-        this.updateTemplateAssignForm.get('secondaryApprovar').enable();
+         this.updateTemplateAssignForm.get('primaryApprovar').enable();
       }
     })
   }
@@ -369,12 +371,7 @@ export class AttendanceTemplateAssignmentComponent {
             this.translate.instant('attendance.templateAssignedSuccess')
           );
           this.dialogRef.close(true);
-          this.attendanceTemplateAssignmentForm.reset({
-            employee: '',
-            attendanceTemplate: '',
-            effectiveFrom: new Date(),
-            primaryApprover: ''
-          });
+         this.resetAssignmentForm();
         },
         err => {
           const errorMessage = err?.error?.message || err?.message || err 
@@ -388,7 +385,15 @@ export class AttendanceTemplateAssignmentComponent {
       this.markFormGroupTouched(this.attendanceTemplateAssignmentForm);
     }
   }
-
+  resetAssignmentForm() {
+    this.attendanceTemplateAssignmentForm.reset({
+      employee: '',
+      attendanceTemplate: '',
+      effectiveFrom: new Date(),
+      primaryApprover: ''
+    });
+    this.userHasTemplateError = false;
+    }
   markFormGroupTouched(formGroup: FormGroup) {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
@@ -409,7 +414,8 @@ export class AttendanceTemplateAssignmentComponent {
           this.translate.instant('attendance.templateAssignmentUpdateSuccess')
         );  
           this.loadRecords();
-        this.dialogRef.close(true);
+          this.resetAssignmentForm();
+          this.dialogRef.close(true);        
       },
         err => {
           const errorMessage = err?.error?.message || err?.message || err 

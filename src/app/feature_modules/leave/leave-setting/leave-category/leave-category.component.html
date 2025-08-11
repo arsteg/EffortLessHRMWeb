@@ -1,13 +1,17 @@
-<div class="d-none d-md-block">
-    <div class="d-flex justify-content-end end-0">
-        <button mat-flat-button class="end-0" color="primary" (click)="isEdit = false; open(addModal)">
-            {{ "leave.addButton" | translate }}
-        </button>
-    </div>
+<div class="position-relative d-none d-md-block">
+    <button mat-flat-button class="position-absolute end-0" color="primary" (click)="isEdit = false; open(addModal)">
+        {{ "leave.addButton" | translate }}
+    </button>
 </div>
-<hrm-table [data]="allData" [isServerSide]="true" [columns]="columns" [showExport]="'csv'" [showSearch]="true"
+<div class="d-block d-md-none mt-2">
+    <button mat-flat-button class="end-0" color="primary" (click)="isEdit = false; open(addModal)">
+        {{ "leave.addButton" | translate }}
+    </button>
+</div>
+<hrm-table [data]="allData" [isServerSide]="true" [columns]="columns" [showExport]="'all'" [showSearch]="true"
     [totalItems]="totalRecords" (actionClicked)="handleAction($event, addModal)" (pageChanged)="onPageChange($event)"
-    (sortChanged)="onSortChange($event)" (searchChanged)="onSearchChange($event)">
+    (sortChanged)="onSortChange($event)" (searchChanged)="onSearchChange($event)"
+    [pageTitle]="'Leave categories'" [mdColumns]="4">
 </hrm-table>
 
 <ng-template #addModal let-modal>
@@ -53,12 +57,14 @@
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.provideLabel" | translate }}</mat-label>
                         <input matInput type="text" [placeholder]="'leave.labelPlaceholder' | translate"
-                            formControlName="label" />
+                            formControlName="label" (change)="onLabelChange()" />
                         <mat-error
                             *ngIf="categoryForm.get('label')?.invalid && (categoryForm.get('label')?.touched || categoryForm.get('label')?.dirty)">
-
                             <span *ngIf="categoryForm.get('label')?.errors?.['required']">
                                 {{ "leave.errorLabel" | translate }}
+                            </span>
+                            <span *ngIf="categoryForm.get('label')?.errors?.['spacesNotAllowed']">
+                                {{ 'leave.labelNoLeadingOrTrailingSpaces' | translate }}
                             </span>
                             <span *ngIf="categoryForm.get('label')?.errors?.['invalidLabel']">
                                 {{ 'leave.label_invalid' | translate }}
@@ -174,7 +180,7 @@
                                 "leave.semiAnnually" | translate
                                 }}</mat-option>
                             <mat-option value="Quarterly">{{
-                                "leave.quarterly" | translate
+                                "leave.quaterly" | translate
                                 }}</mat-option>
                             <mat-option value="Bi-Monthly">{{
                                 "leave.biMonthly" | translate
@@ -191,19 +197,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-12 my-2">
-                    <label>{{ "leave.accrualInAdvance" | translate }}</label>
-                    <div class="d-flex">
-                        <mat-radio-group formControlName="isEmployeeAccrualLeaveInAdvance">
-                            <mat-radio-button color="primary" [value]="true">{{
-                                "leave.yes" | translate
-                                }}</mat-radio-button>
-                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                                "leave.no" | translate
-                                }}</mat-radio-button>
-                        </mat-radio-group>
-                    </div>
-                </div>
+
                 <div class="form-group col-12 my-2">
                     <label>{{ "leave.weeklyOffInclusion" | translate }}</label>
                     <div class="d-flex">
@@ -276,9 +270,7 @@
                             <mat-option value="no-carryover">{{
                                 "leave.noCarryover" | translate
                                 }}</mat-option>
-                            <mat-option value="carryover-gap">{{
-                                "leave.carryoverGap" | translate
-                                }}</mat-option>
+
                             <mat-option value="no-limit">{{
                                 "leave.noLimit" | translate
                                 }}</mat-option>
@@ -327,7 +319,7 @@
                 <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.minDaysAllowed" | translate }}</mat-label>
-                        <input matInput type="number" formControlName="minimumNumberOfDaysAllowed"  min="0" />
+                        <input matInput type="number" formControlName="minimumNumberOfDaysAllowed" min="0" />
                         <mat-error *ngIf="categoryForm.get('minimumNumberOfDaysAllowed')?.invalid">
                             <span *ngIf="categoryForm.get('minimumNumberOfDaysAllowed')?.errors?.['min']">
                                 {{ 'leave.duration_negative' | translate }}
@@ -354,7 +346,8 @@
                 <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.maxConsecutiveDays" | translate }}</mat-label>
-                        <input matInput type="number" formControlName="maximumNumberConsecutiveLeaveDaysAllowed" min="0" />
+                        <input matInput type="number" formControlName="maximumNumberConsecutiveLeaveDaysAllowed"
+                            min="0" />
                         <mat-error *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.invalid">
                             <span *ngIf="categoryForm.get('maximumNumberConsecutiveLeaveDaysAllowed')?.errors?.['min']">
                                 {{ 'leave.duration_negative' | translate }}
@@ -474,7 +467,7 @@
             <button mat-flat-button (click)="close();">
                 {{ "leave.cancelButton" | translate }}
             </button>
-            <button mat-flat-button color="primary" type="submit">
+            <button mat-flat-button color="primary" [disabled]="isSubmitting" type="submit">
                 {{
                 !isEdit
                 ? ("leave.addButton" | translate)

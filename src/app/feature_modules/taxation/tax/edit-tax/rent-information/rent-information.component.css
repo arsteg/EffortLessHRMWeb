@@ -1,6 +1,30 @@
-.error-message {
+/* .error-message {
     color: #dc3545;
     font-size: 12px;
     margin-top: 4px;
     display: block;
-  }
+  } */
+
+.hrm-table tr.error-cityType td {
+  padding-bottom: 60px !important;
+}
+
+.hrm-table tr.error-rentDeclared td {
+  padding-bottom: 60px !important;
+}
+
+.hrm-table tr.error-landlordName td {
+  padding-bottom: 80px !important;
+}
+
+.hrm-table tr.error-landlordPan td {
+  padding-bottom: 80px !important;
+}
+
+.hrm-table tr.error-landlordAddress td {
+  padding-bottom: 120px !important;
+}
+
+/* .namemargin{
+    margin-bottom: 30px !important;
+} */

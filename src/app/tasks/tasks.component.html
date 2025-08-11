@@ -62,21 +62,19 @@
             </mat-form-field>
             }
 
-            <button mat-flat-button color="primary" class="ms-xl-auto ms-1" data-bs-toggle="modal"
-                data-bs-target="#addModal" (click)="clearForm()">Create</button>
+            <button mat-flat-button color="primary"
+                (click)="openDialog(addModal)">Add New</button>
+            <!-- <button mat-flat-button color="primary" (click)="clearForm(addModal)">Create</button> -->
         </div>
     </div>
 
-    <!-- pagination -->
-    <mat-paginator class="d-flex justify-content-start" [length]="totalRecords?.taskCount" [pageSize]="recordsPerPage"
-        [pageSizeOptions]="recordsPerPageOptions" (page)="paginateTasks($event)">
-    </mat-paginator>
+
 
 
     <!-- List view status -->
     <div *ngIf="isListView">
-        <div class="table-responsive mt-2 py-3 px-2 bg-white tableContainer">
-            <table class="px-2">
+        <div class="table-responsive mt-2 py-3 px-2 bg-white">
+            <table class="px-2" class="hrm-table">
                 <thead>
                     <tr>
                         <th class="ps-2 pe-lg-1 pe-4" scope="col" [appSort]="tasks" data-name="taskNumber"
@@ -255,7 +253,21 @@
                         <!-- Actions -->
                         <td class="text-center pe-lg-1 pe-4">
                             <div ngbDropdown class="d-inline-block dropdown-center">
-                                <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
+                               <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+                                    <mat-icon>more_vert</mat-icon>
+                                </button>
+                                <mat-menu #actionMenu="matMenu">
+                                    <button mat-menu-item (click)="copyTask(task)">
+                                        <span>Copy</span>
+                                    </button>
+                                    <button mat-menu-item (click)="navigateToEditPage(task)">
+                                        <span>Edit</span>
+                                    </button>
+                                    <button mat-menu-item (click)="deleteDialog(task)">
+                                        <span>Delete</span>
+                                    </button>
+                                </mat-menu>
+                                <!-- <button class="actions ms-2" mat-mini-fab ngbDropdownToggle aria-expanded="false"
                                     aria-label="Example icon button with a menu icon">
                                     <i class="bi bi-send"></i>
                                 </button>
@@ -275,7 +287,7 @@
                                         <i class="bi bi-trash3 text-danger dropdown-item w-25"></i>
                                         <span class="pt-1 text-muted">Delete</span>
                                     </li>
-                                </ul>
+                                </ul> -->
                             </div>
                         </td>
                     </tr>
@@ -618,6 +630,11 @@
             </div>
         </div>
     </div>
+
+    <!-- pagination -->
+    <mat-paginator class="d-flex justify-content-start" [length]="totalRecords?.taskCount" [pageSize]="recordsPerPage"
+        [pageSizeOptions]="recordsPerPageOptions" (page)="paginateTasks($event)">
+    </mat-paginator>
 </div>
 
 <ng-template #taskCard let-task="task">
@@ -685,7 +702,155 @@
 
 
 <!-- Add -->
-<div class="modal" id="addModal" data-bs-backdrop="false">
+<ng-template #addModal let-modal>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>Create Task</h1>
+    <button mat-icon-button mat-dialog-close="" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="addForm" (ngSubmit)="onSubmit()">
+    <div mat-dialog-content>
+      <div class="row m-0">
+        <div class="form-group col-md-12">
+          <mat-form-field class="w-100">
+            <mat-label>Project</mat-label>
+            <mat-select formControlName="project" (selectionChange)="getUsersListByProject()" required>
+              <mat-option value="undefined">Choose a Project</mat-option>
+              <mat-option *ngFor="let project of projectList" [value]="project.id">
+                {{ project?.projectName }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="addForm.controls['project'].invalid && addForm.controls['project'].touched">
+              <span *ngIf="addForm.controls['project'].errors?.['required']">
+                Please Select Project Name!
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-12">
+          <mat-form-field class="w-100">
+            <mat-label>Assignee</mat-label>
+            <mat-select formControlName="user">
+              <mat-option value="undefined" disabled>Choose Assignee</mat-option>
+              <mat-option *ngFor="let user of usersByProject" [value]="user?.user?.id">
+                {{ user?.user?.firstName | titlecase }} {{ user?.user?.lastName | titlecase }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="addForm.controls['user'].invalid && addForm.controls['user'].touched">
+              <span *ngIf="addForm.controls['user'].errors?.['required']">
+                Assignee is required!
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-12 mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>Title</mat-label>
+            <input matInput type="text" formControlName="title" placeholder="Add a Title" required>
+            <mat-error *ngIf="addForm.controls['title'].invalid && addForm.controls['title'].touched">
+              <span *ngIf="addForm.controls['title'].errors?.['required']">
+                Title is required!
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-group col-md-12 mt-2">
+          <mat-label>Description</mat-label>
+          <quill-editor [styles]="{ height: '300px' }" formControlName="description" [(ngModel)]="tasks?.data?.task.description"></quill-editor>
+        </div>
+
+        <div class="form-group col-md-6 mt-2">
+            <mat-form-field class="w-100">
+                <mat-label>Start Date</mat-label>
+                <!-- <input matInput placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="startDate"> -->
+                 <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" placeholder="YYYY-MM-DD">
+                <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #startDatePicker></mat-datepicker>
+                <mat-error *ngIf="addForm.controls['startDate'].invalid && addForm.controls['startDate'].touched">
+                <span *ngIf="addForm.controls['startDate'].errors?.['required']">
+                    Start Date is required!
+                </span>
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="form-group col-md-6 mt-2">
+            <mat-form-field class="w-100">
+                <mat-label>End Date</mat-label>
+                <!-- <input matInput placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" formControlName="endDate"> -->
+                 <input matInput [matDatepicker]="endDatePicker" formControlName="endDate" placeholder="YYYY-MM-DD">
+                    <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #endDatePicker></mat-datepicker>
+                    <mat-error *ngIf="addForm.controls['endDate'].invalid && addForm.controls['endDate'].touched">
+                    <span *ngIf="addForm.controls['endDate'].errors?.['required']">
+                        End Date is required!
+                    </span>
+                    </mat-error>
+            </mat-form-field>
+        </div>
+        <div *ngIf="addForm.errors?.['dateRangeError']" class="text-danger mt-2">
+        Start date should not be greater than end date.
+        </div>
+
+        <div class="form-group col-md-6">
+        <mat-form-field class="w-100">
+            <mat-label>Priority</mat-label>
+            <mat-select formControlName="priority">
+            <mat-option value="">Select Priority</mat-option>
+            <mat-option value="Low">Low</mat-option>
+            <mat-option value="Normal">Normal</mat-option>
+            <mat-option value="High">High</mat-option>
+            <mat-option value="Highest">Highest</mat-option>
+            </mat-select>
+        </mat-form-field>
+        </div>
+        <div class="form-group col-md-6">
+        <mat-form-field class="w-100">
+            <mat-label>Estimate (Hours)</mat-label>
+            <input matInput type="number" formControlName="estimate">
+        </mat-form-field>
+        </div>
+        
+        <div class="form-group col-md-12 mt-2">
+          <mat-label>Attachment</mat-label>
+          <div class="attachment flex-wrap mt-1">
+            <label class="attach">
+              <input style="display: none;" formControlName="taskAttachments" accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip" type="file" multiple (change)="onFileSelect($event)">
+              <div class="details-attach-file p-2 d-flex align-items-center justify-content-center me-2 pointer">
+                <mat-icon class="text-secondary">attach_file</mat-icon>
+                <span class="ms-1">Add files to Attach</span>
+              </div>
+            </label>
+          </div>
+          <ul type="none" class="d-flex flex-wrap ps-0">
+            <li class="contentHeading p-2 d-flex align-items-center" *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
+              {{ files.name }}
+              <mat-icon class="text-danger ms-2">cancel</mat-icon>
+            </li>
+          </ul>
+        </div>
+
+        <div class="form-group col-md-12 mt-2">
+          <mat-form-field class="w-100">
+            <mat-label>Comments</mat-label>
+            <input matInput type="text" formControlName="comment" placeholder="Add comment...">
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+      <button mat-flat-button (click)="clearForm()">Cancel</button>
+      <button mat-flat-button color="primary" type="submit">Add</button>
+    </div>
+  </form>
+</ng-template>
+
+<!-- <div class="modal" id="addModal" data-bs-backdrop="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="max-height: 82vh;">
             <div class="modal-body">
@@ -826,7 +991,7 @@
 
 
                             </div>
-                            <!-- <div class="row"> -->
+                            
 
                             <div class="col-12 mt-3">
                                 <label for="">Attachment</label>
@@ -879,10 +1044,10 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 
-<!-- Delete -->
+<!-- Delete not in use-->
 <div class="modal" id="deleteModal" data-bs-backdrop="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

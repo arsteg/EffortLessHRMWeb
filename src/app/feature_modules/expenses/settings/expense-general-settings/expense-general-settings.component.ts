@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, Output, inject  } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { TranslateService } from '@ngx-translate/core';
+import { ManageTeamService } from 'src/app/_services/manage-team.service';
 @Component({
   selector: 'app-expense-general-settings',
   templateUrl: './expense-general-settings.component.html',
@@ -20,29 +21,30 @@ export class ExpenseGeneralSettingsComponent {
   @Input() selectedTemplate: any;
   @Output() close: any = new EventEmitter();
   @Output() changeStep: any = new EventEmitter();
+  managers: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private expenseService: ExpensesService,
     private commonService: CommonService,
     private toast: ToastrService,
+    private manageService: ManageTeamService
   ) {
     this.addTemplateForm = this.fb.group({
       policyLabel: ['', Validators.required],
       approvalType: ['', Validators.required],
-      approvalLevel: ['', Validators.required],
       expenseCategories: [[], Validators.required],
       advanceAmount: [false],
       applyforSameCategorySamedate: [false],
       downloadableFormats: [''],
       firstApprovalEmployee: [''],
-      secondApprovalEmployee: [''],
-      expenseTemplate: [''],
+      expenseTemplate: ['']
     });
   }
 
   ngOnInit() {
-    this.setFormValues()
+    this.getManagers();
+    this.setFormValues();
     this.getAllExpensesCategories();
     this.getAllUsers();
     this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
@@ -50,6 +52,12 @@ export class ExpenseGeneralSettingsComponent {
     });
     this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
       this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value)
+    });
+  }
+
+  getManagers() {
+    this.manageService.getManagers().subscribe((res: any) => {
+      this.managers = res.data;
     });
   }
 
@@ -99,12 +107,10 @@ export class ExpenseGeneralSettingsComponent {
       this.addTemplateForm.patchValue({
         policyLabel: templateData.policyLabel,
         approvalType: templateData.approvalType,
-        approvalLevel: templateData.approvalLevel,
         downloadableFormats: templateData.downloadableFormats,
         applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
         advanceAmount: templateData.advanceAmount,
         firstApprovalEmployee: templateData.firstApprovalEmployee,
-        secondApprovalEmployee: templateData.secondApprovalEmployee,
         expenseCategories: expenseCategories // Array of _id strings
       });
       this.checkedFormats = templateData.downloadableFormats;
@@ -137,11 +143,9 @@ export class ExpenseGeneralSettingsComponent {
     let payload = {
       policyLabel: this.addTemplateForm.value.policyLabel,
       approvalType: this.addTemplateForm.value.approvalType,
-      approvalLevel: this.addTemplateForm.value.approvalLevel,
       applyforSameCategorySamedate: this.addTemplateForm.value.applyforSameCategorySamedate,
       advanceAmount: this.addTemplateForm.value.advanceAmount,
       firstApprovalEmployee: this.addTemplateForm.value.firstApprovalEmployee || null,
-      secondApprovalEmployee: this.addTemplateForm.value.secondApprovalEmployee || null,
       downloadableFormats: this.checkedFormats,
       expenseCategories: this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }))
     };

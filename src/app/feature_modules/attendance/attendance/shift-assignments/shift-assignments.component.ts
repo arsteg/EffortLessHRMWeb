@@ -53,7 +53,7 @@ export class ShiftAssignmentsComponent {
       valueFn: (row: any) => new Date(row.startDate).toLocaleDateString()
     },
     {
-      key: 'action',
+      key: 'actions',
       name: 'Action',
       isAction: true,
       options: [
@@ -189,6 +189,11 @@ export class ShiftAssignmentsComponent {
     });
     if (this.isEdit) {
       this.userHasTemplateError = false;
+      this.shiftForm.get('user').disable();
+    }
+    else
+    {
+      this.shiftForm.get('user').enable();
     }
   }
 

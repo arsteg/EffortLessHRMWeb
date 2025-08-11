@@ -1,6 +1,5 @@
-
 <hrm-table [data]="dataSource.data" [columns]="columns" [showExport]="'none'"
-    (actionClicked)="onActionClick($event)"></hrm-table>
+  (actionClicked)="onActionClick($event)"></hrm-table>
 
 
 <ng-template #addEditCompanyDialog>
@@ -25,7 +24,7 @@
               translate>organization.setup.company_name_required</mat-error>
           </mat-form-field>
         </div>
-      
+
         <div class="form-group col-md-12">
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.setup.contact_person' | translate }}</mat-label>
@@ -36,7 +35,7 @@
               translate>organization.setup.contact_person_required</mat-error>
           </mat-form-field>
         </div>
-      
+
         <div class="form-group col-md-12">
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.setup.address' | translate }}</mat-label>
@@ -47,7 +46,7 @@
               translate>organization.setup.address_required</mat-error>
           </mat-form-field>
         </div>
-      
+
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.setup.city' | translate }}</mat-label>
@@ -68,7 +67,7 @@
               translate>organization.setup.state_required</mat-error>
           </mat-form-field>
         </div>
-      
+
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.setup.country' | translate }}</mat-label>
@@ -92,11 +91,11 @@
               translate>organization.setup.pincode_invalid</mat-error>
           </mat-form-field>
         </div>
-      
+
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.setup.email' | translate }}</mat-label>
-            <input matInput type="email" formControlName="email"   [disabled]="true"
+            <input matInput type="email" formControlName="email" [disabled]="true"
               [placeholder]="'organization.setup.enter_email' | translate" />
             <mat-error
               *ngIf="companyForm.get('email')?.hasError('required') && (companyForm.get('email')?.dirty || companyForm.get('email')?.touched)"
@@ -125,7 +124,7 @@
       <button mat-flat-button (click)="dialogRef.close()">{{'organization.setup.close' | translate}}</button>
       <button mat-flat-button color="primary" type="submit">{{'organization.setup.update' | translate}}</button>
     </div>
-</form>
+  </form>
 </ng-template>
 
 <ng-template #uploadLogoDialog>
@@ -137,16 +136,30 @@
   </div>
   <div mat-dialog-content>
     <div class="row m-0">
-      <div class="form-group col-md-12">
-        <input type="file" accept="image/*" (change)="onFileSelected($event)" #fileInput />
-        <div *ngIf="selectedFile" class="mt-2">
-          <p>{{ 'organization.setup.selected_file' | translate }} {{ selectedFile.name }}</p>
-          <img [src]="imagePreview" alt="Logo Preview" style="max-width: 200px; max-height: 200px;"
-            *ngIf="imagePreview" />
+      <div class="form-group col-md-12 mt-2">
+        <mat-label>Attachment</mat-label>
+        <div class="attachment flex-wrap mt-1">
+          <label class="attach">
+            <input style="display: none;" accept="image/*" type="file" (change)="onFileSelected($event)">
+            <div class="details-attach-file p-2 d-flex align-items-center justify-content-center me-2 pointer">
+              <mat-icon class="text-secondary">attach_file</mat-icon>
+              <span class="ms-1">Add Company Logo</span>
+            </div>
+          </label>
         </div>
-        <mat-error *ngIf="fileError">{{ 'organization.setup.' + fileError | translate }}</mat-error>
+        <ul type="none" class="d-flex flex-wrap ps-0">
+          <li class="contentHeading p-2 d-flex align-items-center">
+            <img [src]="imagePreview" alt="Logo Preview" style="max-width: 200px; max-height: 200px;"
+              *ngIf="imagePreview" />
+            {{ selectedFile?.name }}
+          </li>
+        </ul>
+        <small class="text-muted">Supported File Type: jpeg/jpg, png, gif, svg+xml, webp, bmp, tiff, ico/icon</small>
+        <br>
+        <small class="text-danger" *ngIf="fileError">{{ 'organization.setup.' + fileError | translate }}</small>
       </div>
     </div>
+
   </div>
   <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
     <button mat-flat-button (click)="dialogRef.close()">{{'organization.setup.close' |

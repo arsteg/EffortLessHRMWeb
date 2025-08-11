@@ -26,20 +26,15 @@ export class AddApplicationComponent implements OnDestroy {
   bsValue = new Date();
   @Output() close: any = new EventEmitter();
   leaveCategories: any[] = [];
-  selectedDates: Date[] = [];
   @Output() leaveApplicationRefreshed: EventEmitter<void> = new EventEmitter<void>();
   portalView = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
   members: any[] = [];
-  member: any;
   @Input() tab: number;
   tempLeaveCategory: any;
-  totalLeaveApplied: number = 0;
-  weekOffCount: number = 0;
   dayCounts = {};
   numberOfLeaveAppliedForSelectedCategory: number = 0;
   appliedLeave: any;
-  holidayCount: number;
   leaveDocumentUpload: boolean = false;
   selectedFiles: File[] = [];
   bsConfig: Partial<BsDatepickerConfig> = {
@@ -52,7 +47,6 @@ export class AddApplicationComponent implements OnDestroy {
     showWeekNumbers: false,
     minDate: new Date()
   };
-  today: Date = new Date();
   showHalfDayOption: boolean = true;
   checkStatus: any;
   existingLeaves: any[] = [];
@@ -60,7 +54,6 @@ export class AddApplicationComponent implements OnDestroy {
   weeklyOffDates: Date[] = [];
   holidays: any;
   weeklyOffDays: string[] = [];
-  attachments: '';
   appointmentDetail: any;
   maxHalfDaysAllowed = 0;
   halfDayLimitReached = false;
@@ -296,7 +289,6 @@ export class AddApplicationComponent implements OnDestroy {
         next: (res: any) => {
           const records = res.data;
           this.leaveCategories = records.filter(category => category.leaveCategory?.canEmployeeApply === true);
-          console.log(this.leaveCategories)
           this.checkStatus = res.status;
         },
         error: () => {
@@ -774,20 +766,7 @@ export class AddApplicationComponent implements OnDestroy {
       this.members.push({ id: currentUser.id, name: this.translate.instant('leave.userMe'), email: currentUser.email });
       this.timeLogService.getTeamMembers(currentUser.id).subscribe((res: any) => {
         this.members = res.data;
-        // next: response => {
-        // this.timeLogService.getusers(response.data).subscribe({
-        //   next: result => {
-        //     result.data.forEach(user => {
-        //       if (user.id != currentUser.id) {
-        //         this.members.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
-        //       }
-        //     });
-        //   },
-        //   error: () => {
-        //     this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
-        // }
       },
-        // },
         error => {
           this.toast.error(this.translate.instant('leave.errorFetchingTeamMembers'));
         });
@@ -944,7 +923,6 @@ export class AddApplicationComponent implements OnDestroy {
   }
 
   submitLeaveApplication(payload: any) {
-    console.log(payload);
     this.leaveService.addLeaveApplication(payload).subscribe({
       next: (res: any) => {
         if (res.data) {
@@ -966,7 +944,6 @@ export class AddApplicationComponent implements OnDestroy {
     const files: FileList = event.target.files;
     if (files) {
       this.selectedFiles = Array.from(files);
-      // Update the form control value to trigger validation
       this.leaveApplication.get('leaveApplicationAttachments')?.setValue(this.selectedFiles.length > 0 ? 'files_selected' : '');
       this.leaveApplication.get('leaveApplicationAttachments')?.updateValueAndValidity();
     }
@@ -975,7 +952,6 @@ export class AddApplicationComponent implements OnDestroy {
   removeFile(index: number) {
     if (index !== -1) {
       this.selectedFiles.splice(index, 1);
-      // Update the form control value to trigger validation
       this.leaveApplication.get('leaveApplicationAttachments')?.setValue(this.selectedFiles.length > 0 ? 'files_selected' : '');
       this.leaveApplication.get('leaveApplicationAttachments')?.updateValueAndValidity();
     }
@@ -994,7 +970,7 @@ export class AddApplicationComponent implements OnDestroy {
         if (res.status == "success") {
           this.appliedLeave = res.data;
           this.numberOfLeaveAppliedForSelectedCategory = this.appliedLeave.filter((leave: any) => leave.leaveCategory == category && new Date(leave.addedBy).getFullYear() === currentYear).length;
-          this.validateMaxLeaveLimit(); // Validate after getting leave count
+          this.validateMaxLeaveLimit();
         }
       },
       error: () => {

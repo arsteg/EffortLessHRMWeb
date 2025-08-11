@@ -2,7 +2,8 @@
     <div class="border rounded p-3">
         <form class="d-flex flex-row flex-wrap gap-2" [formGroup]="formGroup" (ngSubmit)="onSubmission()">
             <div>
-                <mat-form-field>
+                <mat-form-field 
+                    [class.mb-3]="formGroup.get('cityType').errors?.['required'] && formGroup.get('cityType').touched">
                     <mat-label>City Type</mat-label>
                     <mat-select formControlName="cityType">
                         <mat-option value="" disabled>Select City Type</mat-option>
@@ -16,7 +17,9 @@
             </div>
 
             <div>
-                <mat-form-field>
+                <mat-form-field 
+                    [class.mb-3]="formGroup.get('rentDeclared').errors?.['required'] && formGroup.get('rentDeclared').touched"
+                    [class.mb-4]="formGroup.get('rentDeclared').errors?.['exceedLimit'] && formGroup.get('rentDeclared').touched">
                     <mat-label>Per Month Rent </mat-label>
                     <input type="number" matInput formControlName="rentDeclared">
                     <mat-error *ngIf="formGroup.get('rentDeclared')?.touched && formGroup.get('rentDeclared')?.errors">
@@ -56,7 +59,8 @@
             </div>
 
             <div>
-                <mat-form-field>
+                <mat-form-field
+                    [class.mb-5]="formGroup.get('landlordAddress').errors?.['required'] && formGroup.get('landlordAddress').touched">
                     <mat-label>Landlord Address</mat-label>
                     <input type="text" matInput formControlName="landlordAddress">
                     <mat-error *ngIf="formGroup.get('landlordAddress')?.touched && formGroup.get('landlordAddress')?.hasError('required')">
@@ -90,7 +94,8 @@
                 </tr>
             </thead>
             <tbody formArrayName="employeeIncomeTaxDeclarationHRA">
-                <tr *ngFor="let group of employeeIncomeTaxDeclarationHRA.controls; let i = index" [formGroupName]="i">
+                <tr *ngFor="let group of employeeIncomeTaxDeclarationHRA.controls; let i = index" [formGroupName]="i" 
+                    [ngClass]="'error-' + getFirstInvalidControlName(group)">
                     <td class="align-top">
                         <div class="month pt-2">
                             {{ monthsArray[i] }}

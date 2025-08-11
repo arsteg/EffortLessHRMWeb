@@ -43,6 +43,7 @@ export class CreateReportComponent {
   @Output() expenseReportExpensesEmitter = new EventEmitter<any>();
   private readonly destroyRef = inject(DestroyRef);
   expenseData: any;
+  isSubmitting: boolean = false;
 
   constructor(public expenseService: ExpensesService,
     private fb: FormBuilder,
@@ -71,6 +72,7 @@ export class CreateReportComponent {
   }
 
   ngOnInit() {
+    this.isSubmitting = false;
     this.initChanges();
     this.isEdit = this.data ? this.data.isEdit : false;
     const user = this.expenseService.tabIndex.getValue() === 1 ? this.user.id : this.expenseService.selectedUser.getValue();
@@ -89,10 +91,12 @@ export class CreateReportComponent {
     });
   }
 
+  documentName : any;
   loadExpenseReportData() {
     const expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
     expenseFieldsArray.clear();
     this.expenseService.expenseReportExpense.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
+      this.documentName = res.documentName;
       this.expenseReportform.patchValue({
         expenseCategory: res?.expenseCategory,
         incurredDate: res?.incurredDate,
@@ -103,7 +107,7 @@ export class CreateReportComponent {
         expenseReport: res._id,
         quantity: res.quantity,
         type: res.type,
-        expenseAttachments: res.documentLink,
+        expenseAttachments: res.documentLink || this.selectedFiles,
         expenseTemplateCategoryFieldValues: res?.expenseTemplateCategoryFieldValues,
         expenseReportExpenseFields: res.expenseReportExpenseFields
       });
@@ -113,6 +117,7 @@ export class CreateReportComponent {
   }
 
   onSubmission() {
+    this.isSubmitting = true;
     const payload = this.createPayload();
     if (this.selectedFiles.length > 0) {
       this.processAttachments(payload);
@@ -150,6 +155,7 @@ export class CreateReportComponent {
   }
 
   submitExpenseReport(payload) {
+    this.isSubmitting = true;
     if (this.isEdit) {
       this.updateExpenseReport(payload);
     } else {
@@ -176,6 +182,7 @@ export class CreateReportComponent {
   }
 
   addExpenseReport(payload) {
+    this.isSubmitting = true;
     const report = this.expenseService.selectedReport.getValue();
     payload.expenseTemplateCategoryFieldValues = this.expenseService.expenseTemplateCategoryFieldValues.getValue();
     payload.expenseReport = report._id;
@@ -233,6 +240,16 @@ export class CreateReportComponent {
     if (index !== -1) {
       this.selectedFiles.splice(index, 1);
     }
+  }
+
+  openAttachment() {
+  const fileUrl = this.expenseReportform.get('expenseAttachments').value;
+  if (fileUrl && typeof fileUrl === 'string') {
+    window.open(fileUrl, '_blank');
+  }
+}
+  removeExistingAttachment() {
+    this.expenseReportform.get('expenseAttachments').setValue(null);
   }
 
   closeModal() {

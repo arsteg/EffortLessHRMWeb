@@ -125,7 +125,7 @@
                                 Run Date cannot be a future date.
                             </span>
                             <span *ngIf="attendanceProcessForm.get('runDate')?.errors?.['outOfRange']">
-                                Run Date must be within the selected attendance period.
+                                Run Date must be within the selected attendance period means first five days or last 5 days for seleced month.
                             </span>
                         </mat-error>
                     </mat-form-field>
@@ -280,7 +280,7 @@
                                 Run Date cannot be a future date.
                             </span>
                             <span *ngIf="fnfAttendanceProcessForm.get('runDate')?.errors?.['outOfRange']">
-                                Run Date must be within the selected attendance period.
+                                Run Date must be within the first or last five days of the selected attendance period.
                             </span>
                         </mat-error>
                     </mat-form-field>

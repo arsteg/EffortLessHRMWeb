@@ -174,18 +174,32 @@ export class CustomValidators {
       return days && days.length > 0 ? null : { atLeastOneDayRequired: true };
     };
   }
-  static  minHoursValidator() : ValidatorFn {
-      return (control: AbstractControl): ValidationErrors | null => {
-        if (!control.value) {
-          return null; // If the field is empty, the 'required' validator will handle it
-        }
-        const [hours, minutes] = control.value.split(':').map(Number);
-        if (hours < 1 || hours > 8 || (hours === 8 && minutes > 0)) {
-          return { invalidTime: true };
-        }
-        return null;
-      };
-    }
+  static minHoursFullDayValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (value === null || value === '' || isNaN(value)) {
+        return null; // Let Validators.required handle empty values
+      }
+      const hours = Number(value);
+      if (hours < 6 || hours > 8) {
+        return { invalidTime: true }; // Set invalidTime error
+      }
+      return null;
+    };
+  }
+  static minHoursHalfDayValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (value === null || value === '' || isNaN(value)) {
+        return null; // Let Validators.required handle empty values
+      }
+      const hours = Number(value);
+      if (hours < 0 || hours > 6) {        
+        return { invalidTime: true }; // Set invalidTime error
+      }
+      return null;
+    };
+  }
     static exitInterviewAfterResignationValidator(): ValidatorFn {
       return  (group: AbstractControl): ValidationErrors | null => {
       const resignationDate = group.get('resignation_date')?.value;

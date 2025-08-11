@@ -24,6 +24,7 @@ export class HrmTableComponent {
   @Input() showSearch = false; // global table search
   @Input() showUserfilter = false;
   @Input() userFilterOptions = [];
+  @Input() mdColumns: number = 5;
 
   @Output() actionClicked = new EventEmitter();
   @Output() selectionChanged = new EventEmitter<any[]>(); // for checkbox row selection
@@ -153,28 +154,34 @@ export class HrmTableComponent {
 
   exportToExcel() {
     const data = this.filteredData.map(item => {
+      const row = {};
       this.columns.forEach((col) => {
-        if (col.valueFn) {
-          item[col.key] = col.valueFn(item);
-        } else {
-          item[col.key] = this.getValueByPath(item, col.key)
+        if (col.key != 'actions') {
+          if (col.valueFn) {
+            row[col.name] = col.valueFn(item);
+          } else {
+            row[col.name] = this.getValueByPath(item, col.key)
+          }
         }
       });
-      return item
+      return row
     })
     this.exportService.exportToExcel(this.pageTitle, this.pageTitle, data);
   }
 
   exportToCsv() {
     const data = this.filteredData.map(item => {
+      const row = {};
       this.columns.forEach((col) => {
-        if (col.valueFn) {
-          item[col.key] = col.valueFn(item);
-        } else {
-          item[col.key] = this.getValueByPath(item, col.key)
+        if (col.key != 'actions') {
+          if (col.valueFn) {
+            row[col.name] = col.valueFn(item);
+          } else {
+            row[col.name] = this.getValueByPath(item, col.key)
+          }
         }
       });
-      return item
+      return row
     })
     this.exportService.exportToCSV(this.pageTitle, this.pageTitle, data);
   }

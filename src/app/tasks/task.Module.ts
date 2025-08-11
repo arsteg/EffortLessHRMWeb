@@ -10,6 +10,7 @@ import { SubtaskComponent } from "./subtask/subtask.component";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { QuillModule } from "ngx-quill";
+import { CommonComponentsModule } from 'src/app/common/commonComponents.module';
 @NgModule({
   declarations: [TasksComponent, TagComponent, TaskCommentComponent, TaskCommentListComponent, ConfirmationDialogComponent, EditTaskComponent, SubtaskComponent],
   exports: [TasksComponent, TagComponent, TaskCommentComponent, TaskCommentListComponent, SubtaskComponent],
@@ -17,6 +18,7 @@ import { QuillModule } from "ngx-quill";
     SharedModule,
     NgbModule, 
     BsDropdownModule,
+    CommonComponentsModule,    
     QuillModule.forRoot()
   ],
   schemas: [

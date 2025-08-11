@@ -64,9 +64,7 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
     this.initializeFilterPredicate();
   }
 
-  ngOnInit(): void {
-    this.getLeaveTemplates();
-  }
+  ngOnInit(): void { }
 
   ngAfterViewInit() {
     this.tableService.dataSource.paginator = this.paginator;
@@ -96,16 +94,6 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
 
   setFormValues(templateData: any) {
     this.leaveService.selectedTemplate.next(templateData);
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
   }
 
   onChangeStep(event: number) {
@@ -204,8 +192,7 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
       this.open(addModal);
     }
     if (event.action.label === 'Delete') {
-      console.log(event.row?.leaveTemplateAssignmentCount)
-      if (event.row?.leaveTemplateAssignmentCount < 0) {
+      if (event?.row?.leaveTemplateAssignmentCount <= 0) {
         this.deleteDialog(event.row._id);
       }
       else {
@@ -215,8 +202,8 @@ export class LeaveTemplateComponent implements OnInit, AfterViewInit {
   }
 
   onPageChange(event: any) {
-    this.paginator.pageIndex = event.pageIndex;
-    this.paginator.pageSize = event.pageSize;
+    this.tableService.currentPage = event.pageIndex + 1;
+    this.tableService.recordsPerPage = event.pageSize
     this.getLeaveTemplates();
   }
 

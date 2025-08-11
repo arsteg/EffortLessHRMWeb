@@ -32,15 +32,20 @@ export class ShowStatusComponent {
   dialogRef: MatDialogRef<any> | null = null;
 
   columns: TableColumn[] = [
-    { key: 'employeeName', name: this.translate.instant('leave.leaveGrant.employeeColName'),
+    {
+      key: 'employeeName', name: this.translate.instant('leave.leaveGrant.employeeColName'),
       valueFn: (row: any) => `${row?.employee?.firstName} ${row?.employee?.lastName}`
     },
-    { key: 'appliedOn', name: this.translate.instant('leave.leaveGrant.appliedOnColName'),
-      valueFn: (row: any) => new Date(row.appliedOn).toLocaleDateString() },
-    { key: 'date', name: this.translate.instant('leave.leaveGrant.appliedForColName'),
+    {
+      key: 'appliedOn', name: this.translate.instant('leave.leaveGrant.appliedOnColName'),
+      valueFn: (row: any) => new Date(row.appliedOn).toLocaleDateString()
+    },
+    {
+      key: 'date', name: this.translate.instant('leave.leaveGrant.appliedForColName'),
       valueFn: (row: any) => new Date(row.date).toLocaleDateString()
     },
-    { key: 'usedOn', name: this.translate.instant('leave.leaveGrant.usedOnColName'),
+    {
+      key: 'usedOn', name: this.translate.instant('leave.leaveGrant.usedOnColName'),
       valueFn: (row: any) => new Date(row.usedOn).toLocaleDateString()
     },
     { key: 'comment', name: this.translate.instant('leave.leaveGrant.commentColName') },
@@ -50,26 +55,30 @@ export class ShowStatusComponent {
       name: this.translate.instant('leave.leaveGrant.actionColName'),
       isAction: true,
       options: [
-        { label: 'Approve', 
-          icon: 'check_circle', 
+        {
+          label: 'Approve',
+          icon: 'check_circle',
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.approve || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 7))
+          hideCondition: (row: any) => !this.actionOptions.approve || (this.portalView === 'user' && (this.portalView === 'user' && this.tab != 7))
         },
-        { label: 'Reject', 
-          icon: 'person_remove', 
+        {
+          label: 'Reject',
+          icon: 'person_remove',
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.reject ||  ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 7))
+          hideCondition: (row: any) => !this.actionOptions.reject || (this.portalView === 'user' && (this.portalView === 'user' && this.tab != 7))
         },
-        { label: 'Delete', 
-          icon: 'delete', 
+        {
+          label: 'Delete',
+          icon: 'delete',
           visibility: ActionVisibility.LABEL,
           hideCondition: (row: any) => !this.actionOptions.delete
         },
-        { label: 'View', 
-          icon: 'visibility', 
+        {
+          label: 'View',
+          icon: 'visibility',
           visibility: ActionVisibility.LABEL,
-        hideCondition: (row: any) => !this.actionOptions.view
-       }
+          hideCondition: (row: any) => !this.actionOptions.view
+        }
       ]
     }
   ];
@@ -107,21 +116,26 @@ export class ShowStatusComponent {
         }
       });
     }
-    if (this.portalView === 'user') {
-      if (this.tab === 3) {
-        this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
-          this.leaveGrant = res.data.filter(leave => leave.status === this.status);
-        });
-      } else if (parseInt(storedTabValue) === 7) {
-        this.leaveService.getLeaveGrantByTeam(requestBody).subscribe((res: any) => {
-          this.leaveGrant = res.data.filter(leave => leave.status === this.status);
-          if (res.status == 'success') {
-            this.totalRecords = res.total;
-            this.leaveGrant = res.data;
-            this.allData = res.data;
-          }
-        });
-      }
+    if (this.portalView === 'user' && parseInt(storedTabValue) === 3) {
+      this.leaveService.getLeaveGrantByUser(this.currentUser?.id, requestBody).subscribe((res: any) => {
+        this.leaveGrant = res.data.filter(leave => leave.status === this.status);
+        if (res.status == 'success') {
+          this.totalRecords = res.total;
+          this.leaveGrant = res.data;
+          this.allData = res.data;
+        }
+      });
+    }
+    else if (this.portalView === 'user' && parseInt(storedTabValue) === 7) {
+      this.leaveService.getLeaveGrantByTeam(requestBody).subscribe((res: any) => {
+        this.leaveGrant = res.data.filter(leave => leave.status === this.status);
+        if (res.status == 'success') {
+          this.totalRecords = res.total;
+          this.leaveGrant = res.data;
+          this.allData = res.data;
+        }
+      });
+
     }
   }
 
@@ -149,6 +163,8 @@ export class ShowStatusComponent {
       "next": this.recordsPerPage.toString(),
       "status": this.status
     };
+    const storedTabValue = localStorage.getItem('selectedTab');
+
     if (this.portalView === 'admin') {
       this.leaveService.getLeaveGrant(requestBody).subscribe(
         (res) => {
@@ -163,11 +179,11 @@ export class ShowStatusComponent {
       );
     }
     if (this.portalView === 'user') {
-      if (this.tab === 4) {
-        this.leaveService.getLeaveGrantByUser(this.currentUser?.id).subscribe((res: any) => {
+      if (parseInt(storedTabValue) === 3) {
+        this.leaveService.getLeaveGrantByUser(this.currentUser?.id, requestBody).subscribe((res: any) => {
           this.leaveGrant = res.data.filter(leave => leave.status === this.status);
         });
-      } else if (this.tab === 7) {
+      } else if (parseInt(storedTabValue) === 7) {
         this.leaveService.getLeaveGrantByTeam(requestBody).subscribe((res: any) => {
           if (res.status == 'success') {
             this.totalRecords = res.total;
@@ -195,7 +211,7 @@ export class ShowStatusComponent {
       width: '50%',
       data: { report: selectedReport }
     });
-    dialogRef.afterClosed().subscribe(result => {});
+    dialogRef.afterClosed().subscribe(result => { });
   }
 
   getUser(employeeId: string) {
@@ -255,11 +271,11 @@ export class ShowStatusComponent {
     this.getLeaveGrant();
   }
 
- onSortChange(event: any) {
+  onSortChange(event: any) {
     const sorted = this.allData.slice().sort((a: any, b: any) => {
       var valueA = '';
       var valueB = '';
-      
+
       if (event.active === 'employee' || event.active === 'employeeName') {
         valueA = `${a.employee.firstName || ''} ${a.employee.lastName || ''}`.toLowerCase();
         valueB = `${b.employee.firstName || ''} ${b.employee.lastName || ''}`.toLowerCase();

@@ -20,7 +20,7 @@ export class GeneralTemplateSettingsComponent {
   weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   checkedFormats: any = [''];
   addTemplateForm: FormGroup;
-  users: any = [];
+  managers: any = [];
   selectedCategories: any = [];
   leaveCategories: any[];
   selectedCategory: string[] = ['loss-of-pay', 'present'];
@@ -60,9 +60,7 @@ export class GeneralTemplateSettingsComponent {
       isCommentMandatoryForRegularisation: [true],
       departmentDesignations: ['Software Developer', Validators.required],
       approversType: ['template-wise', Validators.required],
-      approvalLevel: ['1', Validators.required],
       primaryApprover: [null],
-      secondaryApprover: [null],
       leveCategoryHierarchyForAbsentHalfDay: [[''], Validators.required]
     }, { validators: CustomValidators.mutuallyExclusiveDays() });
   }
@@ -70,7 +68,7 @@ export class GeneralTemplateSettingsComponent {
   ngOnInit() {
     console.log(this.templates);
     this.getModes();
-    this.getAllUsers();
+    this.getAllManagers();
     this.getLeaveCatgeories();
     if (this.isEdit) {
       this.attendanceService.selectedTemplate.subscribe(res => {
@@ -93,15 +91,6 @@ export class GeneralTemplateSettingsComponent {
       this.addTemplateForm.updateValueAndValidity();
       console.log('Alternate Week Off Routine Changed:', value, 'Form Errors:', this.addTemplateForm.errors);
     });
-
-    this.addTemplateForm.get('approversType')?.valueChanges.subscribe(value => {
-      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel')?.value);
-    });
-
-    this.addTemplateForm.get('approvalLevel')?.valueChanges.subscribe(value => {
-      this.validateApprovers(this.addTemplateForm.get('approversType')?.value, value);
-    });
-
     // Debug form value changes
     this.addTemplateForm.valueChanges.subscribe(() => {
       console.log('Form Values:', this.addTemplateForm.value);
@@ -111,24 +100,16 @@ export class GeneralTemplateSettingsComponent {
 
   validateApprovers(approversType: string, approverLevel: string) {
     const primaryApproverControl = this.addTemplateForm.get('primaryApprover');
-    const secondaryApproverControl = this.addTemplateForm.get('secondaryApprover');
 
     primaryApproverControl?.clearValidators();
-    secondaryApproverControl?.clearValidators();
     primaryApproverControl?.setValue(null);
-    secondaryApproverControl?.setValue(null);
 
     if (approversType === 'template-wise') {
-      if (approverLevel === '1') {
+    
         primaryApproverControl?.setValidators([Validators.required]);
-      } else if (approverLevel === '2') {
-        primaryApproverControl?.setValidators([Validators.required]);
-        secondaryApproverControl?.setValidators([Validators.required]);
-      }
     }
 
     primaryApproverControl?.updateValueAndValidity();
-    secondaryApproverControl?.updateValueAndValidity();
   }
 
   setFormValues() {
@@ -149,9 +130,7 @@ export class GeneralTemplateSettingsComponent {
           isCommentMandatoryForRegularisation: templateData?.isCommentMandatoryForRegularisation,
           departmentDesignations: templateData?.departmentDesignations,
           approversType: templateData?.approversType || 'template-wise',
-          approvalLevel: templateData?.approvalLevel || '1',
           primaryApprover: templateData?.primaryApprover,
-          secondaryApprover: templateData?.secondaryApprover,
           leveCategoryHierarchyForAbsentHalfDay: templateData?.leveCategoryHierarchyForAbsentHalfDay || ['loss-of-pay', 'present']
         });
         this.selectedWeeklyDays = templateData?.weeklyOfDays || [];
@@ -176,11 +155,8 @@ export class GeneralTemplateSettingsComponent {
         alternateWeekOffRoutine: 'none',
         daysForAlternateWeekOffRoutine: [],
         isNotificationToSupervisors: true,
-        isCommentMandatoryForRegularisation: true,
-         approversType: '',
-        approvalLevel: '',
+        approversType: '',
         primaryApprover: null,
-        secondaryApprover: null,
       });
       this.selectedWeeklyDays = [];
       this.selectedHalfDays = [];
@@ -270,14 +246,14 @@ export class GeneralTemplateSettingsComponent {
     this.addTemplateForm.updateValueAndValidity();
    }
 
-  getAllUsers() {
-    this.users = [];
+  getAllManagers() {
+    this.managers = [];
     this.timelog.getManagers().subscribe({
       next: response => {
         this.timelog.getusers(response.data).subscribe({
           next: result => {
             result.data.forEach(user => {
-              this.users.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
+              this.managers.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
             });
           },
           error: error => {

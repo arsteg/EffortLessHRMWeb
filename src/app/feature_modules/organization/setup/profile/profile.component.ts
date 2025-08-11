@@ -159,6 +159,7 @@ export class ProfileComponent implements OnInit {
     this.logoPayload = null;
     this.dialogRef = this.dialog.open(this.uploadLogoDialog, {
       width: '400px',
+      disableClose: true,
       data: { company }
     });
 
@@ -199,7 +200,7 @@ export class ProfileComponent implements OnInit {
       }
     } else {
       this.selectedFile = null;
-      this.imagePreview = null;
+      // this.imagePreview = null;
       this.logoPayload = null;
       this.fileError = 'no_file_selected';
     }

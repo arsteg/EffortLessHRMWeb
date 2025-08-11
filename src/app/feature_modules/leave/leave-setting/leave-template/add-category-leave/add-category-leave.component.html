@@ -1,211 +1,216 @@
-  <h1 mat-dialog-title>{{ 'leave.templateCategories.title' | translate }} {{ selectedTemplate?.label }}</h1>
-  <div mat-dialog-content style="overflow-x: hidden; max-width: 100%;">
-    @if (!loader) {
-      <mat-vertical-stepper #stepper [formGroup]="firstForm" [linear]="true">
-        <ng-container formArrayName="leaveCategories">
-          <ng-container *ngFor="let categoryCtrl of firstForm?.get('leaveCategories')?.['controls']; let i = index">
-            <mat-step [stepControl]="categoryCtrl">
-              <form [formGroup]="categoryCtrl">
-                <ng-template matStepLabel>{{ getCategoryLabel(categoryCtrl.value.leaveCategory) }}
-                  <span [matTooltip]="getCategoryLabel(categoryCtrl.value.leaveCategory)" matTooltipPosition="below"></span>
-                </ng-template>
+<h1 mat-dialog-title>{{ 'leave.templateCategories.title' | translate }} {{ selectedTemplate?.label }}</h1>
+<div mat-dialog-content style="overflow-x: hidden; max-width: 100%;">
+  <mat-vertical-stepper #stepper [formGroup]="firstForm" [linear]="true">
+    <ng-container formArrayName="leaveCategories">
+      <ng-container *ngFor="let categoryCtrl of firstForm?.get('leaveCategories')?.['controls']; let i = index">
+        <mat-step [stepControl]="categoryCtrl">
+          <form [formGroup]="categoryCtrl">
+            <ng-template matStepLabel>{{ getCategoryLabel(categoryCtrl.value.leaveCategory) }}
+              <span [matTooltip]="getCategoryLabel(categoryCtrl.value.leaveCategory)" matTooltipPosition="below"></span>
+            </ng-template>
 
-                <div class="row m-0">
-                  <div class="form-group col-md-12 my-2">
-                    <div class="d-flex align-items-center">
-                      <mat-label class="w-50">{{ 'leave.templateCategories.limitApplyQuestion' | translate }}</mat-label>
-                      <div class="ms-auto d-flex align-items-center">
-                        <mat-slide-toggle formControlName="limitNumberOfTimesApply"></mat-slide-toggle>
-                        <mat-form-field class="ms-4 w-100">
-                          <mat-label>{{ 'leave.templateCategories.numberOfDaysPlaceholder' | translate }}</mat-label>
-                          <input type="number" matInput formControlName="maximumNumbersEmployeeCanApply"
-                                 [attr.disabled]="!categoryCtrl.get('limitNumberOfTimesApply').value ? true : null">
-                          @if (categoryCtrl.get('maximumNumbersEmployeeCanApply').invalid &&
-                               categoryCtrl.get('maximumNumbersEmployeeCanApply').touched) {
-                            <mat-error>{{ 'leave.templateCategories.errorMaxApply' | translate }}</mat-error>
-                          }
-                        </mat-form-field>
-                      </div>
-                    </div>
+            <div class="row m-0">
+              <div class="form-group col-md-12 my-2">
+                <div class="d-flex align-items-center">
+                  <mat-label class="w-50">{{ 'leave.templateCategories.limitApplyQuestion' | translate }}</mat-label>
+                  <div class="ms-auto d-flex align-items-center">
+                    <mat-slide-toggle formControlName="limitNumberOfTimesApply"></mat-slide-toggle>
+                    <mat-form-field class="ms-4 w-100">
+                      <mat-label>{{ 'leave.templateCategories.numberOfDaysPlaceholder' | translate }}</mat-label>
+                      <input type="number" matInput formControlName="maximumNumbersEmployeeCanApply"
+                        [attr.disabled]="!categoryCtrl.get('limitNumberOfTimesApply').value ? true : null" min="0">
+                      @if (categoryCtrl.get('maximumNumbersEmployeeCanApply').invalid &&
+                      categoryCtrl.get('maximumNumbersEmployeeCanApply').touched) {
+                      <mat-error>{{ 'leave.templateCategories.errorMaxApply' | translate }}</mat-error>
+                      }
+                    </mat-form-field>
                   </div>
                 </div>
-
-                <div class="row m-0">
-                  <div class="form-group col-md-12 my-2">
-                    <div class="d-flex align-items-center">
-                      <mat-label class="w-50">{{ 'leave.templateCategories.newlyJoinedQuestion' | translate }}</mat-label>
-
-                      <mat-form-field class="ms-auto w-100" appearance="outline">
-                        <mat-label>{{ 'leave.templateCategories.newlyJoinedQuestion' | translate }}</mat-label>
-                        <mat-select formControlName="dealWithNewlyJoinedEmployee" required>
-                          <mat-option value="eligibleImmediately">{{ 'leave.templateCategories.eligibleImmediately' | translate }}</mat-option>
-                          <mat-option value="eligibleAfterConfirmation">{{ 'leave.templateCategories.eligibleAfterConfirmation' | translate }}</mat-option>
-                        </mat-select>
-                        @if (categoryCtrl.get('dealWithNewlyJoinedEmployee').invalid &&
-                             categoryCtrl.get('dealWithNewlyJoinedEmployee').touched) {
-                          <mat-error>{{ 'leave.templateCategories.errorNewlyJoined' | translate }}</mat-error>
-                        }
-                      </mat-form-field>
-                    </div>
-                  </div>
-                </div>
-
-                
-
-                @if (categoryCtrl.get('dealWithNewlyJoinedEmployee').value === 'eligibleAfterConfirmation') {
-
-                  <div class="row m-0">
-                    <div class="form-group col-md-12 my-2">
-                      <div class="d-flex align-items-center">
-                        <mat-label class="w-50">{{ 'leave.templateCategories.creditEntireAmountQuestion' | translate }}</mat-label>
-                        <div class="ms-auto">
-                          <mat-slide-toggle formControlName="isEmployeeGetCreditedTheEntireAmount"></mat-slide-toggle>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                }
- 
-                <div class="row m-0">
-                  <div class="form-group col-md-12 my-2">
-                    <div class="d-flex align-items-center">
-                      <mat-label class="w-50">{{ 'leave.templateCategories.accrualRateQuestion' | translate }}</mat-label>
-                      <mat-form-field class="ms-auto w-100">
-                        <mat-label>{{ 'leave.templateCategories.accrualRateQuestion' | translate }}</mat-label>
-                        <input type="number" matInput formControlName="accrualRatePerPeriod" min="1">
-                        @if (categoryCtrl.get('accrualRatePerPeriod').invalid &&
-                             categoryCtrl.get('accrualRatePerPeriod').touched) {
-                          <mat-error>{{ 'leave.templateCategories.errorAccrualRequired' | translate }}</mat-error>
-                        }
-                        @if (categoryCtrl.get('accrualRatePerPeriod').hasError('min') &&
-                             categoryCtrl.get('accrualRatePerPeriod').touched) {
-                          <mat-error>{{ 'leave.templateCategories.errorAccrualMin' | translate }}</mat-error>
-                        }
-                      </mat-form-field>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row m-0">
-                  <div class="form-group col-md-12 my-2">
-                    <div class="d-flex align-items-center">
-                      <mat-label class="w-50">{{ 'leave.templateCategories.applicableToQuestion' | translate }}</mat-label>
-                      <div class="ms-auto">
-                        <mat-radio-group formControlName="categoryApplicable" class="d-flex">
-                          <mat-radio-button color="primary" value="all-employees" class="me-4">
-                            {{ 'leave.templateCategories.allEmployees' | translate }}
-                          </mat-radio-button>
-                          <mat-radio-button color="primary" value="specific-employees">
-                            {{ 'leave.templateCategories.specificEmployees' | translate }}
-                          </mat-radio-button>
-                        </mat-radio-group>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                @if (categoryCtrl.get('categoryApplicable').value === 'specific-employees') {
-                  <div class="row m-0">
-                    <div class="form-group col-md-12 my-2">
-                      <div class="d-flex align-items-center">
-                        <mat-label class="w-50">{{ 'leave.templateCategories.selectEmployee' | translate }}</mat-label>
-                        <mat-form-field class="ms-auto w-100" appearance="outline">
-                          <mat-label>{{ 'leave.templateCategories.selectEmployee' | translate }}</mat-label>
-                          <mat-select multiple formControlName="users">
-                            <mat-option *ngFor="let member of members" [value]="member.id">
-                              {{ member?.firstName | titlecase }} {{ member?.lastName }}
-                            </mat-option>
-                          </mat-select>
-                        </mat-form-field>
-                      </div>
-                    </div>
-                  </div>
-                }
-
-                <div class="row m-0">
-                  <div class="col-12 mt-3">
-                    @if (i > 0) {
-                      <button mat-button matStepperPrevious color="primary">{{ 'leave.templateCategories.back' | translate }}</button>
-                    }
-                    <button mat-stroked-button matStepperNext color="accent">{{ 'leave.templateCategories.next' | translate }}</button>
-                  </div>
-                </div>
-              </form>
-            </mat-step>
-          </ng-container>
-        </ng-container>
-        <mat-step>
-          <ng-template matStepLabel>{{ 'leave.templateCategories.review' | translate }}</ng-template>
-          @for (categoryCtrl of firstForm?.get('leaveCategories')?.['controls']; track categoryCtrl; let i = $index) {
-            <mat-card class="mb-2">
-              <mat-card-title>{{ getCategoryLabel(categoryCtrl.value.leaveCategory) }}</mat-card-title>
-              <mat-card-content>
-                @if (categoryCtrl.get('limitNumberOfTimesApply').value) {
-                  <div class="d-flex justify-content-between py-1">
-                    <span>{{ 'leave.templateCategories.limitApplyQuestion' | translate }}</span>
-                    <b>{{ categoryCtrl.value.maximumNumbersEmployeeCanApply }}</b>
-                  </div>
-                }
-                <div class="d-flex justify-content-between py-1">
-                  <span>{{ 'leave.templateCategories.newlyJoinedQuestion' | translate }}</span>
-                  <b>
-                    @if (categoryCtrl.value.dealWithNewlyJoinedEmployee === '1') {
-                      {{ 'leave.templateCategories.eligibleImmediately' | translate }}
-                    } @else if (categoryCtrl.value.dealWithNewlyJoinedEmployee === '2') {
-                      {{ 'leave.templateCategories.eligibleAfterTenure' | translate }}
-                    } @else {
-                      {{ 'leave.templateCategories.eligibleAfterConfirmation' | translate }}
-                    }
-                  </b>
-                </div>
-                @if (categoryCtrl.value.dealWithNewlyJoinedEmployee === '2') {
-                  <div class="d-flex justify-content-between py-1">
-                    <span>{{ 'leave.templateCategories.daysToBecomeEligible' | translate }}</span>
-                    <b>{{ categoryCtrl.value.daysToCompleteToBecomeEligibleForLeave }}</b>
-                  </div>
-                }
-                @if (categoryCtrl.value.dealWithNewlyJoinedEmployee === '2' ||
-                     categoryCtrl.value.dealWithNewlyJoinedEmployee === '3') {
-                  <div class="d-flex justify-content-between py-1">
-                    <span>{{ 'leave.templateCategories.creditEntireAmountQuestion' | translate }}</span>
-                    <b>{{ categoryCtrl.value.isEmployeeGetCreditedTheEntireAmount ? ('leave.templateCategories.yes' | translate) : ('leave.templateCategories.no' | translate) }}</b>
-                  </div>
-                }
-                <div class="d-flex justify-content-between py-1">
-                  <span>{{ 'leave.templateCategories.accrualRateQuestion' | translate }}</span>
-                  <b>{{ categoryCtrl.value.accrualRatePerPeriod }}</b>
-                </div>
-                <div class="d-flex justify-content-between py-1">
-                  <span>{{ 'leave.templateCategories.applicableToQuestion' | translate }}</span>
-                  <b>{{ categoryCtrl.value.categoryApplicable === 'all-employees' ?
-                        ('leave.templateCategories.allEmployees' | translate) :
-                        ('leave.templateCategories.specificEmployees' | translate) }}</b>
-                </div>
-                @if (categoryCtrl.value.categoryApplicable === 'specific-employees' &&
-                     categoryCtrl.value.users.length) {
-                  <div class="d-flex justify-content-between py-1">
-                    <span>{{ 'leave.templateCategories.selectEmployee' | translate }}</span>
-                    <b>{{ categoryCtrl.value.users.length }} {{ 'leave.templateCategories.selected' | translate }}</b>
-                  </div>
-                }
-              </mat-card-content>
-            </mat-card>
-          }
-          
-          <div class="row m-0">
-            <div class="col-12 mt-3">
-              <button mat-button matStepperPrevious color="primary">{{ 'leave.templateCategories.back' | translate }}</button>
+              </div>
             </div>
-          </div>
-        </mat-step>
-      </mat-vertical-stepper>
-    } @else {
-      <h2>{{ 'leave.templateCategories.loading' | translate }}</h2>
-      <p>{{ 'leave.templateCategories.loadingMessage' | translate }}</p>
-    }
-  </div>
 
-  <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
-    <button mat-flat-button type="button" (click)="closeModal()">{{ 'leave.createTemplate.cancel' | translate }}</button>
-    <button mat-flat-button color="primary" (click)="onSubmit()">{{ 'leave.templateCategories.submit' | translate }}</button>
-  </div>
+            <div class="row m-0">
+              <div class="form-group col-md-12 my-2">
+                <div class="d-flex align-items-center">
+                  <mat-label class="w-50">{{ 'leave.templateCategories.newlyJoinedQuestion' | translate }}</mat-label>
+                  <mat-form-field class="ms-auto w-100" appearance="outline">
+                    <mat-label>{{ 'leave.templateCategories.newlyJoinedQuestion' | translate }}</mat-label>
+                    <mat-select formControlName="dealWithNewlyJoinedEmployee" required>
+                      <mat-option value="eligibleImmediately">{{ 'leave.templateCategories.eligibleImmediately' |
+                        translate }}</mat-option>
+                      <mat-option value="eligibleAfterConfirmation">{{
+                        'leave.templateCategories.eligibleAfterConfirmation' | translate }}</mat-option>
+                    </mat-select>
+                    @if (categoryCtrl.get('dealWithNewlyJoinedEmployee').invalid &&
+                    categoryCtrl.get('dealWithNewlyJoinedEmployee').touched) {
+                    <mat-error>{{ 'leave.templateCategories.errorNewlyJoined' | translate }}</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+            @if (categoryCtrl.get('dealWithNewlyJoinedEmployee').value === 'eligibleAfterConfirmation') {
+            <div class="row m-0">
+              <div class="form-group col-md-12 my-2">
+                <div class="d-flex align-items-center">
+                  <mat-label class="w-50">{{ 'leave.templateCategories.creditEntireAmountQuestion' | translate
+                    }}</mat-label>
+                  <div class="ms-auto">
+                    <mat-slide-toggle formControlName="isEmployeeGetCreditedTheEntireAmount"></mat-slide-toggle>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+            <div class="row m-0">
+              <div class="form-group col-md-12 my-2">
+                <div class="d-flex align-items-center">
+                  <mat-form-field class="ms-auto w-100">
+                    <mat-label>
+                      {{ 'leave.templateCategories.accrualRateQuestion' | translate }}
+                      @if (categoryCtrl.get('leaveAccrualPeriod')?.value) {
+                      ({{ categoryCtrl.get('leaveAccrualPeriod').value }})
+                      } @else {
+                      (Not required)
+                      }
+                    </mat-label>
+                    <input type="number" matInput formControlName="accrualRatePerPeriod" min="0">
+                    @if (categoryCtrl.get('accrualRatePerPeriod').invalid &&
+                    categoryCtrl.get('accrualRatePerPeriod').touched) {
+                    <mat-error>{{ 'leave.templateCategories.errorAccrualRequired' | translate }}</mat-error>
+                    }
+                    @if (categoryCtrl.get('accrualRatePerPeriod').hasError('min') &&
+                    categoryCtrl.get('accrualRatePerPeriod').touched) {
+                    <mat-error>{{ 'leave.templateCategories.errorAccrualMin' | translate }}</mat-error>
+                    }
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row m-0">
+                <div class="form-group col-md-12 my-2">
+                  <div class="d-flex align-items-center">
+                    <mat-label class="w-50">{{ 'leave.templateCategories.applicableToQuestion' | translate
+                      }}</mat-label>
+                    <div class="ms-auto">
+                      <mat-radio-group formControlName="categoryApplicable" class="d-flex">
+                        <mat-radio-button color="primary" value="all-employees" class="me-4">
+                          {{ 'leave.templateCategories.allEmployees' | translate }}
+                        </mat-radio-button>
+                        <mat-radio-button color="primary" value="specific-employees">
+                          {{ 'leave.templateCategories.specificEmployees' | translate }}
+                        </mat-radio-button>
+                      </mat-radio-group>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              @if (categoryCtrl.get('categoryApplicable').value === 'specific-employees') {
+              <div class="row m-0">
+                <div class="form-group col-md-12 my-2">
+                  <div class="d-flex align-items-center">
+                    <mat-label class="w-50">{{ 'leave.templateCategories.selectEmployee' | translate }}</mat-label>
+                    <mat-form-field class="ms-auto w-100" appearance="outline">
+                      <mat-label>{{ 'leave.templateCategories.selectEmployee' | translate }}</mat-label>
+                      <mat-select multiple formControlName="users">
+                        <mat-option *ngFor="let member of members" [value]="member.id">
+                          {{ member?.firstName | titlecase }} {{ member?.lastName }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
+              }
+
+              <div class="row m-0">
+                <div class="col-12 mt-3">
+                  @if (i > 0) {
+                  <button mat-button matStepperPrevious color="primary">{{ 'leave.templateCategories.back' | translate
+                    }}</button>
+                  }
+                  <button mat-stroked-button matStepperNext color="accent">{{ 'leave.templateCategories.next' |
+                    translate }}</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </mat-step>
+      </ng-container>
+    </ng-container>
+    <mat-step>
+      <ng-template matStepLabel>{{ 'leave.templateCategories.review' | translate }}</ng-template>
+      @for (categoryCtrl of firstForm?.get('leaveCategories')?.['controls']; track categoryCtrl; let i = $index) {
+      <mat-card class="mb-2">
+        <mat-card-title>{{ getCategoryLabel(categoryCtrl.value.leaveCategory) }}</mat-card-title>
+        <mat-card-content>
+          @if (categoryCtrl.get('limitNumberOfTimesApply').value) {
+          <div class="d-flex justify-content-between py-1">
+            <span>{{ 'leave.templateCategories.limitApplyQuestion' | translate }}</span>
+            <b>{{ categoryCtrl.value.maximumNumbersEmployeeCanApply }}</b>
+          </div>
+          }
+          <div class="d-flex justify-content-between py-1">
+            <span>{{ 'leave.templateCategories.newlyJoinedQuestion' | translate }}</span>
+            <b>
+              @if (categoryCtrl.value.dealWithNewlyJoinedEmployee === '1') {
+              {{ 'leave.templateCategories.eligibleImmediately' | translate }}
+              } @else if (categoryCtrl.value.dealWithNewlyJoinedEmployee === '2') {
+              {{ 'leave.templateCategories.eligibleAfterTenure' | translate }}
+              } @else {
+              {{ 'leave.templateCategories.eligibleAfterConfirmation' | translate }}
+              }
+            </b>
+          </div>
+          @if (categoryCtrl.value.dealWithNewlyJoinedEmployee === '2') {
+          <div class="d-flex justify-content-between py-1">
+            <span>{{ 'leave.templateCategories.daysToBecomeEligible' | translate }}</span>
+            <b>{{ categoryCtrl.value.daysToCompleteToBecomeEligibleForLeave }}</b>
+          </div>
+          }
+          @if (categoryCtrl.value.dealWithNewlyJoinedEmployee === '2' ||
+          categoryCtrl.value.dealWithNewlyJoinedEmployee === '3') {
+          <div class="d-flex justify-content-between py-1">
+            <span>{{ 'leave.templateCategories.creditEntireAmountQuestion' | translate }}</span>
+            <b>{{ categoryCtrl.value.isEmployeeGetCreditedTheEntireAmount ? ('leave.templateCategories.yes' | translate)
+              : ('leave.templateCategories.no' | translate) }}</b>
+          </div>
+          }
+          <div class="d-flex justify-content-between py-1">
+            <span>{{ 'leave.templateCategories.accrualRateQuestion' | translate }}</span>
+            <b>{{ categoryCtrl.value.accrualRatePerPeriod }}</b>
+          </div>
+          <div class="d-flex justify-content-between py-1">
+            <span>{{ 'leave.templateCategories.applicableToQuestion' | translate }}</span>
+            <b>{{'leave.templateCategories.allEmployees' | translate}}</b>
+            <!-- <b>{{ categoryCtrl.value.categoryApplicable === 'all-employees' ?
+              ('leave.templateCategories.allEmployees' | translate) :
+              ('leave.templateCategories.specificEmployees' | translate) }}</b> -->
+          </div>
+          @if (categoryCtrl.value.categoryApplicable === 'specific-employees' &&
+          categoryCtrl.value.users.length) {
+          <div class="d-flex justify-content-between py-1">
+            <span>{{ 'leave.templateCategories.selectEmployee' | translate }}</span>
+            <b>{{ categoryCtrl.value.users.length }} {{ 'leave.templateCategories.selected' | translate }}</b>
+          </div>
+          }
+        </mat-card-content>
+      </mat-card>
+      }
+
+      <div class="row m-0">
+        <div class="col-12 mt-3">
+          <button mat-button matStepperPrevious color="primary">{{ 'leave.templateCategories.back' | translate
+            }}</button>
+        </div>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+</div>
+
+<div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+  <button mat-flat-button type="button" (click)="closeModal()">{{ 'leave.createTemplate.cancel' | translate }}</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()">{{ 'leave.templateCategories.submit' | translate
+    }}</button>
+</div>

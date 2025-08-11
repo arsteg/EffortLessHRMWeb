@@ -5,7 +5,7 @@
             [active]="rla1.isActive">{{ 'leave.admin.settings' | translate }}</a>
          <a mat-tab-link routerLink="leave-application" routerLinkActive #rla4="routerLinkActive" (click)="selectTab(4)"
             [active]="rla4.isActive">{{ 'leave.admin.leaveApplication' | translate }}</a>
-         <a mat-tab-link routerLink="leave-grant" routerLinkActive #rla2="routerLinkActive" (click)="selectTab(2)"
+         <a mat-tab-link *ngIf="false" routerLink="leave-grant" routerLinkActive #rla2="routerLinkActive" (click)="selectTab(2)"
             [active]="rla2.isActive">{{ 'leave.admin.leaveGrant' | translate }}</a>
          <a mat-tab-link routerLink="leave-balance" routerLinkActive #rla3="routerLinkActive" (click)="selectTab(3)"
             [active]="rla3.isActive">{{ 'leave.admin.leaveBalance' | translate }}</a>
@@ -25,7 +25,7 @@
             [active]="rla6.isActive">{{ 'leave.user.myApplication' | translate }}</a>
          <a mat-tab-link routerLink="my-leave-balance" routerLinkActive #rla7="routerLinkActive" (click)="selectTab(2)"
             [active]="rla7.isActive">{{ 'leave.user.myLeaveBalance' | translate }}</a>
-         <a mat-tab-link routerLink="my-leave-grant" routerLinkActive #rla8="routerLinkActive" (click)="selectTab(3)"
+         <a mat-tab-link *ngIf="false" routerLink="my-leave-grant" routerLinkActive #rla8="routerLinkActive" (click)="selectTab(3)"
             [active]="rla8.isActive">{{ 'leave.user.myLeaveGrant' | translate }}</a>
          <a mat-tab-link *ngIf="false" routerLink="my-short-leave" routerLinkActive #rla9="routerLinkActive"
             (click)="selectTab(4)" [active]="rla9.isActive">{{ 'leave.user.myShortLeave' | translate }}</a>
@@ -33,7 +33,7 @@
             [active]="rla10.isActive">{{ 'leave.user.teamApplication' | translate }}</a>
          <a mat-tab-link routerLink="my-team-balance" routerLinkActive #rla11="routerLinkActive" (click)="selectTab(6)"
             [active]="rla11.isActive">{{ 'leave.user.myTeamBalance' | translate }}</a>
-         <a mat-tab-link routerLink="team-leave-grant" routerLinkActive #rla12="routerLinkActive" (click)="selectTab(7)"
+         <a mat-tab-link *ngIf="false" routerLink="team-leave-grant" routerLinkActive #rla12="routerLinkActive" (click)="selectTab(7)"
             [active]="rla12.isActive">{{ 'leave.user.teamLeaveGrant' | translate }}</a>
          <a mat-tab-link *ngIf="false" routerLink="team-short-leave" routerLinkActive #rla13="routerLinkActive"
             (click)="selectTab(8)" [active]="rla13.isActive">{{ 'leave.user.teamShortLeave' | translate }}</a>
