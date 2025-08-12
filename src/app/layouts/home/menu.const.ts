@@ -23,7 +23,8 @@ export const SideBarAdminMenu = [
   {
     id: '4',
     title: 'Organization',
-    url: 'organization/organization-setup/organization-profile',
+    //url: 'organization/organization-setup/organization-profile',
+    url: 'organization',
     svgIcon: 'organization',
   },
   {
@@ -41,7 +42,8 @@ export const SideBarAdminMenu = [
   {
     id: '7',
     title: 'Attendance',
-    url: 'attendance/settings/attendance-templates',
+    //url: 'attendance/settings/attendance-templates',
+    url: 'attendance',
     svgIcon: 'attendance',
   },
   // {
@@ -53,13 +55,15 @@ export const SideBarAdminMenu = [
   {
     id: '9',
     title: 'Leave',
-    url: 'leave/settings/leave-category',
+    //url: 'leave/settings/leave-category',
+    url: 'leave',
     svgIcon: 'leave',
   },
   {
     id: '10',
     title: 'Expenses',
-    url: 'expense/settings/expense-category',
+    //url: 'expense/settings/expense-category',
+    url: 'expense',
     svgIcon: 'expenses',
   },
   {
@@ -71,13 +75,15 @@ export const SideBarAdminMenu = [
   {
     id: '12',
     title: 'Payroll',
-    url: 'payroll/settings/general-settings',
+    //url: 'payroll/settings/general-settings',
+    url: 'payroll',
     svgIcon: 'payroll',
   },
   {
     id: '13',
     title: 'Taxation',
-    url: 'taxation/sections',
+    //url: 'taxation/sections',
+    url: 'taxation',
     svgIcon: 'taxation',
   },
   {
@@ -171,7 +177,8 @@ export const SideBarUserMenu = [
   {
     id: '5',
     title: 'Organization',
-    url: 'organization/company-policies',
+    //url: 'organization/company-policies',
+    url: 'organization',
     svgIcon: 'organization',
   },
   {
@@ -183,13 +190,15 @@ export const SideBarUserMenu = [
   {
     id: '7',
     title: 'Leave',
-    url: 'leave/my-application',
+    //url: 'leave/my-application',
+    url: 'leave',
     svgIcon: 'leave',
   },
   {
     id: '8',
     title: 'Attendance',
-    url: 'attendance/my-attendance-records',
+    //url: 'attendance/my-attendance-records',
+    url: 'attendance',
     svgIcon: 'attendance',
   },
   // {
@@ -201,19 +210,22 @@ export const SideBarUserMenu = [
   {
     id: '10',
     title: 'Taxation',
-    url: 'taxation/tax-declaration',
+    //url: 'taxation/tax-declaration',
+    url: 'taxation',
     svgIcon: 'taxation',
   },
   {
     id: '11',
     title: 'Expenses',
-    url: 'expense/my-expense',
+    //url: 'expense/my-expense',
+    url: 'expense',
     svgIcon: 'expenses',
   },
   {
     id: '12',
     title: 'PaySlips',
-    url:'payroll/my-payslips',
+    //url:'payroll/my-payslips',
+    url:'payroll',
     svgIcon: 'payslip',
   },
   {
