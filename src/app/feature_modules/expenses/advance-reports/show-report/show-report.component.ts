@@ -157,8 +157,8 @@ export class ShowReportComponent {
 
   exportToCsv() {
     const dataToExport = this.advanceReport.map((advance) => ({
-      employee: advance.employeeName,
-      category: advance.categoryLabel,
+      employee: this.getUser(advance.employee),
+      category: this.getCategory(advance.category),
       amount: advance?.amount,
       status: advance.status,
       comment: advance.comment,

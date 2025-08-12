@@ -318,15 +318,15 @@ export class TimelineComponent implements OnInit {
     return hours + ' hr ' + minutes + ' m';
   }
   exportToExcel() {
-    this.exportService.exportToExcel('TimeSheets', 'timeSheet', this.timeline);
+    this.exportService.exportToExcel('Timeline', 'timeSheet', this.timeline);
   }
   exportToCsv() {
-    this.exportService.exportToCSV('TimeSheets', 'timeSheet', this.timeline);
+    this.exportService.exportToCSV('Timeline', 'timeSheet', this.timeline);
   }
 
   @ViewChild('timeSheet') content!: ElementRef
   exportToPdf() {
-    this.exportService.exportToPdf('TimeSheets', 'TimeSheet Report', this.content.nativeElement)
+    this.exportService.exportToPdf('Timeline', 'TimeSheet Report', this.content.nativeElement)
   }
   hasLogsInHour(hour: number): boolean {
     return this.timeline.some(log => this.isLogInHour(log, this.startTime.getHours() + hour));
