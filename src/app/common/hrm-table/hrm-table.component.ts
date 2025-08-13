@@ -156,7 +156,7 @@ export class HrmTableComponent {
     const data = this.filteredData.map(item => {
       const row = {};
       this.columns.forEach((col) => {
-        if (col.key != 'actions') {
+        if (col.key != 'actions' && col.name != '' && col.key != 'action') {
           if (col.valueFn) {
             row[col.name] = col.valueFn(item);
           } else {
@@ -173,7 +173,7 @@ export class HrmTableComponent {
     const data = this.filteredData.map(item => {
       const row = {};
       this.columns.forEach((col) => {
-        if (col.key != 'actions') {
+        if (col.key != 'actions' && col.name != '' && col.key != 'action') {
           if (col.valueFn) {
             row[col.name] = col.valueFn(item);
           } else {
