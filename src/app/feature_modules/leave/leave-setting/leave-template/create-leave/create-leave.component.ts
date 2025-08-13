@@ -152,14 +152,15 @@ export class CreateLeaveComponent {
     this.addTemplateForm.get('clubbingRestrictions').enable();
     this.addTemplateForm.value.clubbingRestrictions = false;
 
-    const categories = this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }));
+   this.addTemplateForm.value.leaveCategories = this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }));
     if (this.addTemplateForm.value.approvalType === 'employee-wise') {
       this.addTemplateForm.patchValue({
         primaryApprover: null,
         secondaryApprover: null,
-        leaveCategories : categories
+        leaveCategories: this.addTemplateForm.value.leaveCategories
       })
-    
+    }
+
     if (this.addTemplateForm.valid) {
       if (this.changeMode === 'Add') {
         this.leaveService.addLeaveTemplate(this.addTemplateForm.value).subscribe((res: any) => {
@@ -190,7 +191,6 @@ export class CreateLeaveComponent {
       this.addTemplateForm.get('clubbingRestrictions').disable();
       this.toast.warning(this.translate.instant('leave.invalidForm'));
     }
-  }
     this.addTemplateForm.get('clubbingRestrictions').disable();
   }
 
