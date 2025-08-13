@@ -153,7 +153,8 @@
             "back": "Back",
             "reset": "Reset",
             "submit": "Submit",
-            "review": "Review"
+            "review": "Review",
+            "errorMaxApply": "A minimum of one application is required."
         },
         "leaveAssignmentAlreadyExist": "This user already has a leave template assigned.",
         "successTemplateCreated": "Leave template created successfully",
