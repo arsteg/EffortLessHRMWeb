@@ -25,8 +25,11 @@
           <div class="d-flex align-items-center my-2">
             <mat-label class="w-50">{{'expenses.rate_per_day' | translate}}</mat-label>
             <mat-form-field class="ms-auto">
-              <input type="number" matInput formControlName="ratePerDay">
+              <input type="number" min="0" matInput formControlName="ratePerDay">
             </mat-form-field>
+             @if (categoryCtrl.get('ratePerDay').invalid) {
+                <small class="text-danger">{{ 'expenses.negativeValRestrict' | translate }}</small>
+              }
           </div>
           }
 
@@ -36,9 +39,12 @@
               <mat-slide-toggle color="primary" formControlName="isMaximumAmountPerExpenseSet"></mat-slide-toggle>
             </div>
             <mat-form-field class="ms-4">
-              <input type="number" matInput formControlName="maximumAmountPerExpense"
+              <input type="number"  min="0"  matInput formControlName="maximumAmountPerExpense"
                 [attr.disabled]="!categoryCtrl.get('isMaximumAmountPerExpenseSet').value ? true : null">
             </mat-form-field>
+             @if (categoryCtrl.get('maximumAmountPerExpense').invalid) {
+                <small class="text-danger">{{ 'expenses.negativeValRestrict' | translate }}</small>
+              }
           </div>
 
           <div class="d-flex align-items-center mt-2">
@@ -47,9 +53,12 @@
               <mat-slide-toggle color="primary" formControlName="isMaximumAmountWithoutReceiptSet"></mat-slide-toggle>
             </div>
             <mat-form-field class="ms-4">
-              <input type="number" matInput formControlName="maximumAmountWithoutReceipt"
+              <input type="number"  min="0" matInput formControlName="maximumAmountWithoutReceipt"
                 [attr.disabled]="!categoryCtrl.get('isMaximumAmountWithoutReceiptSet').value ? true : null">
             </mat-form-field>
+             @if (categoryCtrl.get('maximumAmountWithoutReceipt').invalid) {
+                <small class="text-danger">{{ 'expenses.negativeValRestrict' | translate }}</small>
+              }
           </div>
 
           @if(categoryCtrl.get('categoryType').value != 'dateRange'){
@@ -75,16 +84,22 @@
               <mat-slide-toggle color="primary" formControlName="isEmployeeCanAddInTotalDirectly"></mat-slide-toggle>
             </div>
             <mat-form-field class="ms-4">
-              <input type="number" matInput formControlName="expiryDay"
+              <input type="number" min="0" matInput formControlName="expiryDay"
                 [attr.disabled]="!categoryCtrl.get('isEmployeeCanAddInTotalDirectly').value ? true : null">
             </mat-form-field>
+            @if (categoryCtrl.get('expiryDay').invalid) {
+                <small class="text-danger">{{ 'expenses.negativeValRestrict' | translate }}</small>
+              }
           </div>
 
           <div class="d-flex align-items-center mt-2">
             <label class="w-50">{{'expenses.max_expense' | translate}}</label>
             <mat-form-field class="ms-auto">
-              <input type="number" matInput formControlName="maximumExpensesCanApply">
+              <input type="number" min="0" matInput formControlName="maximumExpensesCanApply">
             </mat-form-field>
+             @if (categoryCtrl.get('maximumExpensesCanApply').invalid) {
+                <small class="text-danger">{{ 'expenses.negativeValRestrict' | translate }}</small>
+              }
           </div>
           }
 
@@ -99,9 +114,9 @@
               <div
                 *ngFor="let fieldCtrl of categoryCtrl.get('expenseTemplateCategoryFieldValues').controls; let j = index">
                 <div [formGroupName]="j">
-                  <div class="d-flex pt-2 align-items-center">
+                  <div class="d-flex pt-2 align-items-center justify-content-between">
                     <mat-form-field>
-                      <mat-label>{{'expenses.label' | translate}}</mat-label>
+                      <mat-label>{{'expenses.categoryLabel' | translate}}</mat-label>
                       <input matInput formControlName="label" placeholder="Label" required>
                       @if(fieldCtrl.get('label').invalid && fieldCtrl.get('label').touched){
                       <mat-error>
@@ -121,15 +136,15 @@
 
                     <mat-form-field>
                       <mat-label>{{'expenses.rate' | translate}}</mat-label>
-                      <input matInput type="number" placeholder="Rate" formControlName="rate" required>
+                      <input matInput type="number" min="0" placeholder="Rate" formControlName="rate" required>
                       @if(fieldCtrl.get('rate').invalid && fieldCtrl.get('rate').touched){
                       <mat-error>
-                        {{'expenses.rate_error' | translate}}
+                        {{'expenses.negativeValRestrict' | translate}}
                       </mat-error>
                       }
                     </mat-form-field>
 
-                    <button (click)="removeField(i, j)" mat-icon-button type="button" color="warn">
+                    <button (click)="deleteCategoryField(i, j)" mat-icon-button type="button" color="warn">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </div>
@@ -151,7 +166,6 @@
       <ng-template matStepLabel>Review</ng-template>
 
       @for(categoryCtrl of firstForm?.get('expenseCategories')?.controls; track categoryCtrl; let i = $index){
-      <!-- {{categoryCtrl.value | json}} -->
       <div class="mb-2">
         <h4 class="mb-1 fw-bold text-dark">{{ getCategoryLabel(categoryCtrl.value._id)}}</h4>
         <ul class="list-group border border-warning">
@@ -193,7 +207,7 @@
         <table class="mt-2 table table-bordered table-sm">
           <thead>
             <tr>
-              <th translate>expenses.label</th>
+              <th translate>expenses.categoryLabel</th>
               @if(categoryCtrl.get('categoryType').value === 'distance'){
               <th translate>expenses.type</th>
               }
@@ -227,5 +241,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-  <button mat-flat-button class="ms-auto" color="primary" (click)="onSubmit()">{{'expenses.submit' | translate}}</button>
+  <button mat-flat-button class="ms-auto" color="primary" [disabled]="firstForm.invalid" (click)="onSubmit()">{{'expenses.submit' | translate}}</button>
 </div>
