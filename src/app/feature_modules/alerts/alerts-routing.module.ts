@@ -15,9 +15,9 @@ const routes: Routes = [
         redirectTo: (localStorage.getItem('adminView') === 'user') ? 'notification' : 'notification',
         pathMatch: 'full'
       },
-      { path: 'notification-types', component: NotificationTypeComponent },
-      { path: 'notification', component: EventNotificationComponent },
-      { path: 'viewer', component: EventNotificationViewerComponent },
+      { path: 'notification-types', component: NotificationTypeComponent, canActivate: [AuthGuard], data: { permission: 'Alerts Settings' } },
+      { path: 'notification', component: EventNotificationComponent, canActivate: [AuthGuard], data: { permission: 'Alerts' } },
+      { path: 'viewer', component: EventNotificationViewerComponent, canActivate: [AuthGuard], data: { permission: 'Alerts Settings' } },
       // { path: '', redirectTo: 'notification', pathMatch: 'full' }
     ]
   }

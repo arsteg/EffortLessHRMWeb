@@ -24,15 +24,18 @@ const routes: Routes = [
           {
             path: '',
             redirectTo: (localStorage.getItem('adminView') === 'user') ? 'my-attendance-records' : 'settings',
-            pathMatch: 'full'
+            pathMatch: 'full',
+            data: { permission: 'Attendance' }
           },
-          { path: 'my-attendance-records', component: MyAttendanceRecordsComponent },
-          { path: 'my-roster-records', component: RosterRecordsComponent },
-          { path: 'my-on-duty-request', component: OnDutyRecordsComponent },
-          { path: 'my-overtime-records', component: OvertimeRecordsComponent },
+          { path: 'my-attendance-records', component: MyAttendanceRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
+          { path: 'my-roster-records', component: RosterRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
+          { path: 'my-on-duty-request', component: OnDutyRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
+          { path: 'my-overtime-records', component: OvertimeRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
 
           {
             path: 'settings', component: AttendanceManagementSettingsComponent,
+            canActivate: [AuthGuard],
+            data: { permission: 'Attendance Settings' },
             children: [
               { path: '', redirectTo: 'attendance-templates', pathMatch: 'full' },
               { path: 'attendance-templates', component: AttendanceTemplateComponent },
@@ -44,13 +47,13 @@ const routes: Routes = [
               { path: 'shift-assignment', component: ShiftAssignmentsComponent },
             ]
           },
-          { path: 'attendance-records', component: AttendanceRecordsComponent },
-          { path: 'roster-records', component: RosterRecordsComponent },
-          { path: 'overtime-records', component: OvertimeRecordsComponent },
-          { path: 'on-duty-request', component: OnDutyRecordsComponent },
+          { path: 'attendance-records', component: AttendanceRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
+          { path: 'roster-records', component: RosterRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
+          { path: 'overtime-records', component: OvertimeRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
+          { path: 'on-duty-request', component: OnDutyRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
           // { path: 'attendance-audit', component: OnDutyRecordsComponent },
-          { path: 'attendance-process', component: AttendanceProcessComponent },
-          { path: 'reconcilation', component: OnDutyRecordsComponent },
+          { path: 'attendance-process', component: AttendanceProcessComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
+          { path: 'reconcilation', component: OnDutyRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
         ]
       },
 

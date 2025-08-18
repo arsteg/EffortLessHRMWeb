@@ -16,10 +16,10 @@ const routes: Routes = [
         redirectTo: (localStorage.getItem('adminView') === 'user') ? 'tax-declaration' : 'sections',
         pathMatch: 'full'
       },
-      { path: 'sections', component: TaxSectionComponent },
-      { path: 'components', component: TaxComponentBySectionComponent },
-      { path: 'all-tax-declarations', component: TaxDeclarationByCompanyComponent },
-      { path: 'tax-declaration', component: UserTaxDeclarationComponent },
+      { path: 'sections', component: TaxSectionComponent, canActivate: [AuthGuard], data: { permission: 'Taxation Settings' } },
+      { path: 'components', component: TaxComponentBySectionComponent, canActivate: [AuthGuard], data: { permission: 'Taxation Settings' } },
+      { path: 'all-tax-declarations', component: TaxDeclarationByCompanyComponent, canActivate: [AuthGuard], data: { permission: 'Taxation Settings' } },
+      { path: 'tax-declaration', component: UserTaxDeclarationComponent, canActivate: [AuthGuard], data: { permission: 'Taxation' } },
     ]
   },
  

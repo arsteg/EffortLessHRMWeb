@@ -73,7 +73,7 @@ const routes: Routes = [
         path: 'attendance',
         loadChildren: () => import('./feature_modules/attendance/attendance.module').then(m => m.AttendanceModule),
         resolve: { translation: TranslationResolver },
-        data: { moduleKey: 'attendance', permission: 'Attendance' }
+        data: { moduleKey: 'attendance' }
       },
       {
         path: 'timesheets',
@@ -85,19 +85,19 @@ const routes: Routes = [
         path: 'leave',
         loadChildren: () => import('./feature_modules/leave/leave.module').then(m => m.LeaveModule),
         resolve: { translation: TranslationResolver },
-        data: { moduleKey: 'leave', permission: 'Leave' }
+        data: { moduleKey: 'leave' }
       },
       {
         path: 'expense',
         loadChildren: () => import('./feature_modules/expenses/expenses.module').then(m => m.ExpensesModule),
         resolve: { translation: TranslationResolver },
-        data: { moduleKey: 'expenses', permission: 'Expenses' },
+        data: { moduleKey: 'expenses' },
       },
       {
         path: 'alerts',
         loadChildren: () => import('./feature_modules/alerts/alerts.module').then(m => m.AlertsModule),
         resolve: { translation: TranslationResolver },
-        data: { moduleKey: 'alerts', permission: 'Alerts' },
+        data: { moduleKey: 'alerts' },
       },
       {
         path: 'payroll',
@@ -109,7 +109,7 @@ const routes: Routes = [
         path: 'taxation',
         loadChildren: () => import('./feature_modules/taxation/taxation.module').then(m => m.TaxationModule),
         resolve: { translation: TranslationResolver },
-        data: { moduleKey: 'taxation', permission: 'Taxation' }
+        data: { moduleKey: 'taxation' }
       },
       {
         path: 'manage',
