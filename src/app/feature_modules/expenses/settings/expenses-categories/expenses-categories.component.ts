@@ -110,9 +110,24 @@ export class ExpensesCategoriesComponent implements OnInit {
     }
     else {
       this.fields.removeAt(index);
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     }
   }
 
+  deleteApplicationField(index: number): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.removeCatgoryField(index);
+      }
+      err => {
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
+      }
+    });
+
+  }
   removeFieldValue(fieldIndex: number, valueIndex: number) {
     const fieldArray = this.fields.at(fieldIndex).get('expenseApplicationFieldValues') as FormArray;
     if (fieldArray.value[valueIndex]._id) {

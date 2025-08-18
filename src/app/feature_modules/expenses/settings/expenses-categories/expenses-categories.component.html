@@ -58,7 +58,7 @@
     </div>
     <form [formGroup]="addCategoryForm" (ngSubmit)="isEdit ? updateExpenseCategory() :  addExpenseCategory()">
         <div mat-dialog-content>
-            <mat-form-field class="w-100">
+            <mat-form-field class="w-100 mb-2">
                 <mat-label>{{'expenses.choose_type' | translate}}</mat-label>
                 <mat-select formControlName="type" required name="expenseType">
                     @for(expenseType of expenseTypes | keyvalue: originalOrder; track expenseType.key){
@@ -73,7 +73,7 @@
                 </mat-error>
             </mat-form-field>
 
-            <mat-form-field class="w-100">
+            <mat-form-field class="w-100 mt-3">
                 <mat-label>{{'expenses.enter_expense_label' | translate}}</mat-label>
                 <input matInput formControlName="label" required placeholder="Enter Custom Label">
                 <mat-error *ngIf="addCategoryForm.get('label').invalid && addCategoryForm.get('label').touched">
@@ -109,7 +109,7 @@
                                 </mat-form-field>
 
                                 <button mat-icon-button color="warn" matTooltip="Delete" type="button"
-                                    (click)="removeCatgoryField(i)">
+                                    (click)="deleteApplicationField(i)">
                                     <mat-icon>delete</mat-icon>
                                 </button>
                             </div>
