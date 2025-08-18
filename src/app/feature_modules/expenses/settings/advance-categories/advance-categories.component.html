@@ -73,7 +73,7 @@
         <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
         <button mat-stroked-button type="button" (click)="editAdvanceCategory()">{{'expenses.reset' | translate}}</button>
       </div> -->
-      <button mat-flat-button color="primary" type="submit">{{isEdit ? ('expenses.update' | translate) : ('expenses.add' | translate)}}</button>
+      <button mat-flat-button color="primary" [disabled]="isSubmitted" type="submit">{{isEdit ? ('expenses.update' | translate) : ('expenses.add' | translate)}}</button>
     </div>
   </form>
 </ng-template>

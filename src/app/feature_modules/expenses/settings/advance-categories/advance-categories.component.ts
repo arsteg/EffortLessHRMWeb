@@ -32,6 +32,7 @@ export class AdvanceCategoriesComponent implements OnInit {
   currentPage: number = 1;
   displayedColumns: string[] = ['label', 'actions'];
   dialogRef: MatDialogRef<any>;
+  isSubmitted: boolean = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -39,18 +40,21 @@ export class AdvanceCategoriesComponent implements OnInit {
     private dialog: MatDialog,
     private expenseService: ExpensesService,
     private toast: ToastrService) {
-
     this.addCategory = this.fb.group({
       label: ['', Validators.required]
     });
   }
 
   ngOnInit() {
+    this.addCategory.get('label').valueChanges.subscribe(value => {
+      this.isSubmitted = false;
+    });
     this.getAllAdvanceCategories();
   }
 
 
   open(content: any) {
+    this.isSubmitted = false;
     this.dialogRef = this.dialog.open(content, {
       width: '600px',
       disableClose: true
@@ -88,6 +92,7 @@ export class AdvanceCategoriesComponent implements OnInit {
   }
 
   onSubmit() {
+    this.isSubmitted = true
     if (!this.isEdit) {
       let payload = {
         label: this.addCategory.value['label'],
