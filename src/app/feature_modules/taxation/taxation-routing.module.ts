@@ -9,7 +9,7 @@ import { TaxDeclarationByCompanyComponent } from './tax-declaration-by-company/t
 
 const routes: Routes = [
   {
-    path: '', component: TaxationComponent, canActivate: [AuthGuard],
+    path: '', component: TaxationComponent,
     children: [
       {
         path: '',
