@@ -225,10 +225,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
   deleteTemplateAssignment(_id: string) {
     this.expenseService.deleteTemplateAssignment(_id).subscribe((res: any) => {
-      const index = this.templateAssignments.findIndex(temp => temp._id === _id);
-      if (index !== -1) {
-        this.templateAssignments.splice(index, 1);
-      }
+      this.getAssignments();
       this.toast.success(this.translate.instant('expenses.delete_success'));
     })
   }
