@@ -6,8 +6,8 @@
                 <div class="col-md-6 col-12">
                     <mat-form-field class="w-100">
                         <mat-label translate>payroll.day_of_month_to_run_payroll</mat-label>
-                        <mat-select formControlName="dayOfMonthToRunPayroll">
-                            <mat-option *ngFor="let number of days" [value]="number">
+                        <mat-select formControlName="dayOfMonthToRunPayroll" [disabled]="true">
+                             <mat-option *ngFor="let number of days" [value]="number">
                                 {{number}}
                             </mat-option>
                         </mat-select>
@@ -64,18 +64,18 @@
                     <mat-form-field class="w-100">
                         <mat-label translate>payroll.percentage_for_gratuity</mat-label>
                         <input matInput type="text" formControlName="percentageForGraduity">
+                       
+                          <mat-error *ngIf="generalSettingForm.get('percentageForGraduity')?.hasError('notANumber')">
+                            {{'payroll.ValidNumber' | translate}}
+                          </mat-error>
+                          <mat-error *ngIf="generalSettingForm.get('percentageForGraduity')?.hasError('notGreaterThanOne')">
+                            {{'payroll.GreaterThanOneAllowed' | translate}}
+                          </mat-error>
+                          <mat-error *ngIf="generalSettingForm.get('percentageForGraduity')?.hasError('negativeNumber')">
+                            {{'payroll.NegativeNotAllowed' | translate}}
+                          </mat-error>
                     </mat-form-field>
-                </div>
-                <div class="col-12 col-md-6">
-                    <mat-form-field class="w-100">
-                        <mat-label translate>payroll.gratuity_components_calculation</mat-label>
-                        <mat-select multiple formControlName="graduityComponentsGraduitycalculation">
-                            <mat-option *ngFor="let fa of fixedAllowance" [value]="fa._id">
-                                {{fa.label}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
+                </div>               
                 }
             </div>
         </section>

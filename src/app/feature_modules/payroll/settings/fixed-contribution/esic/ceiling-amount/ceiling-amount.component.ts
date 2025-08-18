@@ -7,6 +7,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-ceiling-amount',
@@ -24,6 +25,7 @@ export class CeilingAmountComponent {
   ceilingAmount: any;
   ceilingAmountForm: FormGroup;
   selectedRecord: any;
+  isSubmitting: boolean = false;
   dialogRef: MatDialogRef<any>;
   columns: TableColumn[] = [
     { key: 'employeeCount', name: this.translate.instant('payroll.minimum_employee_count') },
@@ -48,8 +50,8 @@ export class CeilingAmountComponent {
     private translate: TranslateService
   ) {
     this.ceilingAmountForm = this.fb.group({
-      employeeCount: [0, Validators.required],
-      maxGrossAmount: [0, Validators.required]
+      employeeCount: ['', [Validators.required, CustomValidators.greaterThanOneValidator()]],
+      maxGrossAmount: ['', [Validators.required, CustomValidators.greaterThanOneValidator()]]
     });
   }
 
@@ -111,62 +113,57 @@ export class CeilingAmountComponent {
         (focusableElement as HTMLElement).focus();
       }
     }, 100);
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
-  }
+  } 
 
   closeModal() {
     this.modalService.dismissAll();
+    this.isSubmitting = false;
   }
 
   onSubmission() {
+    this.isSubmitting = true;
+    if (this.ceilingAmountForm.invalid) {            
+      this.ceilingAmountForm.markAllAsTouched();  // This triggers validation errors
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
+      this.isSubmitting = false;
+      return;
+    }
     if (!this.isEdit) {
       this.payroll.addESICCeiling(this.ceilingAmountForm.value).subscribe({
-        next: (res: any) => {
-          this.ceilingAmount.push(res.data);
+        next: (res: any) => {         
           this.toast.success(
             this.translate.instant('payroll.esic_ceiling_amount_added'),
             this.translate.instant('payroll.esic_ceiling_amount_title')
           );
-          this.ceilingAmountForm.patchValue({ employeeCount: 0, maxGrossAmount: 0 });
+          this.getCeilingAmount();
           this.dialogRef.close();
+          this.clearForm();
         },
-        error: () => {
-          this.toast.error(
-            this.translate.instant('payroll.esic_ceiling_amount_add_error'),
-            this.translate.instant('payroll.esic_ceiling_amount_title')
-          );
-          this.dialogRef.close();
-        }
+        error: (err) => {
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.esic_ceiling_amount_add_error')
+          ;
+          this.toast.error(errorMessage);
+        }       
       });
     } else {
       this.payroll.updateESICCeiling(this.selectedRecord._id, this.ceilingAmountForm.value).subscribe({
         next: (res: any) => {
-          const index = this.ceilingAmount.findIndex(item => item._id === this.selectedRecord._id);
-          if (index !== -1) {
-            this.ceilingAmount[index] = res.data;
-          }
+        
           this.toast.success(
             this.translate.instant('payroll.esic_ceiling_amount_updated'),
             this.translate.instant('payroll.esic_ceiling_amount_title')
           );
+          this.getCeilingAmount();
           this.isEdit = false;
-          this.ceilingAmountForm.patchValue({ employeeCount: 0, maxGrossAmount: 0 });
-        },
-        error: () => {
-          this.toast.error(
-            this.translate.instant('payroll.esic_ceiling_amount_update_error'),
-            this.translate.instant('payroll.esic_ceiling_amount_title')
-          );
-        }
+          this.clearForm();
+        },        
+        error: (err) => {
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.esic_ceiling_amount_update_error')
+          ;
+          this.toast.error(errorMessage);
+        }    
       });
     }
   }
@@ -177,29 +174,27 @@ export class CeilingAmountComponent {
 
   clearForm() {
     this.ceilingAmountForm.patchValue({
-      employeeCount: 0,
-      maxGrossAmount: 0
+      employeeCount: '',
+      maxGrossAmount:''
     });
+    this.isSubmitting = false;
   }
 
   deleteRecord(_id: string) {
     this.payroll.deleteESICCeiling(_id).subscribe({
-      next: (res: any) => {
-        const index = this.ceilingAmount.findIndex(res => res._id === _id);
-        if (index !== -1) {
-          this.ceilingAmount.splice(index, 1);
-        }
+      next: (res: any) => {       
         this.toast.success(
           this.translate.instant('payroll.esic_ceiling_amount_deleted'),
           this.translate.instant('payroll.esic_ceiling_amount_title')
         );
+        this.getCeilingAmount();
       },
-      error: () => {
-        this.toast.error(
-          this.translate.instant('payroll.esic_ceiling_amount_delete_error'),
-          this.translate.instant('payroll.esic_ceiling_amount_title')
-        );
-      }
+      error: (err) => {
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll.esic_ceiling_amount_delete_error')
+        ;
+        this.toast.error(errorMessage);
+      }    
     });
   }
 

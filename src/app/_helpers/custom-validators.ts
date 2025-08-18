@@ -79,6 +79,16 @@ export class CustomValidators {
     }
     return null;
   }
+  static noNumbersOrSymbolsValidator(control: any) {
+  const value = control.value;
+  
+  // Allow letters and spaces, disallow digits and special characters
+  if (/\d/.test(value) || /[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+    return { invalidName: true };
+  }
+  
+  return null;
+}
   static appliedLessThanMaxValidator(): ValidatorFn {
     return (group: AbstractControl): ValidationErrors | null => {
       const appliedControl = group.get('appliedAmount');
@@ -194,7 +204,7 @@ export class CustomValidators {
         return null; // Let Validators.required handle empty values
       }
       const hours = Number(value);
-      if (hours < 0 || hours > 6) {        
+      if (hours < 1 || hours > 6) {        
         return { invalidTime: true }; // Set invalidTime error
       }
       return null;
@@ -269,5 +279,64 @@ static mutuallyExclusiveDays(): ValidatorFn {
     return Object.keys(errors).length ? errors : null;
   };
 }
+static greaterThanOneValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
 
+    if (value === null || value === '') return null;
+
+    // Not a number
+    if (isNaN(value)) {
+      return { notANumber: true };
+    }
+
+    const num = parseFloat(value);
+
+    // First check: negative
+    if (num < 0) return { negativeNumber: true };
+
+    // Then check: not greater than 1
+    if (num < 1) return { notGreaterThanOne: true };
+
+    return null;
+  };
+}
+static GreaterThanZeroValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (value === null || value === '') return null;
+
+    // Not a number
+    if (isNaN(value)) {
+      return { notANumber: true };
+    }
+
+    const num = parseFloat(value);
+
+    // First check: negative
+    if (num <= 0) return { negativeNumber: true };
+
+    return null;
+  };
+}
+static OnlyPostiveNumberValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (value === null || value === '') return null;
+
+    // Not a number
+    if (isNaN(value)) {
+      return { notANumber: true };
+    }
+
+    const num = parseFloat(value);
+
+    // First check: negative
+    if (num < 0) return { negativeNumber: true };
+
+    return null;
+  };
+}
 }

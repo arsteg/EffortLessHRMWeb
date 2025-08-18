@@ -7,6 +7,7 @@ import { TranslateService } from '@ngx-translate/core'; // Import TranslateServi
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-contribution',
@@ -25,6 +26,7 @@ export class ContributionComponent {
   contributionForm: FormGroup;
   allData: any;
   dialogRef: MatDialogRef<any>;
+  isSubmitting: boolean = false;
   columns: TableColumn[] = [
     { key: 'employeePercentage', name: this.translate.instant('payroll.employee_percentage') },
     { key: 'employerPercentage', name: this.translate.instant('payroll.employer_percentage') },
@@ -47,8 +49,8 @@ export class ContributionComponent {
     private translate: TranslateService // Inject TranslateService
   ) {
     this.contributionForm = this.fb.group({
-      employeePercentage: [0, Validators.required],
-      employerPercentage: [0, Validators.required],
+      employeePercentage:  ['', [Validators.required, CustomValidators.GreaterThanZeroValidator()]],
+      employerPercentage: ['', [Validators.required, CustomValidators.GreaterThanZeroValidator()]],
     });
   }
 
@@ -101,44 +103,53 @@ export class ContributionComponent {
   }
 
   closeModal() {
-    this.modalService.dismissAll();
+    this.modalService.dismissAll();    
   }
 
   onSubmission() {
+    this.isSubmitting = true;
+    if (this.contributionForm.invalid) {            
+      this.contributionForm.markAllAsTouched();  // This triggers validation errors
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
+      this.isSubmitting = false;
+      return;
+    }
     if (!this.isEdit) {
       this.payroll.addContribution(this.contributionForm.value).subscribe(
-        (res: any) => {
-          this.contribution.push(res.data);
-          this.translate.get(['esic.toast.success_added', 'esic.title']).subscribe(translations => {
-            this.toast.success(translations['esic.toast.success_added'], translations['esic.title']);
-          });
+        (res: any) => {     
+          this.toast.success(
+          this.translate.instant('payroll.toast.success_added')
+        );
+       
+          this.getContribution();
           this.clearForm();
           this.dialogRef.close();
         },
-        (err) => {
-          this.translate.get(['esic.toast.error_add', 'esic.title']).subscribe(translations => {
-            this.toast.error(translations['esic.toast.error_add'], translations['esic.title']);
-          });
+        (err) => {          
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.toast.error_add')
+          ;
+          this.toast.error(errorMessage);
+          this.isSubmitting = false;
           this.dialogRef.close();
         }
       );
     } else {
       this.payroll.updateContribution(this.selectedRecord._id, this.contributionForm.value).subscribe(
-        (res: any) => {
-          const index = this.contribution.findIndex(item => item._id === this.selectedRecord._id);
-          if (index !== -1) {
-            this.contribution[index] = res.data;
-          }
-          this.translate.get(['esic.toast.success_updated', 'esic.title']).subscribe(translations => {
-            this.toast.success(translations['esic.toast.success_updated'], translations['esic.title']);
-          });
+        (res: any) => {         
+          this.toast.success(
+            this.translate.instant('payroll.toast.success_updated')
+          );        
+          this.getContribution();
           this.clearForm();
           this.dialogRef.close();
         },
-        (err) => {
-          this.translate.get(['esic.toast.error_update', 'esic.title']).subscribe(translations => {
-            this.toast.error(translations['esic.toast.error_update'], translations['esic.title']);
-          });
+        (err) => {       
+          const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll.toast.error_update')
+        ;
+        this.toast.error(errorMessage);      
+          this.isSubmitting = false;
           this.dialogRef.close();
         }
       );
@@ -151,26 +162,25 @@ export class ContributionComponent {
 
   clearForm() {
     this.contributionForm.patchValue({
-      employeePercentage: 0,
-      employerPercentage: 0,
+      employeePercentage: '',
+      employerPercentage: '',
     });
+      this.isSubmitting = false;
   }
 
   deleteRecord(_id: string) {
     this.payroll.deleteContribution(_id).subscribe(
-      (res: any) => {
-        const index = this.contribution.findIndex(res => res._id === _id);
-        if (index !== -1) {
-          this.contribution.splice(index, 1);
-        }
-        this.translate.get(['esic.toast.success_deleted', 'esic.title']).subscribe(translations => {
-          this.toast.success(translations['esic.toast.success_deleted'], translations['esic.title']);
-        });
+      (res: any) => {       
+        this.toast.success(
+          this.translate.instant('payroll.toast.success_deleted')
+        );
+        this.getContribution();
       },
-      (err) => {
-        this.translate.get(['esic.toast.error_delete', 'esic.title']).subscribe(translations => {
-          this.toast.error(translations['esic.toast.error_delete'], translations['esic.title']);
-        });
+      (err) => {       
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll.toast.error_delete')
+        ;
+        this.toast.error(errorMessage);
       }
     );
   }

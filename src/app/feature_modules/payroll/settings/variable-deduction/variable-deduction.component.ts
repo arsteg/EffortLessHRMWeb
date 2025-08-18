@@ -67,7 +67,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
   years: number[] = [];
   members: any[];
   private unsubscribe$ = new Subject<void>();
-
+  isSubmitting: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   columns: TableColumn[] = [
     { key: 'label', name: this.translate.instant('payroll.variable_deduction.name_header') },
@@ -211,28 +211,21 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
   closeModal() {
     this.clearForm();
     this.dialogRef.close(true);
+    this.isSubmitting = false;
   }
 
   onSubmission() {
     this.markFormGroupTouched(this.variableDeductionForm);
+    this.isSubmitting = true;
+    if (this.variableDeductionForm.invalid) {
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');   
+      this.isSubmitting = false;
+      return;
+    }
 
     const formValue = this.variableDeductionForm.value;
     const payload = { ...formValue };
-    console.log(this.variableDeductionForm.value);
-    // Check for duplicate label before submission
-    const isDuplicate = this.tableService.dataSource.data.some(
-      (deduction: any) =>
-        deduction.label.toLowerCase().trim() === payload.label.toLowerCase().trim() &&
-        (this.isEdit ? deduction._id !== this.selectedRecord._id : true)
-    );
-
-    if (isDuplicate) {
-      this.toast.error(
-        this.translate.instant('payroll.variable_deduction.toast.duplicate_label_error'),
-        this.translate.instant('payroll.variable_deduction.toast.title')
-      );
-      return;
-    }
+    console.log(this.variableDeductionForm.value); 
 
     if (!this.isEdit) {
       this.payroll.addVariableDeduction(payload).pipe(takeUntil(this.unsubscribe$)).subscribe({
@@ -249,6 +242,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
             this.translate.instant('payroll.variable_deduction.toast.error_add'),
             this.translate.instant('payroll.variable_deduction.toast.title')
           );
+          this.isSubmitting = false;
         }
       });
     } else {
@@ -269,6 +263,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
             this.translate.instant('payroll.variable_deduction.toast.error_update'),
             this.translate.instant('payroll.variable_deduction.toast.title')
           );
+          this.isSubmitting = false;
         }
       });
     }

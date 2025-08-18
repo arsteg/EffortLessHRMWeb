@@ -8,6 +8,7 @@ import { CompanyService } from 'src/app/_services/company.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-pt-slab',
@@ -23,10 +24,13 @@ export class PtSlabComponent {
   closeResult: string = '';
   recordsPerPage: number = 10;
   selectedState: string = '';
+  
+  isSubmitting: boolean = false;
   totalRecords: number;
   currentPage: number = 1;
   searchText: string = '';
-  states: any;
+  states: any;  
+  stateTouched: boolean = false;
   frequency: string[] = []; // Initialize as empty, to be populated with translated values
   dialogRef!: MatDialogRef<any>;
   eligibleStates = [];
@@ -34,8 +38,8 @@ export class PtSlabComponent {
     { key: 'state', name: this.translate.instant('payroll.professional-tax.table.state') },
     { key: 'fromAmount', name: this.translate.instant('payroll.professional-tax.table.from') },
     { key: 'toAmount', name: this.translate.instant('payroll.professional-tax.table.to') },
+    { key: 'employeePercentage', name: this.translate.instant('payroll.professional-tax.table.pt_percentage') },
     { key: 'employeeAmount', name: this.translate.instant('payroll.professional-tax.table.pt_amount') },
-    { key: 'twelfthMonthAmount', name: this.translate.instant('payroll.professional-tax.table.twelfth_month_amount') },
     { key: 'frequency', name: this.translate.instant('payroll.professional-tax.table.frequency') },
     {
       key: 'action',
@@ -59,12 +63,10 @@ export class PtSlabComponent {
   ) {
     this.ptSlabForm = this.fb.group({
       state: ['', Validators.required],
-      fromAmount: [0],
-      toAmount: [0],
-      employeePercentage: [0, Validators.required],
-      employeeAmount: [0, Validators.required],
-      twelfthMonthValue: [0, Validators.required],
-      twelfthMonthAmount: [0, Validators.required],
+      fromAmount: ['', [CustomValidators.OnlyPostiveNumberValidator()]],
+      toAmount: ['', [CustomValidators.OnlyPostiveNumberValidator()]],
+      employeePercentage: ['', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
+      employeeAmount: ['', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
       frequency: ['Monthly', Validators.required],
     });
 
@@ -73,14 +75,12 @@ export class PtSlabComponent {
       'payroll.professional-tax.frequency.monthly',
       'payroll.professional-tax.frequency.annually',
       'payroll.professional-tax.frequency.semi_annually',
-      'payroll.professional-tax.frequency.bi_monthly',
       'payroll.professional-tax.frequency.quarterly'
     ]).subscribe(translations => {
       this.frequency = [
         translations['payroll.professional-tax.frequency.monthly'],
         translations['payroll.professional-tax.frequency.annually'],
         translations['payroll.professional-tax.frequency.semi_annually'],
-        translations['payroll.professional-tax.frequency.bi_monthly'],
         translations['payroll.professional-tax.frequency.quarterly']
       ];
     });
@@ -94,18 +94,19 @@ export class PtSlabComponent {
 
   onAction(event: any, modal: any) {
     switch (event.action.label) {
-      case 'Edit': this.selectedRecord = event.row; this.open(modal); break;
+      case 'Edit': this.selectedRecord = event.row; this.openEditModel(modal); break;
       case 'Delete': this.deleteDialog(event.row?._id); break;
     }
   }
 
   getCompanyState() {
     this.companyService.getCompany().subscribe((res: any) => {
-      const companyState = res?.data?.company?.state;
+      const companyState = res?.data?.company?.state;     
       if (companyState) {
         this.ptSlabForm.patchValue({ state: companyState });
         this.ptSlabForm.get('state').disable();
       }
+      this.selectedState=companyState;
     });
   }
 
@@ -133,15 +134,14 @@ export class PtSlabComponent {
   }
 
   clearForm() {
-    this.ptSlabForm.patchValue({
-      state: '',
+    this.ptSlabForm.patchValue({     
       fromAmount: 0,
       toAmount: 0,
       employeePercentage: 0,
       employeeAmount: 0,
-      twelfthMonthValue: 0,
-      twelfthMonthAmount: 0
     });
+    this.ptSlabForm.get('state')?.disable();
+    this.isSubmitting = false;
   }
 
   onRecordsPerPageChange(recordsPerPage: number) {
@@ -161,9 +161,12 @@ export class PtSlabComponent {
     });
   }
 
-  editRecord() {
-    this.isEdit = true;
+  editRecord() {   
+    console.log(this.selectedRecord);
     this.ptSlabForm.patchValue(this.selectedRecord);
+    this.isEdit = true;
+    this.ptSlabForm.get('state')?.disable();
+    this.isSubmitting = false;
   }
 
   closeModal() {
@@ -171,6 +174,15 @@ export class PtSlabComponent {
   }
 
   onSubmission() {
+
+    this.ptSlabForm.get('state')?.enable();
+    this.isSubmitting = true;
+    if (this.ptSlabForm.invalid) {            
+      this.ptSlabForm.markAllAsTouched();  // This triggers validation errors
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
+      this.isSubmitting = false;
+      return;
+    }
     const payload = {
       ...this.ptSlabForm.value
     };
@@ -184,11 +196,14 @@ export class PtSlabComponent {
           });
           this.dialogRef.close();
         },
-        (err) => {
-          this.translate.get(['payroll.professional-tax.toast.error_add', 'payroll.professional-tax.title']).subscribe(translations => {
-            this.toast.error(translations['payroll.professional-tax.toast.error_add'], translations['payroll.professional-tax.title']);
-            this.dialogRef.close();
-          });
+        (err) => {          
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.professional-tax.toast.error_add')
+          ;
+          this.toast.error(errorMessage);               
+          this.dialogRef.close();
+          this.ptSlabForm.get('state')?.disable();
+          this.isSubmitting = false;
         }
       );
     } else {
@@ -199,11 +214,15 @@ export class PtSlabComponent {
           this.translate.get(['payroll.professional-tax.toast.success_updated', 'payroll.professional-tax.title']).subscribe(translations => {
             this.toast.success(translations['payroll.professional-tax.toast.success_updated'], translations['payroll.professional-tax.title']);
           });
+         
         },
-        (err) => {
-          this.translate.get(['payroll.professional-tax.toast.error_update', 'payroll.professional-tax.title']).subscribe(translations => {
-            this.toast.error(translations['payroll.professional-tax.toast.error_update'], translations['payroll.professional-tax.title']);
-          });
+        (err) => {          
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.professional-tax.toast.error_update')
+          ;
+          this.toast.error(errorMessage);   
+          this.ptSlabForm.get('state')?.disable();
+          this.isSubmitting = false;
         }
       );
     }
@@ -212,18 +231,16 @@ export class PtSlabComponent {
   deleteRecord(_id: string) {
     this.payrollService.deletePTSlab(_id).subscribe(
       (res: any) => {
-        const index = this.ptSlab.findIndex(res => res._id === _id);
-        if (index !== -1) {
-          this.ptSlab.splice(index, 1);
-        }
+        this.getPtSlab();
         this.translate.get(['payroll.professional-tax.toast.success_deleted', 'payroll.professional-tax.title']).subscribe(translations => {
           this.toast.success(translations['payroll.professional-tax.toast.success_deleted'], translations['payroll.professional-tax.title']);
         });
       },
-      (err) => {
-        this.translate.get(['payroll.professional-tax.toast.error_delete', 'payroll.professional-tax.title']).subscribe(translations => {
-          this.toast.error(translations['payroll.professional-tax.toast.error_delete'], translations['payroll.professional-tax.title']);
-        });
+      (err) => {        
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll.professional-tax.toast.error_delete')
+        ;
+        this.toast.error(errorMessage);  
       }
     );
   }
@@ -239,10 +256,40 @@ export class PtSlabComponent {
     });
   }
 
-  open(content: any) {
+  openEditModel(content: any) {
+    this.ptSlabForm.patchValue(this.selectedRecord);
+    this.isEdit = true;
+    this.ptSlabForm.get('state')?.disable();
+    this.isSubmitting = false;
+    this.dialogRef = this.dialog.open(content, {
+      maxWidth: '600px'
+    });
+    this.open(content);
+  }
+  open(content: any) {   
     this.dialogRef = this.dialog.open(content, {
       maxWidth: '600px'
     });
   }
+  handleAdd(modal: any) {
+    this.stateTouched = true;
+    if (!this.selectedState) {
+      this.translate.get('payroll._lwf.slab.warning_state').subscribe(message => {
+        this.toast.warning(message);
+      });
+      return;
+    }
+    const isStateEligible = this.eligibleStates?.some((state: any) => state === this.selectedState);
 
+    if (!isStateEligible) {
+      this.translate.get('payroll._lwf.slab.invalid_company_state').subscribe(message => {
+        this.toast.warning(message);
+      });
+      return;
+    } 
+
+    this.isEdit = false;
+    this.clearForm();
+    this.open(modal);
+  }
 }

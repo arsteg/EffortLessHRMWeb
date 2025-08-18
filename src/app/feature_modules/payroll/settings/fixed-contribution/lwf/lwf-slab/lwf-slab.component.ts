@@ -8,6 +8,7 @@ import { CompanyService } from 'src/app/_services/company.service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-lwf-slab',
@@ -31,6 +32,7 @@ export class LwfSlabComponent {
   @Input() selectedRecord: any;
   eligibleStates: any;
   route: any;
+  isSubmitting: boolean = false;
   dialogRef: MatDialogRef<any>;
   columns: TableColumn[] = [
     { key: 'employeeAmount', name: this.translate.instant('payroll._lwf.slab.table.employee_amount') },
@@ -40,7 +42,6 @@ export class LwfSlabComponent {
     { key: 'maxContribution', name: this.translate.instant('payroll._lwf.slab.table.max_contribution') },
     { key: 'minAmount', name: this.translate.instant('payroll._lwf.slab.table.min_amount') },
     { key: 'maxAmount', name: this.translate.instant('payroll._lwf.slab.table.max_amount') },
-    { key: 'frequency', name: this.translate.instant('payroll._lwf.slab.table.frequency') },
     { key: 'isActive', name: this.translate.instant('payroll._lwf.slab.table.active') },
     {
       key: 'action',
@@ -63,14 +64,14 @@ export class LwfSlabComponent {
     private translate: TranslateService // Inject TranslateService
   ) {
     this.lwfSLabForm = this.fb.group({
-      fixedContribution: ['', Validators.required],
-      employeeAmount: [0, Validators.required],
-      employerAmount: [0, Validators.required],
-      employeePercentage: [0],
-      employerPercentage: [0],
-      maxContribution: [0],
-      minAmount: [0],
-      maxAmount: [0]
+      fixedContribution:['', Validators.required],
+      employeeAmount: ['', [Validators.required, CustomValidators.greaterThanOneValidator()]],
+      employerAmount:['', [Validators.required, CustomValidators.greaterThanOneValidator()]],
+      employeePercentage:['', [CustomValidators.OnlyPostiveNumberValidator()]],
+      employerPercentage: ['', [CustomValidators.OnlyPostiveNumberValidator()]],
+      maxContribution: ['', [CustomValidators.OnlyPostiveNumberValidator()]],
+      minAmount: ['', [CustomValidators.OnlyPostiveNumberValidator()]],
+      maxAmount:['', [CustomValidators.OnlyPostiveNumberValidator()]],
     });
   }
 
@@ -159,6 +160,13 @@ export class LwfSlabComponent {
   }
 
   onSubmission() {
+    this.isSubmitting = true;
+    if (this.lwfSLabForm.invalid) {            
+      this.lwfSLabForm.markAllAsTouched();  // This triggers validation errors
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
+      this.isSubmitting = false;
+      return;
+    }
     const payload = {
       ...this.lwfSLabForm.value,
       state: this.selectedState
@@ -171,6 +179,7 @@ export class LwfSlabComponent {
           this.translate.get(['payroll._lwf.slab.success_added', 'payroll.lwf_title']).subscribe(translations => {
             this.toast.success(translations['payroll._lwf.slab.success_added'], translations['payroll.lwf_title']);
           });
+          this.isSubmitting = false;
           this.dialogRef.close();
         },
         (err) => {
@@ -178,6 +187,7 @@ export class LwfSlabComponent {
           this.translate.get('payroll.lwf_title').subscribe(title => {
             this.toast.error(errorMessage, title);
           });
+          this.isSubmitting = false;
         }
       );
     } else {
@@ -188,6 +198,7 @@ export class LwfSlabComponent {
           this.translate.get(['payroll._lwf.slab.success_updated', 'payroll.lwf_title']).subscribe(translations => {
             this.toast.success(translations['payroll._lwf.slab.success_updated'], translations['payroll.lwf_title']);
           });
+          this.isSubmitting = false;
           this.dialogRef.close();
         },
         (err) => {
@@ -195,6 +206,7 @@ export class LwfSlabComponent {
           this.translate.get('payroll.lwf_title').subscribe(title => {
             this.toast.error(errorMessage, title);
           });
+          this.isSubmitting = false;
         }
       );
     }
@@ -204,10 +216,7 @@ export class LwfSlabComponent {
   deleteRecord(_id: string) {
     this.payrollService.deleteLWF(_id).subscribe(
       (res: any) => {
-        const index = this.lwfSlabs.findIndex(res => res._id === _id);
-        if (index !== -1) {
-          this.lwfSlabs.splice(index, 1);
-        }
+        this.getLwfSlab();
         this.translate.get(['payroll._lwf.slab.success_deleted', 'payroll.lwf_title']).subscribe(translations => {
           this.toast.success(translations['payroll._lwf.slab.success_deleted'], translations['payroll.lwf_title']);
         });
@@ -240,6 +249,14 @@ export class LwfSlabComponent {
       });
       return;
     }
+    const isStateEligible = this.eligibleStates?.some((state: any) => state === this.selectedState);
+
+    if (!isStateEligible) {
+      this.translate.get('payroll._lwf.slab.invalid_company_state').subscribe(message => {
+        this.toast.warning(message);
+      });
+      return;
+    } 
 
     this.isEdit = false;
     this.clearForm();

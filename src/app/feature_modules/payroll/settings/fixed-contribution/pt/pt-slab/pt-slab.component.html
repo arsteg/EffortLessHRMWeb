@@ -1,6 +1,6 @@
 <div class="position-relative">
 
-    <button color="primary" mat-flat-button (click)="open(modal); isEdit= false;" class="position-absolute end-0">
+    <button color="primary" mat-flat-button (click)="handleAdd(modal); isEdit= false;" class="position-absolute end-0">
         {{ 'payroll.add' | translate }}
     </button>
 </div>
@@ -30,10 +30,12 @@
                                 {{ state }}
                             </mat-option>
                         </mat-select>
+                        
                         <mat-error *ngIf="ptSlabForm.controls['state'].touched && ptSlabForm.controls['state'].invalid">
                             {{ 'payroll._lwf.slab.form.error.state_required' | translate }}
                         </mat-error>
                     </mat-form-field>
+                    
                 </div>
                 <div class="col-md-6 col-12 mb-2">
                     <mat-form-field class="w-100">
@@ -50,9 +52,15 @@
                 <div class="col-md-6 col-12 mb-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ 'payroll.professional-tax.form.from_amount' | translate }} </mat-label>
-                        <input type="number" matInput formControlName="fromAmount" required>
-                        <mat-error *ngIf="ptSlabForm.get('fromAmount').touched && ptSlabForm.get('fromAmount').invalid">
-                            {{ 'payroll.professional-tax.form.error.required' | translate }}
+                        <input type="number" matInput formControlName="fromAmount" required>                      
+                        <mat-error *ngIf="ptSlabForm.get('fromAmount').hasError('required')">
+                            {{ 'payroll._lwf.slab.form.error.required' | translate }}
+                          </mat-error>
+                          <mat-error *ngIf="ptSlabForm.get('fromAmount')?.hasError('notGreaterThanOne')">
+                            {{'payroll.NegativeNotAllowedAndGreaterThanZeroAllowed' | translate}}
+                          </mat-error>
+                          <mat-error *ngIf="ptSlabForm.get('fromAmount')?.hasError('negativeNumber')">
+                            {{'payroll.NegativeNotAllowed' | translate}}
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -60,8 +68,15 @@
                     <mat-form-field class="w-100">
                         <mat-label>{{ 'payroll.professional-tax.form.to_amount' | translate }} </mat-label>
                         <input type="number" matInput formControlName="toAmount" required>
-                        <mat-error *ngIf="ptSlabForm.get('toAmount').touched && ptSlabForm.get('toAmount').invalid">
+                       
+                        <mat-error *ngIf="ptSlabForm.get('toAmount').hasError('required')">
                             {{ 'payroll.professional-tax.form.error.required' | translate }}
+                          </mat-error>
+                          <mat-error *ngIf="ptSlabForm.get('toAmount')?.hasError('notGreaterThanOne')">
+                            {{'payroll.NegativeNotAllowedAndGreaterThanZeroAllowed' | translate}}
+                          </mat-error>
+                          <mat-error *ngIf="ptSlabForm.get('toAmount')?.hasError('negativeNumber')">
+                            {{'payroll.NegativeNotAllowed' | translate}}
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -69,10 +84,15 @@
                 <div class="col-md-6 col-12 mb-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ 'payroll.professional-tax.form.employee_percentage' | translate }} </mat-label>
-                        <input type="number" matInput formControlName="employeePercentage" required>
-                        <mat-error
-                            *ngIf="ptSlabForm.get('employeePercentage').touched && ptSlabForm.get('employeePercentage').invalid">
+                        <input type="number" matInput formControlName="employeePercentage" required>                       
+                        <mat-error *ngIf="ptSlabForm.get('employeePercentage').hasError('required')">
                             {{ 'payroll.professional-tax.form.error.required' | translate }}
+                          </mat-error>
+                          <mat-error *ngIf="ptSlabForm.get('employeePercentage')?.hasError('notGreaterThanOne')">
+                            {{'payroll.NegativeNotAllowedAndGreaterThanZeroAllowed' | translate}}
+                          </mat-error>
+                          <mat-error *ngIf="ptSlabForm.get('employeePercentage')?.hasError('negativeNumber')">
+                            {{'payroll.NegativeNotAllowed' | translate}}
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -80,37 +100,23 @@
                     <mat-form-field class="w-100">
                         <mat-label>{{ 'payroll.professional-tax.form.employee_amount' | translate }} </mat-label>
                         <input type="number" matInput formControlName="employeeAmount" required>
-                        <mat-error
-                            *ngIf="ptSlabForm.get('employeeAmount').touched && ptSlabForm.get('employeeAmount').invalid">
+                        <mat-error *ngIf="ptSlabForm.get('employeeAmount').hasError('required')">
                             {{ 'payroll.professional-tax.form.error.required' | translate }}
+                          </mat-error>
+                          <mat-error *ngIf="ptSlabForm.get('employeeAmount')?.hasError('notGreaterThanOne')">
+                            {{'payroll.NegativeNotAllowedAndGreaterThanZeroAllowed' | translate}}
+                          </mat-error>
+                          <mat-error *ngIf="ptSlabForm.get('employeeAmount')?.hasError('negativeNumber')">
+                            {{'payroll.NegativeNotAllowed' | translate}}
                         </mat-error>
                     </mat-form-field>
-                </div>
-                <div class="col-md-6 col-12 mb-2">
-                    <mat-form-field class="w-100">
-                        <mat-label>{{ 'payroll.professional-tax.form.twelfth_month_value' | translate }} </mat-label>
-                        <input type="number" matInput formControlName="twelfthMonthValue" required>
-                        <mat-error
-                            *ngIf="ptSlabForm.get('twelfthMonthValue').touched && ptSlabForm.get('twelfthMonthValue').invalid">
-                            {{ 'payroll.professional-tax.form.error.required' | translate }}
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                <div class="col-md-6 col-12 mb-2">
-                    <mat-form-field class="w-100">
-                        <mat-label>{{ 'payroll.professional-tax.form.twelfth_month_amount' | translate }} </mat-label>
-                        <input type="number" matInput formControlName="twelfthMonthAmount" required>
-                        <mat-error
-                            *ngIf="ptSlabForm.get('twelfthMonthAmount').touched && ptSlabForm.get('twelfthMonthAmount').invalid">
-                            {{ 'payroll.professional-tax.form.error.required' | translate }}
-                        </mat-error>
-                    </mat-form-field>
-                </div>
+                </div>             
+               
             </div>
         </form>
         <div mat-dialog-actions class="d-flex justify-content-between mt-2">
             <button mat-flat-button mat-dialog-close="">{{ 'payroll.cancel' | translate }}</button>
-            <button mat-flat-button type="button" (click)="onSubmission()" color="primary">
+            <button mat-flat-button type="button" (click)="onSubmission()" color="primary" [disabled]="isSubmitting">
                 {{ 'payroll.submit' | translate }}
             </button>
         </div>

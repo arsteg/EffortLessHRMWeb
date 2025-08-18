@@ -202,6 +202,13 @@
         "update_fixed_allowance": "Update Fixed Allowance",
         "fixed_allowance_label": "What is the label of this Fixed Allowance",
         "label_required": "Label is required",
+        "label_name_invalid": "Label cannot contain numbers, or symbols.",
+        "spacenotallowed": "start and end spaces are not allowed.",
+        "ValidNumber":"Must be a valid number",
+        "RequiredFieldAreMissing": "Please fill all required fields",
+        "NegativeNotAllowed": "Negative values are not allowed",
+        "GreaterThanOneAllowed": "Value must be greater than 1",
+        "NegativeNotAllowedAndGreaterThanZeroAllowed": "Value must be greater than 0",
         "is_tds_affected": "Does this Allowance affect TDS?",
         "is_provident_fund_affected": "Does this Allowance affect Provident Fund?",
         "is_professional_tax_affected": "Does this Allowance affect Professional Tax?",
@@ -265,8 +272,8 @@
                 "state": "State",
                 "from": "From",
                 "to": "To",
+                "pt_percentage": "PT Percentage",
                 "pt_amount": "PT Amount",
-                "twelfth_month_amount": "12th Month Amount",
                 "frequency": "Frequency",
                 "actions": "Actions",
                 "upto": "Upto {{amount}}",
@@ -353,7 +360,8 @@
                 "error_update": "LWF Slab cannot be updated",
                 "success_deleted": "Successfully Deleted!",
                 "error_delete": "LWF Slab cannot be deleted",
-                "warning_state": "Please select a state before adding"
+                "warning_state": "Please select a state before adding",
+                "invalid_company_state": "State for your Company is not valid please go in organization setup and set proper state name"
             },
             "monthly_deduction": {
                 "button": {
@@ -390,7 +398,6 @@
         "allowance_rate_question": "What is the allowance rate per day?",
         "it": "IT",
         "frequency": "Frequency",
-        "duplicate_allowance_label_error": "A fixed allowance with this name already exists. Please choose a different name.",
         "_variable_allowance": {
             "title": "Variable Allowance",
             "table": {

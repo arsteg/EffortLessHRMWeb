@@ -29,31 +29,33 @@
             <div class="form-group">
                 <mat-form-field class="w-100">
                     <mat-label>{{'payroll.form.employee_percentage' | translate}}</mat-label>
-                    <input type="number" matInput required formControlName="employeePercentage">
-                    @if(contributionForm.get('employeePercentage').invalid &&
-                    contributionForm.get('employeePercentage').touched){
-                    <mat-error>
-                        {{'payroll.field_required' | translate}}
-                    </mat-error>
-                    }
+                    <input type="number" matInput required formControlName="employeePercentage">                            
+                    <mat-error
+                    *ngIf="contributionForm.get('employeePercentage')?.hasError('required') && (contributionForm.get('employeePercentage')?.touched || contributionForm.get('employeePercentage')?.dirty)">
+                    {{ 'payroll.field_required' | translate }}
+                  </mat-error>      
+                      <mat-error *ngIf="contributionForm.get('employeePercentage')?.hasError('negativeNumber')">
+                        {{ 'payroll.NegativeNotAllowedAndGreaterThanZeroAllowed' | translate }}
+                     </mat-error>
                 </mat-form-field>
                 
             </div>
             <div class="form-group">
                  <mat-form-field class="w-100">
                     <mat-label>{{'payroll.form.employer_percentage' | translate}}</mat-label>
-                    <input type="number" matInput required formControlName="employerPercentage">
-                    @if(contributionForm.get('employerPercentage').invalid &&
-                    contributionForm.get('employerPercentage').touched){
-                    <mat-error>
-                        {{'payroll.field_required' | translate}}
-                    </mat-error>
-                    }
+                    <input type="number" matInput required formControlName="employerPercentage">                                 
+                    <mat-error
+                    *ngIf="contributionForm.get('employerPercentage')?.hasError('required') && (contributionForm.get('employerPercentage')?.touched || contributionForm.get('employerPercentage')?.dirty)">
+                    {{ 'payroll.field_required' | translate }}
+                  </mat-error>    
+                      <mat-error *ngIf="contributionForm.get('employerPercentage')?.hasError('negativeNumber')">
+                        {{ 'payroll.NegativeNotAllowed' | translate }}
+                      </mat-error>
                 </mat-form-field>
             </div>
             <div class="d-flex mt-2 justify-content-between" mat-dialog-actions>
                 <button mat-flat-button mat-dialog-close="">{{ 'payroll.cancel' | translate }}</button>
-                <button mat-flat-button type="submit"  color=primary [disabled]="!contributionForm.valid">
+                <button mat-flat-button type="submit"  color=primary [disabled]="isSubmitting">
                     {{ 'payroll.submit' | translate }}
                 </button>
             </div>

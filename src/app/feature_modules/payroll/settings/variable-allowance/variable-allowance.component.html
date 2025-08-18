@@ -300,7 +300,7 @@
         <button mat-flat-button (click)="closeModal()">
           {{ 'payroll.cancel' | translate }}
         </button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="!variableAllowanceForm.valid">
+        <button mat-flat-button color="primary" type="submit"  [disabled]="isSubmitting">
           {{ (isEdit ? 'payroll.update' : 'payroll.save') | translate }}
         </button>
       </div>

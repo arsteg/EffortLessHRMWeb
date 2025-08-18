@@ -8,17 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 import { MatSort } from '@angular/material/sort';
-
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  // Check if the value is empty or only whitespace
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true }; // Treat empty or only whitespace as required error
-  }
-  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-fixed-allowance',
@@ -31,7 +21,7 @@ export class FixedAllowanceComponent implements AfterViewInit {
   isEdit = false;
   selectedRecord: any;
   dialogRef: MatDialogRef<any>;
-
+  isSubmitting: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -43,7 +33,7 @@ export class FixedAllowanceComponent implements AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.fixedAllowanceForm = this.fb.group({
-      label: ['', [Validators.required, labelValidator]],
+      label: ['', [Validators.required, CustomValidators.noNumbersOrSymbolsValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       isProvidentFundAffected: [false],
       isESICAffected: [false],
       isGratuityFundAffected: [false],
@@ -110,30 +100,17 @@ export class FixedAllowanceComponent implements AfterViewInit {
       isTDSAffected: false,
     });
     this.fixedAllowanceForm.get('label').enable();
+    this.isSubmitting = false;
   }
 
   onSubmission() {
     this.markFormGroupTouched(this.fixedAllowanceForm);
-
+    this.isSubmitting = true;
     if (this.fixedAllowanceForm.invalid) {
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');   
+      this.isSubmitting = false;
       return;
     }
-
-    const newLabel = this.fixedAllowanceForm.get('label').value;
-
-    const isDuplicate = this.tableService.dataSource.data.some((allowance: any) =>
-      allowance.label.toLowerCase() === newLabel.toLowerCase() &&
-      (this.isEdit ? allowance._id !== this.selectedRecord._id : true)
-    );
-
-    if (isDuplicate) {
-      this.toast.error(
-        this.translate.instant('payroll.duplicate_allowance_label_error'),
-        this.translate.instant('payroll.fixed_allowance_title')
-      );
-      return;
-    }
-
     if (!this.isEdit) {
       this.payroll.addAllowanceTemplate(this.fixedAllowanceForm.value).subscribe({
         next: (res: any) => {
@@ -144,11 +121,13 @@ export class FixedAllowanceComponent implements AfterViewInit {
           this.closeModal();
         },
         error: (err) => {
-          this.toast.error(
-            this.translate.instant('payroll.fixed_allowance_add_error'),
-            this.translate.instant('payroll.fixed_allowance_title')
-          );
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.fixed_allowance_add_error')
+          ;
+          this.toast.error(errorMessage);
+          this.isSubmitting = false;
         }
+        
       });
     } else {
       this.payroll.updateAllowanceTemplate(this.selectedRecord._id, this.fixedAllowanceForm.value).subscribe({
@@ -157,13 +136,15 @@ export class FixedAllowanceComponent implements AfterViewInit {
             this.translate.instant('payroll.fixed_allowance_updated'),
             this.translate.instant('payroll.fixed_allowance_title')
           );
+         
           this.closeModal();
         },
-        error: (err) => {
-          this.toast.error(
-            this.translate.instant('payroll.fixed_allowance_update_error'),
-            this.translate.instant('payroll.fixed_allowance_title')
-          );
+        error: (err) => {         
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.fixed_allowance_update_error')
+          ;
+          this.toast.error(errorMessage);
+          this.isSubmitting = false;
         }
       });
     }
@@ -205,10 +186,11 @@ export class FixedAllowanceComponent implements AfterViewInit {
         );
       },
       error: (err) => {
-        this.toast.error(
-          this.translate.instant('payroll.fixed_allowance_delete_error'),
-          this.translate.instant('payroll.fixed_allowance_title')
-        );
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll.fixed_allowance_delete_error')
+        ;
+        this.toast.error(errorMessage);
+      
       }
     });
   }

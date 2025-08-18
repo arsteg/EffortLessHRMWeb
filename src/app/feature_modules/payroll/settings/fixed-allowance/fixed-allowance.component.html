@@ -131,12 +131,15 @@
                     <mat-form-field class="w-100">
                         <mat-label translate>payroll.fixed_allowance_label</mat-label>
                         <input matInput type="text" formControlName="label">
-                        <mat-error
-                            *ngIf="fixedAllowanceForm.get('label').hasError('required') && (fixedAllowanceForm.get('label').dirty || fixedAllowanceForm.get('label').touched)"
-                            translate>payroll.label_required</mat-error>
-                        <mat-error *ngIf="fixedAllowanceForm.get('label')?.errors?.['invalidLabel']">
-                            {{ 'payroll.fixed_deduction.form.error.label_no_special_characters' | translate
-                            }}</mat-error> </mat-form-field>
+                            <mat-error class="mb-3" *ngIf="!fixedAllowanceForm.get('label').valid && fixedAllowanceForm.get('label').touched">
+                                <span *ngIf="fixedAllowanceForm.get('label').errors?.['required']">{{ 'payroll.label_required' |
+                                  translate }}</span>
+                                <span *ngIf="fixedAllowanceForm.get('label').errors?.['invalidName']">{{ 'payroll.label_name_invalid' |
+                                  translate }}</span>   
+                                    <span *ngIf="fixedAllowanceForm.get('label')?.errors?.['spacesNotAllowed']">      
+                                        {{ 'payroll.spacenotallowed' | translate }}
+                                      </span>                                    
+                              </mat-error>  </mat-form-field>
                 </div>
                 <div class="form-group my-1">
                     <div class="d-flex align-items-center justify-content-between">
@@ -198,7 +201,7 @@
             </div>
             <div class="d-flex border-top mt-2 py-2 justify-content-between" mat-dialog-actions>
                 <button mat-flat-button type="button" (click)="closeModal()">{{'payroll.close' | translate}}</button>
-                <button mat-flat-button type="submit" color="primary">{{ (isEdit ? 'payroll.update' : 'payroll.add') |
+                <button mat-flat-button type="submit" color="primary" [disabled]="isSubmitting">{{ (isEdit ? 'payroll.update' : 'payroll.add') |
                     translate }}</button>
             </div>
         </div>

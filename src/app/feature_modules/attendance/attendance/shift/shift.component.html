@@ -370,7 +370,7 @@
               <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['required']">
                 {{ 'attendance.shift.min_hours_half_day_required' | translate }}
               </span>
-              <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['invalidTime']">
+              <span *ngIf="shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['min'] || shiftForm.get('minHoursPerDayToGetCreditforHalfDay')?.errors?.['max']">
                 {{ 'attendance.shift.min_hd_hours_invalid' | translate }}
               </span>
             </mat-error>

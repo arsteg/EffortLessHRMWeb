@@ -65,6 +65,7 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
   months: string[] = [];
   years: number[] = [];
   dialogRef: MatDialogRef<any>;
+  isSubmitting: boolean = false;
   columns: TableColumn[] = [
     { key: 'label', name: this.translate.instant('payroll._variable_allowance.table.allowance_name') },
     {
@@ -273,6 +274,7 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
   }
 
   open(content: any) {
+    this.isSubmitting = false;
     this.dialogRef = this.dialog.open(content, {
       width: '600px',
       disableClose: true
@@ -306,24 +308,22 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
       isProfessionalTaxAffected: false,
     });
     this.dialogRef.close(true);
+    this.isSubmitting = false;
   }
 
   onSubmission() {
+    this.markFormGroupTouched(this.variableAllowanceForm);
+    this.isSubmitting = true;
+    if (this.variableAllowanceForm.invalid) {
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');   
+      this.isSubmitting = false;
+      return;
+    }
     if (this.variableAllowanceForm.valid) {
       const formValue = this.variableAllowanceForm.value;
       if (!this.isEdit) {
         // Check for duplicate allowance before adding
-        const isDuplicate = this.tableService.dataSource.data.some(
-          (allowance) => allowance.label.toLowerCase() === formValue.label.toLowerCase()
-        );
-
-        if (isDuplicate) {
-          this.translate.get('payroll._variable_allowance.toast.error_duplicate').subscribe(errorMessage => {
-            this.toast.error(errorMessage, this.translate.instant('payroll._variable_allowance.title'));
-          });
-          return;
-        }
-
+      
         this.payroll.addVariableAllowance(formValue).subscribe({
           next: (res: any) => {
             this.tableService.setData([...this.tableService.dataSource.data, res.data]);
@@ -343,23 +343,10 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
             this.translate.get('payroll._variable_allowance.title').subscribe(title => {
               this.toast.error(errorMessage, title);
             });
+            this.isSubmitting = false;
           }
         });
-      } else {
-        // Check for duplicate allowance during edit, excluding the current record being edited
-        const isDuplicate = this.tableService.dataSource.data.some(
-          (allowance) =>
-            allowance.label.toLowerCase() === formValue.label.toLowerCase() &&
-            allowance._id !== this.selectedRecord._id
-        );
-
-        if (isDuplicate) {
-          this.translate.get('payroll._variable_allowance.toast.error_duplicate').subscribe(errorMessage => {
-            this.toast.error(errorMessage, this.translate.instant('payroll._variable_allowance.title'));
-          });
-          return;
-        }
-
+      } else {      
         this.payroll.updateVariableAllowance(this.selectedRecord._id, formValue).subscribe({
           next: (res: any) => {
             const updatedData = this.tableService.dataSource.data.map(item =>
@@ -383,6 +370,7 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
             this.translate.get('payroll._variable_allowance.title').subscribe(title => {
               this.toast.error(errorMessage, title);
             });
+            this.isSubmitting = false;
           }
         });
       }

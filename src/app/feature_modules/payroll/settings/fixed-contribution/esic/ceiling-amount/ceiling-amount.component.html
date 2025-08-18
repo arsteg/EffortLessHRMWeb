@@ -30,32 +30,41 @@
             <div class="form-group">
                 <mat-form-field class="w-100">
                     <mat-label>{{'payroll.minimum_employee_count' | translate}}</mat-label>
-                    <input type="number" matInput required formControlName="employeeCount">
-                    @if(ceilingAmountForm.get('employeeCount').invalid &&
-                    ceilingAmountForm.get('employeeCount').touched){
-                    <mat-error>
-                        {{'payroll.field_required' | translate}}
+                    <input type="number" matInput required formControlName="employeeCount">                 
+                    <mat-error
+                    *ngIf="ceilingAmountForm.get('employeeCount')?.hasError('required') && (ceilingAmountForm.get('employeeCount')?.touched || ceilingAmountForm.get('employeeCount')?.dirty)">
+                    {{ 'payroll.field_required' | translate }}
+                  </mat-error>
+                    <mat-error *ngIf="ceilingAmountForm.get('employeeCount')?.hasError('notGreaterThanOne')">
+                        {{'payroll.ValidNumber' | translate}}
+                      </mat-error>
+                      <mat-error *ngIf="ceilingAmountForm.get('employeeCount')?.hasError('negativeNumber')">
+                        {{'payroll.NegativeNotAllowed' | translate}}
                     </mat-error>
-                    }
                 </mat-form-field>
             </div>
 
             <div class="form-group">
                 <mat-form-field class="w-100">
                     <mat-label>{{'payroll.gross_monthly_salary_limit' | translate}}</mat-label>
-                    <input type="number" matInput required formControlName="maxGrossAmount">
-                    @if(ceilingAmountForm.get('maxGrossAmount').invalid &&
-                    ceilingAmountForm.get('maxGrossAmount').touched){
-                    <mat-error>
-                        {{'payroll.field_required' | translate}}
-                    </mat-error>
-                    }
+                    <input type="number" matInput required formControlName="maxGrossAmount">                   
+                    <mat-error
+              *ngIf="ceilingAmountForm.get('maxGrossAmount')?.hasError('required') && (ceilingAmountForm.get('maxGrossAmount')?.touched || ceilingAmountForm.get('departmentName')?.dirty)">
+              {{ 'payroll.field_required' | translate }}
+            </mat-error>
+                    <mat-error *ngIf="ceilingAmountForm.get('maxGrossAmount')?.hasError('notGreaterThanOne')">
+                        {{'payroll.GreaterThanOneAllowed' | translate}}
+                      </mat-error>
+                      <mat-error *ngIf="ceilingAmountForm.get('maxGrossAmount')?.hasError('negativeNumber')">
+                        {{'payroll.NegativeNotAllowed' | translate}}
+               
+                      </mat-error>
                 </mat-form-field>
             </div>
 
             <div class="d-flex mt-2 justify-content-between" mat-dialog-actions>
                 <button mat-flat-button type="button" mat-dialog-close="">{{'payroll.cancel' | translate}}</button>
-                <button mat-flat-button type="submit" color="primary">{{'payroll.submit' | translate}}</button>
+                <button mat-flat-button type="submit" color="primary" [disabled]="isSubmitting">{{'payroll.submit' | translate}}</button>
             </div>
         </form>
     </mat-dialog-content>

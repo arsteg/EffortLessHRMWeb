@@ -8,17 +8,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 import { MatSort } from '@angular/material/sort';
-
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  // Check if the value is empty or only whitespace
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true }; // Treat empty or only whitespace as required error
-  }
-  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-fixed-deduction',
@@ -31,7 +21,7 @@ export class FixedDeductionComponent implements AfterViewInit {
   fixedContributionForm: FormGroup;
   dialogRef: MatDialogRef<any>;
   sortOrder: string = '';
-
+  isSubmitting: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -44,8 +34,8 @@ export class FixedDeductionComponent implements AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.fixedContributionForm = this.fb.group({
-      label: ['', [Validators.required, labelValidator]], // Added custom validator
-      isEffectAttendanceOnEligibility: [false]
+        label: ['', [Validators.required, CustomValidators.noNumbersOrSymbolsValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],        
+        isEffectAttendanceOnEligibility: [false]
     });
 
     // Set custom filter predicate to search by label
@@ -71,6 +61,7 @@ export class FixedDeductionComponent implements AfterViewInit {
       isEffectAttendanceOnEligibility: false // Reset toggle as well
     });
     this.fixedContributionForm.get('label').enable(); // Ensure label is enabled for new additions
+    this.isSubmitting = false;
   }
 
   open(content: any) {
@@ -88,29 +79,16 @@ export class FixedDeductionComponent implements AfterViewInit {
 
   closeModal() {
     this.dialogRef.close(true);
+    this.isSubmitting = false;  
   }
 
   onSubmission() {
-    this.markFormGroupTouched(this.fixedContributionForm); // Mark all fields as touched
-
+    this.isSubmitting = true;
     if (this.fixedContributionForm.invalid) {
+      this.isSubmitting = false;
+      this.markFormGroupTouched(this.fixedContributionForm); // Mark all fields as touched
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');   
       return; // Stop submission if form is invalid
-    }
-
-    const newLabel = this.fixedContributionForm.get('label').value;
-
-    // Check for duplicate label
-    const isDuplicate = this.tableService.dataSource.data.some((deduction: any) =>
-      deduction.label.toLowerCase() === newLabel.toLowerCase() &&
-      (this.isEdit ? deduction._id !== this.selectedRecord._id : true) // Exclude current record if editing
-    );
-
-    if (isDuplicate) {
-      this.toast.error(
-        this.translate.instant('payroll.fixed_deduction.toast.duplicate_label_error'), // New translation key
-        this.translate.instant('payroll.fixed_deduction.title')
-      );
-      return; // Stop submission if duplicate is found
     }
 
     if (!this.isEdit) {
@@ -123,11 +101,13 @@ export class FixedDeductionComponent implements AfterViewInit {
           );
           this.closeModal();
         },
-        error: (err) => {
-          this.toast.error(
-            this.translate.instant('payroll.fixed_deduction.toast.error_add'),
-            this.translate.instant('payroll.fixed_deduction.title')
-          );
+        error: (err) => {     
+          this.isSubmitting = false;  
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.fixed_deduction.toast.error_add')
+          ;
+          this.toast.error(errorMessage);
+         
         }
       });
     } else {
@@ -140,11 +120,13 @@ export class FixedDeductionComponent implements AfterViewInit {
           );
           this.closeModal();
         },
-        error: (err) => {
-          this.toast.error(
-            this.translate.instant('payroll.fixed_deduction.toast.error_update'),
-            this.translate.instant('payroll.fixed_deduction.title')
-          );
+        error: (err) => {      
+          this.isSubmitting = false;  
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.fixed_deduction.toast.error_update')
+          ;
+          this.toast.error(errorMessage);
+         
         }
       });
     }
@@ -181,10 +163,10 @@ export class FixedDeductionComponent implements AfterViewInit {
         );
       },
       error: (err) => {
-        this.toast.error(
-          this.translate.instant('payroll.fixed_deduction.toast.error_delete'),
-          this.translate.instant('payroll.fixed_deduction.title')
-        );
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll.fixed_deduction.toast.error_delete')
+        ;
+        this.toast.error(errorMessage);       
       }
     });
   }
