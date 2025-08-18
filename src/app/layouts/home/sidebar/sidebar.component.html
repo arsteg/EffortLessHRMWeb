@@ -11,13 +11,17 @@
 
 <ul class="menu mt-3" [class.rail-menu]="railMenu">
     @for(menu of menuList; track menu) {
-    <li class="menu-item" [class.rail-menu-item]="railMenu" [routerLink]="menu.url" routerLinkActive="active" [matTooltip]="railMenu ? menu.title : ''"
-        [routerLinkActiveOptions]="{ exact: false }">
+    <li class="menu-item" 
+        [class.rail-menu-item]="railMenu" 
+        [routerLink]="menu.url"
+        [matTooltip]="railMenu ? menu.title : ''"
+        [class.active]="isActive(menu)"
+        >
         @if(menu.svgIcon) {
-        <mat-icon [svgIcon]="menu.svgIcon"></mat-icon>
+            <mat-icon [svgIcon]="menu.svgIcon"></mat-icon>
         } @else {
-        <img class="icon-img" [src]="menu.icon" height="25" alt="">
-        <img class="icon-img-light" [src]="menu.lightIcon" height="25" alt="">
+            <img class="icon-img" [src]="menu.icon" height="25" alt="">
+            <img class="icon-img-light" [src]="menu.lightIcon" height="25" alt="">
         }
         <span> {{menu.title}}</span>
     </li>

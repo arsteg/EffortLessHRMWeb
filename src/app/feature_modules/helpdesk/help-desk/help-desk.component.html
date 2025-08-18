@@ -29,7 +29,7 @@
           </div>
 
           <div class="col-12 mb-3">
-              <button class="btn btn-success me-2" *ngIf="!isRecording" tooltip="You can record a video of your screen to explain your issue better" (click)="startRecording()">
+              <button class="btn btn-outline-success me-2" *ngIf="!isRecording" tooltip="You can record a video of your screen to explain your issue better" (click)="startRecording()">
                   <i class="fas fa-video"></i> {{ 'helpdesk.start_recording' | translate }}
               </button>
               <button class="btn btn-danger me-2" *ngIf="isRecording" (click)="stopRecording()">

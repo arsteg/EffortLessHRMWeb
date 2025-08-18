@@ -17,7 +17,9 @@ import { GeneralInformationComponent } from './general-information/general-infor
 
 const routes: Routes = [
   {
-    path: '', component: ExpensesComponent, canActivate: [AuthGuard],
+    path: '', 
+    component: ExpensesComponent, 
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -25,12 +27,14 @@ const routes: Routes = [
         pathMatch: 'full',
         data: { permission: 'Expenses' },
       },
-      { path: 'my-expense', component: ShowMyExpensesComponent },
-      { path: 'team-expense', component: TeamExpenseComponent },
-      { path: 'general-information', component: GeneralInformationComponent },
+      { path: 'my-expense', component: ShowMyExpensesComponent, canActivate: [AuthGuard], data: { permission: 'Expenses' } },
+      { path: 'team-expense', component: TeamExpenseComponent, canActivate: [AuthGuard], data: { permission: 'Expenses' } },
+      { path: 'general-information', component: GeneralInformationComponent, canActivate: [AuthGuard], data: { permission: 'Expenses' } },
       {
-        path: 'settings', component: SettingsComponent,
-        data: { permission: 'Expenses' },
+        path: 'settings', 
+        component: SettingsComponent,
+        canActivate: [AuthGuard],
+        data: { permission: 'Expenses Settings' },
         children: [
           { path: '', redirectTo: 'expense-category', pathMatch: 'full' },
           { path: 'expense-category', component: ExpensesCategoriesComponent },
@@ -41,8 +45,8 @@ const routes: Routes = [
           { path: 'advance-template-assignment', component: AdvanceTemplateAssignmentComponent },
         ],
       },
-      { path: 'expense-reports', component: ExpenseReportsComponent },
-      { path: 'advance-reports', component: AdvanceReportsComponent },
+      { path: 'expense-reports', component: ExpenseReportsComponent, canActivate: [AuthGuard], data: { permission: 'Expenses' } },
+      { path: 'advance-reports', component: AdvanceReportsComponent, canActivate: [AuthGuard], data: { permission: 'Expenses' } },
     ],
   },
 ];
