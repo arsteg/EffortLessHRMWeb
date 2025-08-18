@@ -19,13 +19,13 @@ const routes: Routes = [
   {
     path: '', 
     component: ExpensesComponent, 
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
     children: [
       {
         path: '',
         redirectTo: (localStorage.getItem('adminView') === 'user') ? 'my-expense' : 'settings',
         pathMatch: 'full',
-        data: { permission: 'Expenses' },
+        //data: { permission: 'Expenses' },
       },
       { path: 'my-expense', component: ShowMyExpensesComponent, canActivate: [AuthGuard], data: { permission: 'Expenses' } },
       { path: 'team-expense', component: TeamExpenseComponent, canActivate: [AuthGuard], data: { permission: 'Expenses' } },

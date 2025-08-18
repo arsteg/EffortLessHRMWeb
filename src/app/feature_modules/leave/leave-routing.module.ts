@@ -15,23 +15,22 @@ import { GeneralComponent } from './general-information/general/general.componen
 
 const routes: Routes = [
   {
-    path: '', component: LeaveComponent, canActivate: [AuthGuard],
+    path: '', component: LeaveComponent,
     children: [
       {
         path: '',
         redirectTo: (localStorage.getItem('adminView') === 'user') ? 'my-application' : 'settings',
-        pathMatch: 'full',
-        data: { permission: 'Leave' }
+        pathMatch: 'full'
       },
-      { path: 'my-application', component: LeaveApplicationComponent, data: { permission: 'Leave' } },
-      { path: 'my-leave-balance', component: LeaveBalanceComponent, data: { permission: 'Leave' } },
-      { path: 'my-team-balance', component: LeaveBalanceComponent, data: { permission: 'Leave' } },
-      { path: 'my-leave-grant', component: LeaveManagementComponent, data: { permission: 'Leave' } },
-      { path: 'my-short-leave', component: ShortLeaveComponent, data: { permission: 'Leave' } },
-      { path: 'team-application', component: LeaveApplicationComponent, data: { permission: 'Leave' } },
-      { path: 'team-short-leave', component: ShortLeaveComponent, data: { permission: 'Leave' } },
-      { path: 'team-leave-grant', component: LeaveManagementComponent, data: { permission: 'Leave' } },
-      { path: 'general-information', component: GeneralComponent, data: { permission: 'Leave' } },
+      { path: 'my-application', component: LeaveApplicationComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'my-leave-balance', component: LeaveBalanceComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'my-team-balance', component: LeaveBalanceComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'my-leave-grant', component: LeaveManagementComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'my-short-leave', component: ShortLeaveComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'team-application', component: LeaveApplicationComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'team-short-leave', component: ShortLeaveComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'team-leave-grant', component: LeaveManagementComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'general-information', component: GeneralComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
       {
         path: 'settings', component: LeaveSettingComponent, canActivate: [AuthGuard],
         data: { permission: 'Leave Settings' },
@@ -44,10 +43,10 @@ const routes: Routes = [
           { path: 'leave-assignment', component: LeaveAssignmentComponent },
         ],
       },
-      { path: 'leave-grant', component: LeaveManagementComponent, data: { permission: 'Leave' } },
-      { path: 'leave-balance', component: LeaveBalanceComponent, data: { permission: 'Leave' } },
-      { path: 'leave-application', component: LeaveApplicationComponent, data: { permission: 'Leave' } },
-      { path: 'short-leave', component: ShortLeaveComponent, data: { permission: 'Leave' } }
+      { path: 'leave-grant', component: LeaveManagementComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'leave-balance', component: LeaveBalanceComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'leave-application', component: LeaveApplicationComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } },
+      { path: 'short-leave', component: ShortLeaveComponent, canActivate: [AuthGuard], data: { permission: 'Leave' } }
 
     ],
   },

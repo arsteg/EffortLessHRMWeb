@@ -8,7 +8,8 @@ import { EventNotificationViewerComponent } from './event-notification-viewer/ev
 
 const routes: Routes = [
   {
-    path: '', component: AlertsComponent, canActivate: [AuthGuard],
+    path: '', component: AlertsComponent, 
+    //canActivate: [AuthGuard],
     children: [
       {
         path: '',

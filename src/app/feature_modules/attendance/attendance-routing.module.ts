@@ -19,13 +19,12 @@ import { AttendanceProcessComponent } from './attendance-process/attendance-proc
 
 const routes: Routes = [
   {
-        path: '', component: AttendanceManagementComponent, canActivate: [AuthGuard],
+        path: '', component: AttendanceManagementComponent,
         children: [
           {
             path: '',
             redirectTo: (localStorage.getItem('adminView') === 'user') ? 'my-attendance-records' : 'settings',
-            pathMatch: 'full',
-            data: { permission: 'Attendance' }
+            pathMatch: 'full'
           },
           { path: 'my-attendance-records', component: MyAttendanceRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
           { path: 'my-roster-records', component: RosterRecordsComponent, canActivate: [AuthGuard], data: { permission: 'Attendance' } },
