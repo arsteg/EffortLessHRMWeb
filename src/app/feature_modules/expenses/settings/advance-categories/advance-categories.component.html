@@ -49,7 +49,8 @@
 
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>
-      {{isEdit ? ('expenses.update' | translate) : ('expenses.add' | translate)}} {{'expenses.advance_category' | translate}}
+      {{isEdit ? ('expenses.edit' | translate) : ('expenses.add' | translate)}} {{'expenses.advance_category' |
+      translate}}
     </h1>
     <button mat-icon-button mat-dialog-close="" class="me-4">
       <mat-icon>close</mat-icon>
@@ -61,19 +62,26 @@
         <mat-form-field class="w-100">
           <mat-label>{{'expenses.category_label' | translate}}</mat-label>
           <input matInput type="text" placeholder="Add Custom Label" formControlName="label" required>
-          <mat-error *ngIf="addCategory.get('label').invalid && addCategory.get('label').touched">
+          <mat-error *ngIf="addCategory.get('label').touched && (!addCategory.get('label').hasError('maxlength') && addCategory.get('label')?.errors?.['invalidLabel'] && addCategory.get('label')?.errors?.['spacesNotAllowed'])">
             {{'expenses.category_label_required' | translate}}
+          </mat-error>
+          <mat-error *ngIf="addCategory.get('label').hasError('maxlength')">
+            {{'expenses.category_label_Limit' | translate}}
+          </mat-error>
+          <mat-error *ngIf="addCategory.get('label')?.errors?.['spacesNotAllowed']">
+            {{ 'expenses.labelNoLeadingOrTrailingSpaces' | translate }}
+          </mat-error>
+          <mat-error *ngIf="addCategory.get('label')?.errors?.['invalidLabel']">
+            {{ 'expenses.label_invalid' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
     </div>
     <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
-      <button mat-flat-button type="button" (click)="addCategory.reset(); dialogRef.close()">{{'expenses.cancel' | translate}}</button>
-      <!-- <div>
-        <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
-        <button mat-stroked-button type="button" (click)="editAdvanceCategory()">{{'expenses.reset' | translate}}</button>
-      </div> -->
-      <button mat-flat-button color="primary" [disabled]="isSubmitted" type="submit">{{isEdit ? ('expenses.update' | translate) : ('expenses.add' | translate)}}</button>
+      <button mat-flat-button type="button" (click)="addCategory.reset(); dialogRef.close()">{{'expenses.cancel' |
+        translate}}</button>
+      <button mat-flat-button color="primary" [disabled]="isSubmitted" type="submit">{{isEdit ? ('expenses.update' |
+        translate) : ('expenses.add' | translate)}}</button>
     </div>
   </form>
 </ng-template>

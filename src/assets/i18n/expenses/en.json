@@ -97,6 +97,10 @@
         "rate":"Reimbursement Rate",
         "categoryLabel": "Category Name",
         "rate_error":"Please enter rate.",
+        "category_label_Limit": "The label must be no more than 30 characters long.",
+        "labelNoLeadingOrTrailingSpaces": "Label cannot have leading or trailing spaces.",
+        "label_invalid": "Label must contain at least one alphabet and can include spaces, commas, hyphens, and parentheses.",
+
         "max_amount_limit_per_expense":"Maximum amount limit per individual expense",
         "max_amount_limit_per_expense_without_receipt":"Maximum amount permitted per expense without receipt",
         "times_in_a":"Times in a",

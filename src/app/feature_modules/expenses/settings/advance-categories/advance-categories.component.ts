@@ -7,6 +7,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 @Component({
   selector: 'app-advance-categories',
   templateUrl: './advance-categories.component.html',
@@ -41,7 +42,7 @@ export class AdvanceCategoriesComponent implements OnInit {
     private expenseService: ExpensesService,
     private toast: ToastrService) {
     this.addCategory = this.fb.group({
-      label: ['', Validators.required]
+      label: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]]
     });
   }
 
@@ -92,39 +93,44 @@ export class AdvanceCategoriesComponent implements OnInit {
   }
 
   onSubmit() {
-    this.isSubmitted = true
-    if (!this.isEdit) {
-      let payload = {
-        label: this.addCategory.value['label'],
-      };
-
-      this.expenseService.addAdvanceCategory(payload).subscribe((res: any) => {
-        const newCategory = res.data;
-        this.toast.success(this.translate.instant('expenses.category_added_success'));
-        this.advanceCategories.data.push(newCategory);
-        this.advanceCategories._updateChangeSubscription();
-        this.addCategory.reset();
-      },
-        err => {
-          this.toast.error(err || this.translate.instant('expenses.category_added_error'));
-        });
+    this.isSubmitted = true;
+    if (this.addCategory.invalid) {
+      this.addCategory.markAllAsTouched();
     }
-    if (this.isEdit) {
-      let categoryPayload = {
-        label: this.addCategory.value['label']
-      };
+    else {
+      if (!this.isEdit) {
+        let payload = {
+          label: this.addCategory.value['label'],
+        };
 
-      if (this.addCategory.get('label').dirty) {
-        this.expenseService.updateAdvanceCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
-          this.updatedCategory = res.data._id;
-          this.toast.success(this.translate.instant('expenses.category_updated_success'));
+        this.expenseService.addAdvanceCategory(payload).subscribe((res: any) => {
+          const newCategory = res.data;
+          this.toast.success(this.translate.instant('expenses.category_added_success'));
+          this.advanceCategories.data.push(newCategory);
+          this.advanceCategories._updateChangeSubscription();
           this.addCategory.reset();
-          this.isEdit = false;
-          this.getAllAdvanceCategories();
         },
-          (err) => {
-            this.toast.error(err || this.translate.instant('expenses.category_updated_error'));
+          err => {
+            this.toast.error(err || this.translate.instant('expenses.category_added_error'));
           });
+      }
+      if (this.isEdit) {
+        let categoryPayload = {
+          label: this.addCategory.value['label']
+        };
+
+        if (this.addCategory.get('label').dirty) {
+          this.expenseService.updateAdvanceCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
+            this.updatedCategory = res.data._id;
+            this.toast.success(this.translate.instant('expenses.category_updated_success'));
+            this.addCategory.reset();
+            this.isEdit = false;
+            this.getAllAdvanceCategories();
+          },
+            (err) => {
+              this.toast.error(err || this.translate.instant('expenses.category_updated_error'));
+            });
+        }
       }
     }
   }
