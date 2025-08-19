@@ -80,10 +80,7 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   deleteTemplate(_id: string) {
     this.expenseService.deleteTemplate(_id).subscribe((res: any) => {
-      const index = this.templates.findIndex(temp => temp._id === _id);
-      if (index !== -1) {
-        this.templates.splice(index, 1);
-      }
+      this.getAllTemplates();
       this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {

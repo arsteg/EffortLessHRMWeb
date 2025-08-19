@@ -40,7 +40,7 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item *ngIf="templateAssignment.approvalType == 'employee-wise'"
+                        <button mat-menu-item
                             (click)="setFormValues(templateAssignment, addModal, 'Update');">
                             <mat-icon>edit</mat-icon>
                             <span translate>expenses.edit</span>

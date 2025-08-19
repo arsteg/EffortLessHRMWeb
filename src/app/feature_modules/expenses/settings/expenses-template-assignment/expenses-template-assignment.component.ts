@@ -103,7 +103,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     const data = this.selectedTemplateAssignment;
     this.expenseService.getTemplateAssignmentById(data.user).subscribe((res: any) => {
       const templateAssignment = res.data[0];
-      console.log(templateAssignment)
       this.templateAssignmentForm.patchValue({
         user: templateAssignment.user,
         primaryApprover: templateAssignment.primaryApprover,
@@ -121,13 +120,9 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
               effectiveDate: data.effectiveDate
             });
             this.templateAssignmentForm.get('user').disable();
-            this.templateAssignmentForm.get('effectiveDate').disable();
-            this.templateAssignmentForm.get('expenseTemplate').disable();
             this.templateAssignmentForm.get('primaryApprover').disable();
           }
           this.templateAssignmentForm.get('user').disable();
-          this.templateAssignmentForm.get('effectiveDate').disable();
-          this.templateAssignmentForm.get('expenseTemplate').disable();
           this.templateAssignmentForm.get('primaryApprover').disable();
         }
 
@@ -139,8 +134,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
             effectiveDate: templateAssignment.effectiveDate
           });
           this.templateAssignmentForm.get('user').disable();
-          this.templateAssignmentForm.get('effectiveDate').disable();
-          this.templateAssignmentForm.get('expenseTemplate').disable();
           this.templateAssignmentForm.get('primaryApprover').enable();
         }
       });
@@ -151,40 +144,21 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   onTemplateSelectionChange(event: any) {
     this.showApproverFields = true;
     const selectedTemplateId = event.value;
-
     this.expenseService.getTemplateById(selectedTemplateId).subscribe((res: any) => {
       this.templateById = res.data;
-
       if (this.templateById.approvalType === 'template-wise') {
-        if (this.templateById.approvalLevel === '1') {
-          this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.firstApprovalEmployee,
-          });
-          this.templateAssignmentForm.get('primaryApprover').disable();
-          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
+        this.templateAssignmentForm.patchValue({
+          primaryApprover: this.templateById.firstApprovalEmployee,
+        });
+        this.templateAssignmentForm.get('primaryApprover').disable();
+        this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
 
-          this.primaryApproverField.nativeElement.disabled = true;
-
-        }
       } else if (this.templateById.approvalType === 'employee-wise') {
-        if (this.templateById.approvalLevel === '1') {
-          this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.firstApprovalEmployee,
-          });
-          this.templateAssignmentForm.get('primaryApprover').enable();
-          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
-
-          // Enable the fields
-          this.primaryApproverField.nativeElement.disabled = false;
-
-        } else if (this.templateById.approvalLevel === '2') {
-          this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.firstApprovalEmployee,
-          });
-          this.templateAssignmentForm.get('primaryApprover').enable();
-          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
-          this.primaryApproverField.nativeElement.disabled = false;
-        }
+        this.templateAssignmentForm.patchValue({
+          primaryApprover: this.templateById.firstApprovalEmployee,
+        });
+        this.templateAssignmentForm.get('primaryApprover').enable();
+        this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
       }
     });
   }
@@ -352,7 +326,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       expenseTemplate: templateAssignment.expenseTemplate,
       effectiveDate: templateAssignment.effectiveDate
     };
-    console.log(formValues)
     this.templateAssignmentForm.get('user')?.enable();
     this.templateAssignmentForm.get('expenseTemplate')?.enable();
     this.templateAssignmentForm.patchValue(formValues);
