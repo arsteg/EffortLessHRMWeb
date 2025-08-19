@@ -1,8 +1,8 @@
 <div class="d-flex align-items-center justify-content-between">
   <h1 mat-dialog-title>
-    {{'expenses.expense_category_setting_title' | translate}} {{selectedTemplate.policyLabel}}
+    {{'expenses.expense_category_setting_title' | translate}} {{selectedTemplate?.policyLabel}}
   </h1>
-  <button mat-icon-button mat-dialog-close="" class="me-4">
+  <button mat-icon-button mat-dialog-close="" (click)="closeModal()" class="me-4">
     <mat-icon>close</mat-icon>
   </button>
 </div>
@@ -241,5 +241,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-  <button mat-flat-button class="ms-auto" color="primary" [disabled]="firstForm.invalid" (click)="onSubmit()">{{'expenses.submit' | translate}}</button>
+  <button mat-flat-button class="ms-auto" color="primary" [disabled]="firstForm?.invalid" (click)="onSubmit()">{{'expenses.submit' | translate}}</button>
 </div>

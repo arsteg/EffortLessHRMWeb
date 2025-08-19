@@ -27,6 +27,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   totalRecords: number;
   recordsPerPage: number = 10;
   currentPage: number = 1;
+  isSubmitted: boolean = false;
   displayedColumns: string[] = ['label', 'type', 'actions'];
   dialogRef: MatDialogRef<any>;
   expenseTypes = {
@@ -61,6 +62,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   }
 
   open(content: any) {
+    this.isSubmitted = false;
     this.dialogRef = this.dialog.open(content, {
       width: '50%',
       disableClose: true
@@ -173,6 +175,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   }
 
   addExpenseCategory() {
+    this.isSubmitted = true;
     let categoryPayload = {
       type: this.addCategoryForm.value['type'],
       label: this.addCategoryForm.value['label'],
@@ -235,6 +238,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   }
 
   updateExpenseCategory() {
+    this.isSubmitted = true;
     let categoryPayload = {
       type: this.addCategoryForm.value['type'],
       label: this.addCategoryForm.value['label'],

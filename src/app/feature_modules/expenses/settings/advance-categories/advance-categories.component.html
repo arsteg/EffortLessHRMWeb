@@ -65,6 +65,9 @@
           <mat-error *ngIf="addCategory.get('label').touched && (!addCategory.get('label').hasError('maxlength') && addCategory.get('label')?.errors?.['invalidLabel'] && addCategory.get('label')?.errors?.['spacesNotAllowed'])">
             {{'expenses.category_label_required' | translate}}
           </mat-error>
+          <mat-error *ngIf="!addCategory.get('label').dirty">
+            {{'expenses.category_label_required' | translate}}
+          </mat-error>
           <mat-error *ngIf="addCategory.get('label').hasError('maxlength')">
             {{'expenses.category_label_Limit' | translate}}
           </mat-error>

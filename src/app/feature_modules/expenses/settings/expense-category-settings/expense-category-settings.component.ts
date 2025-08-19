@@ -212,7 +212,6 @@ export class ExpenseCategorySettingsComponent {
 
   closeModal() {
     this.changeStep.emit(1);
-    // this.firstForm.reset();
     this.close.emit(true);
   }
 

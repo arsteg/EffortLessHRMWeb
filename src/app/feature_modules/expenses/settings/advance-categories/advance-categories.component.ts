@@ -109,6 +109,7 @@ export class AdvanceCategoriesComponent implements OnInit {
           this.advanceCategories.data.push(newCategory);
           this.advanceCategories._updateChangeSubscription();
           this.addCategory.reset();
+          this.dialogRef.close();
         },
           err => {
             this.toast.error(err || this.translate.instant('expenses.category_added_error'));
@@ -126,6 +127,7 @@ export class AdvanceCategoriesComponent implements OnInit {
             this.addCategory.reset();
             this.isEdit = false;
             this.getAllAdvanceCategories();
+            this.dialogRef.close();
           },
             (err) => {
               this.toast.error(err || this.translate.instant('expenses.category_updated_error'));

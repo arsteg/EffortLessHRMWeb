@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { CommonService } from 'src/app/_services/common.Service';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -154,7 +153,7 @@ export class AdvanceTemplatesComponent implements OnInit {
         this.expenseService.addAdvanceTemplates(payload).subscribe(
           (res: any) => {
             const newCategory = res.data;
-            this.list.push(newCategory);
+            this.getAllTemplates();
 
             if (this.advanceCategories.length > 0) {
               let advanceCategories = {
@@ -163,6 +162,7 @@ export class AdvanceTemplatesComponent implements OnInit {
             }
             this.toast.success(this.translate.instant('expenses.template_created_success'));
             this.addAdvanceTempForm.reset();
+            this.dialogRef.close();
           },
           err => {
             this.toast.error(err || this.translate.instant('expenses.template_created_error'));
@@ -182,6 +182,7 @@ export class AdvanceTemplatesComponent implements OnInit {
           this.isEdit = false;
           this.changeMode == 'Add';
           this.getAllTemplates();
+          this.dialogRef.close();
         },
           (err) => {
             this.toast.error(this.translate.instant('expenses.template_updated_error'));
@@ -189,7 +190,6 @@ export class AdvanceTemplatesComponent implements OnInit {
       }
     }
     else {
-      console.log('fields not added properly')
       this.markFormGroupTouched(this.addAdvanceTempForm);
     }
   }
