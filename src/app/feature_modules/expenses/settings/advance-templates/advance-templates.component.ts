@@ -10,6 +10,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-advance-templates',
@@ -43,6 +44,7 @@ export class AdvanceTemplatesComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  isSubmitted: boolean = false;
 
   constructor(private fb: FormBuilder,
     private expenseService: ExpensesService,
@@ -50,11 +52,10 @@ export class AdvanceTemplatesComponent implements OnInit {
     private dialog: MatDialog,
     private manageService: ManageTeamService) {
     this.addAdvanceTempForm = this.fb.group({
-      policyLabel: ['', Validators.required],
+      policyLabel: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       approvalType: ['employee-wise', Validators.required],
       advanceCategories: [[]],
-      firstApprovalEmployee: ['', Validators.required],
-      secondApprovalEmployee: ['', Validators.required]
+      firstApprovalEmployee: [''],
     });
   }
 
@@ -63,12 +64,14 @@ export class AdvanceTemplatesComponent implements OnInit {
     this.getAllTemplates();
     this.getAlladvanceCategories();
     this.addAdvanceTempForm.get('approvalType').valueChanges.subscribe((value: any) => {
+      this.isSubmitted = false;
       if (value === 'template-wise') {
         this.addAdvanceTempForm.get('firstApprovalEmployee')?.setValidators([Validators.required]);
+      } else {
+        this.addAdvanceTempForm.get('firstApprovalEmployee')?.clearValidators();
+        this.addAdvanceTempForm.get('firstApprovalEmployee')?.setValue(null);
       }
-      this.addAdvanceTempForm.patchValue({
-        firstApprovalEmployee: null
-      })
+      this.addAdvanceTempForm.get('firstApprovalEmployee')?.updateValueAndValidity();
     });
     this.dataSource = new MatTableDataSource(this.list);
     this.dataSource.paginator = this.paginator;
@@ -92,6 +95,7 @@ export class AdvanceTemplatesComponent implements OnInit {
   }
 
   open(content: any) {
+    this.isSubmitted = false;
     this.dialogRef = this.dialog.open(content, {
       width: '600px',
       disableClose: true
@@ -137,13 +141,14 @@ export class AdvanceTemplatesComponent implements OnInit {
   }
 
   addAdvanceTemplate() {
+    console.log(this.addAdvanceTempForm.value)
+    this.isSubmitted = true;
     if (this.addAdvanceTempForm.valid) {
       if (this.changeMode === 'Add') {
         let payload = {
           policyLabel: this.addAdvanceTempForm.value['policyLabel'],
           approvalType: this.addAdvanceTempForm.value['approvalType'],
-          firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
-          secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
+          firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'] || null,
           advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
         };
         this.expenseService.addAdvanceTemplates(payload).subscribe(
@@ -163,14 +168,12 @@ export class AdvanceTemplatesComponent implements OnInit {
             this.toast.error(err || this.translate.instant('expenses.template_created_error'));
           }
         );
-        this.addAdvanceTempForm.reset();
       }
       else if (this.changeMode === 'Update') {
         let payload = {
           policyLabel: this.addAdvanceTempForm.value['policyLabel'],
           approvalType: this.addAdvanceTempForm.value['approvalType'],
-          firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'],
-          secondApprovalEmployee: this.addAdvanceTempForm.value['secondApprovalEmployee'],
+          firstApprovalEmployee: this.addAdvanceTempForm.value['firstApprovalEmployee'] || null,
           advanceCategories: this.addAdvanceTempForm.value.advanceCategories.map(category => ({ advanceCategory: category })),
         };
         this.expenseService.updateAdvanceTemplates(this.selectedTemplate._id, payload).subscribe((res: any) => {
@@ -186,6 +189,7 @@ export class AdvanceTemplatesComponent implements OnInit {
       }
     }
     else {
+      console.log('fields not added properly')
       this.markFormGroupTouched(this.addAdvanceTempForm);
     }
   }

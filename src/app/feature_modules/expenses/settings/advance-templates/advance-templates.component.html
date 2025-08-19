@@ -13,7 +13,8 @@
         </div>
         <table mat-table [dataSource]="dataSource" matSort class="hrm-table">
             <ng-container matColumnDef="policyLabel">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'expenses.advance_template_label' | translate}}</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'expenses.advance_template_label' | translate}}
+                </th>
                 <td mat-cell *matCellDef="let advance">{{advance?.policyLabel}}</td>
             </ng-container>
 
@@ -56,7 +57,8 @@
 
     <div class="d-flex align-items-center justify-content-between">
         <h1 mat-dialog-title>
-            {{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}} {{'expenses.advance_template' | translate}}
+            {{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}} {{'expenses.advance_template' |
+            translate}}
         </h1>
         <button mat-icon-button mat-dialog-close="" class="me-4">
             <mat-icon>close</mat-icon>
@@ -65,16 +67,27 @@
     <form action="" [formGroup]="addAdvanceTempForm" (ngSubmit)="addAdvanceTemplate()">
         <div mat-dialog-content>
 
-            <mat-form-field class="w-100">
+            <mat-form-field class="w-100 mb-2">
                 <mat-label>{{'expenses.advance_template_label' | translate}}</mat-label>
                 <input type="text" matInput placeholder="Add Custom Label" formControlName="policyLabel" required>
                 <mat-error
-                    *ngIf="addAdvanceTempForm.get('policyLabel').invalid && addAdvanceTempForm.get('policyLabel').touched">
-                    {{'expenses.advance_template_label_error' | translate}}
+                    *ngIf="addAdvanceTempForm.get('policyLabel').touched && addAdvanceTempForm.get('policyLabel').invalid">
+                    <span *ngIf="addAdvanceTempForm.get('policyLabel').hasError('maxlength')">
+                        {{'expenses.category_label_Limit' | translate}}
+                    </span>
+                    <span *ngIf="addAdvanceTempForm.get('policyLabel')?.errors?.['spacesNotAllowed']">
+                        {{ 'expenses.labelNoLeadingOrTrailingSpaces' | translate }}
+                    </span>
+                    <span *ngIf="addAdvanceTempForm.get('policyLabel')?.errors?.['invalidLabel']">
+                        {{ 'expenses.label_invalid' | translate }}
+                    </span>
+                    <span *ngIf="addAdvanceTempForm.get('policyLabel').hasError('required')">
+                        {{'expenses.advance_template_label_error' | translate}}
+                    </span>
                 </mat-error>
             </mat-form-field>
 
-            <mat-form-field class="w-100">
+            <mat-form-field class="w-100 mt-3">
                 <mat-label>{{'expenses.select_applicable_categories' | translate}}</mat-label>
                 <mat-select multiple formControlName="advanceCategories" required>
                     <mat-option [value]="advanceCategory?._id"
@@ -95,7 +108,8 @@
                     <mat-radio-button value="template-wise">{{'expenses.template_wise' | translate}}</mat-radio-button>
                     <mat-radio-button value="employee-wise">{{'expenses.employee_wise' | translate}}</mat-radio-button>
                 </mat-radio-group>
-                <mat-error *ngIf="addAdvanceTempForm.get('approvalType').invalid && addAdvanceTempForm.get('approvalType').touched">
+                <mat-error
+                    *ngIf="addAdvanceTempForm.get('approvalType').invalid && addAdvanceTempForm.get('approvalType').touched">
                     {{'expenses.add_approvers_error' | translate}}
                 </mat-error>
             </div>
@@ -108,8 +122,9 @@
                             <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |
                                 titlecase}} {{user.lastName | titlecase}}</mat-option>
                         </mat-select>
-                        <mat-error *ngIf="addAdvanceTempForm.get('firstApprovalEmployee').invalid && addAdvanceTempForm.get('firstApprovalEmployee').touched">
-                           {{'expenses.first_approver_error' | translate}}
+                        <mat-error
+                            *ngIf="addAdvanceTempForm.get('firstApprovalEmployee').invalid && addAdvanceTempForm.get('firstApprovalEmployee').touched">
+                            {{'expenses.first_approver_error' | translate}}
                         </mat-error>
                     </mat-form-field>
                 </div>
@@ -117,8 +132,7 @@
         </div>
         <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
             <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
-            <button mat-flat-button color="primary" type="submit"
-                [disabled]="!addAdvanceTempForm.valid">
+            <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitted">
                 {{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}}
             </button>
         </div>
