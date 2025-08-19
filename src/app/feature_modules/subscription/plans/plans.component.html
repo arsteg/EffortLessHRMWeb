@@ -117,8 +117,8 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                @if(!(subscription.status === 'new' || subscription.status === 'cancelled' || subscription.status === 'created')) {
-                                    Status of your subscription is {{subscription.status}}. Please contact administrator.
+                                @if(subscription?.status && !(subscription?.status === 'new' || subscription?.status === 'cancelled' || subscription?.status === 'created')) {
+                                    Status of your subscription is {{subscription?.status}}. Please contact administrator.
                                 } 
                             </div>
                         </div>
