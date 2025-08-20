@@ -69,6 +69,8 @@ export class LoginComponent implements OnInit {
           this.user.lastName = data.data.user.lastName;
           this.user.freeCompany = data.data.user.company.freeCompany;
           this.user.empCode = data.data.user?.appointment[0]?.empCode;
+          this.user.isTrial = data.data.user?.trialInfo?.isTrial;
+          this.user.daysLeft = data.data.user?.trialInfo?.daysLeft;
           localStorage.setItem('jwtToken', data.token);
           localStorage.setItem('currentUser', JSON.stringify(this.user));
           localStorage.setItem('rememberMe', JSON.stringify(this.loginForm.value.rememberMe));

@@ -153,7 +153,7 @@ export class PlansComponent {
                 this.authService.companySubscription.next(data.data.subscription.razorpaySubscription);
                 localStorage.setItem('subscription', JSON.stringify(data.data.subscription.razorpaySubscription));
                 this.loading = false;
-                if (localStorage.getItem('roleId') === '639acb77b5e1ffe22eaa4a39') {
+                if (localStorage.getItem('role').toLowerCase() === 'admin') {
                   this.router.navigate(['home/dashboard']);
                 } else {
                   this.router.navigate(['home/dashboard/user']);

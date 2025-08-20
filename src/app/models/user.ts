@@ -65,6 +65,8 @@ export class signup{
   createdOn: Date;
   updatedOn: Date;
   empCode?: number;
+  isTrial: Boolean;
+  daysLeft?: number;
 }
 export class changeUserPassword{
   passwordCurrent:string;

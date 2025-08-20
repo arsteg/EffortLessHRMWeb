@@ -10,6 +10,15 @@
         <div class="d-flex justify-content-end">
             <div class="text-right">
                 <div class=" d-flex align-items-center">
+                    <div *ngIf="isTrialMode" class="trial-banner d-flex justify-content-between align-items-center px-2 py-2">
+                        <div class="me-2">
+                            <span class="fw-bold text-danger">{{ 'header.trialmessage' | translate: { daysLeft: daysLeft } }}</span>
+                        </div>
+                        <button mat-flat-button color="primary" (click)="goToPurchase()">
+                            <mat-icon class="me-1">shopping_cart</mat-icon>
+                            {{ 'header.purchaseNow' | translate }}
+                        </button>
+                    </div>
                     <hrm-language-selector cssClass="pe-2"></hrm-language-selector>
                     <app-notification></app-notification>
                     <section>

@@ -43,7 +43,8 @@ private async processActivation(
   const user = this.authService.currentUserSubject.getValue();
   const subscriptionActive = ['active', 'authenticated'];
 
-  if (!subscriptionActive.includes(subscription?.status) && !user.freeCompany) {
+  //if (!subscriptionActive.includes(subscription?.status) && !user.freeCompany) {
+  if (!subscriptionActive.includes(subscription?.status) && !user?.isTrial) {
     this.router.navigate(['/subscription/plans']);
     return false;
   }

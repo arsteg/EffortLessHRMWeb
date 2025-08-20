@@ -108,6 +108,8 @@ export class AuthenticationService {
             freeCompany: user.data.user.company.freeCompany,
             empCode: user.data.user.appointment?.[0]?.empCode,
             role: user.data.user.role.name.toLowerCase() == "admin"? Role.Admin : Role.User,
+            isTrial: user.data.user.trialInfo?.isTrial,
+            daysLeft: user.data.user.trialInfo?.daysLeft
           }
         );
         this.companySubscription.next(user.data.companySubscription);
