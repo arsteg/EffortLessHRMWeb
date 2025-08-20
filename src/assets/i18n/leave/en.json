@@ -63,7 +63,7 @@
         "leaveAccrualPeriod": "Select your accrual period",
         "annually": "Annually",
         "semiAnnually": "Semi-Annually",
-        "quaterly": "Quaterly",
+        "quarterly": "Quarterly",
         "biMonthly": "Bi-Monthly",
         "monthly": "Monthly",
         "errorLeaveAccrualPeriod": "Please Choose Accural Period.",

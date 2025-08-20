@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
@@ -25,17 +26,18 @@ export class GeneralSettingsComponent implements OnInit {
         private payrollService: PayrollService,
         private userService: UserService,
         private toast: ToastrService,
+         private translate: TranslateService,
         private authService: AuthenticationService
     ) {
         this.generalSettingForm = this.fb.group({
-            dayOfMonthToRunPayroll: [{ value: 'Last Day of Month', disabled: true }, Validators.required],
+            dayOfMonthToRunPayroll:[{ value: 'Last Day of Month', disabled: true }, Validators.required],
             payrollApprovar: ['',Validators.required],
             password: [''],
-            isPasswordForSalaryRegister: [true],
-            isGraduityEligible: [true],
-            percentageForGraduity: [''],
-            isAllowTDSFromEffortlessHRM: [true],
-            isAllowToCalculateOvertime: [true]
+            isPasswordForSalaryRegister: [false],
+            isGraduityEligible: [false],
+            percentageForGraduity: ['0'],
+            isAllowTDSFromEffortlessHRM: [false],
+            isAllowToCalculateOvertime: [false]
         });
         // this.generalSettingForm.disable();
     }
@@ -116,25 +118,26 @@ export class GeneralSettingsComponent implements OnInit {
 
     patchFormValues(settings: any) {
         this.generalSettingForm.patchValue({
-            dayOfMonthToRunPayroll: settings.dayOfMonthToRunPayroll,
+          dayOfMonthToRunPayroll: settings.dayOfMonthToRunPayroll ?? 'Last Day of Month',
             payrollApprovar: settings.payrollApprovar,
             password: settings.password,
-            isPasswordForSalaryRegister: settings.isPasswordForSalaryRegister,
-            isGraduityEligible: settings.isGraduityEligible,
-            percentageForGraduity: settings.percentageForGraduity,
-            isAllowTDSFromEffortlessHRM: settings.isAllowTDSFromEffortlessHRM,
-            isAllowToCalculateOvertime: settings.isAllowToCalculateOvertime
+            isPasswordForSalaryRegister: settings.isPasswordForSalaryRegister ?? false,
+            isGraduityEligible: settings.isGraduityEligible ?? false,
+            percentageForGraduity: settings.percentageForGraduity ?? '0',
+            isAllowTDSFromEffortlessHRM: settings.isAllowTDSFromEffortlessHRM  ?? false,
+            isAllowToCalculateOvertime: settings.isAllowToCalculateOvertime ?? false
         });
     }
 
     saveGeneralSettings() {
+        this.generalSettingForm.get('dayOfMonthToRunPayroll')?.enable();
         const companyId = this.fixedAllowance[0]?.company;
         if (!companyId) return;
         if (this.generalSettingForm.invalid) {
             
             this.generalSettingForm.markAllAsTouched();  // This triggers validation errors
-            this.toast.error('Please fill all required fields', 'Error!');
-  
+            this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');  
+            this.generalSettingForm.get('dayOfMonthToRunPayroll')?.disable();
             return;
           }
         this.payrollService.getGeneralSettings(companyId).subscribe({
@@ -144,16 +147,24 @@ export class GeneralSettingsComponent implements OnInit {
                     ? this.payrollService.addGeneralSettings(this.generalSettingForm.value)
                     : this.payrollService.updateGeneralSettings(companyId, this.generalSettingForm.value);
 
-                request.subscribe({
-                    next: (res: any) => {
+                request.subscribe(
+                  (res) => {
                         this.patchFormValues(res.data);
-                        this.toast.success(`General Settings ${settings.length === 0 ? 'Added' : 'Updated'} Successfully`);
+                        this.toast.success(`General Settings ${settings.length === 0 ? 'Added' : 'Updated'} Successfully`);                         
                         this.resetSettings();
                     },
-                    error: () => this.toast.error('Failed to save general settings')
+                    (err) => {
+                      {
+                        const errorMessage = err?.error?.message || err?.message || this.translate.instant('payroll.save_failed');
+                        this.translate.get('payroll.save_failed').subscribe(title => {
+                          this.toast.error(errorMessage, title);
+                        });
+                        this.generalSettingForm.get('dayOfMonthToRunPayroll')?.disable();
+                      }
                 });
             },
             error: () => this.toast.error('Failed to check existing settings')
+
         });
     }
 
@@ -164,6 +175,7 @@ export class GeneralSettingsComponent implements OnInit {
 
     resetSettings() {
         this.isEdit = false;
+        this.generalSettingForm.get('dayOfMonthToRunPayroll')?.disable();
         this.loadGeneralSettings();
     }
 

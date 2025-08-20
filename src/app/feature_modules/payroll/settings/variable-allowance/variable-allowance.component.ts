@@ -9,48 +9,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
-
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  // Check if the value is empty or only whitespace
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true }; // Treat empty or only whitespace as required error
-  }
-  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
-const periodValidator: ValidatorFn = (formGroup: FormGroup) => {
-  const isEndingPeriod = formGroup.get('isEndingPeriod')?.value;
-  if (!isEndingPeriod) {
-    return null; // No validation needed if there's no end period
-  }
-
-  const startMonth = formGroup.get('allowanceEffectiveFromMonth')?.value;
-  const startYear = formGroup.get('allowanceEffectiveFromYear')?.value;
-  const endMonth = formGroup.get('allowanceStopMonth')?.value;
-  const endYear = formGroup.get('allowanceStopYear')?.value;
-
-  if (!startMonth || !startYear || !endMonth || !endYear) {
-    return null;
-  }
-
-  const monthMap: { [key: string]: number } = {
-    january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
-    july: 7, august: 8, september: 9, october: 10, november: 11, december: 12
-  };
-
-  const startMonthNum = monthMap[startMonth.toLowerCase()];
-  const endMonthNum = monthMap[endMonth.toLowerCase()];
-  if (!startMonthNum || !endMonthNum) {
-    return { invalidMonth: true };
-  }
-
-  const startDate = new Date(Number(startYear), startMonthNum - 1);
-  const endDate = new Date(Number(endYear), endMonthNum - 1);
-
-  return endDate > startDate ? null : { invalidPeriod: true };
-};
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-variable-allowance',
@@ -164,7 +123,7 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.variableAllowanceForm = this.fb.group({
-      label: ['', [Validators.required, labelValidator]],
+      label: ['', [Validators.required, CustomValidators.noNumbersOrSymbolsValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       allowanceRatePerDay: [0, [Validators.required, Validators.min(0)]],
       isShowINCTCStructure:[false],
       isPayrollEditable: [false],
@@ -181,7 +140,7 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
       allowanceStopMonth: [''],
       allowanceStopYear: [''],
       isProfessionalTaxAffected: [false]
-    }, { validators: periodValidator });
+    }, { validators: CustomValidators.periodValidator });
 
     // Update validators dynamically based on isEndingPeriod
     this.variableAllowanceForm.get('isEndingPeriod')?.valueChanges.subscribe(value => {
@@ -338,11 +297,11 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
               );
             });
           },
-          error: (err) => {
-            const errorMessage = err?.error?.message || this.translate.instant('payroll._variable_allowance.toast.error_add');
-            this.translate.get('payroll._variable_allowance.title').subscribe(title => {
-              this.toast.error(errorMessage, title);
-            });
+          error: (err) => {         
+            const errorMessage = err?.error?.message || err?.message || err 
+            ||  this.translate.instant('_variable_allowance.toast.error_add')
+            ;
+            this.toast.error(errorMessage);
             this.isSubmitting = false;
           }
         });
@@ -365,11 +324,11 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
               );
             });
           },
-          error: (err) => {
-            const errorMessage = err?.error?.message || this.translate.instant('payroll._variable_allowance.toast.error_update');
-            this.translate.get('payroll._variable_allowance.title').subscribe(title => {
-              this.toast.error(errorMessage, title);
-            });
+          error: (err) => {           
+            const errorMessage = err?.error?.message || err?.message || err 
+            ||  this.translate.instant('_variable_allowance.toast.error_update')
+            ;
+            this.toast.error(errorMessage);
             this.isSubmitting = false;
           }
         });
@@ -423,11 +382,11 @@ export class VariableAllowanceComponent implements OnInit, AfterViewInit {
           );
         });
       },
-      error: (err) => {
-        const errorMessage = err?.error?.message || this.translate.instant('payroll._variable_allowance.toast.error_delete');
-        this.translate.get('payroll._variable_allowance.title').subscribe(title => {
-          this.toast.error(errorMessage, title);
-        });
+      error: (err) => {      
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll._variable_allowance.toast.error_delete')
+        ;
+        this.toast.error(errorMessage);
       }
     });
   }

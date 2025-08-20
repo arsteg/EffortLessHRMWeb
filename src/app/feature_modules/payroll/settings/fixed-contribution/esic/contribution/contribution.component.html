@@ -49,7 +49,7 @@
                     {{ 'payroll.field_required' | translate }}
                   </mat-error>    
                       <mat-error *ngIf="contributionForm.get('employerPercentage')?.hasError('negativeNumber')">
-                        {{ 'payroll.NegativeNotAllowed' | translate }}
+                        {{ 'payroll.NegativeNotAllowedAndGreaterThanZeroAllowed' | translate }}
                       </mat-error>
                 </mat-form-field>
             </div>

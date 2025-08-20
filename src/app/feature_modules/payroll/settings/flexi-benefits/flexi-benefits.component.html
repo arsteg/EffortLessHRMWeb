@@ -31,13 +31,15 @@
                     <mat-label>{{ 'payroll.flexi_benefits.form.name' | translate }}</mat-label>
                     <input matInput type="text" formControlName="name"
                         [placeholder]="'payroll.flexi_benefits.form.name_placeholder' | translate">
-                    <mat-error
-                        *ngIf="flexiBenefitsForm.get('name').invalid && (flexiBenefitsForm.get('name').dirty || flexiBenefitsForm.get('name').touched)">
-                        {{ 'payroll.flexi_benefits.form.error.name_required' | translate }}
-                    </mat-error>
-                    <mat-error *ngIf="flexiBenefitsForm.get('name')?.errors?.['invalidLabel']">
-                        {{ 'payroll.fixed_deduction.form.error.label_no_special_characters' | translate }}
-                    </mat-error>
+                        <mat-error class="mb-3" *ngIf="!flexiBenefitsForm.get('name').valid && flexiBenefitsForm.get('name').touched">
+                            <span *ngIf="flexiBenefitsForm.get('name').errors?.['required']">{{ 'payroll.name_required' |
+                              translate }}</span>
+                            <span *ngIf="flexiBenefitsForm.get('name').errors?.['invalidName']">{{ 'payroll.name_invalid' |
+                              translate }}</span>   
+                                <span *ngIf="flexiBenefitsForm.get('name')?.errors?.['spacesNotAllowed']">      
+                                    {{ 'payroll.spacenotallowed' | translate }}
+                                  </span>                                    
+                          </mat-error>
                 </mat-form-field>
             </div>
         </div>
@@ -45,7 +47,7 @@
             <button mat-flat-button type="button" (click)="clearForm(); closeModal()">
                 {{ 'payroll.cancel' | translate }}
             </button>
-            <button mat-flat-button type="submit" color="primary" [disabled]="!flexiBenefitsForm.valid">
+            <button mat-flat-button type="submit" color="primary" [disabled]="!flexiBenefitsForm.valid" [disabled]="isSubmitting">
                 {{ 'payroll.submit' | translate }}
             </button>
         </div>

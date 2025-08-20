@@ -59,9 +59,12 @@
         </div>
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
-            <mat-label>{{ 'organization.setup.state' | translate }}</mat-label>
-            <input matInput type="text" formControlName="state"
-              [placeholder]="'organization.setup.enter_state' | translate" />
+            <mat-label>{{ 'organization.setup.state' | translate }}</mat-label>          
+              <mat-select formControlName="state" required>
+                <mat-option *ngFor="let state of eligibleStates" [value]="state">
+                    {{ state }}
+                </mat-option>
+            </mat-select>
             <mat-error
               *ngIf="companyForm.get('state')?.hasError('required') && (companyForm.get('state')?.dirty || companyForm.get('state')?.touched)"
               translate>organization.setup.state_required</mat-error>

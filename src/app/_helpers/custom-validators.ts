@@ -339,4 +339,57 @@ static OnlyPostiveNumberValidator(): ValidatorFn {
     return null;
   };
 }
+static periodValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const isEndingPeriod = control.get('isEndingPeriod')?.value;
+
+  if (!isEndingPeriod) return null; // ✅ No validation needed
+
+  const fromMonth = control.get('allowanceEffectiveFromMonth')?.value;
+  const fromYear = control.get('allowanceEffectiveFromYear')?.value;
+  const toMonth = control.get('allowanceStopMonth')?.value;
+  const toYear = control.get('allowanceStopYear')?.value;
+
+  if (!fromMonth || !fromYear || !toMonth || !toYear) {
+    return null; // Wait until all fields are filled
+  }
+
+  const fromDate = new Date(`${fromMonth} 1, ${fromYear}`);
+  const toDate = new Date(`${toMonth} 1, ${toYear}`);
+
+  if (fromDate >= toDate) {
+    return { invalidPeriod: true }; // ❌ From date is same or after To date
+  }
+
+  return null; // ✅ Valid
+};
+static onlyIntegerValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (value === null || value === '') return null;
+
+    if (isNaN(value)) {
+      return { notANumber: true };
+    }
+
+    const num = parseFloat(value);
+
+    if (!Number.isInteger(num)) {
+      return { notInteger: true };
+    }
+
+    return null;
+  };
+}
+static fromLessThanToValidator(fromKey: string, toKey: string): ValidatorFn {
+  return (group: AbstractControl): { [key: string]: any } | null => {
+    const from = group.get(fromKey)?.value;
+    const to = group.get(toKey)?.value;
+
+    if (from !== null && to !== null && from >= to) {
+      return { fromGreaterThanTo: true };
+    }
+    return null;
+  };
+}
 }

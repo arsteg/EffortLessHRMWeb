@@ -11,6 +11,7 @@ import { TableService } from 'src/app/_services/table.service';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 const labelValidator: ValidatorFn = (control: AbstractControl) => {
   const value = control.value as string;
@@ -93,17 +94,14 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.variableDeductionForm = this.fb.group({
-      label: ['', [Validators.required, labelValidator]],
+      label: ['', [Validators.required, CustomValidators.noNumbersOrSymbolsValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       isShowINCTCStructure: [true, Validators.required],
       paidDeductionFrequently: ['', Validators.required],
       deductionEffectiveFromMonth: ['', Validators.required],
       deductionEffectiveFromYear: ['', Validators.required],
       isEndingPeriod: [true, Validators.required],
       deductionStopMonth: [''],
-      deductionStopYear: [''],
-      amountEnterForThisVariableDeduction: ['', Validators.required],
-      amount: [0],
-      percentage: [0]
+      deductionStopYear: ['']
     }, { validators: periodValidator });
 
     const currentYear = new Date().getFullYear();
@@ -237,11 +235,11 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
             this.translate.instant('payroll.variable_deduction.toast.title')
           );
         },
-        error: (err) => {
-          this.toast.error(
-            this.translate.instant('payroll.variable_deduction.toast.error_add'),
-            this.translate.instant('payroll.variable_deduction.toast.title')
-          );
+        error: (err) => {          
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.variable_deduction.toast.error_add')
+          ;
+          this.toast.error(errorMessage);
           this.isSubmitting = false;
         }
       });
@@ -258,11 +256,11 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
             this.translate.instant('payroll.variable_deduction.toast.title')
           );
         },
-        error: (err) => {
-          this.toast.error(
-            this.translate.instant('payroll.variable_deduction.toast.error_update'),
-            this.translate.instant('payroll.variable_deduction.toast.title')
-          );
+        error: (err) => {          
+          const errorMessage = err?.error?.message || err?.message || err 
+          ||  this.translate.instant('payroll.variable_deduction.toast.error_update')
+          ;
+          this.toast.error(errorMessage);
           this.isSubmitting = false;
         }
       });
@@ -296,7 +294,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
         deductionEffectiveFromYear: Number(this.selectedRecord.deductionEffectiveFromYear),
         isEndingPeriod: this.selectedRecord.isEndingPeriod ?? true,
         deductionStopMonth: this.selectedRecord.isEndingPeriod ? this.selectedRecord.deductionStopMonth || '' : '',
-        deductionStopYear: this.selectedRecord.isEndingPeriod ? this.selectedRecord.deductionStopYear ? String(this.selectedRecord.deductionStopYear) : '' : '',
+        deductionStopYear: this.selectedRecord.isEndingPeriod ? Number(this.selectedRecord.deductionStopYear) || '' : '',
         amountEnterForThisVariableDeduction: this.selectedRecord.amountEnterForThisVariableDeduction || '',
         amount: this.selectedRecord.amount || 0,
         percentage: this.selectedRecord.percentage || 0
@@ -314,11 +312,11 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
           this.translate.instant('payroll.variable_deduction.toast.title')
         );
       },
-      error: (err) => {
-        this.toast.error(
-          this.translate.instant('payroll.variable_deduction.toast.error_delete'),
-          this.translate.instant('payroll.variable_deduction.toast.title')
-        );
+      error: (err) => {       
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll.variable_deduction.toast.error_delete')
+        ;
+        this.toast.error(errorMessage);
       }
     });
   }

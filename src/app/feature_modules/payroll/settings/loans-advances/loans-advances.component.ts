@@ -8,6 +8,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-loans-advances',
@@ -21,7 +22,7 @@ export class LoansAdvancesComponent implements AfterViewInit {
   dialogRef: MatDialogRef<any>;
   sortOrder: string = '';
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
+  isSubmitting: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   columns: TableColumn[] = [
     { key: 'name', name: this.translate.instant('payroll.loans_advances.table.category_name') },
@@ -46,7 +47,7 @@ export class LoansAdvancesComponent implements AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.loansAdvancesForm = this.fb.group({
-      name: ['', Validators.required]
+       name: ['', [Validators.required, CustomValidators.noNumbersOrSymbolsValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
     });
 
     // Set custom filter predicate to search by name
@@ -91,6 +92,7 @@ export class LoansAdvancesComponent implements AfterViewInit {
     this.loansAdvancesForm.reset({
       name: ''
     });
+    this.isSubmitting = false;
   }
 
   open(content: any) {
@@ -111,44 +113,50 @@ export class LoansAdvancesComponent implements AfterViewInit {
   }
 
   onSubmission() {
+    this.markFormGroupTouched(this.loansAdvancesForm);
+    this.isSubmitting = true;
+    if (this.loansAdvancesForm.invalid) {
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');   
+      this.isSubmitting = false;
+      return;
+    }
     if (this.loansAdvancesForm.valid) {
       if (!this.isEdit) {
         this.payroll.addLoans(this.loansAdvancesForm.value).subscribe({
           next: (res: any) => {
-            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+            this.getLoanAdvances();
+            this.dialogRef.close(true);
             this.clearForm();
             this.toast.success(
               this.translate.instant('payroll.loans_advances.toast.success_added'),
               this.translate.instant('payroll.loans_advances.title')
             );
-            this.closeModal();
           },
-          error: (err) => {
-            this.toast.error(
-              this.translate.instant('payroll.loans_advances.toast.error_add'),
-              this.translate.instant('payroll.loans_advances.title')
-            );
+          error: (err) => {           
+            const errorMessage = err?.error?.message || err?.message || err 
+            ||  this.translate.instant('payroll.loans_advances.toast.error_add')
+            ;
+            this.toast.error(errorMessage);
+            this.isSubmitting = false;
           }
         });
       } else {
         this.payroll.updateLoans(this.selectedRecord._id, this.loansAdvancesForm.value).subscribe({
           next: (res: any) => {
-            const updatedData = this.tableService.dataSource.data.map(item =>
-              item._id === res.data._id ? res.data : item
-            );
-            this.tableService.setData(updatedData);
+            this.getLoanAdvances();  
+            this.dialogRef.close(true);        
             this.clearForm();
             this.toast.success(
               this.translate.instant('payroll.loans_advances.toast.success_updated'),
               this.translate.instant('payroll.loans_advances.title')
             );
-            this.closeModal();
           },
-          error: (err) => {
-            this.toast.error(
-              this.translate.instant('payroll.loans_advances.toast.error_update'),
-              this.translate.instant('payroll.loans_advances.title')
-            );
+          error: (err) => {           
+            const errorMessage = err?.error?.message || err?.message || err 
+            ||  this.translate.instant('payroll.loans_advances.toast.error_update')
+            ;
+            this.toast.error(errorMessage);
+            this.isSubmitting = false;
           }
         });
       }
@@ -173,17 +181,17 @@ export class LoansAdvancesComponent implements AfterViewInit {
   deleteRecord(_id: string) {
     this.payroll.deleteLoans(_id).subscribe({
       next: (res: any) => {
-        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
+        this.getLoanAdvances();
         this.toast.success(
           this.translate.instant('payroll.loans_advances.toast.success_deleted'),
           this.translate.instant('payroll.loans_advances.title')
         );
       },
-      error: (err) => {
-        this.toast.error(
-          this.translate.instant('payroll.loans_advances.toast.error_delete'),
-          this.translate.instant('payroll.loans_advances.title')
-        );
+      error: (err) => {        
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll.loans_advances.toast.error_delete')
+        ;
+        this.toast.error(errorMessage);
       }
     });
   }

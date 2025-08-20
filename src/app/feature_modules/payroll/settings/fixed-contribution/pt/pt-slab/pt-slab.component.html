@@ -48,7 +48,9 @@
                             {{ 'payroll.professional-tax.form.error.required' | translate }}
                         </mat-error>
                     </mat-form-field>
+                </div>  
                 </div>
+                <div class="row">           
                 <div class="col-md-6 col-12 mb-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ 'payroll.professional-tax.form.from_amount' | translate }} </mat-label>
@@ -63,8 +65,9 @@
                             {{'payroll.NegativeNotAllowed' | translate}}
                         </mat-error>
                     </mat-form-field>
+              
                 </div>
-                <div class="col-md-6 col-12 mb-2">
+                <div class="col-md-6">
                     <mat-form-field class="w-100">
                         <mat-label>{{ 'payroll.professional-tax.form.to_amount' | translate }} </mat-label>
                         <input type="number" matInput formControlName="toAmount" required>
@@ -78,9 +81,17 @@
                           <mat-error *ngIf="ptSlabForm.get('toAmount')?.hasError('negativeNumber')">
                             {{'payroll.NegativeNotAllowed' | translate}}
                         </mat-error>
+                      
                     </mat-form-field>
+                  
                 </div>
-
+                <div class="col-md-12 col-12 mb-2" style="margin-top: -1.5rem !important;">
+                <mat-error *ngIf="ptSlabForm.hasError('fromGreaterThanTo') && (ptSlabForm.get('toAmount')?.touched || ptSlabForm.get('fromAmount')?.touched)">
+                    <span style="margin-top:20px;">  {{ 'payroll.from_less_than_to' | translate }}</span>
+                                    </mat-error>
+                                    </div>
+             </div>
+                <div class="row">
                 <div class="col-md-6 col-12 mb-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ 'payroll.professional-tax.form.employee_percentage' | translate }} </mat-label>

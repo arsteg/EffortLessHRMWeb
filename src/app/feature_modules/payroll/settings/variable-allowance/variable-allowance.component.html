@@ -28,15 +28,15 @@
           <div class="form-group col-md-6">
             <mat-form-field class="w-100">
               <mat-label>{{ 'payroll._variable_allowance.form.label' | translate }}</mat-label>
-              <input matInput type="text" formControlName="label">
-              <mat-error
-                *ngIf="variableAllowanceForm.get('label')?.invalid && (variableAllowanceForm.get('label')?.touched || variableAllowanceForm.get('label')?.dirty)">
-                <span *ngIf="variableAllowanceForm.get('label')?.errors?.['required']">
-                  {{ 'payroll._variable_allowance.form.error.label_required' | translate }}
-                </span>
-                <span *ngIf="variableAllowanceForm.get('label')?.errors?.['invalidLabel']">
-                  {{ 'payroll._variable_allowance.form.error.label_invalid' | translate }}
-                </span>
+              <input matInput type="text" formControlName="label">              
+              <mat-error class="mb-3" *ngIf="!variableAllowanceForm.get('label').valid && variableAllowanceForm.get('label').touched">
+                <span *ngIf="variableAllowanceForm.get('label').errors?.['required']">{{ 'payroll.label_required' |
+                  translate }}</span>
+                <span *ngIf="variableAllowanceForm.get('label').errors?.['invalidName']">{{ 'payroll.label_name_invalid' |
+                  translate }}</span>   
+                    <span *ngIf="variableAllowanceForm.get('label')?.errors?.['spacesNotAllowed']">      
+                        {{ 'payroll.spacenotallowed' | translate }}
+                      </span>                                    
               </mat-error>
             </mat-form-field>
           </div>
@@ -180,11 +180,11 @@
                 <mat-option value="monthly">
                   {{ 'payroll._variable_allowance.frequency.monthly' | translate }}
                 </mat-option>
-                <mat-option value="quaterly">
-                  {{ 'payroll._variable_allowance.frequency.quaterly' | translate }}
+                <mat-option value="quarterly">
+                  {{ 'payroll._variable_allowance.frequency.quarterly' | translate }}
                 </mat-option>
-                <mat-option value="half_yearly">
-                  {{ 'payroll._variable_allowance.frequency.half_yearly' | translate }}
+                <mat-option value="half yearly">
+                  {{ 'payroll._variable_allowance.frequency.half yearly' | translate }}
                 </mat-option>
                 <mat-option value="annually">
                   {{ 'payroll._variable_allowance.frequency.annually' | translate }}
@@ -287,11 +287,11 @@
               </mat-error>
             </mat-form-field>
           </div>
-        </div>
+              </div>
         <div
           *ngIf="variableAllowanceForm.errors?.['invalidPeriod'] && (variableAllowanceForm.get('allowanceStopMonth').touched || variableAllowanceForm.get('allowanceStopYear').touched)">
           <small class="text-danger">
-            {{ 'payroll.variable_deduction.invalid_period' | translate }}
+            {{ 'payroll._variable_allowance.invalid_period' | translate }}
           </small>
         </div>
 

@@ -9,6 +9,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-pt-slab',
@@ -56,6 +57,7 @@ export class PtSlabComponent {
     private fb: FormBuilder,
     private modalService: NgbModal,
     private payrollService: PayrollService,
+    private commonService: CommonService,
     private companyService: CompanyService,
     private toast: ToastrService,
     private dialog: MatDialog,
@@ -68,7 +70,9 @@ export class PtSlabComponent {
       employeePercentage: ['', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
       employeeAmount: ['', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
       frequency: ['Monthly', Validators.required],
-    });
+    }, {
+        validators: [CustomValidators.fromLessThanToValidator('fromAmount', 'toAmount')]
+      });
 
     // Translate frequency options
     this.translate.get([
@@ -111,7 +115,7 @@ export class PtSlabComponent {
   }
 
   getStates() {
-    this.payrollService.getAllStates().subscribe((res: any) => {
+    this.commonService.getAllStates().subscribe((res: any) => {
       this.eligibleStates = res.data;
     });
   }
@@ -171,6 +175,7 @@ export class PtSlabComponent {
 
   closeModal() {
     this.modalService.dismissAll();
+    this.dialogRef.close();
   }
 
   onSubmission() {
@@ -181,6 +186,7 @@ export class PtSlabComponent {
       this.ptSlabForm.markAllAsTouched();  // This triggers validation errors
       this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
       this.isSubmitting = false;
+      this.ptSlabForm.get('state')?.disable();
       return;
     }
     const payload = {

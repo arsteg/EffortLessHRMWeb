@@ -6,6 +6,7 @@ import { CompanyService } from 'src/app/_services/company.service';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-profile',
@@ -23,7 +24,7 @@ export class ProfileComponent implements OnInit {
   imagePreview: string | null = null;
   fileError: string | null = null;
   logoPayload: any = null;
-
+  eligibleStates = [];
   @ViewChild('addEditCompanyDialog') addEditCompanyDialog: TemplateRef<any>;
   @ViewChild('uploadLogoDialog') uploadLogoDialog: TemplateRef<any>;
   columns: TableColumn[] = [
@@ -61,6 +62,7 @@ export class ProfileComponent implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog,
     private companyService: CompanyService,
+    private commonService: CommonService,
     private toast: ToastrService,
     private translate: TranslateService
   ) {
@@ -70,7 +72,7 @@ export class ProfileComponent implements OnInit {
       address: ['', Validators.required],
       city: ['', Validators.required],
       state: ['', Validators.required],
-      country: ['', Validators.required],
+      country: [{ value: 'India', disabled: true }, Validators.required],
       pincode: ['', [Validators.required, Validators.pattern('^[0-9]{6}$')]],
       email: [{ value: '', disabled: true }, [Validators.email]],
       phone: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]]
@@ -79,6 +81,12 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.getCompany();
+    this.getStates();
+  }
+  getStates() {
+    this.commonService.getAllStates().subscribe((res: any) => {
+      this.eligibleStates = res.data;
+    });
   }
 
   onActionClick(event) {

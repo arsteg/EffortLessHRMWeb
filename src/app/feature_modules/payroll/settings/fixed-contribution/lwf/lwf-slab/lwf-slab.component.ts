@@ -9,6 +9,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-lwf-slab',
@@ -56,6 +57,7 @@ export class LwfSlabComponent {
 
   constructor(
     private payrollService: PayrollService,
+    private commonService: CommonService,
     private companyService: CompanyService,
     private fb: FormBuilder,
     private modalService: NgbModal,
@@ -76,7 +78,7 @@ export class LwfSlabComponent {
   }
 
   ngOnInit() {
-    this.payrollService.getAllStates().subscribe((res: any) => {
+    this.commonService.getAllStates().subscribe((res: any) => {
       this.eligibleStates = res.data;
     });
     this.getCompanyState();

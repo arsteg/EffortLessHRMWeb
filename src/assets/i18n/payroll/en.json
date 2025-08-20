@@ -1,6 +1,7 @@
 {
     "payroll": {
         "settings": "General Settings",
+        "save_failed": "Failed To Save",
         "ctc_template": "CTC Template",
         "lop_reversal": "LOP Reversal",
         "run_payroll": "Run Payroll",
@@ -203,6 +204,8 @@
         "fixed_allowance_label": "What is the label of this Fixed Allowance",
         "label_required": "Label is required",
         "label_name_invalid": "Label cannot contain numbers, or symbols.",
+        "name_required": "Name is required",
+        "name_invalid": "Name cannot contain numbers, or symbols.",
         "spacenotallowed": "start and end spaces are not allowed.",
         "ValidNumber":"Must be a valid number",
         "RequiredFieldAreMissing": "Please fill all required fields",
@@ -215,6 +218,8 @@
         "is_esic_affected": "Does this Allowance affect ESIC?",
         "is_gratuity_fund_affected": "Does this Allowance affect Gratuity fund?",
         "is_lwf_affected": "Does this Allowance affect LWF?",
+        "OnlyIntegerAllowed": "Only whole numbers are allowed",
+        "from_less_than_to": "From Amount must be less than To Amount",
         "close": "Close",
         "submit": "Submit",
         "delete": "Delete",
@@ -226,6 +231,8 @@
         "fixed_allowance_update_error": "This cannot be updated as it is already used in the system",
         "fixed_allowance_delete_error": "This cannot be deleted as it is already used in the system",
         "fixed_allowance_title": "Fixed Allowance",
+        "Success_save": "Successfully Saved!",        
+        "success_update": "Successfully Updated!",
         "label_name": "Label Name",
         "esic_fullname": "Employees State Insurance Contribution",
         "ceiling_amount": "Ceiling Amount",
@@ -394,12 +401,14 @@
         },
         "update_variable_allowance": "Update Variable Allowance",
         "add_variable_allowance": "Add Variable Allowance",
+         
         "label_question": "Enter the label of variable allowance?",
         "allowance_rate_question": "What is the allowance rate per day?",
         "it": "IT",
         "frequency": "Frequency",
         "_variable_allowance": {
             "title": "Variable Allowance",
+            "invalid_period": "Variable allowance end period must be later than effective period.",      
             "table": {
                 "allowance_name": "Allowance Name",
                 "pf": "PF",
@@ -414,8 +423,8 @@
             },
             "frequency": {
                 "monthly": "Monthly",
-                "quaterly": "Quarterly",
-                "half_yearly": "Half Yearly",
+                "quarterly": "Quarterly",
+                "half yearly": "Half Yearly",
                 "annually": "Annually"
             },
             "menu": {
@@ -461,7 +470,7 @@
                     "allowance_rate_negative": "Allowance rate cannot be negative",
                     "allowance_rate_required": "Allowance rate is required",
                     "label_invalid": "Label cannot contain digits and special characters (e.g., #, *, ^, %, $, @).",
-                    "period_invalid_end": "End period must be greater than or equal to start period."
+                    "period_invalid_end": "Variable allowance end period must be later than effective period."
                 }
             },
             "toast": {
@@ -476,7 +485,7 @@
         },
         "variable_deduction": {
             "invalid_label": "Label can only contain letters and spaces.",
-            "invalid_period": "End period must be greater than or equal to start period.",
+            "invalid_period": "Variable deducion end period must be later than effective period.",
             "title_add": "Add Variable Deduction",
             "title_update": "Update Variable Deduction",
             "name_header": "Deduction Name",

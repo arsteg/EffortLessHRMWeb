@@ -32,15 +32,15 @@
                         <mat-label>{{ 'payroll.variable_deduction.label_question' | translate }}</mat-label>
                         <input matInput type="text" formControlName="label" required
                             [placeholder]="'payroll.variable_deduction.label_placeholder' | translate" />
-                        <mat-error
-                            *ngIf="variableDeductionForm.get('paidDeductionFrequently').invalid && variableDeductionForm.get('paidDeductionFrequently').touched">
-                            @if(variableDeductionForm.get('label')['errors']['required']){
-                            {{ 'payroll.field_required' | translate }}
-                            }
-                            @if(variableDeductionForm.get('label')['errors']['invalidLabel']) {
-                            {{ 'payroll.variable_deduction.invalid_label' | translate }}
-                            }
-                        </mat-error>
+                            <mat-error class="mb-3" *ngIf="!variableDeductionForm.get('label').valid && variableDeductionForm.get('label').touched">
+                                <span *ngIf="variableDeductionForm.get('label').errors?.['required']">{{ 'payroll.label_required' |
+                                  translate }}</span>
+                                <span *ngIf="variableDeductionForm.get('label').errors?.['invalidName']">{{ 'payroll.label_name_invalid' |
+                                  translate }}</span>   
+                                    <span *ngIf="variableDeductionForm.get('label')?.errors?.['spacesNotAllowed']">      
+                                        {{ 'payroll.spacenotallowed' | translate }}
+                                      </span>                                    
+                              </mat-error>
                     </mat-form-field>
                 </div>
 
@@ -68,7 +68,7 @@
                         <mat-select formControlName="paidDeductionFrequently">
                             <mat-option value="Monthly">{{ 'payroll.variable_deduction.frequency.monthly' | translate
                                 }}</mat-option>
-                            <mat-option value="Quaterly">{{ 'payroll.variable_deduction.frequency.quarterly' | translate
+                            <mat-option value="Quarterly">{{ 'payroll.variable_deduction.frequency.quarterly' | translate
                                 }}</mat-option>
                             <mat-option value="Yearly">{{ 'payroll.variable_deduction.frequency.annually' | translate
                                 }}</mat-option>
@@ -132,8 +132,7 @@
                 </div>
                 <div class="mt-2 col-md-12"
                     *ngIf="variableDeductionForm.get('isEndingPeriod').value === true">
-                    <label class="small mb-2">{{ 'payroll.variable_deduction.effective_period_question' | translate }}</label>
-                    <div class="d-flex justify-content-between">
+                     <div class="d-flex justify-content-between">
                         <mat-form-field class="w-50 me-2">
                             <mat-label>{{ 'payroll.variable_deduction.month_placeholder' | translate }}</mat-label>
                             <mat-select formControlName="deductionStopMonth">
@@ -173,8 +172,7 @@
         </div>
         <div mat-dialog-actions class="d-flex pb-2 justify-content-between">
             <button mat-flat-button type="button" (click)="closeModal()">{{ 'payroll.cancel' | translate }}</button>
-            <button mat-flat-button type="submit" color="primary"
-                [disabled]="variableDeductionForm.errors?.['invalidPeriod']">
+            <button mat-flat-button type="submit" color="primary" [disabled]="isSubmitting">
                 {{ (isEdit ? 'payroll.update' : 'payroll.add') | translate }}
             </button>
         </div>

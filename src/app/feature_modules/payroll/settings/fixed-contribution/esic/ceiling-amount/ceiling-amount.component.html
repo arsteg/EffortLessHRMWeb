@@ -35,6 +35,9 @@
                     *ngIf="ceilingAmountForm.get('employeeCount')?.hasError('required') && (ceilingAmountForm.get('employeeCount')?.touched || ceilingAmountForm.get('employeeCount')?.dirty)">
                     {{ 'payroll.field_required' | translate }}
                   </mat-error>
+                  <mat-error *ngIf="ceilingAmountForm.get('employeeCount')?.hasError('notInteger')">
+                    {{ 'payroll.OnlyIntegerAllowed' | translate }}
+                  </mat-error>
                     <mat-error *ngIf="ceilingAmountForm.get('employeeCount')?.hasError('notGreaterThanOne')">
                         {{'payroll.ValidNumber' | translate}}
                       </mat-error>

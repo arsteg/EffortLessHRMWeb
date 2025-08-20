@@ -50,7 +50,7 @@ export class CeilingAmountComponent {
     private translate: TranslateService
   ) {
     this.ceilingAmountForm = this.fb.group({
-      employeeCount: ['', [Validators.required, CustomValidators.greaterThanOneValidator()]],
+      employeeCount: ['', [Validators.required, CustomValidators.greaterThanOneValidator(),CustomValidators.onlyIntegerValidator()]],
       maxGrossAmount: ['', [Validators.required, CustomValidators.greaterThanOneValidator()]]
     });
   }
