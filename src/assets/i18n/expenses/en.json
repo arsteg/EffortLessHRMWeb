@@ -65,6 +65,7 @@
         "number":"Number",
         "daterange":"DateRange",
         "date":"Date",
+        "dateFuture": "Incurred date can not be in the future.",
         "negativeValRestrict": "Negative Values are not allowed",
         "is_mandatory":"Is field mandatory while submitting expense request?",
         "expense_template_name":"Expense Template Name",

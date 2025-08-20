@@ -1,11 +1,12 @@
 <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>
-        {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}} {{'expenses.expense_report' | translate}}
+        {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
+        {{'expenses.expense_report' | translate}}
     </h1>
     <button mat-icon-button mat-dialog-close="" class="me-4">
-      <mat-icon>close</mat-icon>
+        <mat-icon>close</mat-icon>
     </button>
-  </div>
+</div>
 
 <form [formGroup]="addExpenseForm" (ngSubmit)="createReport()">
     <div mat-dialog-content>
@@ -28,26 +29,40 @@
         </mat-form-field>
         }
 
-        <mat-form-field class="w-100">
+        <mat-form-field class="w-100 mb-1">
             <mat-label>{{'expenses.label_for_expense_template' | translate}}</mat-label>
             <input type="text" matInput formControlName="title" required>
             <mat-error *ngIf="addExpenseForm.get('title').invalid && addExpenseForm.get('title').touched">
-                {{'expenses.label_for_expense_template_error' | translate}}
+                <span *ngIf="addExpenseForm.get('title').hasError('maxlength')">
+                    {{'expenses.category_label_Limit' | translate}}
+                </span>
+                <span *ngIf="addExpenseForm.get('title')?.errors?.['spacesNotAllowed']">
+                    {{ 'expenses.labelNoLeadingOrTrailingSpaces' | translate }}
+                </span>
+                <span *ngIf="addExpenseForm.get('title')?.errors?.['invalidLabel']">
+                    {{ 'expenses.label_invalid' | translate }}
+                </span>
+                <span *ngIf="addExpenseForm.get('title').hasError('required')">
+                    {{'expenses.advance_template_label_error' | translate}}
+                </span>
             </mat-error>
         </mat-form-field>
 
-        <mat-form-field class="w-100">
+        <mat-form-field class="w-100 mt-3">
             <mat-label>
                 @if(validations?.expenseTemplate?.advanceAmount){
-                    {{'expenses.advance_amount' | translate}}
+                {{'expenses.advance_amount' | translate}}
                 } @else {
-                    {{'expenses.amount' | translate}}
+                {{'expenses.amount' | translate}}
                 }
             </mat-label>
             <input type="number" matInput formControlName="amount" min="0" required>
             <mat-error *ngIf="addExpenseForm.get('amount').invalid && addExpenseForm.get('amount').touched">
                 @if(addExpenseForm.get('amount').errors['required']){
                 {{'expenses.amount_error' | translate}}
+                }
+                 @if(addExpenseForm.get('amount').errors['min']){
+                {{'expenses.negativeValRestrict' | translate}}
                 }
             </mat-error>
         </mat-form-field>
@@ -129,8 +144,7 @@
     </div>
     <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
         <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-        <button mat-flat-button type="submit" color="primary"
-            [disabled]="addExpenseForm.invalid">
+        <button mat-flat-button type="submit" color="primary">
             {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
         </button>
     </div>

@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 @Component({
   selector: 'add-expense',
   templateUrl: './add-expense.component.html',
@@ -42,9 +43,9 @@ export class AddExpenseComponent {
   initForm() {
     this.addExpenseForm = this.fb.group({
       employee: [this.selfExpense ? this.currentUser.id : '', Validators.required],
-      title: ['', Validators.required],
+      title: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       status: [''],
-      amount: [0],
+      amount: [0, Validators.min[(0)] ],
       expenseReportExpenses: []
     });
     this.expenseService.changeMode.next(this.changeMode);
