@@ -6,8 +6,7 @@
                 <input matInput #searchInput (input)="applyFilter($event)">
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
-            <button mat-flat-button color="primary" class="me-1"
-                (click)="changeMode='Add'; clearSelection(addModal)">
+            <button mat-flat-button color="primary" class="me-1" (click)="changeMode='Add'; clearSelection(addModal)">
                 {{'expenses.add_new' | translate}}
             </button>
         </div>
@@ -29,7 +28,8 @@
 
             <ng-container matColumnDef="effectiveDate">
                 <th mat-header-cell *matHeaderCellDef translate>expenses.effective_date</th>
-                <td mat-cell *matCellDef="let templateAssignment"> {{templateAssignment?.effectiveDate | date:'mediumDate'}}
+                <td mat-cell *matCellDef="let templateAssignment"> {{templateAssignment?.effectiveDate |
+                    date:'mediumDate'}}
                 </td>
             </ng-container>
 
@@ -40,12 +40,11 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <button mat-menu-item
-                            (click)="setFormValues(templateAssignment, addModal, 'Update');">
+                        <button mat-menu-item (click)="setFormValues(templateAssignment, addModal, 'Update');">
                             <mat-icon>edit</mat-icon>
                             <span translate>expenses.edit</span>
                         </button>
-                        
+
                         <button mat-menu-item (click)="openDialog(templateAssignment?._id)">
                             <mat-icon>delete</mat-icon>
                             <span translate>expenses.delete</span>
@@ -67,14 +66,14 @@
     <div class="d-flex align-items-center justify-content-between">
         <h1 mat-dialog-title>
             @switch(changeMode){
-                @case('Add'){<span translate>expenses.add </span>}
-                @case('View'){<span translate>expenses.view </span>}
-                @case('Update'){<span translate>expenses.update </span>}
-            } 
+            @case('Add'){<span translate>expenses.add </span>}
+            @case('View'){<span translate>expenses.view </span>}
+            @case('Update'){<span translate>expenses.update </span>}
+            }
             <span translate>expenses.employee_expense_assignment</span>
         </h1>
         <button mat-icon-button mat-dialog-close="" class="me-4">
-        <mat-icon>close</mat-icon>
+            <mat-icon>close</mat-icon>
         </button>
     </div>
     <form [formGroup]="templateAssignmentForm" (ngSubmit)="addOrUpdateAssignment()">
@@ -82,11 +81,27 @@
 
             <mat-form-field class="w-100">
                 <mat-label>{{'expenses.expense_template_for' | translate}}</mat-label>
+                @switch(changeMode){@case('Add'){
                 <mat-select [attr.disabled]="isEdit === true" formControlName="user">
-                    <mat-option *ngFor="let assignee of allAssignee" [value]="assignee.id">
-                        {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
+                    <mat-option *ngFor="let user of getAvailableUsers()" [value]="user.id">
+                        {{user?.firstName | titlecase}} {{user?.lastName | titlecase}}
                     </mat-option>
                 </mat-select>
+                }
+                @case('Update'){
+                <mat-select [attr.disabled]="isEdit === true" formControlName="user">
+                    <mat-option *ngFor="let user of allAssignee" [value]="user.id">
+                        {{user?.firstName | titlecase}} {{user?.lastName | titlecase}}
+                    </mat-option>
+                </mat-select>
+                }
+                }
+
+                @if(templateAssignmentForm.get('user').touched){
+                <mat-error>
+                    {{'expenses.template_for_error' | translate}}
+                </mat-error>}
+
             </mat-form-field>
 
             <mat-form-field class="w-100">
@@ -97,6 +112,10 @@
                         {{template?.policyLabel}}
                     </mat-option>
                 </mat-select>
+                @if(templateAssignmentForm.get('expenseTemplate').touched){
+                <mat-error>
+                    {{'expenses.template_required' | translate}}
+                </mat-error>}
             </mat-form-field>
 
             <div *ngIf="showApproverFields">
@@ -109,9 +128,13 @@
                                 {{assignee?.firstName |titlecase}} {{assignee?.lastName | titlecase}}
                             </mat-option>
                         </mat-select>
+                        @if(templateAssignmentForm.get('primaryApprover').touched){
+                        <mat-error>
+                            {{'expenses.first_approver_error' | translate}}
+                        </mat-error>}
                     </mat-form-field>
                 </div>
-                
+
             </div>
 
             <mat-form-field class="w-50">
@@ -119,18 +142,26 @@
                 <input matInput [matDatepicker]="picker" formControlName="effectiveDate">
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
+                @if(templateAssignmentForm.get('effectiveDate').touched) {
+                <mat-error>
+                    {{'expenses.date_required' | translate}}
+                </mat-error>}
             </mat-form-field>
         </div>
 
-        <div mat-dialog-actions class="d-flex align-items-center justify-content-between" *ngIf="changeMode == 'Add' || 'Update'">
+        <div mat-dialog-actions class="d-flex align-items-center justify-content-between"
+            *ngIf="changeMode == 'Add' || 'Update'">
             <div>
-                <button mat-flat-button type="button" (click)="templateAssignmentForm.reset(); dialogRef.close()">{{'expenses.cancel' | translate}}</button>
+                <button mat-flat-button type="button"
+                    (click)="templateAssignmentForm.reset(); dialogRef.close()">{{'expenses.cancel' |
+                    translate}}</button>
                 <!-- @if(changeMode === 'Update' || changeMode === 'Add'){
                     <button mat-stroked-button type="button" (click)="clearSelection()">{{'expenses.reset' | translate}}</button>
                 } -->
             </div>
             @if(changeMode === 'Update' || changeMode === 'Add'){
-                <button mat-flat-button type="submit" color="primary">{{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}</button>
+            <button mat-flat-button type="submit" color="primary">{{changeMode === 'Add' ? ('expenses.add' | translate)
+                : ('expenses.update' | translate)}}</button>
             }
         </div>
     </form>

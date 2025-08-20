@@ -100,7 +100,6 @@
         "category_label_Limit": "The label must be no more than 30 characters long.",
         "labelNoLeadingOrTrailingSpaces": "Label cannot have leading or trailing spaces.",
         "label_invalid": "Label must contain at least one alphabet and can include spaces, commas, hyphens, and parentheses.",
-
         "max_amount_limit_per_expense":"Maximum amount limit per individual expense",
         "max_amount_limit_per_expense_without_receipt":"Maximum amount permitted per expense without receipt",
         "times_in_a":"Times in a",
@@ -165,6 +164,7 @@
         "user_not_found":"User not found",
         "delete_success":"Deleted successfully",
         "delete_error":"Error while deleting",
+        "template_required": "Please Select Expense Template",
         "template_created_success":"Template created successfully",
         "template_updated_success":"Template updated successfully",
         "template_created_error":"Error while creating template",
