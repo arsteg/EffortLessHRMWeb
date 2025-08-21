@@ -11,6 +11,7 @@ export class SubscriptionComponent {
   private readonly authService = inject(AuthenticationService);
   isTrialMode: boolean = false;
   private router = inject(Router);
+  view = localStorage.getItem('adminView');
 
   ngOnInit(): void {
     const subscription = this.authService.companySubscription.getValue();
@@ -26,6 +27,6 @@ export class SubscriptionComponent {
   }
 
   skipToHome() {
-    this.router.navigate(['/home/dashboard']);
+    (this.view = 'user') ? this.router.navigate(['/home/dashboard/user']) : this.router.navigate(['/home/dashboard']);
   }
 }

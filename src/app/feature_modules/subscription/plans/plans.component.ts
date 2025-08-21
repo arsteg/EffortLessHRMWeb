@@ -53,6 +53,7 @@ export class PlansComponent {
   loadingPlans = false;
   loadingSubscription = false;
   confirmPayment = null;
+  currentDate = Date.now();
 
   ngOnInit() {
     this.credentials();
