@@ -12,12 +12,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-create-report',
   templateUrl: './create-report.component.html',
-  styleUrl: './create-report.component.css'
+  styleUrls: ['./create-report.component.css']
 })
 export class CreateReportComponent {
   private readonly translate = inject(TranslateService);
   @Output() changeStep: any = new EventEmitter();
   @Output() close: any = new EventEmitter();
+  @Output() expenseReportExpensesEmitter = new EventEmitter<any>();
   categories: any;
   expenseReportform: FormGroup;
   isEdit: boolean;
@@ -40,22 +41,23 @@ export class CreateReportComponent {
   expenseFieldsArray: FormArray;
   @Input() changeMode: string;
   user = JSON.parse(localStorage.getItem('currentUser'));
-  @Output() expenseReportExpensesEmitter = new EventEmitter<any>();
   private readonly destroyRef = inject(DestroyRef);
   expenseData: any;
   isSubmitting: boolean = false;
 
-  constructor(public expenseService: ExpensesService,
+  constructor(
+    public expenseService: ExpensesService,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: { isEdit: boolean },
-    private toast: ToastrService) {
+    private toast: ToastrService
+  ) {
     this.expenseReportform = this.fb.group({
       expenseCategory: [''],
       incurredDate: ['', [Validators.required, this.futureDateValidator()]],
       amount: [0],
       type: [''],
-      quantity: [0, Validators.min[(0)]],
+      quantity: [0, Validators.min(0)],
       isReimbursable: [false],
       isBillable: [false],
       reason: [''],
@@ -70,7 +72,8 @@ export class CreateReportComponent {
     this.bsRangeValue = [this.bsValue, this.maxDate];
     this.expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
   }
-private futureDateValidator(): ValidatorFn {
+
+  private futureDateValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       if (!control.value) {
         return null; // Don't validate if the field is empty, leave it to Validators.required
@@ -90,6 +93,7 @@ private futureDateValidator(): ValidatorFn {
       return null;
     };
   }
+
   ngOnInit() {
     this.isSubmitting = false;
     this.initChanges();
@@ -110,7 +114,7 @@ private futureDateValidator(): ValidatorFn {
     });
   }
 
-  documentName : any;
+  documentName: any;
   loadExpenseReportData() {
     const expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
     expenseFieldsArray.clear();
@@ -192,10 +196,12 @@ private futureDateValidator(): ValidatorFn {
       (result: any) => {
         this.expenseService.expenseReportExpense.next(result.data);
         this.toast.success(this.translate.instant('expenses.expense_updated_success'));
+        this.expenseReportExpensesEmitter.emit({ action: 'update', data: result.data }); // Emit event on update
         this.dialogRef.close();
       },
       (err) => {
         this.toast.error(err || this.translate.instant('expenses.expense_updated_error'));
+        this.isSubmitting = false;
       }
     );
   }
@@ -207,13 +213,15 @@ private futureDateValidator(): ValidatorFn {
     payload.expenseReport = report._id;
     this.expenseService.addExpenseReportExpenses(payload).subscribe(
       (result: any) => {
-        this.expenseService.expenseReportExpense.next(result.data);
+        this.expenseService.expenseReportExpense.next(result);
         this.toast.success(this.translate.instant('expenses.expense_created_success'));
+        this.expenseReportExpensesEmitter.emit({ action: 'add', data: result }); // Emit event on add
         this.dialogRef.close();
         this.closeModal();
       },
       (err) => {
         this.toast.error(err || this.translate.instant('expenses.expense_created_error'));
+        this.isSubmitting = false;
       }
     );
   }
@@ -227,12 +235,12 @@ private futureDateValidator(): ValidatorFn {
         const fileSize = file.size;
         const fileType = file.type;
         const fileNameParts = file.name.split('.');
-        const extention = '.' + fileNameParts[fileNameParts.length - 1];
+        const extension = '.' + fileNameParts[fileNameParts.length - 1];
         const attachment = {
           attachmentName: file.name,
-          attachmentType: fileType,
+          attachmentType: file.type,
           attachmentSize: fileSize,
-          extention: extention,
+          extension: extension,
           file: base64String
         };
         resolve(attachment);
@@ -262,11 +270,12 @@ private futureDateValidator(): ValidatorFn {
   }
 
   openAttachment() {
-  const fileUrl = this.expenseReportform.get('expenseAttachments').value;
-  if (fileUrl && typeof fileUrl === 'string') {
-    window.open(fileUrl, '_blank');
+    const fileUrl = this.expenseReportform.get('expenseAttachments').value;
+    if (fileUrl && typeof fileUrl === 'string') {
+      window.open(fileUrl, '_blank');
+    }
   }
-}
+
   removeExistingAttachment() {
     this.expenseReportform.get('expenseAttachments').setValue(null);
   }

@@ -144,8 +144,8 @@ export class PendingComponent {
     this.expenseService.deleteExpenseReport(id).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
       this.toast.success(this.translate.instant('expenses.delete_success'));
-    }, () => {
-      this.toast.error(this.translate.instant('expenses.delete_error'));
+    }, err => {
+      this.toast.error(err);
     });
   }
 
@@ -179,15 +179,15 @@ export class PendingComponent {
       title: this.selectedReport.title,
       status: result.approved ? 'Approved' : 'Rejected',
     };
-    if(this.selectedReport.status === 'Level 1 Approval Pending'){
+    if (this.selectedReport.status === 'Level 1 Approval Pending') {
       payload['primaryApprovalReason'] = result.reason;
     }
-    if(this.selectedReport.status === 'Level 2 Approval Pending'){
-      payload['secondaryApprovalReason']= result.reason;
+    if (this.selectedReport.status === 'Level 2 Approval Pending') {
+      payload['secondaryApprovalReason'] = result.reason;
     }
     this.expenseService.updateExpenseReport(id, payload).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
-    }, (error)=>{
+    }, (error) => {
       this.toast.error(error, this.translate.instant('expenses.expense_report'));
     });
   }

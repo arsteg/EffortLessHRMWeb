@@ -8,6 +8,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ExportService } from 'src/app/_services/export.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-approved',
   templateUrl: './approved.component.html',
@@ -39,7 +40,8 @@ export class ApprovedComponent {
     private expenseService: ExpensesService,
     private commonService: CommonService,
     private fb: FormBuilder,
-    private exportService: ExportService) {
+    private exportService: ExportService,
+    private toast: ToastrService) {
     this.updateExpenseReport = this.fb.group({
       employee: [''],
       title: [''],
@@ -57,7 +59,7 @@ export class ApprovedComponent {
   }
 
   open(content: any, selectedReport?: any) {
-    if(selectedReport){
+    if (selectedReport) {
       this.selectedReport = selectedReport;
       this.expenseService.expenseReportExpense.next(selectedReport);
     } else {
@@ -141,8 +143,12 @@ export class ApprovedComponent {
     this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
       this.expenseReport = this.expenseReport.filter(report => report._id !== id);
       this.displayedData.data = this.expenseReport;
+      this.toast.success(this.translate.instant('expenses.cancelRequest'));
       this.dialogRef.close();
-    });
+    },
+      err => {
+        this.toast.error(this.translate.instant('expenses.cancelRequestError'))
+      });
   }
 
   exportToCsv() {

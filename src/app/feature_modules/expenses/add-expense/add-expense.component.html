@@ -1,6 +1,6 @@
 <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>
-        {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
+        {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.edit' | translate)}}
         {{'expenses.expense_report' | translate}}
     </h1>
     <button mat-icon-button mat-dialog-close="" class="me-4">
@@ -144,7 +144,7 @@
     </div>
     <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
         <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-        <button mat-flat-button type="submit" color="primary">
+        <button mat-flat-button type="submit" color="primary" [disabled]="isSubmitting || hasBeenSubmitted">
             {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
         </button>
     </div>

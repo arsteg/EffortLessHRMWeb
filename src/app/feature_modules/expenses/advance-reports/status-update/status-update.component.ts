@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 @Component({
   selector: 'app-status-update',
   templateUrl: './status-update.component.html',
@@ -28,7 +29,7 @@ export class StatusUpdateComponent {
       amount: [],
       comment: [''],
       status: [''],
-      primaryApprovalReason: ['', Validators.required],
+      primaryApprovalReason: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       secondaryApprovalReason: ['']
     })
   }
@@ -46,24 +47,29 @@ export class StatusUpdateComponent {
       employee: this.updateReport.employee,
       category: this.updateReport.category,
       amount: this.updateReport.amount,
-      comment: this.updateReport.comment,
+      comment: this.updateReport.primaryApprovalReason,
       status: this.data.status,
     }
 
-    if(this.updateReport.status === 'Level 1 Approval Pending'){
+    if (this.updateReport.status === 'Level 1 Approval Pending') {
       payload['primaryApprovalReason'] = this.updateExpenseReport.value.primaryApprovalReason;
     }
-    if(this.updateReport.status === 'Level 2 Approval Pending'){
-      payload['secondaryApprovalReason']= this.updateExpenseReport.value.primaryApprovalReason
+    if (this.updateReport.status === 'Level 2 Approval Pending') {
+      payload['secondaryApprovalReason'] = this.updateExpenseReport.value.primaryApprovalReason
     }
-    this.expenseService.updateAdvanceReport(id, payload).subscribe((res: any) => {
-      this.toast.success(this.translate.instant('expenses.status_updated_success'));
-      this.advanceReportRefreshed.emit();
-      this.dialogRef.close('success');
-    }, (error)=>{
-      this.toast.error(error);
-      this.dialogRef.close('success');
-    });
+    if (this.updateExpenseReport.valid) {
+      this.expenseService.updateAdvanceReport(id, payload).subscribe((res: any) => {
+        this.toast.success(this.translate.instant('expenses.status_updated_success'));
+        this.advanceReportRefreshed.emit();
+        this.dialogRef.close('success');
+      }, (error) => {
+        this.toast.error(error);
+        this.dialogRef.close('success');
+      });
+    }
+    else {
+      this.updateExpenseReport.markAllAsTouched();
+    }
     this.advanceReportRefreshed.emit();
   }
 
