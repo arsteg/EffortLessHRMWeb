@@ -8,6 +8,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 @Component({
   selector: 'app-expenses-categories',
   templateUrl: './expenses-categories.component.html',
@@ -46,10 +47,10 @@ export class ExpensesCategoriesComponent implements OnInit {
   ) {
     this.addCategoryForm = this.fb.group({
       type: ['', Validators.required],
-      label: ['', Validators.required],
+      label: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       isMandatory: ['', Validators.required],
       expenseCategory: [''],
-      fields: this.fb.array([]),
+      fields: this.fb.array([])
     });
   }
 
