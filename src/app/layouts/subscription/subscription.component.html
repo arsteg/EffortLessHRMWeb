@@ -4,6 +4,14 @@
             <img src="assets/logo/expanded-logo.svg" alt="effortlessHRM" height="70">
         </div>
         <div>
+            <button
+                *ngIf="isTrialMode"
+                mat-stroked-button
+                color="primary"
+                (click)="skipToHome()">
+                Skip to Home
+                <mat-icon>arrow_forward</mat-icon>
+            </button>
             <button mat-flat-button (click)="logout()">
                 Logout <mat-icon>logout</mat-icon>
             </button>

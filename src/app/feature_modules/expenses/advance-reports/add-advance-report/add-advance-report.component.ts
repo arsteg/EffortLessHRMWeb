@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 @Component({
   selector: 'app-add-advance-report',
   templateUrl: './add-advance-report.component.html',
@@ -29,7 +30,7 @@ export class AddAdvanceReportComponent {
       employee: ['', Validators.required],
       category: ['', Validators.required],
       status: ['Level 1 Approval Pending', Validators.required],
-      comment: [''],
+      comment: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       amount: ['', [Validators.required, Validators.min(0)]]
     });
   }
@@ -84,7 +85,9 @@ export class AddAdvanceReportComponent {
         })
       }
     }
-    
+    else {
+      this.addAdvanceReport.markAllAsTouched();
+    }
   }
 
   onEmployeeSelected() {

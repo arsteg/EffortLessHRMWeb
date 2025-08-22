@@ -6,8 +6,7 @@
                 <input matInput (keyup)="applyFilter($event)">
                 <mat-icon matSuffix>search</mat-icon>
             </mat-form-field>
-            <button mat-flat-button color="primary" class="me-1"
-                (click)="clearselectedRequest(); open(addModal)">
+            <button mat-flat-button color="primary" class="me-1" (click)="clearselectedRequest(); open(addModal)">
                 {{'expenses.add_new' | translate}}
             </button>
         </div>
@@ -51,7 +50,8 @@
 <!-- Add/Update category -->
 <ng-template #addModal>
     <div class="d-flex align-items-center justify-content-between">
-        <h1 mat-dialog-title>{{isEdit? ('expenses.edit' | translate) : ('expenses.add'  | translate)}} {{'expenses.expense_category' | translate}}</h1>
+        <h1 mat-dialog-title>{{isEdit? ('expenses.edit' | translate) : ('expenses.add' | translate)}}
+            {{'expenses.expense_category' | translate}}</h1>
         <button mat-icon-button mat-dialog-close="" class="me-4">
             <mat-icon>close</mat-icon>
         </button>
@@ -76,15 +76,27 @@
             <mat-form-field class="w-100 mt-3">
                 <mat-label>{{'expenses.enter_expense_label' | translate}}</mat-label>
                 <input matInput formControlName="label" required placeholder="Enter Custom Label">
-                <mat-error *ngIf="addCategoryForm.get('label').invalid && addCategoryForm.get('label').touched">
-                    {{'expenses.enter_expense_label_error' | translate}}
+                <mat-error *ngIf="addCategoryForm.get('label').touched && addCategoryForm.get('label').invalid">
+                    <span *ngIf="addCategoryForm.get('label').hasError('maxlength')">
+                        {{'expenses.category_label_Limit' | translate}}
+                    </span>
+                    <span *ngIf="addCategoryForm.get('label')?.errors?.['spacesNotAllowed']">
+                        {{ 'expenses.labelNoLeadingOrTrailingSpaces' | translate }}
+                    </span>
+                    <span *ngIf="addCategoryForm.get('label')?.errors?.['invalidLabel']">
+                        {{ 'expenses.label_invalid' | translate }}
+                    </span>
+                    <span *ngIf="addCategoryForm.get('label').hasError('required')">
+                        {{'expenses.enter_expense_label_error' | translate}}
+                    </span>
                 </mat-error>
             </mat-form-field>
 
             <div class="w-100 mt-2">
                 <div class="d-flex align-items-center">
                     <label>{{'expenses.add_fields_label' | translate}}</label>
-                    <button mat-stroked-button color="primary" type="button" (click)="addField()">{{'expenses.add' | translate}}</button>
+                    <button mat-stroked-button color="primary" type="button" (click)="addField()">{{'expenses.add' |
+                        translate}}</button>
                 </div>
 
                 <div formArrayName="fields">

@@ -18,6 +18,8 @@ export class HeaderComponent {
   @Input() role: any;
   profileImageUrl: string;
   isMenuCollapsed: boolean = false;
+  isTrialMode: boolean = false;
+  daysLeft: number = 0;
 
   constructor(private preferenceService: PreferenceService,
     private auth: AuthenticationService,
@@ -32,6 +34,16 @@ export class HeaderComponent {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['loggedInUser'] && this.loggedInUser?._id) {
       this.loadMenuPreference();
+    }
+  }
+
+  ngOnInit(): void {
+    const subscription = this.auth.companySubscription.getValue();
+    const user = this.auth.currentUserSubject.getValue();
+    const subscriptionActive = ['active', 'authenticated'];
+    if (!subscriptionActive.includes(subscription?.status) && user?.isTrial) {
+      this.isTrialMode = true;
+      this.daysLeft = parseInt(String(user?.daysLeft || 0));
     }
   }
     
@@ -138,5 +150,9 @@ export class HeaderComponent {
     localStorage.removeItem('loginTime');
     window.location.reload();
     this.router.navigateByUrl('/login');
+  }
+
+  goToPurchase() {
+    this.router.navigate(['/subscription/plans']);
   }
 }

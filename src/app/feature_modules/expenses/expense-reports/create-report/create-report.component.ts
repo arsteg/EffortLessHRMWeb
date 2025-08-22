@@ -4,7 +4,7 @@ import {
   MatDialogRef,
 } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,12 +12,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-create-report',
   templateUrl: './create-report.component.html',
-  styleUrl: './create-report.component.css'
+  styleUrls: ['./create-report.component.css']
 })
 export class CreateReportComponent {
   private readonly translate = inject(TranslateService);
   @Output() changeStep: any = new EventEmitter();
   @Output() close: any = new EventEmitter();
+  @Output() expenseReportExpensesEmitter = new EventEmitter<any>();
   categories: any;
   expenseReportform: FormGroup;
   isEdit: boolean;
@@ -40,22 +41,23 @@ export class CreateReportComponent {
   expenseFieldsArray: FormArray;
   @Input() changeMode: string;
   user = JSON.parse(localStorage.getItem('currentUser'));
-  @Output() expenseReportExpensesEmitter = new EventEmitter<any>();
   private readonly destroyRef = inject(DestroyRef);
   expenseData: any;
   isSubmitting: boolean = false;
 
-  constructor(public expenseService: ExpensesService,
+  constructor(
+    public expenseService: ExpensesService,
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<any>,
     @Inject(MAT_DIALOG_DATA) public data: { isEdit: boolean },
-    private toast: ToastrService) {
+    private toast: ToastrService
+  ) {
     this.expenseReportform = this.fb.group({
       expenseCategory: [''],
-      incurredDate: [],
-      amount: [0],
+      incurredDate: ['', [Validators.required, this.futureDateValidator()]],
+      amount: [0, Validators.min(0)],
       type: [''],
-      quantity: [1],
+      quantity: [0, Validators.min(0)],
       isReimbursable: [false],
       isBillable: [false],
       reason: [''],
@@ -69,6 +71,27 @@ export class CreateReportComponent {
     this.maxDate.setDate(this.maxDate.getDate() + 7);
     this.bsRangeValue = [this.bsValue, this.maxDate];
     this.expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
+  }
+
+  private futureDateValidator(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      if (!control.value) {
+        return null; // Don't validate if the field is empty, leave it to Validators.required
+      }
+
+      const today = new Date().getTime();
+      const incurredDate = new Date(control.value).getTime();
+
+      // Clear the time part of today's date to allow for future dates on the same day.
+      const todayAtMidnight = new Date();
+      todayAtMidnight.setHours(0, 0, 0, 0);
+
+      // Check if the incurred date is before or equal to today's date (at midnight)
+      if (incurredDate > todayAtMidnight.getTime()) {
+        return { 'futureDate': { value: control.value } };
+      }
+      return null;
+    };
   }
 
   ngOnInit() {
@@ -91,7 +114,7 @@ export class CreateReportComponent {
     });
   }
 
-  documentName : any;
+  documentName: any;
   loadExpenseReportData() {
     const expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
     expenseFieldsArray.clear();
@@ -118,11 +141,13 @@ export class CreateReportComponent {
 
   onSubmission() {
     this.isSubmitting = true;
-    const payload = this.createPayload();
-    if (this.selectedFiles.length > 0) {
-      this.processAttachments(payload);
-    } else {
-      this.submitExpenseReport(payload);
+    if (this.expenseReportform.valid) {
+      const payload = this.createPayload();
+      if (this.selectedFiles.length > 0) {
+        this.processAttachments(payload);
+      } else {
+        this.submitExpenseReport(payload);
+      }
     }
   }
 
@@ -173,10 +198,12 @@ export class CreateReportComponent {
       (result: any) => {
         this.expenseService.expenseReportExpense.next(result.data);
         this.toast.success(this.translate.instant('expenses.expense_updated_success'));
+        this.expenseReportExpensesEmitter.emit({ action: 'update', data: result.data }); // Emit event on update
         this.dialogRef.close();
       },
       (err) => {
         this.toast.error(err || this.translate.instant('expenses.expense_updated_error'));
+        this.isSubmitting = false;
       }
     );
   }
@@ -188,13 +215,15 @@ export class CreateReportComponent {
     payload.expenseReport = report._id;
     this.expenseService.addExpenseReportExpenses(payload).subscribe(
       (result: any) => {
-        this.expenseService.expenseReportExpense.next(result.data);
+        this.expenseService.expenseReportExpense.next(result);
         this.toast.success(this.translate.instant('expenses.expense_created_success'));
+        this.expenseReportExpensesEmitter.emit({ action: 'add', data: result }); // Emit event on add
         this.dialogRef.close();
         this.closeModal();
       },
       (err) => {
         this.toast.error(err || this.translate.instant('expenses.expense_created_error'));
+        this.isSubmitting = false;
       }
     );
   }
@@ -208,12 +237,12 @@ export class CreateReportComponent {
         const fileSize = file.size;
         const fileType = file.type;
         const fileNameParts = file.name.split('.');
-        const extention = '.' + fileNameParts[fileNameParts.length - 1];
+        const extension = '.' + fileNameParts[fileNameParts.length - 1];
         const attachment = {
           attachmentName: file.name,
-          attachmentType: fileType,
+          attachmentType: file.type,
           attachmentSize: fileSize,
-          extention: extention,
+          extension: extension,
           file: base64String
         };
         resolve(attachment);
@@ -243,11 +272,12 @@ export class CreateReportComponent {
   }
 
   openAttachment() {
-  const fileUrl = this.expenseReportform.get('expenseAttachments').value;
-  if (fileUrl && typeof fileUrl === 'string') {
-    window.open(fileUrl, '_blank');
+    const fileUrl = this.expenseReportform.get('expenseAttachments').value;
+    if (fileUrl && typeof fileUrl === 'string') {
+      window.open(fileUrl, '_blank');
+    }
   }
-}
+
   removeExistingAttachment() {
     this.expenseReportform.get('expenseAttachments').setValue(null);
   }

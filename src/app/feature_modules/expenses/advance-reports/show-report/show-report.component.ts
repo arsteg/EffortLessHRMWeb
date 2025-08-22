@@ -181,7 +181,7 @@ export class ShowReportComponent {
   }
   deleteReport(id: string) {
     this.expenseService.deleteAdvanceReport(id).subscribe((res: any) => {
-      this.advanceReport = this.advanceReport.filter(report => report._id !== id);
+      this.getAdvanceReports();
       this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {

@@ -63,7 +63,6 @@ export class AdvanceTemplatesComponent implements OnInit {
     this.getAllTemplates();
     this.getAlladvanceCategories();
     this.addAdvanceTempForm.get('approvalType').valueChanges.subscribe((value: any) => {
-      this.isSubmitted = false;
       if (value === 'template-wise') {
         this.addAdvanceTempForm.get('firstApprovalEmployee')?.setValidators([Validators.required]);
       } else {

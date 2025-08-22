@@ -28,7 +28,7 @@ export class RejectedComponent {
   public sortOrder: string = '';
   totalRecords: number
   recordsPerPage: number = 10;
-  displayedColumns: string[] = ['title', 'user', 'totalAmount', 'reimbursable', 'billable', 'status', 'action'];
+  displayedColumns: string[] = ['title', 'user', 'totalAmount', 'reimbursable', 'billable', 'reason' , 'status', 'action'];
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;

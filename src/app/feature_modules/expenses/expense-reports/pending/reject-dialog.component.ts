@@ -1,6 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-reject-dialog',
@@ -16,6 +17,21 @@ import { FormBuilder, FormGroup } from '@angular/forms';
         <mat-form-field  class="w-100">
           <mat-label>{{'reason' | translate}}</mat-label>
           <textarea matInput formControlName="reason"></textarea>
+          <mat-error>
+            @if(form.get('reason').touched || form.get('reason').invalid){
+              {{'expenses.reason' | translate}}
+          
+                @if(form.get('reason').hasError('maxlength')){
+                    {{'expenses.category_label_Limit' | translate}}
+                  }
+                @if(form.get('reason')?.errors?.['spacesNotAllowed']){
+                    {{ 'expenses.labelNoLeadingOrTrailingSpaces' | translate }}
+                }
+                @if(form.get('reason')?.errors?.['invalidLabel']){
+                    {{ 'expenses.label_invalid' | translate }}
+                 }
+                }
+          </mat-error>
         </mat-form-field>
         </mat-dialog-content>
       </form>
@@ -34,7 +50,7 @@ export class RejectDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.form = this.fb.group({
-      reason: ['']
+      reason: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]]
     });
   }
 
@@ -43,6 +59,8 @@ export class RejectDialogComponent {
   }
 
   onReject(): void {
-    this.dialogRef.close({'rejected': true, 'reason': this.form.value.reason});
+    if (this.form.valid) {
+      this.dialogRef.close({ 'rejected': true, 'reason': this.form.value.reason });
+    }
   }
 }

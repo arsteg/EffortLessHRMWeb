@@ -48,6 +48,11 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="reason">
+        <th mat-header-cell *matHeaderCellDef>{{'reason' | translate}}</th>
+        <td mat-cell *matCellDef="let expenseReport">{{expenseReport?.primaryApprovalReason}}</td>
+      </ng-container>
+
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef class="text-center">{{'expenses.action' | translate}}</th>
         <td mat-cell *matCellDef="let expenseReport">
@@ -68,9 +73,10 @@
       </ng-container>
 
       <tr mat-header-row
-        *matHeaderRowDef="['title', 'employee', 'totalAmount', 'reimbursable', 'billable', 'status', 'action']"></tr>
+        *matHeaderRowDef="['title', 'employee', 'totalAmount', 'reimbursable', 'billable', 'reason', 'status', 'action']">
+      </tr>
       <tr mat-row
-        *matRowDef="let row; columns: ['title', 'employee', 'totalAmount', 'reimbursable', 'billable', 'status', 'action'];">
+        *matRowDef="let row; columns: ['title', 'employee', 'totalAmount', 'reimbursable', 'billable', 'reason', 'status', 'action'];">
       </tr>
     </table>
     <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]"
@@ -91,18 +97,18 @@
   <div mat-dialog-content>
     <form [formGroup]="updateExpenseReport" (ngSubmit)="updateCancelledReport()">
       <h4>{{'expenses.cancel_msg' | translate}}</h4>
-      
+
       <div mat-dialog-actions>
         <button mat-flat-button mat-dialog-close>{{'expenses.no' | translate}}</button>
-        <button mat-flat-button color="accent" class="ms-auto" type="submit">{{'expenses.yes' | translate}}</button>
+        <button mat-flat-button color="primary" class="ms-auto" type="submit">{{'expenses.yes' | translate}}</button>
       </div>
     </form>
   </div>
 </ng-template>
 
 <ng-template #addModal let-modal>
-  <add-expense (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1"
-    (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></add-expense>
+  <add-expense (changeStep)="onChangeStep($event)" [changeMode]="changeMode" *ngIf="step == 1" (close)="onClose($event)"
+    (updateExpenseReportTable)="refreshExpenseReportTable()"></add-expense>
   <app-create-report *ngIf="step == 2" (changeStep)="onChangeStep($event)" [changeMode]="changeMode"
     (close)="onClose($event)" (updateExpenseReportTable)="refreshExpenseReportTable()"></app-create-report>
 </ng-template>

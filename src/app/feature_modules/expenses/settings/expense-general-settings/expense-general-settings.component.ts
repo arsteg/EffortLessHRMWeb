@@ -5,6 +5,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { TranslateService } from '@ngx-translate/core';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 @Component({
   selector: 'app-expense-general-settings',
   templateUrl: './expense-general-settings.component.html',
@@ -31,7 +32,7 @@ export class ExpenseGeneralSettingsComponent {
     private manageService: ManageTeamService
   ) {
     this.addTemplateForm = this.fb.group({
-      policyLabel: ['', Validators.required],
+      policyLabel: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       approvalType: ['', Validators.required],
       expenseCategories: [[], Validators.required],
       advanceAmount: [false],

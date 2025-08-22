@@ -25,7 +25,7 @@ export class CancelledComponent {
   users: any[] = [];
   selectedReport: any;
   expenseReportExpenses: any;
-  displayedColumns: string[] = ['title', 'user', 'totalAmount', 'reimbursable', 'billable', 'status', 'action'];
+  displayedColumns: string[] = ['title', 'user', 'totalAmount', 'reimbursable', 'billable', 'reason', 'status', 'action'];
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
