@@ -4,11 +4,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           Appointment Details
-        </mat-panel-title>
-        <mat-panel-description>
-          <mat-icon>account_circle</mat-icon>
-          &nbsp;{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}
-        </mat-panel-description>
+        </mat-panel-title>    
       </mat-expansion-panel-header>
 
       <form [formGroup]="appointmentForm" (ngSubmit)="onAppointmentSubmission()">
@@ -63,11 +59,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           Job Information
-        </mat-panel-title>
-        <mat-panel-description>
-          <mat-icon>info</mat-icon>
-          &nbsp;{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}
-        </mat-panel-description>
+        </mat-panel-title>      
       </mat-expansion-panel-header>
 
       <form [formGroup]="jobInformationForm" (ngSubmit)="onSubmissionJobInformation()">

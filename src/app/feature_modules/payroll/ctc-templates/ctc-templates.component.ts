@@ -116,23 +116,19 @@ export class CtcTemplatesComponent implements OnInit {
       next: () => {
         this.dataSource.data = this.dataSource.data.filter(item => item._id !== id);
         this.translate.get([
-          'payroll._ctc_templates.toast.success_deleted',
-          'payroll._ctc_templates.title'
+          'payroll._ctc_templates.toast.success_deleted'
         ]).subscribe(translations => {
           this.toast.success(
             translations['payroll._ctc_templates.toast.success_deleted'],
-            translations['payroll._ctc_templates.title']
           );
         });
         this.loadCTCTemplates(); // Refresh data after deletion
       },
-      error: (err) => {
-        this.translate.get('payroll._ctc_templates.title').subscribe(title => {
-          this.toast.error(
-            err?.error?.message || this.translate.instant('payroll._ctc_templates.toast.error_delete'),
-            title
-          );
-        });
+      error: (err) => {       
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll._ctc_templates.toast.error_delete')
+        ;
+        this.toast.error(errorMessage);
       }
     });
   }

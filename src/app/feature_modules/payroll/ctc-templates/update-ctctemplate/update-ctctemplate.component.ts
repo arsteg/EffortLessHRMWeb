@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AssignedFixedAllowanceComponent } from '../assigned-templates/fixed-allowance/fixed-allowance.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 const labelValidator: ValidatorFn = (control: AbstractControl) => {
   const value = control.value as string;
@@ -42,7 +43,7 @@ export class UpdateCTCTemplateComponent {
     private router: Router
   ) {
     this.ctcTemplateForm = this.fb.group({
-      name: ['',[ Validators.required, labelValidator]],
+      name: ['', [Validators.required, CustomValidators.noNumbersOrSymbolsValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       ctcTemplateFixedAllowance: [[]],
       ctcTemplateFixedDeduction: [[]],
       ctcTemplateVariableAllowance: [[]],

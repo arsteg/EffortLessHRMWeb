@@ -63,9 +63,12 @@
               {{ 'payroll.field_required' | translate }}
             </mat-error>
             <mat-error *ngIf="allowance.get('minimumAmount').hasError('min')">
-              Minimum Amount cannot be negative
+              {{ 'payroll._ctc_templates.minimum_amount_positive_only' | translate }}   
             </mat-error>
           </mat-form-field>
+          <mat-error *ngIf="allowance.hasError('minGreaterThanValue')">
+            {{ 'payroll._ctc_templates.minimum_amount_greater_than_value' | translate }}  
+          </mat-error>
         </td>
       </ng-container>
 

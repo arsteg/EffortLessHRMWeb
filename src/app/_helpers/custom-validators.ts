@@ -72,6 +72,19 @@ export class CustomValidators {
     }
     return null;
   }
+  static passportNumber(control: AbstractControl): ValidationErrors | null {
+    const value = String(control.value || '').trim().toUpperCase();
+  
+    // Indian passport number: 1 uppercase letter (excluding Q, X, Z), followed by 7 digits
+    const passportRegex = /^[A-PR-WY][0-9]{7}$/;
+  
+    if (value && !passportRegex.test(value)) {
+      return { invalidPassport: true };
+    }
+  
+    return null;
+  }
+  
   static noSpacesNumbersOrSymbolsValidator(control: any) {
     const value = control.value;
     if (/\d/.test(value) || /\s/.test(value) || /[!@#$%^&*(),.?":{}|<>]/.test(value)) {
@@ -169,7 +182,18 @@ export class CustomValidators {
       return null;
     }
   // Custom validator for shift name
- 
+  static labelValidatorWithEmptyAccept(control: AbstractControl): ValidationErrors | null {
+    const value = (control.value || '').trim();
+  
+    // Allow completely empty field (i.e., optional)
+    if (!value) {
+      return null;
+    }
+  
+    // Validate only if there is some input
+    const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
+    return valid ? null : { invalidLabel: true };
+  }
   static labelValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value as string;
     if (!value || /^\s*$/.test(value)) {
@@ -392,4 +416,28 @@ static fromLessThanToValidator(fromKey: string, toKey: string): ValidatorFn {
     return null;
   };
 }
+static minimumAmountLessThanOrEqualValue: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+  const value = group.get('value')?.value;
+  const minAmount = group.get('minimumAmount')?.value;
+
+  if (value != null && minAmount != null && minAmount > value) {
+    return { minGreaterThanValue: true };
+  }
+
+  return null;
+};
+static minimumAge(minAge: number) {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const dob = new Date(control.value);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    return isNaN(age) || age < minAge ? { minimumAge: true } : null;
+  };
+}
+
+
 }

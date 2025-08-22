@@ -616,6 +616,9 @@
         },
         "_ctc_templates": {
             "title": "CTC Templates",
+            "field_required": "Field is required",
+            "minimum_amount_positive_only": "Minimum Amount cannot be negative",
+            "minimum_amount_greater_than_value": "Minimum Amount cannot be greater than Value",
             "table": {
                 "name": "Template Name",
                 "fixed_allowances": "Fixed Allowances",
@@ -628,7 +631,7 @@
                 "fixed_deduction_Invalid_data": "Fixed Deduction contains invalid Value or Minimum Amount",
                 "variable_allowance_Invalid_data": "Variable Allowance contains invalid Value or Minimum Amount",
                 "variable_deduction_Invalid_data": "Variable Deduction contains invalid Value or Minimum Amount",
-                "success_updated": "CTC Template deleted successfully",
+                "success_updated": "CTC Template updated successfully",
                 "failed_updated": "Failed to update CTC Template",
                 "success_saved": "CTC Template saved successfully",
                 "failed_saved": "Failed to save CTC Template",

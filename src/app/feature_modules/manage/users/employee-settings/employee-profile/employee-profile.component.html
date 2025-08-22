@@ -79,10 +79,13 @@
                     <div class="row">
                         <mat-form-field class="col-md-6">
                             <mat-label>Date of Birth (DOB)</mat-label>
-                            <input matInput [matDatepicker]="picker" formControlName="DOB">
+                            <input matInput [matDatepicker]="dobPicker" formControlName="DOB" readonly  [max]="maxDate">
                             <mat-hint>MM/DD/YYYY</mat-hint>
-                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
+                            <mat-datepicker #dobPicker></mat-datepicker>
+                            <mat-error *ngIf="userForm.get('DOB')?.hasError('minimumAge') && userForm.get('DOB')?.touched">
+                                You must be at least 18 years old.
+                              </mat-error>                            
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-6">
@@ -98,10 +101,10 @@
                     <div class="row">
                         <mat-form-field class="col-md-6">
                             <mat-label>Marriage Anniversary</mat-label>
-                            <input matInput [matDatepicker]="picker" formControlName="MarraigeAniversary">
+                            <input matInput [matDatepicker]="marriagePicker" formControlName="MarraigeAniversary" readonly [max]="maxDate">
                             <mat-hint>MM/DD/YYYY</mat-hint>
-                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
+                            <mat-datepicker-toggle matIconSuffix [for]="marriagePicker"></mat-datepicker-toggle>
+                            <mat-datepicker #marriagePicker></mat-datepicker>
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-6">
@@ -150,13 +153,20 @@
                             <mat-label>Number of Children</mat-label>
                             <input matInput type="number" formControlName="NoOfChildren"
                                 placeholder="Enter Number of Children">
+                                <mat-error *ngIf="userForm.get('NoOfChildren')?.touched && userForm.get('NoOfChildren')?.invalid">
+                                    <small *ngIf="userForm.get('NoOfChildren')?.errors?.['pattern']">No Of Children must be a 1-digit positive number with no leading zero.</small>
+                                </mat-error>  
                         </mat-form-field>
                     </div>
 
                     <div class="row">
                         <mat-form-field appearance="outline" class="col-md-6">
-                            <mat-label>Passport Details</mat-label>
-                            <input matInput formControlName="PassportDetails" placeholder="Enter Passport Details">
+                            <mat-label>Passport</mat-label>
+                            <input matInput formControlName="PassportDetails" placeholder="Enter Passport Number">                      
+                           
+                            <mat-error *ngIf="userForm.get('PassportDetails')?.hasError('invalidPassport') && userForm.get('PassportDetails')?.touched">
+                                Passport Number must be 1 uppercase letter followed by 7 digits (e.g., A1234567).
+                              </mat-error>
                         </mat-form-field>
                     </div>
                 </mat-expansion-panel>
@@ -190,8 +200,9 @@
                             <mat-label>Pincode</mat-label>
                             <input type="number" matInput formControlName="pincode" placeholder="Enter Pincode">
                             <mat-error *ngIf="userForm.get('pincode')?.touched && userForm.get('pincode')?.invalid">
-                                <small *ngIf="userForm.get('pincode')?.errors?.['pattern']">Pincode must be a 6-digit
-                                    number.</small>
+                                <small *ngIf="userForm.get('pincode')?.errors?.['pattern']">
+                                    Pincode must be a 6-digit positive number with no leading zero.
+                                </small>
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -209,8 +220,7 @@
                             <mat-label>Phone</mat-label>
                             <input type="number" matInput formControlName="phone" placeholder="Enter Phone Number">
                             <mat-error *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid">
-                                <small *ngIf="userForm.get('phone')?.errors?.['pattern']">Phone must be a 10-digit
-                                    number.</small>
+                                <small *ngIf="userForm.get('phone')?.errors?.['pattern']"> Phone must be a 10-digit positive number with no leading zero.</small>
                             </mat-error>
                         </mat-form-field>
 
@@ -218,8 +228,7 @@
                             <mat-label>Mobile</mat-label>
                             <input type="number" matInput formControlName="mobile" placeholder="Enter Mobile Number">
                             <mat-error *ngIf="userForm.get('mobile')?.touched && userForm.get('mobile')?.invalid">
-                                <small *ngIf="userForm.get('mobile')?.errors?.['pattern']">Mobile must be a 10-digit
-                                    number.</small>
+                                <small *ngIf="userForm.get('mobile')?.errors?.['pattern']">Mobile must be a 10-digit positive number with no leading zero.</small>
                             </mat-error>
                         </mat-form-field>
                     </div>
@@ -236,6 +245,13 @@
                         <mat-form-field appearance="outline" class="col-md-6">
                             <mat-label>Emergency Contact Name</mat-label>
                             <input matInput formControlName="emergancyContactName" placeholder="Enter Name">
+                            <mat-error
+                            *ngIf="userForm.get('emergancyContactName')?.invalid && (userForm.get('emergancyContactName')?.touched || userForm.get('emergancyContactName')?.dirty)">
+                          
+                            <span *ngIf="userForm.get('emergancyContactName')?.errors?.['invalidLabel']">
+                                Emergency Contact Name cannot contain spaces, numbers, or symbols.
+                            </span>
+                            </mat-error>
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-6">
@@ -333,8 +349,16 @@
                     <div class="row">
                         <mat-form-field appearance="outline" class="col-md-12">
                             <mat-label>Extra Details</mat-label>
-                            <textarea matInput formControlName="extraDetails"
-                                placeholder="Enter Extra Details"></textarea>
+                            <textarea matInput
+            formControlName="extraDetails"
+            maxlength="500"
+            placeholder="Enter Extra Details">
+  </textarea>
+  <mat-hint align="end">{{ userForm.get('extraDetails')?.value?.length || 0 }}/500</mat-hint>
+
+  <mat-error *ngIf="userForm.get('extraDetails')?.hasError('maxlength') && userForm.get('extraDetails')?.touched">
+    Maximum 500 characters allowed.
+  </mat-error>
                         </mat-form-field>
                     </div>
                 </mat-expansion-panel>

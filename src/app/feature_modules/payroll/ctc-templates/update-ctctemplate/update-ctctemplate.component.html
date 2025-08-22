@@ -7,12 +7,14 @@
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Enter the Label for CTC Template</mat-label>
           <input matInput type="text" formControlName="name" placeholder="CTC Template...">
-          <mat-error
-            *ngIf="ctcTemplateForm.get('name').hasError('required') && (ctcTemplateForm.get('name').dirty || ctcTemplateForm.get('name').touched)">
-            {{ 'payroll.flexi_benefits.form.error.name_required' | translate }}
-          </mat-error>
-          <mat-error *ngIf="ctcTemplateForm.get('name')?.errors?.['invalidLabel']">
-            {{ 'payroll.fixed_deduction.form.error.label_no_special_characters' | translate }}
+          <mat-error class="mb-3" *ngIf="!ctcTemplateForm.get('name').valid && ctcTemplateForm.get('name').touched">
+            <span *ngIf="ctcTemplateForm.get('name').errors?.['required']">{{ 'payroll.name_required' |
+              translate }}</span>
+            <span *ngIf="ctcTemplateForm.get('name').errors?.['invalidName']">{{ 'payroll.name_invalid' |
+              translate }}</span>   
+                <span *ngIf="ctcTemplateForm.get('name')?.errors?.['spacesNotAllowed']">      
+                    {{ 'payroll.spacenotallowed' | translate }}
+                  </span>                                    
           </mat-error>
         </mat-form-field>
       </div>
