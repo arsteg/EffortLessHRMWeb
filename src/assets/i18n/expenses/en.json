@@ -158,6 +158,7 @@
         "cancel_msg":"Are you sure you want to cancel this request?",
         "cancelRequest": "Expense Report successfully cancelled",
         "cancelRequestError": "Expense Report can not be cancelled",
+        "updatedStatus": "Expense report status updated successfully",
         "reject_msg":"Are you sure you want to reject this request?",
         "approve_msg":"Are you sure you want to approve this request?",
         "expense_applicable_expense_settings":"Expense Applicable Expense Settings",

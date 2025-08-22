@@ -8,9 +8,9 @@
         <ng-container matColumnDef="policyInformation">
             <th mat-header-cell *matHeaderCellDef> Policy Information </th>
             <td mat-cell *matCellDef="let element">
-                {{'expenses.amount_limit_single_expense' | translate}}: {{element?.maximumAmountPerExpense}}<br>
-                {{'expenses.amount_limit_without_receipt' | translate}}: {{element?.maximumAmountWithoutReceipt}}<br>
-                {{'expenses.request_limit' | translate}}: {{element?.maximumExpensesCanApply}}
+                {{'expenses.amount_limit_single_expense' | translate}}: {{element?.maximumAmountPerExpense || 0}}<br>
+                {{'expenses.amount_limit_without_receipt' | translate}}: {{element?.maximumAmountWithoutReceipt || 0}}<br>
+                {{'expenses.request_limit' | translate}}: {{element?.maximumExpensesCanApply || 0}}
             </td>
         </ng-container>
 

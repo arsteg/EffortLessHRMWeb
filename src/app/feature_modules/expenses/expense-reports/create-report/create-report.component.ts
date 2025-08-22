@@ -55,7 +55,7 @@ export class CreateReportComponent {
     this.expenseReportform = this.fb.group({
       expenseCategory: [''],
       incurredDate: ['', [Validators.required, this.futureDateValidator()]],
-      amount: [0],
+      amount: [0, Validators.min(0)],
       type: [''],
       quantity: [0, Validators.min(0)],
       isReimbursable: [false],
@@ -141,11 +141,13 @@ export class CreateReportComponent {
 
   onSubmission() {
     this.isSubmitting = true;
-    const payload = this.createPayload();
-    if (this.selectedFiles.length > 0) {
-      this.processAttachments(payload);
-    } else {
-      this.submitExpenseReport(payload);
+    if (this.expenseReportform.valid) {
+      const payload = this.createPayload();
+      if (this.selectedFiles.length > 0) {
+        this.processAttachments(payload);
+      } else {
+        this.submitExpenseReport(payload);
+      }
     }
   }
 

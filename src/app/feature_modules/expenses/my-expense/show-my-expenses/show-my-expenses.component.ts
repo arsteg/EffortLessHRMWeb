@@ -152,6 +152,7 @@ export class ShowMyExpensesComponent {
     }
     return totalAmount;
   }
+
   exportToCsv() {
     const dataToExport = this.expenseReport.map((report) => {
       let totalAmount = report.amount || 0;
@@ -169,6 +170,4 @@ export class ShowMyExpensesComponent {
     });
     this.exportService.exportToCSV('My-Expense-Report', 'My-Expense-Report', dataToExport);
   }
-
 }
-

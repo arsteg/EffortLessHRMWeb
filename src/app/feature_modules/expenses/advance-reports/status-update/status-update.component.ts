@@ -61,6 +61,7 @@ export class StatusUpdateComponent {
       this.expenseService.updateAdvanceReport(id, payload).subscribe((res: any) => {
         this.toast.success(this.translate.instant('expenses.status_updated_success'));
         this.advanceReportRefreshed.emit();
+        this.toast.success(this.translate.instant('expenses.updatedStatus'))
         this.dialogRef.close('success');
       }, (error) => {
         this.toast.error(error);

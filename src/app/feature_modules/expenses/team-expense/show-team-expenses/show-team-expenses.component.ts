@@ -8,6 +8,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ApproveDialogComponent } from '../../expense-reports/pending/approve-dialog.component';
 import { RejectDialogComponent } from '../../expense-reports/pending/reject-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-show-team-expenses',
@@ -37,13 +38,14 @@ export class ShowTeamExpensesComponent {
   updateExpenseReport: FormGroup;
   @Input() selectedTab: number;
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-  displayedColumns: string[] = ['title', 'employeeName', 'totalAmount', 'amount', 'reimbursable', 'billable', 'status', 'actions'];
+  displayedColumns: string[] = ['title', 'employeeName', 'totalAmount', 'amount', 'reimbursable', 'billable', 'comment', 'status', 'actions'];
   dialogRef: MatDialogRef<any>;
 
   constructor(private expenseService: ExpensesService,
     private commonService: CommonService,
     private dialog: MatDialog,
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private toast: ToastrService) {
     this.updateExpenseReport = this.fb.group({
       employee: [''],
       title: [''],
@@ -134,7 +136,11 @@ export class ShowTeamExpensesComponent {
     };
     this.expenseService.updateExpenseReport(id, payload).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
-    });
+      this.toast.success(this.translate.instant('expenses.updatedStatus'))
+    },
+      err => {
+        this.toast.error(err)
+      });
   }
 
   openApproveDialog(expenseReport: any) {

@@ -38,7 +38,7 @@
                         }
                         @if(expenseReportform.get('incurredDate')?.hasError('futureDate') &&
                         expenseReportform.get('incurredDate')?.touched){
-                        {{'expenses.dataFuture' | translate}}
+                        {{'expenses.dateFuture' | translate}}
                         }
                     </mat-error>
                     }
@@ -85,6 +85,9 @@
                         }
                         @if(expenseReportform.get('amount').errors['exceeds']){
                         {{'expenses.amount_limit' | translate}} {{expenseData.maximumAmountPerExpense}}.
+                        }
+                        @if(expenseReportform.get('amount').errors['min']){
+                        {{'expenses.negativeValRestrict' | translate}}
                         }
                     </mat-error>
                     }
