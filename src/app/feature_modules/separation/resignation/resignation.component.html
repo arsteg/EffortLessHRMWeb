@@ -93,10 +93,9 @@
               <mat-datepicker #picker3></mat-datepicker>
             
             </mat-form-field>
-            <mat-error
-            *ngIf="resignationForm.hasError('exitBeforeResignation')">
-            Exit Interview Date must be after Resignation Date.
-          </mat-error>
+            <mat-error *ngIf="resignationForm.hasError('exitBeforeResignation') && resignationForm.touched">
+  Exit Interview Date must be after Resignation Date.
+</mat-error>
           </div>
         </div>
 

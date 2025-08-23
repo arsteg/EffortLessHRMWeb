@@ -236,8 +236,7 @@ export class ResignationComponent implements OnInit {
         company_property_returned: [false],
         final_pay_processed: [false],
         exit_feedback: ['']
-      }, { validators: CustomValidators.exitInterviewAfterTerminationValidator() });
-      
+      }, { validators: CustomValidators.exitInterviewAfterResignationValidator() });     
    
   }
 

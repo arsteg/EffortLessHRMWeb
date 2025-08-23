@@ -234,7 +234,7 @@ export class CustomValidators {
       return null;
     };
   }
-    static exitInterviewAfterResignationValidator(): ValidatorFn {
+  static exitInterviewAfterResignationValidator(): ValidatorFn {
       return  (group: AbstractControl): ValidationErrors | null => {
       const resignationDate = group.get('resignation_date')?.value;
       const exitInterviewDate = group.get('exit_interview_date')?.value;
@@ -251,6 +251,24 @@ export class CustomValidators {
       return exitDate > resDate ? null : { exitBeforeResignation: true };
     };
   }
+  static ConfirmationAfterJoiningValidator(): ValidatorFn {
+    return  (group: AbstractControl): ValidationErrors | null => {
+    const joiningDate = group.get('joiningDate')?.value;
+    const confirmationDate = group.get('confirmationDate')?.value;
+  
+    if (!joiningDate || !confirmationDate) return null;
+  
+    const resDate = new Date(joiningDate);
+    const exitDate = new Date(confirmationDate);
+  
+    // Normalize dates (remove time part)
+    resDate.setHours(0, 0, 0, 0);
+    exitDate.setHours(0, 0, 0, 0);
+  console.log(resDate);
+  console.log(exitDate);
+    return exitDate > resDate ? null : { ConfirmationBeforeJoining: true };
+  };
+}
   static exitInterviewAfterTerminationValidator(): ValidatorFn {
     return  (group: AbstractControl): ValidationErrors | null => {
     const terminationDate = group.get('termination_date')?.value;
@@ -264,7 +282,8 @@ export class CustomValidators {
     // Normalize dates (remove time part)
     resDate.setHours(0, 0, 0, 0);
     exitDate.setHours(0, 0, 0, 0);
-  
+  console.log(resDate)
+  console.log(exitDate)
     return exitDate > resDate ? null : { exitBeforeTermination: true };
   };
 }
