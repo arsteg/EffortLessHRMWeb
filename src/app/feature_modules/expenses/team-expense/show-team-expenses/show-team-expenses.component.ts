@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -9,6 +9,8 @@ import { ApproveDialogComponent } from '../../expense-reports/pending/approve-di
 import { RejectDialogComponent } from '../../expense-reports/pending/reject-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { ExportService } from 'src/app/_services/export.service';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-show-team-expenses',
@@ -40,11 +42,13 @@ export class ShowTeamExpensesComponent {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   displayedColumns: string[] = ['title', 'employeeName', 'totalAmount', 'amount', 'reimbursable', 'billable', 'comment', 'status', 'actions'];
   dialogRef: MatDialogRef<any>;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private expenseService: ExpensesService,
     private commonService: CommonService,
     private dialog: MatDialog,
     private fb: FormBuilder,
+    private exportService: ExportService,
     private toast: ToastrService) {
     this.updateExpenseReport = this.fb.group({
       employee: [''],
@@ -60,6 +64,32 @@ export class ShowTeamExpensesComponent {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
+  }
+
+  ngAfterViewInit() {
+    this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = (item, property) => {
+      switch (property) {
+        case 'title':
+          return item.title ? item.title.toLowerCase() : '';
+        case 'employeeName':
+          return item.employeeName ? item.employeeName.toLowerCase() : '';
+        case 'totalAmount':
+          return this.calculateTotalAmount(item);
+        case 'amount':
+          return item.amount || 0;
+        case 'reimbursable':
+          return this.calculateTotalisReimbursable(item, true, false);
+        case 'billable':
+          return this.calculateTotalisReimbursable(item, false, true);
+        case 'comment':
+          return item.primaryApprovalReason ? item.primaryApprovalReason.toLowerCase() : '';
+        case 'status':
+          return item.status ? item.status.toLowerCase() : '';
+        default:
+          return item[property];
+      }
+    };
   }
 
   open(content: any, selectedReport?: any) {
@@ -122,6 +152,9 @@ export class ShowTeamExpensesComponent {
       this.dataSource.data = this.expenseReport;
       this.totalAmount = this.expenseReport.reduce((total, report) => total + report.amount, 0);
       this.totalRecords = res.total;
+      if (this.sort) {
+        this.dataSource.sort = this.sort;
+      }
     });
   }
 
@@ -220,4 +253,23 @@ export class ShowTeamExpensesComponent {
     return totalAmount;
   }
 
+  exportToCsv() {
+    const timestamp = new Date().toISOString().replace(/[-:T.]/g, '');
+    const dataToExport = this.expenseReport.map((report) => {
+      const totalAmount = this.calculateTotalAmount(report);
+      const reimbursableAmount = this.calculateTotalisReimbursable(report, true, false);
+      const billableAmount = this.calculateTotalisReimbursable(report, false, true);
+      return {
+        title: report.title || '',
+        employeeName: report.employeeName || this.getUser(report.employee) || '',
+        amount: report.amount || 0,
+        totalAmount: totalAmount,
+        reimbursableAmount: reimbursableAmount,
+        billableAmount: billableAmount,
+        comment: report.comment || '',
+        status: report.status || ''
+      };
+    });
+    this.exportService.exportToCSV(`Team-Expense-Report-${timestamp}`, 'Team-Expense-Report', dataToExport);
+  }
 }

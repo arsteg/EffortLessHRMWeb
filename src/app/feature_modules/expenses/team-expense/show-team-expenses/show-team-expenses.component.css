@@ -2,4 +2,9 @@
     background: #76bc21 !important;
     border: transparent !important;
     border-radius: 20px !important;
+    justify-content: flex-start !important;
+  }
+
+:host ::ng-deep .mat-mdc-paginator-container {
+    justify-content: flex-start !important;
   }

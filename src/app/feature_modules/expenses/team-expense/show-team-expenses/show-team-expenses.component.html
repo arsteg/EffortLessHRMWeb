@@ -9,50 +9,50 @@
             <button mat-flat-button color="primary" class="me-1" (click)="open(addModal); step=1">
                 {{'expenses.add_expense' | translate}}
             </button>
-            <button class="me-1 border" mat-flat-button>
+            <button class="me-1 border" (click)="exportToCsv()" mat-flat-button>
                 <mat-icon>download</mat-icon> {{'download' | translate}}
             </button>
         </div>
     </div>
 
-    <table mat-table [dataSource]="dataSource" class="hrm-table">
+    <table mat-table [dataSource]="dataSource" matSort class="hrm-table">
         <ng-container matColumnDef="title">
-            <th mat-header-cell *matHeaderCellDef> {{'expenses.report_title' | translate}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'expenses.report_title' | translate}} </th>
             <td mat-cell *matCellDef="let report"> {{report?.title}} </td>
         </ng-container>
 
         <ng-container matColumnDef="employeeName">
-            <th mat-header-cell *matHeaderCellDef>{{'expenses.employee' | translate}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'expenses.employee' | translate}} </th>
             <td mat-cell *matCellDef="let report"> {{report?.employeeName}} </td>
         </ng-container>
 
         <ng-container matColumnDef="totalAmount">
-            <th mat-header-cell *matHeaderCellDef> {{'expenses.total_amount' | translate}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'expenses.total_amount' | translate}} </th>
             <td mat-cell *matCellDef="let report"> {{calculateTotalAmount(report)}} </td>
         </ng-container>
 
         <ng-container matColumnDef="amount">
-            <th mat-header-cell *matHeaderCellDef> {{'expenses.advance_recieved' | translate}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'expenses.advance_recieved' | translate}} </th>
             <td mat-cell *matCellDef="let report"> {{report?.amount}} </td>
         </ng-container>
 
         <ng-container matColumnDef="reimbursable">
-            <th mat-header-cell *matHeaderCellDef> {{'expenses.reimbursable' | translate}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'expenses.reimbursable' | translate}} </th>
             <td mat-cell *matCellDef="let report"> {{calculateTotalisReimbursable(report, true, false)}} </td>
         </ng-container>
 
         <ng-container matColumnDef="billable">
-            <th mat-header-cell *matHeaderCellDef> {{'expenses.billable' | translate}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'expenses.billable' | translate}} </th>
             <td mat-cell *matCellDef="let report"> {{calculateTotalisReimbursable(report, false, true)}} </td>
         </ng-container>
 <ng-container matColumnDef="comment">
-            <th mat-header-cell *matHeaderCellDef> {{'comment' | translate}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'comment' | translate}} </th>
             <td mat-cell *matCellDef="let report">
                 {{report?.primaryApprovalReason}}
             </td>
         </ng-container>
         <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef> {{'status' | translate}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'status' | translate}} </th>
             <td mat-cell *matCellDef="let report">
                 {{report?.status}}
             </td>
@@ -84,7 +84,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]"
+    <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25]"
         (page)="onPageChange($event)">
     </mat-paginator>
 </div>
