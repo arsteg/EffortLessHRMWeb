@@ -106,26 +106,30 @@ export class AddCategoryLeaveComponent {
     });
   }
 
+  //Revised toggleControl method
   toggleControl(formGroup: FormGroup, toggler: string, control: string) {
     const toggleControl = formGroup.get(toggler);
     const dependentControl = formGroup.get(control);
 
+    // Function to update validators and value
+    const updateValidation = (value: boolean) => {
+      if (value) {
+        dependentControl.setValidators([Validators.required, Validators.min(0)]);
+        dependentControl.enable();
+      } else {
+        dependentControl.clearValidators();
+        dependentControl.setValue(0);
+        dependentControl.disable();
+      }
+      dependentControl.updateValueAndValidity();
+    };
+
     // Set initial state
-    if (!toggleControl.value) {
-      dependentControl.setValue(0); // Reset to 0 when toggle is initially false
-      dependentControl.disable();
-    } else {
-      dependentControl.enable();
-    }
+    updateValidation(toggleControl.value);
 
     // Listen for value changes on the toggle
     toggleControl.valueChanges.subscribe(value => {
-      if (value) {
-        dependentControl.enable();
-      } else {
-        dependentControl.setValue(0); // Reset to 0 when toggle is set to false
-        dependentControl.disable();
-      }
+      updateValidation(value);
     });
   }
   bindCategoryApplicableChange(categoryGroup: FormGroup) {
@@ -147,13 +151,18 @@ export class AddCategoryLeaveComponent {
       category.categoryApplicable = 'all-employees'; // Force set to 'all-employees' on submission
       category.users = category.users.map(user => ({ user }));
     });
-    this.leaveService.updateLeaveTemplateCategories(formData).subscribe((res: any) => {
-      this.toast.success(this.translate.instant('leave.successTemplateCategoriesUpdated'));
-      this.updateLeaveTemplateTable.emit();
-      this.closeModal();
-    }, err => {
-      this.toast.error(err?.message || this.translate.instant('leave.errorTemplateCategoriesUpdated'));
-    });
+    if (this.firstForm.invalid) {
+      this.firstForm.markAllAsTouched();
+    }
+    else {
+      this.leaveService.updateLeaveTemplateCategories(formData).subscribe((res: any) => {
+        this.toast.success(this.translate.instant('leave.successTemplateCategoriesUpdated'));
+        this.updateLeaveTemplateTable.emit();
+        this.closeModal();
+      }, err => {
+        this.toast.error(err?.message || this.translate.instant('leave.errorTemplateCategoriesUpdated'));
+      });
+    }
   }
 
   closeModal() {

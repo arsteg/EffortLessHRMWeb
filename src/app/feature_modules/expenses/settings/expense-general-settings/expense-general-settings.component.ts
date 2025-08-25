@@ -66,9 +66,6 @@ export class ExpenseGeneralSettingsComponent {
     if (approverLevel == 1 && approverType == 'template-wise') {
       this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
       this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
-    } else if (approverLevel == 2 && approverType == 'template-wise') {
-      this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
-      this.addTemplateForm.get('secondApprovalEmployee').setValidators([Validators.required]);
     } else {
       this.addTemplateForm.get('firstApprovalEmployee').clearValidators();
       this.addTemplateForm.get('secondApprovalEmployee').clearValidators();

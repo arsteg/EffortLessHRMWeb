@@ -223,7 +223,8 @@ const routes: Routes = [
       {
         path: 'profile', 
         loadChildren: () => import('./feature_modules/manage/users/employee-settings/employee-settings.module').then(m => m.EmployeeSettingsModule),
-        data: { permission: 'profile' }
+        resolve: { translation: TranslationResolver },
+        data: { moduleKey: 'manage', permission: 'profile' }
        }
     ]
   },

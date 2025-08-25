@@ -34,7 +34,6 @@ export class LeaveAssignmentComponent implements OnInit {
   isSubmitting: boolean = false;
   alreadyExist: boolean = false;
 
-
   columns: TableColumn[] = [
     { key: this.translate.instant('leave.leaveassignment.employee'), name: 'Employee', valueFn: (row) => row?.user },
     { key: this.translate.instant('leave.leaveassignment.leaveTemplate'), name: 'Current Leave Policy', valueFn: (row) => row?.leaveTemplate?.label },
@@ -74,7 +73,7 @@ export class LeaveAssignmentComponent implements OnInit {
     this.getManagers();
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
-    })
+    });
     this.getTemplateAssignments();
     this.templateAssignmentForm.get('leaveTemplate')?.valueChanges.subscribe(value => {
       this.onTemplateChange(value);
@@ -82,6 +81,7 @@ export class LeaveAssignmentComponent implements OnInit {
   }
 
   open(content: any) {
+    this.isSubmitting = false;
     this.getAllTemplates();
     this.dialogRef = this.dialog.open(content, {
       width: '600px',

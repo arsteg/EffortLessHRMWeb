@@ -3,3 +3,7 @@
     border: transparent !important;
     border-radius: 20px !important;
   }
+
+:host ::ng-deep .mat-mdc-paginator-container {
+  justify-content: flex-start !important;
+}

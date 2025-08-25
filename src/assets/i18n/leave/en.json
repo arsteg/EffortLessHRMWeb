@@ -127,6 +127,7 @@
         "errorTemplateCategoriesUpdated": "Failed to update leave template categories",
         "endDateValidate": "Please first select Start Date",
         "halfDayLimitReachedError": "You can only select up to {{limit}} half-day entries based on your leave duration.",
+        "required": "This field is required.",
         "templateCategories": {
             "title": "Leave Template Applicable Categories",
             "done": "Done",
