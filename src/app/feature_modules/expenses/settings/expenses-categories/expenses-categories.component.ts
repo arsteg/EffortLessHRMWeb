@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-expenses-categories',
   templateUrl: './expenses-categories.component.html',
@@ -31,6 +32,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   isSubmitted: boolean = false;
   displayedColumns: string[] = ['label', 'type', 'actions'];
   dialogRef: MatDialogRef<any>;
+  allData: any[] = [];
   expenseTypes = {
     perDay: 'Per Day',
     time: 'Time',
@@ -38,6 +40,20 @@ export class ExpensesCategoriesComponent implements OnInit {
     dateRange: 'Date Range',
     other: 'Other'
   }
+
+  columns: TableColumn[] = [
+    { key: 'label', name: this.translate.instant('expenses.expense_name') },
+    { key: 'type', name: this.translate.instant('expenses.type'), valueFn: (row: any) => this.expenseTypes[row.type] },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.actions'),
+      isAction: true,
+      options: [
+        { label: this.translate.instant('expenses.edit'), icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: this.translate.instant('expenses.delete'), icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(
     private dialog: MatDialog,
@@ -157,6 +173,7 @@ export class ExpensesCategoriesComponent implements OnInit {
     };
     this.expenses.getExpenseCatgories(pagination).subscribe((res: any) => {
       this.expenseCategories.data = res.data;
+      this.allData = res.data;
       this.totalRecords = res.total;
     });
   }
@@ -359,6 +376,45 @@ export class ExpensesCategoriesComponent implements OnInit {
       }
     }
     return '';
+  }
+
+  onSearchChange(search: string) {
+    const lowerSearch = search.toLowerCase();
+    const data = this.allData?.filter(row => {
+      const valuesToSearch = [
+        row?.label,
+        this.expenseTypes[row?.type]
+      ];
+
+      return valuesToSearch.some(value =>
+        value?.toString().toLowerCase().includes(lowerSearch)
+      );
+    });
+    this.expenseCategories.data = data;
+  }
+  
+  onSortChange(event: any) {
+    const sorted = this.expenseCategories.data.slice().sort((a: any, b: any) => {
+      const valueA = this.getNestedValue(a, event.active);
+      const valueB = this.getNestedValue(b, event.active);
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.expenseCategories.data = sorted;
+  }
+
+  private getNestedValue(obj: any, key: string): any {
+    return key.split('.').reduce((o, k) => (o ? o[k] : undefined), obj);
+  }
+
+  handleAction(event: any, addModal: any) {
+    if (event.action.label === this.translate.instant('expenses.edit')) {
+      this.selectedCategory = event.row;
+      this.editCategory();
+      this.open(addModal);
+    }
+    if (event.action.label === this.translate.instant('expenses.delete')) {
+      this.deleteDialog(event.row._id);
+    }
   }
 
 }
