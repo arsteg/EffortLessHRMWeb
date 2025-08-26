@@ -5,12 +5,12 @@
             <input matInput (keyup)="applyFilter($event)">
             <mat-icon matSuffix>search</mat-icon>
         </mat-form-field>
-        <div>
+        <div class="d-flex align-items-center ms-auto">
+            <button color="primary" class="me-2 btn btn-light d-flex align-items-center dropdown-toggle" (click)="exportToCsv()">
+                <span>Export</span><mat-icon class="fs-5">download</mat-icon>
+            </button>
             <button mat-flat-button color="primary" class="me-1" (click)="open(addModal); step=1">
                 {{'expenses.add_expense' | translate}}
-            </button>
-            <button class="me-1 border" (click)="exportToCsv()" mat-flat-button>
-                <mat-icon>download</mat-icon> {{'download' | translate}}
             </button>
         </div>
     </div>

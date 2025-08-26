@@ -7,6 +7,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-rejected',
   templateUrl: './rejected.component.html',
@@ -34,6 +35,49 @@ export class RejectedComponent {
   @ViewChild(MatSort) sort: MatSort;
   currentPage: number = 1;
   dialogRef: MatDialogRef<any>;
+
+  columns: TableColumn[] = [
+    { 
+      key: 'title', 
+      name: this.translate.instant('expenses.report_title') 
+    },
+    { 
+      key: 'user', 
+      name: this.translate.instant('expenses.employee') 
+    },
+    { 
+      key: 'totalAmount', 
+      name: this.translate.instant('expenses.total_amount'),
+      valueFn: (row: any) => this.calculateTotalAmount(row)
+    },
+    { 
+      key: 'reimbursable', 
+      name: this.translate.instant('expenses.reimbursable'),
+      valueFn: (row: any) => this.calculateTotalisReimbursable(row, true, false)
+    },
+    { 
+      key: 'billable', 
+      name: this.translate.instant('expenses.billable'),
+      valueFn: (row: any) => this.calculateTotalisReimbursable(row, false, true)
+    },
+    { 
+      key: 'primaryApprovalReason', 
+      name: this.translate.instant('reason') 
+    },
+    { 
+      key: 'status', 
+      name: this.translate.instant('status') 
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.action'),
+      isAction: true,
+      options: [
+        { label: 'View', icon: 'visibility', visibility: ActionVisibility.LABEL },
+        { label: 'Re-initiate', icon: 'refresh', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(
     private dialog: MatDialog,
@@ -156,5 +200,36 @@ export class RejectedComponent {
       }
     }
     return totalAmount;
+  }
+
+  handleAction(event: any, viewModal: any, addModal: any) {
+    if (event.action.label === 'View') {
+      this.open(viewModal, event.row);
+    }
+    if (event.action.label === 'Re-initiate') {
+      this.editReport(event.row);
+      this.open(addModal);
+      this.changeMode = 'Update';
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.dataSource.data.slice().sort((a, b) => {
+      const aValue = a[event.active]?.toString();
+      const bValue = b[event.active]?.toString();
+      return event.direction === 'asc' ? (aValue > bValue ? 1 : -1) : (aValue < bValue ? 1 : -1);
+    });
+    this.dataSource.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.dataSource.data = this.expenseReport?.filter(row => {
+      const searchText = event.toLowerCase();
+      return this.columns.some(col => {
+        if (col.isAction) return false;
+        const value = col.valueFn ? col.valueFn(row) : row[col.key];
+        return value?.toString().toLowerCase().includes(searchText);
+      });
+    });
   }
 }

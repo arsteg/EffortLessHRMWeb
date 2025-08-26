@@ -1,66 +1,17 @@
-<div class="mainContent">
-    <div class="py-3">
-        <div class="d-flex justify-content-between align-items-start mb-2">
-            <mat-form-field appearance="outline">
-                <mat-label>{{'expenses.search' | translate}}</mat-label>
-                <input matInput #searchInput (input)="applyFilter($event)">
-                <mat-icon matSuffix>search</mat-icon>
-            </mat-form-field>
-            <button mat-flat-button color="primary" class="me-1" (click)="changeMode='Add'; clearSelection(addModal)">
-                {{'expenses.add_new' | translate}}
-            </button>
-        </div>
-        <table mat-table [dataSource]="dataSource" class="hrm-table">
-            <ng-container matColumnDef="employeeName">
-                <th mat-header-cell *matHeaderCellDef translate>expenses.member</th>
-                <td mat-cell *matCellDef="let templateAssignment"> {{templateAssignment?.employeeName}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="expenseTemplate">
-                <th mat-header-cell *matHeaderCellDef translate> expenses.current_expense_template</th>
-                <td mat-cell *matCellDef="let templateAssignment"> {{templateAssignment?.expenseTemplate}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="primaryApprover">
-                <th mat-header-cell *matHeaderCellDef translate>expenses.primary_approver</th>
-                <td mat-cell *matCellDef="let templateAssignment"> {{templateAssignment?.primaryApprover}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="effectiveDate">
-                <th mat-header-cell *matHeaderCellDef translate>expenses.effective_date</th>
-                <td mat-cell *matCellDef="let templateAssignment"> {{templateAssignment?.effectiveDate |
-                    date:'mediumDate'}}
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef translate>expenses.actions</th>
-                <td mat-cell *matCellDef="let templateAssignment">
-                    <button mat-icon-button [matMenuTriggerFor]="menu">
-                        <mat-icon>more_vert</mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu">
-                        <button mat-menu-item (click)="setFormValues(templateAssignment, addModal, 'Update');">
-                            <mat-icon>edit</mat-icon>
-                            <span translate>expenses.edit</span>
-                        </button>
-
-                        <button mat-menu-item (click)="openDialog(templateAssignment?._id)">
-                            <mat-icon>delete</mat-icon>
-                            <span translate>expenses.delete</span>
-                        </button>
-                    </mat-menu>
-                </td>
-            </ng-container>
-
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-        <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]"
-            (page)="onPageChange($event)">
-        </mat-paginator>
-    </div>
+<div class="position-relative">
+    <button mat-flat-button 
+    class="position-absolute end-0" 
+    color="primary" 
+    (click)="changeMode='Add'; clearSelection(addModal)">
+    {{ 'expenses.add_new' | translate }}
+    </button>
 </div>
+<hrm-table [data]="dataSource.data" [isServerSide]="true" [columns]="columns" [showExport]="'none'"
+    [showSearch]="true" [totalItems]="totalRecords" (actionClicked)="handleAction($event, addModal)"
+    (pageChanged)="onPageChange($event)" (sortChanged)="onSortChange($event)"
+    (searchChanged)="onSearchChange($event)">
+</hrm-table>
+
 <!-- update template assignment -->
 <ng-template #addModal>
     <div class="d-flex align-items-center justify-content-between">

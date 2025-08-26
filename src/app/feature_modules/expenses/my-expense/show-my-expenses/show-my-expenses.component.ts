@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input, inject } from '@angular/core';
+import { Component, Output, EventEmitter, Input, inject, ViewChild } from '@angular/core';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -6,6 +6,7 @@ import { ExportService } from 'src/app/_services/export.service';
 import { ViewReportComponent } from '../../expense-reports/view-report/view-report.component';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
+import { MatSort, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-show-my-expenses',
@@ -35,6 +36,7 @@ export class ShowMyExpensesComponent {
   displayedColumns: string[] = ['title', 'totalAmount', 'amount', 'reimbursable', 'billable', 'status', 'actions'];
   dataSource: any = new MatTableDataSource([]);
   dialogRef: MatDialogRef<any>;
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(
     private expenseService: ExpensesService,
@@ -169,5 +171,39 @@ export class ShowMyExpensesComponent {
       };
     });
     this.exportService.exportToCSV('My-Expense-Report', 'My-Expense-Report', dataToExport);
+  }
+
+  sortData(sort: Sort) {
+    const data = this.expenseReport.slice();
+    if (!sort.active || sort.direction === '') {
+      this.dataSource.data = data;
+      return;
+    }
+
+    this.dataSource.data = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case 'title':
+          return this.compare(a.title, b.title, isAsc);
+        case 'totalAmount':
+          return this.compare(this.calculateTotalAmount(a), this.calculateTotalAmount(b), isAsc);
+        case 'amount':
+          return this.compare(a.amount, b.amount, isAsc);
+        case 'reimbursable':
+          return this.compare(this.calculateTotalisReimbursable(a, true, false), 
+                        this.calculateTotalisReimbursable(b, true, false), isAsc);
+        case 'billable':
+          return this.compare(this.calculateTotalisReimbursable(a, false, true), 
+                        this.calculateTotalisReimbursable(b, false, true), isAsc);
+        case 'status':
+          return this.compare(a.status, b.status, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 }
