@@ -9,6 +9,8 @@ import { ExportService } from 'src/app/_services/export.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { th } from 'date-fns/locale';
 @Component({
   selector: 'app-approved',
   templateUrl: './approved.component.html',
@@ -34,6 +36,41 @@ export class ApprovedComponent {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
   dialogRef: MatDialogRef<any>;
+  allData: any[] = [];
+
+  columns: TableColumn[] = [
+    { 
+      key: 'title', 
+      name: this.translate.instant('expenses.report_title') },
+    { 
+      key: 'user', 
+      name: this.translate.instant('expenses.employee') },
+    { 
+      key: 'totalAmount', 
+      name: this.translate.instant('expenses.total_amount'),
+      valueFn: (row: any) => this.calculateTotalAmount(row)
+     },
+    { key: 'reimbursable', name: this.translate.instant('expenses.reimbursable'),
+      valueFn: (row: any) => this.calculateTotalisReimbursable(row, true, false)
+     },
+    { key: 'billable', name: this.translate.instant('expenses.billable'),
+      valueFn: (row: any) => this.calculateTotalisReimbursable(row, false, true)
+    },
+    { 
+      key: 'primaryApprovalReason', 
+      name: this.translate.instant('reason') 
+    },
+    { key: 'status', name: this.translate.instant('status') },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.action'),
+      isAction: true,
+      options: [
+        { label: 'View', icon: 'visibility', visibility: ActionVisibility.LABEL },
+        { label: 'Cancel', icon: 'close', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(
     private dialog: MatDialog,
@@ -123,6 +160,7 @@ export class ApprovedComponent {
       this.totalRecords = res.total;
       this.displayedData = new MatTableDataSource(this.expenseReport);
       this.displayedData.paginator = this.paginator;
+      this.allData = this.expenseReport;
     });
   }
 
@@ -185,5 +223,34 @@ export class ApprovedComponent {
       }
     }
     return totalAmount;
+  }
+
+  handleAction(event: any, viewModal: any, cancelModal: any) {
+    if (event.action.label === 'View') {
+      this.open(viewModal, event.row);
+    }
+    if (event.action.label === 'Cancel') {
+      this.open(cancelModal, event.row);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.displayedData.data.slice().sort((a, b) => {
+      const aValue = a[event.active]?.toString();
+      const bValue = b[event.active]?.toString();
+      return event.direction === 'asc' ? (aValue > bValue ? 1 : -1) : (aValue < bValue ? 1 : -1);
+    });
+    this.displayedData.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.displayedData.data = this.allData?.filter(row => {
+      const searchText = event.toLowerCase();
+      return this.columns.some(col => {
+        if (col.isAction) return false;
+        const value = col.valueFn ? col.valueFn(row) : row[col.key];
+        return value?.toString().toLowerCase().includes(searchText);
+      });
+    });
   }
 }

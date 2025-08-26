@@ -8,6 +8,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ExportService } from 'src/app/_services/export.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-cancelled',
   templateUrl: './cancelled.component.html',
@@ -34,6 +35,48 @@ export class CancelledComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   dialogRef: MatDialogRef<any>;
+
+  columns: TableColumn[] = [
+    { 
+      key: 'title', 
+      name: this.translate.instant('expenses.report_title') 
+    },
+    { 
+      key: 'user', 
+      name: this.translate.instant('expenses.employee') 
+    },
+    { 
+      key: 'totalAmount', 
+      name: this.translate.instant('expenses.total_amount'),
+      valueFn: (row: any) => this.calculateTotalAmount(row)
+    },
+    { 
+      key: 'reimbursable', 
+      name: this.translate.instant('expenses.reimbursable'),
+      valueFn: (row: any) => this.calculateTotalisReimbursable(row, true, false)
+    },
+    { 
+      key: 'billable', 
+      name: this.translate.instant('expenses.billable'),
+      valueFn: (row: any) => this.calculateTotalisReimbursable(row, false, true)
+    },
+    { 
+      key: 'primaryApprovalReason', 
+      name: this.translate.instant('reason') 
+    },
+    { 
+      key: 'status', 
+      name: this.translate.instant('status') 
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.action'),
+      isAction: true,
+      options: [
+        { label: 'View', icon: 'visibility', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(private dialog: MatDialog,
     private expenseService: ExpensesService,
@@ -163,5 +206,31 @@ export class CancelledComponent {
       }
     }
     return totalAmount;
+  }
+
+  handleAction(event: any, viewModal: any) {
+    if (event.action.label === 'View') {
+      this.open(viewModal, event.row);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.dataSource.data.slice().sort((a, b) => {
+      const aValue = a[event.active]?.toString();
+      const bValue = b[event.active]?.toString();
+      return event.direction === 'asc' ? (aValue > bValue ? 1 : -1) : (aValue < bValue ? 1 : -1);
+    });
+    this.dataSource.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.dataSource.data = this.expenseReport?.filter(row => {
+      const searchText = event.toLowerCase();
+      return this.columns.some(col => {
+        if (col.isAction) return false;
+        const value = col.valueFn ? col.valueFn(row) : row[col.key];
+        return value?.toString().toLowerCase().includes(searchText);
+      });
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -9,6 +9,7 @@ import { ExportService } from 'src/app/_services/export.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
 import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
@@ -37,6 +38,7 @@ export class ShowReportComponent {
   selectedRecord: any;
   displayedColumns = ['employee', 'category', 'amount', 'status', 'comment', 'action'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(private commonService: CommonService,
     private expenseService: ExpensesService,
@@ -59,12 +61,48 @@ export class ShowReportComponent {
       this.advanceReport = reports.data;
       this.dataSource.data = this.advanceReport;
       this.totalRecords = reports?.total;
+
+      this.dataSource.filterPredicate = (data: any, filter: string) => {
+        const employeeName = this.getUser(data.employee)?.toLowerCase() || '';
+        const category = this.getCategory(data.category)?.toLowerCase() || '';
+        const amount = data.amount?.toString().toLowerCase() || '';
+        const status = data.status?.toLowerCase() || '';
+        const comment = (data.primaryApprovalReason || data.comment)?.toLowerCase() || '';
+        
+        return employeeName.includes(filter) ||
+               category.includes(filter) ||
+               amount.includes(filter) ||
+               status.includes(filter) ||
+               comment.includes(filter);
+      };
+
+      this.dataSource.sort = this.sort;
+      this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: string) => {
+        switch (sortHeaderId) {
+          case 'employee':
+            return this.getUser(data.employee)?.toLowerCase() || '';
+          case 'category':
+            return this.getCategory(data.category)?.toLowerCase() || '';
+          case 'amount':
+            return data.amount || 0;
+          case 'status':
+            return data.status?.toLowerCase() || '';
+          case 'comment':
+            return (data.primaryApprovalReason || data.comment)?.toLowerCase() || '';
+          default:
+            return data[sortHeaderId] || '';
+        }
+      };
+      
     });
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   onPageChange(event: any) {
