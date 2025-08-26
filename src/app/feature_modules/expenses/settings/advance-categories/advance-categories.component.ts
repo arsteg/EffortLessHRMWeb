@@ -8,6 +8,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-advance-categories',
   templateUrl: './advance-categories.component.html',
@@ -34,8 +35,22 @@ export class AdvanceCategoriesComponent implements OnInit {
   displayedColumns: string[] = ['label', 'actions'];
   dialogRef: MatDialogRef<any>;
   isSubmitted: boolean = false;
+  allData: any[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  columns: TableColumn[] = [
+    { key: 'label', name: this.translate.instant('expenses.category_name') },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
@@ -89,6 +104,7 @@ export class AdvanceCategoriesComponent implements OnInit {
     this.expenseService.getAdvanceCatgories(pagination).subscribe((res: any) => {
       this.advanceCategories = new MatTableDataSource(res.data);
       this.totalRecords = res.total;
+      this.allData = res.data;
     });
   }
 
@@ -171,5 +187,36 @@ export class AdvanceCategoriesComponent implements OnInit {
       (err) => {
         this.toast.error(err || this.translate.instant('expenses.delete_error'));
       });
+  }
+
+  handleAction(event: any, addModal: any) {
+    if (event.action.label === 'Edit') {
+      this.isEdit = true;
+      this.selectedCategory = event.row;
+      this.editAdvanceCategory();
+      this.open(addModal);
+    }
+    if (event.action.label === 'Delete') {
+      this.deleteAdvancecate(event.row._id);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.advanceCategories.data.slice().sort((a, b) => {
+      const key = event.active;
+      const valueA = a[key];
+      const valueB = b[key];
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.advanceCategories.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.advanceCategories.data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    });
   }
 }

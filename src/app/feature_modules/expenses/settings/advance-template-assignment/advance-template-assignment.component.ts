@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-advance-template-assignment',
   templateUrl: './advance-template-assignment.component.html',
@@ -40,6 +41,26 @@ export class AdvanceTemplateAssignmentComponent {
   dataSource = new MatTableDataSource<any>([]);
   dialogRef: MatDialogRef<any>;
   managers: any;
+  allData: any[] = [];
+  columns: TableColumn[] = [
+    { key: 'employeeName', name: this.translate.instant('expenses.user') },
+    { key: 'advanceTemplate', name: this.translate.instant('expenses.advance_template') },
+    { key: 'primaryApprover', name: this.translate.instant('expenses.primary_approver') },
+    { 
+      key: 'effectiveDate', 
+      name: this.translate.instant('expenses.effective_date'),
+      valueFn: (row: any) => new Date(row.effectiveDate).toLocaleDateString('en-US')
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(private fb: FormBuilder,
     private expenseService: ExpensesService,
@@ -81,6 +102,7 @@ export class AdvanceTemplateAssignmentComponent {
         };
       });
       this.totalRecords = assignments?.total || 0;
+      this.allData = this.dataSource.data;
     });
   }
 
@@ -219,6 +241,7 @@ export class AdvanceTemplateAssignmentComponent {
         };
       });
       this.totalRecords = res.total;
+      this.allData = this.dataSource.data;
     });
   }
 
@@ -358,5 +381,42 @@ export class AdvanceTemplateAssignmentComponent {
         this.toast.error(err || this.translate.instant('expenses.delete_error'))
       }
     });
+  }
+
+  handleAction(event: any, addModal: any) {
+    if (event.action.label === 'Edit') {
+      this.changeMode = 'Update';
+      this.isEdit = true;
+      this.showApproverFields = true;
+      this.selectedTemplateAssignment = event.row;
+      this.setFormValues();
+      this.open(addModal);
+    }
+    if (event.action.label === 'Delete') {
+      const index = this.dataSource.data.findIndex(row => row._id === event.row._id);
+      this.deleteDialog(event.row._id, index);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.dataSource.data.slice().sort((a, b) => {
+      const key = event.active;
+      const valueA = key === 'effectiveDate' ? new Date(a[key]) : a[key];
+      const valueB = key === 'effectiveDate' ? new Date(b[key]) : b[key];
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.dataSource.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.dataSource.data = this.allData.filter(row => {
+      const found = this.columns.some(col => {
+        if (col.key === 'effectiveDate') {
+          return row[col.key] ? new Date(row[col.key]).toLocaleDateString().toLowerCase().includes(event.toLowerCase()) : false;
+        }
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    }) || [];
   }
 }

@@ -10,6 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-advance-templates',
@@ -44,6 +45,23 @@ export class AdvanceTemplatesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   isSubmitted: boolean = false;
+  columns: TableColumn[] = [
+    { key: 'policyLabel', name: this.translate.instant('expenses.advance_template_label') },
+    { 
+      key: 'advanceCategories', 
+      name: this.translate.instant('expenses.number_of_advance_categories'),
+      valueFn: (row: any) => row?.advanceCategories?.length || 0
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH }
+      ]
+    }
+  ];
 
   constructor(private fb: FormBuilder,
     private expenseService: ExpensesService,
@@ -100,7 +118,7 @@ export class AdvanceTemplatesComponent implements OnInit {
     });
   }
 
-  onPageChange(event: PageEvent) {
+  onPageChange(event: any) {
     this.currentPage = event.pageIndex + 1;
     this.recordsPerPage = event.pageSize;
     this.getAllTemplates();
@@ -255,6 +273,40 @@ export class AdvanceTemplatesComponent implements OnInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  handleAction(event: any, addModal: any) {
+    if (event.action.label === 'Edit') {
+      this.isEdit = true;
+      this.selectedTemplate = event.row;
+      this.editadvanceCategory();
+      this.open(addModal);
+    }
+    if (event.action.label === 'Delete') {
+      this.deleteAdvancecate(event.row._id);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.dataSource.data.slice().sort((a, b) => {
+      const key = event.active;
+      const valueA = key === 'advanceCategories' ? a[key]?.length : a[key];
+      const valueB = key === 'advanceCategories' ? b[key]?.length : b[key];
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.dataSource.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.dataSource.data = this.list?.filter(row => {
+      const found = this.columns.some(col => {
+        if (col.key === 'advanceCategories') {
+          return row[col.key]?.length.toString().toLowerCase().includes(event.toLowerCase());
+        }
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    });
   }
 
 }

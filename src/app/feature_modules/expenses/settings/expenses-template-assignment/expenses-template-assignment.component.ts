@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-expenses-template-assignment',
   templateUrl: './expenses-template-assignment.component.html',
@@ -43,6 +44,25 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   dataSource = new MatTableDataSource<any>([]);
   dialogRef: MatDialogRef<any>;
   managers: any;
+  columns: TableColumn[] = [
+    { key: 'employeeName', name: this.translate.instant('expenses.member') },
+    { key: 'expenseTemplate', name: this.translate.instant('expenses.current_expense_template') },
+    { key: 'primaryApprover', name: this.translate.instant('expenses.primary_approver') },
+    { 
+      key: 'effectiveDate',
+      name: this.translate.instant('expenses.effective_date'),
+      valueFn: (row: any) => new Date(row.effectiveDate).toLocaleDateString('en-US')
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(
     private dialog: MatDialog,
@@ -341,6 +361,37 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     this.templateAssignmentForm.patchValue(formValues);
     this.templateAssignmentForm.get('user')?.disable();
     this.templateAssignmentForm.get('expenseTemplate')?.disable();
+  }
+
+  handleAction(event: any, addModal: any) {
+    if (event.action.label === 'Edit') {
+      this.setFormValues(event.row, addModal, 'Update');
+    }
+    if (event.action.label === 'Delete') {
+      this.openDialog(event.row._id);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.dataSource.data.slice().sort((a, b) => {
+      const key = event.active;
+      const valueA = a[key];
+      const valueB = b[key];
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.dataSource.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.dataSource.data = this.templateAssignments?.filter(row => {
+      const found = this.columns.some(col => {
+        if (col.key === 'effectiveDate') {
+          return row[col.key] ? new Date(row[col.key]).toLocaleDateString().toLowerCase().includes(event.toLowerCase()) : false;
+        }
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    });
   }
 
 }
