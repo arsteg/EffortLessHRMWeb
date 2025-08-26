@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 import { CompanyService } from 'src/app/_services/company.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -61,7 +62,7 @@ export class SignatoryDetailsComponent {
     private toast: ToastrService,
     ) {
     this.signatoryDetailForm = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       designation: ['', Validators.required]
     });
   }

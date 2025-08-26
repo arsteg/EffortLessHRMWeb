@@ -97,18 +97,15 @@ export class DesignationComponent {
     this.designationForm.markAllAsTouched();
     if (this.designationForm.invalid) {      
       this.toast.error('Please fill all required fields', 'Error!');
-      return;
-    }
-    // Prevent submission if form is invalid
-    if (this.designationForm.invalid) {
       this.isSubmitting = false;
       return;
     }
+    // Prevent submission if form is invalid   
     // add Department
     if (!this.isEdit) {
       this.companyService.addDesignations(this.designationForm.value).subscribe(res => {
         this.getDesignations();
-        this.toast.success(this.translate.instant('organization.setup.designation_deleted'));
+        this.toast.success(this.translate.instant('organization.setup.designation_added'));
         this.designationForm.reset();
         this.isSubmitting = false;
         this.dialogRef.close(true);
@@ -125,7 +122,8 @@ export class DesignationComponent {
       this.companyService.updateDesignations(this.selectedRecord._id, this.designationForm.value).subscribe(res => {
         this.toast.success(this.translate.instant('organization.setup.designation_updated'));
         this.getDesignations();
-        this.designationForm.reset(); this.isSubmitting = false;
+        this.isSubmitting = false;
+        this.designationForm.reset(); 
         this.isEdit = false;
         this.dialogRef.close(true);
       },
@@ -172,7 +170,7 @@ export class DesignationComponent {
   deleteDesignation(id: string) {
     this.companyService.deleteDesignations(id).subscribe((res: any) => {
       this.getDesignations();
-      this.toast.success(this.translate.instant('organization.setup.designation_updated'));
+      this.toast.success(this.translate.instant('organization.setup.designation_deleted'));
       
     },
       (err) => {

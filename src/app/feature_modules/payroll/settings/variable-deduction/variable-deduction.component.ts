@@ -13,47 +13,6 @@ import { Subject } from 'rxjs';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  // Check if the value is empty or only whitespace
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true }; // Treat empty or only whitespace as required error
-  }
-  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
-
-const periodValidator: ValidatorFn = (formGroup: FormGroup) => {
-  const isEndingPeriod = formGroup.get('isEndingPeriod').value;
-  if (!isEndingPeriod) {
-    return null; // No validation needed if there's no end period
-  }
-
-  const startMonth = formGroup.get('deductionEffectiveFromMonth').value;
-  const startYear = formGroup.get('deductionEffectiveFromYear').value;
-  const endMonth = formGroup.get('deductionStopMonth').value;
-  const endYear = formGroup.get('deductionStopYear').value;
-
-  // If any required fields are missing, skip validation (let individual validators handle it)
-  if (!startMonth || !startYear || !endMonth || !endYear) {
-    return null;
-  }
-
-  // Convert month names to numbers for comparison
-  const monthMap: { [key: string]: number } = {
-    January: 1, February: 2, March: 3, April: 4, May: 5, June: 6,
-    July: 7, August: 8, September: 9, October: 10, November: 11, December: 12
-  };
-
-  const startMonthNum = monthMap[startMonth];
-  const endMonthNum = monthMap[endMonth];
-  const startDate = new Date(Number(startYear), startMonthNum - 1);
-  const endDate = new Date(Number(endYear), endMonthNum - 1);
-
-  return endDate > startDate ? null : { invalidPeriod: true };
-};
-
 @Component({
   selector: 'app-variable-deduction',
   templateUrl: './variable-deduction.component.html',
@@ -102,7 +61,7 @@ export class VariableDeductionComponent implements OnInit, AfterViewInit {
       isEndingPeriod: [true, Validators.required],
       deductionStopMonth: [''],
       deductionStopYear: ['']
-    }, { validators: periodValidator });
+    }, { validators: CustomValidators.periodValidator });
 
     const currentYear = new Date().getFullYear();
     for (let year = currentYear - 2; year <= currentYear + 1; year++) {

@@ -7,16 +7,6 @@ import { AssignedFixedAllowanceComponent } from '../assigned-templates/fixed-all
 import { TranslateService } from '@ngx-translate/core';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  // Check if the value is empty or only whitespace
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true }; // Treat empty or only whitespace as required error
-  }
-  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
 @Component({
   selector: 'app-update-ctctemplate',
   templateUrl: './update-ctctemplate.component.html',
