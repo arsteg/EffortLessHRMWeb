@@ -23,6 +23,7 @@
         "advance_template_label":"Advance Template Label",
         "advance_template_label_error":"Please add label for advance template",
         "advance_template_assignment":"Advance Template Assignment",
+        "requiredFields":"Please fill all required fields",
         "pending":"Pending",
         "approve":"Approve",
         "approved":"Approved",

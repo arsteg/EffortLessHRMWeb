@@ -48,11 +48,8 @@ export class ExpenseGeneralSettingsComponent {
     this.setFormValues();
     this.getAllExpensesCategories();
     this.getAllUsers();
-    this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
-    });
     this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value)
+      this.validateApprovers(value)
     });
   }
 
@@ -62,16 +59,13 @@ export class ExpenseGeneralSettingsComponent {
     });
   }
 
-  validateApprovers(approverType, approverLevel) {
-    if (approverLevel == 1 && approverType == 'template-wise') {
+  validateApprovers(approverType) {
+    if (approverType === 'template-wise') {
       this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
-      this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
     } else {
       this.addTemplateForm.get('firstApprovalEmployee').clearValidators();
-      this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
     }
     this.addTemplateForm.get('firstApprovalEmployee').updateValueAndValidity();
-    this.addTemplateForm.get('secondApprovalEmployee').updateValueAndValidity();
   }
 
   isDisabledFormat(format) {
@@ -109,7 +103,7 @@ export class ExpenseGeneralSettingsComponent {
         applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
         advanceAmount: templateData.advanceAmount,
         firstApprovalEmployee: templateData.firstApprovalEmployee,
-        expenseCategories: expenseCategories // Array of _id strings
+        expenseCategories: expenseCategories
       });
       this.checkedFormats = templateData.downloadableFormats;
     }
@@ -147,6 +141,7 @@ export class ExpenseGeneralSettingsComponent {
       downloadableFormats: this.checkedFormats,
       expenseCategories: this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }))
     };
+    if (this.addTemplateForm.valid) {
     if (this.changeMode === 'Add') {
       this.expenseService.addTemplate(payload).subscribe((res: any) => {
         this.expenseService.selectedTemplate.next(res.data);
@@ -175,6 +170,11 @@ export class ExpenseGeneralSettingsComponent {
         this.toast.error(err || this.translate.instant('expenses.template_updated_error'));
       });
     }
+  }
+  else {
+    this.addTemplateForm.markAllAsTouched();
+    this.toast.warning(this.translate.instant('expenses.requiredFields'));
+  }
   }
 
 }
