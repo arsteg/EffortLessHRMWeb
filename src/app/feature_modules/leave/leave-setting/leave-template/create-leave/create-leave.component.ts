@@ -145,26 +145,15 @@ export class CreateLeaveComponent {
   }
 
   onSubmission() {
-    // Ensure clubbingRestrictions is not unnecessarily set to false
-    // It's better to let the form value dictate this.
     const formValue = this.addTemplateForm.value;
-
-    // Handle leave categories
     const categories = formValue.leaveCategories.map(category => ({ leaveCategory: category }));
-
-    // Conditionally handle approvers based on approvalType
     if (formValue.approvalType === 'employee-wise') {
       this.addTemplateForm.patchValue({
         primaryApprover: null,
         secondaryApprover: null,
       });
     }
-
-    // Update the form value to be submitted
     const submissionValue = { ...formValue, leaveCategories: categories };
-
-    console.log(submissionValue);
-
     if (this.addTemplateForm.valid) {
       if (this.changeMode === 'Add') {
         this.leaveService.addLeaveTemplate(submissionValue).subscribe(

@@ -52,7 +52,7 @@
                         <mat-option *ngIf="checkStatus == 'failure'" disabled>{{ 'leave.noCategoryAssigned' | translate
                             }}</mat-option>
                         <mat-option *ngFor="let category of leaveCategories" [value]="category?.leaveCategory?._id">
-                            {{ category?.leaveCategory?.label | titlecase }}
+                            {{ category?.leaveCategory?.label }}
                         </mat-option>
                     </mat-select>
                     <mat-error *ngIf="leaveApplication.get('leaveCategory')?.touched">
@@ -117,10 +117,13 @@
                 </mat-form-field>
 
             </div>
-            <div *ngIf="maxConsecutiveLeaveDays > 0" class="text-muted small mt-1">
+
+            <div *ngIf="maxConsecutiveLeaveDays > 0 && tempLeaveCategory?.leaveCategory?.weeklyOffDaysIncluded"
+                class="text-muted small mt-1">
                 Maximum consecutive days allowed: {{ maxConsecutiveLeaveDays }} days
             </div>
-            <div *ngIf="minimumNumberOfDaysAllowed > 0" class="text-muted small mt-1">
+            <div *ngIf="minimumNumberOfDaysAllowed > 0 && tempLeaveCategory?.leaveCategory?.weeklyOffDaysIncluded"
+                class="text-muted small mt-1">
                 Minimum consecutive days required: {{ minimumNumberOfDaysAllowed }} days
             </div>
 
@@ -151,11 +154,17 @@
                     </li>
                 </ul>
             </div>
+            <small>5MB size file is allowed.</small><br>
+
+            <small class="text-muted">Accepted attachments type:
+                jpeg, .glb, .svg, .blend, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx,
+                .odt, .fodt, .ods, .fods, .odp, .fodp, .odg, .fodg, .odf, .csv, .html, .css, .txt</small>
         </div>
         <div *ngIf="leaveApplication.errors?.['duplicateLeave']" class="text-danger error pt-0">
             {{ 'leave.duplicateLeaveError' | translate }}
         </div>
         }
+
         <div class="row m-0 mt-2">
             <ng-container *ngIf="leaveApplication.get('isHalfDayOption').value === true">
                 <button type="button" mat-raised-button color="primary" class="mt-2" (click)="addHalfDayEntry()"

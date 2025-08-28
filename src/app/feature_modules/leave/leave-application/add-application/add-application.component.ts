@@ -118,17 +118,29 @@ export class AddApplicationComponent implements OnDestroy {
     return (group: AbstractControl) => {
       const startDate = group.get('startDate')?.value;
       const endDate = group.get('endDate')?.value;
+      const leaveCategory = group.get('leaveCategory')?.value;
 
       if (startDate && endDate && moment(startDate).isAfter(moment(endDate))) {
         group.get('endDate')?.setErrors({ dateRangeError: true });
         return null;
       }
 
-      // Check if the date range exceeds maximum consecutive leave days
-      if (startDate && endDate && this.maxConsecutiveLeaveDays) {
-        const start = moment(startDate);
-        const end = moment(endDate);
-        const daysDiff = end.diff(start, 'days') + 1; // +1 because start date counts as day 1
+      if (startDate && endDate && this.maxConsecutiveLeaveDays && leaveCategory) {
+        const selectedCategory = this.leaveCategories.find(
+          (cat) => cat.leaveCategory._id === leaveCategory
+        );
+        const weeklyOffDaysIncluded =
+          selectedCategory?.leaveCategory?.weeklyOffDaysIncluded ??
+          this.appliedLeave[0]?.weeklyOffDaysIncluded ??
+          false;
+
+        let daysDiff;
+        if (weeklyOffDaysIncluded) {
+          // Count all days
+          daysDiff = moment(endDate).diff(moment(startDate), 'days') + 1;
+        } else {
+          daysDiff = this.calculateLeaveDays();
+        }
 
         if (daysDiff > this.maxConsecutiveLeaveDays) {
           group.get('endDate')?.setErrors({ maxConsecutiveDaysExceeded: true });
@@ -136,11 +148,21 @@ export class AddApplicationComponent implements OnDestroy {
         }
       }
 
-      // Check if the date range meets minimum number of days required
-      if (startDate && endDate && this.minimumNumberOfDaysAllowed) {
-        const start = moment(startDate);
-        const end = moment(endDate);
-        const daysDiff = end.diff(start, 'days') + 1; // +1 because start date counts as day 1
+      if (startDate && endDate && this.minimumNumberOfDaysAllowed && leaveCategory) {
+        const selectedCategory = this.leaveCategories.find(
+          (cat) => cat.leaveCategory._id === leaveCategory
+        );
+        const weeklyOffDaysIncluded =
+          selectedCategory?.leaveCategory?.weeklyOffDaysIncluded ??
+          this.appliedLeave[0]?.weeklyOffDaysIncluded ??
+          false;
+
+        let daysDiff;
+        if (weeklyOffDaysIncluded) {
+          daysDiff = moment(endDate).diff(moment(startDate), 'days') + 1;
+        } else {
+          daysDiff = this.calculateLeaveDays();
+        }
 
         if (daysDiff < this.minimumNumberOfDaysAllowed) {
           group.get('endDate')?.setErrors({ minDaysRequired: true });
@@ -150,6 +172,37 @@ export class AddApplicationComponent implements OnDestroy {
 
       return null;
     };
+  }
+
+  calculateLeaveDays(): number {
+    const startDate = this.leaveApplication.get('startDate')?.value;
+    const endDate = this.leaveApplication.get('endDate')?.value;
+    const leaveCategory = this.leaveApplication.get('leaveCategory')?.value;
+
+    if (!startDate || !endDate || !leaveCategory) {
+      return 0;
+    }
+
+    const selectedCategory = this.leaveCategories.find(
+      (cat) => cat.leaveCategory._id === leaveCategory
+    );
+
+    const weeklyOffDaysIncluded =
+      selectedCategory?.leaveCategory?.weeklyOffDaysIncluded ??
+      this.appliedLeave[0]?.weeklyOffDaysIncluded ??
+      false;
+
+    let totalDays = moment(endDate).diff(moment(startDate), 'days') + 1;
+
+    if (this.leaveApplication.get('isHalfDayOption')?.value) {
+      const halfDays = this.leaveApplication.get('halfDays')?.value?.length || 0;
+      totalDays -= halfDays * 0.5;
+    }
+    if (!weeklyOffDaysIncluded) {
+      const weeklyOffDates = this.getWeeklyOffDates(new Date(startDate), new Date(endDate));
+      totalDays -= weeklyOffDates.length;
+    }
+    return Math.max(totalDays, 0);
   }
 
   attachmentValidator() {
@@ -232,12 +285,12 @@ export class AddApplicationComponent implements OnDestroy {
       this.handleLeaveCategoryChange();
       this.formSubmitted = false;
     });
+
     if (this.portalView === 'admin' || (this.portalView === 'user' && this.tabIndex === 5)) {
       this.employeeValueChangesSubscription = this.leaveApplication.get('employee').valueChanges.subscribe(employee => {
         if (!employee) {
           return;
-        }
-        else {
+        } else {
           this.leaveService.getLeaveCategoriesByUserv1(employee).subscribe({
             next: (res: any) => {
               const records = res.data;
@@ -278,12 +331,12 @@ export class AddApplicationComponent implements OnDestroy {
         this.updateAttachmentValidation();
         this.formSubmitted = false;
 
-        // Reset flag after a short delay to allow form updates to complete
         setTimeout(() => {
           this.isResettingForm = false;
         }, 100);
       });
     }
+
     if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
       this.leaveService.getLeaveCategoriesByUserv1(this.currentUser.id).subscribe({
         next: (res: any) => {
@@ -298,48 +351,23 @@ export class AddApplicationComponent implements OnDestroy {
     }
 
     this.startDateValueChangesSubscription = this.leaveApplication.get('startDate')?.valueChanges.subscribe((startDate) => {
-      // Skip if we're in the middle of resetting the form
       if (this.isResettingForm) {
         return;
       }
 
-      // Clear end date when start date changes
       this.leaveApplication.patchValue({ endDate: null });
 
-      // Update maximum end date based on start date and consecutive days limit
       this.updateMaxEndDate(startDate);
 
       this.checkForDuplicateLeave();
       this.calculateDateRangeAndLimitHalfDays();
     });
+
     this.endDateValueChangesSubscription = this.leaveApplication.get('endDate')?.valueChanges.subscribe((endDate) => {
-      // Skip if we're in the middle of resetting the form
       if (this.isResettingForm) {
         return;
       }
-
-      // Validate end date against maximum consecutive days limit
-      if (endDate && this.leaveApplication.get('startDate')?.value && this.maxConsecutiveLeaveDays) {
-        const startDate = moment(this.leaveApplication.get('startDate')?.value);
-        const endDateMoment = moment(endDate);
-        const daysDiff = endDateMoment.diff(startDate, 'days') + 1;
-
-        if (daysDiff > this.maxConsecutiveLeaveDays) {
-          this.leaveApplication.get('endDate')?.setErrors({ maxConsecutiveDaysExceeded: true });
-        }
-      }
-
-      // Validate end date against minimum days requirement
-      if (endDate && this.leaveApplication.get('startDate')?.value && this.minimumNumberOfDaysAllowed) {
-        const startDate = moment(this.leaveApplication.get('startDate')?.value);
-        const endDateMoment = moment(endDate);
-        const daysDiff = endDateMoment.diff(startDate, 'days') + 1;
-
-        if (daysDiff < this.minimumNumberOfDaysAllowed) {
-          this.leaveApplication.get('endDate')?.setErrors({ minDaysRequired: true });
-        }
-      }
-
+      this.leaveApplication.updateValueAndValidity();
       this.checkForDuplicateLeave();
       this.calculateDateRangeAndLimitHalfDays();
     });
@@ -390,16 +418,22 @@ export class AddApplicationComponent implements OnDestroy {
   }
 
   updateMinDate(baseDate: Date): void {
-    let minDate = new Date(baseDate);
+    // Start with today's date as the minimum
+    let today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to the start of the day
+
+    // The effective base date for validation is either today or the provided baseDate, whichever is later.
+    let effectiveBaseDate = baseDate > today ? baseDate : today;
 
     if (this.tempLeaveCategory?.leaveCategory?.submitBefore) {
       const submitBeforeDays = parseInt(this.tempLeaveCategory.leaveCategory.submitBefore, 10);
       if (!isNaN(submitBeforeDays)) {
-        minDate.setDate(minDate.getDate() + submitBeforeDays);
+        effectiveBaseDate = new Date(effectiveBaseDate); // Create a new instance to avoid mutation
+        effectiveBaseDate.setDate(effectiveBaseDate.getDate() + submitBeforeDays);
       }
     }
 
-    this.minSelectableDate = minDate;
+    this.minSelectableDate = effectiveBaseDate;
     this.bsConfig = {
       ...this.bsConfig,
       minDate: this.minSelectableDate
@@ -409,7 +443,7 @@ export class AddApplicationComponent implements OnDestroy {
   }
 
   updateMaxEndDate(startDate: Date): void {
-    if (!startDate || !this.maxConsecutiveLeaveDays) {
+    if (!startDate || !this.maxConsecutiveLeaveDays || !this.tempLeaveCategory) {
       this.maxSelectableEndDate = null;
       this.endDateBsConfig = {
         ...this.endDateBsConfig,
@@ -418,9 +452,26 @@ export class AddApplicationComponent implements OnDestroy {
       return;
     }
 
-    // Calculate the maximum end date based on start date and consecutive days limit
-    const maxEndDate = new Date(startDate);
-    maxEndDate.setDate(maxEndDate.getDate() + this.maxConsecutiveLeaveDays - 1); // -1 because start date counts as day 1
+    // Use tempLeaveCategory for weeklyOffDaysIncluded
+    const weeklyOffDaysIncluded = this.tempLeaveCategory?.leaveCategory?.weeklyOffDaysIncluded ?? false;
+    let maxEndDate: Date;
+    if (weeklyOffDaysIncluded) {
+      maxEndDate = new Date(startDate);
+      maxEndDate.setDate(maxEndDate.getDate() + this.maxConsecutiveLeaveDays - 1);
+    } else {
+      maxEndDate = new Date(startDate);
+      let workingDaysCounted = 0;
+      const maxWorkingDays = this.maxConsecutiveLeaveDays; // Include start date in count
+      while (workingDaysCounted < maxWorkingDays) {
+        const dayName = moment(maxEndDate).format('dddd');
+        if (!this.weeklyOffDays.includes(dayName)) {
+          workingDaysCounted++;
+        }
+        if (workingDaysCounted < maxWorkingDays) {
+          maxEndDate.setDate(maxEndDate.getDate() + 1);
+        }
+      }
+    }
 
     this.maxSelectableEndDate = maxEndDate;
     this.endDateBsConfig = {
@@ -440,6 +491,11 @@ export class AddApplicationComponent implements OnDestroy {
       this.maxHalfDaysAllowed = duration;
 
       this.halfDayLimitReached = this.halfDays.length > this.maxHalfDaysAllowed;
+
+      // Update the leave days display
+      this.numberOfLeaveAppliedForSelectedCategory = this.calculateLeaveDays();
+    } else {
+      this.numberOfLeaveAppliedForSelectedCategory = 0;
     }
   }
 
@@ -618,17 +674,42 @@ export class AddApplicationComponent implements OnDestroy {
     }
   }
 
+  // halfDayRequiredValidator(formGroup: FormGroup) {
+  //   return (formArray: FormArray): { [key: string]: any } | null => {
+  //     const isHalfDayOption = formGroup.get('isHalfDayOption')?.value;
+  //     if (!isHalfDayOption) {
+  //       return null;
+  //     }
+
+  //     if (formArray.length === 0) {
+  //       return { halfDayRequired: true };
+  //     }
+
+  //     for (let i = 0; i < formArray.length; i++) {
+  //       const halfDayDate = formArray.at(i).get('date')?.value;
+  //       const dayHalf = formArray.at(i).get('dayHalf')?.value;
+  //       if (!halfDayDate || !dayHalf) {
+  //         return { halfDayRequired: true };
+  //       }
+  //     }
+  //     return null;
+  //   };
+  // }
   halfDayRequiredValidator(formGroup: FormGroup) {
     return (formArray: FormArray): { [key: string]: any } | null => {
       const isHalfDayOption = formGroup.get('isHalfDayOption')?.value;
+
+      // Case 1: Half-day option is not enabled → no validation
       if (!isHalfDayOption) {
         return null;
       }
 
+      // Case 2: Half-day option is enabled, but user hasn’t added any rows
       if (formArray.length === 0) {
-        return { halfDayRequired: true };
+        return null; // ❌ don't force required here
       }
 
+      // Case 3: Half-day entries exist → validate them
       for (let i = 0; i < formArray.length; i++) {
         const halfDayDate = formArray.at(i).get('date')?.value;
         const dayHalf = formArray.at(i).get('dayHalf')?.value;
@@ -636,6 +717,7 @@ export class AddApplicationComponent implements OnDestroy {
           return { halfDayRequired: true };
         }
       }
+
       return null;
     };
   }
@@ -742,20 +824,15 @@ export class AddApplicationComponent implements OnDestroy {
     if (!date) {
       return true;
     }
-
     const dayName = moment(date).format('dddd');
-
     if (this.weeklyOffDays.includes(dayName)) {
       return false;
     }
-
     const selectedDateNormalized = this.stripTime(date);
-
     const isHoliday = this.holidays.some(holiday => {
       const holidayDateNormalized = this.stripTime(new Date(holiday.date));
       return holidayDateNormalized === selectedDateNormalized;
     });
-
     return !isHoliday;
   };
 
@@ -778,7 +855,6 @@ export class AddApplicationComponent implements OnDestroy {
     }
   }
   resetForm() {
-    // Set flag to prevent API calls during reset
     this.isResettingForm = true;
 
     this.leaveApplication.reset({
@@ -821,7 +897,8 @@ export class AddApplicationComponent implements OnDestroy {
     }, 100);
   }
   onSubmission() {
-    this.formSubmitted = true;
+    // this.formSubmitted = true;
+    console.log(this.leaveApplication.value);
     if (this.leaveApplication.invalid || this.leaveApplication.hasError('maxLeaveLimitExceeded') || this.leaveApplication.hasError('maxLeaveLimitExceeded')) {
       this.leaveApplication.markAllAsTouched();
       return;
@@ -849,19 +926,11 @@ export class AddApplicationComponent implements OnDestroy {
       }
     }
 
-    const employeeId = this.leaveApplication.get('employee')?.value;
-    const leaveCategory = this.leaveApplication.get('leaveCategory')?.value;
-    let startDate = this.leaveApplication.get('startDate')?.value;
-    let endDate = this.leaveApplication.get('endDate')?.value;
-
-    startDate = this.stripTime(new Date(startDate));
-    endDate = this.stripTime(new Date(endDate));
-
     const leaveApplicationPayload = {
-      employee: employeeId,
-      leaveCategory: leaveCategory,
-      startDate: startDate,
-      endDate: endDate,
+      employee: this.leaveApplication.get('employee')?.value,
+      leaveCategory: this.leaveApplication.get('leaveCategory')?.value,
+      startDate: this.stripTime(new Date(this.leaveApplication.get('startDate')?.value)),
+      endDate: this.stripTime(new Date(this.leaveApplication.get('endDate')?.value)),
       status: 'Level 1 Approval Pending',
       level1Reason: this.leaveApplication.get('level1Reason')?.value || '',
       level2Reason: this.leaveApplication.get('level2Reason')?.value || '',
@@ -870,6 +939,7 @@ export class AddApplicationComponent implements OnDestroy {
       halfDays: this.leaveApplication.get('isHalfDayOption')?.value ? this.leaveApplication.get('halfDays')?.value : [],
       comment: this.leaveApplication.get('comment')?.value
     };
+    console.log(leaveApplicationPayload);
     if (this.leaveApplication.hasError('duplicateLeave')) {
       this.toast.error(this.translate.instant('leave.duplicateLeaveError'));
       return;
@@ -930,7 +1000,6 @@ export class AddApplicationComponent implements OnDestroy {
         } else if (res.data === null) {
           this.toast.warning(res.message);
         }
-
         this.leaveApplicationRefreshed.emit(res.data);
         this.resetForm();
       },
@@ -940,15 +1009,17 @@ export class AddApplicationComponent implements OnDestroy {
       }
     });
   }
+
   onFileSelected(event: any) {
-    const files: FileList = event.target.files;
-    if (files) {
-      this.selectedFiles = Array.from(files);
+    const newFiles: FileList = event.target.files;
+    if (newFiles) {
+      const previousFiles = this.selectedFiles || [];
+      this.selectedFiles = previousFiles.concat(Array.from(newFiles));
       this.leaveApplication.get('leaveApplicationAttachments')?.setValue(this.selectedFiles.length > 0 ? 'files_selected' : '');
       this.leaveApplication.get('leaveApplicationAttachments')?.updateValueAndValidity();
+      event.target.value = '';
     }
   }
-
   removeFile(index: number) {
     if (index !== -1) {
       this.selectedFiles.splice(index, 1);
@@ -997,12 +1068,4 @@ export class AddApplicationComponent implements OnDestroy {
     }
     attachmentControl?.updateValueAndValidity();
   }
-}
-
-interface attachments {
-  attachmentName: string;
-  attachmentType: string;
-  attachmentSize: number;
-  extention: string;
-  file: string;
 }
