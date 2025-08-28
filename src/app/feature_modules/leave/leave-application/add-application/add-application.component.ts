@@ -12,6 +12,7 @@ import { CompanyService } from 'src/app/_services/company.service';
 import { UserService } from 'src/app/_services/users.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import * as moment from 'moment';
+import { em } from '@fullcalendar/core/internal-common';
 
 @Component({
   selector: 'app-add-application',
@@ -630,10 +631,11 @@ export class AddApplicationComponent implements OnDestroy {
       const formattedEndDate = this.stripTime(new Date(endDate));
 
       const isOverlappingLeave = this.existingLeaves.some((leave: any) => {
+        console.log(leave);
         const leaveStartDate = this.stripTime(new Date(leave.startDate));
         const leaveEndDate = this.stripTime(new Date(leave.endDate));
-        return leave.employee === employeeId &&
-          leave.leaveCategory === leaveCategory &&
+        return leave?.employee?._id === employeeId &&
+          leave?.leaveCategory?._id === leaveCategory &&
           (formattedStartDate <= leaveEndDate && formattedEndDate >= leaveStartDate);
       });
 
@@ -651,6 +653,7 @@ export class AddApplicationComponent implements OnDestroy {
       }
     }
   }
+  
   handleLeaveCategoryChange() {
     if (!this.tab) {
       return;
