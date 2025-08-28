@@ -677,27 +677,6 @@ export class AddApplicationComponent implements OnDestroy {
     }
   }
 
-  // halfDayRequiredValidator(formGroup: FormGroup) {
-  //   return (formArray: FormArray): { [key: string]: any } | null => {
-  //     const isHalfDayOption = formGroup.get('isHalfDayOption')?.value;
-  //     if (!isHalfDayOption) {
-  //       return null;
-  //     }
-
-  //     if (formArray.length === 0) {
-  //       return { halfDayRequired: true };
-  //     }
-
-  //     for (let i = 0; i < formArray.length; i++) {
-  //       const halfDayDate = formArray.at(i).get('date')?.value;
-  //       const dayHalf = formArray.at(i).get('dayHalf')?.value;
-  //       if (!halfDayDate || !dayHalf) {
-  //         return { halfDayRequired: true };
-  //       }
-  //     }
-  //     return null;
-  //   };
-  // }
   halfDayRequiredValidator(formGroup: FormGroup) {
     return (formArray: FormArray): { [key: string]: any } | null => {
       const isHalfDayOption = formGroup.get('isHalfDayOption')?.value;
