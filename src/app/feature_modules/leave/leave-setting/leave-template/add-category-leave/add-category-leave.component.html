@@ -19,15 +19,15 @@
                       <mat-label>{{ 'leave.templateCategories.numberOfDaysPlaceholder' | translate }}</mat-label>
                       <input type="number" matInput formControlName="maximumNumbersEmployeeCanApply"
                         [attr.disabled]="!categoryCtrl.get('limitNumberOfTimesApply').value ? true : null" min="0">
-
-                      @if (categoryCtrl.get('maximumNumbersEmployeeCanApply').hasError('required') &&
-                      categoryCtrl.get('maximumNumbersEmployeeCanApply').touched) {
-                      <mat-error>{{ 'leave.required' | translate }}</mat-error>
-                      }
-                      @if (categoryCtrl.get('maximumNumbersEmployeeCanApply').invalid &&
-                      categoryCtrl.get('maximumNumbersEmployeeCanApply').touched) {
-                      <mat-error>{{ 'leave.duration_negative' | translate }}</mat-error>
-                      }
+                      <mat-error>
+                        @if (categoryCtrl.get('maximumNumbersEmployeeCanApply').hasError('required') &&
+                        categoryCtrl.get('maximumNumbersEmployeeCanApply').touched) {
+                        <span>{{ 'leave.required' | translate }}</span>
+                        }
+                        @else if(categoryCtrl.get('maximumNumbersEmployeeCanApply')?.errors?.['min']) {
+                        <span>{{ 'leave.duration_negative' | translate }}</span>
+                        }
+                      </mat-error>
                     </mat-form-field>
                   </div>
                 </div>
@@ -80,14 +80,14 @@
                       }
                     </mat-label>
                     <input type="number" matInput formControlName="accrualRatePerPeriod" min="0">
-                    @if (categoryCtrl.get('accrualRatePerPeriod').invalid ||
-                    categoryCtrl.get('accrualRatePerPeriod').touched) {
-                    <mat-error>{{ 'leave.templateCategories.errorAccrualRequired' | translate }}</mat-error>
-                    }
-                    @if (categoryCtrl.get('accrualRatePerPeriod').hasError('min')) {
-                    <mat-error>{{ 'leave.templateCategories.errorAccrualMin' | translate }}</mat-error>
-                    }
-
+                    <mat-error>
+                      @if (categoryCtrl.get('accrualRatePerPeriod').required) {
+                      <span>{{ 'leave.templateCategories.errorAccrualRequired' | translate }}</span>
+                      }
+                      @else if(categoryCtrl.get('accrualRatePerPeriod')?.errors?.['min']) {
+                      <span>{{ 'leave.duration_negative' | translate }}</span>
+                      }
+                    </mat-error>
                   </mat-form-field>
                 </div>
               </div>
