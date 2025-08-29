@@ -106,6 +106,10 @@ export class ProfileComponent implements OnInit {
       this.company = res.data?.company;
       this.dataSource.data = this.company ? [this.company] : [];
       if (this.company) {
+        if (this.company?.logo && this.company.logo.includes('?')) {
+          const urlWithoutQuery = this.company.logo.split('?')[0];
+          this.company.logo = urlWithoutQuery;
+        }
         this.companyForm.patchValue(this.company);
       }
     });

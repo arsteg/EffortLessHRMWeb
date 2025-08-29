@@ -6,6 +6,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-expense-category-settings',
@@ -60,7 +61,7 @@ export class ExpenseCategorySettingsComponent {
   constructor(private _formBuilder: FormBuilder,
     private expenseService: ExpensesService,
     private toast: ToastrService,
-        private dialog: MatDialog
+    private dialog: MatDialog
   ) {
     this.minDate.setDate(this.minDate.getDate() - 1);
     this.maxDate.setDate(this.maxDate.getDate() + 7);
@@ -73,7 +74,7 @@ export class ExpenseCategorySettingsComponent {
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
       this.loader = false;
       let applicableCategories = res.data;
-      this.expenseCategory = applicableCategories.map(category => { return category.expenseCategory });
+      this.expenseCategory = applicableCategories.map(category => category.expenseCategory);
       this.expenseService.allExpenseCategories.subscribe((categories: any) => {
         this.allExpenseCategories = categories;
         this.steps = applicableCategories;
@@ -89,7 +90,6 @@ export class ExpenseCategorySettingsComponent {
             if (categoryId === step.expenseCategory._id) {
               this.typeCategory = matchingCategory.type;
             }
-            // Fetch category details by ID
             const categoryDetails = await this.expenseService.getExpenseCategoryById(categoryId).toPromise();
             expenseCategoriesArray.push(this._formBuilder.group({
               expenseCategory: categoryId,
@@ -99,7 +99,7 @@ export class ExpenseCategorySettingsComponent {
               maximumAmountWithoutReceipt: [step.maximumAmountWithoutReceipt, [Validators.min(0)]],
               maximumExpensesCanApply: [step.maximumExpensesCanApply, [Validators.min(0)]],
               isTimePeroidSet: step.isTimePeroidSet,
-              timePeroid: [step.timePeroid, [Validators.min(0)]],
+              timePeroid: [step.timePeroid],
               expiryDay: [step.expiryDay, [Validators.min(0)]],
               isEmployeeCanAddInTotalDirectly: step.isEmployeeCanAddInTotalDirectly,
               ratePerDay: [step.ratePerDay, [Validators.min(0)]],
@@ -115,7 +115,7 @@ export class ExpenseCategorySettingsComponent {
               step.expenseTemplateCategoryFieldValues?.forEach((value) => {
                 if (value.expenseTemplateCategory === step._id && categoryDetails.data._id === step.expenseCategory._id) {
                   const fieldFormGroup = this._formBuilder.group({
-                    label: value.label,
+                    label: [value.label, [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
                     rate: [value.rate, [Validators.min(0)]],
                     type: value.type
                   });
@@ -123,6 +123,7 @@ export class ExpenseCategorySettingsComponent {
                 }
               });
             }
+            // Apply toggle logic for each control
             this.toggleControl(formGroup, 'isMaximumAmountPerExpenseSet', 'maximumAmountPerExpense');
             this.toggleControl(formGroup, 'isMaximumAmountWithoutReceiptSet', 'maximumAmountWithoutReceipt');
             this.toggleControl(formGroup, 'isTimePeroidSet', 'timePeroid');
@@ -133,20 +134,31 @@ export class ExpenseCategorySettingsComponent {
     });
   }
 
-  toggleControl(formGroup, toggler, control){
+  toggleControl(formGroup: any, toggler: string, control: string) {
+    // Reset function to determine the appropriate empty value based on control
+    const resetValue = (controlName: string) => {
+      return controlName === 'timePeroid' ? '' : null;
+    };
+
+    // Initial state: disable and reset if toggler is false
     if (!formGroup.get(toggler).value) {
       formGroup.get(control).disable();
+      formGroup.get(control).setValue(resetValue(control));
+    } else {
+      formGroup.get(control).enable();
     }
 
+    // Subscribe to toggler changes
     formGroup.get(toggler).valueChanges.subscribe((value) => {
       if (value) {
         formGroup.get(control).enable();
       } else {
         formGroup.get(control).disable();
+        formGroup.get(control).setValue(resetValue(control));
       }
     });
   }
-
+  
   addField(expenseCategoryIndex: number) {
     const newField = this._formBuilder.group({
       label: ['', Validators.required],

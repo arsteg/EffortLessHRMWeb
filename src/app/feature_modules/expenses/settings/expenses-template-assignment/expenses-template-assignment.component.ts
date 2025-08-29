@@ -24,7 +24,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   templates: any[] = [];
   userId: string;
   approverId: string
-  templateAssignments: any;
+  templateAssignments: any[];
   templateAssignmentForm: FormGroup;
   templateResponse;
   selectedTemplateAssignment: any;
@@ -110,9 +110,9 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   }
 
   getAvailableUsers() {
-    const assignedUsers = this.templateAssignments.map(a => a.user);
-    return this.allAssignee.filter(user => {
-      return !assignedUsers.includes(user._id);
+    const assignedUsers = this.templateAssignments?.map(a => a?.user);
+    return this.allAssignee?.filter(user => {
+      return !assignedUsers.includes(user?._id);
     });
   }
 

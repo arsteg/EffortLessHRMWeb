@@ -81,8 +81,7 @@ export class AddCategoryLeaveComponent {
                 extendLeaveCategory: [step.extendLeaveCategory ?? true],
                 extendMaximumDayNumber: [step.extendMaximumDayNumber ?? 0, [Validators.min(0)]],
                 extendFromCategory: [step.extendFromCategory || ''],
-                negativeBalanceCap: [step.negativeBalanceCap ?? 0, [Validators.min(0)]],
-                accrualRatePerPeriod: [step?.accrualRatePerPeriod],
+                accrualRatePerPeriod: [step?.accrualRatePerPeriod, [Validators.min(0)]],
                 categoryApplicable: [{ value: step.categoryApplicable || 'all-employees', disabled: true }, Validators.required],
                 users: [step.templateApplicableCategoryEmployee?.map(user => user.user) || []],
                 leaveAccrualPeriod: [category?.leaveAccrualPeriod]

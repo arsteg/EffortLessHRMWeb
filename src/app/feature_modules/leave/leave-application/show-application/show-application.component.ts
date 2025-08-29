@@ -133,6 +133,7 @@ export class ShowApplicationComponent {
 
   onClose(event: any) {
     if (event) {
+       this.ngOnInit();
       this.dialogRef.close(true);
     }
   }
@@ -279,10 +280,10 @@ export class ShowApplicationComponent {
     this.leaveService.deleteLeaveApplication(_id).subscribe({
       next: (res: any) => {
         this.getLeaveApplication();
-        this.toast.success(this.translate.instant('leave.successDelete'));
+        this.toast.success(this.translate.instant('leave.successDeleteLeaveApplication'));
       },
       error: () => {
-        this.toast.error(this.translate.instant('leave.errorDelete'));
+        this.toast.error(this.translate.instant('leave.errorDeleteLeaveApplication'));
       }
     });
   }
