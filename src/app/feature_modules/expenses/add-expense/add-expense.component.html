@@ -30,7 +30,7 @@
         }
 
         <mat-form-field class="w-100 mb-1">
-            <mat-label>{{'expenses.label_for_expense_template' | translate}}</mat-label>
+            <mat-label>{{'expenses.label_for_expense_report' | translate}}</mat-label>
             <input type="text" matInput formControlName="title" required>
             <mat-error *ngIf="addExpenseForm.get('title').invalid && addExpenseForm.get('title').touched">
                 <span *ngIf="addExpenseForm.get('title').hasError('maxlength')">
@@ -43,7 +43,7 @@
                     {{ 'expenses.label_invalid' | translate }}
                 </span>
                 <span *ngIf="addExpenseForm.get('title').hasError('required')">
-                    {{'expenses.advance_template_label_error' | translate}}
+                    {{'expenses.label_for_expense_reportError' | translate}}
                 </span>
             </mat-error>
         </mat-form-field>
