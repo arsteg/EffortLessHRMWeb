@@ -12,7 +12,7 @@
     <div mat-dialog-content>
         @if(!selfExpense){
         <mat-form-field class="w-100">
-            <mat-label>{{'expenses.expense_template_for' | translate}}</mat-label>
+            <mat-label>{{'expenses.expense_report_for' | translate}}</mat-label>
             <mat-select required (selectionChange)="getCategoryByUser()" formControlName="employee" required>
                 <mat-option selected>{{'expenses.template_for_default_option' | translate}}</mat-option>
                 <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">{{user?.firstName |

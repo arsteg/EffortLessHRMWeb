@@ -50,7 +50,8 @@ export class ExpenseGeneralSettingsComponent {
     this.getAllExpensesCategories();
     this.getAllUsers();
     this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(value)
+      this.addTemplateForm.get('firstApprovalEmployee').setValue('');
+      this.validateApprovers(value);
     });
   }
 

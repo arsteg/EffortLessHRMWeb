@@ -127,6 +127,7 @@
         "date_duplicate_for_category":"Only one claim per day is allowed for this category.",
         "employee_expense_assignment":"Employee Expense Assignment",
         "expense_template_for":"User for Expense Template",
+        "expense_report_for" : "User for Expense Report",
         "advance_expense_template_for":"User for Advance Expense Template Assignment",
         "template_for_error":"Please select user.",
         "template_for_no_category":"Selected user is not assigned to any expense category.",
