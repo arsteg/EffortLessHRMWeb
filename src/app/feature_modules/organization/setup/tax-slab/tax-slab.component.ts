@@ -193,7 +193,7 @@ export class TaxSlabComponent {
     if (this.isEdit) {
       this.companyService.updateTaxSlab(this.selectedRecord?._id, this.taxSlabForm.value).subscribe((res: any) => {
         this.getTaxSlabs();
-        this.toast.success(this.translate.instant('organization.setup.tax_slab_added'), this.translate.instant('organization.toast.success'));
+        this.toast.success(this.translate.instant('organization.setup.tax_slab_updated'), this.translate.instant('organization.toast.success'));
        this.resetTaxSlabForm();this.isSubmitting = false;
        this.dialogRef.close(true);
         this.isEdit = false;

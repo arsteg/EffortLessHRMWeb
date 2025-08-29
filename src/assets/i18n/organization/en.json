@@ -296,7 +296,7 @@
           "designation_placeholder": "Enter Designation of Company's Authorized Signatory",
         "error": {
           "name_required": "Name is required.",
-          "label_invalid": "Label must contain at least one alphabet and can include spaces, commas, hyphens, and parentheses.",
+          "label_invalid": "Label must contain only alphabet",
           "labelNoLeadingOrTrailingSpaces": "Label cannot have leading or trailing spaces.",       
           "designation_required": "Designation is required."
         }

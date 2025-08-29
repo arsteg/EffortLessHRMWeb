@@ -50,6 +50,7 @@ export class ResignationComponent implements OnInit {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   minDate: Date;
+  maxDate: Date;
   isSubmitting: boolean = false;
   isAdminView = false;
   columns = [
@@ -267,6 +268,7 @@ export class ResignationComponent implements OnInit {
     this.isEditMode = !!resignation;
     const today = new Date();
     this.minDate = new Date(today.setDate(today.getDate()));
+    this.maxDate = new Date(today.setDate(today.getDate()));
     if (this.isEditMode) {
       this.resignationForm.patchValue(resignation);
     } else {

@@ -386,7 +386,10 @@ export class PayrollService {
     var response = this.http.get<any>(`${environment.apiUrlDotNet}/payroll/ctc-templates/${id}`, this.httpOptions);
     return response;
   }
-
+  getCTCTemplateByName(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/ctc-templates-by-name`, payload, this.httpOptions);
+    return response;
+  }
   // Run payroll: Payroll history
   addPayroll(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll`, payload, this.httpOptions);

@@ -68,8 +68,8 @@ export class UpdateCTCTemplateComponent {
       this.ctcTemplateForm.reset();
     }
   }
-  onNext() {
-    const isValid = this.getAssignedTemplates();
+  async onNext() {
+    const isValid = await this.getAssignedTemplates();
     if (!isValid) 
       {
         this.showAssignedTemplates = true;
@@ -118,7 +118,7 @@ export class UpdateCTCTemplateComponent {
     this.payroll.variableAllowances.next([...this.variableAllowance]);
     this.payroll.variableDeductions.next([...this.variableDeduction]);
   }
-  getAssignedTemplates(): boolean {
+  async getAssignedTemplates(): Promise<boolean> {
     const template = this.ctcTemplateForm.value;
   
     // 1. Validate template name
@@ -126,7 +126,11 @@ export class UpdateCTCTemplateComponent {
       this.toast.error(this.translate.instant('payroll._ctc_templates.toast.template_name')); 
       return false;
     }
-  
+    const res = await this.payroll.getCTCTemplateByName(this.ctcTemplateForm.value).toPromise();
+    if (res.isDuplicate) {
+      this.toast.error(res.message);
+      return false;
+    }
     // 2. Validate at least one fixed allowance
     const fixedAllowances = this.ctcTemplateForm.get('ctcTemplateFixedAllowance')?.value;
     if (!fixedAllowances || fixedAllowances.length === 0) {

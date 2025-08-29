@@ -370,6 +370,7 @@ export class TerminationComponent {
             const errorMessage = err?.error?.message || err?.message || err 
           ||  this.translate.instant('separation.add_fail');
           this.toast.error(errorMessage, 'Error!');
+          this.isSubmitting = false;
           }
         );
       } else {
@@ -399,6 +400,7 @@ export class TerminationComponent {
           || this.translate.instant('separation.termination_add_fail')
           ;
           this.toast.error(errorMessage, 'Error!');
+          this.isSubmitting = false;
         });
     }
   }
