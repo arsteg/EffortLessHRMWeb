@@ -49,6 +49,9 @@ export class ExpenseGeneralSettingsComponent {
     this.setFormValues();
     this.getAllExpensesCategories();
     this.getAllUsers();
+    if(this.changeMode === 'Add'){
+      this.addTemplateForm.get('approvalType').setValue('employee-wise');
+    }
     this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
       this.addTemplateForm.get('firstApprovalEmployee').setValue('');
       this.validateApprovers(value);
