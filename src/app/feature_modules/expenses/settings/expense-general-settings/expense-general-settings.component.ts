@@ -23,6 +23,7 @@ export class ExpenseGeneralSettingsComponent {
   @Output() close: any = new EventEmitter();
   @Output() changeStep: any = new EventEmitter();
   managers: any[] = [];
+  isSubmitted: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -110,6 +111,7 @@ export class ExpenseGeneralSettingsComponent {
   }
 
   closeModal() {
+    this.isSubmitted = false;
     this.close.emit(true);
     this.expenseService.selectedTemplate.next('')
   }
@@ -132,6 +134,7 @@ export class ExpenseGeneralSettingsComponent {
   }
 
   createTemplate() {
+    this.isSubmitted = true;
     let payload = {
       policyLabel: this.addTemplateForm.value.policyLabel,
       approvalType: this.addTemplateForm.value.approvalType,
@@ -142,39 +145,39 @@ export class ExpenseGeneralSettingsComponent {
       expenseCategories: this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }))
     };
     if (this.addTemplateForm.valid) {
-    if (this.changeMode === 'Add') {
-      this.expenseService.addTemplate(payload).subscribe((res: any) => {
-        this.expenseService.selectedTemplate.next(res.data);
-        this.expenseService.categories.next(res.categories);
-        this.toast.success(this.translate.instant('expenses.template_created_success'));
-        this.changeStep.emit(2);
-      }, err => {
-        this.toast.error(err || this.translate.instant('expenses.template_created_error'));
-      });
-    } else {
-      let templateId = this.expenseService.selectedTemplate.getValue()._id;
-      const isArrayStructureChanged = this.addTemplateForm.value.expenseCategories.some(category => typeof category !== 'object');
-
-      if (isArrayStructureChanged) {
-        payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }));
-        this.expenseService.categories.next(payload.expenseCategories);
+      if (this.changeMode === 'Add') {
+        this.expenseService.addTemplate(payload).subscribe((res: any) => {
+          this.expenseService.selectedTemplate.next(res.data);
+          this.expenseService.categories.next(res.categories);
+          this.toast.success(this.translate.instant('expenses.template_created_success'));
+          this.changeStep.emit(2);
+        }, err => {
+          this.toast.error(err || this.translate.instant('expenses.template_created_error'));
+        });
       } else {
-        payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category.expenseCategory }));
-        this.expenseService.categories.next(payload.expenseCategories);
+        let templateId = this.expenseService.selectedTemplate.getValue()._id;
+        const isArrayStructureChanged = this.addTemplateForm.value.expenseCategories.some(category => typeof category !== 'object');
 
+        if (isArrayStructureChanged) {
+          payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }));
+          this.expenseService.categories.next(payload.expenseCategories);
+        } else {
+          payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category.expenseCategory }));
+          this.expenseService.categories.next(payload.expenseCategories);
+
+        }
+        this.expenseService.updateTemplate(templateId, payload).subscribe((res: any) => {
+          this.toast.success(this.translate.instant('expenses.template_updated_success'));
+          this.changeStep.emit(2);
+        }, err => {
+          this.toast.error(err || this.translate.instant('expenses.template_updated_error'));
+        });
       }
-      this.expenseService.updateTemplate(templateId, payload).subscribe((res: any) => {
-        this.toast.success(this.translate.instant('expenses.template_updated_success'));
-        this.changeStep.emit(2);
-      }, err => {
-        this.toast.error(err || this.translate.instant('expenses.template_updated_error'));
-      });
     }
-  }
-  else {
-    this.addTemplateForm.markAllAsTouched();
-    this.toast.warning(this.translate.instant('expenses.requiredFields'));
-  }
+    else {
+      this.addTemplateForm.markAllAsTouched();
+      this.toast.warning(this.translate.instant('expenses.requiredFields'));
+    }
   }
 
 }

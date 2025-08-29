@@ -6,6 +6,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-expense-category-settings',
@@ -115,7 +116,7 @@ export class ExpenseCategorySettingsComponent {
               step.expenseTemplateCategoryFieldValues?.forEach((value) => {
                 if (value.expenseTemplateCategory === step._id && categoryDetails.data._id === step.expenseCategory._id) {
                   const fieldFormGroup = this._formBuilder.group({
-                    label: value.label,
+                    label: [value.label, [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
                     rate: [value.rate, [Validators.min(0)]],
                     type: value.type
                   });
