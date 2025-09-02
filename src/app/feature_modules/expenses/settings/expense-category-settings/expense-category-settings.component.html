@@ -137,8 +137,7 @@
                     <mat-form-field>
                       <mat-label>{{'expenses.categoryLabel' | translate}}</mat-label>
                       <input matInput formControlName="label" placeholder="Label" required>
-                      <mat-error
-                        *ngIf="fieldCtrl.get('label').touched && fieldCtrl.get('label').invalid">
+                      <mat-error *ngIf="fieldCtrl.get('label').touched && fieldCtrl.get('label').invalid">
                         <span *ngIf="fieldCtrl.get('label').hasError('maxlength')">
                           {{'expenses.category_label_Limit' | translate}}
                         </span>
@@ -162,17 +161,16 @@
                       </mat-select>
                     </mat-form-field>
                     }
-
                     <mat-form-field>
                       <mat-label>{{'expenses.rate' | translate}}</mat-label>
                       <input matInput type="number" min="0" placeholder="Rate" formControlName="rate" required>
-                      @if(fieldCtrl.get('rate').invalid && fieldCtrl.get('rate').touched){
-                      <mat-error>
-                        {{'expenses.negativeValRestrict' | translate}}
-                      </mat-error>
+                      @if (fieldCtrl.get('rate')?.errors?.['min']) {
+                      <mat-error>{{ 'expenses.negativeValRestrict' | translate }}</mat-error>
+                      }
+                      @if (fieldCtrl.get('rate')?.errors?.['required']) {
+                      <mat-error>{{ 'expenses.requiredFields' | translate }}</mat-error>
                       }
                     </mat-form-field>
-
                     <button (click)="deleteCategoryField(i, j)" mat-icon-button type="button" color="warn">
                       <mat-icon>delete</mat-icon>
                     </button>
