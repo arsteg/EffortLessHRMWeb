@@ -143,10 +143,10 @@ export class AttendanceRecordsComponent implements OnInit {
         this.holidays = results.holidays.data;
         this.attendanceTemplateAssignment = results.attendanceTemplate.data;
         this.shifts = results.shiftData.data;
-        this.toast.success(this.translate.instant('common.data_updated_success'));
+        this.toast.success(this.translate.instant('attendance.data_updated_success'));
       },
       error: (error) => {
-        this.toast.error(this.translate.instant('common.data_update_error'));
+        this.toast.error(this.translate.instant('attendance.data_update_failed'));
       }
     });
   }
@@ -170,7 +170,7 @@ export class AttendanceRecordsComponent implements OnInit {
     records.forEach(record => {
       const user = record.user;
       const duration = record.duration;
-      const userName = this.getUser(record.user);
+      const userName = record?.user?.firstName + ' ' + record?.user?.lastName;
 
       if (!groupedRecords[user]) {
         groupedRecords[user] = {
@@ -285,11 +285,8 @@ export class AttendanceRecordsComponent implements OnInit {
       holidayDate.setHours(0, 0, 0, 0);
 
       if (holidayDate.getTime() === compareDate.getTime()) {
-        console.log('Matching holiday found:', holiday);
         if (Array.isArray(holiday.holidayapplicableEmployee)) {
-          // if (holiday.holidayapplicableEmployee.some((emp: any) => emp?.user === user?._id)) {
           return true; ``
-          // }
         }
       }
     }
@@ -502,7 +499,7 @@ export class AttendanceRecordsComponent implements OnInit {
       month: this.selectedMonth,
       year: this.selectedYear,
       records: attendanceRecords,
-      name: user.userName,
+      name: user.firstName + ' ' + user.lastName,
       shiftFullDayTime: this.formatHoursToTime(fullHours),
       shiftHalfDayTime: this.formatHoursToTime(halfHours),
       monthDays: daysInMonth
