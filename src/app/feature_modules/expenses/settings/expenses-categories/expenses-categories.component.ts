@@ -72,6 +72,9 @@ export class ExpensesCategoriesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllExpensesCategories();
+    this.addCategoryForm.get('label')?.valueChanges.subscribe(value => {
+      this.isSubmitted = false;
+    });
   }
 
   originalOrder = (a: unknown, b: unknown): number => {
@@ -392,7 +395,7 @@ export class ExpensesCategoriesComponent implements OnInit {
     });
     this.expenseCategories.data = data;
   }
-  
+
   onSortChange(event: any) {
     const sorted = this.expenseCategories.data.slice().sort((a: any, b: any) => {
       const valueA = this.getNestedValue(a, event.active);

@@ -65,7 +65,7 @@
             @if (categoryCtrl.get('maximumAmountWithoutReceipt')?.errors?.['min']) {
             <small class="text-danger">{{ 'expenses.negativeValRestrict' | translate }}</small>
             }
-            @if (categoryCtrl.get('maximumAmountPerExpense')?.errors?.['required']) {
+            @if (categoryCtrl.get('maximumAmountWithoutReceipt')?.errors?.['required']) {
             <small class="text-danger">{{ 'expenses.requiredFields' | translate }}</small>
             }
           </div>
