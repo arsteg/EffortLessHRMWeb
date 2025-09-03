@@ -36,6 +36,8 @@ export class ExpensesCategoriesComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
   allData: any[] = [];
   private readonly destroyRef = inject(DestroyRef);
+  private wasFormSaved: boolean = false;
+
   expenseTypes = {
     perDay: 'Per Day',
     time: 'Time',
@@ -88,6 +90,7 @@ export class ExpensesCategoriesComponent implements OnInit {
 
   open(content: any) {
     this.isSubmitted = false;
+    this.wasFormSaved = false;
     this.dialogRef = this.dialog.open(content, {
       width: '50%',
       disableClose: true
@@ -95,6 +98,12 @@ export class ExpensesCategoriesComponent implements OnInit {
 
     this.dialogRef.afterClosed().subscribe(result => {
       this.closeResult = `Closed with: ${result}`;
+      if (!this.wasFormSaved) {
+        const fieldsArray = this.addCategoryForm.get('fields') as FormArray;
+        while (fieldsArray.length !== 0) {
+          fieldsArray.removeAt(0);
+        }
+      }
     });
   }
 
@@ -221,6 +230,7 @@ export class ExpensesCategoriesComponent implements OnInit {
           console.log(result.data);
         });
       }
+      this.wasFormSaved = true;
       this.clearselectedRequest();
       this.toast.success(this.translate.instant('expenses.category_added_success'));
       this.dialogRef.close();
@@ -264,73 +274,73 @@ export class ExpensesCategoriesComponent implements OnInit {
   }
 
   updateExpenseCategory() {
-  this.isSubmitted = true;
-  let categoryPayload = {
-    type: this.addCategoryForm.value['type'],
-    label: this.addCategoryForm.value['label'],
-    isMandatory: this.addCategoryForm.value['isMandatory']
-  };
+    this.isSubmitted = true;
+    let categoryPayload = {
+      type: this.addCategoryForm.value['type'],
+      label: this.addCategoryForm.value['label'],
+      isMandatory: this.addCategoryForm.value['isMandatory']
+    };
 
-  /** Update Category */
-  const apiCalls: { [key: string]: any } = {};
-  const updateCategory$ = this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload);
-  apiCalls['updateCategory'] = updateCategory$;
+    /** Update Category */
+    const apiCalls: { [key: string]: any } = {};
+    const updateCategory$ = this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload);
+    apiCalls['updateCategory'] = updateCategory$;
 
-  /** Update fields */
-  if (this.addCategoryForm.get('fields')) {
-    const updateFields = (this.addCategoryForm.value['fields'] as any[]).filter(
-      (field) => field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
-    );
+    /** Update fields */
+    if (this.addCategoryForm.get('fields')) {
+      const updateFields = (this.addCategoryForm.value['fields'] as any[]).filter(
+        (field) => field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
+      );
 
-    if (updateFields.length > 0) {
-      const fieldsPayload = {
-        fields: updateFields
-      };
-      const updateField$ = this.expenses.updateCategoryField(fieldsPayload);
-      apiCalls['updateField'] = updateField$;
+      if (updateFields.length > 0) {
+        const fieldsPayload = {
+          fields: updateFields
+        };
+        const updateField$ = this.expenses.updateCategoryField(fieldsPayload);
+        apiCalls['updateField'] = updateField$;
+      }
+
+      /** Add New fields */
+      const newFields = (this.addCategoryForm.value['fields'] as any[]).filter(
+        (field) => !field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
+      );
+      if (newFields && newFields.length > 0) {
+        let fieldsPayload = {
+          fields: newFields,
+          expenseCategory: this.selectedCategory._id
+        };
+        const addField$ = this.expenses.addCategoryField(fieldsPayload);
+        apiCalls['addField'] = addField$;
+      }
     }
 
-    /** Add New fields */
-    const newFields = (this.addCategoryForm.value['fields'] as any[]).filter(
-      (field) => !field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
-    );
-    if (newFields && newFields.length > 0) {
-      let fieldsPayload = {
-        fields: newFields,
-        expenseCategory: this.selectedCategory._id
-      };
-      const addField$ = this.expenses.addCategoryField(fieldsPayload);
-      apiCalls['addField'] = addField$;
-    }
+    forkJoin(apiCalls).subscribe({
+      next: (result: { [key: string]: any }) => {
+        if (result['updateCategory']) {
+          this.toast.success(this.translate.instant('expenses.category_updated_success'));
+          this.updatedCategory = result['updateCategory']?.data._id;
+        }
+        if (result['updateField']) {
+          (this.addCategoryForm.get('fields') as FormArray).clear();
+          this.addCategoryForm.reset({
+            isMandatory: false
+          });
+          this.isEdit = false;
+          this.toast.success(this.translate.instant('expenses.category_applicable_field_updated_success'));
+        }
+        if (result['addField']) {
+          this.toast.success(this.translate.instant('expenses.category_applicable_field_added_success'));
+        }
+        this.wasFormSaved = true;
+        this.getAllExpensesCategories();
+        this.dialogRef.close();
+      },
+      error: (err) => {
+        this.isSubmitted = false;
+        this.toast.error(err);
+      }
+    });
   }
-
-  forkJoin(apiCalls).subscribe({
-    next: (result: { [key: string]: any }) => {
-      if (result['updateCategory']) {
-        this.toast.success(this.translate.instant('expenses.category_updated_success'));
-        this.updatedCategory = result['updateCategory']?.data._id;
-      }
-      if (result['updateField']) {
-        (this.addCategoryForm.get('fields') as FormArray).clear();
-        this.addCategoryForm.reset({
-          isMandatory: false
-        });
-        this.isEdit = false;
-        this.toast.success(this.translate.instant('expenses.category_applicable_field_updated_success'));
-      }
-      if (result['addField']) {
-        this.toast.success(this.translate.instant('expenses.category_applicable_field_added_success'));
-      }
-      this.getAllExpensesCategories();
-      this.dialogRef.close();
-    },
-    error: (err) => {
-      // Handle errors with toast notifications
-      this.isSubmitted = false; // Reset isSubmitted on error
-      this.toast.error(err);
-    }
-  });
-}
 
   editCategory() {
     this.isEdit = true;

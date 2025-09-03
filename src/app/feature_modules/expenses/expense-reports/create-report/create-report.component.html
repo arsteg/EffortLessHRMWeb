@@ -161,40 +161,38 @@
             </mat-form-field>
         </div>
 
-        <div class="form-group col-md-12 mt-2">
-            <mat-label>Attachment</mat-label>
+        <div class="col-12 mt-3">
+            <label for="">{{'leave.attachments' | translate}}</label>
             <div class="attachment flex-wrap mt-1">
                 <label class="attach">
-                    <input style="display: none;" formControlName="expenseAttachments"
-                        accept=".jpeg,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt"
-                        type="file" (change)="onFileSelect($event)">
-                    <div class="details-attach-file p-2 d-flex align-items-center justify-content-center me-2 pointer">
-                        <mat-icon class="text-secondary">attach_file</mat-icon>
-                        <span class="ms-1">Add files to Attach</span>
+                    <input style="display: none;" [attr.required]="documentMandatory ? true : null"
+                        [required]="documentMandatory" formControlName="leaveApplicationAttachments"
+                        accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
+                        type="file" multiple (change)="onFileSelected($event)">
+                    <div class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
+                        <span class="fa fa-paperclip text-secondary"> Add files to Attach
+                        </span>
                     </div>
                 </label>
+                <small class="text-danger"
+                    *ngIf="documentMandatory && (!selectedFiles || selectedFiles.length === 0) && (expenseReportform.get('expenseAttachments')?.touched || expenseReportform.get('expenseAttachments')?.dirty)">
+                    {{ 'expenses.attachmentRequired' | translate }}
+                </small>
             </div>
-            <ul type="none" class="d-flex flex-wrap ps-0">
-                <li class="contentHeading p-2 d-flex align-items-center"
-                    *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
-                    {{ files.name }}
-                    <mat-icon class="text-danger ms-2">cancel</mat-icon>
-                </li>
-            </ul>
-
-            @if(this.isEdit && expenseReportform.get('expenseAttachments').value && selectedFiles.length === 0){
-            <ul type="none" class="d-flex flex-wrap ps-0">
-                <li class="contentHeading p-2 d-flex align-items-center">
-                    <span (click)="openAttachment()">{{ documentName }}</span>
-                    <mat-icon class="text-danger ms-2" (click)="removeExistingAttachment()">cancel</mat-icon>
-                </li>
-            </ul>
-            }
         </div>
+        <div>
+            <ul type="none" class="d-flex ps-0">
+                <li class="contentHeading p-2" *ngFor="let files of selectedFiles; let i = index"
+                    (click)="removeFile(i)">
+                    {{files.name}} <i class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
+                </li>
+            </ul>
+        </div>
+        <small>5MB size file is allowed.</small><br>
+
         <small class="text-muted">Accepted attachments type:
             jpeg, .glb, .svg, .blend, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx,
             .odt, .fodt, .ods, .fods, .odp, .fodp, .odg, .fodg, .odf, .csv, .html, .css, .txt</small>
-
     </div>
     <div mat-dialog-actions class="d-flex justify-content-between">
         <button mat-flat-button type="button" mat-dialog-close="'close'">{{'expenses.cancel' | translate}}</button>

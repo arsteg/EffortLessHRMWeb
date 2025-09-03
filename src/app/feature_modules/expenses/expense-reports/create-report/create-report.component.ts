@@ -44,6 +44,8 @@ export class CreateReportComponent {
   private readonly destroyRef = inject(DestroyRef);
   expenseData: any;
   isSubmitting: boolean = false;
+  documentMandatory: boolean;
+
 
   constructor(
     public expenseService: ExpensesService,
@@ -261,21 +263,21 @@ export class CreateReportComponent {
     });
   }
 
-  onFileSelect(event) {
-    const files: FileList = event.target.files;
-    if (files) {
-      for (let i = 0; i < files.length; i++) {
-        const file: File = files.item(i);
-        if (file) {
-          this.selectedFiles.push(file);
-        }
-      }
+ onFileSelected(event: any) {
+    const newFiles: FileList = event.target.files;
+    if (newFiles) {
+      const previousFiles = this.selectedFiles || [];
+      this.selectedFiles = previousFiles.concat(Array.from(newFiles));
+      this.expenseReportform.get('expenseAttachments')?.setValue(this.selectedFiles.length > 0 ? 'files_selected' : '');
+      this.expenseReportform.get('expenseAttachments')?.updateValueAndValidity();
+      event.target.value = '';
     }
   }
-
   removeFile(index: number) {
     if (index !== -1) {
       this.selectedFiles.splice(index, 1);
+      this.expenseReportform.get('expenseAttachments')?.setValue(this.selectedFiles.length > 0 ? 'files_selected' : '');
+      this.expenseReportform.get('expenseAttachments')?.updateValueAndValidity();
     }
   }
 

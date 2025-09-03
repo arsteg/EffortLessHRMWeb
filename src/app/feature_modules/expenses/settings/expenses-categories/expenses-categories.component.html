@@ -1,22 +1,12 @@
 <div class="position-relative">
-    <button mat-flat-button 
-        class="position-absolute end-0" 
-        color="primary" 
+    <button mat-flat-button class="position-absolute end-0" color="primary"
         (click)="clearselectedRequest(); open(addModal)">
         {{'expenses.add_new' | translate}}
     </button>
 </div>
-<hrm-table
-    [data]="expenseCategories.data"
-    [isServerSide]="true"
-    [columns]="columns"
-    [showExport]="'none'"
-    [showSearch]="true"
-    [totalItems]="totalRecords"
-    (actionClicked)="handleAction($event, addModal)"
-    (pageChanged)="onPageChange($event)"
-    (sortChanged)="onSortChange($event)"
-    (searchChanged)="onSearchChange($event)">
+<hrm-table [data]="expenseCategories.data" [isServerSide]="true" [columns]="columns" [showExport]="'none'"
+    [showSearch]="true" [totalItems]="totalRecords" (actionClicked)="handleAction($event, addModal)"
+    (pageChanged)="onPageChange($event)" (sortChanged)="onSortChange($event)" (searchChanged)="onSearchChange($event)">
 </hrm-table>
 
 <!-- Add/Update category -->
@@ -79,6 +69,10 @@
                                 <mat-form-field class="compact-density">
                                     <mat-label>{{'expenses.field_name' | translate}}</mat-label>
                                     <input matInput formControlName="fieldName" required placeholder="Enter Field Name">
+                                    <mat-error
+                                        *ngIf="fieldGroup.get('fieldName').invalid && (fieldGroup.get('fieldName').touched || isSubmitted)">
+                                        {{'expenses.field_name_required' | translate}}
+                                    </mat-error>
                                 </mat-form-field>
 
                                 <mat-form-field class="compact-density">
@@ -90,6 +84,10 @@
                                         <mat-option value="DateRange">{{'expenses.daterange' | translate}}</mat-option>
                                         <mat-option value="Date">{{'expenses.date' | translate}}</mat-option>
                                     </mat-select>
+                                    <mat-error
+                                        *ngIf="fieldGroup.get('fieldType').invalid && (fieldGroup.get('fieldType').touched || isSubmitted)">
+                                        {{'expenses.field_type_required' | translate}}
+                                    </mat-error>
                                 </mat-form-field>
 
                                 <button mat-icon-button color="warn" matTooltip="Delete" type="button"

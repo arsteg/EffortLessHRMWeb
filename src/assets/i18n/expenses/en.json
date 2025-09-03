@@ -1,5 +1,8 @@
 {
     "expenses": {
+        "field_type_required": "Field type is required.",
+        "field_name_required": "Field name is required.",
+        "attachmentRequired": "Attachment is required. Please upload at least one file.",
         "settings": "Settings",
         "expense": "Expense",
         "expense_reports": "Expense Reports",
