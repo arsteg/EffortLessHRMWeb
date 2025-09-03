@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-assigned-fixed-deduction',
@@ -50,7 +51,7 @@ export class AssignedFixedDeductionComponent {
         value: [item.value ?? '', [Validators.required, Validators.min(0)]],
         valueType: [item.valueType ?? '0'],
         minimumAmount: [item.minimumAmount ?? '', [Validators.required, Validators.min(0)]]
-      }));
+    }, { validators: CustomValidators.minimumAmountLessThanOrEqualValue }));
     });
     this.fixedDeductionForm.valueChanges.subscribe(() => {
       if (this.fixedDeductionForm.valid) {

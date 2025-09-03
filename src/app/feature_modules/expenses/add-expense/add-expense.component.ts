@@ -1,16 +1,18 @@
-import { Component, Output, EventEmitter, Input, inject } from '@angular/core';
+import { Component, Output, EventEmitter, Input, inject, Inject } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CreateReportComponent } from '../expense-reports/create-report/create-report.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
+
 @Component({
   selector: 'add-expense',
   templateUrl: './add-expense.component.html',
-  styleUrl: './add-expense.component.css'
+  styleUrls: ['./add-expense.component.css']
 })
 export class AddExpenseComponent {
   private translate: TranslateService = inject(TranslateService);
@@ -30,26 +32,28 @@ export class AddExpenseComponent {
   validations: any;
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   reportId = '';
+  isSubmitting: boolean = false;
+  hasBeenSubmitted: boolean = false;
 
-  constructor(private dialog: MatDialog,
+  constructor(
+    private dialog: MatDialog,
     private commonService: CommonService,
     public expenseService: ExpensesService,
     private fb: FormBuilder,
-    private toast: ToastrService,) {
-
-  }
+    private toast: ToastrService,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   initForm() {
     this.addExpenseForm = this.fb.group({
       employee: [this.selfExpense ? this.currentUser.id : '', Validators.required],
-      title: ['', Validators.required],
+      title: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       status: [''],
-      amount: [0],
+      amount: [0, [Validators.min(0)]],
       expenseReportExpenses: []
     });
     this.expenseService.changeMode.next(this.changeMode);
     if (this.changeMode !== 'Add') {
-      console.log(this.expenseService.selectedReport.getValue())
       const { employee, title, amount, status } = this.expenseService.selectedReport.getValue();
       this.addExpenseForm.patchValue({
         employee: employee,
@@ -66,8 +70,8 @@ export class AddExpenseComponent {
     this.getCategoryByUser();
     this.getAllCatgeories();
   }
-  
-  getUsers(){
+
+  getUsers() {
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
     });
@@ -77,11 +81,12 @@ export class AddExpenseComponent {
     let payload = {
       next: '',
       skip: ''
-    }
+    };
     this.expenseService.getExpenseCatgories(payload).subscribe((res: any) => {
       this.allCategories = res.data;
-    })
+    });
   }
+
   openSecondModal(isEdit: boolean) {
     this.isEdit = isEdit;
     const selectedReport = this.expenseService.selectedReport.getValue();
@@ -93,24 +98,34 @@ export class AddExpenseComponent {
       width: '50%',
       data: { isEdit: this.isEdit }
     });
+
+    // Subscribe to the expenseReportExpensesEmitter from the second form
+    dialogRef.componentInstance.expenseReportExpensesEmitter.subscribe(event => {
+      if (event.action === 'add' || event.action === 'update') {
+        this.hasBeenSubmitted = false; // Reset submission status to re-enable submit button
+      }
+    });
+
     dialogRef.afterClosed().subscribe(result => {
+      this.isSubmitting = false;
       const id = this.expenseService.selectedReport.getValue();
       this.expenseService.getExpenseReportExpensesByReportId(id._id).subscribe((res: any) => {
         this.expenseReportExpenses = res.data;
         this.setCalculcatedExpenseAmount();
-        if(result === 'close'){
+        if (result === 'close') {
           this.createReport(false);
         }
-      })
+      });
     });
   }
 
   resetForm() {
-    if (this.changeMode == 'Add') {
+    if (this.changeMode === 'Add') {
       this.expenseReportExpenses = [];
       this.addExpenseForm.reset();
+      this.hasBeenSubmitted = false; // Reset submission status
     }
-    if (this.changeMode == 'Update') {
+    if (this.changeMode === 'Update') {
       this.addExpenseForm.patchValue({
         employee: this.expenseService.selectedReport.getValue().employee,
         title: this.expenseService.selectedReport.getValue().title,
@@ -122,12 +137,13 @@ export class AddExpenseComponent {
   }
 
   getSelectedExpenseReportExpense(selectedExpenseReportExpense: any) {
-    this.expenseService.expenseReportExpId.next(selectedExpenseReportExpense._id)
+    this.expenseService.expenseReportExpId.next(selectedExpenseReportExpense._id);
     this.expenseService.expenseReportExpense.next(selectedExpenseReportExpense);
   }
 
   closeModal() {
     this.close.emit(true);
+    this.dialog.closeAll(); // Close the dialog
   }
 
   getCategoryByUser() {
@@ -139,63 +155,81 @@ export class AddExpenseComponent {
         this.expenseService.tempAndCat.next(res);
         if (res?.details?.length) {
           this.validations = res.details[0];
-          if(this.changeMode !== 'Add'){
+          if (this.changeMode !== 'Add') {
             this.getExpenseReportExpensesByReportId();
           }
         }
         if (!res || res.data == null) {
           this.noCategoryError = true;
         }
-      })
+      });
     }
   }
-  createReport(showToaster=true) {
+
+  createReport(showToaster: boolean = true) {
+    if (this.hasBeenSubmitted) {
+      this.closeModal(); // Close the dialog if already submitted
+      return;
+    }
+
+    this.isSubmitting = true;
     let payload = {
       employee: this.selfExpense ? this.currentUser.id : this.addExpenseForm.value.employee,
       title: this.addExpenseForm.value.title,
       amount: this.addExpenseForm.getRawValue().amount,
       status: 'Level 1 Approval Pending',
       expenseReportExpenses: []
-    }
+    };
     if (this.expenseService.expenseReportExpense.getValue()) {
       let formArray = this.expenseService.expenseReportExpense.getValue();
       payload.expenseReportExpenses = [formArray];
     }
+
     if (this.addExpenseForm.valid) {
-      if (this.changeMode == 'Add' && !this.reportId) {
-        this.expenseService.addExpensePendingReport(payload).subscribe((res: any) => {
-          this.expenseService.selectedReport.next(res.data.expenseReport);
-          this.reportId = res.data.expenseReport._id;
-          this.toast.success(this.translate.instant('expenses.expense_report_created_success'));
-          
-        },
+      if (this.changeMode === 'Add' && !this.reportId) {
+        this.expenseService.addExpensePendingReport(payload).subscribe(
+          (res: any) => {
+            this.expenseService.selectedReport.next(res.data.expenseReport);
+            this.reportId = res.data.expenseReport._id;
+            if (showToaster) {
+              this.toast.success(this.translate.instant('expenses.expense_report_created_success'));
+            }
+            this.isSubmitting = false;
+            this.hasBeenSubmitted = true; 
+          },
           err => {
             this.toast.error(this.translate.instant('expenses.expense_report_created_error'));
+            this.isSubmitting = false;
           }
-        )
-      }
-      else {
-        let id = this.expenseService.selectedReport.getValue()._id
-        this.expenseService.updateExpenseReport(id, payload).subscribe((res: any) => {
-          this.expenseService.selectedReport.next(res.data);
-          if(showToaster){
-            this.toast.success(this.translate.instant('expenses.expense_report_updated_success'));
-          }
-        },
+        );
+      } else {
+        let id = this.expenseService.selectedReport.getValue()._id;
+        this.expenseService.updateExpenseReport(id, payload).subscribe(
+          (res: any) => {
+            this.expenseService.selectedReport.next(res.data);
+            if (showToaster) {
+              this.toast.success(this.translate.instant('expenses.expense_report_updated_success'));
+            }
+            this.isSubmitting = false;
+            this.hasBeenSubmitted = true; // Mark as submitted
+          },
           err => {
             this.toast.error(this.translate.instant('expenses.expense_report_updated_error'));
+            this.isSubmitting = false;
           }
-        )
+        );
       }
+    } else {
+      this.addExpenseForm.markAllAsTouched();
+      this.isSubmitting = false;
     }
-    else { this.addExpenseForm.markAllAsTouched(); }
     this.updateExpenseReportTable.emit();
   }
 
   getCategoryById(categoryId) {
     this.expenseService.getExpenseCategoryById(categoryId).subscribe((res: any) => {
       this.category = res.data.label;
-      return this.category
+      return this.category;
     });
   }
 
@@ -203,7 +237,6 @@ export class AddExpenseComponent {
     const matchingCategory = this.allCategories?.find(category => category._id === expenseCategoryId);
     return matchingCategory ? matchingCategory.label : '';
   }
-
 
   deleteExpenseReportExpense(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
@@ -213,20 +246,21 @@ export class AddExpenseComponent {
       if (result === 'delete') {
         this.deleteReport(id);
       }
-      err => {
-        this.toast.error(this.translate.instant('expenses.delete_error'));
-      }
+    }, err => {
+      this.toast.error(this.translate.instant('expenses.delete_error'));
     });
   }
 
   deleteReport(id: string) {
-    this.expenseService.deleteExpenseReportExpenses(id).subscribe((res: any) => {
-      this.expenseReportExpenses = this.expenseReportExpenses.filter(report => report._id !== id);
-      this.toast.success(this.translate.instant('expenses.delete_success'));
-    },
+    this.expenseService.deleteExpenseReportExpenses(id).subscribe(
+      (res: any) => {
+        this.expenseReportExpenses = this.expenseReportExpenses.filter(report => report._id !== id);
+        this.toast.success(this.translate.instant('expenses.delete_success'));
+      },
       (err) => {
         this.toast.error(this.translate.instant('expenses.delete_error'));
-      })
+      }
+    );
   }
 
   getExpenseReportExpensesByReportId() {
@@ -235,11 +269,11 @@ export class AddExpenseComponent {
       this.expenseService.getExpenseReportExpensesByReportId(this.reportId).subscribe((res: any) => {
         this.expenseReportExpenses = res.data;
         this.setCalculcatedExpenseAmount();
-      })
+      });
     }
   }
 
-  setCalculcatedExpenseAmount(){
+  setCalculcatedExpenseAmount() {
     if (this.expenseReportExpenses.length > 0 && !this.validations?.expenseTemplate?.advanceAmount) {
       this.addExpenseForm.get('amount').setValue(0);
       this.addExpenseForm.get('amount').disable();

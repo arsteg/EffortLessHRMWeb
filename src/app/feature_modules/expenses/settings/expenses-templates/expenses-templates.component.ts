@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-expenses-templates',
@@ -27,6 +28,7 @@ export class ExpensesTemplatesComponent implements OnInit {
   selectedTemplate: any;
   formatValues: string;
   filteredTemplates: any[] = [];
+  allData: any[] = [];
   categoryList: any;
   selectedCategory: any;
   matchingCategories: any;
@@ -40,6 +42,24 @@ export class ExpensesTemplatesComponent implements OnInit {
   displayedColumns: string[] = ['policyLabel', 'matchingCategories', 'actions'];
   dataSource: MatTableDataSource<any> = new MatTableDataSource();
   dialogRef: MatDialogRef<any>;
+
+  columns: TableColumn[] = [
+    { key: 'policyLabel', name: 'Template Name' },
+    { 
+      key: 'numberOfCategories', 
+      name: 'Number of Expense Categories',
+      valueFn: (row: any) => row.applicableCategories?.length
+    },
+    {
+      key: 'action',
+      name: 'Actions',
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(
     private modalService: NgbModal,
@@ -80,10 +100,7 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   deleteTemplate(_id: string) {
     this.expenseService.deleteTemplate(_id).subscribe((res: any) => {
-      const index = this.templates.findIndex(temp => temp._id === _id);
-      if (index !== -1) {
-        this.templates.splice(index, 1);
-      }
+      this.getAllTemplates();
       this.toast.success(this.translate.instant('expenses.delete_success'));
     },
       (err) => {
@@ -101,7 +118,7 @@ export class ExpensesTemplatesComponent implements OnInit {
       }
     });
   }
-  onPageChange(event: PageEvent) {
+  onPageChange(event: any) {
     this.currentPage = event.pageIndex + 1;
     this.recordsPerPage = event.pageSize;
     this.getAllTemplates();
@@ -126,6 +143,7 @@ export class ExpensesTemplatesComponent implements OnInit {
       this.templates = res.data;
       this.totalRecords = res.total;
       this.dataSource.data = this.templates;
+      this.allData = this.templates;
       this.dataSource.filterPredicate = (data: any, filter: string) => {
         return data.policyLabel.toLowerCase().includes(filter);
       };
@@ -266,5 +284,50 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   refreshExpenseTemplateTable() {
     this.getAllTemplates();
+  }
+
+  handleAction(event: any, addModal: any) {
+    if (event.action.label === 'Edit') {
+      this.setFormValues(event.row); 
+      this.open(addModal);
+      this.editTemplate(event.row);
+    }
+    if (event.action.label === 'Delete') {
+      this.deleteDialog(event.row._id);
+    }
+  }
+
+  editTemplate(row: any) {
+    this.selectedTemplate = row;
+    this.changeMode = 'Next';
+    this.setFormValues(row);
+  }
+
+  onSearchChange(search: string) {
+    const lowerSearch = search.toLowerCase();
+    const data = this.allData?.filter(row => {
+      const valuesToSearch = [
+        row?.policyLabel,
+        row?.applicableCategories?.length
+      ];
+
+      return valuesToSearch.some(value =>
+        value?.toString().toLowerCase().includes(lowerSearch)
+      );
+    });
+    this.dataSource.data = data;
+  }
+  
+  onSortChange(event: any) {
+    const sorted = this.dataSource.data.slice().sort((a: any, b: any) => {
+      const valueA = this.getNestedValue(a, event.active);
+      const valueB = this.getNestedValue(b, event.active);
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.dataSource.data = sorted;
+  }
+
+  private getNestedValue(obj: any, key: string): any {
+    return key.split('.').reduce((o, k) => (o ? o[k] : undefined), obj);
   }
 }

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
@@ -57,7 +58,7 @@ export class VarDeductionComponent {
         value: [vd.value ?? '', [Validators.required, Validators.min(0)]],
         valueType: [vd.valueType ?? 0],
         minimumAmount: [vd.minimumAmount ?? '', [Validators.min(0)]]
-      }));
+     }, { validators: CustomValidators.minimumAmountLessThanOrEqualValue }));
     });
 
     this.variableDeductionForm.valueChanges.subscribe(() => {

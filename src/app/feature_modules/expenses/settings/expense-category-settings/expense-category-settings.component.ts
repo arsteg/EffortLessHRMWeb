@@ -4,6 +4,9 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { TranslateService } from '@ngx-translate/core';
+import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-expense-category-settings',
@@ -57,7 +60,8 @@ export class ExpenseCategorySettingsComponent {
   loader = true;
   constructor(private _formBuilder: FormBuilder,
     private expenseService: ExpensesService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private dialog: MatDialog
   ) {
     this.minDate.setDate(this.minDate.getDate() - 1);
     this.maxDate.setDate(this.maxDate.getDate() + 7);
@@ -70,7 +74,7 @@ export class ExpenseCategorySettingsComponent {
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
       this.loader = false;
       let applicableCategories = res.data;
-      this.expenseCategory = applicableCategories.map(category => { return category.expenseCategory });
+      this.expenseCategory = applicableCategories.map(category => category.expenseCategory);
       this.expenseService.allExpenseCategories.subscribe((categories: any) => {
         this.allExpenseCategories = categories;
         this.steps = applicableCategories;
@@ -86,20 +90,19 @@ export class ExpenseCategorySettingsComponent {
             if (categoryId === step.expenseCategory._id) {
               this.typeCategory = matchingCategory.type;
             }
-            // Fetch category details by ID
             const categoryDetails = await this.expenseService.getExpenseCategoryById(categoryId).toPromise();
             expenseCategoriesArray.push(this._formBuilder.group({
               expenseCategory: categoryId,
               isMaximumAmountPerExpenseSet: step.isMaximumAmountPerExpenseSet,
-              maximumAmountPerExpense: step.maximumAmountPerExpense,
+              maximumAmountPerExpense: [step.maximumAmountPerExpense, [Validators.min(0)]],
               isMaximumAmountWithoutReceiptSet: step.isMaximumAmountWithoutReceiptSet,
-              maximumAmountWithoutReceipt: step.maximumAmountWithoutReceipt,
-              maximumExpensesCanApply: step.maximumExpensesCanApply,
+              maximumAmountWithoutReceipt: [step.maximumAmountWithoutReceipt, [Validators.min(0)]],
+              maximumExpensesCanApply: [step.maximumExpensesCanApply, [Validators.min(0)]],
               isTimePeroidSet: step.isTimePeroidSet,
-              timePeroid: step.timePeroid,
-              expiryDay: step.expiryDay,
+              timePeroid: [step.timePeroid],
+              expiryDay: [step.expiryDay, [Validators.min(0)]],
               isEmployeeCanAddInTotalDirectly: step.isEmployeeCanAddInTotalDirectly,
-              ratePerDay: step.ratePerDay,
+              ratePerDay: [step.ratePerDay, [Validators.min(0)]],
               expenseTemplateCategoryFieldValues: this._formBuilder.array([], Validators.required),
               categoryType: categoryDetails.data.type,
               _id: step.expenseCategory._id
@@ -112,14 +115,15 @@ export class ExpenseCategorySettingsComponent {
               step.expenseTemplateCategoryFieldValues?.forEach((value) => {
                 if (value.expenseTemplateCategory === step._id && categoryDetails.data._id === step.expenseCategory._id) {
                   const fieldFormGroup = this._formBuilder.group({
-                    label: value.label,
-                    rate: value.rate,
+                    label: [value.label, [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
+                    rate: [value.rate, [Validators.min(0)]],
                     type: value.type
                   });
                   fieldsArray.push(fieldFormGroup);
                 }
               });
             }
+            // Apply toggle logic for each control
             this.toggleControl(formGroup, 'isMaximumAmountPerExpenseSet', 'maximumAmountPerExpense');
             this.toggleControl(formGroup, 'isMaximumAmountWithoutReceiptSet', 'maximumAmountWithoutReceipt');
             this.toggleControl(formGroup, 'isTimePeroidSet', 'timePeroid');
@@ -130,20 +134,38 @@ export class ExpenseCategorySettingsComponent {
     });
   }
 
-  toggleControl(formGroup, toggler, control){
-    if (!formGroup.get(toggler).value) {
-      formGroup.get(control).disable();
+ toggleControl(formGroup: any, toggler: string, control: string) {
+  // Reset function to determine the appropriate empty value based on control
+  const resetValue = (controlName: string) => {
+    return controlName === 'timePeroid' ? '' : null;
+  };
+
+  const targetCtrl = formGroup.get(control);
+
+  const applyToggle = (value: boolean) => {
+    if (value) {
+      targetCtrl.enable();
+      // Add required validator dynamically
+      targetCtrl.addValidators([Validators.required]);
+    } else {
+      targetCtrl.disable();
+      targetCtrl.setValue(resetValue(control));
+      // Remove validators dynamically
+      targetCtrl.clearValidators();
     }
+    targetCtrl.updateValueAndValidity();
+  };
 
-    formGroup.get(toggler).valueChanges.subscribe((value) => {
-      if (value) {
-        formGroup.get(control).enable();
-      } else {
-        formGroup.get(control).disable();
-      }
-    });
-  }
+  // Initial state
+  applyToggle(formGroup.get(toggler).value);
 
+  // Subscribe to changes
+  formGroup.get(toggler).valueChanges.subscribe((value: boolean) => {
+    applyToggle(value);
+  });
+}
+
+  
   addField(expenseCategoryIndex: number) {
     const newField = this._formBuilder.group({
       label: ['', Validators.required],
@@ -167,12 +189,25 @@ export class ExpenseCategorySettingsComponent {
     const fieldsArray = expenseCategoryFormGroup.get('expenseTemplateCategoryFieldValues') as FormArray;
     if (fieldsArray) {
       fieldsArray.removeAt(fieldIndex);
+      this.toast.success(this.translate.instant('expenses.delete_success'));
     } else {
       console.error('FormArray not found');
     }
   }
 
-
+  deleteCategoryField(i: number, j: number): void {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'delete') {
+        this.removeField(i, j);
+      }
+      err => {
+        this.toast.error(err || this.translate.instant('expenses.delete_error'));
+      }
+    });
+  }
 
   getCategoryLabel(expenseCategoryId: string): string {
     const matchingCategory = this.allExpenseCategories.find(category => category._id === expenseCategoryId);
@@ -196,7 +231,6 @@ export class ExpenseCategorySettingsComponent {
 
   closeModal() {
     this.changeStep.emit(1);
-    // this.firstForm.reset();
     this.close.emit(true);
   }
 

@@ -54,9 +54,6 @@ export class AssignedTemplatesComponent {
     this.activeTabIndex = index;
     this.visitedTabs.add(index); // Track tabs user interacted with
   }
-  goBack() {
-    this.router.navigate(['home/payroll/ctc-template']);
-  }
 
   updateForm() {
     if (this.isEdit) {
@@ -134,14 +131,20 @@ export class AssignedTemplatesComponent {
         this.recordUpdated.emit(res.data);
         this.toast.success(this.translate.instant('payroll._ctc_templates.toast.success_updated'));
       }, err => {
-        this.toast.error(this.translate.instant('payroll._ctc_templates.toast.failed_updated'));  
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll._ctc_templates.toast.failed_updated')
+        ;
+        this.toast.error(errorMessage);  
       })
     } else {
       this.payroll.addCTCTemplate(payload).subscribe((res: any) => {
         this.recordUpdated.emit(res.data);
         this.toast.success(this.translate.instant('payroll._ctc_templates.toast.success_saved'));
       }, err => {
-        this.toast.error(this.translate.instant('payroll._ctc_templates.toast.failed_saved'));  
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll._ctc_templates.toast.failed_saved')
+        ;
+        this.toast.error(errorMessage);
       })
     }
   }

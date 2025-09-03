@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
@@ -18,6 +19,7 @@ export class UpdateStateComponent implements OnInit {
   
   constructor(private payroll: PayrollService,
     private fb: FormBuilder,
+    private commonService: CommonService,
     private toast: ToastrService
   ) {
     this.addStateForm = this.fb.group({
@@ -37,7 +39,7 @@ export class UpdateStateComponent implements OnInit {
   }
 
   getAllStates() {
-    this.payroll.getAllStates().subscribe((res: any) => {
+    this.commonService.getAllStates().subscribe((res: any) => {
       this.states = res.data;
       console.log(this.states);
     });

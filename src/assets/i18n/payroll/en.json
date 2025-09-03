@@ -1,6 +1,7 @@
 {
     "payroll": {
         "settings": "General Settings",
+        "save_failed": "Failed To Save",
         "ctc_template": "CTC Template",
         "lop_reversal": "LOP Reversal",
         "run_payroll": "Run Payroll",
@@ -202,12 +203,23 @@
         "update_fixed_allowance": "Update Fixed Allowance",
         "fixed_allowance_label": "What is the label of this Fixed Allowance",
         "label_required": "Label is required",
+        "label_name_invalid": "Label cannot contain numbers, or symbols.",
+        "name_required": "Name is required",
+        "name_invalid": "Name cannot contain numbers, or symbols.",
+        "spacenotallowed": "start and end spaces are not allowed.",
+        "ValidNumber":"Must be a valid number",
+        "RequiredFieldAreMissing": "Please fill all required fields",
+        "NegativeNotAllowed": "Negative values are not allowed",
+        "GreaterThanOneAllowed": "Value must be greater than 1",
+        "NegativeNotAllowedAndGreaterThanZeroAllowed": "Value must be greater than 0",
         "is_tds_affected": "Does this Allowance affect TDS?",
         "is_provident_fund_affected": "Does this Allowance affect Provident Fund?",
         "is_professional_tax_affected": "Does this Allowance affect Professional Tax?",
         "is_esic_affected": "Does this Allowance affect ESIC?",
         "is_gratuity_fund_affected": "Does this Allowance affect Gratuity fund?",
         "is_lwf_affected": "Does this Allowance affect LWF?",
+        "OnlyIntegerAllowed": "Only whole numbers are allowed",
+        "from_less_than_to": "From Amount must be less than To Amount",
         "close": "Close",
         "submit": "Submit",
         "delete": "Delete",
@@ -219,6 +231,8 @@
         "fixed_allowance_update_error": "This cannot be updated as it is already used in the system",
         "fixed_allowance_delete_error": "This cannot be deleted as it is already used in the system",
         "fixed_allowance_title": "Fixed Allowance",
+        "Success_save": "Successfully Saved!",        
+        "success_update": "Successfully Updated!",
         "label_name": "Label Name",
         "esic_fullname": "Employees State Insurance Contribution",
         "ceiling_amount": "Ceiling Amount",
@@ -265,8 +279,8 @@
                 "state": "State",
                 "from": "From",
                 "to": "To",
+                "pt_percentage": "PT Percentage",
                 "pt_amount": "PT Amount",
-                "twelfth_month_amount": "12th Month Amount",
                 "frequency": "Frequency",
                 "actions": "Actions",
                 "upto": "Upto {{amount}}",
@@ -353,7 +367,8 @@
                 "error_update": "LWF Slab cannot be updated",
                 "success_deleted": "Successfully Deleted!",
                 "error_delete": "LWF Slab cannot be deleted",
-                "warning_state": "Please select a state before adding"
+                "warning_state": "Please select a state before adding",
+                "invalid_company_state": "State for your Company is not valid please go in organization setup and set proper state name"
             },
             "monthly_deduction": {
                 "button": {
@@ -386,13 +401,14 @@
         },
         "update_variable_allowance": "Update Variable Allowance",
         "add_variable_allowance": "Add Variable Allowance",
+         
         "label_question": "Enter the label of variable allowance?",
         "allowance_rate_question": "What is the allowance rate per day?",
         "it": "IT",
         "frequency": "Frequency",
-        "duplicate_allowance_label_error": "A fixed allowance with this name already exists. Please choose a different name.",
         "_variable_allowance": {
             "title": "Variable Allowance",
+            "invalid_period": "Variable allowance end period must be later than effective period.",      
             "table": {
                 "allowance_name": "Allowance Name",
                 "pf": "PF",
@@ -407,8 +423,8 @@
             },
             "frequency": {
                 "monthly": "Monthly",
-                "quaterly": "Quarterly",
-                "half_yearly": "Half Yearly",
+                "quarterly": "Quarterly",
+                "half yearly": "Half Yearly",
                 "annually": "Annually"
             },
             "menu": {
@@ -454,7 +470,7 @@
                     "allowance_rate_negative": "Allowance rate cannot be negative",
                     "allowance_rate_required": "Allowance rate is required",
                     "label_invalid": "Label cannot contain digits and special characters (e.g., #, *, ^, %, $, @).",
-                    "period_invalid_end": "End period must be greater than or equal to start period."
+                    "period_invalid_end": "Variable allowance end period must be later than effective period."
                 }
             },
             "toast": {
@@ -469,7 +485,7 @@
         },
         "variable_deduction": {
             "invalid_label": "Label can only contain letters and spaces.",
-            "invalid_period": "End period must be greater than or equal to start period.",
+            "invalid_period": "Variable deducion end period must be later than effective period.",
             "title_add": "Add Variable Deduction",
             "title_update": "Update Variable Deduction",
             "name_header": "Deduction Name",
@@ -600,6 +616,9 @@
         },
         "_ctc_templates": {
             "title": "CTC Templates",
+            "field_required": "Field is required",
+            "minimum_amount_positive_only": "Minimum Amount cannot be negative",
+            "minimum_amount_greater_than_value": "Minimum Amount cannot be greater than Value",
             "table": {
                 "name": "Template Name",
                 "fixed_allowances": "Fixed Allowances",
@@ -612,7 +631,7 @@
                 "fixed_deduction_Invalid_data": "Fixed Deduction contains invalid Value or Minimum Amount",
                 "variable_allowance_Invalid_data": "Variable Allowance contains invalid Value or Minimum Amount",
                 "variable_deduction_Invalid_data": "Variable Deduction contains invalid Value or Minimum Amount",
-                "success_updated": "CTC Template deleted successfully",
+                "success_updated": "CTC Template updated successfully",
                 "failed_updated": "Failed to update CTC Template",
                 "success_saved": "CTC Template saved successfully",
                 "failed_saved": "Failed to save CTC Template",

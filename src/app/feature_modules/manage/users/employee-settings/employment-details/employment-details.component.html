@@ -4,11 +4,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           Appointment Details
-        </mat-panel-title>
-        <mat-panel-description>
-          <mat-icon>account_circle</mat-icon>
-          &nbsp;{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}
-        </mat-panel-description>
+        </mat-panel-title>    
       </mat-expansion-panel-header>
 
       <form [formGroup]="appointmentForm" (ngSubmit)="onAppointmentSubmission()">
@@ -33,7 +29,7 @@
               <mat-option value="Direct Deposit">Direct Deposit</mat-option>
               <mat-option value="Cash">Cash</mat-option>
             </mat-select>
-            <mat-error *ngIf="jobInformationForm.get('salaryPaymentMethod')?.hasError('required') && jobInformationForm.get('salaryPaymentMethod')?.touched">
+            <mat-error *ngIf="appointmentForm.get('salaryPaymentMethod')?.hasError('required') && appointmentForm.get('salaryPaymentMethod')?.touched">
               Salary Payment Method is required.
             </mat-error>
           </mat-form-field>
@@ -42,7 +38,7 @@
             <mat-label>What is the Employee's joining Date</mat-label>
             <input matInput [matDatepicker]="joiningDatePicker" (focus)="joiningDatePicker.open()" formControlName="joiningDate" readonly>
             <mat-datepicker #joiningDatePicker></mat-datepicker>
-            <mat-error *ngIf="jobInformationForm.get('joiningDate')?.hasError('required') && jobInformationForm.get('joiningDate')?.touched">
+            <mat-error *ngIf="appointmentForm.get('joiningDate')?.hasError('required') && appointmentForm.get('joiningDate')?.touched">
               Joining Date is required.
             </mat-error>
           </mat-form-field>
@@ -51,10 +47,13 @@
             <mat-label>What is the Employee's confirmation Date</mat-label>
             <input matInput [matDatepicker]="confirmationDatePicker" (focus)="confirmationDatePicker.open()" formControlName="confirmationDate" readonly>
             <mat-datepicker #confirmationDatePicker></mat-datepicker>
-            <mat-error *ngIf="jobInformationForm.get('confirmationDate')?.hasError('required') && jobInformationForm.get('confirmationDate')?.touched">
+            <mat-error *ngIf="appointmentForm.get('confirmationDate')?.hasError('required') && appointmentForm.get('confirmationDate')?.touched">
               Confirmation Date is required.
-            </mat-error>
-          </mat-form-field>
+            </mat-error>         
+          </mat-form-field>       
+          <mat-error *ngIf="appointmentForm.hasError('ConfirmationBeforeJoining') && appointmentForm.touched">
+            Confirmation Date must be after Joining Date.
+           </mat-error> 
         </div>
       </form>
     </mat-expansion-panel>
@@ -63,11 +62,7 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           Job Information
-        </mat-panel-title>
-        <mat-panel-description>
-          <mat-icon>info</mat-icon>
-          &nbsp;{{selectedUser?.firstName | titlecase}}&nbsp;{{selectedUser?.lastName | titlecase}}
-        </mat-panel-description>
+        </mat-panel-title>      
       </mat-expansion-panel-header>
 
       <form [formGroup]="jobInformationForm" (ngSubmit)="onSubmissionJobInformation()">

@@ -14,16 +14,27 @@
             <mat-label>{{'comment' | translate}}</mat-label>
             <textarea matInput formControlName="primaryApprovalReason" rows="3" maxlength="200" 
                 (input)="onCommentChange()"></textarea>
-            <mat-hint align="end">{{commentLength}} / 200</mat-hint>
-            <mat-error *ngIf="updateExpenseReport.get('primaryApprovalReason')?.hasError('required') && updateExpenseReport.get('primaryApprovalReason')?.touched">
-                {{ 'expenses.comment_required' | translate }}
+            <mat-hint align="end">{{commentLength}} / 30</mat-hint>
+            <mat-error *ngIf="updateExpenseReport.get('primaryApprovalReason').invalid && updateExpenseReport.get('primaryApprovalReason').touched">
+                <span *ngIf="updateExpenseReport.get('primaryApprovalReason').hasError('maxlength')">
+                    {{'expenses.category_label_Limit' | translate}}
+                </span>
+                <span *ngIf="updateExpenseReport.get('primaryApprovalReason')?.errors?.['spacesNotAllowed']">
+                    {{ 'expenses.labelNoLeadingOrTrailingSpaces' | translate }}
+                </span>
+                <span *ngIf="updateExpenseReport.get('primaryApprovalReason')?.errors?.['invalidLabel']">
+                    {{ 'expenses.label_invalid' | translate }}
+                </span>
+                <span *ngIf="updateExpenseReport.get('primaryApprovalReason').hasError('required')">
+                    {{'expenses.advance_template_label_error' | translate}}
+                </span>
             </mat-error>
         </mat-form-field>
     </div>
 
         <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
             <button mat-flat-button type="button" mat-dialog-close>{{'expenses.no' | translate}}</button>
-            <button mat-flat-button type="submit" [disabled]="updateExpenseReport.invalid" color="primary">
+            <button mat-flat-button type="submit" color="primary">
                 @switch(data.status){
                 @case('Rejected'){
                     {{'expenses.reject' | translate}}

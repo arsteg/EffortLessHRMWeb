@@ -35,10 +35,18 @@
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.signatory.form.name' | translate }}</mat-label>
             <input matInput type="text" formControlName="name" placeholder="{{ 'organization.signatory.form.name_placeholder' | translate }}">
-            <mat-error
-              *ngIf="signatoryDetailForm.get('name')?.hasError('required') && (signatoryDetailForm.get('name')?.touched || signatoryDetailForm.get('name')?.dirty)">
-              {{ 'organization.signatory.form.error.name_required' | translate }}
-            </mat-error>
+          <mat-error
+          *ngIf="signatoryDetailForm.get('name')?.invalid && (signatoryDetailForm.get('name')?.touched || signatoryDetailForm.get('name')?.dirty)">
+          <span *ngIf="signatoryDetailForm.get('name')?.errors?.['required']">
+              {{ "organization.signatory.form.error.name_required" | translate }}
+          </span>
+          <span *ngIf="signatoryDetailForm.get('name')?.errors?.['spacesNotAllowed']">
+              {{ 'organization.signatory.form.error.labelNoLeadingOrTrailingSpaces' | translate }}
+          </span>
+          <span *ngIf="signatoryDetailForm.get('name')?.errors?.['invalidLabel']">
+              {{ 'organization.signatory.form.error.label_invalid' | translate }}
+          </span>
+      </mat-error>
           </mat-form-field>
         </div>
         <div class="form-group col-md-12">

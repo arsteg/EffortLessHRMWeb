@@ -72,7 +72,9 @@ export class CommonService extends baseService {
       })
     );
   }
-
+  getAllStates(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/location/states`, this.httpOptions);
+  }
   getRandomColor(firstName: string) {
     let colorMap = {
         A: '#76bc21',

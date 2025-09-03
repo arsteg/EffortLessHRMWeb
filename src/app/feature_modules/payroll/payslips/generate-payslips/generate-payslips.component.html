@@ -14,7 +14,7 @@
         <div id="payslipContainer" #payslipContainer class="payslipContainer bg-white px-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 @if(companyInfo?.logo){
-                    <img [src]="companyInfo?.logo" width="150px">
+                    <img [src]="companyInfo?.logo" width="150px" crossOrigin="anonymous">
                 }
                 <div class="text-end">
                     <label class="fw-bold">{{companyInfo?.companyName}}</label><br>

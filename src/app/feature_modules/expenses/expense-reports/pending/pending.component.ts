@@ -12,6 +12,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { ExportService } from 'src/app/_services/export.service';
 import { ApproveDialogComponent } from './approve-dialog.component';
 import { RejectDialogComponent } from './reject-dialog.component';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-pending',
@@ -41,6 +42,39 @@ export class PendingComponent {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
+
+  columns: TableColumn[] = [
+    { 
+      key: 'title', 
+      name: this.translate.instant('expenses.report_title') },
+    { 
+      key: 'user', 
+      name: this.translate.instant('expenses.employee') },
+    { 
+      key: 'totalAmount', 
+      name: this.translate.instant('expenses.total_amount'),
+      valueFn: (row: any) => this.calculateTotalAmount(row)
+     },
+    { key: 'reimbursable', name: this.translate.instant('expenses.reimbursable'),
+      valueFn: (row: any) => this.calculateTotalisReimbursable(row, true, false)
+     },
+    { key: 'billable', name: this.translate.instant('expenses.billable'),
+      valueFn: (row: any) => this.calculateTotalisReimbursable(row, false, true)
+     },
+    { key: 'status', name: this.translate.instant('status') },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.action'),
+      isAction: true,
+      options: [
+        { label: 'Approve', icon: 'check_circle', visibility: ActionVisibility.LABEL },
+        { label: 'Reject', icon: 'cancel', visibility: ActionVisibility.LABEL },
+        { label: 'View', icon: 'visibility', visibility: ActionVisibility.LABEL },
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(
     private expenseService: ExpensesService,
@@ -144,8 +178,8 @@ export class PendingComponent {
     this.expenseService.deleteExpenseReport(id).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
       this.toast.success(this.translate.instant('expenses.delete_success'));
-    }, () => {
-      this.toast.error(this.translate.instant('expenses.delete_error'));
+    }, err => {
+      this.toast.error(err);
     });
   }
 
@@ -179,15 +213,15 @@ export class PendingComponent {
       title: this.selectedReport.title,
       status: result.approved ? 'Approved' : 'Rejected',
     };
-    if(this.selectedReport.status === 'Level 1 Approval Pending'){
+    if (this.selectedReport.status === 'Level 1 Approval Pending') {
       payload['primaryApprovalReason'] = result.reason;
     }
-    if(this.selectedReport.status === 'Level 2 Approval Pending'){
-      payload['secondaryApprovalReason']= result.reason;
+    if (this.selectedReport.status === 'Level 2 Approval Pending') {
+      payload['secondaryApprovalReason'] = result.reason;
     }
     this.expenseService.updateExpenseReport(id, payload).subscribe(() => {
       this.dataSource.data = this.dataSource.data.filter(report => report._id !== id);
-    }, (error)=>{
+    }, (error) => {
       this.toast.error(error, this.translate.instant('expenses.expense_report'));
     });
   }
@@ -230,6 +264,46 @@ export class PendingComponent {
       if (result.rejected) {
         this.updateReportStatus(result);
       }
+    });
+  }
+
+  handleAction(event: any, addModal: any, viewModal: any) {
+    if (event.action.label === 'Edit') {
+      this.editReport(event.row);
+      this.open(addModal, event.row);
+      this.changeMode = 'Update';
+    } 
+    if (event.action.label === 'Delete') {
+      this.deleteExpenseReport(event.row._id);
+    }
+    if (event.action.label === 'Approve') {
+      this.openApproveDialog(event.row);
+    }
+    if (event.action.label === 'Reject') {
+      this.openRejectDialog(event.row);
+    }
+    if (event.action.label === 'View') {
+      this.open(viewModal, event.row);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.dataSource.data.slice().sort((a, b) => {
+      const aValue = a[event.active]?.toString();
+      const bValue = b[event.active]?.toString();
+      return event.direction === 'asc' ? (aValue > bValue ? 1 : -1) : (aValue < bValue ? 1 : -1);
+    });
+    this.dataSource.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.dataSource.data = this.expenseReport?.filter(row => {
+      const searchText = event.toLowerCase();
+      return this.columns.some(col => {
+        if (col.isAction) return false;
+        const value = col.valueFn ? col.valueFn(row) : row[col.key];
+        return value?.toString().toLowerCase().includes(searchText);
+      });
     });
   }
 }

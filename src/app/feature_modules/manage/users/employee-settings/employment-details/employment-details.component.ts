@@ -49,7 +49,7 @@ export class EmploymentDetailsComponent {
       salaryTypePaid: ['',Validators.required],
       joiningDate: [0,Validators.required],
       confirmationDate: [0]
-    });
+    }, { validators: CustomValidators.ConfirmationAfterJoiningValidator() });     
 
     this.jobInformationForm = this.fb.group({
       user: [''],

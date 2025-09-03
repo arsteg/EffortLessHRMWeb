@@ -208,7 +208,16 @@ export class UserService {
   addSalaryDetails(payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/salary-details`, payload, this.httpOptions);
   }
+  getManagers(): any {
+    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getManagers`, this.httpOptions);
+   return response;
 
+  }
+  getusers(ids): any {
+    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/users/getUsers`,{"userId":ids}, this.httpOptions);
+    return response;
+  
+    }
   getSalaryByUserId(id: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/users/salary-details-by-userId/${id}`, this.httpOptions);
   }

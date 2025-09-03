@@ -72,6 +72,19 @@ export class CustomValidators {
     }
     return null;
   }
+  static passportNumber(control: AbstractControl): ValidationErrors | null {
+    const value = String(control.value || '').trim().toUpperCase();
+  
+    // Indian passport number: 1 uppercase letter (excluding Q, X, Z), followed by 7 digits
+    const passportRegex = /^[A-PR-WY][0-9]{7}$/;
+  
+    if (value && !passportRegex.test(value)) {
+      return { invalidPassport: true };
+    }
+  
+    return null;
+  }
+  
   static noSpacesNumbersOrSymbolsValidator(control: any) {
     const value = control.value;
     if (/\d/.test(value) || /\s/.test(value) || /[!@#$%^&*(),.?":{}|<>]/.test(value)) {
@@ -79,6 +92,16 @@ export class CustomValidators {
     }
     return null;
   }
+  static noNumbersOrSymbolsValidator(control: any) {
+  const value = control.value;
+  
+  // Allow letters and spaces, disallow digits and special characters
+  if (/\d/.test(value) || /[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+    return { invalidName: true };
+  }
+  
+  return null;
+}
   static appliedLessThanMaxValidator(): ValidatorFn {
     return (group: AbstractControl): ValidationErrors | null => {
       const appliedControl = group.get('appliedAmount');
@@ -159,7 +182,18 @@ export class CustomValidators {
       return null;
     }
   // Custom validator for shift name
- 
+  static labelValidatorWithEmptyAccept(control: AbstractControl): ValidationErrors | null {
+    const value = (control.value || '').trim();
+  
+    // Allow completely empty field (i.e., optional)
+    if (!value) {
+      return null;
+    }
+  
+    // Validate only if there is some input
+    const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),\-/]*$/.test(value);
+    return valid ? null : { invalidLabel: true };
+  }
   static labelValidator(control: AbstractControl): ValidationErrors | null {
     const value = control.value as string;
     if (!value || /^\s*$/.test(value)) {
@@ -194,13 +228,13 @@ export class CustomValidators {
         return null; // Let Validators.required handle empty values
       }
       const hours = Number(value);
-      if (hours < 0 || hours > 6) {        
+      if (hours < 1 || hours > 6) {        
         return { invalidTime: true }; // Set invalidTime error
       }
       return null;
     };
   }
-    static exitInterviewAfterResignationValidator(): ValidatorFn {
+  static exitInterviewAfterResignationValidator(): ValidatorFn {
       return  (group: AbstractControl): ValidationErrors | null => {
       const resignationDate = group.get('resignation_date')?.value;
       const exitInterviewDate = group.get('exit_interview_date')?.value;
@@ -217,6 +251,24 @@ export class CustomValidators {
       return exitDate > resDate ? null : { exitBeforeResignation: true };
     };
   }
+  static ConfirmationAfterJoiningValidator(): ValidatorFn {
+    return  (group: AbstractControl): ValidationErrors | null => {
+    const joiningDate = group.get('joiningDate')?.value;
+    const confirmationDate = group.get('confirmationDate')?.value;
+  
+    if (!joiningDate || !confirmationDate) return null;
+  
+    const resDate = new Date(joiningDate);
+    const exitDate = new Date(confirmationDate);
+  
+    // Normalize dates (remove time part)
+    resDate.setHours(0, 0, 0, 0);
+    exitDate.setHours(0, 0, 0, 0);
+  console.log(resDate);
+  console.log(exitDate);
+    return exitDate > resDate ? null : { ConfirmationBeforeJoining: true };
+  };
+}
   static exitInterviewAfterTerminationValidator(): ValidatorFn {
     return  (group: AbstractControl): ValidationErrors | null => {
     const terminationDate = group.get('termination_date')?.value;
@@ -230,7 +282,8 @@ export class CustomValidators {
     // Normalize dates (remove time part)
     resDate.setHours(0, 0, 0, 0);
     exitDate.setHours(0, 0, 0, 0);
-  
+  console.log(resDate)
+  console.log(exitDate)
     return exitDate > resDate ? null : { exitBeforeTermination: true };
   };
 }
@@ -269,5 +322,141 @@ static mutuallyExclusiveDays(): ValidatorFn {
     return Object.keys(errors).length ? errors : null;
   };
 }
+static greaterThanOneValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (value === null || value === '') return null;
+
+    // Not a number
+    if (isNaN(value)) {
+      return { notANumber: true };
+    }
+
+    const num = parseFloat(value);
+
+    // First check: negative
+    if (num < 0) return { negativeNumber: true };
+
+    // Then check: not greater than 1
+    if (num < 1) return { notGreaterThanOne: true };
+
+    return null;
+  };
+}
+static GreaterThanZeroValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (value === null || value === '') return null;
+
+    // Not a number
+    if (isNaN(value)) {
+      return { notANumber: true };
+    }
+
+    const num = parseFloat(value);
+
+    // First check: negative
+    if (num <= 0) return { negativeNumber: true };
+
+    return null;
+  };
+}
+static OnlyPostiveNumberValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (value === null || value === '') return null;
+
+    // Not a number
+    if (isNaN(value)) {
+      return { notANumber: true };
+    }
+
+    const num = parseFloat(value);
+
+    // First check: negative
+    if (num < 0) return { negativeNumber: true };
+
+    return null;
+  };
+}
+static periodValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  const isEndingPeriod = control.get('isEndingPeriod')?.value;
+
+  if (!isEndingPeriod) return null; // ✅ No validation needed
+
+  const fromMonth = control.get('allowanceEffectiveFromMonth')?.value;
+  const fromYear = control.get('allowanceEffectiveFromYear')?.value;
+  const toMonth = control.get('allowanceStopMonth')?.value;
+  const toYear = control.get('allowanceStopYear')?.value;
+
+  if (!fromMonth || !fromYear || !toMonth || !toYear) {
+    return null; // Wait until all fields are filled
+  }
+
+  const fromDate = new Date(`${fromMonth} 1, ${fromYear}`);
+  const toDate = new Date(`${toMonth} 1, ${toYear}`);
+
+  if (fromDate >= toDate) {
+    return { invalidPeriod: true }; // ❌ From date is same or after To date
+  }
+
+  return null; // ✅ Valid
+};
+static onlyIntegerValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+
+    if (value === null || value === '') return null;
+
+    if (isNaN(value)) {
+      return { notANumber: true };
+    }
+
+    const num = parseFloat(value);
+
+    if (!Number.isInteger(num)) {
+      return { notInteger: true };
+    }
+
+    return null;
+  };
+}
+static fromLessThanToValidator(fromKey: string, toKey: string): ValidatorFn {
+  return (group: AbstractControl): { [key: string]: any } | null => {
+    const from = group.get(fromKey)?.value;
+    const to = group.get(toKey)?.value;
+
+    if (from !== null && to !== null && from >= to) {
+      return { fromGreaterThanTo: true };
+    }
+    return null;
+  };
+}
+static minimumAmountLessThanOrEqualValue: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
+  const value = group.get('value')?.value;
+  const minAmount = group.get('minimumAmount')?.value;
+
+  if (value != null && minAmount != null && minAmount > value) {
+    return { minGreaterThanValue: true };
+  }
+
+  return null;
+};
+static minimumAge(minAge: number) {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const dob = new Date(control.value);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    return isNaN(age) || age < minAge ? { minimumAge: true } : null;
+  };
+}
+
 
 }

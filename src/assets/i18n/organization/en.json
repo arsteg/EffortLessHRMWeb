@@ -100,7 +100,7 @@
       "zone_add_fail": "Failed to add Zone",
       "zone_delete_fail": "This Zone cannot be deleted!",
       "zone_deleted": "Zone deleted successfully",
-      "tax_slab_added": "Tax section added successfully",
+      "tax_slab_added": "Tax Slab added successfully",
       "tax_slab_updated": "Tax section updated successfully",
       "tax_slab_add_fail": "Failed to To Tax section",
       "tax_slab_update_fail": "Failed to To Tax section",
@@ -293,9 +293,11 @@
         "name": "Full Name",
         "designation": "Designation",
         "name_placeholder": "Enter Full Name of Company's Authorized Signatory",
-        "designation_placeholder": "Enter Designation of Company's Authorized Signatory",
+          "designation_placeholder": "Enter Designation of Company's Authorized Signatory",
         "error": {
           "name_required": "Name is required.",
+          "label_invalid": "Label must contain only alphabet",
+          "labelNoLeadingOrTrailingSpaces": "Label cannot have leading or trailing spaces.",       
           "designation_required": "Designation is required."
         }
       },

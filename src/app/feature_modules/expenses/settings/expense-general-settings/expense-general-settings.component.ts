@@ -5,6 +5,7 @@ import { ExpensesService } from 'src/app/_services/expenses.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { TranslateService } from '@ngx-translate/core';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 @Component({
   selector: 'app-expense-general-settings',
   templateUrl: './expense-general-settings.component.html',
@@ -22,6 +23,7 @@ export class ExpenseGeneralSettingsComponent {
   @Output() close: any = new EventEmitter();
   @Output() changeStep: any = new EventEmitter();
   managers: any[] = [];
+  isSubmitted: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -31,7 +33,7 @@ export class ExpenseGeneralSettingsComponent {
     private manageService: ManageTeamService
   ) {
     this.addTemplateForm = this.fb.group({
-      policyLabel: ['', Validators.required],
+      policyLabel: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       approvalType: ['', Validators.required],
       expenseCategories: [[], Validators.required],
       advanceAmount: [false],
@@ -47,11 +49,12 @@ export class ExpenseGeneralSettingsComponent {
     this.setFormValues();
     this.getAllExpensesCategories();
     this.getAllUsers();
-    this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
-    });
+    if(this.changeMode === 'Add'){
+      this.addTemplateForm.get('approvalType').setValue('employee-wise');
+    }
     this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value)
+      this.addTemplateForm.get('firstApprovalEmployee').setValue('');
+      this.validateApprovers(value);
     });
   }
 
@@ -61,19 +64,13 @@ export class ExpenseGeneralSettingsComponent {
     });
   }
 
-  validateApprovers(approverType, approverLevel) {
-    if (approverLevel == 1 && approverType == 'template-wise') {
+  validateApprovers(approverType) {
+    if (approverType === 'template-wise') {
       this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
-      this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
-    } else if (approverLevel == 2 && approverType == 'template-wise') {
-      this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
-      this.addTemplateForm.get('secondApprovalEmployee').setValidators([Validators.required]);
     } else {
       this.addTemplateForm.get('firstApprovalEmployee').clearValidators();
-      this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
     }
     this.addTemplateForm.get('firstApprovalEmployee').updateValueAndValidity();
-    this.addTemplateForm.get('secondApprovalEmployee').updateValueAndValidity();
   }
 
   isDisabledFormat(format) {
@@ -111,13 +108,14 @@ export class ExpenseGeneralSettingsComponent {
         applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
         advanceAmount: templateData.advanceAmount,
         firstApprovalEmployee: templateData.firstApprovalEmployee,
-        expenseCategories: expenseCategories // Array of _id strings
+        expenseCategories: expenseCategories
       });
       this.checkedFormats = templateData.downloadableFormats;
     }
   }
 
   closeModal() {
+    this.isSubmitted = false;
     this.close.emit(true);
     this.expenseService.selectedTemplate.next('')
   }
@@ -140,6 +138,7 @@ export class ExpenseGeneralSettingsComponent {
   }
 
   createTemplate() {
+    this.isSubmitted = true;
     let payload = {
       policyLabel: this.addTemplateForm.value.policyLabel,
       approvalType: this.addTemplateForm.value.approvalType,
@@ -149,33 +148,39 @@ export class ExpenseGeneralSettingsComponent {
       downloadableFormats: this.checkedFormats,
       expenseCategories: this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }))
     };
-    if (this.changeMode === 'Add') {
-      this.expenseService.addTemplate(payload).subscribe((res: any) => {
-        this.expenseService.selectedTemplate.next(res.data);
-        this.expenseService.categories.next(res.categories);
-        this.toast.success(this.translate.instant('expenses.template_created_success'));
-        this.changeStep.emit(2);
-      }, err => {
-        this.toast.error(err || this.translate.instant('expenses.template_created_error'));
-      });
-    } else {
-      let templateId = this.expenseService.selectedTemplate.getValue()._id;
-      const isArrayStructureChanged = this.addTemplateForm.value.expenseCategories.some(category => typeof category !== 'object');
-
-      if (isArrayStructureChanged) {
-        payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }));
-        this.expenseService.categories.next(payload.expenseCategories);
+    if (this.addTemplateForm.valid) {
+      if (this.changeMode === 'Add') {
+        this.expenseService.addTemplate(payload).subscribe((res: any) => {
+          this.expenseService.selectedTemplate.next(res.data);
+          this.expenseService.categories.next(res.categories);
+          this.toast.success(this.translate.instant('expenses.template_created_success'));
+          this.changeStep.emit(2);
+        }, err => {
+          this.toast.error(err || this.translate.instant('expenses.template_created_error'));
+        });
       } else {
-        payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category.expenseCategory }));
-        this.expenseService.categories.next(payload.expenseCategories);
+        let templateId = this.expenseService.selectedTemplate.getValue()._id;
+        const isArrayStructureChanged = this.addTemplateForm.value.expenseCategories.some(category => typeof category !== 'object');
 
+        if (isArrayStructureChanged) {
+          payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category }));
+          this.expenseService.categories.next(payload.expenseCategories);
+        } else {
+          payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category.expenseCategory }));
+          this.expenseService.categories.next(payload.expenseCategories);
+
+        }
+        this.expenseService.updateTemplate(templateId, payload).subscribe((res: any) => {
+          this.toast.success(this.translate.instant('expenses.template_updated_success'));
+          this.changeStep.emit(2);
+        }, err => {
+          this.toast.error(err || this.translate.instant('expenses.template_updated_error'));
+        });
       }
-      this.expenseService.updateTemplate(templateId, payload).subscribe((res: any) => {
-        this.toast.success(this.translate.instant('expenses.template_updated_success'));
-        this.changeStep.emit(2);
-      }, err => {
-        this.toast.error(err || this.translate.instant('expenses.template_updated_error'));
-      });
+    }
+    else {
+      this.addTemplateForm.markAllAsTouched();
+      this.toast.warning(this.translate.instant('expenses.requiredFields'));
     }
   }
 

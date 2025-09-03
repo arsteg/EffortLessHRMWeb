@@ -77,7 +77,9 @@ export class GeneralTemplateSettingsComponent {
         }
       });
     }
-
+    this.addTemplateForm.get('approversType')?.valueChanges.subscribe(value => {
+      this.validateApprovers(value, '');
+    });
     this.addTemplateForm.get('alternateWeekOffRoutine')?.valueChanges.subscribe(value => {
       const daysControl = this.addTemplateForm.get('daysForAlternateWeekOffRoutine');
       if (value === 'odd' || value === 'even') {
@@ -91,24 +93,21 @@ export class GeneralTemplateSettingsComponent {
       this.addTemplateForm.updateValueAndValidity();
       console.log('Alternate Week Off Routine Changed:', value, 'Form Errors:', this.addTemplateForm.errors);
     });
-    // Debug form value changes
-    this.addTemplateForm.valueChanges.subscribe(() => {
-      console.log('Form Values:', this.addTemplateForm.value);
-      console.log('Form Errors:', this.addTemplateForm.errors);
-    });
+   
   }
 
   validateApprovers(approversType: string, approverLevel: string) {
     const primaryApproverControl = this.addTemplateForm.get('primaryApprover');
 
-    primaryApproverControl?.clearValidators();
-    primaryApproverControl?.setValue(null);
-
     if (approversType === 'template-wise') {
-    
-        primaryApproverControl?.setValidators([Validators.required]);
+      primaryApproverControl?.setValidators([Validators.required]);
+    } else {
+      primaryApproverControl?.clearValidators();
+      primaryApproverControl?.setValue(null); // optional: reset value
+      primaryApproverControl?.markAsPristine(); // optional
+      primaryApproverControl?.markAsUntouched(); // optional
     }
-
+  
     primaryApproverControl?.updateValueAndValidity();
   }
 
@@ -281,7 +280,7 @@ export class GeneralTemplateSettingsComponent {
   onSubmission() {
     this.addTemplateForm.markAllAsTouched();
     this.addTemplateForm.updateValueAndValidity();
-  
+  console.log(this.addTemplateForm.valid);
     if (this.addTemplateForm.valid) {
       this.submitted = true;
 

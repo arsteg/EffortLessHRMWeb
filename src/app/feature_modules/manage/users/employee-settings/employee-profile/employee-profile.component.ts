@@ -20,7 +20,7 @@ export class EmployeeProfileComponent {
   selectedUser: any;
   isEdit = this.userService.getIsEdit();
   bsValue = new Date();
-
+  maxDate: Date;
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -38,24 +38,24 @@ export class EmployeeProfileComponent {
       address: [''],
       city: [''],
       state: [''],
-      extraDetails: [''],
-      role: ['', Validators.required],
+      extraDetails: ['', [Validators.maxLength(500)]],
+      role: ['',[Validators.required]],
       email: ['', Validators.email],
-      phone: [, [Validators.pattern('^[0-9]{10}$')]],
-      mobile: [, [Validators.pattern('^[0-9]{10}$')]],
-      pincode: [, [Validators.pattern('^[0-9]{6}$')]],
-      emergancyContactName: [''],
+      phone: [, [Validators.pattern('^[1-9][0-9]{9}$')]],
+      mobile: [, [Validators.pattern('^[1-9][0-9]{9}$')]],
+      pincode: [, [Validators.pattern('^[1-9][0-9]{5}$')]],
+      emergancyContactName: ['', CustomValidators.labelValidatorWithEmptyAccept],
       emergancyContactNumber: ['', [CustomValidators.digitsOnly, CustomValidators.phoneNumber]],
       Gender: [''],
-      DOB: [''],
+      DOB: ['', [CustomValidators.minimumAge(18)]],
       MaritalStatus: ['Unmarried'],
       MarraigeAniversary: [''],
-      PassportDetails: [''],
+      PassportDetails: ['', [CustomValidators.passportNumber]],
       Pancard: ['', [Validators.required, CustomValidators.panCard]],
       AadharNumber: ['', [Validators.required, CustomValidators.digitsOnly, CustomValidators.aadharNumber]],
       Disability: ['no'],
       FatherHusbandName: [''],
-      NoOfChildren: [''],
+      NoOfChildren:  ['', [Validators.pattern('^(0|[1-9])$')]],
       BankName: ['', [Validators.required, CustomValidators.bankName]],
       BankAccountNumber: ['', [Validators.required, CustomValidators.digitsOnly, CustomValidators.bankAccountNumber]],
       BankIFSCCode: ['', [Validators.required, CustomValidators.ifscCode]],
@@ -66,9 +66,20 @@ export class EmployeeProfileComponent {
 
   ngOnInit() {
     this.logUrlSegmentsForUser();
+    const today = new Date();
+    this.maxDate = new Date(today.setDate(today.getDate()));
+   this.makeRoleDsabledIfinProfile();
     this.getRoles();
   }
-
+makeRoleDsabledIfinProfile()
+{
+  if (this.router.url.includes('profile')) {
+    this.userForm.get('role')?.disable();
+  } else {
+    this.userForm.get('role')?.enable();
+  }
+  
+}
   logUrlSegmentsForUser() {
     const empCode = this.route.parent.snapshot.paramMap.get('empCode') || this.authService.currentUserValue?.empCode;
     if (empCode) {
@@ -90,6 +101,7 @@ export class EmployeeProfileComponent {
   }
 
   onSubmit() {
+    this.userForm.get('role')?.enable();
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
       this.toast.error(this.translate.instant('common.missing_required_Field'), this.translate.instant('common.validation_error'));
@@ -97,12 +109,16 @@ export class EmployeeProfileComponent {
     }
     // if (this.userForm.valid) {
       this.userService.updateUser(this.selectedUser[0].id, this.userForm.value).subscribe(
-        (res: any) =>  this.toast.success(this.translate.instant('manage.users.employee-settings.employee_profile_updated'), this.translate.instant('common.success'))
-        ,
-        (err) => {  const errorMessage = err?.error?.message || err?.message || err 
+        (res: any) =>  
+          {
+            this.toast.success(this.translate.instant('manage.users.employee-settings.employee_profile_updated'), this.translate.instant('common.success'))
+            this.makeRoleDsabledIfinProfile();
+          },
+        (err) => { 
+           const errorMessage = err?.error?.message || err?.message || err 
           || this.translate.instant('manage.users.employee-settings.failed_employee_update')
           ;
-         
+          this.makeRoleDsabledIfinProfile();
           this.toast.error(errorMessage, 'Error!'); } 
       );
     // } else {

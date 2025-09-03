@@ -5,17 +5,8 @@ import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AssignedFixedAllowanceComponent } from '../assigned-templates/fixed-allowance/fixed-allowance.component';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  // Check if the value is empty or only whitespace
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true }; // Treat empty or only whitespace as required error
-  }
-  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
 @Component({
   selector: 'app-update-ctctemplate',
   templateUrl: './update-ctctemplate.component.html',
@@ -42,7 +33,7 @@ export class UpdateCTCTemplateComponent {
     private router: Router
   ) {
     this.ctcTemplateForm = this.fb.group({
-      name: ['',[ Validators.required, labelValidator]],
+      name: ['', [Validators.required, CustomValidators.noNumbersOrSymbolsValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       ctcTemplateFixedAllowance: [[]],
       ctcTemplateFixedDeduction: [[]],
       ctcTemplateVariableAllowance: [[]],
@@ -77,8 +68,8 @@ export class UpdateCTCTemplateComponent {
       this.ctcTemplateForm.reset();
     }
   }
-  onNext() {
-    const isValid = this.getAssignedTemplates();
+  async onNext() {
+    const isValid = await this.getAssignedTemplates();
     if (!isValid) 
       {
         this.showAssignedTemplates = true;
@@ -127,7 +118,7 @@ export class UpdateCTCTemplateComponent {
     this.payroll.variableAllowances.next([...this.variableAllowance]);
     this.payroll.variableDeductions.next([...this.variableDeduction]);
   }
-  getAssignedTemplates(): boolean {
+  async getAssignedTemplates(): Promise<boolean> {
     const template = this.ctcTemplateForm.value;
   
     // 1. Validate template name
@@ -135,7 +126,11 @@ export class UpdateCTCTemplateComponent {
       this.toast.error(this.translate.instant('payroll._ctc_templates.toast.template_name')); 
       return false;
     }
-  
+    const res = await this.payroll.getCTCTemplateByName(this.ctcTemplateForm.value).toPromise();
+    if (res.isDuplicate) {
+      this.toast.error(res.message);
+      return false;
+    }
     // 2. Validate at least one fixed allowance
     const fixedAllowances = this.ctcTemplateForm.get('ctcTemplateFixedAllowance')?.value;
     if (!fixedAllowances || fixedAllowances.length === 0) {

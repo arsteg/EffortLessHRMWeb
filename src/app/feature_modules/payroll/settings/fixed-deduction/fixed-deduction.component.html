@@ -70,14 +70,16 @@
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'payroll.fixed_deduction.form.label' | translate }}</mat-label>
                     <input matInput type="text" formControlName="label"
-                        [placeholder]="'payroll.fixed_deduction.form.label_placeholder' | translate">
-                    <mat-error
-                        *ngIf="fixedContributionForm.get('label').hasError('required') && (fixedContributionForm.get('label').dirty || fixedContributionForm.get('label').touched)">
-                        {{ 'payroll.fixed_deduction.form.error.label_required' | translate }}
-                    </mat-error>
-                    <mat-error *ngIf="fixedContributionForm.get('label')?.errors?.['invalidLabel']">
-                        {{ 'payroll.fixed_deduction.form.error.label_no_special_characters' | translate }}
-                    </mat-error>
+                        [placeholder]="'payroll.fixed_deduction.form.label_placeholder' | translate">                   
+                    <mat-error class="mb-3" *ngIf="!fixedContributionForm.get('label').valid && fixedContributionForm.get('label').touched">
+                        <span *ngIf="fixedContributionForm.get('label').errors?.['required']">{{ 'payroll.label_required' |
+                          translate }}</span>
+                        <span *ngIf="fixedContributionForm.get('label').errors?.['invalidName']">{{ 'payroll.label_name_invalid' |
+                          translate }}</span>   
+                            <span *ngIf="fixedContributionForm.get('label')?.errors?.['spacesNotAllowed']">      
+                                {{ 'payroll.spacenotallowed' | translate }}
+                              </span>                                    
+                      </mat-error>  
                 </mat-form-field>
             </div>
 
@@ -91,9 +93,9 @@
             <button mat-flat-button type="button" (click)="clearForm(); closeModal()">
                 {{ 'payroll.cancel' | translate }}
             </button>
-            <button mat-flat-button type="submit" color="primary">
+            <button mat-flat-button type="submit" color="primary" [disabled]="isSubmitting">
                 {{ (isEdit ? 'payroll.update' : 'payroll.add') | translate }}
-            </button>
+            </button> 
         </div>
     </form>
 </ng-template>

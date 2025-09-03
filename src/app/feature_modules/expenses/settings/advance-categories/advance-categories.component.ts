@@ -7,6 +7,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { TranslateService } from '@ngx-translate/core';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-advance-categories',
   templateUrl: './advance-categories.component.html',
@@ -32,25 +34,43 @@ export class AdvanceCategoriesComponent implements OnInit {
   currentPage: number = 1;
   displayedColumns: string[] = ['label', 'actions'];
   dialogRef: MatDialogRef<any>;
+  isSubmitted: boolean = false;
+  allData: any[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
+
+  columns: TableColumn[] = [
+    { key: 'label', name: this.translate.instant('expenses.category_name') },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(private fb: FormBuilder,
     private dialog: MatDialog,
     private expenseService: ExpensesService,
     private toast: ToastrService) {
-
     this.addCategory = this.fb.group({
-      label: ['', Validators.required]
+      label: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]]
     });
   }
 
   ngOnInit() {
+    this.addCategory.get('label').valueChanges.subscribe(value => {
+      this.isSubmitted = false;
+    });
     this.getAllAdvanceCategories();
   }
 
 
   open(content: any) {
+    this.isSubmitted = false;
     this.dialogRef = this.dialog.open(content, {
       width: '600px',
       disableClose: true
@@ -84,42 +104,51 @@ export class AdvanceCategoriesComponent implements OnInit {
     this.expenseService.getAdvanceCatgories(pagination).subscribe((res: any) => {
       this.advanceCategories = new MatTableDataSource(res.data);
       this.totalRecords = res.total;
+      this.allData = res.data;
     });
   }
 
   onSubmit() {
-    if (!this.isEdit) {
-      let payload = {
-        label: this.addCategory.value['label'],
-      };
-
-      this.expenseService.addAdvanceCategory(payload).subscribe((res: any) => {
-        const newCategory = res.data;
-        this.toast.success(this.translate.instant('expenses.category_added_success'));
-        this.advanceCategories.data.push(newCategory);
-        this.advanceCategories._updateChangeSubscription();
-        this.addCategory.reset();
-      },
-        err => {
-          this.toast.error(err || this.translate.instant('expenses.category_added_error'));
-        });
+    this.isSubmitted = true;
+    if (this.addCategory.invalid) {
+      this.addCategory.markAllAsTouched();
     }
-    if (this.isEdit) {
-      let categoryPayload = {
-        label: this.addCategory.value['label']
-      };
+    else {
+      if (!this.isEdit) {
+        let payload = {
+          label: this.addCategory.value['label'],
+        };
 
-      if (this.addCategory.get('label').dirty) {
-        this.expenseService.updateAdvanceCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
-          this.updatedCategory = res.data._id;
-          this.toast.success(this.translate.instant('expenses.category_updated_success'));
+        this.expenseService.addAdvanceCategory(payload).subscribe((res: any) => {
+          const newCategory = res.data;
+          this.toast.success(this.translate.instant('expenses.category_added_success'));
+          this.advanceCategories.data.push(newCategory);
+          this.advanceCategories._updateChangeSubscription();
           this.addCategory.reset();
-          this.isEdit = false;
-          this.getAllAdvanceCategories();
+          this.dialogRef.close();
         },
-          (err) => {
-            this.toast.error(err || this.translate.instant('expenses.category_updated_error'));
+          err => {
+            this.toast.error(err || this.translate.instant('expenses.category_added_error'));
           });
+      }
+      if (this.isEdit) {
+        let categoryPayload = {
+          label: this.addCategory.value['label']
+        };
+
+        if (this.addCategory.get('label').dirty) {
+          this.expenseService.updateAdvanceCategory(this.selectedCategory?._id, categoryPayload).subscribe((res: any) => {
+            this.updatedCategory = res.data._id;
+            this.toast.success(this.translate.instant('expenses.category_updated_success'));
+            this.addCategory.reset();
+            this.isEdit = false;
+            this.getAllAdvanceCategories();
+            this.dialogRef.close();
+          },
+            (err) => {
+              this.toast.error(err || this.translate.instant('expenses.category_updated_error'));
+            });
+        }
       }
     }
   }
@@ -158,5 +187,36 @@ export class AdvanceCategoriesComponent implements OnInit {
       (err) => {
         this.toast.error(err || this.translate.instant('expenses.delete_error'));
       });
+  }
+
+  handleAction(event: any, addModal: any) {
+    if (event.action.label === 'Edit') {
+      this.isEdit = true;
+      this.selectedCategory = event.row;
+      this.editAdvanceCategory();
+      this.open(addModal);
+    }
+    if (event.action.label === 'Delete') {
+      this.deleteAdvancecate(event.row._id);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.advanceCategories.data.slice().sort((a, b) => {
+      const key = event.active;
+      const valueA = a[key];
+      const valueB = b[key];
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.advanceCategories.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.advanceCategories.data = this.allData?.filter(row => {
+      const found = this.columns.some(col => {
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    });
   }
 }

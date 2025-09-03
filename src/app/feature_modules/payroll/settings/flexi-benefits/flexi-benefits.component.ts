@@ -8,17 +8,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
-
-const labelValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = control.value as string;
-  // Check if the value is empty or only whitespace
-  if (!value || /^\s*$/.test(value)) {
-    return { required: true }; // Treat empty or only whitespace as required error
-  }
-  // Ensure at least one letter and only allowed characters (letters, spaces, (), /)
-  const valid = /^(?=.*[a-zA-Z])[a-zA-Z\s(),/]*$/.test(value);
-  return valid ? null : { invalidLabel: true };
-};
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
   selector: 'app-flexi-benefits',
@@ -32,7 +22,7 @@ export class FlexiBenefitsComponent implements AfterViewInit {
   dialogRef: MatDialogRef<any>;
   sortOrder: string = '';
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
+  isSubmitting: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   columns: TableColumn[] = [
     { key: 'name', name: this.translate.instant('payroll.flexi_benefits.table.category_name') },
@@ -57,7 +47,7 @@ export class FlexiBenefitsComponent implements AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.flexiBenefitsForm = this.fb.group({
-      name: ['', [Validators.required, labelValidator]]
+        name: ['', [Validators.required, CustomValidators.noNumbersOrSymbolsValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
     });
 
     // Set custom filter predicate to search by name
@@ -103,6 +93,7 @@ export class FlexiBenefitsComponent implements AfterViewInit {
     this.flexiBenefitsForm.reset({
       name: ''
     });
+    this.isSubmitting = false;
   }
 
   open(content: any) {
@@ -123,28 +114,19 @@ export class FlexiBenefitsComponent implements AfterViewInit {
   }
   isDuplicate: boolean = false;
   onSubmission() {
-    if (this.flexiBenefitsForm.valid) {
-      const newBenefitName = this.flexiBenefitsForm.value.name.toLowerCase();
-
-      // Check for duplicate name if not in edit mode
-      if (!this.isEdit) {
-        this.isDuplicate = this.tableService.dataSource.data.some(
-          (benefit: any) => benefit.name.toLowerCase() === newBenefitName
-        );
-
-        if (this.isDuplicate) {
-          this.toast.error(
-            this.translate.instant('payroll.flexi_benefits.toast.duplicate_name_error'),
-            this.translate.instant('payroll.flexi_benefits.title')
-          );
-          return; // Stop submission if duplicate is found
-        }
-      }
+    this.markFormGroupTouched(this.flexiBenefitsForm);
+    this.isSubmitting = true;
+    if (this.flexiBenefitsForm.invalid) {
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');   
+      this.isSubmitting = false;
+      return;
+    }
+    if (this.flexiBenefitsForm.valid) {   
 
       if (!this.isEdit) {
         this.payroll.addFlexiBenefits(this.flexiBenefitsForm.value).subscribe({
           next: (res: any) => {
-            this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+            this.getFlexiBenefits();
             this.clearForm();
             this.toast.success(
               this.translate.instant('payroll.flexi_benefits.toast.success_added'),
@@ -152,46 +134,32 @@ export class FlexiBenefitsComponent implements AfterViewInit {
             );
             this.closeModal();
           },
-          error: (err) => {
-            this.toast.error(
-              this.translate.instant('payroll.flexi_benefits.toast.error_add'),
-              this.translate.instant('payroll.flexi_benefits.title')
-            );
+          error: (err) => {           
+            const errorMessage = err?.error?.message || err?.message || err 
+            ||  this.translate.instant('payroll.variable_deduction.toast.error_add')
+            ;
+            this.toast.error(errorMessage);
+            this.isSubmitting = false;
           }
         });
       } else {
-        // In edit mode, check for duplicate only if the name has changed and it conflicts with another existing benefit
-        const originalName = this.selectedRecord.name.toLowerCase();
-        if (newBenefitName !== originalName) {
-          this.isDuplicate = this.tableService.dataSource.data.some(
-            (benefit: any) => benefit.name.toLowerCase() === newBenefitName && benefit._id !== this.selectedRecord._id
-          );
-          if (this.isDuplicate) {
-            this.toast.error(
-              this.translate.instant('payroll.flexi_benefits.toast.duplicate_name_error'),
-              this.translate.instant('payroll.flexi_benefits.title')
-            );
-            return;
-          }
-        }
+       
 
         this.payroll.updateFlexiBenefits(this.selectedRecord._id, this.flexiBenefitsForm.value).subscribe({
           next: (res: any) => {
-            const updatedData = this.tableService.dataSource.data.map(item =>
-              item._id === res.data._id ? res.data : item
-            );
-            this.tableService.setData(updatedData);
+            this.getFlexiBenefits();
             this.toast.success(
               this.translate.instant('payroll.flexi_benefits.toast.success_updated'),
               this.translate.instant('payroll.flexi_benefits.title')
             );
             this.closeModal();
           },
-          error: (err) => {
-            this.toast.error(
-              this.translate.instant('payroll.flexi_benefits.toast.error_update'),
-              this.translate.instant('payroll.flexi_benefits.title')
-            );
+          error: (err) => {          
+            const errorMessage = err?.error?.message || err?.message || err 
+            ||  this.translate.instant('payroll.variable_deduction.toast.error_update')
+            ;
+            this.toast.error(errorMessage);
+            this.isSubmitting = false;
           }
         });
       }
@@ -216,17 +184,17 @@ export class FlexiBenefitsComponent implements AfterViewInit {
   deleteRecord(_id: string) {
     this.payroll.deleteFlexiBenefits(_id).subscribe({
       next: (res: any) => {
-        this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
-        this.toast.success(
+        this.getFlexiBenefits();
+           this.toast.success(
           this.translate.instant('payroll.flexi_benefits.toast.success_deleted'),
           this.translate.instant('payroll.flexi_benefits.title')
         );
       },
-      error: (err) => {
-        this.toast.error(
-          this.translate.instant('payroll.flexi_benefits.toast.error_delete'),
-          this.translate.instant('payroll.flexi_benefits.title')
-        );
+      error: (err) => {       
+        const errorMessage = err?.error?.message || err?.message || err 
+        ||  this.translate.instant('payroll.variable_deduction.toast.error_delete')
+        ;
+        this.toast.error(errorMessage);
       }
     });
   }

@@ -26,7 +26,7 @@ export class LocationComponent {
   searchText: string = '';
   selectedZone: any;
   isSubmitting: boolean = false;
-  countryName = '';
+  OrgnaizationName = '';
   selectedCountryCode: string;
   dialogRef: MatDialogRef<any> | null = null;
   totalRecords: number = 0;
@@ -101,20 +101,35 @@ export class LocationComponent {
     private http: HttpClient) {
     this.locationForm = this.fb.group({
       locationCode: ['', Validators.required],
-      country: ['', Validators.required],
+      country: ['India', Validators.required], // ✅ Default value set here
       state: ['', Validators.required],
       city: ['', Validators.required],
       organization: ['', Validators.required],
       providentFundRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/\d{5}$/)]],  // Example: TN/12345
       esicRegistrationCode: ['', [Validators.pattern(/^\d{17}$/)]],  // Example: 17-digit ESIC number
       professionalTaxRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/PT\/\d{5}$/)]],  // Example: MH/PT/12345
-      lwfRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/LWF\/\d{4}$/)]],  // Example: KA/LWF/1234    
-      taxDeclarationApprovers: [['']]
+      lwfRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/LWF\/\d{4}$/)]]
     });
   }
 
   ngOnInit() {
     this.getLocations();
+    this.getCompany();
+    this.locationForm.get('country')?.enable(); // optional
+this.locationForm.get('country')?.setValue('India');
+this.locationForm.get('country')?.disable(); // optional
+this.locationForm.get('organization')?.enable(); // optional
+this.locationForm.get('organization')?.setValue(this.OrgnaizationName);
+this.locationForm.get('organization')?.disable(); // optional
+
+  }
+
+  getCompany() {
+    this.companyService.getCompany().subscribe((res: any) => {
+      this.OrgnaizationName = res.data?.company.companyName;     
+      console.log(this.OrgnaizationName);
+      console.log(res.data);
+    });
   }
 
   onActionClick(event) {
@@ -152,7 +167,7 @@ export class LocationComponent {
     }
     // add Location
     if (!this.isEdit) {
-      this.companyService.addLocation(this.locationForm.value).subscribe(res => {
+      this.companyService.addLocation(this.locationForm.getRawValue()).subscribe(res => {
         this.getLocations();
         this.toast.success(this.translate.instant('organization.setup.location_added'));
         this.isSubmitting = false;
@@ -169,7 +184,7 @@ export class LocationComponent {
     }
     // updateZone
     else if (this.isEdit) {
-      this.companyService.updateLocation(this.selectedZone._id, this.locationForm.value).subscribe(res => {
+      this.companyService.updateLocation(this.selectedZone._id, this.locationForm.getRawValue()).subscribe(res => {
         this.toast.success(this.translate.instant('organization.setup.location_updated'));
         this.getLocations();
         this.locationForm.reset();
@@ -199,16 +214,21 @@ export class LocationComponent {
       providentFundRegistrationCode: data.providentFundRegistrationCode,
       esicRegistrationCode: data.esicRegistrationCode,
       professionalTaxRegistrationCode: data.professionalTaxRegistrationCode,
-      lwfRegistrationCode: data.lwfRegistrationCode,
-      taxDeclarationApprovers: data.taxDeclarationApprovers
+      lwfRegistrationCode: data.lwfRegistrationCode
     });
     this.locationForm.get('locationCode').disable();
   }
 
   clearselectedRequest() {
     this.isEdit = false;
-    this.locationForm.get('locationCode').enable();
-    this.locationForm.reset();
+  this.locationForm.get('locationCode')?.enable();
+  this.locationForm.reset();
+
+  // Set default country again after reset
+  this.locationForm.get('country')?.setValue('India');
+  this.locationForm.get('country')?.disable();
+  this.locationForm.get('organization')?.setValue(this.OrgnaizationName);
+  this.locationForm.get('organization')?.disable();
   }
 
   private getDismissReason(reason: any): string {

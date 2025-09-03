@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
@@ -9,6 +9,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 @Component({
   selector: 'app-expenses-template-assignment',
   templateUrl: './expenses-template-assignment.component.html',
@@ -23,7 +24,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   templates: any[] = [];
   userId: string;
   approverId: string
-  templateAssignments: any;
+  templateAssignments: any[];
   templateAssignmentForm: FormGroup;
   templateResponse;
   selectedTemplateAssignment: any;
@@ -43,6 +44,25 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   dataSource = new MatTableDataSource<any>([]);
   dialogRef: MatDialogRef<any>;
   managers: any;
+  columns: TableColumn[] = [
+    { key: 'employeeName', name: this.translate.instant('expenses.member') },
+    { key: 'expenseTemplate', name: this.translate.instant('expenses.current_expense_template') },
+    { key: 'primaryApprover', name: this.translate.instant('expenses.primary_approver') },
+    { 
+      key: 'effectiveDate',
+      name: this.translate.instant('expenses.effective_date'),
+      valueFn: (row: any) => new Date(row.effectiveDate).toLocaleDateString('en-US')
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('expenses.actions'),
+      isAction: true,
+      options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+      ]
+    }
+  ];
 
   constructor(
     private dialog: MatDialog,
@@ -52,10 +72,10 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     private toast: ToastrService,
     private manageService: ManageTeamService) {
     this.templateAssignmentForm = this.fb.group({
-      user: [''],
-      primaryApprover: [''],
-      expenseTemplate: [''],
-      effectiveDate: []
+      user: ['', Validators.required],
+      primaryApprover: ['', Validators.required],
+      expenseTemplate: ['', Validators.required],
+      effectiveDate: ['', Validators.required]
     });
 
     this.maxDate.setDate(this.maxDate.getDate() + 7);
@@ -89,6 +109,13 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     });
   }
 
+  getAvailableUsers() {
+    const assignedUsers = this.templateAssignments?.map(a => a?.user);
+    return this.allAssignee?.filter(user => {
+      return !assignedUsers.includes(user?._id);
+    });
+  }
+
   getManagers() {
     this.manageService.getManagers().subscribe((res: any) => {
       this.managers = res.data;
@@ -103,7 +130,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     const data = this.selectedTemplateAssignment;
     this.expenseService.getTemplateAssignmentById(data.user).subscribe((res: any) => {
       const templateAssignment = res.data[0];
-      console.log(templateAssignment)
       this.templateAssignmentForm.patchValue({
         user: templateAssignment.user,
         primaryApprover: templateAssignment.primaryApprover,
@@ -121,13 +147,9 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
               effectiveDate: data.effectiveDate
             });
             this.templateAssignmentForm.get('user').disable();
-            this.templateAssignmentForm.get('effectiveDate').disable();
-            this.templateAssignmentForm.get('expenseTemplate').disable();
             this.templateAssignmentForm.get('primaryApprover').disable();
           }
           this.templateAssignmentForm.get('user').disable();
-          this.templateAssignmentForm.get('effectiveDate').disable();
-          this.templateAssignmentForm.get('expenseTemplate').disable();
           this.templateAssignmentForm.get('primaryApprover').disable();
         }
 
@@ -139,8 +161,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
             effectiveDate: templateAssignment.effectiveDate
           });
           this.templateAssignmentForm.get('user').disable();
-          this.templateAssignmentForm.get('effectiveDate').disable();
-          this.templateAssignmentForm.get('expenseTemplate').disable();
           this.templateAssignmentForm.get('primaryApprover').enable();
         }
       });
@@ -151,40 +171,21 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   onTemplateSelectionChange(event: any) {
     this.showApproverFields = true;
     const selectedTemplateId = event.value;
-
     this.expenseService.getTemplateById(selectedTemplateId).subscribe((res: any) => {
       this.templateById = res.data;
-
       if (this.templateById.approvalType === 'template-wise') {
-        if (this.templateById.approvalLevel === '1') {
-          this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.firstApprovalEmployee,
-          });
-          this.templateAssignmentForm.get('primaryApprover').disable();
-          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
+        this.templateAssignmentForm.patchValue({
+          primaryApprover: this.templateById.firstApprovalEmployee,
+        });
+        this.templateAssignmentForm.get('primaryApprover').disable();
+        this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
 
-          this.primaryApproverField.nativeElement.disabled = true;
-
-        }
       } else if (this.templateById.approvalType === 'employee-wise') {
-        if (this.templateById.approvalLevel === '1') {
-          this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.firstApprovalEmployee,
-          });
-          this.templateAssignmentForm.get('primaryApprover').enable();
-          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
-
-          // Enable the fields
-          this.primaryApproverField.nativeElement.disabled = false;
-
-        } else if (this.templateById.approvalLevel === '2') {
-          this.templateAssignmentForm.patchValue({
-            primaryApprover: this.templateById.firstApprovalEmployee,
-          });
-          this.templateAssignmentForm.get('primaryApprover').enable();
-          this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
-          this.primaryApproverField.nativeElement.disabled = false;
-        }
+        this.templateAssignmentForm.patchValue({
+          primaryApprover: this.templateById.firstApprovalEmployee,
+        });
+        this.templateAssignmentForm.get('primaryApprover').enable();
+        this.templateAssignmentForm.get('primaryApprover').updateValueAndValidity();
       }
     });
   }
@@ -225,12 +226,12 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
 
   deleteTemplateAssignment(_id: string) {
     this.expenseService.deleteTemplateAssignment(_id).subscribe((res: any) => {
-      const index = this.templateAssignments.findIndex(temp => temp._id === _id);
-      if (index !== -1) {
-        this.templateAssignments.splice(index, 1);
-      }
+      this.getAssignments();
       this.toast.success(this.translate.instant('expenses.delete_success'));
-    })
+    },
+  err => {
+    this.toast.error(err)
+  })
   }
 
   openDialog(id: string): void {
@@ -309,38 +310,38 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     this.templateAssignmentForm.get('user').enable();
     this.templateAssignmentForm.get('expenseTemplate').enable();
     this.templateAssignmentForm.get('effectiveDate').enable();
-
-    let payload = {
-      user: this.templateAssignmentForm.value.user || null,
-      primaryApprover: this.templateAssignmentForm.value.primaryApprover,
-      expenseTemplate: this.templateAssignmentForm.value.expenseTemplate || null,
-      effectiveDate: this.templateAssignmentForm.value.effectiveDate
+    if (this.templateAssignmentForm.valid) {
+      let payload = {
+        user: this.templateAssignmentForm.value.user || null,
+        primaryApprover: this.templateAssignmentForm.value.primaryApprover,
+        expenseTemplate: this.templateAssignmentForm.value.expenseTemplate || null,
+        effectiveDate: this.templateAssignmentForm.value.effectiveDate
+      }
+      this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
+        const newTemplateAssignment = res.data;
+        if (this.changeMode == 'Add') {
+          this.toast.success(this.translate.instant('expenses.template_assigned_success'));
+          this.templateAssignments.push(newTemplateAssignment);
+        }
+        if (this.changeMode == 'Update') {
+          this.toast.success(this.translate.instant('expenses.template_assigned_update_success'));
+          this.changeMode = 'Add';
+          this.templateAssignmentForm.get('user').enable();
+          this.templateAssignmentForm.get('expenseTemplate').enable();
+          this.templateAssignmentForm.get('effectiveDate').enable();
+        }
+        this.getAssignments();
+        this.templateAssignmentForm.reset();
+        this.showApproverFields = false;
+      },
+        (err) => {
+          if (this.changeMode == 'Add') { this.toast.error(err || this.translate.instant('expenses.template_assigned_error')) }
+          if (this.changeMode == 'Update') { this.toast.error(err || this.translate.instant('expenses.template_assigned_update_error')) }
+        });
     }
-    this.expenseService.addTemplateAssignment(payload).subscribe((res: any) => {
-      const newTemplateAssignment = res.data;
-      if (this.changeMode == 'Add') {
-        this.toast.success(this.translate.instant('expenses.template_assigned_success'));
-        this.templateAssignments.push(newTemplateAssignment);
-      }
-      if (this.changeMode == 'Update') {
-        this.toast.success(this.translate.instant('expenses.template_assigned_update_success'));
-        this.changeMode = 'Add';
-        this.templateAssignmentForm.get('user').enable();
-        this.templateAssignmentForm.get('expenseTemplate').enable();
-        this.templateAssignmentForm.get('effectiveDate').enable();
-      }
-      this.getAssignments();
-      this.templateAssignmentForm.reset();
-      this.showApproverFields = false;
-    },
-      (err) => {
-        if (this.changeMode == 'Add') { this.toast.error(err || this.translate.instant('expenses.template_assigned_error')) }
-        if (this.changeMode == 'Update') { this.toast.error(err || this.translate.instant('expenses.template_assigned_update_error')) }
-      });
-
-    // this.templateAssignmentForm.get('user').disable();
-    // this.templateAssignmentForm.get('expenseTemplate').disable();
-    // this.templateAssignmentForm.get('effectiveDate').disable();
+    else {
+      this.templateAssignmentForm.markAllAsTouched();
+    }
   }
 
 
@@ -355,12 +356,42 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       expenseTemplate: templateAssignment.expenseTemplate,
       effectiveDate: templateAssignment.effectiveDate
     };
-    console.log(formValues)
     this.templateAssignmentForm.get('user')?.enable();
     this.templateAssignmentForm.get('expenseTemplate')?.enable();
     this.templateAssignmentForm.patchValue(formValues);
     this.templateAssignmentForm.get('user')?.disable();
     this.templateAssignmentForm.get('expenseTemplate')?.disable();
+  }
+
+  handleAction(event: any, addModal: any) {
+    if (event.action.label === 'Edit') {
+      this.setFormValues(event.row, addModal, 'Update');
+    }
+    if (event.action.label === 'Delete') {
+      this.openDialog(event.row._id);
+    }
+  }
+
+  onSortChange(event: any) {
+    const sorted = this.dataSource.data.slice().sort((a, b) => {
+      const key = event.active;
+      const valueA = a[key];
+      const valueB = b[key];
+      return event.direction === 'asc' ? (valueA > valueB ? 1 : -1) : (valueA < valueB ? 1 : -1);
+    });
+    this.dataSource.data = sorted;
+  }
+
+  onSearchChange(event: any) {
+    this.dataSource.data = this.templateAssignments?.filter(row => {
+      const found = this.columns.some(col => {
+        if (col.key === 'effectiveDate') {
+          return row[col.key] ? new Date(row[col.key]).toLocaleDateString().toLowerCase().includes(event.toLowerCase()) : false;
+        }
+        return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
+      });
+      return found;
+    });
   }
 
 }

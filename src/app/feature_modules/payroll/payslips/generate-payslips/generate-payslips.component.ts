@@ -88,7 +88,7 @@ export class GeneratePayslipsComponent {
   downloadPDF() {
     const element = this.payslipContainer.nativeElement;
 
-    html2canvas(element, { scale: 2, }).then((canvas) => {
+    html2canvas(element, { scale: 2, useCORS: true, allowTaint: true }).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF.default('p', 'mm', 'a4');
 

@@ -38,15 +38,11 @@
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.location.form.country' | translate }}</mat-label>
-            <mat-select formControlName="country">
-              <mat-option [value]="null" disabled>{{ 'organization.location.form.country_placeholder' | translate }}</mat-option>
-              <mat-option value="India">{{ 'organization.location.form.country_india' | translate }}</mat-option>
-            </mat-select>
-            <mat-error
-              *ngIf="locationForm.get('country')?.hasError('required') && (locationForm.get('country')?.touched || locationForm.get('country')?.dirty)">
-              {{ 'organization.location.form.error.country_required' | translate }}
-            </mat-error>
+            <input matInput type="text" formControlName="country" [disabled]="true" />
+
           </mat-form-field>
+          
+          
         </div>
 
         <div class="form-group col-md-6">
@@ -66,10 +62,8 @@
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.location.form.city' | translate }}</mat-label>
-            <mat-select formControlName="city">
-              <mat-option [value]="null" disabled>{{ 'organization.location.form.city_placeholder' | translate }}</mat-option>
-              <mat-option value="city-1">{{ 'organization.location.form.city_1' | translate }}</mat-option>
-            </mat-select>
+            <input matInput type="text" formControlName="city" />
+
             <mat-error
               *ngIf="locationForm.get('city')?.hasError('required') && (locationForm.get('city')?.touched || locationForm.get('city')?.dirty)">
               {{ 'organization.location.form.error.city_required' | translate }}
@@ -79,10 +73,8 @@
 
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
-            <mat-label>{{ 'organization.location.form.organization' | translate }}</mat-label>
-            <mat-select formControlName="organization">
-              <mat-option value="Arsteg">{{ 'organization.location.form.organization_arsteg' | translate }}</mat-option>
-            </mat-select>
+            <mat-label>{{ 'organization.location.form.organization' | translate }}</mat-label>          
+            <input matInput type="text" formControlName="organization" [disabled]="true" />
             <mat-error
               *ngIf="locationForm.get('organization')?.hasError('required') && (locationForm.get('organization')?.touched || locationForm.get('organization')?.dirty)">
               {{ 'organization.location.form.error.organization_required' | translate }}
@@ -132,16 +124,7 @@
               {{ 'organization.location.form.error.lwf_registration_code_format' | translate }}
             </mat-error>
           </mat-form-field>
-        </div>
-
-        <div class="form-group col-md-6">
-          <mat-form-field class="w-100">
-            <mat-label>{{ 'organization.location.form.tax_declaration_approvers' | translate }}</mat-label>
-            <mat-select formControlName="taxDeclarationApprovers">
-              <mat-option value="">{{ 'organization.location.form.tax_declaration_approvers_placeholder' | translate }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+        </div>       
       </div>
     </div>
 

@@ -82,7 +82,7 @@ export class ShiftComponent {
       enterNumberOfDaysForEarlyGoing: [0],
       graceTimeLimitForEarlyGoing: [0],
       isHalfDayApplicable: [false],
-      minHoursPerDayToGetCreditforHalfDay: ['0', [Validators.min(0), Validators.max(8), CustomValidators.minHoursHalfDayValidator()]],  // Added min validator
+      minHoursPerDayToGetCreditforHalfDay: ['0', [Validators.max(6), CustomValidators.minHoursHalfDayValidator()]],  // Added min validator
       maxLateComingAllowedMinutesFirstHalfAttendance:['0', Validators.min(0)], 
     }, {
       validators: this.timeComparisonValidator // Apply the custom validator at the form group level
@@ -195,6 +195,22 @@ export class ShiftComponent {
       minHoursHalfDayControl.updateValueAndValidity();
       minHoursFullDayControl.updateValueAndValidity();
     });
+    this.shiftForm.get('isHalfDayApplicable')?.valueChanges.subscribe((isApplicable) => {
+      const halfDayControl = this.shiftForm.get('minHoursPerDayToGetCreditforHalfDay');
+    
+      if (isApplicable) {
+        halfDayControl.setValidators([
+          Validators.required,
+          Validators.min(1),
+          Validators.max(6),
+          CustomValidators.minHoursHalfDayValidator()
+        ]);
+      } else {
+        halfDayControl.clearValidators();
+        halfDayControl.setValue(null); // or '', depending on type
+      }
+    });
+    
   }  
 
 

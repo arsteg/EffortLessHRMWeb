@@ -32,10 +32,15 @@
                     <mat-label>{{ 'payroll.loans_advances.form.name' | translate }}</mat-label>
                     <input matInput type="text" formControlName="name"
                         [placeholder]="'payroll.loans_advances.form.name_placeholder' | translate">
-                    <mat-error
-                        *ngIf="loansAdvancesForm.get('name').invalid && (loansAdvancesForm.get('name').dirty || loansAdvancesForm.get('name').touched)">
-                        {{ 'payroll.loans_advances.form.error.name_required' | translate }}
-                    </mat-error>
+                        <mat-error class="mb-3" *ngIf="!loansAdvancesForm.get('name').valid && loansAdvancesForm.get('name').touched">
+                            <span *ngIf="loansAdvancesForm.get('name').errors?.['required']">{{ 'payroll.name_required' |
+                              translate }}</span>
+                            <span *ngIf="loansAdvancesForm.get('name').errors?.['invalidName']">{{ 'payroll.name_invalid' |
+                              translate }}</span>   
+                                <span *ngIf="loansAdvancesForm.get('name')?.errors?.['spacesNotAllowed']">      
+                                    {{ 'payroll.spacenotallowed' | translate }}
+                                  </span>                                    
+                          </mat-error>
                 </mat-form-field>
             </div>
         </div>
@@ -43,7 +48,7 @@
             <button mat-flat-button type="button" (click)="clearForm(); closeModal()">
                 {{ 'payroll.cancel' | translate }}
             </button>
-            <button mat-flat-button color="primary" [disabled]="!loansAdvancesForm.valid">
+            <button mat-flat-button color="primary" [disabled]="isSubmitting">
                 {{ (isEdit ? 'payroll.update' : 'payroll.add') | translate }}
             </button>
         </div>

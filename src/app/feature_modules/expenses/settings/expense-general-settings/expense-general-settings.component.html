@@ -1,6 +1,8 @@
 <div class="d-flex align-items-center justify-content-between">
-    <h1 mat-dialog-title *ngIf="changeMode == 'Next'">{{'expenses.update' | translate}} {{'expenses.expense_template' | translate}}</h1>
-    <h1 mat-dialog-title *ngIf="changeMode == 'Add'">{{'expenses.add' | translate}} {{'expenses.expense_template' | translate}}</h1>
+    <h1 mat-dialog-title *ngIf="changeMode == 'Next'">{{'expenses.edit' | translate}} {{'expenses.expense_template' |
+        translate}}</h1>
+    <h1 mat-dialog-title *ngIf="changeMode == 'Add'">{{'expenses.add' | translate}} {{'expenses.expense_template' |
+        translate}}</h1>
     <button mat-icon-button mat-dialog-close="" class="me-4">
         <mat-icon>close</mat-icon>
     </button>
@@ -9,25 +11,40 @@
 <form [formGroup]="addTemplateForm" (ngSubmit)="createTemplate()">
     <div mat-dialog-content>
         <div class="row m-0">
-            <mat-form-field class="w-100">
+            <mat-form-field class="w-100 mb-3">
                 <mat-label>{{'expenses.label_for_expense_template' | translate}}</mat-label>
                 <input type="text" matInput placeholder="Enter Label" formControlName="policyLabel" required>
-                <mat-error *ngIf="addTemplateForm.get('policyLabel').invalid && addTemplateForm.get('policyLabel').touched">
-                    {{'expenses.label_for_expense_template_error' | translate}}
+                <mat-error
+                    *ngIf="addTemplateForm.get('policyLabel').touched && addTemplateForm.get('policyLabel').invalid">
+                    <span *ngIf="addTemplateForm.get('policyLabel').hasError('maxlength')">
+                        {{'expenses.category_label_Limit' | translate}}
+                    </span>
+                    <span *ngIf="addTemplateForm.get('policyLabel')?.errors?.['spacesNotAllowed']">
+                        {{ 'expenses.labelNoLeadingOrTrailingSpaces' | translate }}
+                    </span>
+                    <span *ngIf="addTemplateForm.get('policyLabel')?.errors?.['invalidLabel']">
+                        {{ 'expenses.label_invalid' | translate }}
+                    </span>
+                    <span *ngIf="addTemplateForm.get('policyLabel').hasError('required')">
+                        {{'expenses.label_for_expense_template_error' | translate}}
+                    </span>
                 </mat-error>
             </mat-form-field>
 
             <div class="row mb-4">
                 <div class="col-12 col-md-6">
                     <div class="d-flex flex-column">
-                        <mat-label>{{'expenses.add_approvers' | translate}}<span class="text-danger">*</span></mat-label>
+                        <mat-label>{{'expenses.add_approvers' | translate}}<span
+                                class="text-danger">*</span></mat-label>
                         <mat-radio-group formControlName="approvalType" required>
-                            <mat-radio-button color="primary" value="template-wise">{{'expenses.template_wise' | translate}}</mat-radio-button>
-                            <mat-radio-button color="primary" value="employee-wise">{{'expenses.employee_wise' | translate}}</mat-radio-button>
+                            <mat-radio-button color="primary" value="template-wise">{{'expenses.template_wise' |
+                                translate}}</mat-radio-button>
+                            <mat-radio-button color="primary" value="employee-wise">{{'expenses.employee_wise' |
+                                translate}}</mat-radio-button>
                         </mat-radio-group>
                         <div *ngIf="addTemplateForm.get('approvalType').invalid && addTemplateForm.get('approvalType').touched"
                             class="text-danger error">
-                        {{ 'expenses.add_approvers_error' | translate }}
+                            {{ 'expenses.add_approvers_error' | translate }}
                         </div>
                     </div>
                 </div>
@@ -40,7 +57,8 @@
                     <mat-form-field class="w-100">
                         <mat-label>{{'expenses.first_approver' | translate}}</mat-label>
                         <mat-select formControlName="firstApprovalEmployee" required>
-                            <mat-option [value]="user?.id" *ngFor="let user of managers; let i = index">{{user?.firstName |
+                            <mat-option [value]="user?.id"
+                                *ngFor="let user of managers; let i = index">{{user?.firstName |
                                 titlecase}} {{user.lastName | titlecase}}</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -51,7 +69,8 @@
                 <mat-form-field class="w-100">
                     <mat-label>{{'expenses.select_applicable_categories' | translate}}</mat-label>
                     <mat-select multiple formControlName="expenseCategories">
-                        <mat-option [value]="categories?._id" *ngFor="let categories of expenseCategories; let i = index">
+                        <mat-option [value]="categories?._id"
+                            *ngFor="let categories of expenseCategories; let i = index">
                             {{categories?.label}}
                         </mat-option>
                     </mat-select>
@@ -74,14 +93,16 @@
                 <div class="col-12 col-md-12">
                     <div class="d-flex ">
                         <mat-label>{{'expenses.restriction_same_date_category' | translate}} </mat-label>
-                        <mat-slide-toggle color="primary" class="ms-auto" formControlName="applyforSameCategorySamedate"></mat-slide-toggle>
+                        <mat-slide-toggle color="primary" class="ms-auto"
+                            formControlName="applyforSameCategorySamedate"></mat-slide-toggle>
                     </div>
                 </div>
 
                 <div class="col-12 col-md-12">
                     <div class="my-2 d-flex">
                         <mat-label>{{'expenses.enable_advance_amount' | translate}}</mat-label>
-                        <mat-slide-toggle color="primary" class="ms-auto" formControlName="advanceAmount"></mat-slide-toggle>
+                        <mat-slide-toggle color="primary" class="ms-auto"
+                            formControlName="advanceAmount"></mat-slide-toggle>
                     </div>
                 </div>
             </div>
@@ -89,7 +110,6 @@
     </div>
     <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
         <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-        <button mat-flat-button color="primary" type="submit"
-            [disabled]="!addTemplateForm.valid">{{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.next' | translate)}}</button>
+        <button mat-flat-button color="primary" [disabled]="isSubmitted || !addTemplateForm.valid" type="submit">{{'expenses.next' | translate}}</button>
     </div>
 </form>

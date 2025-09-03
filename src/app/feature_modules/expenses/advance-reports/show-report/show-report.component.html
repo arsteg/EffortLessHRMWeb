@@ -15,40 +15,40 @@
       </mat-select>
     </mat-form-field>
 
-    <div class="ms-auto">
+    <div class="d-flex align-items-center ms-auto">
+      <button color="primary" class="me-2 btn btn-light d-flex align-items-center dropdown-toggle" (click)="exportToCsv()">
+        <span>Export</span><mat-icon class="fs-5">download</mat-icon>
+      </button>      
       <button mat-flat-button color="primary" class="me-1" (click)="changeMode='Add'; open(addModal)">
         {{'expenses.add_advance' | translate}}
-      </button>
-      <button class="me-1 border" mat-flat-button (click)="exportToCsv()">
-        <mat-icon>download</mat-icon> {{'download' | translate}}
       </button>
     </div>
   </div>
 
   
-  <table mat-table [dataSource]="dataSource">
+  <table mat-table [dataSource]="dataSource" class="hrm-table" matSort>
     <ng-container matColumnDef="employee">
-      <th mat-header-cell *matHeaderCellDef> {{'expenses.employee' | translate}} </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'expenses.employee' | translate}} </th>
       <td mat-cell *matCellDef="let report"> {{getUser(report?.employee)}} </td>
     </ng-container>
 
     <ng-container matColumnDef="amount">
-      <th mat-header-cell *matHeaderCellDef> {{'expenses.amount' | translate}} </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'expenses.amount' | translate}} </th>
       <td mat-cell *matCellDef="let report"> {{report?.amount}} </td>
     </ng-container>
 
     <ng-container matColumnDef="category">
-      <th mat-header-cell *matHeaderCellDef> {{'expenses.category' | translate}} </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'expenses.category' | translate}} </th>
       <td mat-cell *matCellDef="let report"> {{getCategory(report?.category)}} </td>
     </ng-container>
 
     <ng-container matColumnDef="comment">
-      <th mat-header-cell *matHeaderCellDef> {{'comment' | translate}} </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'comment' | translate}} </th>
       <td mat-cell *matCellDef="let report"> {{report?.primaryApprovalReason || report?.comment}} </td>
     </ng-container>
 
     <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef> {{'status' | translate}} </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'status' | translate}} </th>
       <td mat-cell *matCellDef="let report"> {{report?.status}} </td>
     </ng-container>
 

@@ -52,30 +52,26 @@ export class CreateLeaveComponent {
     this.setFormValues();
     this.getManagers();
     this.getLeaveCategories();
-    this.addTemplateForm.get('approvalType')?.valueChanges.subscribe((value: any) => {
-      if (value === 'template-wise') {
-        this.addTemplateForm.get('primaryApprover')?.setValidators([Validators.required]);
-      }
-      this.addTemplateForm.patchValue({
-        primaryApprover: null
-      })
+    this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
+      this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
+    });
+    this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
+      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value)
     });
   }
 
-  validateApprovers(approverType: string, approverLevel: string) {
-    if (approverLevel === '1 Level' && approverType === 'template-wise') {
-      this.addTemplateForm.get('primaryApprover')?.setValidators([Validators.required]);
-      this.addTemplateForm.get('secondaryApprover')?.clearValidators();
-    } else if (approverLevel === '2 Level' && approverType === 'template-wise') {
-      this.addTemplateForm.get('primaryApprover')?.setValidators([Validators.required]);
-      this.addTemplateForm.get('secondaryApprover')?.setValidators([Validators.required]);
+  validateApprovers(approverType, approverLevel) {
+    if (approverLevel == 1 && approverType == 'template-wise') {
+      this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
+      this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
     } else {
-      this.addTemplateForm.get('primaryApprover')?.clearValidators();
-      this.addTemplateForm.get('secondaryApprover')?.clearValidators();
+      this.addTemplateForm.get('firstApprovalEmployee').clearValidators();
+      this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
     }
-    this.addTemplateForm.get('primaryApprover')?.updateValueAndValidity();
-    this.addTemplateForm.get('secondaryApprover')?.updateValueAndValidity();
+    this.addTemplateForm.get('firstApprovalEmployee').updateValueAndValidity();
+    this.addTemplateForm.get('secondApprovalEmployee').updateValueAndValidity();
   }
+
 
   setFormValues() {
     if (this.changeMode === 'Add') {
@@ -149,49 +145,46 @@ export class CreateLeaveComponent {
   }
 
   onSubmission() {
-    this.addTemplateForm.get('clubbingRestrictions').enable();
-    this.addTemplateForm.value.clubbingRestrictions = false;
-
-    const categories = this.addTemplateForm.value.leaveCategories.map(category => ({ leaveCategory: category }));
-    if (this.addTemplateForm.value.approvalType === 'employee-wise') {
+    const formValue = this.addTemplateForm.value;
+    const categories = formValue.leaveCategories.map(category => ({ leaveCategory: category }));
+    if (formValue.approvalType === 'employee-wise') {
       this.addTemplateForm.patchValue({
         primaryApprover: null,
         secondaryApprover: null,
-        leaveCategories : categories
-      })
-    
+      });
+    }
+    const submissionValue = { ...formValue, leaveCategories: categories };
     if (this.addTemplateForm.valid) {
       if (this.changeMode === 'Add') {
-        this.leaveService.addLeaveTemplate(this.addTemplateForm.value).subscribe((res: any) => {
-          this.leaveService.selectedTemplate.next(res.data);
-          this.leaveService.categories.next(res.categories);
-          this.updateLeaveTemplateTable.emit();
-          this.changeStep.emit(2);
-          this.toast.success(this.translate.instant('leave.successTemplateCreated'));
-        },
+        this.leaveService.addLeaveTemplate(submissionValue).subscribe(
+          (res: any) => {
+            this.leaveService.selectedTemplate.next(res.data);
+            this.leaveService.categories.next(res.categories);
+            this.updateLeaveTemplateTable.emit();
+            this.changeStep.emit(2);
+            this.toast.success(this.translate.instant('leave.successTemplateCreated'));
+          },
           error => {
-            this.toast.error(error || this.translate.instant('leave.errorCreatingTemplate'));
+            this.toast.error(error?.error?.message || this.translate.instant('leave.errorCreatingTemplate'));
           }
         );
       } else if (this.changeMode === 'Next') {
         const id = this.leaveService.selectedTemplate.getValue()._id;
-        this.leaveService.updateLeaveTemplate(id, this.addTemplateForm.value).subscribe((res: any) => {
-          this.updateLeaveTemplateTable.emit();
-          this.changeStep.emit(2);
-          this.toast.success(this.translate.instant('leave.successTemplateUpdated'));
-        },
+        this.leaveService.updateLeaveTemplate(id, submissionValue).subscribe(
+          () => {
+            this.updateLeaveTemplateTable.emit();
+            this.changeStep.emit(2);
+            this.toast.success(this.translate.instant('leave.successTemplateUpdated'));
+          },
           error => {
-            this.toast.error(error || this.translate.instant('leave.errorUpdatingTemplate'));
+            this.toast.error(error?.error?.message || this.translate.instant('leave.errorUpdatingTemplate'));
           }
         );
       }
     } else {
       this.addTemplateForm.markAllAsTouched();
-      this.addTemplateForm.get('clubbingRestrictions').disable();
       this.toast.warning(this.translate.instant('leave.invalidForm'));
     }
-  }
-    this.addTemplateForm.get('clubbingRestrictions').disable();
   }
 
   get clubbingRestrictionCategories() {

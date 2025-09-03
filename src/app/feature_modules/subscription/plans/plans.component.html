@@ -1,6 +1,6 @@
-@if(user.freeCompany){
+<!-- @if(user.freeCompany){
     Free Company
-} @else {
+} @else { -->
 
     @if(hasActiveSubscription && subscribedPlan){
         <div class="card p-0 col-md-4 col m-4 text-center">
@@ -62,7 +62,7 @@
             </div>
         </div>
     } @else if(hasCreatedSubscription && subscribedPlan){
-        <div class="card w-25 container p-0">
+        <div class="card container p-0" style="width: 30%;">
             <div class="card-header">
                 <h2 class="m-0">
                     {{subscribedPlan.name}}
@@ -77,10 +77,17 @@
                     }   
                 </h2>
                 @if(subscription){
-                    <p>Your subscription will be charged on {{subscription.start_at*1000 | date}}.</p>
+                    <p>Your subscription will be charged on {{ (subscription.start_at ?? (currentDate / 1000)) * 1000 | date }}.</p>
                 }
                 <p>Your subscription is created and waiting for payment authentication.</p>
-                <button mat-flat-button color="accent" class="btn btn-block" (click)="payNow()">Authenticate Payment</button>
+                <!-- <button mat-flat-button color="accent" class="btn btn-block" (click)="payNow()">Authenticate Payment</button>
+                <button mat-stroked-button (click)="viewPlans(selectPlanTemplate)">
+                    Change Plan
+                </button> -->
+                <div style="display: flex; gap: 10px;">
+                    <button mat-flat-button color="accent" (click)="payNow()">Authenticate Payment</button>
+                    <button mat-stroked-button (click)="viewPlans(selectPlanTemplate)">Change Plan</button>
+                </div>
             </div>
         </div>
     } @else {
@@ -117,8 +124,8 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                @if(!(subscription.status === 'new' || subscription.status === 'cancelled' || subscription.status === 'created')) {
-                                    Status of your subscription is {{subscription.status}}. Please contact administrator.
+                                @if(subscription?.status && !(subscription?.status === 'new' || subscription?.status === 'cancelled' || subscription?.status === 'created')) {
+                                    Status of your subscription is {{subscription?.status}}. Please contact administrator.
                                 } 
                             </div>
                         </div>
@@ -139,7 +146,7 @@
             }
         </div>
     }
-}
+<!-- } -->
 
 <ng-template #selectPlanTemplate>
     <h1 mat-dialog-title>Select new Plan</h1>

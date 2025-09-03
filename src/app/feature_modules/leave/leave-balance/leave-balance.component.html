@@ -37,7 +37,7 @@
                     <mat-form-field class="w-100">
                         <mat-label>{{ 'leave.selectLeaveCycle' | translate }}</mat-label>
                         <mat-select formControlName="cycle">
-                            <mat-option *ngFor="let year of years" [value]="year.label">
+                            <mat-option *ngFor="let year of years" [value]="year.value">
                                 {{ year.label }}
                             </mat-option>
                         </mat-select>

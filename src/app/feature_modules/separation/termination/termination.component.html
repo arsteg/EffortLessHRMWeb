@@ -159,7 +159,7 @@
       </div>
       <div class="mt-2 d-flex justify-content-between" mat-dialog-actions>
         <button mat-flat-button type="button" (click)="closeDialog()">Cancel</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="selectedAppeal?.appeal_status || appealForm.invalid">Submit</button>
+        <button mat-flat-button color="primary" type="submit"[disabled]="(selectedAppeal?.appeal_status && selectedAppeal?.appeal_status !== terminationStatuses.Pending) || appealForm.invalid">Submit</button>
       </div>
     </form>
   </mat-dialog-content>

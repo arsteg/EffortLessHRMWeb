@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { MatDialog } from '@angular/material/dialog';
+import { CommonService } from 'src/app/_services/common.Service';
 
 @Component({
   selector: 'app-eligible-states',
@@ -20,6 +21,7 @@ export class EligibleStatesComponent implements OnInit {
 
   constructor(private modalService: NgbModal,
     private payroll: PayrollService,
+    private commonService: CommonService,
     private fb: FormBuilder,
     private dialog: MatDialog) { }
 
@@ -34,7 +36,7 @@ export class EligibleStatesComponent implements OnInit {
   }
 
   getAllStates() {
-    this.payroll.getAllStates().subscribe((res: any) => {
+    this.commonService.getAllStates().subscribe((res: any) => {
       this.states = res.data;
       // Ensure all states are in the form array
       this.states.forEach(state => {
