@@ -10,6 +10,8 @@ import { forkJoin } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DestroyRef } from '@angular/core';
 @Component({
   selector: 'app-expenses-categories',
   templateUrl: './expenses-categories.component.html',
@@ -33,6 +35,7 @@ export class ExpensesCategoriesComponent implements OnInit {
   displayedColumns: string[] = ['label', 'type', 'actions'];
   dialogRef: MatDialogRef<any>;
   allData: any[] = [];
+  private readonly destroyRef = inject(DestroyRef);
   expenseTypes = {
     perDay: 'Per Day',
     time: 'Time',
@@ -72,8 +75,10 @@ export class ExpensesCategoriesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllExpensesCategories();
-    this.addCategoryForm.get('label')?.valueChanges.subscribe(value => {
-      this.isSubmitted = false;
+    this.addCategoryForm.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      if (this.isSubmitted) {
+        this.isSubmitted = false;
+      }
     });
   }
 
@@ -259,45 +264,48 @@ export class ExpensesCategoriesComponent implements OnInit {
   }
 
   updateExpenseCategory() {
-    this.isSubmitted = true;
-    let categoryPayload = {
-      type: this.addCategoryForm.value['type'],
-      label: this.addCategoryForm.value['label'],
-      isMandatory: this.addCategoryForm.value['isMandatory']
-    };
-    /**Update Category */
-    const apiCalls = {};
-    const updateCategory$ = this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload);
-    apiCalls['updateCategory'] = updateCategory$;
+  this.isSubmitted = true;
+  let categoryPayload = {
+    type: this.addCategoryForm.value['type'],
+    label: this.addCategoryForm.value['label'],
+    isMandatory: this.addCategoryForm.value['isMandatory']
+  };
 
-    /**Update fields */
-    if (this.addCategoryForm.get('fields')) {
-      const updateFields = (this.addCategoryForm.value['fields'] as any[]).filter(
-        (field) => field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
-      );
+  /** Update Category */
+  const apiCalls: { [key: string]: any } = {};
+  const updateCategory$ = this.expenses.updateCategory(this.selectedCategory?._id, categoryPayload);
+  apiCalls['updateCategory'] = updateCategory$;
 
-      if (updateFields.length > 0) {
-        const fieldsPayload = {
-          fields: updateFields
-        };
-        const updateField$ = this.expenses.updateCategoryField(fieldsPayload);
-        apiCalls['updateField'] = updateField$;
-      }
-      /**Add New fields */
-      const newFields = (this.addCategoryForm.value['fields'] as any[]).filter(
-        (field) => !field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
-      );
-      if (newFields && newFields.length > 0) {
-        let fieldsPayload = {
-          fields: newFields,
-          expenseCategory: this.selectedCategory._id
-        };
-        const addField$ = this.expenses.addCategoryField(fieldsPayload);
-        apiCalls['addField'] = addField$;
-      }
+  /** Update fields */
+  if (this.addCategoryForm.get('fields')) {
+    const updateFields = (this.addCategoryForm.value['fields'] as any[]).filter(
+      (field) => field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
+    );
 
+    if (updateFields.length > 0) {
+      const fieldsPayload = {
+        fields: updateFields
+      };
+      const updateField$ = this.expenses.updateCategoryField(fieldsPayload);
+      apiCalls['updateField'] = updateField$;
     }
-    forkJoin(apiCalls).subscribe((result: { [key: string]: any }) => {
+
+    /** Add New fields */
+    const newFields = (this.addCategoryForm.value['fields'] as any[]).filter(
+      (field) => !field.id && !this.originalFields.some((originalField) => isEqual(field, originalField))
+    );
+    if (newFields && newFields.length > 0) {
+      let fieldsPayload = {
+        fields: newFields,
+        expenseCategory: this.selectedCategory._id
+      };
+      const addField$ = this.expenses.addCategoryField(fieldsPayload);
+      apiCalls['addField'] = addField$;
+    }
+  }
+
+  forkJoin(apiCalls).subscribe({
+    next: (result: { [key: string]: any }) => {
       if (result['updateCategory']) {
         this.toast.success(this.translate.instant('expenses.category_updated_success'));
         this.updatedCategory = result['updateCategory']?.data._id;
@@ -311,12 +319,18 @@ export class ExpensesCategoriesComponent implements OnInit {
         this.toast.success(this.translate.instant('expenses.category_applicable_field_updated_success'));
       }
       if (result['addField']) {
-        this.toast.success(this.translate.instant('expenses.category_applicable_field_added_success'))
+        this.toast.success(this.translate.instant('expenses.category_applicable_field_added_success'));
       }
       this.getAllExpensesCategories();
       this.dialogRef.close();
-    })
-  }
+    },
+    error: (err) => {
+      // Handle errors with toast notifications
+      this.isSubmitted = false; // Reset isSubmitted on error
+      this.toast.error(err);
+    }
+  });
+}
 
   editCategory() {
     this.isEdit = true;
