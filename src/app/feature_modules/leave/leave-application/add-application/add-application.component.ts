@@ -982,8 +982,9 @@ export class AddApplicationComponent implements OnDestroy {
         } else if (res.data === null) {
           this.toast.warning(res.message);
         }
-        this.leaveApplicationRefreshed.emit(res.data);
-        this.resetForm();
+        this.closeModal()
+        // this.leaveApplicationRefreshed.emit(res.data);
+        // this.resetForm();
       },
       error: (error) => {
         const errorMessage = error || this.translate.instant('leave.errorAddLeaveGeneric');
