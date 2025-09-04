@@ -57,9 +57,9 @@ export class CreateReportComponent {
     this.expenseReportform = this.fb.group({
       expenseCategory: ['', Validators.required],
       incurredDate: ['', [Validators.required, this.futureDateValidator()]],
-      amount: [0, Validators.min(0)],
+      amount: [0, [Validators.required, Validators.min(0)]],
       type: [''],
-      quantity: [0, Validators.min(0)],
+      quantity: [0, [Validators.required, Validators.min(0)]],
       isReimbursable: [false],
       isBillable: [false],
       reason: [''],

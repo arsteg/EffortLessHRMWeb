@@ -157,6 +157,7 @@
         "select_category":"Select Category",
         "applicable_category_field":"Select Applicable Category Field",
         "quantity":"Quantity",
+        "quantity_error":"Please enter quantity.",
         "view_attachment":"View Attachment",
         "attachment":"Attachment",
         "upload":"Upload",

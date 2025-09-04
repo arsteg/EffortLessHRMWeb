@@ -15,13 +15,14 @@
                     <mat-label>{{'expenses.select_category' | translate}}</mat-label>
                     <mat-select formControlName="expenseCategory" required
                         (selectionChange)="onCategorySelection($event.value)">
-                        <mat-option value="" disabled >-{{'expenses.select_category' | translate}}-</mat-option>
+                        <mat-option value="" disabled>-{{'expenses.select_category' | translate}}-</mat-option>
                         <mat-option *ngFor="let category of categories"
                             [value]="category._id">{{category?.label}}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="expenseReportform.get('expenseCategory')?.hasError('required') || expenseReportform.get('expenseCategory')?.touched">
-                    {{ 'expenses.choose_type_error' | translate }}
-                </mat-error>
+                    <mat-error
+                        *ngIf="expenseReportform.get('expenseCategory')?.hasError('required') || expenseReportform.get('expenseCategory')?.touched">
+                        {{ 'expenses.choose_type_error' | translate }}
+                    </mat-error>
                 </mat-form-field>
             </div>
             <div class="col-md-6 col-12">
@@ -57,9 +58,10 @@
                         <mat-option [value]="field?.label" *ngFor="let field of applicableCategoryFields">{{
                             field?.label }}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="expenseReportform.get('type')?.hasError('required') || expenseReportform.get('type')?.touched">
-                    {{ 'expenses.choose_category_type' | translate }}
-                </mat-error>
+                    <mat-error
+                        *ngIf="expenseReportform.get('type')?.hasError('required') || expenseReportform.get('type')?.touched">
+                        {{ 'expenses.choose_category_type' | translate }}
+                    </mat-error>
                 </mat-form-field>
             </div>
 
@@ -69,10 +71,13 @@
                     <input matInput type="number" min="0" formControlName="quantity" (input)="updateTotalRate()">
                     <mat-hint>{{'expenses.rate_per' | translate}} {{categoryType?.type}} {{'expenses.category' |
                         translate}} {{ selectedRate }}</mat-hint>
-                    @if(expenseReportform.get('quantity').errors || expenseReportform.get('quantity').touched){
+                    @if(expenseReportform.get('quantity')?.invalid && expenseReportform.get('quantity')?.touched){
                     <mat-error>
-                        @if(expenseReportform.get('quantity').hasError('min')){
+                        @if(expenseReportform.get('quantity')?.errors['min']){
                         {{'expenses.negativeValRestrict' | translate}}
+                        }
+                        @if (expenseReportform.get('quantity')?.errors['required']){
+                        {{ 'expenses.quantity_error' | translate }}
                         }
                     </mat-error>
                     }
@@ -84,15 +89,16 @@
                     <mat-label>{{'expenses.amount' | translate}}</mat-label>
                     <input matInput type="number" min="0" formControlName="amount" [value]="totalRate"
                         (change)="setPermissions()">
-                    @if(expenseReportform.get('amount').errors || expenseReportform.get('amount').touched){
+                    
+                    @if(expenseReportform.get('amount').invalid && expenseReportform.get('amount').touched){
                     <mat-error>
-                        @if(expenseReportform.get('amount').errors['required']){
+                        @if(expenseReportform.get('amount')?.errors['required']){
                         {{'expenses.amount_error' | translate}}
                         }
-                        @if(expenseReportform.get('amount').errors['exceeds']){
+                        @if(expenseReportform.get('amount')?.errors['exceeds']){
                         {{'expenses.amount_limit' | translate}} {{expenseData.maximumAmountPerExpense}}.
                         }
-                        @if(expenseReportform.get('amount').hasError('min')){
+                        @if(expenseReportform.get('amount')?.errors['min']){
                         {{'expenses.negativeValRestrict' | translate}}
                         }
                     </mat-error>
