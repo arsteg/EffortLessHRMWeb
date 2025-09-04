@@ -55,7 +55,7 @@ export class CreateReportComponent {
     private toast: ToastrService
   ) {
     this.expenseReportform = this.fb.group({
-      expenseCategory: [''],
+      expenseCategory: ['', Validators.required],
       incurredDate: ['', [Validators.required, this.futureDateValidator()]],
       amount: [0, Validators.min(0)],
       type: [''],
