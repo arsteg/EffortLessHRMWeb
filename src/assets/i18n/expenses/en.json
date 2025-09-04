@@ -62,6 +62,7 @@
         "choose_type":"Choose the type of expense",
         "choose_type_hint":"Select how this expense should be calculated (Per Day, Date Range, Time, Distance, or Other)",
         "choose_type_error":"Please choose a type of expense category",
+        "choose_category_type":"Choose an expense applicable category field",
         "enter_expense_label":"Enter a label for this expense",
         "enter_expense_label_error":"Please enter label of expense category",
         "add_fields_label":"Please add/edit fields that employees need to fill during expense application",

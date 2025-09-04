@@ -33,10 +33,10 @@
                     <mat-datepicker #picker></mat-datepicker>
                     @if(expenseReportform.get('incurredDate').invalid || expenseReportform.get('incurredDate').touched){
                     <mat-error>
-                        @if(expenseReportform.get('incurredDate').errors['required']){
+                        @if(expenseReportform.get('incurredDate').hasError('required')){
                         {{'expenses.date_required' | translate}}
                         }
-                        @if(expenseReportform.get('incurredDate').errors['duplicate']){
+                        @if(expenseReportform.get('incurredDate').hasError('duplicate')){
                         {{'expenses.date_duplicate_for_category' | translate}}
                         }
                         @if(expenseReportform.get('incurredDate')?.hasError('futureDate') &&
@@ -57,6 +57,9 @@
                         <mat-option [value]="field?.label" *ngFor="let field of applicableCategoryFields">{{
                             field?.label }}</mat-option>
                     </mat-select>
+                    <mat-error *ngIf="expenseReportform.get('type')?.hasError('required') || expenseReportform.get('type')?.touched">
+                    {{ 'expenses.choose_category_type' | translate }}
+                </mat-error>
                 </mat-form-field>
             </div>
 
