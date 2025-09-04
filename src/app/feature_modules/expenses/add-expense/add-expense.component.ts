@@ -69,6 +69,19 @@ export class AddExpenseComponent {
     this.getUsers();
     this.getCategoryByUser();
     this.getAllCatgeories();
+    this.addExpenseForm.get('employee').valueChanges.subscribe(() => {
+      this.isSubmitting = false;
+      this.hasBeenSubmitted = false;
+      this.getCategoryByUser();
+    });
+    this.addExpenseForm.get('title').valueChanges.subscribe(() => {
+      this.hasBeenSubmitted = false;
+      this.isSubmitting = false;
+    });
+    this.addExpenseForm.get('amount').valueChanges.subscribe(() => {
+      this.hasBeenSubmitted = false;
+      this.isSubmitting = false;
+    });
   }
 
   getUsers() {

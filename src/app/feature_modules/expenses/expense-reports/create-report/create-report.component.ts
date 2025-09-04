@@ -44,6 +44,8 @@ export class CreateReportComponent {
   private readonly destroyRef = inject(DestroyRef);
   expenseData: any;
   isSubmitting: boolean = false;
+  documentMandatory: boolean;
+
 
   constructor(
     public expenseService: ExpensesService,
@@ -106,11 +108,18 @@ export class CreateReportComponent {
         this.categories = res.data;
       });
     }
+    
   }
 
   initChanges() {
     this.expenseReportform.get('amount').valueChanges.subscribe((value: string) => {
       this.setPermissions();
+    });
+
+    this.expenseReportform.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      if (this.isSubmitting) {
+        this.isSubmitting = false;
+      }
     });
   }
 
@@ -202,7 +211,8 @@ export class CreateReportComponent {
         this.dialogRef.close();
       },
       (err) => {
-        this.toast.error(err || this.translate.instant('expenses.expense_updated_error'));
+        console.log(err)
+        this.toast.error(err);
         this.isSubmitting = false;
       }
     );
@@ -222,7 +232,8 @@ export class CreateReportComponent {
         this.closeModal();
       },
       (err) => {
-        this.toast.error(err || this.translate.instant('expenses.expense_created_error'));
+        console.log(err)
+        this.toast.error(err);
         this.isSubmitting = false;
       }
     );
@@ -235,14 +246,13 @@ export class CreateReportComponent {
       reader.onload = () => {
         const base64String = reader.result.toString().split(',')[1];
         const fileSize = file.size;
-        const fileType = file.type;
         const fileNameParts = file.name.split('.');
-        const extension = '.' + fileNameParts[fileNameParts.length - 1];
+        const extention = '.' + fileNameParts[fileNameParts.length - 1];
         const attachment = {
           attachmentName: file.name,
           attachmentType: file.type,
           attachmentSize: fileSize,
-          extension: extension,
+          extention: extention,
           file: base64String
         };
         resolve(attachment);
@@ -253,21 +263,21 @@ export class CreateReportComponent {
     });
   }
 
-  onFileSelect(event) {
-    const files: FileList = event.target.files;
-    if (files) {
-      for (let i = 0; i < files.length; i++) {
-        const file: File = files.item(i);
-        if (file) {
-          this.selectedFiles.push(file);
-        }
-      }
+ onFileSelected(event: any) {
+    const newFiles: FileList = event.target.files;
+    if (newFiles) {
+      const previousFiles = this.selectedFiles || [];
+      this.selectedFiles = previousFiles.concat(Array.from(newFiles));
+      this.expenseReportform.get('expenseAttachments')?.setValue(this.selectedFiles.length > 0 ? 'files_selected' : '');
+      this.expenseReportform.get('expenseAttachments')?.updateValueAndValidity();
+      event.target.value = '';
     }
   }
-
   removeFile(index: number) {
     if (index !== -1) {
       this.selectedFiles.splice(index, 1);
+      this.expenseReportform.get('expenseAttachments')?.setValue(this.selectedFiles.length > 0 ? 'files_selected' : '');
+      this.expenseReportform.get('expenseAttachments')?.updateValueAndValidity();
     }
   }
 
