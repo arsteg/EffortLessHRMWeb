@@ -1,5 +1,8 @@
 {
     "expenses": {
+        "attachments": "Attachments",
+        "fileSize": "5MB size file is allowed.",
+        "fileType": "Allowed file types: jpeg, .glb, .svg, .blend, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, odt, fodt, ods, fods, odp, fodp, odg, fodg, odf, csv, html, css, txt, zip",
         "field_type_required": "Field type is required.",
         "field_name_required": "Field name is required.",
         "attachmentRequired": "Attachment is required. Please upload at least one file.",
