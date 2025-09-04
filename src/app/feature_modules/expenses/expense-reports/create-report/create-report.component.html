@@ -71,7 +71,7 @@
                         translate}} {{ selectedRate }}</mat-hint>
                     @if(expenseReportform.get('quantity').errors || expenseReportform.get('quantity').touched){
                     <mat-error>
-                        @if(expenseReportform.get('quantity').errors['min']){
+                        @if(expenseReportform.get('quantity').hasError('min')){
                         {{'expenses.negativeValRestrict' | translate}}
                         }
                     </mat-error>
@@ -92,7 +92,7 @@
                         @if(expenseReportform.get('amount').errors['exceeds']){
                         {{'expenses.amount_limit' | translate}} {{expenseData.maximumAmountPerExpense}}.
                         }
-                        @if(expenseReportform.get('amount').errors['min']){
+                        @if(expenseReportform.get('amount').hasError('min')){
                         {{'expenses.negativeValRestrict' | translate}}
                         }
                     </mat-error>
