@@ -207,7 +207,7 @@ export class CreateReportComponent {
       (result: any) => {
         this.expenseService.expenseReportExpense.next(result.data);
         this.toast.success(this.translate.instant('expenses.expense_updated_success'));
-        this.expenseReportExpensesEmitter.emit({ action: 'update', data: result.data }); // Emit event on update
+        this.expenseReportExpensesEmitter.emit({ action: 'update', data: result.data, close: true }); // Emit event on update
         this.dialogRef.close();
       },
       (err) => {
@@ -227,7 +227,7 @@ export class CreateReportComponent {
       (result: any) => {
         this.expenseService.expenseReportExpense.next(result);
         this.toast.success(this.translate.instant('expenses.expense_created_success'));
-        this.expenseReportExpensesEmitter.emit({ action: 'add', data: result }); // Emit event on add
+        this.expenseReportExpensesEmitter.emit({ action: 'add', data: result, close: true }); // Emit event on add
         this.dialogRef.close();
         this.closeModal();
       },
