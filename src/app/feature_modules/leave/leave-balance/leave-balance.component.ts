@@ -125,6 +125,15 @@ export class LeaveBalanceComponent {
         value: `${this.translate.instant('leave.month.january')}_${nextYear.toString()}-${this.translate.instant('leave.month.december')}_${nextYear.toString()}`
       }
     ];
+
+    // const currentYearCycle = this.years.find(year => year.value.includes(currentYear.toString()))?.value;
+    // if (currentYearCycle) {
+    //   this.leaveBalanceForm.patchValue({ cycle: currentYearCycle });
+    // } else {
+    //   this.error = this.translate.instant('leave.errorNoCurrentYearCycle');
+    //   this.toast.error(this.error);
+    // }
+
     this.leaveBalanceForm.valueChanges.subscribe(() => {
       if (this.leaveBalanceForm.valid) {
         this.getLeaveBalance();
@@ -179,13 +188,13 @@ export class LeaveBalanceComponent {
         cycle: this.leaveBalanceForm.value.cycle?.toUpperCase(),
         category: this.leaveBalanceForm.value.category
       };
-      if (this.portalView == 'user') {
-        if (this.extractedUrl === 'my-leave-balance') {
-          payload.user = this.currentUser?.id;
-        } else if (this.extractedUrl === 'my-team-balance') {
-          payload.user = this.member?.id;
-        }
-      }
+      // if (this.portalView == 'user') {
+      //   if (this.extractedUrl === 'my-leave-balance') {
+      //     payload.user = this.currentUser?.id;
+      //   } else if (this.extractedUrl === 'my-team-balance') {
+      //     payload.user = this.member?.id;
+      //   }
+      // }
       this.leaveService.getLeaveBalance(payload).subscribe({
         next: (res: any) => {
           this.leaveBalance = res.data;
@@ -220,6 +229,7 @@ export class LeaveBalanceComponent {
     this.error = '';
     this.leaveCategories = [];
     this.leaveBalanceForm.patchValue({ category: '' });
+    this.leaveBalanceForm.patchValue({ user: userId });
 
     this.leaveService.getLeaveCategoriesByUserv1(userId).subscribe(
       {
@@ -245,6 +255,7 @@ export class LeaveBalanceComponent {
   getCategoriesByCurrentUser() {
     const user = this.currentUser?.id;
     this.member = user;
+    this.leaveBalanceForm.patchValue({ user: user });
     this.leaveService.getLeaveCategoriesByUserv1(user).subscribe({
       next: (res: any) => {
         if (res.status == 'success') {
