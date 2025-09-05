@@ -294,7 +294,6 @@ export class AdvanceTemplateAssignmentComponent {
 
     if (this.addTemplateAssignmentForm.valid) {
       this.isSubmitted = true;
-      console.log(this.isSubmitted)
       // Prepare the payload
       let payload = {
         user: this.addTemplateAssignmentForm.value.user,
@@ -321,7 +320,6 @@ export class AdvanceTemplateAssignmentComponent {
           }
         );
       } else if (this.changeMode === 'Add') {
-        console.log(this.isSubmitted)
         this.expenseService.addAdvanceTemplateAssignment(payload).subscribe(
           (res: any) => {
             this.getAssignments();
