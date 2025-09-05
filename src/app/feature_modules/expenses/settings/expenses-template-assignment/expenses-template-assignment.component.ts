@@ -44,6 +44,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   dataSource = new MatTableDataSource<any>([]);
   dialogRef: MatDialogRef<any>;
   managers: any;
+  isSubmitted: boolean = false;
   columns: TableColumn[] = [
     { key: 'employeeName', name: this.translate.instant('expenses.member') },
     { key: 'expenseTemplate', name: this.translate.instant('expenses.current_expense_template') },
@@ -196,6 +197,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   }
 
   open(content: any) {
+    this.isSubmitted = false;
     if (this.changeMode == 'Add') {
       this.showApproverFields = false;
     }
@@ -307,6 +309,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
   }
 
   addOrUpdateAssignment() {
+    this.isSubmitted = true;
     this.templateAssignmentForm.get('user').enable();
     this.templateAssignmentForm.get('expenseTemplate').enable();
     this.templateAssignmentForm.get('effectiveDate').enable();
