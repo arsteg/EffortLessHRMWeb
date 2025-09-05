@@ -47,8 +47,8 @@ export class AdvanceTemplatesComponent implements OnInit {
   isSubmitted: boolean = false;
   columns: TableColumn[] = [
     { key: 'policyLabel', name: this.translate.instant('expenses.advance_template_label') },
-    { 
-      key: 'advanceCategories', 
+    {
+      key: 'advanceCategories',
       name: this.translate.instant('expenses.number_of_advance_categories'),
       valueFn: (row: any) => row?.advanceCategories?.length || 0
     },
@@ -89,9 +89,17 @@ export class AdvanceTemplatesComponent implements OnInit {
       }
       this.addAdvanceTempForm.get('firstApprovalEmployee')?.updateValueAndValidity();
     });
+
+    this.addAdvanceTempForm.valueChanges.subscribe(() => {
+      if (this.isSubmitted) {
+        this.isSubmitted = false; // Reset isSubmitted when form values change
+      }
+    });
+
     this.dataSource = new MatTableDataSource(this.list);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+
   }
 
   getManagers() {
