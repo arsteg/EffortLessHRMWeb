@@ -165,7 +165,6 @@ export class AdvanceTemplatesComponent implements OnInit {
   }
 
   addAdvanceTemplate() {
-    console.log(this.addAdvanceTempForm.value)
     this.isSubmitted = true;
     if (this.addAdvanceTempForm.valid) {
       if (this.changeMode === 'Add') {
