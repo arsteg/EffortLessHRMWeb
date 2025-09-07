@@ -21,6 +21,7 @@ export class AddAdvanceReportComponent {
   @Input() selectedRecord: any;
   allAdvanceCategories: any;
   commentLength = 0;
+  isSubmitted: boolean = false;
 
   constructor(private fb: FormBuilder,
     private expenseService: ExpensesService,
@@ -36,6 +37,7 @@ export class AddAdvanceReportComponent {
   }
 
   ngOnInit() {
+    this.isSubmitted = false;
     if (this.changeMode == 'Update') {
       this.addAdvanceReport.patchValue(this.selectedRecord);
       this.getAdvanceCategoryByUserId(this.selectedRecord.employee);
@@ -55,6 +57,10 @@ export class AddAdvanceReportComponent {
     this.addAdvanceReport.get('comment')?.valueChanges.subscribe(value => {
       this.commentLength = value?.length || 0;
     });
+
+    this.addAdvanceReport.valueChanges.subscribe(() => {
+     this.isSubmitted = false;
+    })
   }
 
   getAllAdvanceCategories() {
@@ -67,6 +73,7 @@ export class AddAdvanceReportComponent {
   }
 
   onSubmission() {
+    this.isSubmitted = true;
     if (this.addAdvanceReport.valid) {
       if (this.changeMode == 'Add') {
         this.expenseService.addAdvanceReport(this.addAdvanceReport.value).subscribe((res: any) => {

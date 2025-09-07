@@ -112,8 +112,6 @@ export class AttendanceRecordsComponent implements OnInit {
     return this.attendanceService.getShiftAssignment(payload.skip, payload.next);
   }
 
-
-
   getAttendanceTemplateAssignment(): Observable<any> {
     let payload = { skip: '', next: '' };
     return this.attendanceService.getAttendanceAssignment(payload.skip, payload.next);
@@ -136,18 +134,19 @@ export class AttendanceRecordsComponent implements OnInit {
       attendance: this.getAttendanceByMonth(),
       leaves: this.getLeaveDetails(),
       holidays: this.getHolidays(),
-      shiftData: this.getShiftDetails()
+      shiftData: this.getShiftDetails(),
+      attendanceTemplate: this.getAttendanceTemplateAssignment()
     }).subscribe({
-      next: (results: { attendance: any; leaves: any; holidays: any; shiftData: any }) => {
+      next: (results: { attendance: any; leaves: any; holidays: any; shiftData: any, attendanceTemplate: any }) => {
         this.groupedAttendanceRecords = this.groupAttendanceByUser(results.attendance);
         this.leave = results.leaves.data.filter((l: any) => l.status === 'Approved');
         this.holidays = results.holidays.data;
-
+        this.attendanceTemplateAssignment = results.attendanceTemplate.data;
         this.shifts = results.shiftData.data;
-        this.toast.success(this.translate.instant('common.data_updated_success'));
+        this.toast.success(this.translate.instant('attendance.data_updated_success'));
       },
       error: (error) => {
-        this.toast.error(this.translate.instant('common.data_update_error'));
+        this.toast.error(this.translate.instant('attendance.data_update_failed'));
       }
     });
   }
@@ -171,7 +170,7 @@ export class AttendanceRecordsComponent implements OnInit {
     records.forEach(record => {
       const user = record.user;
       const duration = record.duration;
-      const userName = this.getUser(record.user);
+      const userName = record?.user?.firstName + ' ' + record?.user?.lastName;
 
       if (!groupedRecords[user]) {
         groupedRecords[user] = {
@@ -193,26 +192,47 @@ export class AttendanceRecordsComponent implements OnInit {
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
   }
 
-
   getAttendanceStatus(user: any, date: Date): string {
     const today = new Date();
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     let status = 'N/A';
 
-    if (date > today) {
-      status = 'notApplicable';
-      return status;
+    // 1. Check for holidays first
+    if (this.isHolidayForUser(user, date)) {
+      return 'holiday';
     }
 
+    // 2. Check for leaves
+    if (this.isDateOnLeave(user._id, date)) {
+      return 'leave';
+    }
+
+    // 3. Check for weekly offs
+    const assignment = this.attendanceTemplateAssignment?.find(
+      (assignment: any) => assignment?.employee?._id === user?._id
+    );
+    const assignedTemplate = assignment?.attendanceTemplate;
+    const weeklyOfDays = assignedTemplate?.weeklyOfDays || [];
+    const dayOfWeekName = dayNames[date.getDay()];
+    if (weeklyOfDays.includes(dayOfWeekName)) {
+      return 'weeklyOff';
+    }
+
+    // 4. Check for future dates
+    if (date > today) {
+      return 'notApplicable';
+    }
+
+    // 5. Check attendance record
     const attendance = user.attendance.find(
       (att: any) => new Date(att.date).toDateString() === date.toDateString()
     );
 
     if (!attendance) {
-      status = 'noRecord';
-      return status;
+      return 'noRecord';
     }
 
+    // 6. Check shift and calculate attendance status
     const shiftAssignment = this.shifts.find(
       (shift: any) => shift?.user === user?._id
     );
@@ -222,37 +242,17 @@ export class AttendanceRecordsComponent implements OnInit {
       const halfDayDuration = this.parseHoursToMinutes(shiftAssignment?.template?.minHoursPerDayToGetCreditforHalfDay);
 
       if (attendance.duration >= fullDayDuration) {
-        status = 'present';
+        return 'present';
       } else if (attendance.duration >= halfDayDuration) {
-        status = 'halfDay';
-      } else if (attendance.duration < halfDayDuration) {
-        status = 'incomplete halfDay';
+        return 'halfDay';
       } else {
-        status = 'incomplete';
+        return 'incomplete halfDay';
       }
-      return status;
     }
 
-    const assignment = this.attendanceTemplateAssignment?.find(
-      (assignment: any) => assignment?.employee?._id === user?._id
-    );
-    const assignedTemplate = assignment?.attendanceTemplate;
-    const weeklyOfDays = assignedTemplate?.weeklyOfDays || [];
-    const dayOfWeekName = dayNames[date.getDay()];
-
-    if (weeklyOfDays.includes(dayOfWeekName)) {
-      status = 'weeklyOff';
-      return status;
-    }
-
-    if (this.isDateOnLeave(user._id, date)) {
-      status = 'leave';
-    } else if (this.isHolidayForUser(user, date)) {
-      status = 'holiday';
-    }
+    // Default return if none of the above conditions are met
     return status;
   }
-
   isDateOnLeave(userId: string, date: Date): boolean {
     if (!this.leave || this.leave.length === 0) {
       return false;
@@ -286,9 +286,7 @@ export class AttendanceRecordsComponent implements OnInit {
 
       if (holidayDate.getTime() === compareDate.getTime()) {
         if (Array.isArray(holiday.holidayapplicableEmployee)) {
-          if (holiday.holidayapplicableEmployee.some((emp: any) => emp.user === user._id)) {
-            return true;
-          }
+          return true; ``
         }
       }
     }
@@ -501,7 +499,7 @@ export class AttendanceRecordsComponent implements OnInit {
       month: this.selectedMonth,
       year: this.selectedYear,
       records: attendanceRecords,
-      name: user.userName,
+      name: user.firstName + ' ' + user.lastName,
       shiftFullDayTime: this.formatHoursToTime(fullHours),
       shiftHalfDayTime: this.formatHoursToTime(halfHours),
       monthDays: daysInMonth

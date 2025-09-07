@@ -81,7 +81,7 @@
 
     <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
         <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-        <button mat-flat-button type="submit" color="primary">
+        <button mat-flat-button type="submit" [disabled]="isSubmitted" color="primary">
             {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
         </button>
     </div>

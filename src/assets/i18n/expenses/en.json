@@ -1,5 +1,11 @@
 {
     "expenses": {
+        "attachments": "Attachments",
+        "fileSize": "5MB size file is allowed.",
+        "fileType": "Allowed file types: jpeg, .glb, .svg, .blend, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx, odt, fodt, ods, fods, odp, fodp, odg, fodg, odf, csv, html, css, txt, zip",
+        "field_type_required": "Field type is required.",
+        "field_name_required": "Field name is required.",
+        "attachmentRequired": "Attachment is required. Please upload at least one file.",
         "settings": "Settings",
         "expense": "Expense",
         "expense_reports": "Expense Reports",
@@ -56,6 +62,7 @@
         "choose_type":"Choose the type of expense",
         "choose_type_hint":"Select how this expense should be calculated (Per Day, Date Range, Time, Distance, or Other)",
         "choose_type_error":"Please choose a type of expense category",
+        "choose_category_type":"Choose an expense applicable category field",
         "enter_expense_label":"Enter a label for this expense",
         "enter_expense_label_error":"Please enter label of expense category",
         "add_fields_label":"Please add/edit fields that employees need to fill during expense application",
@@ -150,6 +157,7 @@
         "select_category":"Select Category",
         "applicable_category_field":"Select Applicable Category Field",
         "quantity":"Quantity",
+        "quantity_error":"Please enter quantity.",
         "view_attachment":"View Attachment",
         "attachment":"Attachment",
         "upload":"Upload",

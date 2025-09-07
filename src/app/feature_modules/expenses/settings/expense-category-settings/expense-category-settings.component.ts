@@ -134,30 +134,37 @@ export class ExpenseCategorySettingsComponent {
     });
   }
 
-  toggleControl(formGroup: any, toggler: string, control: string) {
-    // Reset function to determine the appropriate empty value based on control
-    const resetValue = (controlName: string) => {
-      return controlName === 'timePeroid' ? '' : null;
-    };
+ toggleControl(formGroup: any, toggler: string, control: string) {
+  // Reset function to determine the appropriate empty value based on control
+  const resetValue = (controlName: string) => {
+    return controlName === 'timePeroid' ? '' : null;
+  };
 
-    // Initial state: disable and reset if toggler is false
-    if (!formGroup.get(toggler).value) {
-      formGroup.get(control).disable();
-      formGroup.get(control).setValue(resetValue(control));
+  const targetCtrl = formGroup.get(control);
+
+  const applyToggle = (value: boolean) => {
+    if (value) {
+      targetCtrl.enable();
+      // Add required validator dynamically
+      targetCtrl.addValidators([Validators.required]);
     } else {
-      formGroup.get(control).enable();
+      targetCtrl.disable();
+      targetCtrl.setValue(resetValue(control));
+      // Remove validators dynamically
+      targetCtrl.clearValidators();
     }
+    targetCtrl.updateValueAndValidity();
+  };
 
-    // Subscribe to toggler changes
-    formGroup.get(toggler).valueChanges.subscribe((value) => {
-      if (value) {
-        formGroup.get(control).enable();
-      } else {
-        formGroup.get(control).disable();
-        formGroup.get(control).setValue(resetValue(control));
-      }
-    });
-  }
+  // Initial state
+  applyToggle(formGroup.get(toggler).value);
+
+  // Subscribe to changes
+  formGroup.get(toggler).valueChanges.subscribe((value: boolean) => {
+    applyToggle(value);
+  });
+}
+
   
   addField(expenseCategoryIndex: number) {
     const newField = this._formBuilder.group({

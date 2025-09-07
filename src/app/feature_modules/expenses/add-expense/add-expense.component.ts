@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, Input, inject, Inject } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { CreateReportComponent } from '../expense-reports/create-report/create-report.component';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
@@ -34,6 +34,7 @@ export class AddExpenseComponent {
   reportId = '';
   isSubmitting: boolean = false;
   hasBeenSubmitted: boolean = false;
+  private dialogRef: MatDialogRef<AddExpenseComponent>
 
   constructor(
     private dialog: MatDialog,
@@ -69,6 +70,19 @@ export class AddExpenseComponent {
     this.getUsers();
     this.getCategoryByUser();
     this.getAllCatgeories();
+    this.addExpenseForm.get('employee').valueChanges.subscribe(() => {
+      this.isSubmitting = false;
+      this.hasBeenSubmitted = false;
+      this.getCategoryByUser();
+    });
+    this.addExpenseForm.get('title').valueChanges.subscribe(() => {
+      this.hasBeenSubmitted = false;
+      this.isSubmitting = false;
+    });
+    this.addExpenseForm.get('amount').valueChanges.subscribe(() => {
+      this.hasBeenSubmitted = false;
+      this.isSubmitting = false;
+    });
   }
 
   getUsers() {
@@ -123,7 +137,7 @@ export class AddExpenseComponent {
     if (this.changeMode === 'Add') {
       this.expenseReportExpenses = [];
       this.addExpenseForm.reset();
-      this.hasBeenSubmitted = false; // Reset submission status
+      this.hasBeenSubmitted = false;
     }
     if (this.changeMode === 'Update') {
       this.addExpenseForm.patchValue({
@@ -143,6 +157,7 @@ export class AddExpenseComponent {
 
   closeModal() {
     this.close.emit(true);
+    this.dialogRef.close();
     this.dialog.closeAll(); // Close the dialog
   }
 
@@ -168,6 +183,7 @@ export class AddExpenseComponent {
 
   createReport(showToaster: boolean = true) {
     if (this.hasBeenSubmitted) {
+      console.log('Form has already been submitted.');
       this.closeModal(); // Close the dialog if already submitted
       return;
     }
@@ -275,7 +291,7 @@ export class AddExpenseComponent {
 
   setCalculcatedExpenseAmount() {
     if (this.expenseReportExpenses.length > 0 && !this.validations?.expenseTemplate?.advanceAmount) {
-      this.addExpenseForm.get('amount').setValue(0);
+      // this.addExpenseForm.get('amount').setValue(0);
       this.addExpenseForm.get('amount').disable();
       this.addExpenseForm.get('amount').updateValueAndValidity();
     } else {

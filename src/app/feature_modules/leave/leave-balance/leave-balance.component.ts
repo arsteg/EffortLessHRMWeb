@@ -48,10 +48,12 @@ export class LeaveBalanceComponent {
   columns: TableColumn[] = [
     { 
       key: 'startMonth', 
-      name: this.translate.instant('leave.startMonth') 
+      name: this.translate.instant('leave.startMonth'),
+      valueFn: (row: any) => this.getMonthName(row.startMonth)
     },
     { key: 'endMonth', 
-      name: this.translate.instant('leave.endMonth') 
+      name: this.translate.instant('leave.endMonth'),
+      valueFn: (row: any) => this.getMonthName(row.endMonth)
     },
     { key: 'openingBalance', 
       name: this.translate.instant('leave.openingBalance') 
@@ -110,10 +112,28 @@ export class LeaveBalanceComponent {
     const previousYear = currentYear - 1;
     const nextYear = currentYear + 1;
     this.years = [
-      { label: `${this.translate.instant('leave.month.january')} ${previousYear.toString()} - ${this.translate.instant('leave.month.december')} ${previousYear.toString()}` },
-      { label: `${this.translate.instant('leave.month.january')} ${currentYear.toString()} - ${this.translate.instant('leave.month.december')} ${currentYear.toString()}` },
-      { label: `${this.translate.instant('leave.month.january')} ${nextYear.toString()} - ${this.translate.instant('leave.month.december')} ${nextYear.toString()}` }
+      { 
+        label: `${this.translate.instant('leave.month.january')} ${previousYear.toString()} - ${this.translate.instant('leave.month.december')} ${previousYear.toString()}`,
+        value: `${this.translate.instant('leave.month.january')}_${previousYear.toString()}-${this.translate.instant('leave.month.december')}_${previousYear.toString()}`
+      },
+      { 
+        label: `${this.translate.instant('leave.month.january')} ${currentYear.toString()} - ${this.translate.instant('leave.month.december')} ${currentYear.toString()}`,
+        value: `${this.translate.instant('leave.month.january')}_${currentYear.toString()}-${this.translate.instant('leave.month.december')}_${currentYear.toString()}`
+      },
+      { 
+        label: `${this.translate.instant('leave.month.january')} ${nextYear.toString()} - ${this.translate.instant('leave.month.december')} ${nextYear.toString()}`,
+        value: `${this.translate.instant('leave.month.january')}_${nextYear.toString()}-${this.translate.instant('leave.month.december')}_${nextYear.toString()}`
+      }
     ];
+
+    // const currentYearCycle = this.years.find(year => year.value.includes(currentYear.toString()))?.value;
+    // if (currentYearCycle) {
+    //   this.leaveBalanceForm.patchValue({ cycle: currentYearCycle });
+    // } else {
+    //   this.error = this.translate.instant('leave.errorNoCurrentYearCycle');
+    //   this.toast.error(this.error);
+    // }
+
     this.leaveBalanceForm.valueChanges.subscribe(() => {
       if (this.leaveBalanceForm.valid) {
         this.getLeaveBalance();
@@ -165,21 +185,21 @@ export class LeaveBalanceComponent {
     if (this.leaveBalanceForm.valid) {
       let payload = {
         user: this.leaveBalanceForm.value.user,
-        cycle: this.leaveBalanceForm.value.cycle,
+        cycle: this.leaveBalanceForm.value.cycle?.toUpperCase(),
         category: this.leaveBalanceForm.value.category
       };
-      if (this.portalView == 'user') {
-        if (this.extractedUrl === 'my-leave-balance') {
-          payload.user = this.currentUser?.id;
-        } else if (this.extractedUrl === 'my-team-balance') {
-          payload.user = this.member?.id;
-        }
-      }
+      // if (this.portalView == 'user') {
+      //   if (this.extractedUrl === 'my-leave-balance') {
+      //     payload.user = this.currentUser?.id;
+      //   } else if (this.extractedUrl === 'my-team-balance') {
+      //     payload.user = this.member?.id;
+      //   }
+      // }
       this.leaveService.getLeaveBalance(payload).subscribe({
         next: (res: any) => {
           this.leaveBalance = res.data;
           this.allData = this.leaveBalance;
-          this.totalRecords = this.leaveBalance.lenght;
+          this.totalRecords = this.leaveBalance.length;
         },
         error: () => {
           this.toast.error(this.translate.instant('leave.errorFetchingBalance'));
@@ -209,6 +229,7 @@ export class LeaveBalanceComponent {
     this.error = '';
     this.leaveCategories = [];
     this.leaveBalanceForm.patchValue({ category: '' });
+    this.leaveBalanceForm.patchValue({ user: userId });
 
     this.leaveService.getLeaveCategoriesByUserv1(userId).subscribe(
       {
@@ -234,6 +255,7 @@ export class LeaveBalanceComponent {
   getCategoriesByCurrentUser() {
     const user = this.currentUser?.id;
     this.member = user;
+    this.leaveBalanceForm.patchValue({ user: user });
     this.leaveService.getLeaveCategoriesByUserv1(user).subscribe({
       next: (res: any) => {
         if (res.status == 'success') {

@@ -467,7 +467,7 @@
             <button mat-flat-button (click)="close();">
                 {{ "leave.cancelButton" | translate }}
             </button>
-            <button mat-flat-button color="primary" [disabled]="isSubmitting" type="submit">
+            <button mat-flat-button color="primary" [disabled]="isSubmitting && categoryForm.invalid" type="submit">
                 {{
                 !isEdit
                 ? ("leave.addButton" | translate)

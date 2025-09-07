@@ -15,10 +15,14 @@
                     <mat-label>{{'expenses.select_category' | translate}}</mat-label>
                     <mat-select formControlName="expenseCategory" required
                         (selectionChange)="onCategorySelection($event.value)">
-                        <mat-option value="">-{{'expenses.select_category' | translate}}-</mat-option>
+                        <mat-option value="" disabled>-{{'expenses.select_category' | translate}}-</mat-option>
                         <mat-option *ngFor="let category of categories"
                             [value]="category._id">{{category?.label}}</mat-option>
                     </mat-select>
+                    <mat-error
+                        *ngIf="expenseReportform.get('expenseCategory')?.hasError('required') || expenseReportform.get('expenseCategory')?.touched">
+                        {{ 'expenses.choose_type_error' | translate }}
+                    </mat-error>
                 </mat-form-field>
             </div>
             <div class="col-md-6 col-12">
@@ -28,12 +32,12 @@
                         (dateChange)="setPermissions()">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
-                    @if(expenseReportform.get('incurredDate').errors && expenseReportform.get('incurredDate').touched){
+                    @if(expenseReportform.get('incurredDate').invalid || expenseReportform.get('incurredDate').touched){
                     <mat-error>
-                        @if(expenseReportform.get('incurredDate').errors['required']){
+                        @if(expenseReportform.get('incurredDate').hasError('required')){
                         {{'expenses.date_required' | translate}}
                         }
-                        @if(expenseReportform.get('incurredDate').errors['duplicate']){
+                        @if(expenseReportform.get('incurredDate').hasError('duplicate')){
                         {{'expenses.date_duplicate_for_category' | translate}}
                         }
                         @if(expenseReportform.get('incurredDate')?.hasError('futureDate') &&
@@ -54,6 +58,10 @@
                         <mat-option [value]="field?.label" *ngFor="let field of applicableCategoryFields">{{
                             field?.label }}</mat-option>
                     </mat-select>
+                    <mat-error
+                        *ngIf="expenseReportform.get('type')?.hasError('required') || expenseReportform.get('type')?.touched">
+                        {{ 'expenses.choose_category_type' | translate }}
+                    </mat-error>
                 </mat-form-field>
             </div>
 
@@ -63,10 +71,13 @@
                     <input matInput type="number" min="0" formControlName="quantity" (input)="updateTotalRate()">
                     <mat-hint>{{'expenses.rate_per' | translate}} {{categoryType?.type}} {{'expenses.category' |
                         translate}} {{ selectedRate }}</mat-hint>
-                    @if(expenseReportform.get('quantity').errors && expenseReportform.get('quantity').touched){
+                    @if(expenseReportform.get('quantity')?.invalid && expenseReportform.get('quantity')?.touched){
                     <mat-error>
-                        @if(expenseReportform.get('quantity').errors['min']){
+                        @if(expenseReportform.get('quantity')?.errors['min']){
                         {{'expenses.negativeValRestrict' | translate}}
+                        }
+                        @if (expenseReportform.get('quantity')?.errors['required']){
+                        {{ 'expenses.quantity_error' | translate }}
                         }
                     </mat-error>
                     }
@@ -78,15 +89,16 @@
                     <mat-label>{{'expenses.amount' | translate}}</mat-label>
                     <input matInput type="number" min="0" formControlName="amount" [value]="totalRate"
                         (change)="setPermissions()">
-                    @if(expenseReportform.get('amount').errors && expenseReportform.get('amount').touched){
+                    
+                    @if(expenseReportform.get('amount').invalid && expenseReportform.get('amount').touched){
                     <mat-error>
-                        @if(expenseReportform.get('amount').errors['required']){
+                        @if(expenseReportform.get('amount')?.errors['required']){
                         {{'expenses.amount_error' | translate}}
                         }
-                        @if(expenseReportform.get('amount').errors['exceeds']){
+                        @if(expenseReportform.get('amount')?.errors['exceeds']){
                         {{'expenses.amount_limit' | translate}} {{expenseData.maximumAmountPerExpense}}.
                         }
-                        @if(expenseReportform.get('amount').errors['min']){
+                        @if(expenseReportform.get('amount')?.errors['min']){
                         {{'expenses.negativeValRestrict' | translate}}
                         }
                     </mat-error>
@@ -161,40 +173,36 @@
             </mat-form-field>
         </div>
 
-        <div class="form-group col-md-12 mt-2">
-            <mat-label>Attachment</mat-label>
+        <div class="col-12 mt-3">
+            <label for="">{{'expenses.attachments' | translate}}</label>
             <div class="attachment flex-wrap mt-1">
                 <label class="attach">
-                    <input style="display: none;" formControlName="expenseAttachments"
-                        accept=".jpeg,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt"
-                        type="file" (change)="onFileSelect($event)">
-                    <div class="details-attach-file p-2 d-flex align-items-center justify-content-center me-2 pointer">
-                        <mat-icon class="text-secondary">attach_file</mat-icon>
-                        <span class="ms-1">Add files to Attach</span>
+                    <input style="display: none;" [attr.required]="documentMandatory ? true : null"
+                        [required]="documentMandatory" formControlName="expenseAttachments"
+                        accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
+                        type="file" multiple (change)="onFileSelected($event)">
+                    <div class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
+                        <span class="fa fa-paperclip text-secondary"> Add files to Attach
+                        </span>
                     </div>
                 </label>
+                <small class="text-danger"
+                    *ngIf="documentMandatory && (!selectedFiles || selectedFiles.length === 0) && (expenseReportform.get('expenseAttachments')?.touched || expenseReportform.get('expenseAttachments')?.dirty)">
+                    {{ 'expenses.attachmentRequired' | translate }}
+                </small>
             </div>
-            <ul type="none" class="d-flex flex-wrap ps-0">
-                <li class="contentHeading p-2 d-flex align-items-center"
-                    *ngFor="let files of selectedFiles; let i = index" (click)="removeFile(i)">
-                    {{ files.name }}
-                    <mat-icon class="text-danger ms-2">cancel</mat-icon>
-                </li>
-            </ul>
-
-            @if(this.isEdit && expenseReportform.get('expenseAttachments').value && selectedFiles.length === 0){
-            <ul type="none" class="d-flex flex-wrap ps-0">
-                <li class="contentHeading p-2 d-flex align-items-center">
-                    <span (click)="openAttachment()">{{ documentName }}</span>
-                    <mat-icon class="text-danger ms-2" (click)="removeExistingAttachment()">cancel</mat-icon>
-                </li>
-            </ul>
-            }
         </div>
-        <small class="text-muted">Accepted attachments type:
-            jpeg, .glb, .svg, .blend, .jpg, .png, .gif, .pdf, .doc, .docx, .xls, .xlsx, .ppt, .pptx,
-            .odt, .fodt, .ods, .fods, .odp, .fodp, .odg, .fodg, .odf, .csv, .html, .css, .txt</small>
+        <div>
+            <ul type="none" class="d-flex ps-0">
+                <li class="contentHeading p-2" *ngFor="let files of selectedFiles; let i = index"
+                    (click)="removeFile(i)">
+                    {{files.name}} <i class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
+                </li>
+            </ul>
+        </div>
+        <small>{{'expenses.fileSize' | translate}}</small><br>
 
+        <small class="text-muted">{{'expenses.fileType' | translate}}</small>
     </div>
     <div mat-dialog-actions class="d-flex justify-content-between">
         <button mat-flat-button type="button" mat-dialog-close="'close'">{{'expenses.cancel' | translate}}</button>

@@ -4,7 +4,7 @@
     {{ 'expenses.add_new' | translate }}
   </button>
 </div>
-<hrm-table [data]="advanceCategories.data" [isServerSide]="true" [columns]="columns" [showExport]="'none'"
+<hrm-table [data]="advanceCategories?.data" [isServerSide]="true" [columns]="columns" [showExport]="'none'"
   [showSearch]="true" [totalItems]="totalRecords" (actionClicked)="handleAction($event, addModal)"
   (pageChanged)="onPageChange($event)" (sortChanged)="onSortChange($event)"
   (searchChanged)="onSearchChange($event)">
