@@ -31,7 +31,7 @@ export class AddAdvanceReportComponent {
       employee: ['', Validators.required],
       category: ['', Validators.required],
       status: ['Level 1 Approval Pending', Validators.required],
-      comment: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
+      comment: ['', Validators.required],
       amount: ['', [Validators.required, Validators.min(0)]]
     });
   }
