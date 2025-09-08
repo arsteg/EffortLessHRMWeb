@@ -111,7 +111,7 @@ export class AdvanceTemplateAssignmentComponent {
           approvalType: expenseAdvanceTemplateDetails?.approvalType
         };
       });
-      
+
       this.allData = this.dataSource.data;
     });
 
@@ -233,7 +233,26 @@ export class AdvanceTemplateAssignmentComponent {
     this.recordsPerPage = event.pageSize;
     this.getAssignments();
   }
+  private updateDataSourceAndAssignees() {
+    // Update dataSource
+    this.dataSource.data = this.templateAssignments.map((report) => {
+      const expenseAdvanceTemplateDetails = this.getTemplateDetails(report?.advanceTemplate);
+      return {
+        ...report,
+        employeeName: this.getUser(report?.user),
+        advanceTemplate: this.getAdvanceTemplate(report?.advanceTemplate),
+        primaryApprover: this.getUser(report?.primaryApprover),
+        secondaryApprover: this.getUser(report?.secondaryApprover),
+        approvalType: expenseAdvanceTemplateDetails?.approvalType,
+        effectiveDate: report.effectiveDate,
+      };
+    });
+    this.allData = this.dataSource.data;
 
+    // Update availableAssignees
+    const assignedUserIds = this.templateAssignments.map(assignment => assignment.user);
+    this.availableAssignees = this.allAssignee.filter(user => !assignedUserIds.includes(user._id));
+  }
   getAssignments() {
     let pagination = {
       skip: ((this.currentPage - 1) * this.recordsPerPage).toString(),
@@ -241,36 +260,11 @@ export class AdvanceTemplateAssignmentComponent {
     };
 
     this.expenseService.getAdvanceTemplateAssignment(pagination).subscribe((res: any) => {
-      this.dataSource.data = res.data.map((report) => {
-        const expenseAdvanceTemplateDetails = this.getTemplateDetails(report?.advanceTemplate);
-        return {
-          ...report,
-          employeeName: this.getUser(report?.user),
-          advanceTemplate: this.getAdvanceTemplate(report?.advanceTemplate),
-          primaryApprover: this.getUser(report?.primaryApprover),
-          effectiveDate: report.effectiveDate,
-          approvalType: expenseAdvanceTemplateDetails?.approvalType
-        };
-      });
+      this.templateAssignments = res.data;
       this.totalRecords = res.total;
-      const assignedUserIds = this.templateAssignments.map(assignment => assignment.user);
-      this.availableAssignees = this.allAssignee.filter(user => !assignedUserIds.includes(user._id));
-
-      this.dataSource.data = res.data.map((report) => {
-        const expenseAdvanceTemplateDetails = this.getTemplateDetails(report?.advanceTemplate);
-        return {
-          ...report,
-          employeeName: this.getUser(report?.user),
-          advanceTemplate: this.getAdvanceTemplate(report?.advanceTemplate),
-          primaryApprover: this.getUser(report?.primaryApprover),
-          effectiveDate: report.effectiveDate,
-          approvalType: expenseAdvanceTemplateDetails?.approvalType
-        };
-      });
-      this.allData = this.dataSource.data;
+      this.updateDataSourceAndAssignees();
     });
   }
-
   getTemplateDetails(templateId: string) {
     return this.advanceTemplates?.find(template => template?._id === templateId);
   }
@@ -281,7 +275,7 @@ export class AdvanceTemplateAssignmentComponent {
   }
 
   onSubmit() {
-    this.isSubmitted = true; // Disable the button immediately
+    this.isSubmitted = true;
 
     // Enable form controls before submission
     this.addTemplateAssignmentForm.get('primaryApprover')?.enable();
@@ -290,11 +284,8 @@ export class AdvanceTemplateAssignmentComponent {
     this.addTemplateAssignmentForm.get('effectiveDate')?.enable();
     this.addTemplateAssignmentForm.get('user')?.enable();
 
-    // Validate the form
-
     if (this.addTemplateAssignmentForm.valid) {
       this.isSubmitted = true;
-      // Prepare the payload
       let payload = {
         user: this.addTemplateAssignmentForm.value.user,
         primaryApprover: this.addTemplateAssignmentForm.value.primaryApprover || null,
@@ -307,7 +298,13 @@ export class AdvanceTemplateAssignmentComponent {
         this.expenseService.addAdvanceTemplateAssignment(payload).subscribe(
           (res: any) => {
             this.toast.success(this.translate.instant('expenses.template_assigned_update_success'));
-            this.getAssignments();
+            // Update templateAssignments and dataSource
+            const updatedAssignment = res.data;
+            const index = this.templateAssignments.findIndex(assignment => assignment._id === updatedAssignment._id);
+            if (index !== -1) {
+              this.templateAssignments[index] = updatedAssignment;
+            }
+            this.updateDataSourceAndAssignees();
             this.showApproverFields = false;
             this.changeMode = 'Add';
             this.isEdit = false;
@@ -322,8 +319,15 @@ export class AdvanceTemplateAssignmentComponent {
       } else if (this.changeMode === 'Add') {
         this.expenseService.addAdvanceTemplateAssignment(payload).subscribe(
           (res: any) => {
-            this.getAssignments();
             this.toast.success(this.translate.instant('expenses.template_assigned_success'));
+            // Add new assignment to templateAssignments
+            this.templateAssignments.push(res.data);
+            // Update availableAssignees by removing the newly assigned user
+            this.availableAssignees = this.availableAssignees.filter(
+              user => user._id !== res.data.user
+            );
+            // Update dataSource
+            this.updateDataSourceAndAssignees();
             this.addTemplateAssignmentForm.reset();
             this.dialogRef.close();
           },
@@ -337,11 +341,9 @@ export class AdvanceTemplateAssignmentComponent {
       this.addTemplateAssignmentForm.get('primaryApprover')?.disable();
       this.addTemplateAssignmentForm.get('secondaryApprover')?.disable();
       this.addTemplateAssignmentForm.get('user')?.disable();
-    }
-    else {
+    } else {
       this.addTemplateAssignmentForm.markAllAsTouched();
     }
-
   }
 
   setFormValues() {
@@ -397,13 +399,22 @@ export class AdvanceTemplateAssignmentComponent {
   }
 
   deleteAdvanceTemplateAssignment(id, index: number) {
-    this.expenseService.deleteAdvanceTemplateAssignment(id).subscribe((res: any) => {
-      this.ngOnInit();
-      this.toast.success(this.translate.instant('expenses.delete_success'));
-    },
+    this.expenseService.deleteAdvanceTemplateAssignment(id).subscribe(
+      (res: any) => {
+        const deletedAssignment = this.templateAssignments[index];
+        this.templateAssignments.splice(index, 1);
+        const deletedUser = this.allAssignee.find(user => user._id === deletedAssignment.user);
+        if (deletedUser) {
+          this.availableAssignees.push(deletedUser);
+          this.availableAssignees.sort((a, b) => `${a.firstName} ${a.lastName}`.localeCompare(`${b.firstName} ${b.lastName}`));
+        }
+        this.updateDataSourceAndAssignees();
+        this.toast.success(this.translate.instant('expenses.delete_success'));
+      },
       (err) => {
         this.toast.error(err || this.translate.instant('expenses.delete_error'));
-      })
+      }
+    );
   }
 
   deleteDialog(id: string, index: number): void {
