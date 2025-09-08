@@ -6,11 +6,11 @@
 </div>
 <mat-dialog-content>
     <div class="table-responsive">
-        <hrm-table [data]="hrmTableData" [columns]="hrmTableColumns" [showSearch]="true" [showExport]="'all'">
+        <hrm-table [data]="hrmTableData" [columns]="hrmTableColumns" [showSearch]="true" [showExport]="'all'" [pageTitle]="'Attendance Records'">
         </hrm-table>
     </div>
 
-    <hrm-table [data]="attendanceRecords" [columns]="attendanceTableColumns" [showSearch]="true" [showExport]="'all'">
+    <hrm-table [data]="attendanceRecords" [columns]="attendanceTableColumns" [showSearch]="true" [showExport]="'all'" [pageTitle]="'Attendance Records'">
     </hrm-table>
 
 </mat-dialog-content>
