@@ -209,7 +209,7 @@ export class AttendanceRecordsComponent implements OnInit {
 
     // 3. Check for weekly offs
     const assignment = this.attendanceTemplateAssignment?.find(
-      (assignment: any) => assignment?.employee?._id === user?._id
+      (assignment: any) => assignment?.employee?._id === user?._id?.id
     );
     const assignedTemplate = assignment?.attendanceTemplate;
     const weeklyOfDays = assignedTemplate?.weeklyOfDays || [];
@@ -231,10 +231,8 @@ export class AttendanceRecordsComponent implements OnInit {
     if (!attendance) {
       return 'noRecord';
     }
-
-    // 6. Check shift and calculate attendance status
     const shiftAssignment = this.shifts.find(
-      (shift: any) => shift?.user === user?._id
+      (shift: any) => shift?.user === user?._id?.id
     );
 
     if (shiftAssignment) {
@@ -249,10 +247,10 @@ export class AttendanceRecordsComponent implements OnInit {
         return 'incomplete halfDay';
       }
     }
-
     // Default return if none of the above conditions are met
     return status;
   }
+
   isDateOnLeave(userId: string, date: Date): boolean {
     if (!this.leave || this.leave.length === 0) {
       return false;
@@ -286,7 +284,7 @@ export class AttendanceRecordsComponent implements OnInit {
 
       if (holidayDate.getTime() === compareDate.getTime()) {
         if (Array.isArray(holiday.holidayapplicableEmployee)) {
-          return true; ``
+          return true;
         }
       }
     }
@@ -483,6 +481,7 @@ export class AttendanceRecordsComponent implements OnInit {
   }
 
   viewHistory(user: any) {
+    console.log(user)
     const fullHours = this.fullDayDuration / 60;
     const halfHours = this.halfDayDuration / 60;
 
@@ -499,7 +498,7 @@ export class AttendanceRecordsComponent implements OnInit {
       month: this.selectedMonth,
       year: this.selectedYear,
       records: attendanceRecords,
-      name: user.firstName + ' ' + user.lastName,
+      name: user.userName,
       shiftFullDayTime: this.formatHoursToTime(fullHours),
       shiftHalfDayTime: this.formatHoursToTime(halfHours),
       monthDays: daysInMonth

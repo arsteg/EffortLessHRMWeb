@@ -78,36 +78,14 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
     {
       key: 'checkIn',
       name: 'Check In',
-      valueFn: (row) => row?.checkIn ? this.datePipe.transform(row?.checkIn, 'mediumTime') : ''
     },
     {
       key: 'checkOut',
       name: 'Check Out',
-      valueFn: (row) => row?.checkOut ? this.datePipe.transform(row?.checkOut, 'mediumTime') : ''
     },
     {
       key: 'duration',
       name: 'Duration'
-    },
-    {
-      key: 'ODHours',
-      name: 'OD Hours'
-    },
-    {
-      key: 'SSLHours',
-      name: 'SSL Hours'
-    },
-    {
-      key: 'beforeProcessing',
-      name: 'Before Processing'
-    },
-    {
-      key: 'afterProcessing',
-      name: 'After Processing'
-    },
-    {
-      key: 'earlyLateStatus',
-      name: 'Early Late Status'
     },
     {
       key: 'deviationHour',
@@ -138,7 +116,8 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
           return {
             ...record,
             date: this.datePipe.transform(record.date, 'MMM d, yyyy'),
-            duration: (record.duration / 60).toFixed(2)
+            duration: (record.duration / 60).toFixed(2),
+            deviationHour: record.deviationHour ? (record.deviationHour / 60) : '0'
           };
         });
 
@@ -147,15 +126,15 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
         }, 0);
 
         this.totalDeviationHours = this.attendanceRecords.reduce((sum, record) => {
-          if (record.deviationHours) {
-            return sum + parseFloat(record.deviationHours);
-          } else {
-            return sum;
-          }
+          const deviation = typeof record.deviationHour === 'number' && !isNaN(record.deviationHour)
+            ? record.deviationHour
+            : 0;
+            console.log(sum + deviation)
+          return sum + deviation;
         }, 0);
 
+        console.log(this.totalDeviationHours);
         this.getStatus();
-
       },
       error: (err) => {
         console.error('Error fetching attendance records:', err);
@@ -166,7 +145,6 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
   getStatus() {
     if (this.data && this.data.records) {
       const statuses = this.data.records.map((record: any) => record.status);
-
       this.daysPresent = statuses.filter((status: string) => status === 'present').length;
       this.daysAbsent = statuses.filter((status: string) => status === 'noRecord').length;
       this.leaveTaken = statuses.filter((status: string) => status === 'leave').length;
@@ -190,7 +168,6 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
         totalPayableDays: this.totalPayableDays
       }];
     } else {
-      console.warn("data or data.records is undefined, cannot calculate status summary.");
       this.hrmTableData = [];
     }
   }

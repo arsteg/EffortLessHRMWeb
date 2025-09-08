@@ -227,7 +227,7 @@ export class CreateReportComponent {
       (result: any) => {
         this.expenseService.expenseReportExpense.next(result);
         this.toast.success(this.translate.instant('expenses.expense_created_success'));
-        this.expenseReportExpensesEmitter.emit({ action: 'add', data: result, close: true }); // Emit event on add
+        this.expenseReportExpensesEmitter.emit({ action: 'add', data: result, close: true });
         this.dialogRef.close();
         this.closeModal();
       },
