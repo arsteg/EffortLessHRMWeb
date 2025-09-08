@@ -91,7 +91,7 @@
         </div>
         <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
             <button mat-flat-button type="button" (click)="dialogRef.close()">{{'expenses.cancel' | translate}}</button>
-            <button mat-flat-button color="primary" type="submit" [disabled]="addAdvanceTempForm.invalid || isSubmitted">
+            <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitted">
                 {{isEdit?('expenses.update' | translate): ('expenses.add' | translate)}}
             </button>
         </div>

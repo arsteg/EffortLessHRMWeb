@@ -57,7 +57,7 @@ export class AdvanceTemplatesComponent implements OnInit {
       name: this.translate.instant('expenses.actions'),
       isAction: true,
       options: [
-        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
         { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH }
       ]
     }
@@ -240,7 +240,6 @@ export class AdvanceTemplatesComponent implements OnInit {
           approvalType: res.data.approvalType,
           advanceCategories: res.data.advanceCategories.map((advanceCategory: any) => advanceCategory.advanceCategory)
         });
-        console.log(this.addAdvanceTempForm.value)
       })
     }
     if (!this.isEdit) {
