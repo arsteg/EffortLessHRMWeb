@@ -1,6 +1,6 @@
 <div class="position-relative">
     <button mat-flat-button class="position-absolute end-0" color="primary" 
-        (click)="isEdit = false; clearselectedRequest(); open(addModal)">
+        (click)="isEdit = false; changeMode = 'Add'; clearselectedRequest(); open(addModal)">
         {{ 'expenses.add_new' | translate }}
     </button>
     </div>

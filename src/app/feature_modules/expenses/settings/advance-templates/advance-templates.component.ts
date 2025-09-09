@@ -284,6 +284,7 @@ export class AdvanceTemplatesComponent implements OnInit {
   handleAction(event: any, addModal: any) {
     if (event.action.label === 'Edit') {
       this.isEdit = true;
+      this.changeMode = 'Update';
       this.selectedTemplate = event.row;
       this.editadvanceCategory();
       this.open(addModal);
