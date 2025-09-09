@@ -126,7 +126,19 @@ export class UpdateCTCTemplateComponent {
       this.toast.error(this.translate.instant('payroll._ctc_templates.toast.template_name')); 
       return false;
     }
-    const res = await this.payroll.getCTCTemplateByName(this.ctcTemplateForm.value).toPromise();
+    const payroll = this.payroll.selectedCTCTemplate.subscribe((data: any) => {
+      this.selectedRecord = data;
+      this.fixedAllowance = data.ctcTemplateFixedAllowances;
+      this.fixedDeduction = data.ctcTemplateFixedDeductions;
+      this.variableAllowance = data.ctcTemplateVariableAllowances;
+      this.variableDeduction = data.ctcTemplateVariableDeductions;
+    });
+    const payload = {
+      ...this.ctcTemplateForm.value,
+      id: this.selectedRecord?._id
+    };
+    
+    const res = await this.payroll.getCTCTemplateByName(payload).toPromise();
     if (res.isDuplicate) {
       this.toast.error(res.message);
       return false;
@@ -138,13 +150,6 @@ export class UpdateCTCTemplateComponent {
       return false;
     }
     
-    const payroll = this.payroll.selectedCTCTemplate.subscribe((data: any) => {
-      this.selectedRecord = data;
-      this.fixedAllowance = data.ctcTemplateFixedAllowances;
-      this.fixedDeduction = data.ctcTemplateFixedDeductions;
-      this.variableAllowance = data.ctcTemplateVariableAllowances;
-      this.variableDeduction = data.ctcTemplateVariableDeductions;
-    });
     const id = this.selectedRecord?._id;
     if (id) {
       this.payroll.isEdit.next(true);
@@ -265,6 +270,37 @@ export class UpdateCTCTemplateComponent {
     this.payroll.getFixedAllowance(payload).subscribe((res: any) => {
       this.fixedAllowance = res.data;
       this.payroll.fixedAllowances.next(this.fixedAllowance);
+  
+      // ✅ Automatically select system-defined allowances if not in edit mode
+      if (!this.isEdit) {
+        const systemDefinedIds = this.fixedAllowance
+          .filter((fa: any) => fa.isDelete === false)
+          .map((fa: any) => fa._id);
+  
+        // ✅ Patch to form
+        this.ctcTemplateForm.patchValue({
+          ctcTemplateFixedAllowance: systemDefinedIds
+        });
+  
+        // ✅ Add to selectedRecord as well
+        const existingIds = new Set();
+        this.selectedRecord.ctcTemplateFixedAllowances = systemDefinedIds.map(id => {
+          const fa = this.fixedAllowance.find(f => f._id === id);
+          if (fa && !existingIds.has(id)) {
+            existingIds.add(id);
+            return {
+              fixedAllowance: { _id: fa._id, label: fa.label },
+              value: '',
+              criteria: '',
+              minAmount: '',
+              isDelete: fa.isDelete
+            };
+          }
+          return null;
+        }).filter(item => item !== null);
+  
+        this.payroll.selectedCTCTemplate.next(this.selectedRecord);
+      }
     });
 
     this.payroll.getFixedDeduction(payload).subscribe((res: any) => {

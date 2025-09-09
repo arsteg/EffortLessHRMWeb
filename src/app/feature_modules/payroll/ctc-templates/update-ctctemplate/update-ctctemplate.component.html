@@ -23,12 +23,16 @@
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Fixed Allowances</mat-label>
           <mat-select multiple formControlName="ctcTemplateFixedAllowance"
-            (selectionChange)="onDropdownChange($event, 'fixedAllowance')">
-            <mat-option *ngFor="let fa of fixedAllowance" [value]="fa?._id">
-              {{fa?.label}}
+                      (selectionChange)="onDropdownChange($event, 'fixedAllowance')">
+            <mat-option
+              *ngFor="let fa of fixedAllowance"
+              [value]="fa._id"
+              [disabled]="fa.isDelete === false"> <!-- ✅ Mark system-defined as disabled -->
+              {{ fa.label }}
             </mat-option>
           </mat-select>
         </mat-form-field>
+        
       </div>
       <div class="form-group mt-2 col-md-6">
         <mat-form-field appearance="outline" class="w-100">

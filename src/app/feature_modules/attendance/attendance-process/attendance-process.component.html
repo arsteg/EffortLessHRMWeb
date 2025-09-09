@@ -70,87 +70,91 @@
 <ng-template #addModal let-dialogRef="dialogRef">
     <h1 mat-dialog-title>{{changeMode}} Attendance Process</h1>
     <div mat-dialog-content>
-        <form [formGroup]="attendanceProcessForm" (ngSubmit)="onSubmission()" class="mt-2">
-            <div class="row">
-                <div class="col-md-6 form-group">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Process Period Year </mat-label>
-                        <mat-select id="year" name="year" formControlName="attendanceProcessPeriodYear"
-                            (selectionChange)="onMonthOrYearChange()">
-                            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="attendanceProcessForm.get('attendanceProcessPeriodYear')?.touched 
-                           && attendanceProcessForm.get('attendanceProcessPeriodYear')?.invalid">
-                            Year is required.
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="col-md-6 form-group">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Process Period Month </mat-label>
-                        <mat-select id="monthSelect" formControlName="attendanceProcessPeriodMonth"
-                            (selectionChange)="onMonthOrYearChange()">
-                            <mat-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="attendanceProcessForm.get('attendanceProcessPeriodMonth')?.touched 
-                            && attendanceProcessForm.get('attendanceProcessPeriodMonth')?.invalid">
-                            <span *ngIf="attendanceProcessForm.get('attendanceProcessPeriodMonth')?.errors?.['required']">
-                                Month is required.
-                            </span>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-                @if(attendancePeriodError){
-                <span class="text-danger">Attendance is already processed for the selected month and year.</span>
-                }
-                @else if (lopNotCreatedError){
-                <span class="text-danger">LOP is not created for the selected month and year.</span>
-                }
-            </div>
-
-
-            <div class="row mt-2">
-                <div class="col-md-6 form-group">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Run Date </mat-label>
-                        <input matInput [matDatepicker]="runDatePicker" formControlName="runDate" />
-                        <mat-datepicker-toggle matSuffix [for]="runDatePicker"></mat-datepicker-toggle>
-                        <mat-datepicker #runDatePicker></mat-datepicker>
-                        <mat-error *ngIf="attendanceProcessForm.get('runDate')?.touched && attendanceProcessForm.get('runDate')?.invalid">
-                            <span *ngIf="attendanceProcessForm.get('runDate')?.errors?.['required']">
-                                Run Date is required.
-                            </span>
-                            <span *ngIf="attendanceProcessForm.get('runDate')?.errors?.['futureDate']">
-                                Run Date cannot be a future date.
-                            </span>
-                            <span *ngIf="attendanceProcessForm.get('runDate')?.errors?.['outOfRange']">
-                                Run Date must be within the selected attendance period means first five days or last 5 days for seleced month.
-                            </span>
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="col-md-6 form-group">
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-label>Status </mat-label>
-                        <input matInput type="text" value="Pending" class="form-control" formControlName="status" />
-                    </mat-form-field>
-                </div>
-            </div>
-            <div class="form-group my-2">
-                <label for="exportToPayroll">Export to Payroll</label>
-                <mat-radio-group formControlName="exportToPayroll" class="d-flex flex-row">
-                    <mat-radio-button value="true" class="me-3">Yes</mat-radio-button>
-                    <mat-radio-button value="false">No</mat-radio-button>
-                </mat-radio-group>
-            </div>
-            <div class="d-flex justify-content-between mt-2">
-                <button type="button" mat-flat-button (click)="dialogRef.close()">Cancel</button>
-                <button type="submit" mat-flat-button color="primary"
-                    [disabled]="attendancePeriodError || lopNotCreatedError">Submit</button>
-            </div>
-        </form>
+      <form [formGroup]="attendanceProcessForm" (ngSubmit)="onSubmission()" class="mt-2">
+        <div class="row">
+          <div class="col-md-6 form-group">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Process Period Year </mat-label>
+              <mat-select id="year" name="year" formControlName="attendanceProcessPeriodYear"
+                (selectionChange)="onMonthOrYearChange()">
+                <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="attendanceProcessForm.get('attendanceProcessPeriodYear')?.touched 
+                && attendanceProcessForm.get('attendanceProcessPeriodYear')?.invalid">
+                Year is required.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 form-group">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Process Period Month </mat-label>
+              <mat-select id="monthSelect" formControlName="attendanceProcessPeriodMonth"
+                (selectionChange)="onMonthOrYearChange()">
+                <mat-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="attendanceProcessForm.get('attendanceProcessPeriodMonth')?.touched 
+                && attendanceProcessForm.get('attendanceProcessPeriodMonth')?.invalid">
+                <span *ngIf="attendanceProcessForm.get('attendanceProcessPeriodMonth')?.errors?.['required']">
+                  Month is required.
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          @if (attendancePeriodError) {
+            <span class="text-danger">Attendance is already processed for the selected month and year.</span>
+          }
+          @else if (lopNotCreatedError && failedUsers.length > 0) {
+            <span class="text-danger">Unmatched attendance for users:
+                <span *ngFor="let user of failedUsers; let last = last">
+                    {{ user.firstName }} {{ user.lastName }}{{ last ? '' : ', ' }}
+                </span>
+            </span>
+        }
+          @else if (lopNotCreatedError) {
+            <span class="text-danger">LOP is not created for the selected month and year.</span>
+          }
+        </div>
+  
+        <div class="row mt-2">
+          <div class="col-md-6 form-group">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Run Date </mat-label>
+              <input matInput [matDatepicker]="runDatePicker" formControlName="runDate" />
+              <mat-datepicker-toggle matSuffix [for]="runDatePicker"></mat-datepicker-toggle>
+              <mat-datepicker #runDatePicker></mat-datepicker>
+              <mat-error *ngIf="attendanceProcessForm.get('runDate')?.touched && attendanceProcessForm.get('runDate')?.invalid">
+                <span *ngIf="attendanceProcessForm.get('runDate')?.errors?.['required']">
+                  Run Date is required.
+                </span>
+                <span *ngIf="attendanceProcessForm.get('runDate')?.errors?.['futureDate']">
+                  Run Date cannot be a future date.
+                </span>
+                <span *ngIf="attendanceProcessForm.get('runDate')?.errors?.['outOfRange']">
+                  Run Date must be within the selected attendance period means first five days or last 5 days for selected month.
+                </span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 form-group">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Status </mat-label>
+              <input matInput type="text" value="Pending" class="form-control" formControlName="status" />
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="form-group my-2">
+          <label for="exportToPayroll">Export to Payroll</label>
+          <mat-radio-group formControlName="exportToPayroll" class="d-flex flex-row">
+            <mat-radio-button value="true" class="me-3">Yes</mat-radio-button>
+            <mat-radio-button value="false">No</mat-radio-button>
+          </mat-radio-group>
+        </div>
+        <div class="d-flex justify-content-between mt-2">
+          <button type="button" mat-flat-button (click)="dialogRef.close()">Cancel</button>
+          <button type="submit" mat-flat-button color="primary"
+            [disabled]="attendancePeriodError || lopNotCreatedError">Submit</button>
+        </div>
+      </form>
     </div>
 </ng-template>
 

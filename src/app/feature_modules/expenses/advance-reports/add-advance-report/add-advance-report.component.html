@@ -61,15 +61,6 @@
                     <mat-hint align="end">{{commentLength}} / 30</mat-hint>
                     <mat-error
                         *ngIf="addAdvanceReport.get('comment').invalid && addAdvanceReport.get('comment').touched">
-                        <span *ngIf="addAdvanceReport.get('comment').hasError('maxlength')">
-                            {{'expenses.category_label_Limit' | translate}}
-                        </span>
-                        <span *ngIf="addAdvanceReport.get('comment')?.errors?.['spacesNotAllowed']">
-                            {{ 'expenses.labelNoLeadingOrTrailingSpaces' | translate }}
-                        </span>
-                        <span *ngIf="addAdvanceReport.get('comment')?.errors?.['invalidLabel']">
-                            {{ 'expenses.label_invalid' | translate }}
-                        </span>
                         <span *ngIf="addAdvanceReport.get('comment').hasError('required')">
                             {{'expenses.advance_template_label_error' | translate}}
                         </span>
@@ -81,7 +72,7 @@
 
     <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
         <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-        <button mat-flat-button type="submit" color="primary">
+        <button mat-flat-button type="submit" [disabled]="isSubmitted" color="primary">
             {{changeMode === 'Add' ? ('expenses.add' | translate) : ('expenses.update' | translate)}}
         </button>
     </div>

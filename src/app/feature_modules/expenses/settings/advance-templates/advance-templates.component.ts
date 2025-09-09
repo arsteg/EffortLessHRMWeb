@@ -47,8 +47,8 @@ export class AdvanceTemplatesComponent implements OnInit {
   isSubmitted: boolean = false;
   columns: TableColumn[] = [
     { key: 'policyLabel', name: this.translate.instant('expenses.advance_template_label') },
-    { 
-      key: 'advanceCategories', 
+    {
+      key: 'advanceCategories',
       name: this.translate.instant('expenses.number_of_advance_categories'),
       valueFn: (row: any) => row?.advanceCategories?.length || 0
     },
@@ -57,7 +57,7 @@ export class AdvanceTemplatesComponent implements OnInit {
       name: this.translate.instant('expenses.actions'),
       isAction: true,
       options: [
-        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
         { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH }
       ]
     }
@@ -89,9 +89,17 @@ export class AdvanceTemplatesComponent implements OnInit {
       }
       this.addAdvanceTempForm.get('firstApprovalEmployee')?.updateValueAndValidity();
     });
+
+    this.addAdvanceTempForm.valueChanges.subscribe(() => {
+      if (this.isSubmitted) {
+        this.isSubmitted = false; // Reset isSubmitted when form values change
+      }
+    });
+
     this.dataSource = new MatTableDataSource(this.list);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+
   }
 
   getManagers() {
@@ -157,7 +165,6 @@ export class AdvanceTemplatesComponent implements OnInit {
   }
 
   addAdvanceTemplate() {
-    console.log(this.addAdvanceTempForm.value)
     this.isSubmitted = true;
     if (this.addAdvanceTempForm.valid) {
       if (this.changeMode === 'Add') {
@@ -182,7 +189,7 @@ export class AdvanceTemplatesComponent implements OnInit {
             this.dialogRef.close();
           },
           err => {
-            this.toast.error(err || this.translate.instant('expenses.template_created_error'));
+            this.toast.error(err);
           }
         );
       }
@@ -233,7 +240,6 @@ export class AdvanceTemplatesComponent implements OnInit {
           approvalType: res.data.approvalType,
           advanceCategories: res.data.advanceCategories.map((advanceCategory: any) => advanceCategory.advanceCategory)
         });
-        console.log(this.addAdvanceTempForm.value)
       })
     }
     if (!this.isEdit) {
@@ -278,6 +284,7 @@ export class AdvanceTemplatesComponent implements OnInit {
   handleAction(event: any, addModal: any) {
     if (event.action.label === 'Edit') {
       this.isEdit = true;
+      this.changeMode = 'Update';
       this.selectedTemplate = event.row;
       this.editadvanceCategory();
       this.open(addModal);

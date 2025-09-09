@@ -12,7 +12,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SeparationService } from 'src/app/_services/separation.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
-
 @Component({
   selector: 'app-attendance-process',
   templateUrl: './attendance-process.component.html',
@@ -438,26 +437,25 @@ export class AttendanceProcessComponent {
       month: this.attendanceProcessForm.value.attendanceProcessPeriodMonth,
       year: this.attendanceProcessForm.value.attendanceProcessPeriodYear,
     };
-
+  
+    if (!payload.month || !payload.year) {
+      this.attendancePeriodError = false;
+      this.lopNotCreatedError = false;
+      return;
+    }
+  
     this.attendanceService.getProcessAttendance(payload).subscribe((res: any) => {
       const existingAttendance = res.data.find((attendance: any) =>
         attendance.attendanceProcessPeriodMonth === this.attendanceProcessForm.value.attendanceProcessPeriodMonth &&
         attendance.attendanceProcessPeriodYear === this.attendanceProcessForm.value.attendanceProcessPeriodYear
       );
-
       if (existingAttendance) {
         this.attendancePeriodError = true;
+        this.lopNotCreatedError = false;
+        this.failedUsers = [];
       } else {
         this.attendancePeriodError = false;
-        console.log("hello");
-       this.validateAttendanceForAllAssignees();
-        this.attendanceService.ValidateMonthlyAttendanceByUser(payload).subscribe((lopRes: any) => {
-          if (lopRes.data.length === 0) {
-            this.lopNotCreatedError = true;
-          } else {
-            this.lopNotCreatedError = false;
-          }
-        });
+        this.validateAttendanceForAllAssignees();
       }
     });
   }
@@ -473,11 +471,10 @@ export class AttendanceProcessComponent {
         month,
         year
       };
-  
       return this.attendanceService.ValidateMonthlyAttendanceByUser(payload).pipe(
         map((lopRes: any) => ({
           user,
-          isValid: lopRes.data
+          isValid: lopRes.status
         }))
       );
     });

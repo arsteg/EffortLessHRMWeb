@@ -127,7 +127,7 @@ export class ExpensesCategoriesComponent implements OnInit {
 
   addFieldValue(fieldIndex: number): void {
     const fieldValueGroup = this.fb.group({
-      value: ['', Validators.required]
+      value: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]]
     });
     ((this.addCategoryForm.get('fields') as FormArray).at(fieldIndex).get('expenseApplicationFieldValues') as FormArray).push(fieldValueGroup);
   }
