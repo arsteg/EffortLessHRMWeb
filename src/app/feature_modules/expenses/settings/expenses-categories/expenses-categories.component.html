@@ -118,6 +118,27 @@
                                                         <mat-icon>delete</mat-icon>
                                                     </button>
                                                 </div>
+                                                @if (fieldValueGroup.get('value').invalid &&
+                                                (fieldValueGroup.get('value').touched)) {
+                                                @if (fieldValueGroup.get('value').hasError('required')) {
+                                                <mat-error class="errorSpace">
+                                                    {{'expenses.enter_expense_label_error' | translate}}
+                                                </mat-error>
+                                                } @else if (fieldValueGroup.get('value').hasError('maxlength')) {
+                                                <mat-error class="errorSpace">
+                                                    {{'expenses.category_label_Limit' | translate}}
+                                                </mat-error>
+                                                } @else if (fieldValueGroup.get('value')?.errors?.['spacesNotAllowed'])
+                                                {
+                                                <mat-error class="errorSpace">
+                                                    {{ 'expenses.labelNoLeadingOrTrailingSpaces' | translate }}
+                                                </mat-error>
+                                                } @else if (fieldValueGroup.get('value')?.errors?.['invalidOption']) {
+                                                <mat-error class="errorSpace">
+                                                    {{ 'expenses.label_invalid' | translate }}
+                                                </mat-error>
+                                                }
+                                                }
                                             </ng-container>
                                         </div>
                                     </div>
