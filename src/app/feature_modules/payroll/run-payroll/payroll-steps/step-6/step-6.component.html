@@ -9,7 +9,6 @@
     </div>
     <hrm-table [data]="flexiBenefits" [columns]="columns" [showSearch]="true"
         (actionClicked)="onActionClick($event)"></hrm-table>
-
 </div>
 
 <ng-template #dialogTemplate>
@@ -18,29 +17,38 @@
         <form [formGroup]="flexiBenefitsForm" (ngSubmit)="onSubmission()">
             <div class="row">
                 <div class="form-group mt-2 col-md-6" *ngIf="changeMode != 'Update'">
-                    <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                    <app-payroll-user-list [controlField]="flexiBenefitsForm.get('PayrollUser')"
+                        (userSelected)="onUserSelectedFromChild($event)"
                         [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-                     <div *ngIf="noSalaryRecordFound">No salary records found for the selected user to pass the professional Tax</div>
+                    <div *ngIf="noSalaryRecordFound">No salary records found for the selected user to pass the
+                        professional Tax</div>
                 </div>
 
                 <div class="form-group col-md-6" *ngIf="changeMode === 'Update'">
-                    <mat-form-field appearance="outline" class="my-2">
+                    <mat-form-field appearance="outline" class="my-2 w-100">
                         <mat-label>Payroll User</mat-label>
                         <input matInput type="text" [disabled] formControlName="PayrollUser">
                     </mat-form-field>
                 </div>
 
                 <div class="form-group col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
+                    <mat-form-field appearance="outline" class="my-2 w-100">
                         <mat-label>Total Flexi Benefits Amount</mat-label>
-                        <input matInput type="number" formControlName="TotalFlexiBenefitAmount">
+                        <input matInput type="number" min="0" formControlName="TotalFlexiBenefitAmount">
+                        @if (flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.invalid &&
+                        flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.touched) {
+                        <mat-error>@if(flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.errors?.['min']){Negative Values
+                            are not allowed}
+                            @else {Total Flexi Benefits Amount is required}
+                        </mat-error>
+                        }
                     </mat-form-field>
                 </div>
 
             </div>
             <div class="d-flex justify-content-between mt-3">
                 <button mat-flat-button type="button" (click)="closeDialog()">Cancel</button>
-                <button mat-flat-button color="primary" type="submit">Save</button>
+                <button mat-flat-button color="primary" [disabled]="isSubmitted" type="submit">Save</button>
             </div>
         </form>
     </div>
