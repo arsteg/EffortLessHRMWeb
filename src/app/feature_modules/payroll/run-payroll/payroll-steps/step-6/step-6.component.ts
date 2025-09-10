@@ -216,14 +216,14 @@ export class Step6Component {
   }
 
   onSubmission() {
-    this.flexiBenefitsForm.get('PayrollUser').enable();
-    this.flexiBenefitsForm.value.PayrollUser = this.selectedPayrollUser;
     if (this.flexiBenefitsForm.invalid) {
       this.isSubmitted = false;
       this.flexiBenefitsForm.markAllAsTouched();
       return;
     }
     else {
+      this.flexiBenefitsForm.get('PayrollUser').enable();
+      this.flexiBenefitsForm.value.PayrollUser = this.selectedPayrollUser;
       this.isSubmitted = true;
       if (this.changeMode == 'Add') {
         this.payrollService.addFlexi(this.flexiBenefitsForm.value).subscribe((res: any) => {

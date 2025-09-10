@@ -37,7 +37,8 @@
                         <input matInput type="number" min="0" formControlName="TotalFlexiBenefitAmount">
                         @if (flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.invalid &&
                         flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.touched) {
-                        <mat-error>@if(flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.errors?.['min']){Negative Values
+                        <mat-error>@if(flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.errors?.['min']){Negative
+                            Values
                             are not allowed}
                             @else {Total Flexi Benefits Amount is required}
                         </mat-error>
@@ -48,7 +49,8 @@
             </div>
             <div class="d-flex justify-content-between mt-3">
                 <button mat-flat-button type="button" (click)="closeDialog()">Cancel</button>
-                <button mat-flat-button color="primary" [disabled]="isSubmitted" type="submit">Save</button>
+                <button mat-flat-button color="primary" [disabled]="flexiBenefitsForm.invalid && isSubmitted"
+                    type="submit">Save</button>
             </div>
         </form>
     </div>
