@@ -97,7 +97,6 @@ export class Step3Component {
 
 
   ngOnInit() {
-    console.log(this.selectedPayroll)
     this.generateYearList();
     this.payrollService.allUsers.subscribe(res => {
       this.allUsers = res;
@@ -160,9 +159,8 @@ export class Step3Component {
         this.payrollUser = res.data;
         this.getSalarydetailsByUser();
         const payrollUser = this.payrollUser?.user;
-        console.log(this.selectedRecord)
         this.variablePayForm.patchValue({
-          payrollUser: this.getUser(payrollUser),
+          payrollUser: this.selectedRecord.payrollUserDetails,
           variableDeduction: this.selectedRecord?.variableDeduction?._id || null,
           variableAllowance: this.selectedRecord?.variableAllowance?._id || null,
           amount: this.selectedRecord?.amount,
@@ -181,11 +179,26 @@ export class Step3Component {
     });
   }
 
+  resetSelectionDedeuction() {
+    this.variablePayForm.patchValue({ variableDeduction: null });
+  }
+
+  resetSelectionAllowance() {
+    this.variablePayForm.patchValue({ variableAllowance: null });
+  }
+
   closeDialog() {
     this.isSubmitted = false;
-    this.variablePayForm.reset();
-    this.variablePayForm.get('payrollUser').enable();
     this.changeMode = 'Update';
+    this.variablePayForm.get('payrollUser').enable();
+    this.variablePayForm.patchValue({
+      payrollUser: '',
+      variableDeduction: null,
+      variableAllowance: null,
+      amount: 0,
+      month: this.selectedPayroll?.month,
+      year: this.selectedPayroll?.year
+    });
     this.dialog.closeAll();
   }
 
@@ -279,7 +292,7 @@ export class Step3Component {
     this.variablePayForm.get('year').enable();
     this.variablePayForm.get('payrollUser').enable();
     this.variablePayForm.patchValue({
-      payrollUser: this.selectedPayrollUser,
+      payrollUser: this.selectedPayrollUser || this.selectedRecord?.payrollUserDetails,
       month: this.selectedPayroll.month,
       year: this.selectedPayroll.year
     });
@@ -288,7 +301,9 @@ export class Step3Component {
       return;
     }
     else {
+
       this.isSubmitted = true;
+
       if (this.changeMode == 'Add') {
         if (this.isDuplicateRecord()) {
           this.toast.error('Duplicate record: Variable Allowance or Deduction already exists for this user in this payroll.');
@@ -299,7 +314,6 @@ export class Step3Component {
           this.payrollService.addVariablePay(this.variablePayForm.value).subscribe((res: any) => {
             this.variablePay = res.data;
             this.getVariablePayByPayroll();
-            this.variablePayForm.reset();
             this.toast.success('Variable Pay Added', 'Successfully!');
             this.changeMode = 'Update'
             this.closeDialog();
@@ -310,13 +324,12 @@ export class Step3Component {
         }
       }
       if (this.changeMode == 'Update') {
+        this.variablePayForm.get('payrollUser')?.setValue(this.selectedRecord.payrollUser);
         let id = this.selectedRecord._id;
         this.payrollService.updateVariablePay(id, this.variablePayForm.value).subscribe((res: any) => {
-          this.getVariablePayByPayroll();
-          this.variablePayForm.reset();
-          this.changeMode = 'Update';
           this.toast.success('Variable Pay Updated', 'Successfully!');
           this.closeDialog();
+          this.getVariablePayByPayroll();
         },
           err => {
             this.toast.error('Variable Pay can not be Updated', 'Error!');
