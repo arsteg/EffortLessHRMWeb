@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 
@@ -13,10 +14,13 @@ export class PayrollUserListComponent {
   selectedUser: string = '';
 
   @Input() selectedPayroll: any;
+  @Input() controlField!: any;
   @Output() userSelected = new EventEmitter<string>();
 
   constructor(private payrollService: PayrollService
-  ) { }
+  ) { 
+    this.controlField = new FormControl('');
+  }
 
   ngOnInit() {
     this.payrollService.allUsers.subscribe(res => {

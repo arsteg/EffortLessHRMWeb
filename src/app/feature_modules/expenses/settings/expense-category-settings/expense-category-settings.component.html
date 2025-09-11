@@ -129,12 +129,11 @@
           <div class="text-danger">{{'expenses.add_fields_error' | translate}}</div>
           }
           <div formArrayName="expenseTemplateCategoryFieldValues">
-            <div *ngIf="i === stepper.selectedIndex">
               <div
                 *ngFor="let fieldCtrl of categoryCtrl.get('expenseTemplateCategoryFieldValues').controls; let j = index">
                 <div [formGroupName]="j">
                   <div class="d-flex pt-2 align-items-center justify-content-between">
-                    <mat-form-field>
+                    <mat-form-field [class.namemargin]="fieldCtrl.get('label').touched && fieldCtrl.get('label').invalid">
                       <mat-label>{{'expenses.categoryLabel' | translate}}</mat-label>
                       <input matInput formControlName="label" placeholder="Label" required>
                       <mat-error *ngIf="fieldCtrl.get('label').touched && fieldCtrl.get('label').invalid">
@@ -177,7 +176,6 @@
                   </div>
                 </div>
               </div>
-            </div>
           </div>
 
           <div class="mt-3 text-end">

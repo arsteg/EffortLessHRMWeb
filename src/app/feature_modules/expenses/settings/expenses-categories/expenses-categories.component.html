@@ -69,11 +69,8 @@
                                 <mat-form-field class="compact-density">
                                     <mat-label>{{'expenses.field_name' | translate}}</mat-label>
                                     <input matInput formControlName="fieldName" required placeholder="Enter Field Name">
-                                    <mat-error
-                                        *ngIf="fieldGroup.get('fieldName').invalid && (fieldGroup.get('fieldName').touched || isSubmitted)">
-                                        {{'expenses.field_name_required' | translate}}
-                                    </mat-error>
                                 </mat-form-field>
+
 
                                 <mat-form-field class="compact-density">
                                     <mat-label>{{'expenses.field_type' | translate}}</mat-label>
@@ -95,6 +92,18 @@
                                     <mat-icon>delete</mat-icon>
                                 </button>
                             </div>
+                            @if (fieldGroup.get('fieldName').invalid && (fieldGroup.get('fieldName').touched ||
+                            isSubmitted)) {
+                            @if ((fieldGroup.get('fieldName').hasError('required'))) {
+                            <mat-error class="errorSpace"> {{'expenses.field_name_required' | translate}}</mat-error>
+                            }
+
+                            @else if (fieldGroup.get('fieldName')?.errors?.['spacesNotAllowed']) {
+                            <mat-error class="errorSpace">
+                                {{ 'expenses.labelNoLeadingOrTrailingSpaces' | translate }}
+                            </mat-error>
+                            }
+                            }
 
                             <div
                                 *ngIf="getFieldType(i) === 'Dropdown' || fieldGroup.get('fieldType').value === 'Dropdown'">
