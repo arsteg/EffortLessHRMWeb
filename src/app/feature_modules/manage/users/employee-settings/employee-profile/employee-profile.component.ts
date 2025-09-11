@@ -73,7 +73,7 @@ export class EmployeeProfileComponent {
   }
 makeRoleDsabledIfinProfile()
 {
-  if (this.router.url.includes('profile')) {
+  if (this.router.url.includes('profile') && !this.router.url.includes('manage')) {
     this.userForm.get('role')?.disable();
   } else {
     this.userForm.get('role')?.enable();
