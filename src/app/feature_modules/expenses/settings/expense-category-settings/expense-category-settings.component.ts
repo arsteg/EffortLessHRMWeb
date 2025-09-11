@@ -134,49 +134,51 @@ export class ExpenseCategorySettingsComponent {
     });
   }
 
- toggleControl(formGroup: any, toggler: string, control: string) {
-  // Reset function to determine the appropriate empty value based on control
-  const resetValue = (controlName: string) => {
-    return controlName === 'timePeroid' ? '' : null;
-  };
+  toggleControl(formGroup: any, toggler: string, control: string) {
+    // Reset function to determine the appropriate empty value based on control
+    const resetValue = (controlName: string) => {
+      return controlName === 'timePeroid' ? '' : null;
+    };
 
-  const targetCtrl = formGroup.get(control);
+    const targetCtrl = formGroup.get(control);
 
-  const applyToggle = (value: boolean) => {
-    if (value) {
-      targetCtrl.enable();
-      // Add required validator dynamically
-      targetCtrl.addValidators([Validators.required]);
-    } else {
-      targetCtrl.disable();
-      targetCtrl.setValue(resetValue(control));
-      // Remove validators dynamically
-      targetCtrl.clearValidators();
-    }
-    targetCtrl.updateValueAndValidity();
-  };
+    const applyToggle = (value: boolean) => {
+      if (value) {
+        targetCtrl.enable();
+        // Add required validator dynamically
+        targetCtrl.addValidators([Validators.required]);
+      } else {
+        targetCtrl.disable();
+        targetCtrl.setValue(resetValue(control));
+        // Remove validators dynamically
+        targetCtrl.clearValidators();
+      }
+      targetCtrl.updateValueAndValidity();
+    };
 
-  // Initial state
-  applyToggle(formGroup.get(toggler).value);
+    // Initial state
+    applyToggle(formGroup.get(toggler).value);
 
-  // Subscribe to changes
-  formGroup.get(toggler).valueChanges.subscribe((value: boolean) => {
-    applyToggle(value);
-  });
-}
+    // Subscribe to changes
+    formGroup.get(toggler).valueChanges.subscribe((value: boolean) => {
+      applyToggle(value);
+    });
+  }
 
-  
+
   addField(expenseCategoryIndex: number) {
     const newField = this._formBuilder.group({
-      label: ['', Validators.required],
-      type: [''],
-      rate: ['', Validators.required]
+      label: ['', [Validators.required, Validators.maxLength(30), CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
+      rate: [null, [Validators.required, Validators.min(0)]],
+      type: ['']
     });
+
     const expenseCategoriesArray = this.firstForm.get('expenseCategories') as FormArray;
     const expenseCategoryFormGroup = expenseCategoriesArray.at(expenseCategoryIndex) as FormGroup;
     const fieldsArray = expenseCategoryFormGroup.get('expenseTemplateCategoryFieldValues') as FormArray;
     fieldsArray.push(newField);
   }
+
 
 
   get expenseTemplateCategoryFieldValues() {
@@ -215,18 +217,25 @@ export class ExpenseCategorySettingsComponent {
   }
 
   onSubmit() {
-    const formData = { ...this.firstForm.value };
-    formData.expenseCategories.forEach((category: any) => {
-      delete category.categoryType;
-    });
-    this.expenseService.addTemplateApplicableCategories(formData).subscribe((res: any) => {
-      this.toast.success(this.translate.instant('expenses.applicable_category_updated_success'));
-      this.updateExpenseTemplateTable.emit();
-      this.closeModal();
-    },
-      err => {
-        this.toast.error(err || this.translate.instant('expenses.applicable_category_updated_error'));
-      })
+
+    if (this.firstForm.invalid) {
+      this.firstForm.markAllAsTouched();   // 👈 Add this
+      return;
+    }
+    else {
+      const formData = { ...this.firstForm.value };
+      formData.expenseCategories.forEach((category: any) => {
+        delete category.categoryType;
+      });
+      this.expenseService.addTemplateApplicableCategories(formData).subscribe((res: any) => {
+        this.toast.success(this.translate.instant('expenses.applicable_category_updated_success'));
+        this.updateExpenseTemplateTable.emit();
+        this.closeModal();
+      },
+        err => {
+          this.toast.error(err || this.translate.instant('expenses.applicable_category_updated_error'));
+        })
+    }
   }
 
   closeModal() {
