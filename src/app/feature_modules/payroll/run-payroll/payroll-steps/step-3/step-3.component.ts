@@ -30,6 +30,7 @@ export class Step3Component {
   salary: any;
   allUsers: any;
   payrollUsers: any;
+  isSubmitted: boolean = false;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   columns: TableColumn[] = [
     { key: 'payrollUserDetails', name: 'Employee Name' },
@@ -71,15 +72,32 @@ export class Step3Component {
   ) {
     this.variablePayForm = this.fb.group({
       payrollUser: ['', Validators.required],
-      variableDeduction: ['', Validators.required],
-      variableAllowance: ['', Validators.required],
-      amount: [0, [Validators.required, Validators.min(1)]],
+      variableDeduction: [null],
+      variableAllowance: [null],
+      amount: [0, [Validators.required, Validators.min(0)]],
       month: [0, [Validators.required, Validators.min(1), Validators.max(12)]],
       year: [0, [Validators.required, Validators.min(2000), Validators.max(new Date().getFullYear())]]
+    }, {
+      validators: this.atLeastOneValidator('variableDeduction', 'variableAllowance')
     })
   }
 
+  atLeastOneValidator(control1: string, control2: string) {
+    return (formGroup: FormGroup) => {
+      const c1 = formGroup.get(control1);
+      const c2 = formGroup.get(control2);
+
+      if (!c1?.value && !c2?.value) {
+        return { atLeastOneRequired: true };
+      }
+      return null;
+    };
+  }
+
+
+
   ngOnInit() {
+    console.log(this.selectedPayroll)
     this.generateYearList();
     this.payrollService.allUsers.subscribe(res => {
       this.allUsers = res;
@@ -89,6 +107,23 @@ export class Step3Component {
     });
     this.getVariableDeductionAndAllowance();
     this.getVariablePayByPayroll();
+    this.variablePayForm.get('variableDeduction')?.valueChanges.subscribe(val => {
+      const allowanceCtrl = this.variablePayForm.get('variableAllowance');
+      if (val) {
+        allowanceCtrl?.disable({ emitEvent: false });
+      } else {
+        allowanceCtrl?.enable({ emitEvent: false });
+      }
+    });
+
+    this.variablePayForm.get('variableAllowance')?.valueChanges.subscribe(val => {
+      const deductionCtrl = this.variablePayForm.get('variableDeduction');
+      if (val) {
+        deductionCtrl?.disable({ emitEvent: false });
+      } else {
+        deductionCtrl?.enable({ emitEvent: false });
+      }
+    });
   }
 
   onActionClick(event: any) {
@@ -128,8 +163,8 @@ export class Step3Component {
         console.log(this.selectedRecord)
         this.variablePayForm.patchValue({
           payrollUser: this.getUser(payrollUser),
-          variableDeduction: this.selectedRecord?.variableDeduction?._id,
-          variableAllowance: this.selectedRecord?.variableAllowance?._id,
+          variableDeduction: this.selectedRecord?.variableDeduction?._id || null,
+          variableAllowance: this.selectedRecord?.variableAllowance?._id || null,
           amount: this.selectedRecord?.amount,
           month: this.selectedRecord?.month,
           year: this.selectedRecord?.year
@@ -147,6 +182,9 @@ export class Step3Component {
   }
 
   closeDialog() {
+    this.isSubmitted = false;
+    this.variablePayForm.reset();
+    this.variablePayForm.get('payrollUser').enable();
     this.changeMode = 'Update';
     this.dialog.closeAll();
   }
@@ -215,6 +253,27 @@ export class Step3Component {
     return matchingTemp ? matchingTemp.label : '';
   }
 
+  isDuplicateRecord(): boolean {
+    const formValue = this.variablePayForm.value;
+
+    return this.variablePay?.some((record: any) => {
+      const sameUser = record.payrollUser?.toString() === formValue.payrollUser?.toString();
+
+      const sameAllowance = record?.variableAllowance?._id?.toString() === formValue?.variableAllowance?.toString();
+      const sameDeduction = record?.variableDeduction?._id?.toString() === formValue?.variableDeduction?.toString();
+
+      // Now make the check strict
+      if (formValue?.variableAllowance) {
+        return sameUser && sameAllowance;
+      }
+      if (formValue?.variableDeduction) {
+        return sameUser && sameDeduction;
+      }
+      return false;
+    }) ?? false;
+  }
+
+
   onSubmit() {
     this.variablePayForm.get('month').enable();
     this.variablePayForm.get('year').enable();
@@ -224,33 +283,45 @@ export class Step3Component {
       month: this.selectedPayroll.month,
       year: this.selectedPayroll.year
     });
-
-    if (this.changeMode == 'Add') {
-      this.payrollService.addVariablePay(this.variablePayForm.value).subscribe((res: any) => {
-        this.variablePay = res.data;
-        this.getVariablePay();
-        this.variablePayForm.reset();
-        this.toast.success('Variable Pay Added', 'Successfully!');
-        this.changeMode = 'Update'
-        this.closeDialog();
-      },
-        err => {
-          this.toast.error('Variable Pay can not be Added', 'Error!');
-        });
+    if (this.variablePayForm.invalid) {
+      this.variablePayForm.markAllAsTouched();
+      return;
     }
-    if (this.changeMode == 'Update') {
-      // Update API call
-      let id = this.selectedRecord._id;
-      this.payrollService.updateVariablePay(id, this.variablePayForm.value).subscribe((res: any) => {
-        this.getVariablePay();
-        this.variablePayForm.reset();
-        this.changeMode = 'Update';
-        this.toast.success('Variable Pay Updated', 'Successfully!');
-        this.closeDialog();
-      },
-        err => {
-          this.toast.error('Variable Pay can not be Updated', 'Error!');
-        });
+    else {
+      this.isSubmitted = true;
+      if (this.changeMode == 'Add') {
+        if (this.isDuplicateRecord()) {
+          this.toast.error('Duplicate record: Variable Allowance or Deduction already exists for this user in this payroll.');
+          this.isSubmitted = false;
+          return;
+        }
+        else {
+          this.payrollService.addVariablePay(this.variablePayForm.value).subscribe((res: any) => {
+            this.variablePay = res.data;
+            this.getVariablePayByPayroll();
+            this.variablePayForm.reset();
+            this.toast.success('Variable Pay Added', 'Successfully!');
+            this.changeMode = 'Update'
+            this.closeDialog();
+          },
+            err => {
+              this.toast.error('Variable Pay can not be Added', 'Error!');
+            });
+        }
+      }
+      if (this.changeMode == 'Update') {
+        let id = this.selectedRecord._id;
+        this.payrollService.updateVariablePay(id, this.variablePayForm.value).subscribe((res: any) => {
+          this.getVariablePayByPayroll();
+          this.variablePayForm.reset();
+          this.changeMode = 'Update';
+          this.toast.success('Variable Pay Updated', 'Successfully!');
+          this.closeDialog();
+        },
+          err => {
+            this.toast.error('Variable Pay can not be Updated', 'Error!');
+          });
+      }
     }
     this.variablePayForm.get('month').disable();
     this.variablePayForm.get('year').disable();

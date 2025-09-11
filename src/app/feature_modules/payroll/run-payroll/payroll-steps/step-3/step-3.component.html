@@ -20,7 +20,8 @@
         <form [formGroup]="variablePayForm" (ngSubmit)="onSubmit()">
             <div class="row">
                 <div class="form-group" *ngIf="changeMode === 'Add'">
-                    <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
+                    <app-payroll-user-list [controlField]="variablePayForm.get('payrollUser')"
+                        (userSelected)="onUserSelectedFromChild($event)"
                         [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
                 </div>
 
@@ -36,11 +37,10 @@
                         <mat-label>Variable Deduction</mat-label>
                         <mat-select formControlName="variableDeduction">
                             <mat-option value="" selected disabled>- Select Variable Deduction -</mat-option>
-                            <mat-option [value]="deduction?.variableDeduction"
+                            <mat-option [value]="deduction?.variableDeduction?._id"
                                 *ngFor="let deduction of salary?.variableDeductionList">
                                 {{getVariableDeduction(deduction?.variableDeduction._id)}}</mat-option>
                         </mat-select>
-
                     </mat-form-field>
                 </div>
 
@@ -53,18 +53,25 @@
                                 *ngFor="let allowance of salary?.variableAllowanceList">
                                 {{getVariableAllowance(allowance?.variableAllowance._id)}}</mat-option>
                         </mat-select>
-
                     </mat-form-field>
                 </div>
+                <mat-error *ngIf="variablePayForm.hasError('atLeastOneRequired') &&
+                  (variablePayForm.get('variableDeduction')?.touched ||
+                   variablePayForm.get('variableAllowance')?.touched)">
+                    Please select either Variable Deduction or Variable Allowance.
+                </mat-error>
 
                 <div class="col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Amount</mat-label>
-                        <input matInput type="number" formControlName="amount" placeholder="Enter Amount">
-                        <mat-error
-                            *ngIf="variablePayForm.get('amount')?.invalid && variablePayForm.get('amount')?.touched">
-                            Amount must be greater than 0.
+                        <input matInput type="number" formControlName="amount" min="0" placeholder="Enter Amount">
+                        @if (variablePayForm.get('amount')?.invalid &&
+                        variablePayForm.get('amount')?.touched) {
+                        <mat-error>
+                            @if (variablePayForm.get('amount')?.errors?.['required']) {Amount is required}
+                            @else if (variablePayForm.get('amount')?.errors?.['min']) {Amount must be greater than 0}
                         </mat-error>
+                        }
                     </mat-form-field>
                 </div>
 
@@ -91,7 +98,7 @@
             </div>
             <div class="mt-4 d-flex justify-content-between">
                 <button type="button" (click)="closeDialog()" mat-flat-button>Cancel</button>
-                <button type="submit" mat-flat-button color="primary">Submit</button>
+                <button type="submit" mat-flat-button color="primary" [disabled]="isSubmitted">Submit</button>
             </div>
         </form>
     </div>
