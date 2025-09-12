@@ -101,7 +101,7 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
   this.dialogRef = this.dialog.open(content, {
     width: '800px',
-    disableClose: false
+    disableClose: true
   });
 }
   
