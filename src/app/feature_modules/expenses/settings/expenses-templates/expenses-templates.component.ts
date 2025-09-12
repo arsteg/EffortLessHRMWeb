@@ -45,8 +45,8 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   columns: TableColumn[] = [
     { key: 'policyLabel', name: 'Template Name' },
-    { 
-      key: 'numberOfCategories', 
+    {
+      key: 'numberOfCategories',
       name: 'Number of Expense Categories',
       valueFn: (row: any) => row.applicableCategories?.length
     },
@@ -79,7 +79,12 @@ export class ExpensesTemplatesComponent implements OnInit {
 
   onClose(event) {
     if (event) {
+      this.ngOnInit()
       this.dialogRef.close();
+      this.selectedTemplate = null; // Reset selectedTemplate
+      this.changeMode = 'Add'; // Reset to Add mode
+      this.step = 1; // Reset to step 1
+      this.expenseService.selectedTemplate.next(''); // Reset service state
     }
   }
 
@@ -87,17 +92,23 @@ export class ExpensesTemplatesComponent implements OnInit {
     this.step = event;
   }
 
-   open(content: any) {
-    this.dialogRef = this.dialog.open(content, {
-      width: '800px',
-      disableClose: false
-    });
+  
+  open(content: any) {
+  if (this.changeMode === 'Add') {
+    this.selectedTemplate = null;
+    this.step = 1;
+    this.expenseService.selectedTemplate.next('');
   }
-
+  this.dialogRef = this.dialog.open(content, {
+    width: '800px',
+    disableClose: false
+  });
+}
+  
   setFormValues(templateData: any) {
-    this.expenseService.selectedTemplate.next(templateData);
-  }
-
+  this.selectedTemplate = templateData || null;
+  this.expenseService.selectedTemplate.next(templateData || '');
+}
   deleteTemplate(_id: string) {
     this.expenseService.deleteTemplate(_id).subscribe((res: any) => {
       this.getAllTemplates();
@@ -283,12 +294,13 @@ export class ExpensesTemplatesComponent implements OnInit {
   }
 
   refreshExpenseTemplateTable() {
-    this.getAllTemplates();
+    this.ngOnInit();
+    this.expenseTemplateTableRefreshed.emit();
   }
 
   handleAction(event: any, addModal: any) {
     if (event.action.label === 'Edit') {
-      this.setFormValues(event.row); 
+      this.setFormValues(event.row);
       this.open(addModal);
       this.editTemplate(event.row);
     }
@@ -317,7 +329,7 @@ export class ExpensesTemplatesComponent implements OnInit {
     });
     this.dataSource.data = data;
   }
-  
+
   onSortChange(event: any) {
     const sorted = this.dataSource.data.slice().sort((a: any, b: any) => {
       const valueA = this.getNestedValue(a, event.active);
