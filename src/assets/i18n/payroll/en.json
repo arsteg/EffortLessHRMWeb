@@ -27,7 +27,7 @@
                 "onhold": "On-Hold"
             },
             "status": {
-                "in_progress": "In Progress",
+                "inprogress": "In Progress",
                 "complete_approval": "Complete Approval Pending",
                 "onhold": "On Hold",
                 "on_hold": "On Hold",
@@ -210,6 +210,7 @@
         "ValidNumber":"Must be a valid number",
         "RequiredFieldAreMissing": "Please fill all required fields",
         "NegativeNotAllowed": "Negative values are not allowed",
+        
         "GreaterThanOneAllowed": "Value must be greater than 1",
         "NegativeNotAllowedAndGreaterThanZeroAllowed": "Value must be greater than 0",
         "is_tds_affected": "Does this Allowance affect TDS?",

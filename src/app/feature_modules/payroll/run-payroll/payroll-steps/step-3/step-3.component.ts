@@ -208,13 +208,35 @@ export class Step3Component {
     })
   }
 
-  onUserSelectedFromChild(userId: any) {
-    this.selectedUserId = userId.value.user;
-    this.selectedPayrollUser = userId.value._id;
-    if (this.changeMode === 'Add') { this.getSalarydetailsByUser(); }
-    if (this.changeMode === 'Update') { this.getVariablePay(); }
-  }
+ onUserSelectedFromChild(userId: any) {
+  this.selectedUserId = userId.value.user;
+  this.selectedPayrollUser = userId.value._id;
 
+  if (this.changeMode === 'Add' || this.changeMode === 'Update') {
+    this.getVariablePayByUser(); // ✅ NEW
+    this.getSalarydetailsByUser();
+  }
+}
+getVariablePayByUser() {
+  if (!this.selectedPayrollUser) return;
+
+  this.payrollService.getVariablePay(this.selectedPayrollUser).subscribe((res: any) => {
+    const userVarPay = res.data;
+
+    const userRequests = userVarPay.map((item: any) => {
+      const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+      return {
+        ...item,
+        payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+      };
+    });
+
+    this.variablePay = userRequests;
+  },
+  error => {
+    this.toast.error("Error fetching Variable Pay for user.");
+  });
+}
   getVariablePay() {
     this.payrollService.getVariablePay(this.selectedRecord?.payrollUser).subscribe((res: any) => {
       this.variablePay = res.data;
@@ -298,6 +320,7 @@ export class Step3Component {
     });
     if (this.variablePayForm.invalid) {
       this.variablePayForm.markAllAsTouched();
+      this.toast.error('Please fill all required fields', 'Error!');
       return;
     }
     else {
@@ -340,15 +363,23 @@ export class Step3Component {
     this.variablePayForm.get('year').disable();
   }
 
-  deleteTemplate(_id: string) {
-    this.payrollService.deleteVariablePay(_id).subscribe((res: any) => {
-      this.getVariablePay();
-      this.toast.success('Successfully Deleted!!!', 'Variable Pay')
+ deleteTemplate(_id: string) {
+  this.payrollService.deleteVariablePay(_id).subscribe(
+    (res: any) => {
+      this.toast.success('Successfully Deleted!!!', 'Variable Pay');
+
+      // ✅ Refresh list based on user selection
+      if (this.selectedPayrollUser) {
+        this.getVariablePayByUser();
+      } else {
+        this.getVariablePayByPayroll();
+      }
     },
-      (err) => {
-        this.toast.error('This Variable Pay Can not be deleted!')
-      })
-  }
+    (err) => {
+      this.toast.error('This Variable Pay cannot be deleted!');
+    }
+  );
+}
 
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

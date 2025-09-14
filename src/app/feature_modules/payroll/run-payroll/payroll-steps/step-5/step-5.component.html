@@ -35,6 +35,9 @@
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Enter Manual Arrears Amount</mat-label>
                         <input matInput type="number" formControlName="manualArrears" placeholder="Enter Manual Arrears">
+                           <mat-error *ngIf="arrearForm.get('manualArrears')?.hasError('negativeNumber')">
+              {{'payroll.NegativeNotAllowed' | translate}}
+          </mat-error>
                     </mat-form-field>
                 </div>
 
@@ -42,6 +45,9 @@
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Enter Number of Arrear Days</mat-label>
                         <input matInput type="number" formControlName="arrearDays" placeholder="Enter Arrear Days">
+                          <mat-error *ngIf="arrearForm.get('arrearDays')?.hasError('negativeNumber')">
+              {{'payroll.NegativeNotAllowed' | translate}}
+          </mat-error>
                     </mat-form-field>
                 </div>
 
@@ -49,13 +55,18 @@
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>LOP Reversal Days</mat-label>
                         <input matInput type="number" formControlName="lopReversalDays" placeholder="Enter LOP Reversal Days">
-                    </mat-form-field>
+                   <mat-error *ngIf="arrearForm.get('lopReversalDays')?.hasError('negativeNumber')">
+              {{'payroll.NegativeNotAllowed' | translate}}
+          </mat-error>  </mat-form-field>
                 </div>
 
                 <div class="form-group col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Salary Revision Days</mat-label>
                         <input matInput type="number" formControlName="salaryRevisionDays" placeholder="Enter Salary Revision Days">
+                           <mat-error *ngIf="arrearForm.get('salaryRevisionDays')?.hasError('negativeNumber')">
+              {{'payroll.NegativeNotAllowed' | translate}}
+          </mat-error>
                     </mat-form-field>
                 </div>
 
@@ -63,6 +74,9 @@
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>LOP Reversal Arrears</mat-label>
                         <input matInput type="number" formControlName="lopReversalArrears" placeholder="Enter LOP Reversal Arrears">
+                           <mat-error *ngIf="arrearForm.get('lopReversalArrears')?.hasError('negativeNumber')">
+              {{'payroll.NegativeNotAllowed' | translate}}
+          </mat-error>
                     </mat-form-field>
                 </div>
 
@@ -70,12 +84,18 @@
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Total Arrears</mat-label>
                         <input matInput type="number" formControlName="totalArrears" placeholder="Enter Total Arrears">
+                          <mat-error *ngIf="arrearForm.get('totalArrears').hasError('required')">
+                        {{ 'payroll.required' | translate }}
+                        </mat-error>
+                        <mat-error *ngIf="arrearForm.get('totalArrears')?.hasError('negativeNumber')">
+                        {{'payroll.NegativeNotAllowedAndGreaterThanZeroAllowed' | translate}}
+                    </mat-error>
                     </mat-form-field>
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-3">
                 <button mat-flat-button type="button" (click)="closeDialog()">Cancel</button>
-                <button mat-flat-button color="primary" type="submit">Save</button>
+                <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitted">Save</button>
             </div>
         </form>
     </div>

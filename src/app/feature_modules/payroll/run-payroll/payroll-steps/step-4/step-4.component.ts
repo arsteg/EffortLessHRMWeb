@@ -25,7 +25,8 @@ export class Step4Component {
   changeMode: 'Add' | 'Update' = 'Add';
   selectedRecord: any;
   payrollUsers: any;
-  matchedLoanAdvances: any;
+  matchedLoanAdvances: any; 
+  isSubmitted: boolean = false;
   selectedPayrollUser: string;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   columns: TableColumn[] = [
@@ -95,6 +96,7 @@ export class Step4Component {
 
   closeDialog() {
     this.changeMode = 'Add';
+     this.isSubmitted = false;
     this.dialog.closeAll();
   }
 
@@ -176,6 +178,13 @@ export class Step4Component {
   }
 
   onSubmission() {
+    this.isSubmitted = true;
+    this.loanAdvanceForm.markAllAsTouched();
+    if (this.loanAdvanceForm.invalid) {      
+      this.toast.error('Please fill all required fields', 'Error!');
+      this.isSubmitted = false;
+      return;
+    }
     this.loanAdvanceForm.get('payrollUser').enable();
     this.loanAdvanceForm.patchValue({ payrollUser: this.selectedPayrollUser });
     console.log(this.loanAdvanceForm.value);
@@ -191,8 +200,9 @@ export class Step4Component {
         },
         (err) => {
           const errorMessage = err?.error?.message || err?.message || err
-            || 'Something went wrong.';
+            || 'Loan/Advance Not Saved';
           this.toast.error(errorMessage, 'Error!');
+            this.isSubmitted = true;
         }
       );
     }
@@ -209,7 +219,10 @@ export class Step4Component {
           this.closeDialog();
         },
         (err) => {
-          this.toast.error('Loan/Advance cannot be Updated', 'Error');
+         const errorMessage = err?.error?.message || err?.message || err
+            || 'Loan/Advance Not Updated';
+          this.toast.error(errorMessage, 'Error!');
+            this.isSubmitted = true;
         }
       );
     }

@@ -52,25 +52,11 @@
         </mat-form-field>
         <mat-form-field appearance="outline" class="col-md-6 my-2">
           <mat-label>{{ 'payroll._history.form.date' | translate }}</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="date">
+          <input matInput [matDatepicker]="picker" formControlName="date" readonly>
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
           <mat-error *ngIf="payrollForm.get('date').hasError('required')">
             {{ 'payroll._history.form.date_required' | translate }}
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="my-2 col-md-6">
-          <mat-label>{{ 'payroll._history.form.status' | translate }}</mat-label>
-          <mat-select formControlName="status">
-            <mat-option value="" disabled>{{ 'payroll._history.form.select_status' | translate }}</mat-option>
-            <mat-option value="InProgress">{{ 'payroll._history.status.in_progress' | translate }}</mat-option>
-            <mat-option value="Complete Approval Pending">{{ 'payroll._history.status.complete_approval' | translate
-              }}</mat-option>
-            <mat-option value="OnHold">{{ 'payroll._history.status.on_hold' | translate }}</mat-option>
-            <mat-option value="Processed">{{ 'payroll._history.status.processed' | translate }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="payrollForm.get('status').hasError('required')">
-            {{ 'payroll._history.form.status_required' | translate }}
           </mat-error>
         </mat-form-field>
       </div>
@@ -78,7 +64,7 @@
   </div>
   <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
     <button mat-flat-button (click)="closeAddDialog()">{{ 'payroll.close' | translate }}</button>
-    <button mat-flat-button color="primary" [disabled]="duplicatePayrollError" (click)="onSubmission()">
+    <button mat-flat-button color="primary" [disabled]="isSubmittingPayroll" (click)="onSubmission()">
       {{ 'payroll.save' | translate }}
     </button>
   </div>
@@ -120,17 +106,9 @@
           [placeholder]="'payroll._history.form.enter_gross_salary' | translate">
       </mat-form-field>
 
-      <mat-form-field class="my-2">
-        <mat-label>{{ 'payroll._history.form.status' | translate }}</mat-label>
-        <mat-select formControlName="status">
-          <mat-option value="Active">{{ 'payroll._history.status.active' | translate }}</mat-option>
-          <mat-option value="Inactive">{{ 'payroll._history.status.inactive' | translate }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-
       <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
         <button mat-flat-button (click)="closeAddUserDialog()" type="button">{{ 'payroll.close' | translate }}</button>
-        <button mat-flat-button color="primary" (click)="updatePayrollUser()" [disabled]="payrollUserForm.invalid"
+        <button mat-flat-button color="primary" (click)="updatePayrollUser()"  [disabled]="isSubmitting"
           type="submit">
           {{ 'payroll.save' | translate }}
         </button>

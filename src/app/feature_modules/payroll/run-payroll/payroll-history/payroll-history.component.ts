@@ -45,7 +45,9 @@ export class PayrollHistoryComponent implements AfterViewInit {
   pageSize = 10;
   currentPage = 1;
   pageSizeOptions = [5, 10, 25, 50, 100];
-  searchText: string = '';
+  searchText: string = '';  
+  isSubmitting: boolean = false;  
+  isSubmittingPayroll: boolean = false;
   columns: TableColumn[] = [
     { key: 'month', name: this.translate.instant('payroll._history.table.period'), valueFn: (row)=> row.month +'-'+ row.year },
     { key: 'date', name: this.translate.instant('payroll._history.table.date'),valueFn: (row)=> this.datePipe.transform(row.date, 'mediumDate') },
@@ -58,9 +60,17 @@ export class PayrollHistoryComponent implements AfterViewInit {
       name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
-        { label: 'Add Employee', icon: 'add', visibility: ActionVisibility.BOTH },
-        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
-        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn" },
+        { label: 'Add Employee', icon: 'add', visibility: ActionVisibility.BOTH ,
+           hideCondition: (row) => row?.status !== 'InProgress'},
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH ,
+           hideCondition: (row) => row?.status !== 'InProgress'
+        },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn",
+           hideCondition: (row) => {
+    // Hide delete button if any count is greater than 0
+            return (row?.processedCount > 0 || row?.activeCount > 0 || row?.onHoldCount > 0);
+          }
+         },
       ]
     },
   ];
@@ -82,7 +92,6 @@ export class PayrollHistoryComponent implements AfterViewInit {
     this.addedUserIds = [];
     this.payrollForm = this.fb.group({
       date: [Date, Validators.required],
-      status: ['', Validators.required],
       month: ['', Validators.required],
       year: ['', Validators.required]
     });
@@ -90,8 +99,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
       payroll: [''],
       user: ['', Validators.required],
       totalCTC: [0],
-      totalGrossSalary: [0],
-      status: ['Active']
+      totalGrossSalary: [0]
     });
 
     // Set custom filter predicate to search by payroll period and status
@@ -115,8 +123,35 @@ export class PayrollHistoryComponent implements AfterViewInit {
     this.payrollForm.get('year').valueChanges.subscribe(() => {
       this.checkForDuplicatePayrollPeriod();
     });
+     this.payrollForm.get('date').disable();
+      this.subscribeToMonthAndYearChanges();
   }
+  subscribeToMonthAndYearChanges(): void {
+    this.payrollForm.get('month').valueChanges.subscribe(() => {
+      this.setDateToLastDayOfMonth();
+    });
 
+    this.payrollForm.get('year').valueChanges.subscribe(() => {
+      this.setDateToLastDayOfMonth();
+    });
+  }
+  setDateToLastDayOfMonth(): void {
+    const month = this.payrollForm.get('month').value;
+    const year = this.payrollForm.get('year').value;
+
+    if (month && year) {
+      const monthIndex = this.getMonthIndex(month); // You'll implement this
+      const lastDay = new Date(year, monthIndex + 1, 0); // The 0th day of the next month is the last day of the current month
+      this.payrollForm.get('date').setValue(lastDay);
+    }
+  }
+  getMonthIndex(monthName: string): number {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return months.indexOf(monthName);
+  }
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.getPayrollWithUserCounts();
@@ -156,7 +191,6 @@ export class PayrollHistoryComponent implements AfterViewInit {
   checkForDuplicatePayrollPeriod() {
     const selectedMonth = this.payrollForm.get('month').value;
     const selectedYear = this.payrollForm.get('year').value;
-
     if (selectedMonth && selectedYear) {
       this.duplicatePayrollError = this.payrollPeriod?.some(period =>
         period?.month === selectedMonth && period?.year === selectedYear
@@ -235,6 +269,12 @@ export class PayrollHistoryComponent implements AfterViewInit {
   }
 
   closeAddDialog() {
+    this.isSubmittingPayroll = false;
+     this.payrollForm.reset({
+      year: '',
+      month: '',
+      date: ''
+    });
     this.dialog.closeAll();
   }
 
@@ -282,8 +322,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
       payroll: '',
       user: '',
       totalCTC: 0,
-      totalGrossSalary: 0,
-      status: 'Active'
+      totalGrossSalary: 0
     });
     this.salaries = [];
     this.addedUserIds = [];
@@ -375,6 +414,13 @@ export class PayrollHistoryComponent implements AfterViewInit {
   }
 
   onSubmission() {
+     this.isSubmittingPayroll = true;
+       if (this.payrollForm.invalid) {            
+      this.payrollUserForm.markAllAsTouched();  // This triggers validation errors
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
+      this.isSubmittingPayroll = false;
+      return;
+    }
     if (this.payrollForm.valid) {
       this.payrollService.addPayroll(this.payrollForm.value).subscribe(
         (res: any) => {
@@ -391,20 +437,31 @@ export class PayrollHistoryComponent implements AfterViewInit {
           this.closeAddDialog();
         },
         err => {
-          this.translate.get('payroll._history.title').subscribe(title => {
-            this.toast.error(
-              err?.error?.message || this.translate.instant('payroll._history.toast.error_create'),
-              title
-            );
-          });
+           const errorMessage = err?.error?.message || err?.message || err 
+            || this.translate.instant('payroll._history.toast.error_create')
+            ;
+            this.toast.error(errorMessage, 'Error!');          
+             this.isSubmittingPayroll = false;          
         }
       );
     } else {
       this.payrollForm.markAllAsTouched();
+      this.isSubmittingPayroll = false;
     }
   }
-
+ disableSalary() {
+      this.payrollUserForm.get('totalGrossSalary').disable();
+      this.payrollUserForm.get('totalCTC').disable();
+       this.isSubmitting = false;
+    }
   updatePayrollUser() {
+     this.isSubmitting = true;
+      if (this.payrollUserForm.invalid) {            
+      this.payrollUserForm.markAllAsTouched();  // This triggers validation errors
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
+      this.isSubmitting = false;
+      return;
+    }
     if (this.payrollUserForm.valid && this.salaries?.length > 0) {
       this.payrollUserForm.get('totalGrossSalary').enable();
       this.payrollUserForm.get('totalCTC').enable();
@@ -424,14 +481,14 @@ export class PayrollHistoryComponent implements AfterViewInit {
                 translations['payroll._history.toast.employee_added'],
                 translations['payroll._history.title']
               );
+              this.disableSalary();
             });
             this.getPayrollWithUserCounts();
             this.payrollUserForm.reset({
               payroll: '',
               user: '',
               totalCTC: 0,
-              totalGrossSalary: 0,
-              status: 'Active'
+              totalGrossSalary: 0
             });
             this.salaries = [];
             this.closeAddUserDialog();
@@ -443,10 +500,12 @@ export class PayrollHistoryComponent implements AfterViewInit {
                 title
               );
             });
+              this.disableSalary();
           }
         );
       });
     } else {
+        this.disableSalary();
       this.payrollUserForm.markAllAsTouched();
       if (this.salaries?.length === 0) {
         this.translate.get('payroll._history.form.no_salary').subscribe(message => {
