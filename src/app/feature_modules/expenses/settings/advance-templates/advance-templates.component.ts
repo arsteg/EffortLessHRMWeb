@@ -209,7 +209,7 @@ export class AdvanceTemplatesComponent implements OnInit {
           this.dialogRef.close();
         },
           (err) => {
-            this.toast.error(this.translate.instant('expenses.template_updated_error'));
+            this.toast.error(this.translate.instant(err));
           });
       }
     }

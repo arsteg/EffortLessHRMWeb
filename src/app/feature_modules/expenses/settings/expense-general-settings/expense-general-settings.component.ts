@@ -80,7 +80,6 @@ export class ExpenseGeneralSettingsComponent {
     return format != 'PNG' && format != 'JPG' && format != 'PDF';
   }
 
-
   isCheckedFormats(format) {
     const downloadableFormats = this.addTemplateForm.get('downloadableFormats').value || [];
     return downloadableFormats.includes(format);
@@ -101,29 +100,6 @@ export class ExpenseGeneralSettingsComponent {
     this.addTemplateForm.get('downloadableFormats').setValue([...this.checkedFormats]);
   }
 
-  // setFormValues() {
-  //   if (this.changeMode === 'Add') {
-  //     this.addTemplateForm.reset();
-  //   }
-  //   const templateData = this.selectedTemplate;
-  //   if (this.changeMode === 'Next') {
-  //     // Map applicableCategories to an array of _id strings
-  //     let expenseCategories = templateData?.applicableCategories
-  //       ? templateData.applicableCategories.map(category => category.expenseCategory._id)
-  //       : [];
-
-  //     this.addTemplateForm.patchValue({
-  //       policyLabel: templateData.policyLabel,
-  //       approvalType: templateData.approvalType,
-  //       downloadableFormats: templateData.downloadableFormats,
-  //       applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
-  //       advanceAmount: templateData.advanceAmount,
-  //       firstApprovalEmployee: templateData.firstApprovalEmployee,
-  //       expenseCategories: expenseCategories
-  //     });
-  //     this.checkedFormats = templateData.downloadableFormats;
-  //   }
-  // }
   setFormValues() {
     if (this.changeMode === 'Add') {
       this.checkedFormats = ['DOCX', 'XLS', 'TXT', 'DOC', 'XLSX']; // Reset for Add mode
