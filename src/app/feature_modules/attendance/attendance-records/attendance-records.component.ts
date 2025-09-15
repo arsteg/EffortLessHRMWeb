@@ -169,17 +169,18 @@ export class AttendanceRecordsComponent implements OnInit {
     const groupedRecords: any = {};
     records.forEach(record => {
       const user = record.user;
+      const userId = record.user?._id;
       const duration = record.duration;
       const userName = record?.user?.firstName + ' ' + record?.user?.lastName;
 
-      if (!groupedRecords[user]) {
-        groupedRecords[user] = {
+      if (!groupedRecords[userId]) {
+        groupedRecords[userId] = {
           _id: user,
           userName: userName,
           attendance: []
         };
       }
-      groupedRecords[user].attendance.push({
+      groupedRecords[userId].attendance.push({
         date: record.date,
         duration: duration
       });
