@@ -216,9 +216,6 @@ export class ExpenseGeneralSettingsComponent {
           },
           (err) => {
             this.toast.error(err || this.translate.instant('expenses.template_updated_error'));
-            // Reset on error
-            this.checkedFormats = ['DOCX', 'XLS', 'TXT', 'DOC', 'XLSX'];
-            this.addTemplateForm.get('downloadableFormats').setValue(this.checkedFormats);
           }
         );
       }
