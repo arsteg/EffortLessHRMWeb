@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, Input, Inject, DestroyRef, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
+  MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
@@ -45,7 +46,9 @@ export class CreateReportComponent {
   expenseData: any;
   isSubmitting: boolean = false;
   documentMandatory: boolean;
-
+  private dialog: MatDialog;
+  public selectedAttachment: any;
+  documentName: any;
 
   constructor(
     public expenseService: ExpensesService,
@@ -108,7 +111,7 @@ export class CreateReportComponent {
         this.categories = res.data;
       });
     }
-    
+
   }
 
   initChanges() {
@@ -123,7 +126,6 @@ export class CreateReportComponent {
     });
   }
 
-  documentName: any;
   loadExpenseReportData() {
     const expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
     expenseFieldsArray.clear();
@@ -255,6 +257,7 @@ export class CreateReportComponent {
           extention: extention,
           file: base64String
         };
+        console.log(attachment);
         resolve(attachment);
       };
       reader.onerror = error => {
@@ -263,7 +266,7 @@ export class CreateReportComponent {
     });
   }
 
- onFileSelected(event: any) {
+  onFileSelected(event: any) {
     const newFiles: FileList = event.target.files;
     if (newFiles) {
       const previousFiles = this.selectedFiles || [];

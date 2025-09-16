@@ -161,6 +161,7 @@
         "view_attachment":"View Attachment",
         "attachment":"Attachment",
         "upload":"Upload",
+        "download": "Click To Download",
         "upload_error":"Please upload receipt.",
         "advance_balances_employee":"Advance balances by employee",
         "add_advance":"Add Advance",

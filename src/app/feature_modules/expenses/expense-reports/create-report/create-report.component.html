@@ -89,7 +89,7 @@
                     <mat-label>{{'expenses.amount' | translate}}</mat-label>
                     <input matInput type="number" min="0" formControlName="amount" [value]="totalRate"
                         (change)="setPermissions()">
-                    
+
                     @if(expenseReportform.get('amount').invalid && expenseReportform.get('amount').touched){
                     <mat-error>
                         @if(expenseReportform.get('amount')?.errors['required']){
@@ -180,7 +180,7 @@
                     <input style="display: none;" [attr.required]="documentMandatory ? true : null"
                         [required]="documentMandatory" formControlName="expenseAttachments"
                         accept=".jpeg,.mp4,.glb,.svg,.blend,.jpg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.fodt,.ods,.fods,.odp,.fodp,.odg,.fodg,.odf,.csv,.html,.css,.txt,.zip"
-                        type="file" multiple (change)="onFileSelected($event)">
+                        type="file" (change)="onFileSelected($event)">
                     <div class="details-attach-file d-flex align-items-center justify-content-center me-2 pointer">
                         <span class="fa fa-paperclip text-secondary"> Add files to Attach
                         </span>
@@ -196,10 +196,13 @@
             <ul type="none" class="d-flex ps-0">
                 <li class="contentHeading p-2" *ngFor="let files of selectedFiles; let i = index"
                     (click)="removeFile(i)">
-                    {{files.name}} <i class="bi bi-x-circle-fill text-danger deleteTaskAttachment"></i>
+                    {{files.name}} <i class="bi bi-x-circle-fill text-danger removeFile"></i>
                 </li>
             </ul>
         </div>
+
+        <span class="contentHeading" [matTooltip]="'expenses.download' | translate" (click)="openAttachment()">{{documentName}}</span><br>
+        
         <small>{{'expenses.fileSize' | translate}}</small><br>
 
         <small class="text-muted">{{'expenses.fileType' | translate}}</small>
