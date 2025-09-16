@@ -100,7 +100,7 @@ export class PendingComponent {
   }
 
   refreshExpenseReportTable() {
-    this.getExpenseReport();
+    this.ngOnInit();
   }
 
   clearform() {

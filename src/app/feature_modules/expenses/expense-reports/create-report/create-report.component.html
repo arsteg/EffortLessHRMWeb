@@ -55,7 +55,7 @@
                     <mat-label>{{'expenses.type' | translate}}</mat-label>
                     <mat-select formControlName="type" required (selectionChange)="onTypeChange($event.value)">
                         <mat-option value="">{{'expenses.applicable_category_field' | translate}}</mat-option>
-                        <mat-option [value]="field?.label" *ngFor="let field of applicableCategoryFields">{{
+                        <mat-option [value]="field?._id" *ngFor="let field of applicableCategoryFields">{{
                             field?.label }}</mat-option>
                     </mat-select>
                     <mat-error

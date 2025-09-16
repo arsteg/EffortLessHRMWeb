@@ -152,6 +152,7 @@ export class AddExpenseComponent {
 
   getSelectedExpenseReportExpense(selectedExpenseReportExpense: any) {
     this.expenseService.expenseReportExpId.next(selectedExpenseReportExpense._id);
+    console.log(selectedExpenseReportExpense)
     this.expenseService.expenseReportExpense.next(selectedExpenseReportExpense);
   }
 
