@@ -18,7 +18,7 @@ export class PayrollUserListComponent {
   @Output() userSelected = new EventEmitter<string>();
 
   constructor(private payrollService: PayrollService
-  ) { 
+  ) {
     this.controlField = new FormControl('');
   }
 
@@ -38,6 +38,13 @@ export class PayrollUserListComponent {
 
   onUserSelect(selectedUser: any) {
     this.userSelected.emit(selectedUser);
+  }
+
+  resetSelection() {
+    this.selectedUser = '';
+    if (this.controlField) {
+      this.controlField.reset();
+    }
   }
 
 }
