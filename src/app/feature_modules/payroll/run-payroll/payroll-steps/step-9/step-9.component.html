@@ -2,7 +2,8 @@
 
     <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Generated Payroll</label></div>
 
-    <hrm-table [data]="generatedPayroll" [columns]="columns" [showSearch]="true"></hrm-table>
+    <hrm-table [data]="generatedPayroll" [columns]="columns" [showSearch]="true"
+        (actionClicked)="onAction($event)"></hrm-table>
 </div>
 
 <ng-template #updateStatus>
