@@ -599,4 +599,8 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
     this.recordsPerPage = event.pageSize;
     this.fetchFnFPayroll();
   }
+
+  notSettledUser() {
+    this.toast.error('No settled users found!', 'Error');
+  }
 }

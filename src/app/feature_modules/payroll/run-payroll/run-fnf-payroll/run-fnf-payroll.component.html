@@ -2,7 +2,7 @@
   <div class="position-relative">
 
     <button color="primary" mat-flat-button class="position-absolute end-0"
-      (click)="settledUser.length > 0 ? open(modal) : null">
+      (click)="settledUser.length > 0 ? open(modal) : notSettledUser()">
       {{ 'payroll._fnf.add' | translate }}
     </button>
   </div>
