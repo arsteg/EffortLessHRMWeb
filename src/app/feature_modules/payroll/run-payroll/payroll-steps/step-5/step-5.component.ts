@@ -213,6 +213,9 @@ export class Step5Component {
   }
 
   onSubmission() {
+    this.arrearForm.get('payrollUser').enable();
+    this.arrearForm.patchValue({ payrollUser: this.selectedPayrollUser });  
+
     this.isSubmitted = true;
     this.arrearForm.markAllAsTouched();
     if (this.arrearForm.invalid) {      
@@ -220,9 +223,6 @@ export class Step5Component {
       this.isSubmitted = false;
       return;
     }
-    this.arrearForm.get('payrollUser').enable();
-    this.arrearForm.patchValue({ payrollUser: this.selectedPayrollUser });  
-
     if (this.changeMode == 'Add') {
      // this.arrearForm.value.payrollUser = this.selectedPayrollUser;
       this.payrollService.addArrear(this.arrearForm.value).subscribe((res: any) => {

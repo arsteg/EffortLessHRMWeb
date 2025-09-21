@@ -47,7 +47,8 @@ export class PayrollHistoryComponent implements AfterViewInit {
   pageSizeOptions = [5, 10, 25, 50, 100];
   searchText: string = '';  
   isSubmitting: boolean = false;  
-  isSubmittingPayroll: boolean = false;
+  isSubmittingPayroll: boolean = false;  
+  isSubmittingStatusPayroll: boolean = false;
   columns: TableColumn[] = [
     { key: 'month', name: this.translate.instant('payroll._history.table.period'), valueFn: (row)=> row.month +'-'+ row.year },
     { key: 'date', name: this.translate.instant('payroll._history.table.date'),valueFn: (row)=> this.datePipe.transform(row.date, 'mediumDate') },
@@ -270,6 +271,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
 
   closeAddDialog() {
     this.isSubmittingPayroll = false;
+    this.isSubmittingStatusPayroll = false;
      this.payrollForm.reset({
       year: '',
       month: '',
@@ -330,6 +332,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
   }
 
   updatePayrollStatus() {
+    this.isSubmittingStatusPayroll = true;
     const id = this.selectedPayroll?._id;
     const payload = {
       updatedOnDate: new Date(),
@@ -346,8 +349,8 @@ export class PayrollHistoryComponent implements AfterViewInit {
             translations['payroll._history.title']
           );
         });
-        this.getPayrollWithUserCounts();
         this.closeAddDialog();
+        this.getPayrollWithUserCounts();       
       },
       (err) => {
         this.translate.get('payroll._history.title').subscribe(title => {
@@ -355,6 +358,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
             err?.error?.message || this.translate.instant('payroll._history.toast.error_update_status'),
             title
           );
+          this.isSubmittingStatusPayroll = false;
         });
       }
     );
@@ -415,6 +419,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
 
   onSubmission() {
      this.isSubmittingPayroll = true;
+     this.payrollForm.get('date')?.enable();
        if (this.payrollForm.invalid) {            
       this.payrollUserForm.markAllAsTouched();  // This triggers validation errors
       this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');

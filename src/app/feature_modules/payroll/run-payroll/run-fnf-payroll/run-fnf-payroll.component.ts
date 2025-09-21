@@ -353,6 +353,11 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   }
 
   open(content: any) {
+      if (!this.settledUser || this.settledUser.length === 0) {
+    // Show message here
+    this.toast.warning('No settled users available.', 'Warning'); // Or use MatSnackBar
+    return;
+  }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
       (result) => {
         this.closeResult = `Closed with: ${result}`;
