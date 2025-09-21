@@ -45,13 +45,13 @@ export class PayrollHistoryComponent implements AfterViewInit {
   pageSize = 10;
   currentPage = 1;
   pageSizeOptions = [5, 10, 25, 50, 100];
-  searchText: string = '';  
-  isSubmitting: boolean = false;  
+  searchText: string = '';
+  isSubmitting: boolean = false;
   isSubmittingPayroll: boolean = false;  
   isSubmittingStatusPayroll: boolean = false;
   columns: TableColumn[] = [
-    { key: 'month', name: this.translate.instant('payroll._history.table.period'), valueFn: (row)=> row.month +'-'+ row.year },
-    { key: 'date', name: this.translate.instant('payroll._history.table.date'),valueFn: (row)=> this.datePipe.transform(row.date, 'mediumDate') },
+    { key: 'month', name: this.translate.instant('payroll._history.table.period'), valueFn: (row) => row.month + '-' + row.year },
+    { key: 'date', name: this.translate.instant('payroll._history.table.date'), valueFn: (row) => this.datePipe.transform(row.date, 'mediumDate') },
     { key: 'processedCount', name: this.translate.instant('payroll._history.table.processed') },
     { key: 'activeCount', name: this.translate.instant('payroll._history.table.active') },
     { key: 'onHoldCount', name: this.translate.instant('payroll._history.table.onhold') },
@@ -61,17 +61,21 @@ export class PayrollHistoryComponent implements AfterViewInit {
       name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
-        { label: 'Add Employee', icon: 'add', visibility: ActionVisibility.BOTH ,
-           hideCondition: (row) => row?.status !== 'InProgress'},
-        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH ,
-           hideCondition: (row) => row?.status !== 'InProgress'
+        {
+          label: 'Add Employee', icon: 'add', visibility: ActionVisibility.BOTH,
+          hideCondition: (row) => row?.status !== 'InProgress'
         },
-        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn",
-           hideCondition: (row) => {
-    // Hide delete button if any count is greater than 0
+        {
+          label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH,
+          hideCondition: (row) => row?.status !== 'InProgress'
+        },
+        {
+          label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn",
+          hideCondition: (row) => {
+            // Hide delete button if any count is greater than 0
             return (row?.processedCount > 0 || row?.activeCount > 0 || row?.onHoldCount > 0);
           }
-         },
+        },
       ]
     },
   ];
@@ -124,8 +128,8 @@ export class PayrollHistoryComponent implements AfterViewInit {
     this.payrollForm.get('year').valueChanges.subscribe(() => {
       this.checkForDuplicatePayrollPeriod();
     });
-     this.payrollForm.get('date').disable();
-      this.subscribeToMonthAndYearChanges();
+    this.payrollForm.get('date').disable();
+    this.subscribeToMonthAndYearChanges();
   }
   subscribeToMonthAndYearChanges(): void {
     this.payrollForm.get('month').valueChanges.subscribe(() => {
@@ -180,7 +184,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
       case 'Delete': this.deleteDialog(event.row?._id); break;
       default:
         this.payrollStatusArray.forEach(status => {
-          if(status === event.action.label){
+          if (status === event.action.label) {
             this.selectedPayroll = event.row;
             this.openUpdateStatusDialog(event.action.label);
           }
@@ -272,7 +276,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
   closeAddDialog() {
     this.isSubmittingPayroll = false;
     this.isSubmittingStatusPayroll = false;
-     this.payrollForm.reset({
+    this.payrollForm.reset({
       year: '',
       month: '',
       date: ''
@@ -418,15 +422,19 @@ export class PayrollHistoryComponent implements AfterViewInit {
   }
 
   onSubmission() {
-     this.isSubmittingPayroll = true;
+    this.isSubmittingPayroll = true;
      this.payrollForm.get('date')?.enable();
-       if (this.payrollForm.invalid) {            
-      this.payrollUserForm.markAllAsTouched();  // This triggers validation errors
+    if (this.payrollForm.invalid) {
+      this.payrollUserForm.markAllAsTouched();
       this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
       this.isSubmittingPayroll = false;
       return;
     }
     if (this.payrollForm.valid) {
+      this.payrollForm.get('date').enable();
+      this.payrollForm.patchValue({
+        date: this.payrollForm.value.date
+      });
       this.payrollService.addPayroll(this.payrollForm.value).subscribe(
         (res: any) => {
           this.translate.get([
@@ -442,11 +450,10 @@ export class PayrollHistoryComponent implements AfterViewInit {
           this.closeAddDialog();
         },
         err => {
-           const errorMessage = err?.error?.message || err?.message || err 
-            || this.translate.instant('payroll._history.toast.error_create')
-            ;
-            this.toast.error(errorMessage, 'Error!');          
-             this.isSubmittingPayroll = false;          
+          const errorMessage = err?.error?.message || err?.message || err
+            || this.translate.instant('payroll._history.toast.error_create');
+          this.toast.error(errorMessage, 'Error!');
+          this.isSubmittingPayroll = false;
         }
       );
     } else {
@@ -454,14 +461,14 @@ export class PayrollHistoryComponent implements AfterViewInit {
       this.isSubmittingPayroll = false;
     }
   }
- disableSalary() {
-      this.payrollUserForm.get('totalGrossSalary').disable();
-      this.payrollUserForm.get('totalCTC').disable();
-       this.isSubmitting = false;
-    }
+  disableSalary() {
+    this.payrollUserForm.get('totalGrossSalary').disable();
+    this.payrollUserForm.get('totalCTC').disable();
+    this.isSubmitting = false;
+  }
   updatePayrollUser() {
-     this.isSubmitting = true;
-      if (this.payrollUserForm.invalid) {            
+    this.isSubmitting = true;
+    if (this.payrollUserForm.invalid) {
       this.payrollUserForm.markAllAsTouched();  // This triggers validation errors
       this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
       this.isSubmitting = false;
@@ -505,12 +512,12 @@ export class PayrollHistoryComponent implements AfterViewInit {
                 title
               );
             });
-              this.disableSalary();
+            this.disableSalary();
           }
         );
       });
     } else {
-        this.disableSalary();
+      this.disableSalary();
       this.payrollUserForm.markAllAsTouched();
       if (this.salaries?.length === 0) {
         this.translate.get('payroll._history.form.no_salary').subscribe(message => {

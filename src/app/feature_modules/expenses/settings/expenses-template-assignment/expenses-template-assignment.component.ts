@@ -49,7 +49,7 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     { key: 'employeeName', name: this.translate.instant('expenses.member') },
     { key: 'expenseTemplate', name: this.translate.instant('expenses.current_expense_template') },
     { key: 'primaryApprover', name: this.translate.instant('expenses.primary_approver') },
-    { 
+    {
       key: 'effectiveDate',
       name: this.translate.instant('expenses.effective_date'),
       valueFn: (row: any) => new Date(row.effectiveDate).toLocaleDateString('en-US')
@@ -107,6 +107,9 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       });
       this.dataSource.data = this.templateAssignments;
       this.totalRecords = assignments?.total || 0;
+    });
+     this.templateAssignmentForm.valueChanges.subscribe(() => {
+      this.isSubmitted = false;
     });
   }
 
@@ -231,12 +234,17 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
       this.getAssignments();
       this.toast.success(this.translate.instant('expenses.delete_success'));
     },
-  err => {
-    this.toast.error(err)
-  })
+      err => {
+        this.toast.error(err)
+      })
   }
 
   openDialog(id: string): void {
+    if (this.changeMode === 'Add') {
+      this.templateAssignmentForm.get('user').enable();
+      this.templateAssignmentForm.get('expenseTemplate').enable();
+      this.templateAssignmentForm.get('effectiveDate').enable();
+    }
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px'
     });
@@ -329,9 +337,6 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
         if (this.changeMode == 'Update') {
           this.toast.success(this.translate.instant('expenses.template_assigned_update_success'));
           this.changeMode = 'Add';
-          this.templateAssignmentForm.get('user').enable();
-          this.templateAssignmentForm.get('expenseTemplate').enable();
-          this.templateAssignmentForm.get('effectiveDate').enable();
         }
         this.getAssignments();
         this.templateAssignmentForm.reset();

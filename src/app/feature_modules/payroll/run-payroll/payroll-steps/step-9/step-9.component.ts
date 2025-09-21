@@ -101,21 +101,25 @@ export class Step9Component {
   }
 
   onAction(event: any) {
+    console.log(event.action.label);
     switch (event.action.label) {
       case 'View':
         this.selectedStatus = event.row?._id;
         this.selectedRecord = event.row;
         this.openDialog()
         break;
+
       default:
-        this.payrollStatusArray.forEach(status => {
+        // this.payrollStatusArray.forEach(status => {
 
-            if (status === event.row?.PayrollUser?.status) {
-              this.selectedPayrollUser = event.row;
-              this.openUpdateStatusDialog(status)
-            }
+        //     if (status === event.row?.PayrollUser?.status) {
+        //       this.selectedPayrollUser = event.row;
+        //       this.openUpdateStatusDialog(status)
+        //     }
 
-        })
+        // })
+        this.selectedPayrollUser = event.row;
+        this.openUpdateStatusDialog(event.action.label);
         break;
     }
   }
@@ -156,7 +160,7 @@ export class Step9Component {
   }
 
   updatePayrollStatus() {
-    const id = this.selectedPayrollUser?.PayrollUser?.id;
+    const id = this.selectedPayrollUser?.PayrollUser?._id;
     const payload = {
       updatedOnDate: new Date(),
       status: this.selectedStatus

@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, Input, Inject, DestroyRef, inject } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
+  MatDialog,
   MatDialogRef,
 } from '@angular/material/dialog';
 import { ExpensesService } from 'src/app/_services/expenses.service';
@@ -45,7 +46,9 @@ export class CreateReportComponent {
   expenseData: any;
   isSubmitting: boolean = false;
   documentMandatory: boolean;
-
+  private dialog: MatDialog;
+  public selectedAttachment: any;
+  documentName: any;
 
   constructor(
     public expenseService: ExpensesService,
@@ -58,7 +61,7 @@ export class CreateReportComponent {
       expenseCategory: ['', Validators.required],
       incurredDate: ['', [Validators.required, this.futureDateValidator()]],
       amount: [0, [Validators.required, Validators.min(0)]],
-      type: [''],
+      type: ['', Validators.required],
       quantity: [0, [Validators.required, Validators.min(0)]],
       isReimbursable: [false],
       isBillable: [false],
@@ -108,7 +111,6 @@ export class CreateReportComponent {
         this.categories = res.data;
       });
     }
-    
   }
 
   initChanges() {
@@ -122,13 +124,12 @@ export class CreateReportComponent {
       }
     });
   }
-
-  documentName: any;
   loadExpenseReportData() {
     const expenseFieldsArray = this.expenseReportform.get('expenseReportExpenseFields') as FormArray;
     expenseFieldsArray.clear();
     this.expenseService.expenseReportExpense.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(res => {
       this.documentName = res.documentName;
+      this.selectedRate = res?.type?.rate || 0;
       this.expenseReportform.patchValue({
         expenseCategory: res?.expenseCategory,
         incurredDate: res?.incurredDate,
@@ -138,7 +139,7 @@ export class CreateReportComponent {
         reason: res.reason,
         expenseReport: res._id,
         quantity: res.quantity,
-        type: res.type,
+        type: res?.type?._id,
         expenseAttachments: res.documentLink || this.selectedFiles,
         expenseTemplateCategoryFieldValues: res?.expenseTemplateCategoryFieldValues,
         expenseReportExpenseFields: res.expenseReportExpenseFields
@@ -184,7 +185,6 @@ export class CreateReportComponent {
       payload.expenseAttachments = attachments;
       this.submitExpenseReport(payload);
     }).catch(error => {
-      console.error('Error processing files:', error);
     });
   }
 
@@ -211,7 +211,6 @@ export class CreateReportComponent {
         this.dialogRef.close();
       },
       (err) => {
-        console.log(err)
         this.toast.error(err);
         this.isSubmitting = false;
       }
@@ -232,7 +231,6 @@ export class CreateReportComponent {
         this.closeModal();
       },
       (err) => {
-        console.log(err)
         this.toast.error(err);
         this.isSubmitting = false;
       }
@@ -263,7 +261,7 @@ export class CreateReportComponent {
     });
   }
 
- onFileSelected(event: any) {
+  onFileSelected(event: any) {
     const newFiles: FileList = event.target.files;
     if (newFiles) {
       const previousFiles = this.selectedFiles || [];
@@ -378,10 +376,12 @@ export class CreateReportComponent {
 
   onTypeChange(selectedType: string): void {
     this.selectedType = selectedType;
-    const selectedField = this.applicableCategoryFields?.find(field => field.label === selectedType);
-    this.expenseReportform.value.expenseTemplateCategoryFieldValues = selectedField._id;
-    this.expenseService.expenseTemplateCategoryFieldValues.next(selectedField._id);
-    this.selectedRate = selectedField ? selectedField.rate : 0;
+
+    const selectedField = this.applicableCategoryFields?.find(field => field._id === selectedType);
+
+    this.expenseReportform.value.expenseTemplateCategoryFieldValues = selectedType;
+    this.expenseService.expenseTemplateCategoryFieldValues.next(selectedType);
+    this.selectedRate = selectedField ? selectedField?.rate : 0;
     this.updateTotalRate();
   }
 

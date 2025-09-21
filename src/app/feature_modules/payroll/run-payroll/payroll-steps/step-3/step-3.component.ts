@@ -8,6 +8,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { PayrollUserListComponent } from '../payroll-user-list/payroll-user-list.component';
 
 @Component({
   selector: 'app-step-3',
@@ -61,7 +62,7 @@ export class Step3Component {
     { name: 'December', value: 12 }
   ];
   selectedPayrollUser: string;
-
+  @ViewChild(PayrollUserListComponent) payrollUserListComp!: PayrollUserListComponent;
 
   constructor(private payrollService: PayrollService,
     private fb: FormBuilder,
@@ -93,8 +94,6 @@ export class Step3Component {
       return null;
     };
   }
-
-
 
   ngOnInit() {
     this.generateYearList();
@@ -188,6 +187,7 @@ export class Step3Component {
   }
 
   closeDialog() {
+    this.selectedUserId = null;
     this.isSubmitted = false;
     this.changeMode = 'Update';
     this.variablePayForm.get('payrollUser').enable();
@@ -199,6 +199,10 @@ export class Step3Component {
       month: this.selectedPayroll?.month,
       year: this.selectedPayroll?.year
     });
+    this.salary = null;
+    if (this.payrollUserListComp) {
+      this.payrollUserListComp.resetSelection();
+    }
     this.dialog.closeAll();
   }
 
@@ -208,35 +212,35 @@ export class Step3Component {
     })
   }
 
- onUserSelectedFromChild(userId: any) {
-  this.selectedUserId = userId.value.user;
-  this.selectedPayrollUser = userId.value._id;
+  onUserSelectedFromChild(userId: any) {
+    this.selectedUserId = userId.value.user;
+    this.selectedPayrollUser = userId.value._id;
 
-  if (this.changeMode === 'Add' || this.changeMode === 'Update') {
-    this.getVariablePayByUser(); // ✅ NEW
-    this.getSalarydetailsByUser();
+    if (this.changeMode === 'Add' || this.changeMode === 'Update') {
+      this.getVariablePayByUser();
+      this.getSalarydetailsByUser();
+    }
   }
-}
-getVariablePayByUser() {
-  if (!this.selectedPayrollUser) return;
+  getVariablePayByUser() {
+    if (!this.selectedPayrollUser) return;
 
-  this.payrollService.getVariablePay(this.selectedPayrollUser).subscribe((res: any) => {
-    const userVarPay = res.data;
+    this.payrollService.getVariablePay(this.selectedPayrollUser).subscribe((res: any) => {
+      const userVarPay = res.data;
 
-    const userRequests = userVarPay.map((item: any) => {
-      const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
-      return {
-        ...item,
-        payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
-      };
-    });
+      const userRequests = userVarPay.map((item: any) => {
+        const payrollUser = this.payrollUsers?.find((user: any) => user._id === item.payrollUser);
+        return {
+          ...item,
+          payrollUserDetails: payrollUser ? this.getUser(payrollUser.user) : null
+        };
+      });
 
-    this.variablePay = userRequests;
-  },
-  error => {
-    this.toast.error("Error fetching Variable Pay for user.");
-  });
-}
+      this.variablePay = userRequests;
+    },
+      error => {
+        this.toast.error("Error fetching Variable Pay for user.");
+      });
+  }
   getVariablePay() {
     this.payrollService.getVariablePay(this.selectedRecord?.payrollUser).subscribe((res: any) => {
       this.variablePay = res.data;
@@ -312,7 +316,6 @@ getVariablePayByUser() {
   onSubmit() {
     this.variablePayForm.get('month').enable();
     this.variablePayForm.get('year').enable();
-    this.variablePayForm.get('payrollUser').enable();
     this.variablePayForm.patchValue({
       payrollUser: this.selectedPayrollUser || this.selectedRecord?.payrollUserDetails,
       month: this.selectedPayroll.month,
@@ -328,12 +331,23 @@ getVariablePayByUser() {
       this.isSubmitted = true;
 
       if (this.changeMode == 'Add') {
+        this.variablePayForm.patchValue({
+          payrollUser: this.selectedPayrollUser,
+          month: this.selectedPayroll.month,
+          year: this.selectedPayroll.year
+        });
         if (this.isDuplicateRecord()) {
           this.toast.error('Duplicate record: Variable Allowance or Deduction already exists for this user in this payroll.');
           this.isSubmitted = false;
           return;
         }
         else {
+          this.variablePayForm.patchValue({
+            payrollUser: this.selectedRecord?.payrollUser,
+            month: this.selectedPayroll.month,
+            year: this.selectedPayroll.year
+          });
+
           this.payrollService.addVariablePay(this.variablePayForm.value).subscribe((res: any) => {
             this.variablePay = res.data;
             this.getVariablePayByPayroll();
@@ -347,7 +361,12 @@ getVariablePayByUser() {
         }
       }
       if (this.changeMode == 'Update') {
-        this.variablePayForm.get('payrollUser')?.setValue(this.selectedRecord.payrollUser);
+        this.variablePayForm.patchValue({
+          payrollUser: this.selectedRecord?.payrollUser,
+          month: this.selectedRecord?.month,
+          year: this.selectedRecord?.year
+        });
+        this.variablePayForm.get('payrollUser')?.setValue(this.selectedRecord?.payrollUserDetails);
         let id = this.selectedRecord._id;
         this.payrollService.updateVariablePay(id, this.variablePayForm.value).subscribe((res: any) => {
           this.toast.success('Variable Pay Updated', 'Successfully!');
@@ -363,23 +382,23 @@ getVariablePayByUser() {
     this.variablePayForm.get('year').disable();
   }
 
- deleteTemplate(_id: string) {
-  this.payrollService.deleteVariablePay(_id).subscribe(
-    (res: any) => {
-      this.toast.success('Successfully Deleted!!!', 'Variable Pay');
+  deleteTemplate(_id: string) {
+    this.payrollService.deleteVariablePay(_id).subscribe(
+      (res: any) => {
+        this.toast.success('Successfully Deleted!!!', 'Variable Pay');
 
-      // ✅ Refresh list based on user selection
-      if (this.selectedPayrollUser) {
-        this.getVariablePayByUser();
-      } else {
-        this.getVariablePayByPayroll();
+        // ✅ Refresh list based on user selection
+        if (this.selectedPayrollUser) {
+          this.getVariablePayByUser();
+        } else {
+          this.getVariablePayByPayroll();
+        }
+      },
+      (err) => {
+        this.toast.error('This Variable Pay cannot be deleted!');
       }
-    },
-    (err) => {
-      this.toast.error('This Variable Pay cannot be deleted!');
-    }
-  );
-}
+    );
+  }
 
   deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

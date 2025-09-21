@@ -4,7 +4,7 @@
 
             <!-- Basic Information -->
             <mat-accordion>
-                <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel [expanded]="expandedPanels.basic" (opened)="expandedPanels.basic = true" (closed)="expandedPanels.basic = false">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             Basic Information
@@ -70,7 +70,7 @@
                 </mat-expansion-panel>
 
                 <!-- Personal Details -->
-                <mat-expansion-panel>
+                <mat-expansion-panel [expanded]="expandedPanels.personal" (opened)="expandedPanels.personal = true" (closed)="expandedPanels.personal = false">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             Personal Details
@@ -172,7 +172,7 @@
                 </mat-expansion-panel>
 
                 <!-- Address Details -->
-                <mat-expansion-panel>
+                <mat-expansion-panel [expanded]="expandedPanels.address" (opened)="expandedPanels.address = true" (closed)="expandedPanels.address = false">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             Address
@@ -209,7 +209,7 @@
                 </mat-expansion-panel>
 
                 <!-- Contact -->
-                <mat-expansion-panel>
+                <mat-expansion-panel [expanded]="expandedPanels.contact" (opened)="expandedPanels.contact = true" (closed)="expandedPanels.contact = false">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             Contact
@@ -235,7 +235,7 @@
                 </mat-expansion-panel>
 
                 <!-- Emergency Contact -->
-                <mat-expansion-panel>
+                <mat-expansion-panel [expanded]="expandedPanels.emergency" (opened)="expandedPanels.emergency = true" (closed)="expandedPanels.emergency = false">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             Emergency Contact
@@ -268,7 +268,7 @@
                 </mat-expansion-panel>
 
                 <!-- Bank Details -->
-                <mat-expansion-panel>
+                <mat-expansion-panel [expanded]="expandedPanels.bank" (opened)="expandedPanels.bank = true" (closed)="expandedPanels.bank = false">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         Bank Details
@@ -340,7 +340,7 @@
                   </mat-expansion-panel>
 
                 <!-- Extra Details -->
-                <mat-expansion-panel>
+                <mat-expansion-panel [expanded]="expandedPanels.extra" (opened)="expandedPanels.extra = true" (closed)="expandedPanels.extra = false">
                     <mat-expansion-panel-header>
                         <mat-panel-title>
                             Extra Details
