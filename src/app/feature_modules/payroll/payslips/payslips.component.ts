@@ -23,7 +23,7 @@ export class PayslipsComponent {
   private readonly translate = inject(TranslateService);
   columns: TableColumn[] = [
     { key: 'PayrollUser', name: 'Employee', valueFn: (row: any) => row?.PayrollUser?.user?.firstName + ' ' + row?.PayrollUser?.user?.lastName },
-    { key: 'period', name: 'Period', valueFn: (row: any) => row?.PayrollUser?.payroll?.month + '-' + row?.PayrollUser?.payroll?.year },
+    { key: 'period', name: 'Period', valueFn: (row: any) =>  row?.PayrollUser?.payroll ? row?.PayrollUser?.payroll?.month + '-' + row?.PayrollUser?.payroll?.year : '' },
     { key: 'generatedOn', name: 'Generated On', valueFn: (row: any) => row?.PayrollUser?.payroll?.date ? this.datePipe.transform(row?.PayrollUser?.payroll?.date, 'mediumDate') : '' },
     { key: 'status', name: 'Status', valueFn: (row: any) => row?.PayrollUser?.payroll?.status },
     {
