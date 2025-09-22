@@ -9,7 +9,7 @@
         </mat-form-field>
 
         <mat-form-field class="ms-2" style="min-width: 180px;">
-            <mat-label>Full and Final Year</mat-label>
+            <mat-label>Select Year</mat-label>
             <mat-select [(ngModel)]="selectedYear" (selectionChange)="onYearChange($event)">
                 <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
             </mat-select>

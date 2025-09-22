@@ -92,7 +92,7 @@ export class AttendanceRecordsComponent implements OnInit {
   }
 
   getAttendanceByMonth(): Observable<any[]> {
-    const payload = { skip: '', next: '1000000', month: this.selectedMonth, year: this.selectedYear };
+    const payload = { skip: '', next: '', month: this.selectedMonth, year: this.selectedYear };
     return this.attendanceService.getAttendanceRecordsByMonth(payload).pipe(
       map((res: any) => res.data)
     );
