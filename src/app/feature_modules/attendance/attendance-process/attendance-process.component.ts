@@ -53,7 +53,7 @@ export class AttendanceProcessComponent {
   resignationDate: any;
   noticePeriod: any;
   lastWorkingDay: any;
-
+  isSubmitted: boolean = false;
   bsValue = new Date();
   selectedMonth: string = (new Date().getMonth() + 1).toString();
   attendanceTemplateAssignment: any;
@@ -216,7 +216,11 @@ export class AttendanceProcessComponent {
       });
     });
     this.attendanceTemplateAssignment = [];
+    this.lopForm.valueChanges.subscribe(() => {
+      this.isSubmitted = false;
+    });
   }
+
   attendanceTemplateValidator(): ValidatorFn {
     return (control: AbstractControl): { [key: string]: any } | null => {
       const selectedUserIds: string[] = control.value;
@@ -224,7 +228,7 @@ export class AttendanceProcessComponent {
         return null;
       }
       const hasTemplateAssigned = selectedUserIds.every(userId =>
-        this.attendanceTemplateAssignment?.find(template => template.employee?._id === userId)
+        this.attendanceTemplateAssignment?.find(template => template?.employee?._id === userId)
       );
       return hasTemplateAssigned ? null : { 'noAttendanceTemplate': true };
     };
@@ -271,7 +275,6 @@ export class AttendanceProcessComponent {
           this.toast.error(`No Attendance Template assigned for: ${userNames}`);
         }
       } catch (error) {
-        console.error('Error fetching attendance templates:', error);
         this.toast.error('Error fetching attendance templates.');
         this.lopForm.controls['user'].markAsTouched();
         this.lopForm.controls['user'].setErrors({ apiError: true });
@@ -282,23 +285,71 @@ export class AttendanceProcessComponent {
       this.lopForm.controls['user'].updateValueAndValidity();
     }
   }
+
+  // runDateValidator(control: AbstractControl): ValidationErrors | null {
+  //   const runDate = new Date(control.value);
+  //   const year = this.attendanceProcessForm?.value?.attendanceProcessPeriodYear;
+  //   const month = this.attendanceProcessForm?.value?.attendanceProcessPeriodMonth;
+  //   if (!control.value) {
+  //     return { required: true };
+  //   }
+  //   if (!year || !month) {
+  //     return null;
+  //   }
+  //   const lastDayOfMonth = new Date(year, month, 1);
+  //   console.log(lastDayOfMonth);
+  //   const lastFiveDaysStart = new Date(year, month + 1, lastDayOfMonth.getDate() + 4);
+  //   console.log(lastFiveDaysStart);
+
+  //   const firstFiveDaysEnd = new Date(year, month - 1, 5);
+
+  //   if (
+  //     (runDate >= lastFiveDaysStart && runDate <= lastDayOfMonth) ||
+  //     (runDate >= new Date(year, month - 1, 1) && runDate <= firstFiveDaysEnd)
+  //   ) {
+  //     return null;
+  //   }
+  //   return { outOfRange: true };
+  // }
   runDateValidator(control: AbstractControl): ValidationErrors | null {
     const runDate = new Date(control.value);
     const year = this.attendanceProcessForm?.value?.attendanceProcessPeriodYear;
     const month = this.attendanceProcessForm?.value?.attendanceProcessPeriodMonth;
+
     if (!control.value) {
-      return { required: true };
+      return { required: { message: 'Run date is required' } };
     }
     if (!year || !month) {
       return null;
     }
-    const lastDayOfMonth = new Date(year, month, 0);
+
+    // Get the last day of the selected month
+    const lastDayOfMonth = new Date(year, month, 0); // Corrected to get the last day
+    console.log('Last day of selected month:', lastDayOfMonth);
+
+    // Last 5 days of the selected month (e.g., for June, 26th to 30th)
     const lastFiveDaysStart = new Date(year, month - 1, lastDayOfMonth.getDate() - 4);
-    const firstFiveDaysEnd = new Date(year, month, 5);
-    if (runDate < lastFiveDaysStart || runDate > firstFiveDaysEnd) {
-      return { outOfRange: true };
+    console.log('Last 5 days start:', lastFiveDaysStart);
+
+    // First 5 days of the next month (e.g., for June, July 1st to 5th)
+    const nextMonthStart = new Date(year, month, 1); // First day of next month
+    const firstFiveDaysEnd = new Date(year, month, 5); // 5th day of next month
+    console.log('First 5 days end:', firstFiveDaysEnd);
+
+    // Check if runDate is within the last 5 days of the selected month OR the first 5 days of the next month
+    if (
+      (runDate >= lastFiveDaysStart && runDate <= lastDayOfMonth) ||
+      (runDate >= nextMonthStart && runDate <= firstFiveDaysEnd)
+    ) {
+      return null; // Valid date
     }
-    return null;
+
+    // Return outOfRange error with a message
+    return {
+      outOfRange: {
+        message: `Selected date must be within the last 5 days of ${month}/${year} or the first 5 days of ${month + 1}/${year}.`
+      }
+    };
   }
 
   onMonthChange(event: any) {
@@ -317,6 +368,7 @@ export class AttendanceProcessComponent {
   }
 
   open(content: TemplateRef<any>) {
+    this.isSubmitted = false;
     this.getUsersByStatus();
     this.attendanceProcessForm.reset({
       exportToPayroll: 'false',
@@ -342,6 +394,7 @@ export class AttendanceProcessComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.isSubmitted = false;
       this.changeMode = 'Update';
       if (result) {
         this.createAttendanceProcessLOP();
@@ -350,6 +403,7 @@ export class AttendanceProcessComponent {
   }
 
   openLopFormDialog() {
+    this.isSubmitted = false;
     const dialogRef = this.dialog.open(this.dialogTemplate, {
       width: '600px',
       disableClose: true
@@ -357,6 +411,7 @@ export class AttendanceProcessComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       this.changeMode = 'Update';
+      this.isSubmitted = false;
       if (result) {
         this.createAttendanceProcessLOP();
       }
@@ -381,6 +436,7 @@ export class AttendanceProcessComponent {
 
   createAttendanceProcessLOP() {
     if (this.lopForm.valid) {
+      this.isSubmitted = true;
       const selectedUsers = this.lopForm.value.user;
       const requests = selectedUsers.map((userId: string) => {
         const payload = {
@@ -399,10 +455,11 @@ export class AttendanceProcessComponent {
             } else if (res.status === 'success') {
               this.lopForm.reset({
                 user: ''
-              })
-              this.toast.success(`LOP Processed For the selected Users`, 'Successfully!');
+              });
             }
           });
+          this.toast.success(`LOP Processed For the selected Users`, 'Successfully!');
+          this.dialog.closeAll();
           this.lopForm.reset({
             month: this.selectedMonth,
             year: this.selectedYear
@@ -437,13 +494,13 @@ export class AttendanceProcessComponent {
       month: this.attendanceProcessForm.value.attendanceProcessPeriodMonth,
       year: this.attendanceProcessForm.value.attendanceProcessPeriodYear,
     };
-  
+
     if (!payload.month || !payload.year) {
       this.attendancePeriodError = false;
       this.lopNotCreatedError = false;
       return;
     }
-  
+
     this.attendanceService.getProcessAttendance(payload).subscribe((res: any) => {
       const existingAttendance = res.data.find((attendance: any) =>
         attendance.attendanceProcessPeriodMonth === this.attendanceProcessForm.value.attendanceProcessPeriodMonth &&
@@ -464,7 +521,7 @@ export class AttendanceProcessComponent {
   validateAttendanceForAllAssignees() {
     const month = this.attendanceProcessForm.value.attendanceProcessPeriodMonth;
     const year = this.attendanceProcessForm.value.attendanceProcessPeriodYear;
-  
+
     const validationRequests = this.allAssignee.map((user: any) => {
       const payload = {
         user: user._id,
@@ -478,7 +535,7 @@ export class AttendanceProcessComponent {
         }))
       );
     });
-  
+
     forkJoin(validationRequests).subscribe((results: any[]) => {
       const failedUsers = results
         .filter(result => !result.isValid)
@@ -487,22 +544,20 @@ export class AttendanceProcessComponent {
           lastName: result.user.lastName,
           id: result.user._id
         }));
-  
+
       if (failedUsers.length > 0) {
         this.lopNotCreatedError = true;
-  
+
         // You can bind this to your UI to show the failed users
         this.failedUsers = failedUsers;
-  
-        console.warn('LOP not created for:', failedUsers);
+
       } else {
         this.lopNotCreatedError = false;
         this.failedUsers = [];
-        console.log('All users passed LOP validation.');
       }
     });
   }
-  
+
   getProcessAttendance() {
     let payload = {
       skip: '',
@@ -522,6 +577,7 @@ export class AttendanceProcessComponent {
 
   onSubmission() {
     if (this.attendanceProcessForm.valid && !this.attendancePeriodError && !this.lopNotCreatedError) {
+      this.isSubmitted = true;
       let payload = {
         skip: '',
         next: '',
@@ -578,7 +634,7 @@ export class AttendanceProcessComponent {
       this.getProcessAttendance();
       this.toast.success('Successfully Deleted!!!', 'Attendance Process');
     }, (err) => {
-      this.toast.error('Attendance Process can not be deleted', 'Error');
+      this.toast.error(err);
     });
   }
 
@@ -608,7 +664,6 @@ export class AttendanceProcessComponent {
           ...(this.changeMode === 'Add' ? settledUsers.data['users'] : []),
           ...fnfAttendanceProcessed.data['users']
         ];
-        console.log(this.usersForFNF)
         return this.usersForFNF;
       })
     );
