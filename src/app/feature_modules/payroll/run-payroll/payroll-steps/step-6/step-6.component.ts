@@ -280,7 +280,7 @@ export class Step6Component {
   deleteTemplate(_id: string) {
     this.payrollService.deleteFlexi(_id).subscribe((res: any) => {
       this.getFlexiBenefitsProfessionalTax();
-      this.toast.success('Successfully Deleted!!!', 'Flexi Benefits');
+      this.toast.success('Successfully Deleted!', 'Flexi Benefits');
     },
       (err) => {
         this.toast.error('This Flexi Benefits Can not be deleted!');

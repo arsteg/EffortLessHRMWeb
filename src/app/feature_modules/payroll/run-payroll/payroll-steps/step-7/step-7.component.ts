@@ -1,14 +1,7 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
-import { forkJoin, map } from 'rxjs';
-import { AttendanceService } from 'src/app/_services/attendance.service';
-import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
-import { UserService } from 'src/app/_services/users.service';
-import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
-import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-step-7',
@@ -77,5 +70,4 @@ export class Step7Component {
       this.overtime = userRequests;
     });
   }
-
 }
