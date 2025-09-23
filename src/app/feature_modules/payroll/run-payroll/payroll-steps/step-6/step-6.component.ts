@@ -223,7 +223,7 @@ export class Step6Component {
     }
     else {
       this.isSubmitted = true;
-      this.flexiBenefitsForm.get('PayrollUser').enable();
+      // this.flexiBenefitsForm.get('PayrollUser').enable();
       this.flexiBenefitsForm.value.PayrollUser = this.selectedPayrollUser;
       if (this.changeMode == 'Add') {
         this.payrollService.addFlexi(this.flexiBenefitsForm.value).subscribe((res: any) => {
@@ -235,7 +235,9 @@ export class Step6Component {
         );
       }
       if (this.changeMode == 'Update') {
+        this.flexiBenefitsForm.patchValue({ PayrollUser: this.selectedPayrollUser});
         this.payrollService.updateFlexi(this.selectedRecord._id, this.flexiBenefitsForm.value).subscribe((res: any) => {
+          this.selectedPayrollUser = res.data.record.PayrollUser;
           this.getFlexiBenefitsProfessionalTax();
           this.toast.success('Flexi Benefits Updated', 'Successfully!');
           this.closeDialog();
