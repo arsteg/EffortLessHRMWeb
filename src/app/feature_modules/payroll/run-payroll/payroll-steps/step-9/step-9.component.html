@@ -11,7 +11,7 @@
     <div mat-dialog-content>
         <div class="d-flex justify-content-between">
             <button mat-flat-button type="button" (click)="closeAddDialog()">Close</button>
-            <button mat-flat-button type="submit" color="primary" (click)="updatePayrollStatus()">
+            <button mat-flat-button type="submit" color="primary" [disabled]="isSubmitted" (click)="updatePayrollStatus()">
                 {{ selectedStatus }}
             </button>
         </div>

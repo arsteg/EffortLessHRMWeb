@@ -43,6 +43,7 @@ export class Step9Component {
   payrollForm: FormGroup;
   changedStatus: string;
   dialogRef: any;
+  isSubmitted: boolean = false;
   displayedColumns = [
     'PayrollUsers',
     'totalOvertime',
@@ -156,10 +157,12 @@ export class Step9Component {
     });
   }
   closeAddDialog() {
+    this.isSubmitted = false;
     this.dialog.closeAll();
   }
 
   updatePayrollStatus() {
+    this.isSubmitted = true;
     const id = this.selectedPayrollUser?.PayrollUser?._id;
     const payload = {
       updatedOnDate: new Date(),
@@ -180,6 +183,7 @@ export class Step9Component {
     this.payrollService.generatedPayrollByPayroll(this.selectedPayroll?._id).subscribe(
       (res: any) => {
         this.generatedPayroll = res.data.map((record) => {
+          console.log(record);
           return {
             ...record,
             totalOvertime: record?.overtime[0]?.OvertimeAmount || 0,
@@ -193,7 +197,7 @@ export class Step9Component {
             monthlySalary: parseFloat(record?.monthlySalary || 0).toFixed(2),
             totalTakeHome: parseFloat(record?.totalTakeHome || 0).toFixed(2),
 
-            payroll_status: record?.payroll_status || 'Pending'
+            payroll_status: record?.payroll_status || 'InProgress'
           };
         });
       },
