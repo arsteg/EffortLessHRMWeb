@@ -276,6 +276,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
   closeAddDialog() {
     this.isSubmittingPayroll = false;
     this.isSubmittingStatusPayroll = false;
+     this.payrollForm.get('date')?.disable();
     this.payrollForm.reset({
       year: '',
       month: '',
@@ -431,7 +432,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
       return;
     }
     if (this.payrollForm.valid) {
-      this.payrollForm.get('date').enable();
+   
       this.payrollForm.patchValue({
         date: this.payrollForm.value.date
       });
