@@ -17,7 +17,7 @@ import { CustomValidators } from 'src/app/_helpers/custom-validators';
 export class Step5Component {
   activeTab: string = 'tabArrears';
   arrearForm: FormGroup;
-  changeMode: 'Add' | 'Update' = 'Update';
+  changeMode: 'Add' | 'Update' = 'Add';
   @Input() selectedPayroll: any;
   salaryPerDay: any; // or fetch dynamically if needed
   selectedUserId: any;
@@ -26,13 +26,13 @@ export class Step5Component {
   selectedRecord: any;
   payrollUser: any;
   searchText: string = '';
-  selectedPayrollUser: string;  
+  selectedPayrollUser: string;
   isSubmitted: boolean = false;
   payrollUsers: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   columns: TableColumn[] = [
     { key: 'payrollUserDetails', name: 'Employee Name' },
-    { key: 'manualArrears', name: 'Manual Arrears'},
+    { key: 'manualArrears', name: 'Manual Arrears' },
     { key: 'arrearDays', name: 'Arrear Days' },
     { key: 'lopReversalDays', name: 'LOP Reversal Days', },
     { key: 'salaryRevisionDays', name: 'Salary Revision Days' },
@@ -55,11 +55,11 @@ export class Step5Component {
   ) {
     this.arrearForm = this.fb.group({
       payrollUser: ['', Validators.required],
-      manualArrears:['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
-      arrearDays:['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
-      lopReversalDays:['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
+      manualArrears: ['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
+      arrearDays: ['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
+      lopReversalDays: ['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
       salaryRevisionDays: ['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
-      lopReversalArrears:['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
+      lopReversalArrears: ['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
       totalArrears: ['', [Validators.required, CustomValidators.GreaterThanZeroValidator()]],
     });
   }
@@ -71,9 +71,9 @@ export class Step5Component {
     this.payrollService.payrollUsers.subscribe(res => {
       this.payrollUsers = res;
     });
-    this.arrearForm.valueChanges.subscribe(() => {
-      this.recalculateFields();
-    });
+      this.arrearForm.valueChanges.subscribe(() => {
+        this.recalculateFields();
+      });
     this.getArrearsByPayroll();
   }
 
@@ -101,7 +101,6 @@ export class Step5Component {
 
     const lopReversalArrears = lopReversalDays * this.salaryPerDay;
     const totalArrears = manualArrears + ((arrearDays + salaryRevisionDays) * this.salaryPerDay) + lopReversalArrears;
-
     this.arrearForm.patchValue({
       lopReversalArrears: lopReversalArrears.toFixed(0),
       totalArrears: totalArrears.toFixed(0)
@@ -110,9 +109,7 @@ export class Step5Component {
   getDailySalaryByUserId(userId: string): void {
     this.userService.getDailySalaryByUserId(userId).subscribe(
       (res: any) => {
-
         this.salaryPerDay = res.data;
-        console.log(this.salaryPerDay);
       },
       (error: any) => {
         this.toast.error('Failed to load Salary Per Day', 'Error');
@@ -123,22 +120,20 @@ export class Step5Component {
   }
 
   openDialog() {
-    if (this.changeMode == 'Update') {
+    if (this.changeMode === 'Update') {
       this.payrollService.getPayrollUserById(this.selectedRecord.payrollUser).subscribe((res: any) => {
         this.payrollUser = res.data;
 
         const payrollUser = this.payrollUser?.user;
-
         this.arrearForm.patchValue({
           payrollUser: this.getUser(payrollUser),
-          manualArrears: this.selectedRecord.manualArrears,
-          arrearDays: this.selectedRecord.arrearDays,
-          lopReversalDays: this.selectedRecord.lopReversalDays,
-          salaryRevisionDays: this.selectedRecord.salaryRevisionDays,
-          lopReversalArrears: this.selectedRecord.lopReversalArrears,
-          totalArrears: this.selectedRecord.totalArrears
+          manualArrears: this.selectedRecord?.manualArrears,
+          arrearDays: this.selectedRecord?.arrearDays,
+          lopReversalDays: this.selectedRecord?.lopReversalDays,
+          salaryRevisionDays: this.selectedRecord?.salaryRevisionDays,
+          lopReversalArrears: this.selectedRecord?.lopReversalArrears,
+          totalArrears: this.selectedRecord?.totalArrears
         });
-        this.arrearForm.get('payrollUser').disable();
       });
     }
     this.dialog.open(this.dialogTemplate, {
@@ -148,25 +143,23 @@ export class Step5Component {
   }
 
   closeDialog() {
-    this.changeMode = 'Update';
+    this.changeMode = 'Add';
     this.dialog.closeAll();
-      this.arrearForm.patchValue({
-          payrollUser: "",
-          manualArrears: 0,
-          arrearDays:0,
-          lopReversalDays: 0,
-          salaryRevisionDays: 0,
-          lopReversalArrears: 0,
-          totalArrears: ''
-        });        
+    this.arrearForm.patchValue({
+      payrollUser: "",
+      manualArrears: 0,
+      arrearDays: 0,
+      lopReversalDays: 0,
+      salaryRevisionDays: 0,
+      lopReversalArrears: 0,
+      totalArrears: ''
+    });
     this.isSubmitted = false;
   }
 
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user?.value?._id;
-    console.log(this.selectedUserId);
-    console.log(this.selectedPayrollUser);
     this.getDailySalaryByUserId(this.selectedUserId);
 
 
@@ -214,17 +207,17 @@ export class Step5Component {
 
   onSubmission() {
     this.arrearForm.get('payrollUser').enable();
-    this.arrearForm.patchValue({ payrollUser: this.selectedPayrollUser });  
+    this.arrearForm.patchValue({ payrollUser: this.selectedPayrollUser });
 
     this.isSubmitted = true;
     this.arrearForm.markAllAsTouched();
-    if (this.arrearForm.invalid) {      
+    if (this.arrearForm.invalid) {
       this.toast.error('Please fill all required fields', 'Error!');
       this.isSubmitted = false;
       return;
     }
     if (this.changeMode == 'Add') {
-     // this.arrearForm.value.payrollUser = this.selectedPayrollUser;
+      // this.arrearForm.value.payrollUser = this.selectedPayrollUser;
       this.payrollService.addArrear(this.arrearForm.value).subscribe((res: any) => {
         this.getArrears();
         this.selectedUserId = null;
@@ -232,11 +225,11 @@ export class Step5Component {
         this.toast.success('Manual Arrear Created', 'Successfully!');
         this.closeDialog();
       },
-        err => {        
-           const errorMessage = err?.error?.message || err?.message || err
+        err => {
+          const errorMessage = err?.error?.message || err?.message || err
             || 'Manual arrear can not be Created';
           this.toast.error(errorMessage, 'Error!');
-            this.isSubmitted = true;
+          this.isSubmitted = true;
         });
     }
     if (this.changeMode == 'Update') {
@@ -248,11 +241,11 @@ export class Step5Component {
         this.changeMode = 'Add';
         this.closeDialog();
       },
-        err => {        
-           const errorMessage = err?.error?.message || err?.message || err
+        err => {
+          const errorMessage = err?.error?.message || err?.message || err
             || 'Manual arrear can not be Updated';
           this.toast.error(errorMessage, 'Error!');
-            this.isSubmitted = true;
+          this.isSubmitted = true;
         });
     }
   }
@@ -264,8 +257,8 @@ export class Step5Component {
     },
       (err) => {
         const errorMessage = err?.error?.message || err?.message || err
-            || 'This Arrear Can not be deleted!';
-          this.toast.error(errorMessage, 'Error!');
+          || 'This Arrear Can not be deleted!';
+        this.toast.error(errorMessage, 'Error!');
       });
   }
 
