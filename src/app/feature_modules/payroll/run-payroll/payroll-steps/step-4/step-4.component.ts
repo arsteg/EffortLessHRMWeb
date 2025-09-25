@@ -25,14 +25,14 @@ export class Step4Component {
   changeMode: 'Add' | 'Update' = 'Add';
   selectedRecord: any;
   payrollUsers: any;
-  matchedLoanAdvances: any; 
+  matchedLoanAdvances: any;
   isSubmitted: boolean = false;
   selectedPayrollUser: string;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   columns: TableColumn[] = [
     { key: 'payrollUserDetails', name: 'Employee Name' },
     { key: 'loanAndAdvance', name: 'Loan Category', valueFn: (row) => row.loanAndAdvance?.loanAdvancesCategory?.name },
-    { key: 'amount', name: 'Repayment Amount'},
+    { key: 'amount', name: 'Repayment Amount' },
     { key: 'disbursementAmount', name: 'Disbursed Amount' },
     {
       key: 'action', name: 'Action', isAction: true, options: [
@@ -96,7 +96,7 @@ export class Step4Component {
 
   closeDialog() {
     this.changeMode = 'Add';
-     this.isSubmitted = false;
+    this.isSubmitted = false;
     this.dialog.closeAll();
   }
 
@@ -179,52 +179,57 @@ export class Step4Component {
 
   onSubmission() {
     this.isSubmitted = true;
-    this.loanAdvanceForm.markAllAsTouched();
-    if (this.loanAdvanceForm.invalid) {      
+    console.log(this.loanAdvanceForm.value);
+
+    if (this.loanAdvanceForm.invalid) {
+      this.loanAdvanceForm.markAllAsTouched();
       this.toast.error('Please fill all required fields', 'Error!');
       this.isSubmitted = false;
       return;
     }
-    this.loanAdvanceForm.get('payrollUser').enable();
-    this.loanAdvanceForm.patchValue({ payrollUser: this.selectedPayrollUser });
-    console.log(this.loanAdvanceForm.value);
-    if (this.changeMode === 'Add') {
-      this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
-        (res: any) => {
-          this.getLoanAdvanceByPayroll();
-          this.loanAdvanceForm.reset();
-          this.userloanAdvances = [];
-          this.selectedUserId = null;
-          this.toast.success('Loan/Advance created', 'Successfully!');
-          this.closeDialog();
-        },
-        (err) => {
-          const errorMessage = err?.error?.message || err?.message || err
-            || 'Loan/Advance Not Saved';
-          this.toast.error(errorMessage, 'Error!');
-            this.isSubmitted = true;
-        }
-      );
-    }
 
-    if (this.changeMode === 'Update') {
-      this.payrollService.updateLoanAdvance(this.selectedRecord._id, this.loanAdvanceForm.value).subscribe(
-        (res: any) => {
-          this.getLoanAdvanceByPayroll();
-          this.toast.success('Loan/Advance Updated', 'Successfully');
-          this.loanAdvanceForm.reset();
-          this.selectedUserId = '';
-          this.userloanAdvances = [];
-          this.changeMode = 'Add';
-          this.closeDialog();
-        },
-        (err) => {
-         const errorMessage = err?.error?.message || err?.message || err
-            || 'Loan/Advance Not Updated';
-          this.toast.error(errorMessage, 'Error!');
+    else {
+      this.loanAdvanceForm.get('payrollUser').enable();
+      this.loanAdvanceForm.patchValue({ payrollUser: this.selectedPayrollUser });
+      console.log(this.loanAdvanceForm.value);
+      if (this.changeMode === 'Add') {
+        this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
+          (res: any) => {
+            this.getLoanAdvanceByPayroll();
+            this.loanAdvanceForm.reset();
+            this.userloanAdvances = [];
+            this.selectedUserId = null;
+            this.toast.success('Loan/Advance created', 'Successfully!');
+            this.closeDialog();
+          },
+          (err) => {
+            const errorMessage = err?.error?.message || err?.message || err
+              || 'Loan/Advance Not Saved';
+            this.toast.error(errorMessage, 'Error!');
             this.isSubmitted = true;
-        }
-      );
+          }
+        );
+      }
+
+      if (this.changeMode === 'Update') {
+        this.payrollService.updateLoanAdvance(this.selectedRecord._id, this.loanAdvanceForm.value).subscribe(
+          (res: any) => {
+            this.getLoanAdvanceByPayroll();
+            this.toast.success('Loan/Advance Updated', 'Successfully');
+            this.loanAdvanceForm.reset();
+            this.selectedUserId = '';
+            this.userloanAdvances = [];
+            this.changeMode = 'Add';
+            this.closeDialog();
+          },
+          (err) => {
+            const errorMessage = err?.error?.message || err?.message || err
+              || 'Loan/Advance Not Updated';
+            this.toast.error(errorMessage, 'Error!');
+            this.isSubmitted = true;
+          }
+        );
+      }
     }
   }
 

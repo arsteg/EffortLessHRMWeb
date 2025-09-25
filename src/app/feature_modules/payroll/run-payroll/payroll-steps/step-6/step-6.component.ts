@@ -222,38 +222,40 @@ export class Step6Component {
       return;
     }
     else {
-      this.flexiBenefitsForm.get('PayrollUser').enable();
-      this.flexiBenefitsForm.value.PayrollUser = this.selectedPayrollUser;
       this.isSubmitted = true;
+      // this.flexiBenefitsForm.get('PayrollUser').enable();
+      this.flexiBenefitsForm.value.PayrollUser = this.selectedPayrollUser;
       if (this.changeMode == 'Add') {
         this.payrollService.addFlexi(this.flexiBenefitsForm.value).subscribe((res: any) => {
           this.getFlexiBenefitsProfessionalTax();
-          this.toast.success('Flexi Benefits and Professional Tax Created', 'Successfully!');
+          this.toast.success('Flexi Benefits Created', 'Successfully!');
           this.closeDialog();
         },
-          (err) => { this.toast.error('Flexi Benefits and Professional Tax can not be Added', 'Error!'); }
+          (err) => { this.toast.error('Flexi Benefits can not be Added', 'Error!'); }
         );
       }
       if (this.changeMode == 'Update') {
+        this.flexiBenefitsForm.patchValue({ PayrollUser: this.selectedPayrollUser});
         this.payrollService.updateFlexi(this.selectedRecord._id, this.flexiBenefitsForm.value).subscribe((res: any) => {
+          this.selectedPayrollUser = res.data.record.PayrollUser;
           this.getFlexiBenefitsProfessionalTax();
-          this.toast.success('Flexi Benefits and Professional Tax Updated', 'Successfully!');
+          this.toast.success('Flexi Benefits Updated', 'Successfully!');
           this.closeDialog();
         },
-          err => { this.toast.error('Flexi Benefits and Professional Tax can not be Updated', 'Error!'); });
+          err => { this.toast.error('Flexi Benefits can not be Updated', 'Error!'); });
       }
     }
   }
 
   openDialog() {
-
+    this.isSubmitted = false;
     if (this.changeMode == 'Update') {
       this.payrollService.getPayrollUserById(this.selectedRecord.PayrollUser).subscribe((res: any) => {
         this.payrollUser = res.data;
         const payrollUser = this.payrollUser?.user;
         this.flexiBenefitsForm.patchValue({
           PayrollUser: this.getUser(payrollUser),
-          TotalFlexiBenefitAmount: this.selectedRecord?.TotalFlexiBenefitAmount,
+          TotalFlexiBenefitAmount: this.selectedRecord?.TotalFlexiBenefitAmount || 0,
         });
         this.flexiBenefitsForm.get('PayrollUser').disable();
       });
@@ -266,7 +268,10 @@ export class Step6Component {
 
   closeDialog() {
     this.isSubmitted = false;
-    this.flexiBenefitsForm.reset();
+    this.flexiBenefitsForm.reset({
+      TotalFlexiBenefitAmount: 0
+    });
+    console.log(this.flexiBenefitsForm.value);
     this.flexiBenefitsForm.get('PayrollUser').enable();
     this.changeMode = 'Update';
     this.dialog.closeAll();
@@ -275,10 +280,10 @@ export class Step6Component {
   deleteTemplate(_id: string) {
     this.payrollService.deleteFlexi(_id).subscribe((res: any) => {
       this.getFlexiBenefitsProfessionalTax();
-      this.toast.success('Successfully Deleted!!!', 'Flexi Benefits and Professional Tax');
+      this.toast.success('Successfully Deleted!', 'Flexi Benefits');
     },
       (err) => {
-        this.toast.error('This Flexi Benefits and Professional Tax Can not be deleted!');
+        this.toast.error('This Flexi Benefits Can not be deleted!');
       });
   }
 

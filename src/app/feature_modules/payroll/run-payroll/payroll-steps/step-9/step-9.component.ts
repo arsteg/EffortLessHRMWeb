@@ -43,6 +43,7 @@ export class Step9Component {
   payrollForm: FormGroup;
   changedStatus: string;
   dialogRef: any;
+  isSubmitted: boolean = false;
   displayedColumns = [
     'PayrollUsers',
     'totalOvertime',
@@ -156,10 +157,12 @@ export class Step9Component {
     });
   }
   closeAddDialog() {
+    this.isSubmitted = false;
     this.dialog.closeAll();
   }
 
   updatePayrollStatus() {
+    this.isSubmitted = true;
     const id = this.selectedPayrollUser?.PayrollUser?._id;
     const payload = {
       updatedOnDate: new Date(),
@@ -180,20 +183,21 @@ export class Step9Component {
     this.payrollService.generatedPayrollByPayroll(this.selectedPayroll?._id).subscribe(
       (res: any) => {
         this.generatedPayroll = res.data.map((record) => {
+          console.log(record);
           return {
             ...record,
-            totalOvertime: parseFloat(record?.totalOvertime || 0).toFixed(2),
+            totalOvertime: record?.overtime[0]?.OvertimeAmount || 0,
             totalFixedAllowance: parseFloat(record?.totalFixedAllowance || 0).toFixed(2),
             totalFixedDeduction: parseFloat(record?.totalFixedDeduction || 0).toFixed(2),
             totalLoanRepayment: record?.totalLoanRepayment,
             totalLoanDisbursed: record.totalLoanDisbursed,
             totalFlexiBenefits: parseFloat(record?.totalFlexiBenefits || 0).toFixed(2),
-            totalIncomeTax: parseFloat(record?.totalIncomeTax || 0).toFixed(2),
+            totalIncomeTax: record?.incomeTax[0]?.TDSCalculated || 0,
             yearlySalary: parseFloat(record?.yearlySalary || 0).toFixed(2),
             monthlySalary: parseFloat(record?.monthlySalary || 0).toFixed(2),
             totalTakeHome: parseFloat(record?.totalTakeHome || 0).toFixed(2),
 
-            payroll_status: record?.payroll_status || 'Pending'
+            payroll_status: record?.payroll_status || 'InProgress'
           };
         });
       },
