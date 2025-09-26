@@ -38,12 +38,12 @@
                 @if(subscription.remaining_count > 0 && subscription.current_end){
                     <p>Next due on {{subscription.current_end*1000 | date: 'dd MMM, yyyy'}}.</p>
                 }
-        
-                <button mat-stroked-button (click)="viewPayments()">
+
+                <button class="btn btn-outline-primary me-2"  (click)="viewPayments()">
                     View Payments
                 </button>
 
-                <button mat-stroked-button (click)="viewPlans(selectPlanTemplate)">
+                <button mat-flat-button color="primary" (click)="viewPlans(selectPlanTemplate)">
                     Change Plan
                 </button>
 
@@ -160,7 +160,7 @@
                       <mat-radio-button [value]="plan._id" class="w-100 d-block border mb-2" [disabled]="plan._id === subscribedPlan._id">
                         <div class="p-2 mb-2">
                             <div>{{plan.currentprice | currency:'INR'}} | {{plan.name}}</div>
-                            <div>{{plan.description}}</div>
+                            <div>{{plan.description}}</div>  
                             @if(plan.notes){
                                 @if(plan.notes.note1){
                                     <div>{{plan.notes.note1}}</div>
@@ -177,7 +177,7 @@
             <div class="d-flex justify-content-between">
                 <button mat-stroked-button type="button" (click)="dialog.closeAll()">Cancel</button>
                 @if(confirmPayment){
-                    <button mat-flat-button type="submit" color="primary">Confirm</button>
+                    <button mat-flat-button type="submit" color="primary" [disabled]="isProcessing">{{ isProcessing ? 'Processing...' : 'Confirm' }}</button>
                 } @else {
                     <button mat-flat-button type="button" [disabled]="changePlanForm.invalid" color="primary" (click)="confirmChangePlan()">Next</button>
                 }
