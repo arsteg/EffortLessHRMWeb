@@ -75,6 +75,9 @@ export class Step5Component {
       this.recalculateFields();
     });
     this.getArrearsByPayroll();
+    this.arrearForm.valueChanges.subscribe(() => {
+      this.isSubmitted = false;
+    });
   }
 
   onActionClick(event: any) {
@@ -207,10 +210,10 @@ export class Step5Component {
 
   onSubmission() {
     this.isSubmitted = true;
-    this.arrearForm.markAllAsTouched();
     if (this.arrearForm.invalid) {
-      this.toast.error('Please fill all required fields', 'Error!');
-      this.isSubmitted = false;
+      // this.toast.error('Please fill all required fields', 'Error!');
+      // this.isSubmitted = false;
+      this.arrearForm.markAllAsTouched();
       return;
     }
     if (this.changeMode == 'Add') {
