@@ -11,6 +11,8 @@ import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SeparationService } from 'src/app/_services/separation.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { PayrollService } from 'src/app/_services/payroll.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-attendance-process',
@@ -133,18 +135,18 @@ export class AttendanceProcessComponent {
     name: 'Full & Final Applicable',
     valueFn: (row) => row?.isFNF ? 'Yes' : 'No'
   }]
-
-
   constructor(
     private attendanceService: AttendanceService,
     private fb: FormBuilder,
     public commonService: CommonService,
     private toast: ToastrService,
     private dialog: MatDialog,
+    private payrollService: PayrollService,
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    private separationService: SeparationService,
+    private separationService: SeparationService,    
+    private translate: TranslateService,
     private datePipe: DatePipe,
   ) {
     this.lopForm = this.fb.group({
@@ -431,10 +433,15 @@ export class AttendanceProcessComponent {
 
   getUser(employeeId: string) {
     const matchingUser = this.allAssignee?.find(user => user._id === employeeId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
 
-  createAttendanceProcessLOP() {
+  async createAttendanceProcessLOP() {
+     const isAttendanceValid = await this.validateAttendanceUploadLock();
+     console.log(isAttendanceValid);
+    if (isAttendanceValid===true) {   
+      return;
+    }
     if (this.lopForm.valid) {
       this.isSubmitted = true;
       const selectedUsers = this.lopForm.value.user;
@@ -557,6 +564,35 @@ export class AttendanceProcessComponent {
       }
     });
   }
+validateAttendanceUploadLock(): Promise<boolean> {
+const month = parseInt(this.lopForm.value.month, 10);
+const year = parseInt(this.lopForm.value.year, 10);
+console.log(month);
+console.log(year);
+  return new Promise((resolve, reject) => {
+    this.payrollService.validateAttendanceProcess({ month, year }).subscribe(
+      (res: any) => {
+        console.log(res.exists);
+        if (res.exists===true) {
+          this.toast.error(
+            res.message || 'Attendance is already processed for this month. Upload is not allowed.'
+          
+          );
+          resolve(true); // ❗️true means "locked"
+        } else {
+          resolve(false); // Not locked, safe to proceed
+        }
+      },
+      (err) => {
+        this.toast.error(
+          err?.error?.message || 'Error validating attendance process.',
+          this.translate.instant('attendance.upload_title') || 'Upload Attendance'
+        );
+        reject(false);
+      }
+    );
+  });
+}
 
   getProcessAttendance() {
     let payload = {
@@ -566,12 +602,15 @@ export class AttendanceProcessComponent {
       year: this.selectedYear.toString()
     };
     this.attendanceService.getProcessAttendance(payload).subscribe((res: any) => {
-      this.processAttendance = res.data.map((data) => {
-        return {
-          ...data,
-          users: data.users.map((user) => this.getUser(user?.user)),
-        }
-      });
+    this.processAttendance = res.data.map((data) => {
+      console.log(data.users);
+ return {
+  ...data,
+  users: (data.users || [])
+    .filter(user => user?.user?.trim()) // Remove null, undefined, or empty strings (with spaces trimmed)
+    .map(user => this.getUser(user.user)),
+};
+});
     })
   }
 
@@ -671,7 +710,7 @@ export class AttendanceProcessComponent {
 
   getMatchedUser(userId: string) {
     const matchingUser = this.setlledUsers?.find(user => user._id === userId);
-    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : 'N/A';
+    return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
 
   selectedUser(user: any) {
@@ -776,15 +815,17 @@ export class AttendanceProcessComponent {
       isFNF: true
     };
 
-    return this.attendanceService.getfnfAttendanceProcess(payload).pipe(
-      map((res: any) => {
-        this.fnfAttendanceProcess = res.data.map(data => ({
-          ...data,
-          users: data.users.map(user => this.getMatchedUser(user?.user))
-        }));
-        return this.fnfAttendanceProcess; // Return the processed data
-      })
-    );
+  return this.attendanceService.getfnfAttendanceProcess(payload).pipe(
+  map((res: any) => {
+    this.fnfAttendanceProcess = res.data.map(data => ({
+      ...data,
+      users: data.users
+        .map(user => this.getMatchedUser(user?.user))
+        .filter(matchedUser => matchedUser !== '') // Filter out empty strings
+    }));
+    return this.fnfAttendanceProcess; // Return the processed data
+  })
+);
   }
 
   onFnF_userChange() {

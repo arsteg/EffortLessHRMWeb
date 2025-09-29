@@ -204,6 +204,34 @@ export class PayrollHistoryComponent implements AfterViewInit {
       this.duplicatePayrollError = false;
     }
   }
+validateAttendanceBeforePayroll(): Promise<boolean> {
+  const monthName = this.payrollForm.get('month')?.value;
+  const year = this.payrollForm.get('year')?.value;
+  const monthIndex = this.getMonthIndex(monthName) + 1; // convert to 1-based month index
+
+  return new Promise((resolve, reject) => {
+    this.payrollService.validateAttendanceProcess({ month: monthIndex, year }).subscribe(
+      (res: any) => {
+        if (res.exists) {
+          resolve(true);
+        } else {
+          this.toast.error(
+            res.message || 'Attendance process not completed for selected period.',
+            this.translate.instant('payroll._history.title')
+          );
+          resolve(false);
+        }
+      },
+      (err) => {
+        this.toast.error(
+          err?.error?.message || 'Error validating attendance process.',
+          this.translate.instant('payroll._history.title')
+        );
+        reject(false);
+      }
+    );
+  });
+}
 
   getPayroll() {
     const pagination = {
@@ -422,7 +450,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
     return monthNames[monthNumber - 1] || 'Invalid month';
   }
 
-  onSubmission() {
+  async onSubmission() {
     this.isSubmittingPayroll = true;
      this.payrollForm.get('date')?.enable();
     if (this.payrollForm.invalid) {
@@ -431,6 +459,13 @@ export class PayrollHistoryComponent implements AfterViewInit {
       this.isSubmittingPayroll = false;
       return;
     }
+  const isAttendanceValid = await this.validateAttendanceBeforePayroll();
+  if (isAttendanceValid===false) {
+    this.isSubmittingPayroll = false;
+     this.toast.error(this.translate.instant('attendance.upload_locked'));
+  
+    return;
+  }
     if (this.payrollForm.valid) {
    
       this.payrollForm.patchValue({

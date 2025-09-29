@@ -14,6 +14,8 @@
     "upload_success": "Excel file uploaded successfully!",
     "upload_failed": "Failed to upload Excel file. Please try again.",
     "invalid_file_type": "Invalid file type. Please upload a valid Excel file (.xlsx or .xls).",
+    "locked_message": "Attendance is already processed for this month. Upload is not allowed.",
+    "locked_lop_message": "Attendance is already processed for this month. LOP is not allowed.",
     "sheet_names": {
       "data": "Attendance Data",
       "instructions": "Instructions"

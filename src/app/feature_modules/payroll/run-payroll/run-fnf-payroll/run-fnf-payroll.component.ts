@@ -43,7 +43,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   payrollStatusArray: any;
   selectedStatus: string = '';
   closeResult: string = '';
-
+  isSubmittingPayroll: boolean = false;  
   // Local properties to replace TableService
   dataSource: MatTableDataSource<any> = new MatTableDataSource([]);
   totalRecords: number = 0;
@@ -59,7 +59,23 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
       key: 'action',
       name: this.translate.instant('payroll.actions'),
       isAction: true,
-      options: []
+      options: [
+        {
+          label: 'Add Employee', icon: 'add', visibility: ActionVisibility.BOTH,
+          hideCondition: (row) => row?.status !== 'InProgress'
+        },
+        {
+          label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH,
+          hideCondition: (row) => row?.status !== 'InProgress'
+        },
+        {
+          label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn",
+          hideCondition: (row) => {
+            // Hide delete button if any count is greater than 0
+            return (row?.processedCount > 0 || row?.activeCount > 0 || row?.onHoldCount > 0);
+          }
+        },
+      ]
     }
   ];
   allData: any = [];
@@ -128,6 +144,13 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
 
   onAction(event: any) {
     switch (event.action.label) {
+       case 'Add Employee':
+        this.selectedFnF = event.row?._id; this.editFnF(this.selectedFnF)
+        break;
+      case 'Edit':
+        this.selectedFnF = event.row; this.openFnFSteps(this.openFnFSteps);
+        break;
+      case 'Delete': this.deleteFnF(event.row?._id); break;
       default:
         this.payrollStatusArray.forEach(status => {
           if(status === event.action.label){
@@ -390,10 +413,20 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   }
 
   onSubmission() {
+    this.isSubmittingPayroll = true;
+    console.log(this.isSubmittingPayroll);
+     this.fnfForm.get('date')?.enable();
+    if (this.fnfForm.invalid) {
+      this.fnfForm.markAllAsTouched();
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
+      this.isSubmittingPayroll = false;
+      return;
+    }
     if (this.fnfForm.valid) {
       const payload = this.fnfForm.value;
       this.payrollService.addFnF(payload).subscribe(
         (res: any) => {
+          
           this.translate.get([
             'payroll._fnf.toast.created',
             'payroll._fnf.title'
@@ -403,17 +436,16 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
               translations['payroll._fnf.title']
             );
           });
-          this.fetchFnFPayroll();
-          this.resetForm();
+          this.fetchFnFPayroll();        
           this.modalService.dismissAll();
+          this.resetForm();
         },
-        (error) => {
-          this.translate.get('payroll._fnf.title').subscribe(title => {
-            this.toast.error(
-              error?.error?.message || this.translate.instant('payroll._fnf.toast.error_create'),
-              title
-            );
-          });
+        (err) => {                
+         const errorMessage = err?.error?.message || err?.message || err 
+        || this.translate.instant('payroll._fnf.toast.error_create')
+        ;
+        this.toast.error(errorMessage, 'Error!'); 
+          this.isSubmittingPayroll = false;      
         }
       );
     } else {
@@ -536,6 +568,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
       month: this.selectedMonth,
       year: this.selectedYear
     });
+     this.isSubmittingPayroll = false;
   }
 
   deleteTemplate(_id: string) {

@@ -12,6 +12,7 @@ import { forkJoin, map, Observable } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 import { TranslateService } from '@ngx-translate/core';
+import { PayrollService } from 'src/app/_services/payroll.service';
 
 @Component({
   selector: 'app-attendance-records',
@@ -47,6 +48,7 @@ export class AttendanceRecordsComponent implements OnInit {
   ];
 
   constructor(private modalService: NgbModal,
+    private payrollService: PayrollService,
     private dialog: MatDialog,
     private commonService: CommonService,
     private attendanceService: AttendanceService,
@@ -361,8 +363,35 @@ export class AttendanceRecordsComponent implements OnInit {
       link.click();
     });
   }
+validateAttendanceUploadLock(): Promise<boolean> {
+  const month = this.selectedMonth; // 1-based month index
+  const year = this.selectedYear;
 
-  uploadAttendance(event: any) {
+  return new Promise((resolve, reject) => {
+    this.payrollService.validateAttendanceProcess({ month, year }).subscribe(
+      (res: any) => {
+        if (res.exists) {
+          this.toast.error(
+            res.message || 'Attendance is already processed for this month. Upload is not allowed.'
+          );
+          resolve(true); // ❗️true means "locked"
+        } else {
+          resolve(false); // Not locked, safe to proceed
+        }
+      },
+      (err) => {
+        this.toast.error(
+          err?.error?.message || 'Error validating attendance process.',
+          this.translate.instant('attendance.upload_title') || 'Upload Attendance'
+        );
+        reject(false);
+      }
+    );
+  });
+}
+
+
+ async uploadAttendance(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -373,7 +402,10 @@ export class AttendanceRecordsComponent implements OnInit {
       this.toast.error(this.translate.instant('attendance.invalid_file_type'));
       return;
     }
-
+    const isAttendanceValid = await this.validateAttendanceUploadLock();
+    if (isAttendanceValid===true) {   
+      return;
+    }
     const reader = new FileReader();
 
     reader.onload = (e: any) => {
@@ -519,7 +551,11 @@ export class AttendanceRecordsComponent implements OnInit {
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
   }
 
-  uploadAttendanceRecord() {
+ async uploadAttendanceRecord() {
+       const isAttendanceValid = await this.validateAttendanceUploadLock();
+    if (isAttendanceValid===true) {
+      return;
+    }
     const dialogRef = this.dialog.open(UploadRecordsComponent, {
       width: '80%',
       height: '80%'
