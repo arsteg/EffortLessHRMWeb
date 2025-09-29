@@ -71,10 +71,13 @@ export class Step5Component {
     this.payrollService.payrollUsers.subscribe(res => {
       this.payrollUsers = res;
     });
-      this.arrearForm.valueChanges.subscribe(() => {
-        this.recalculateFields();
-      });
+    this.arrearForm.valueChanges.subscribe(() => {
+      this.recalculateFields();
+    });
     this.getArrearsByPayroll();
+    this.arrearForm.valueChanges.subscribe(() => {
+      this.isSubmitted = false;
+    });
   }
 
   onActionClick(event: any) {
@@ -101,10 +104,10 @@ export class Step5Component {
 
     const lopReversalArrears = lopReversalDays * this.salaryPerDay;
     const totalArrears = manualArrears + ((arrearDays + salaryRevisionDays) * this.salaryPerDay) + lopReversalArrears;
-    this.arrearForm.patchValue({
-      lopReversalArrears: lopReversalArrears.toFixed(0),
-      totalArrears: totalArrears.toFixed(0)
-    }, { emitEvent: false }); // Prevent recursive loop
+    // this.arrearForm.patchValue({
+    //   lopReversalArrears: lopReversalArrears.toFixed(0),
+    //   totalArrears: totalArrears.toFixed(0)
+    // }, { emitEvent: false }); // Prevent recursive loop
   }
   getDailySalaryByUserId(userId: string): void {
     this.userService.getDailySalaryByUserId(userId).subscribe(
@@ -183,12 +186,12 @@ export class Step5Component {
       });
       this.arrears = userRequests
     });
-    if (this.changeMode == 'Update' && this.selectedRecord) {
-      this.arrearForm.patchValue({
-        payrollUser: this.selectedRecord.payrollUser,
-        ...this.selectedRecord
-      });
-    }
+    // if (this.changeMode == 'Update' && this.selectedRecord) {
+    //   this.arrearForm.patchValue({
+    //     payrollUser: this.selectedRecord.payrollUser,
+    //     ...this.selectedRecord
+    //   });
+    // }
   }
 
   getArrearsByPayroll() {
@@ -206,18 +209,14 @@ export class Step5Component {
   }
 
   onSubmission() {
-    this.arrearForm.get('payrollUser').enable();
-    this.arrearForm.patchValue({ payrollUser: this.selectedPayrollUser });
-
     this.isSubmitted = true;
-    this.arrearForm.markAllAsTouched();
     if (this.arrearForm.invalid) {
-      this.toast.error('Please fill all required fields', 'Error!');
-      this.isSubmitted = false;
+      // this.toast.error('Please fill all required fields', 'Error!');
+      // this.isSubmitted = false;
+      this.arrearForm.markAllAsTouched();
       return;
     }
     if (this.changeMode == 'Add') {
-      // this.arrearForm.value.payrollUser = this.selectedPayrollUser;
       this.payrollService.addArrear(this.arrearForm.value).subscribe((res: any) => {
         this.getArrears();
         this.selectedUserId = null;
@@ -233,7 +232,8 @@ export class Step5Component {
         });
     }
     if (this.changeMode == 'Update') {
-      this.payrollService.updateArrear(this.selectedRecord._id, this.arrearForm.value).subscribe((res: any) => {
+      this.arrearForm.value.payrollUser = this.selectedRecord?.payrollUser;
+      this.payrollService.updateArrear(this.selectedRecord?._id, this.arrearForm.value).subscribe((res: any) => {
         this.getArrears();
         this.toast.success('Arrear Updated', 'Successfully');
         this.selectedUserId = null;

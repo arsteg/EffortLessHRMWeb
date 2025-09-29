@@ -52,7 +52,7 @@ export class Step4Component {
     this.loanAdvanceForm = this.fb.group({
       payrollUser: ['', Validators.required],
       loanAndAdvance: ['', Validators.required],
-      disbursementAmount: [0, [Validators.required, Validators.min(1)]],
+      disbursementAmount: [0, [Validators.required, Validators.min(0)]],
       type: ['', Validators.required],
       amount: [0]
     });
@@ -88,6 +88,7 @@ export class Step4Component {
   }
 
   openDialog() {
+    this.isSubmitted = false;
     this.dialog.open(this.dialogTemplate, {
       width: '600px',
       disableClose: true
@@ -161,7 +162,6 @@ export class Step4Component {
     const selectedLoanId = this.loanAdvanceForm.get('loanAndAdvance').value;
     const type = this.loanAdvanceForm.get('type').value;
     const selectedLoan = this.userloanAdvances?.find(loan => loan._id === selectedLoanId);
-
     if (selectedLoan && type) {
       if (type === 'Disbursement') {
         this.loanAdvanceForm.patchValue({
@@ -171,27 +171,23 @@ export class Step4Component {
       } else if (type === 'Repayment') {
         this.loanAdvanceForm.patchValue({
           disbursementAmount: 0,
-          amount: selectedLoan.monthlyInstallment || 0
+          amount: selectedLoan?.monthlyInstallment || 0
         });
       }
     }
   }
 
   onSubmission() {
-    this.isSubmitted = true;
-    console.log(this.loanAdvanceForm.value);
-
+    this.loanAdvanceForm.patchValue({ payrollUser: this.selectedPayrollUser });
     if (this.loanAdvanceForm.invalid) {
-      this.loanAdvanceForm.markAllAsTouched();
-      this.toast.error('Please fill all required fields', 'Error!');
       this.isSubmitted = false;
+      this.loanAdvanceForm.markAllAsTouched();
       return;
     }
-
     else {
+      this.isSubmitted = true;
       this.loanAdvanceForm.get('payrollUser').enable();
-      this.loanAdvanceForm.patchValue({ payrollUser: this.selectedPayrollUser });
-      console.log(this.loanAdvanceForm.value);
+
       if (this.changeMode === 'Add') {
         this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
           (res: any) => {
@@ -206,7 +202,7 @@ export class Step4Component {
             const errorMessage = err?.error?.message || err?.message || err
               || 'Loan/Advance Not Saved';
             this.toast.error(errorMessage, 'Error!');
-            this.isSubmitted = true;
+            this.isSubmitted = false;
           }
         );
       }
@@ -226,7 +222,7 @@ export class Step4Component {
             const errorMessage = err?.error?.message || err?.message || err
               || 'Loan/Advance Not Updated';
             this.toast.error(errorMessage, 'Error!');
-            this.isSubmitted = true;
+            this.isSubmitted = false;
           }
         );
       }

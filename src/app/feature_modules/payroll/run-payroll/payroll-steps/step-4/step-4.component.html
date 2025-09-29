@@ -19,7 +19,8 @@
         <form [formGroup]="loanAdvanceForm" (ngSubmit)="onSubmission()">
             <div class="row">
                 <div class="form-group mt-2 col-md-12" *ngIf="changeMode != 'Update'">
-                    <app-payroll-user-list [controlField]="loanAdvanceForm.get('payrollUser')" (userSelected)="onUserSelectedFromChild($event)"
+                    <app-payroll-user-list [controlField]="loanAdvanceForm.get('payrollUser')"
+                        (userSelected)="onUserSelectedFromChild($event)"
                         [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
                 </div>
 
@@ -72,8 +73,7 @@
             </div>
             <div class="d-flex justify-content-between mt-3">
                 <button type="button" (click)="closeDialog()" mat-flat-button>Cancel</button>
-                <button type="submit" mat-flat-button color="primary" [disabled]="isSubmitted"
-                   >Save</button>
+                <button type="submit" mat-flat-button color="primary" [disabled]="isSubmitted">Save</button>
             </div>
         </form>
     </div>

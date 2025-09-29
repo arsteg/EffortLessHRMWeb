@@ -54,6 +54,7 @@ export class PlansComponent {
   loadingSubscription = false;
   confirmPayment = null;
   currentDate = Date.now();
+  isProcessing = false;
 
   ngOnInit() {
     this.credentials();
@@ -220,9 +221,13 @@ export class PlansComponent {
   }
 
   changePlan() {
+    if (this.isProcessing) return; // prevent duplicate clicks
+    this.isProcessing = true;
+
     const payload = {...this.changePlanForm.value};
     this.subscriptionService.changeSubscription(this.subscriptionId, payload)
       .subscribe((data: any) => {
+        this.isProcessing = false;
         this.subscription = data.data.subscription.razorpaySubscription;
         this.scheduledChanges = data.data.subscription.scheduledChanges;
         this.subscribedPlan = data.data.subscription.currentPlanId;
@@ -234,6 +239,7 @@ export class PlansComponent {
           this.confirmPayment = null;
         });
       }, (error: any)=>{
+        this.isProcessing = false;
         this.dialog.closeAll();
         const message = error.error.message || 'An error occurred';
         this.snackBar.open(message, 'Close', {duration: 5000});
