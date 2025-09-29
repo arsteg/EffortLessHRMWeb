@@ -6,8 +6,7 @@
 <div id="wrapper">
   <mat-drawer-container class="content-container" autosize>
     <mat-drawer #drawerRef class="sidenav-drawer" [mode]="isMobile ? 'over' : 'side'"
-      (openedChange)="onDrawerOpenedChange($event)"
-      [opened]="!isMobile || isMobile && drawerOpened" [ngClass]="{
+      (openedChange)="onDrawerOpenedChange($event)" [opened]="!isMobile || isMobile && drawerOpened" [ngClass]="{
       'collapsed': !isMobile && isCollapsedMenu,
       'expanded': !isMobile && !isCollapsedMenu
     }">
@@ -16,13 +15,11 @@
 
     <mat-drawer-content #contentArea>
       <div id="page-content-wrapper" class="content-wrapper w-100">
-        
-          <router-outlet></router-outlet>
-          <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100" [extraDuration]="1000"
-            [minDuration]="1000" [backdropBackgroundColor]="'#777777'" [spinner]="spinnerStyle.skThreeBounce">
-          </ng-http-loader>
-        
+        <router-outlet></router-outlet>
       </div>
     </mat-drawer-content>
   </mat-drawer-container>
+  <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100" [extraDuration]="1000"
+    [minDuration]="1000" [backdropBackgroundColor]="'#777777'" [spinner]="spinnerStyle.skThreeBounce">
+  </ng-http-loader>
 </div>
