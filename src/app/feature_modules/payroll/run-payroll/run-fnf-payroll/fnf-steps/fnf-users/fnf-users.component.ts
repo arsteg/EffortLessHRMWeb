@@ -15,7 +15,7 @@ export class FnfUsersComponent implements OnInit {
   users: any[] = [];
   @Output() changeUser: EventEmitter<string> = new EventEmitter<string>();
   @Input() isStep: boolean = false;
-  @Input() selectedFnF: any;
+  @Input() selectedFnF: any[] = [];
   settledUsers: any[] = [];
 
   constructor(private userService: UserService) { }
@@ -33,8 +33,8 @@ export class FnfUsersComponent implements OnInit {
 
   fetchFnFUsers(): any {
     return new Observable(observer => {
-      if (this.selectedFnF && this.selectedFnF.userList) {
-        observer.next(this.selectedFnF.userList);
+      if (this.selectedFnF && this.selectedFnF) {
+        observer.next(this.selectedFnF);
         observer.complete();
       } else {
         observer.next([]);
@@ -45,16 +45,20 @@ export class FnfUsersComponent implements OnInit {
 
   filterAvailableUsers(): void {
     if (this.fnfUsers && this.settledUsers.length > 0 && !this.isStep) {
-        this.users = this.settledUsers.filter(user =>
-          !this.selectedFnF?.userList.some(fnfUser => fnfUser.user === user._id) // Not in fnfUsers
-            && !user.fnfPayroll
-        );
+      console.log(this.settledUsers)
+      this.users = this.users = this.settledUsers?.filter(user =>
+  !(Array.isArray(this.selectedFnF) && this.selectedFnF.some(fnfUser => fnfUser._id === user?._id)) // Not in fnfUsers
+    && !user.fnfPayroll
+)
+ // Not in fnfUsers
+      //   && !user.fnfPayroll
+      // );
     } else if (this.fnfUsers && this.settledUsers.length > 0 && this.isStep) {
-        this.users = this.settledUsers.filter(user => {
-            return this.fnfUsers.some(fnfUser => fnfUser.user === user._id);
-        });
+      this.users = this.settledUsers.filter(user => {
+        return this.fnfUsers.some(fnfUser => fnfUser.user === user._id);
+      });
     }
-}
+  }
 
   onFnFUserSelection(event: any): void {
     this.selectedFnFUser = event.value;
