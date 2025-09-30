@@ -118,7 +118,8 @@ export class AttendanceProcessComponent {
   },
   {
     key: 'employee',
-    name: 'Employee'
+    name: 'Employee',
+    valueFn: (row: any) => row?.users.map((user)=> `${user?.user?.firstName} ${user?.user?.lastName}`).join(', ')
   },
   {
     key: 'runDate',
@@ -818,13 +819,10 @@ console.log(year);
   return this.attendanceService.getfnfAttendanceProcess(payload).pipe(
   map((res: any) => {
     this.fnfAttendanceProcess = res.data.map(data => ({
-      ...data,
-      users: data.users
-        .map(user => this.getMatchedUser(user?.user))
-        .filter(matchedUser => matchedUser !== '') // Filter out empty strings
+      ...data 
     }));
-    return this.fnfAttendanceProcess; // Return the processed data
-  })
+    return this.fnfAttendanceProcess;
+  }),
 );
   }
 
