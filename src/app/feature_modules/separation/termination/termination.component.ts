@@ -325,7 +325,9 @@ export class TerminationComponent {
   getTerminations() {
     if (this.view === 'admin') {
       this.separationService.getTerminationByCompany().subscribe((res: any) => {
-        this.terminations = res.data;
+        this.terminations = (res.data || []).filter(t => 
+        this.users.some(user => user.id === t.user)
+      );
       });
     }
     if (this.view === 'user') {

@@ -30,6 +30,7 @@ export class GeneratePayslipsComponent {
   }
 
   ngOnInit(): void {
+    console.log(this.payslip);
     this.calculateTotals();
   }
 

@@ -209,7 +209,7 @@ export class AdvanceTemplatesComponent implements OnInit {
           this.dialogRef.close();
         },
           (err) => {
-            this.toast.error(this.translate.instant('expenses.template_updated_error'));
+            this.toast.error(this.translate.instant(err));
           });
       }
     }
@@ -232,15 +232,13 @@ export class AdvanceTemplatesComponent implements OnInit {
     this.isEdit = true;
     this.changeMode = 'Update';
     if (this.isEdit) {
-      this.expenseService.getAdvanceTemplateById(this.selectedTemplate?._id).subscribe((res: any) => {
         this.addAdvanceTempForm.patchValue({
-          policyLabel: res.data.policyLabel,
-          firstApprovalEmployee: res.data.firstApprovalEmployee,
-          secondApprovalEmployee: res.data.secondApprovalEmployee,
-          approvalType: res.data.approvalType,
-          advanceCategories: res.data.advanceCategories.map((advanceCategory: any) => advanceCategory.advanceCategory)
+          policyLabel: this.selectedTemplate.policyLabel,
+          firstApprovalEmployee: this.selectedTemplate.firstApprovalEmployee,
+          secondApprovalEmployee: this.selectedTemplate.secondApprovalEmployee,
+          approvalType: this.selectedTemplate.approvalType,
+          advanceCategories: this.selectedTemplate.advanceCategories.map((advanceCategory: any) => advanceCategory.advanceCategory)
         });
-      })
     }
     if (!this.isEdit) {
       this.addAdvanceTempForm.reset();

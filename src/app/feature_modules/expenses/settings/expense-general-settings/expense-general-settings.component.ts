@@ -38,7 +38,7 @@ export class ExpenseGeneralSettingsComponent {
       expenseCategories: [[], Validators.required],
       advanceAmount: [false],
       applyforSameCategorySamedate: [false],
-      downloadableFormats: [''],
+      downloadableFormats: [this.checkedFormats],
       firstApprovalEmployee: [''],
       expenseTemplate: ['']
     });
@@ -49,12 +49,15 @@ export class ExpenseGeneralSettingsComponent {
     this.setFormValues();
     this.getAllExpensesCategories();
     this.getAllUsers();
-    if(this.changeMode === 'Add'){
+    if (this.changeMode === 'Add') {
       this.addTemplateForm.get('approvalType').setValue('employee-wise');
     }
     this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
       this.addTemplateForm.get('firstApprovalEmployee').setValue('');
       this.validateApprovers(value);
+    });
+    this.addTemplateForm.valueChanges.subscribe(() => {
+      this.isSubmitted = false;
     });
   }
 
@@ -78,46 +81,77 @@ export class ExpenseGeneralSettingsComponent {
   }
 
   isCheckedFormats(format) {
-    return this.checkedFormats?.length ? this.checkedFormats.includes(format) : format != 'PNG' && format != 'JPG' && format != 'PDF';
+    const downloadableFormats = this.addTemplateForm.get('downloadableFormats').value || [];
+    return downloadableFormats.includes(format);
   }
 
   onFormatsChange(event, format) {
-    let formatIndex = this.checkedFormats.findIndex((items: any) => items == format);
-    if (formatIndex == -1) {
-      this.checkedFormats.push(format);
+    const formatIndex = this.checkedFormats.indexOf(format);
+    if (event.checked) {
+      if (formatIndex === -1) {
+        this.checkedFormats.push(format);
+      }
     } else {
-      this.checkedFormats.splice(formatIndex, 1);
+      if (formatIndex !== -1) {
+        this.checkedFormats.splice(formatIndex, 1);
+      }
     }
+    // Sync with form control
+    this.addTemplateForm.get('downloadableFormats').setValue([...this.checkedFormats]);
   }
 
   setFormValues() {
     if (this.changeMode === 'Add') {
-      this.addTemplateForm.reset();
-    }
-    const templateData = this.selectedTemplate;
-    if (this.changeMode === 'Next') {
-      // Map applicableCategories to an array of _id strings
+      this.checkedFormats = ['DOCX', 'XLS', 'TXT', 'DOC', 'XLSX']; // Reset for Add mode
+      this.addTemplateForm.reset({
+        policyLabel: '',
+        approvalType: 'employee-wise',
+        expenseCategories: [],
+        advanceAmount: false,
+        applyforSameCategorySamedate: false,
+        downloadableFormats: this.checkedFormats,
+        firstApprovalEmployee: '',
+        expenseTemplate: ''
+      });
+    } else if (this.changeMode === 'Next') {
+      const templateData = this.selectedTemplate;
       let expenseCategories = templateData?.applicableCategories
         ? templateData.applicableCategories.map(category => category.expenseCategory._id)
         : [];
-
+      this.checkedFormats = templateData.downloadableFormats?.length
+        ? templateData.downloadableFormats
+        : ['DOCX', 'XLS', 'TXT', 'DOC', 'XLSX']; // Use saved formats or default
       this.addTemplateForm.patchValue({
         policyLabel: templateData.policyLabel,
         approvalType: templateData.approvalType,
-        downloadableFormats: templateData.downloadableFormats,
+        downloadableFormats: this.checkedFormats,
         applyforSameCategorySamedate: templateData.applyforSameCategorySamedate,
         advanceAmount: templateData.advanceAmount,
         firstApprovalEmployee: templateData.firstApprovalEmployee,
         expenseCategories: expenseCategories
       });
-      this.checkedFormats = templateData.downloadableFormats;
     }
   }
-
+  // closeModal() {
+  //   this.isSubmitted = false;
+  //   this.close.emit(true);
+  //   this.expenseService.selectedTemplate.next('')
+  // }
   closeModal() {
     this.isSubmitted = false;
+    this.checkedFormats = ['DOCX', 'XLS', 'TXT', 'DOC', 'XLSX']; // Reset to default formats
+    this.addTemplateForm.reset({
+      policyLabel: '',
+      approvalType: 'employee-wise',
+      expenseCategories: [],
+      advanceAmount: false,
+      applyforSameCategorySamedate: false,
+      downloadableFormats: this.checkedFormats, // Reset to default formats
+      firstApprovalEmployee: '',
+      expenseTemplate: ''
+    });
     this.close.emit(true);
-    this.expenseService.selectedTemplate.next('')
+    this.expenseService.selectedTemplate.next('');
   }
 
   getAllExpensesCategories() {
@@ -150,14 +184,20 @@ export class ExpenseGeneralSettingsComponent {
     };
     if (this.addTemplateForm.valid) {
       if (this.changeMode === 'Add') {
-        this.expenseService.addTemplate(payload).subscribe((res: any) => {
-          this.expenseService.selectedTemplate.next(res.data);
-          this.expenseService.categories.next(res.categories);
-          this.toast.success(this.translate.instant('expenses.template_created_success'));
-          this.changeStep.emit(2);
-        }, err => {
-          this.toast.error(err || this.translate.instant('expenses.template_created_error'));
-        });
+        this.expenseService.addTemplate(payload).subscribe(
+          (res: any) => {
+            this.expenseService.selectedTemplate.next(res.data);
+            this.expenseService.categories.next(res.categories);
+            this.toast.success(this.translate.instant('expenses.template_created_success'));
+            this.changeStep.emit(2);
+          },
+          (err) => {
+            this.toast.error(err || this.translate.instant('expenses.template_created_error'));
+            // Reset on error
+            this.checkedFormats = ['DOCX', 'XLS', 'TXT', 'DOC', 'XLSX'];
+            this.addTemplateForm.get('downloadableFormats').setValue(this.checkedFormats);
+          }
+        );
       } else {
         let templateId = this.expenseService.selectedTemplate.getValue()._id;
         const isArrayStructureChanged = this.addTemplateForm.value.expenseCategories.some(category => typeof category !== 'object');
@@ -168,20 +208,20 @@ export class ExpenseGeneralSettingsComponent {
         } else {
           payload.expenseCategories = this.addTemplateForm.value.expenseCategories.map(category => ({ expenseCategory: category.expenseCategory }));
           this.expenseService.categories.next(payload.expenseCategories);
-
         }
-        this.expenseService.updateTemplate(templateId, payload).subscribe((res: any) => {
-          this.toast.success(this.translate.instant('expenses.template_updated_success'));
-          this.changeStep.emit(2);
-        }, err => {
-          this.toast.error(err || this.translate.instant('expenses.template_updated_error'));
-        });
+        this.expenseService.updateTemplate(templateId, payload).subscribe(
+          (res: any) => {
+            this.toast.success(this.translate.instant('expenses.template_updated_success'));
+            this.changeStep.emit(2);
+          },
+          (err) => {
+            this.toast.error(err || this.translate.instant('expenses.template_updated_error'));
+          }
+        );
       }
-    }
-    else {
+    } else {
       this.addTemplateForm.markAllAsTouched();
       this.toast.warning(this.translate.instant('expenses.requiredFields'));
     }
   }
-
 }

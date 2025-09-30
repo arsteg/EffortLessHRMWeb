@@ -26,12 +26,13 @@ export class Step4Component {
   selectedRecord: any;
   payrollUsers: any;
   matchedLoanAdvances: any;
+  isSubmitted: boolean = false;
   selectedPayrollUser: string;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   columns: TableColumn[] = [
     { key: 'payrollUserDetails', name: 'Employee Name' },
     { key: 'loanAndAdvance', name: 'Loan Category', valueFn: (row) => row.loanAndAdvance?.loanAdvancesCategory?.name },
-    { key: 'amount', name: 'Repayment Amount'},
+    { key: 'amount', name: 'Repayment Amount' },
     { key: 'disbursementAmount', name: 'Disbursed Amount' },
     {
       key: 'action', name: 'Action', isAction: true, options: [
@@ -51,7 +52,7 @@ export class Step4Component {
     this.loanAdvanceForm = this.fb.group({
       payrollUser: ['', Validators.required],
       loanAndAdvance: ['', Validators.required],
-      disbursementAmount: [0, [Validators.required, Validators.min(1)]],
+      disbursementAmount: [0, [Validators.required, Validators.min(0)]],
       type: ['', Validators.required],
       amount: [0]
     });
@@ -87,6 +88,7 @@ export class Step4Component {
   }
 
   openDialog() {
+    this.isSubmitted = false;
     this.dialog.open(this.dialogTemplate, {
       width: '600px',
       disableClose: true
@@ -95,6 +97,7 @@ export class Step4Component {
 
   closeDialog() {
     this.changeMode = 'Add';
+    this.isSubmitted = false;
     this.dialog.closeAll();
   }
 
@@ -159,7 +162,6 @@ export class Step4Component {
     const selectedLoanId = this.loanAdvanceForm.get('loanAndAdvance').value;
     const type = this.loanAdvanceForm.get('type').value;
     const selectedLoan = this.userloanAdvances?.find(loan => loan._id === selectedLoanId);
-
     if (selectedLoan && type) {
       if (type === 'Disbursement') {
         this.loanAdvanceForm.patchValue({
@@ -169,49 +171,61 @@ export class Step4Component {
       } else if (type === 'Repayment') {
         this.loanAdvanceForm.patchValue({
           disbursementAmount: 0,
-          amount: selectedLoan.monthlyInstallment || 0
+          amount: selectedLoan?.monthlyInstallment || 0
         });
       }
     }
   }
 
   onSubmission() {
-    this.loanAdvanceForm.get('payrollUser').enable();
     this.loanAdvanceForm.patchValue({ payrollUser: this.selectedPayrollUser });
-    console.log(this.loanAdvanceForm.value);
-    if (this.changeMode === 'Add') {
-      this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
-        (res: any) => {
-          this.getLoanAdvanceByPayroll();
-          this.loanAdvanceForm.reset();
-          this.userloanAdvances = [];
-          this.selectedUserId = null;
-          this.toast.success('Loan/Advance created', 'Successfully!');
-          this.closeDialog();
-        },
-        (err) => {
-          const errorMessage = err?.error?.message || err?.message || err
-            || 'Something went wrong.';
-          this.toast.error(errorMessage, 'Error!');
-        }
-      );
+    if (this.loanAdvanceForm.invalid) {
+      this.isSubmitted = false;
+      this.loanAdvanceForm.markAllAsTouched();
+      return;
     }
+    else {
+      this.isSubmitted = true;
+      this.loanAdvanceForm.get('payrollUser').enable();
 
-    if (this.changeMode === 'Update') {
-      this.payrollService.updateLoanAdvance(this.selectedRecord._id, this.loanAdvanceForm.value).subscribe(
-        (res: any) => {
-          this.getLoanAdvanceByPayroll();
-          this.toast.success('Loan/Advance Updated', 'Successfully');
-          this.loanAdvanceForm.reset();
-          this.selectedUserId = '';
-          this.userloanAdvances = [];
-          this.changeMode = 'Add';
-          this.closeDialog();
-        },
-        (err) => {
-          this.toast.error('Loan/Advance cannot be Updated', 'Error');
-        }
-      );
+      if (this.changeMode === 'Add') {
+        this.payrollService.addLoanAdvance(this.loanAdvanceForm.value).subscribe(
+          (res: any) => {
+            this.getLoanAdvanceByPayroll();
+            this.loanAdvanceForm.reset();
+            this.userloanAdvances = [];
+            this.selectedUserId = null;
+            this.toast.success('Loan/Advance created', 'Successfully!');
+            this.closeDialog();
+          },
+          (err) => {
+            const errorMessage = err?.error?.message || err?.message || err
+              || 'Loan/Advance Not Saved';
+            this.toast.error(errorMessage, 'Error!');
+            this.isSubmitted = false;
+          }
+        );
+      }
+
+      if (this.changeMode === 'Update') {
+        this.payrollService.updateLoanAdvance(this.selectedRecord._id, this.loanAdvanceForm.value).subscribe(
+          (res: any) => {
+            this.getLoanAdvanceByPayroll();
+            this.toast.success('Loan/Advance Updated', 'Successfully');
+            this.loanAdvanceForm.reset();
+            this.selectedUserId = '';
+            this.userloanAdvances = [];
+            this.changeMode = 'Add';
+            this.closeDialog();
+          },
+          (err) => {
+            const errorMessage = err?.error?.message || err?.message || err
+              || 'Loan/Advance Not Updated';
+            this.toast.error(errorMessage, 'Error!');
+            this.isSubmitted = false;
+          }
+        );
+      }
     }
   }
 

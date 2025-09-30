@@ -41,33 +41,43 @@ export class MyAttendanceRecordsComponent {
     {
       key: 'checkIn',
       name: 'CheckIn',
-      valueFn: (row) => row?.checkIn ? this.datePipe.transform(row?.checkIn, 'mediumTime') : ''
+      valueFn: (row) => {
+        const val = this.parseTimeString(row?.checkIn);
+        return val ? this.datePipe.transform(val, 'mediumTime') : '';
+        // const val = row?.checkIn;
+        // return (val && val !== '0:00') ? this.datePipe.transform(val, 'mediumTime') : '';
+      }
+      //valueFn: (row) => row?.checkIn ? this.datePipe.transform(row?.checkIn, 'mediumTime') : ''
     },
     {
       key: 'checkOut',
       name: 'CheckOut',
-      valueFn: (row) => row?.checkOut ? this.datePipe.transform(row?.checkOut, 'mediumTime') : ''
+      valueFn: (row) => {
+        const val = this.parseTimeString(row?.checkOut);
+        return val ? this.datePipe.transform(val, 'mediumTime') : '';
+      }
+      //valueFn: (row) => row?.checkOut ? this.datePipe.transform(row?.checkOut, 'mediumTime') : ''
     },
     {
       key: 'duration',
       name: 'Working Hours'
     },
-    {
-      key: 'ODHours',
-      name: 'OD Hours'
-    },
-    {
-      key: 'SSLHours',
-      name: 'SL Hours'
-    },
-    {
-      key: 'afterProcessing',
-      name: 'After Processing'
-    },
-    {
-      key: 'earlyLateStatus',
-      name: 'Early/Late Status'
-    },
+    // {
+    //   key: 'ODHours',
+    //   name: 'OD Hours'
+    // },
+    // {
+    //   key: 'SSLHours',
+    //   name: 'SL Hours'
+    // },
+    // {
+    //   key: 'afterProcessing',
+    //   name: 'After Processing'
+    // },
+    // {
+    //   key: 'earlyLateStatus',
+    //   name: 'Early/Late Status'
+    // },
     {
       key: 'deviationHour',
       name: 'Deviation Hours'
@@ -109,14 +119,27 @@ export class MyAttendanceRecordsComponent {
   getAttendanceRecords() {
     let payload = { month: this.selectedMonth, year: this.selectedYear, user: this.user.id }
     this.attendanceService.getAttendanceRecordsByMonthByUser(payload).subscribe((res: any) => {
-     
+
       this.attendanceRecords = res.data.map((data)=>{
         return {
           ...data,
           date: this.datePipe.transform(data.date, 'MMM d, yyyy'),
-          duration: (data.duration / 60).toFixed(2)
+          duration: (data.duration / 60).toFixed(2),
+          deviationHour: (data.deviationHour / 60).toFixed(2)
         }
       })
     })
+  }
+
+  parseTimeString(timeStr: string): Date | null {
+    if (!timeStr) return null;
+
+    const parts = timeStr.split(':').map(Number);
+    if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return null;
+
+    const [hours, minutes] = parts;
+    const d = new Date();
+    d.setHours(hours, minutes, 0, 0);
+    return d;
   }
 }

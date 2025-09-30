@@ -39,7 +39,7 @@
                 <tbody>
                     <tr>
                         <td class="bg-light fw-bold" translate>payroll.date_of_joining</td>
-                        <td>{{payslip?.userEmployment?.effectiveFrom | date: 'mediumDate'}}</td>
+                        <td>{{payslip?.appointmentDetails?.joiningDate | date: 'mediumDate'}}</td>
                         <td class="bg-light fw-bold" translate>payroll.employee_name</td>
                         <td>{{payslip?.PayrollUser?.user?.firstName}}&nbsp;{{payslip?.PayrollUser?.user?.lastName}}</td>
                     </tr>

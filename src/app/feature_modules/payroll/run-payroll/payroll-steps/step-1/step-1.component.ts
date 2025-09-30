@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { UserService } from 'src/app/_services/users.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
@@ -20,6 +21,7 @@ export class Step1Component {
   payrollUserForm: FormGroup;
   selectedRecord: any;
   activeUsers: any[] = [];
+  joiningDates: Map<string, string> = new Map();
   onHoldUsers: any[] = [];
   processedUsers: any[] = [];
   status: 'Active' | 'OnHold' | 'Processed' = 'Active';
@@ -30,11 +32,12 @@ export class Step1Component {
       name: 'Employee Name',
       valueFn: (row) => this.getUser(row.user)
     },
-    {
-      key: 'date',
-      name: 'Joining Date',
-      valueFn: (row) => this.datePipe.transform(this.selectedPayroll.date, 'mediumDate')
-    }, {
+  {
+  key: 'date',
+  name: 'Joining Date',
+  valueFn: (row) => this.getJoiningDate(row.user)
+},
+ {
       key: 'action',
       name: 'Action',
       isAction: true,
@@ -51,7 +54,8 @@ export class Step1Component {
     private fb: FormBuilder,
     private toast: ToastrService,
     private dialog: MatDialog,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private userService: UserService
   ) {
     this.payrollUserForm = this.fb.group({
       payroll: [''],
@@ -76,6 +80,26 @@ export class Step1Component {
     this.getAllUsers();
     this.getPayrollById();
   }
+  getJoiningDate(userId: string): string {
+    const cachedDate = this.joiningDates.get(userId);
+
+    if (cachedDate) {
+      return cachedDate;
+    } else {
+      this.userService.getAppointmentByUserId(userId).subscribe({
+        next: (res: any) => {
+          const joiningDate = res?.data?.joiningDate;
+          const formattedDate = this.datePipe.transform(joiningDate, 'mediumDate') || 'N/A';
+          this.joiningDates.set(userId, formattedDate);
+        },
+        error: (err) => {
+          this.joiningDates.set(userId, 'N/A');
+        }
+      });
+
+      return 'Loading...';
+    }
+  }
 
   onAction(event:any){
     switch(event.action.label){
@@ -85,7 +109,7 @@ export class Step1Component {
         this.openDialog();
         break;
       case 'Unhold':
-        this.status = 'Processed';
+        this.status = 'Active';
         this.selectedRecord = event.row;
         this.openDialog();
         break;
@@ -142,7 +166,7 @@ export class Step1Component {
     if (this.activeTab === 'tabActiveEmployees') {
       this.payrollUserForm.patchValue({ status: 'OnHold' });
     } else if (this.activeTab === 'tabEmployeesOnHold') {
-      this.payrollUserForm.patchValue({ status: 'Processed' });
+      this.payrollUserForm.patchValue({ status: 'Active' });
     } else if (this.activeTab === 'tabProcessedEmployees') {
       this.payrollUserForm.patchValue({ status: 'Active' });
     }

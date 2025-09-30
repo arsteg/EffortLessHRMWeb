@@ -2,7 +2,7 @@
   <div class="position-relative">
 
     <button color="primary" mat-flat-button class="position-absolute end-0"
-      (click)="settledUser.length > 0 ? open(modal) : null">
+    (click)="open(modal)">
       {{ 'payroll._fnf.add' | translate }}
     </button>
   </div>
@@ -166,7 +166,7 @@
       </div>
       <div class="d-flex justify-content-between mt-3">
         <button mat-flat-button type="button" (click)="resetForm()">{{ 'payroll.cancel' | translate }}</button>
-        <button mat-flat-button class="addBtn" type="submit">{{ 'payroll.submit' | translate }}</button>
+        <button mat-flat-button class="addBtn" type="submit" [disabled]="isSubmittingPayroll">{{ 'payroll.submit' | translate }}</button>
       </div>
     </form>
   </div>

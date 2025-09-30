@@ -8,6 +8,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { CustomValidators } from 'src/app/_helpers/custom-validators';
 @Component({
   selector: 'app-step-5',
   templateUrl: './step-5.component.html',
@@ -16,7 +17,7 @@ import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 export class Step5Component {
   activeTab: string = 'tabArrears';
   arrearForm: FormGroup;
-  changeMode: 'Add' | 'Update' = 'Update';
+  changeMode: 'Add' | 'Update' = 'Add';
   @Input() selectedPayroll: any;
   salaryPerDay: any; // or fetch dynamically if needed
   selectedUserId: any;
@@ -26,11 +27,12 @@ export class Step5Component {
   payrollUser: any;
   searchText: string = '';
   selectedPayrollUser: string;
+  isSubmitted: boolean = false;
   payrollUsers: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
   columns: TableColumn[] = [
     { key: 'payrollUserDetails', name: 'Employee Name' },
-    { key: 'manualArrears', name: 'Manual Arrears'},
+    { key: 'manualArrears', name: 'Manual Arrears' },
     { key: 'arrearDays', name: 'Arrear Days' },
     { key: 'lopReversalDays', name: 'LOP Reversal Days', },
     { key: 'salaryRevisionDays', name: 'Salary Revision Days' },
@@ -53,12 +55,12 @@ export class Step5Component {
   ) {
     this.arrearForm = this.fb.group({
       payrollUser: ['', Validators.required],
-      manualArrears: [0, Validators.required],
-      arrearDays: [0, Validators.required],
-      lopReversalDays: [0, Validators.required],
-      salaryRevisionDays: [0, Validators.required],
-      lopReversalArrears: [0, Validators.required],
-      totalArrears: [0, Validators.required]
+      manualArrears: ['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
+      arrearDays: ['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
+      lopReversalDays: ['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
+      salaryRevisionDays: ['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
+      lopReversalArrears: ['0', [Validators.required, CustomValidators.OnlyPostiveNumberValidator()]],
+      totalArrears: ['', [Validators.required, CustomValidators.GreaterThanZeroValidator()]],
     });
   }
 
@@ -73,6 +75,9 @@ export class Step5Component {
       this.recalculateFields();
     });
     this.getArrearsByPayroll();
+    this.arrearForm.valueChanges.subscribe(() => {
+      this.isSubmitted = false;
+    });
   }
 
   onActionClick(event: any) {
@@ -99,18 +104,15 @@ export class Step5Component {
 
     const lopReversalArrears = lopReversalDays * this.salaryPerDay;
     const totalArrears = manualArrears + ((arrearDays + salaryRevisionDays) * this.salaryPerDay) + lopReversalArrears;
-
-    this.arrearForm.patchValue({
-      lopReversalArrears: lopReversalArrears.toFixed(0),
-      totalArrears: totalArrears.toFixed(0)
-    }, { emitEvent: false }); // Prevent recursive loop
+    // this.arrearForm.patchValue({
+    //   lopReversalArrears: lopReversalArrears.toFixed(0),
+    //   totalArrears: totalArrears.toFixed(0)
+    // }, { emitEvent: false }); // Prevent recursive loop
   }
   getDailySalaryByUserId(userId: string): void {
     this.userService.getDailySalaryByUserId(userId).subscribe(
       (res: any) => {
-
         this.salaryPerDay = res.data;
-        console.log(this.salaryPerDay);
       },
       (error: any) => {
         this.toast.error('Failed to load Salary Per Day', 'Error');
@@ -121,22 +123,20 @@ export class Step5Component {
   }
 
   openDialog() {
-    if (this.changeMode == 'Update') {
+    if (this.changeMode === 'Update') {
       this.payrollService.getPayrollUserById(this.selectedRecord.payrollUser).subscribe((res: any) => {
         this.payrollUser = res.data;
 
         const payrollUser = this.payrollUser?.user;
-
         this.arrearForm.patchValue({
           payrollUser: this.getUser(payrollUser),
-          manualArrears: this.selectedRecord.manualArrears,
-          arrearDays: this.selectedRecord.arrearDays,
-          lopReversalDays: this.selectedRecord.lopReversalDays,
-          salaryRevisionDays: this.selectedRecord.salaryRevisionDays,
-          lopReversalArrears: this.selectedRecord.lopReversalArrears,
-          totalArrears: this.selectedRecord.totalArrears
+          manualArrears: this.selectedRecord?.manualArrears,
+          arrearDays: this.selectedRecord?.arrearDays,
+          lopReversalDays: this.selectedRecord?.lopReversalDays,
+          salaryRevisionDays: this.selectedRecord?.salaryRevisionDays,
+          lopReversalArrears: this.selectedRecord?.lopReversalArrears,
+          totalArrears: this.selectedRecord?.totalArrears
         });
-        this.arrearForm.get('payrollUser').disable();
       });
     }
     this.dialog.open(this.dialogTemplate, {
@@ -146,15 +146,23 @@ export class Step5Component {
   }
 
   closeDialog() {
-    this.changeMode = 'Update';
+    this.changeMode = 'Add';
     this.dialog.closeAll();
+    this.arrearForm.patchValue({
+      payrollUser: "",
+      manualArrears: 0,
+      arrearDays: 0,
+      lopReversalDays: 0,
+      salaryRevisionDays: 0,
+      lopReversalArrears: 0,
+      totalArrears: ''
+    });
+    this.isSubmitted = false;
   }
 
   onUserSelectedFromChild(user: any) {
     this.selectedUserId = user.value.user;
     this.selectedPayrollUser = user?.value?._id;
-    console.log(this.selectedUserId);
-    console.log(this.selectedPayrollUser);
     this.getDailySalaryByUserId(this.selectedUserId);
 
 
@@ -178,12 +186,12 @@ export class Step5Component {
       });
       this.arrears = userRequests
     });
-    if (this.changeMode == 'Update' && this.selectedRecord) {
-      this.arrearForm.patchValue({
-        payrollUser: this.selectedRecord.payrollUser,
-        ...this.selectedRecord
-      });
-    }
+    // if (this.changeMode == 'Update' && this.selectedRecord) {
+    //   this.arrearForm.patchValue({
+    //     payrollUser: this.selectedRecord.payrollUser,
+    //     ...this.selectedRecord
+    //   });
+    // }
   }
 
   getArrearsByPayroll() {
@@ -201,16 +209,14 @@ export class Step5Component {
   }
 
   onSubmission() {
-    this.arrearForm.get('payrollUser').enable();
-    if (this.changeMode == 'Update') {
-      this.arrearForm.patchValue({
-        payrollUser: this.selectedRecord.payrollUser
-      });
+    this.isSubmitted = true;
+    if (this.arrearForm.invalid) {
+      // this.toast.error('Please fill all required fields', 'Error!');
+      // this.isSubmitted = false;
+      this.arrearForm.markAllAsTouched();
+      return;
     }
-    console.log(this.arrearForm.value);
-
     if (this.changeMode == 'Add') {
-      this.arrearForm.value.payrollUser = this.selectedPayrollUser;
       this.payrollService.addArrear(this.arrearForm.value).subscribe((res: any) => {
         this.getArrears();
         this.selectedUserId = null;
@@ -219,18 +225,28 @@ export class Step5Component {
         this.closeDialog();
       },
         err => {
-          this.toast.error('Manual arrear can not be Created', 'Error!');
+          const errorMessage = err?.error?.message || err?.message || err
+            || 'Manual arrear can not be Created';
+          this.toast.error(errorMessage, 'Error!');
+          this.isSubmitted = true;
         });
     }
     if (this.changeMode == 'Update') {
-      this.payrollService.updateArrear(this.selectedRecord._id, this.arrearForm.value).subscribe((res: any) => {
+      this.arrearForm.value.payrollUser = this.selectedRecord?.payrollUser;
+      this.payrollService.updateArrear(this.selectedRecord?._id, this.arrearForm.value).subscribe((res: any) => {
         this.getArrears();
         this.toast.success('Arrear Updated', 'Successfully');
         this.selectedUserId = null;
         this.arrearForm.reset();
         this.changeMode = 'Add';
         this.closeDialog();
-      });
+      },
+        err => {
+          const errorMessage = err?.error?.message || err?.message || err
+            || 'Manual arrear can not be Updated';
+          this.toast.error(errorMessage, 'Error!');
+          this.isSubmitted = true;
+        });
     }
   }
 
@@ -240,7 +256,9 @@ export class Step5Component {
       this.toast.success('Successfully Deleted!!!', 'Arrear');
     },
       (err) => {
-        this.toast.error('This Arrear Can not be deleted!');
+        const errorMessage = err?.error?.message || err?.message || err
+          || 'This Arrear Can not be deleted!';
+        this.toast.error(errorMessage, 'Error!');
       });
   }
 

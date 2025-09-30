@@ -1005,4 +1005,8 @@ export class PayrollService {
   getTaxableSalaryAmountByUserId(id: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/payroll/get-total-taxable-amount-from-salary-structure-by-user/${id}`, this.httpOptions);
   }
+  validateAttendanceProcess(payload: { month: number, year: number }) {  
+     var response = this.http.post<any>(`${environment.apiUrlDotNet}/attendance/validate-attendance-process`,payload, this.httpOptions);
+    return response;
+}
 }

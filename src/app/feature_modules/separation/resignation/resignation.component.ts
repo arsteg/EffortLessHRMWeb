@@ -420,8 +420,10 @@ export class ResignationComponent implements OnInit {
   }
   getResignationByUser() {
     if (this.view === 'admin'){
-      this.separationService.getResignationsByCompany().subscribe((res: any)=>{
-        this.allResignations = res.data;
+      this.separationService.getResignationsByCompany().subscribe((res: any)=>{      
+        this.allResignations = (res.data || []).filter(t => 
+        this.users.some(user => user.id === t.user)
+      );
         this.totalRecords = this.allResignations.length;
       })
     }

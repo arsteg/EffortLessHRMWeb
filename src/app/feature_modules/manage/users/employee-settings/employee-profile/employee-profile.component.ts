@@ -21,6 +21,15 @@ export class EmployeeProfileComponent {
   isEdit = this.userService.getIsEdit();
   bsValue = new Date();
   maxDate: Date;
+  expandedPanels = {
+    basic: true,
+    personal: false,
+    address: false,
+    contact: false,
+    emergency: false,
+    bank: false,
+    extra: false
+  };
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
@@ -103,11 +112,13 @@ makeRoleDsabledIfinProfile()
   onSubmit() {
     this.userForm.get('role')?.enable();
     if (this.userForm.invalid) {
-      this.userForm.markAllAsTouched();
-      this.toast.error(this.translate.instant('common.missing_required_Field'), this.translate.instant('common.validation_error'));
-      return;
+        this.userForm.markAllAsTouched();
+        this.setExpandedPanelsForInvalidFields();
+        this.focusFirstInvalidField();
+        this.makeRoleDsabledIfinProfile();
+        this.toast.error(this.translate.instant('common.missing_required_Field'), this.translate.instant('common.validation_error'));
+        return;
     }
-    // if (this.userForm.valid) {
       this.userService.updateUser(this.selectedUser[0].id, this.userForm.value).subscribe(
         (res: any) =>  
           {
@@ -121,9 +132,45 @@ makeRoleDsabledIfinProfile()
           this.makeRoleDsabledIfinProfile();
           this.toast.error(errorMessage, 'Error!'); } 
       );
-    // } else {
-    //   this.userForm.markAllAsTouched();
-    // }
+  }
+
+  setExpandedPanelsForInvalidFields() {
+    // Reset all panels
+    Object.keys(this.expandedPanels).forEach(key => this.expandedPanels[key] = false);
+    const controls = this.userForm.controls;
+    // Map controls to panels
+    const panelMap = {
+      basic: ['firstName', 'lastName', 'jobTitle', 'role', 'Gender'],
+      personal: ['DOB', 'MaritalStatus', 'MarraigeAniversary', 'Pancard', 'AadharNumber', 'Disability', 'FatherHusbandName', 'NoOfChildren', 'PassportDetails'],
+      address: ['address', 'city', 'state', 'pincode'],
+      contact: ['phone', 'mobile', 'email'],
+      emergency: ['emergancyContactName', 'emergancyContactNumber'],
+      bank: ['BankName', 'BankAccountNumber', 'BankIFSCCode', 'BankBranch', 'BankAddress'],
+      extra: ['extraDetails']
+    };
+    // Find all invalid panels
+    const invalidPanels: string[] = [];
+    for (const panel in panelMap) {
+      if (panelMap[panel].some(ctrl => controls[ctrl] && controls[ctrl].invalid)) {
+        invalidPanels.push(panel);
+      }
+    }
+
+    // Always expand the first invalid panel
+    const firstInvalidPanel = invalidPanels.length > 0 ? invalidPanels[0] : null;
+    //const firstInvalidPanel = Object.keys(this.expandedPanels).find(key => this.expandedPanels[key]);
+    if (firstInvalidPanel) {
+      this.expandedPanels[firstInvalidPanel] = true;
+    }
+  }
+
+  focusFirstInvalidField() {
+    setTimeout(() => {
+      const firstInvalid = document.querySelector('.ng-invalid');
+      if (firstInvalid && typeof (firstInvalid as HTMLElement).focus === 'function') {
+        (firstInvalid as HTMLElement).focus();
+      }
+    }, 100);
   }
 
   getRoles() {

@@ -18,7 +18,7 @@
     <h1 mat-dialog-title>Variable Pay</h1>
     <div mat-dialog-content>
         <form [formGroup]="variablePayForm" (ngSubmit)="onSubmit()">
-            <div class="row">
+            <div class="row mt-2">
                 <div class="form-group" *ngIf="changeMode === 'Add'">
                     <app-payroll-user-list [controlField]="variablePayForm.get('payrollUser')"
                         (userSelected)="onUserSelectedFromChild($event)"
@@ -28,7 +28,7 @@
                 <div class="col-md-6" *ngIf="changeMode === 'Update'">
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Payroll User</mat-label>
-                        <input matInput type="text" formControlName="payrollUser" readonly>
+                        <input matInput type="text" [value]="this.selectedRecord?.payrollUserDetails" formControlName="payrollUser" readonly>
                     </mat-form-field>
                 </div>
 
@@ -36,7 +36,7 @@
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Variable Deduction</mat-label>
                         <mat-select formControlName="variableDeduction">
-                            <mat-option value="" selected disabled>- Select Variable Deduction -</mat-option>
+                            <mat-option (click)="resetSelectionDedeuction()">- Reset Selection -</mat-option>
                             <mat-option [value]="deduction?.variableDeduction?._id"
                                 *ngFor="let deduction of salary?.variableDeductionList">
                                 {{getVariableDeduction(deduction?.variableDeduction._id)}}</mat-option>
@@ -48,7 +48,7 @@
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Variable Allowance</mat-label>
                         <mat-select formControlName="variableAllowance">
-                            <mat-option value="" selected disabled>- Select Variable Allowance -</mat-option>
+                            <mat-option (click)="resetSelectionAllowance()">- Reset Selection -</mat-option>
                             <mat-option [value]="allowance?.variableAllowance?._id"
                                 *ngFor="let allowance of salary?.variableAllowanceList">
                                 {{getVariableAllowance(allowance?.variableAllowance._id)}}</mat-option>
@@ -75,7 +75,7 @@
                     </mat-form-field>
                 </div>
 
-                <div class="col-md-6">
+                <!-- <div class="col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
                         <mat-label>Month</mat-label>
                         <input matInput type="text" formControlName="month">
@@ -94,7 +94,7 @@
                             Year is required!
                         </mat-error>
                     </mat-form-field>
-                </div>
+                </div> -->
             </div>
             <div class="mt-4 d-flex justify-content-between">
                 <button type="button" (click)="closeDialog()" mat-flat-button>Cancel</button>
