@@ -47,15 +47,13 @@ export class FnfUsersComponent implements OnInit {
     if (this.fnfUsers && this.settledUsers.length > 0 && !this.isStep) {
       console.log(this.settledUsers)
       this.users = this.users = this.settledUsers?.filter(user =>
-  !(Array.isArray(this.selectedFnF) && this.selectedFnF.some(fnfUser => fnfUser._id === user?._id)) // Not in fnfUsers
-    && !user.fnfPayroll
-)
- // Not in fnfUsers
-      //   && !user.fnfPayroll
-      // );
+        !(Array.isArray(this.selectedFnF) && this.selectedFnF.some(fnfUser => fnfUser._id === user?._id)) // Not in fnfUsers
+        && !user.fnfPayroll
+      )
     } else if (this.fnfUsers && this.settledUsers.length > 0 && this.isStep) {
+      console.log(this.settledUsers);
       this.users = this.settledUsers.filter(user => {
-        return this.fnfUsers.some(fnfUser => fnfUser.user === user._id);
+        return !(Array.isArray(this.fnfUsers) && this.fnfUsers.some(fnfUser => fnfUser.user === user._id));
       });
     }
   }
