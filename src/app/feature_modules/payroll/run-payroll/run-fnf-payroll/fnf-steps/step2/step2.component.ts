@@ -69,11 +69,21 @@ export class FNFStep2Component implements OnInit {
       year: this.selectedFnF?.year
     });
 
-    this.variablePayForm.get('variableAllowance')?.valueChanges.subscribe(() => {
+    this.variablePayForm.get('variableAllowance')?.valueChanges.subscribe((val) => {
+      if (val) {
+        this.variablePayForm.get('variableDeduction')?.disable({ emitEvent: false });
+      } else {
+        this.variablePayForm.get('variableDeduction')?.enable({ emitEvent: false });
+      }
       this.triggerProRatedCalculation();
     });
 
-    this.variablePayForm.get('variableDeduction')?.valueChanges.subscribe(() => {
+    this.variablePayForm.get('variableDeduction')?.valueChanges.subscribe((val) => {
+      if (val) {
+        this.variablePayForm.get('variableAllowance')?.disable({ emitEvent: false });
+      } else {
+        this.variablePayForm.get('variableAllowance')?.enable({ emitEvent: false });
+      }
       this.triggerProRatedCalculation();
     });
   }
@@ -85,6 +95,7 @@ export class FNFStep2Component implements OnInit {
       // Get the day of the month
       const dayOfTermination = terminationDate.getDate(); // e.g., 15
       // Store or use it for per-day calculation
+      console.log('Day of Termination:', dayOfTermination);
       this.calculateProRatedAmount(dayOfTermination);
     });
   }
@@ -97,11 +108,13 @@ export class FNFStep2Component implements OnInit {
   }
 
   calculateProRatedAmount(terminationDay: number) {
-    const selectedAllowanceKey = this.variablePayForm.get('variableAllowance')?.value;
-    console.log('selectedAllowanceKey', selectedAllowanceKey)
+    // console.log(this.variablePayForm.value);
+
+    const selectedAllowanceKey = this.variablePayForm.get('variableAllowance').value;
     const selectedDeductionKey = this.variablePayForm.get('variableDeduction')?.value;
-    const selectedAllowance = this.variableAllowance?.find(a => a.variableAllowance === selectedAllowanceKey);
-    const selectedDeduction = this.variableDeduction?.find(d => d.variableDeduction === selectedDeductionKey);
+
+    const selectedAllowance = this.variableAllowance?.find(a => a.variableAllowance?._id === selectedAllowanceKey);
+    const selectedDeduction = this.variableDeduction?.find(d => d.variableDeduction?._id === selectedDeductionKey);
     const allowanceAmount = selectedAllowance?.monthlyAmount || 0;
     const deductionAmount = selectedDeduction?.monthlyAmount || 0;
     const totalVariablePay = allowanceAmount - deductionAmount;
@@ -122,6 +135,7 @@ export class FNFStep2Component implements OnInit {
         const variablePayData = res.data.map((item: any) => {
           const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.payrollFNFUser);
           item.userName = this.getMatchedSettledUser(matchedUser.user);
+          item.userId = matchedUser.user;
           return item;
         });
         return variablePayData;
@@ -151,7 +165,15 @@ export class FNFStep2Component implements OnInit {
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
     this.payrollService.getFnFVariablePayFnFUserId(payrollFNFUserId).subscribe((res: any) => {
-      this.variablePaySummary.data = res.data;
+      // this.variablePaySummary.data = res.data;
+      map((res: any) => {
+        const variablePayData = res.data.map((item: any) => {
+          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.payrollFNFUser);
+          item.userName = this.getMatchedSettledUser(matchedUser.user);
+          return item;
+        });
+        return variablePayData;
+      });
     });
   }
 
@@ -170,7 +192,6 @@ export class FNFStep2Component implements OnInit {
   }
 
   openDialog(isEdit: boolean): void {
-    this.isEdit = isEdit;
     if (!this.isEdit) {
       this.variablePayForm.reset({
         payrollFNFUser: '',
@@ -179,7 +200,7 @@ export class FNFStep2Component implements OnInit {
         amount: 0,
         month: this.selectedFnF?.month,
         year: this.selectedFnF?.year
-      })
+      });
     }
     this.dialog.open(this.dialogTemplate, {
       width: '50%',
@@ -191,16 +212,30 @@ export class FNFStep2Component implements OnInit {
   editVariablePay(variablePay: any): void {
     this.isEdit = true;
     this.selectedVariablePay = variablePay;
-    this.variablePayForm.patchValue({
-      payrollFNFUser: variablePay.userName,
-      variableDeduction: variablePay.variableDeduction,
-      variableAllowance: variablePay.variableAllowance,
-      amount: variablePay.amount,
-      month: variablePay.month,
-      year: variablePay.year
+    // make sure user id is set for fetching salary
+    this.selectedFnFUserId = variablePay.userId;
+
+    // fetch salary first
+    this.userService.getSalaryByUserId(this.selectedFnFUserId).subscribe((res: any) => {
+      this.salary = res.data[res.data.length - 1];
+      this.variableAllowance = this.salary?.variableAllowanceList || [];
+      this.variableDeduction = this.salary?.variableDeductionList || [];
+
+      // now open dialog
+
+
+      // then patch form if needed
+      this.variablePayForm.patchValue({
+        payrollFNFUser: variablePay.userName,
+        variableDeduction: variablePay?.variableDeduction?._id,
+        variableAllowance: variablePay?.variableAllowance?._id,
+        amount: variablePay.amount,
+        month: variablePay.month,
+        year: variablePay.year
+      });
+      this.variablePayForm.get('payrollFNFUser').disable();
+      this.openDialog(true);
     });
-    this.variablePayForm.get('payrollFNFUser').disable();
-    this.openDialog(true);
   }
 
   onSubmit(): void {
@@ -215,7 +250,6 @@ export class FNFStep2Component implements OnInit {
       variableDeduction: this.variablePayForm.get('variableDeduction')?.value?._id,
       amount: this.variablePayForm.get('amount')?.value
     })
-    console.log('variablePayForm value', this.variablePayForm.value)
     if (this.variablePayForm.valid) {
       this.variablePayForm.get('payrollFNFUser').enable();
 
@@ -241,15 +275,8 @@ export class FNFStep2Component implements OnInit {
       } else {
         this.payrollService.addFnFVariablePay(payload).subscribe(
           (res: any) => {
-            const newItem = res.data;
-            // Ensure matchedUser exists to avoid undefined errors
-            const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === newItem.payrollFNFUser);
-            newItem.userName = matchedUser ? this.getMatchedSettledUser(matchedUser.user) : 'Not specified';
-
-            // Add new record to the table
-            this.variablePaySummary.data = [...this.variablePaySummary.data, newItem];
+            this.ngOnInit();
             this.toast.success('Variable Pay added successfully', 'Success');
-            // Reset form but keep month/year for quick successive additions
             this.variablePayForm.reset({
               payrollFNFUser: '',
               variableDeduction: null,
@@ -273,18 +300,9 @@ export class FNFStep2Component implements OnInit {
   }
 
   onCancel(): void {
-    if (this.isEdit && this.selectedVariablePay) {
-      this.variablePayForm.patchValue({
-        payrollFNFUser: this.selectedVariablePay.payrollFNFUser,
-        variableDeduction: this.selectedVariablePay.variableDeduction,
-        variableAllowance: this.selectedVariablePay.variableAllowance,
-        amount: this.selectedVariablePay.amount,
-        month: this.selectedVariablePay.month,
-        year: this.selectedVariablePay.year
-      });
-    } else {
-      this.variablePayForm.reset();
-    }
+    this.isEdit = false;
+    this.variablePayForm.reset();
+    this.dialog.closeAll();
   }
 
   deleteVariablePay(_id: string) {

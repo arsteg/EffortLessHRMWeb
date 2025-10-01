@@ -2,6 +2,7 @@
     "payroll": {
         "settings": "General Settings",
         "save_failed": "Failed To Save",
+        "next": "Next",
         "ctc_template": "CTC Template",
         "lop_reversal": "LOP Reversal",
         "run_payroll": "Run Payroll",
