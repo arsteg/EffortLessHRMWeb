@@ -151,8 +151,7 @@ export class ShowApplicationComponent {
   }
 
   refreshLeaveApplicationTable(data: any) {
-    this.leaveApplication.data.push(data);
-    this.leaveApplication._updateChangeSubscription();
+    this.getLeaveApplication();
   }
 
   exportToCsv() {
@@ -225,7 +224,8 @@ export class ShowApplicationComponent {
             leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
-            leaveCount: leave?.calculatedLeaveDays
+            leaveCount: leave?.calculatedLeaveDays,
+            employeeId: leave?.employee?._id
           };
         });
         this.allData = this.leaveApplication.data;
@@ -245,7 +245,8 @@ export class ShowApplicationComponent {
             leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
-            leaveCount: leave?.calculatedLeaveDays
+            leaveCount: leave?.calculatedLeaveDays,
+            employeeId: leave?.employee?._id
           };
         });
         this.allData = this.leaveApplication.data;
@@ -265,7 +266,8 @@ export class ShowApplicationComponent {
             leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
-            leaveCount: leave?.calculatedLeaveDays
+            leaveCount: leave?.calculatedLeaveDays,
+            employeeId: leave?.employee?._id
           };
         });
         this.allData = this.leaveApplication.data;
