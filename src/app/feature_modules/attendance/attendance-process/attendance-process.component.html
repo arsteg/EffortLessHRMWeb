@@ -220,14 +220,20 @@
             <div class="form-group">
                 <mat-form-field appearance="outline" class="w-100">
                     <mat-label>Resigned or Terminated Users</mat-label>
-                    <mat-select id="member" name="member" (selectionChange)="selectedUser($event)">
+                    <mat-select id="member" name="member" formControlName="user"
+                        (selectionChange)="selectedUser($event)">
                         <mat-option *ngFor="let assignee of usersForFNF" [value]="assignee.id">
                             {{ assignee?.firstName | titlecase }} {{ assignee?.lastName | titlecase }}
                         </mat-option>
                     </mat-select>
+                    <mat-error
+                        *ngIf="fnfAttendanceProcessForm.get('user')?.touched && fnfAttendanceProcessForm.get('user')?.invalid">
+                        @if(fnfAttendanceProcessForm.get('user')?.errors?.['required']) {
+                        User selection is required.
+                        }
+                    </mat-error>
                 </mat-form-field>
             </div>
-
 
             <div class="row">
                 <div class="col-md-6 form-group">
@@ -237,14 +243,13 @@
                             (selectionChange)="onMonthOrYearChange()">
                             <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
                         </mat-select>
-                    </mat-form-field>
-                    <div *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodYear')?.touched 
+                        <mat-error *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodYear')?.touched 
                      && fnfAttendanceProcessForm.get('attendanceProcessPeriodYear')?.invalid">
-                        <small class="text-danger"
-                            *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodYear')?.errors?.['required']">
+                            @if(fnfAttendanceProcessForm.get('attendanceProcessPeriodYear')?.errors?.['required']) {
                             Year is required.
-                        </small>
-                    </div>
+                            }
+                        </mat-error>
+                    </mat-form-field>
                 </div>
                 <div class="col-md-6 form-group">
                     <mat-form-field appearance="outline" class="w-100">
@@ -253,23 +258,23 @@
                             (selectionChange)="onMonthOrYearChange()">
                             <mat-option *ngFor="let month of months" [value]="month.value">{{ month.name }}</mat-option>
                         </mat-select>
-                    </mat-form-field>
-                    <div *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodMonth')?.touched 
+                        <mat-error *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodMonth')?.touched 
                      && fnfAttendanceProcessForm.get('attendanceProcessPeriodMonth')?.invalid">
-                        <small class="text-danger"
-                            *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodMonth')?.errors?.['required']">
-                            Month is required.
-                        </small>
-                    </div>
-                </div>
-                <div class="error" *ngIf="fnfAttendanceProcessForm.errors?.['beforeTermination']">
-                    Selected Period cannot be before the Termination Date.
-                </div>
-                <div class="error" *ngIf="fnfAttendanceProcessForm.errors?.['beforeResignation']">
-                    Selected Period cannot be before the Resignation Date.
-                </div>
-                <div class="error" *ngIf="fnfAttendanceProcessForm.errors?.['afterLastWorkingDay']">
-                    Selected Period cannot be after the Last Working Day.
+                            <span
+                                *ngIf="fnfAttendanceProcessForm.get('attendanceProcessPeriodMonth')?.errors?.['required']">
+                                Month is required.
+                            </span>
+                            <div class="error" *ngIf="fnfAttendanceProcessForm.errors?.['beforeTermination']">
+                                Selected Period cannot be before the Termination Date.
+                            </div>
+                            <div class="error" *ngIf="fnfAttendanceProcessForm.errors?.['beforeResignation']">
+                                Selected Period cannot be before the Resignation Date.
+                            </div>
+                            <div class="error" *ngIf="fnfAttendanceProcessForm.errors?.['afterLastWorkingDay']">
+                                Selected Period cannot be after the Last Working Day.
+                            </div>
+                        </mat-error>
+                    </mat-form-field>
                 </div>
             </div>
 
@@ -299,7 +304,7 @@
             <div class="d-flex justify-content-between mt-2">
                 <button type="button" mat-flat-button (click)="dialogRef.close()">Cancel</button>
                 <button type="submit" mat-flat-button color="primary"
-                    [disabled]="fnfAttendanceProcessForm.errors?.['beforeTermination'] || fnfAttendanceProcessForm.errors?.['beforeResignation'] || fnfAttendanceProcessForm.errors?.['afterLastWorkingDay']">Submit</button>
+                    [disabled]="isSubmitted || fnfAttendanceProcessForm.errors?.['beforeTermination'] || fnfAttendanceProcessForm.errors?.['beforeResignation'] || fnfAttendanceProcessForm.errors?.['afterLastWorkingDay']">Submit</button>
             </div>
         </form>
     </div>
