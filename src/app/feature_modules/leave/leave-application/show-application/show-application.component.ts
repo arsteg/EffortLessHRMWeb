@@ -235,10 +235,14 @@ export class ShowApplicationComponent {
     if (this.portalView === 'user' && this.tab === 1) {
       const employeeId = this.currentUser.id;
       this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).subscribe((res: any) => {
-       this.leaveApplication.data = res.data;
-        this.allData = res.data;
-        this.totalRecords = res.total;
-        this.leaveApplication.data = res.data.map((leave: any) => {
+        let filteredData = res.data;
+        if (this.status && this.status !== 'All') {
+          filteredData = res.data.filter((leave: any) => leave.status === this.status);
+        }
+       this.leaveApplication.data = filteredData;
+        this.allData = filteredData;
+        this.totalRecords = filteredData.total;
+        this.leaveApplication.data = filteredData.map((leave: any) => {
           return {
             ...leave,
             employee: leave.employee.firstName + ' ' + leave.employee.lastName,
@@ -256,10 +260,14 @@ export class ShowApplicationComponent {
     if (this.portalView === 'user' && this.tab === 5) {
       let payload = { skip: '', next: '' };
      this.leaveService.getLeaveApplicationByTeam(payload).subscribe((res: any) => {
-        this.leaveApplication.data = res.data;
-        this.allData = res.data;
+        let filteredData = res.data;
+        if (this.status && this.status !== 'All') {
+          filteredData = res.data.filter((leave: any) => leave.status === this.status);
+        }
+        this.leaveApplication.data = filteredData;
+        this.allData = filteredData;
         this.totalRecords = res.total;
-        this.leaveApplication.data = res.data.map((leave: any) => {
+        this.leaveApplication.data = filteredData.map((leave: any) => {
           return {
             ...leave,
             employee: leave.employee.firstName + ' ' + leave.employee.lastName,

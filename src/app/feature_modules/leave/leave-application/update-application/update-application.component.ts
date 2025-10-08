@@ -34,10 +34,10 @@ export class UpdateApplicationComponent {
     this.leaveUpdateStatus = this.leaveService.leave.getValue();
     let id = this.leaveService.leave.getValue()._id;
     let payload = {
-      employee: this.leaveUpdateStatus.employee?._id,
+      employee: this.leaveUpdateStatus.employeeId,
       leaveCatgeory: this.leaveUpdateStatus.leaveCategory,
-      startTime: this.leaveUpdateStatus.startDate,
-      endTime: this.leaveUpdateStatus.endDate,
+      startDate: this.leaveUpdateStatus.startDate,
+      endDate: this.leaveUpdateStatus.endDate,
       durationInMinutes: this.leaveUpdateStatus.durationInMinutes,
       comments: this.leaveUpdateStatus.comments,
       status: this.leaveUpdateStatus.status,
