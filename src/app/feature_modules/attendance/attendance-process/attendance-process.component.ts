@@ -119,7 +119,7 @@ export class AttendanceProcessComponent {
   {
     key: 'employee',
     name: 'Employee',
-    valueFn: (row: any) => row?.users.map((user)=> `${user?.user?.firstName} ${user?.user?.lastName}`).join(', ')
+    valueFn: (row: any) => row?.users.map((user) => `${user?.user?.firstName} ${user?.user?.lastName}`).join(', ')
   },
   {
     key: 'runDate',
@@ -146,7 +146,7 @@ export class AttendanceProcessComponent {
     private userService: UserService,
     private route: ActivatedRoute,
     private router: Router,
-    private separationService: SeparationService,    
+    private separationService: SeparationService,
     private translate: TranslateService,
     private datePipe: DatePipe,
   ) {
@@ -166,8 +166,9 @@ export class AttendanceProcessComponent {
     });
 
     this.fnfAttendanceProcessForm = this.fb.group({
-      attendanceProcessPeriodYear: ['', Validators.required],
-      attendanceProcessPeriodMonth: ['', Validators.required],
+      user: ['', Validators.required],
+      attendanceProcessPeriodYear: [new Date().getFullYear().toString(), Validators.required],
+      attendanceProcessPeriodMonth: [(new Date().getMonth() + 1).toString(), Validators.required],
       runDate: [''],
       exportToPayroll: [''],
       isFNF: [true],
@@ -220,6 +221,9 @@ export class AttendanceProcessComponent {
     });
     this.attendanceTemplateAssignment = [];
     this.lopForm.valueChanges.subscribe(() => {
+      this.isSubmitted = false;
+    });
+    this.fnfAttendanceProcessForm.valueChanges.subscribe(() => {
       this.isSubmitted = false;
     });
   }
@@ -438,9 +442,9 @@ export class AttendanceProcessComponent {
   }
 
   async createAttendanceProcessLOP() {
-     const isAttendanceValid = await this.validateAttendanceUploadLock();
-     console.log(isAttendanceValid);
-    if (isAttendanceValid===true) {   
+    const isAttendanceValid = await this.validateAttendanceUploadLock();
+    console.log(isAttendanceValid);
+    if (isAttendanceValid === true) {
       return;
     }
     if (this.lopForm.valid) {
@@ -565,35 +569,35 @@ export class AttendanceProcessComponent {
       }
     });
   }
-validateAttendanceUploadLock(): Promise<boolean> {
-const month = parseInt(this.lopForm.value.month, 10);
-const year = parseInt(this.lopForm.value.year, 10);
-console.log(month);
-console.log(year);
-  return new Promise((resolve, reject) => {
-    this.payrollService.validateAttendanceProcess({ month, year }).subscribe(
-      (res: any) => {
-        console.log(res.exists);
-        if (res.exists===true) {
+  validateAttendanceUploadLock(): Promise<boolean> {
+    const month = parseInt(this.lopForm.value.month, 10);
+    const year = parseInt(this.lopForm.value.year, 10);
+    console.log(month);
+    console.log(year);
+    return new Promise((resolve, reject) => {
+      this.payrollService.validateAttendanceProcess({ month, year }).subscribe(
+        (res: any) => {
+          console.log(res.exists);
+          if (res.exists === true) {
+            this.toast.error(
+              res.message || 'Attendance is already processed for this month. Upload is not allowed.'
+
+            );
+            resolve(true); // ❗️true means "locked"
+          } else {
+            resolve(false); // Not locked, safe to proceed
+          }
+        },
+        (err) => {
           this.toast.error(
-            res.message || 'Attendance is already processed for this month. Upload is not allowed.'
-          
+            err?.error?.message || 'Error validating attendance process.',
+            this.translate.instant('attendance.upload_title') || 'Upload Attendance'
           );
-          resolve(true); // ❗️true means "locked"
-        } else {
-          resolve(false); // Not locked, safe to proceed
+          reject(false);
         }
-      },
-      (err) => {
-        this.toast.error(
-          err?.error?.message || 'Error validating attendance process.',
-          this.translate.instant('attendance.upload_title') || 'Upload Attendance'
-        );
-        reject(false);
-      }
-    );
-  });
-}
+      );
+    });
+  }
 
   getProcessAttendance() {
     let payload = {
@@ -603,15 +607,15 @@ console.log(year);
       year: this.selectedYear.toString()
     };
     this.attendanceService.getProcessAttendance(payload).subscribe((res: any) => {
-    this.processAttendance = res.data.map((data) => {
-      console.log(data.users);
- return {
-  ...data,
-  users: (data.users || [])
-    .filter(user => user?.user?.trim()) // Remove null, undefined, or empty strings (with spaces trimmed)
-    .map(user => this.getUser(user.user)),
-};
-});
+      this.processAttendance = res.data.map((data) => {
+        console.log(data.users);
+        return {
+          ...data,
+          users: (data.users || [])
+            .filter(user => user?.user?.trim()) // Remove null, undefined, or empty strings (with spaces trimmed)
+            .map(user => this.getUser(user.user)),
+        };
+      });
     })
   }
 
@@ -714,14 +718,12 @@ console.log(year);
     return matchingUser ? `${matchingUser.firstName} ${matchingUser.lastName}` : '';
   }
 
-  selectedUser(user: any) {
-    this.selectedFnfUser = user.value;
+  selectedUser(event: any) {
+    const userId = event.value;
+    this.selectedFnfUser = userId;
+    this.fnfAttendanceProcessForm.patchValue({ user: userId });
 
-    this.fnfAttendanceProcessForm.reset({
-      users: [{ user: user.value, status: '' }]
-    });
-
-    this.separationService.getTerminationByUserId(this.selectedFnfUser).subscribe((res: any) => {
+    this.separationService.getTerminationByUserId(userId).subscribe((res: any) => {
       if (res.data) {
         this.termination = res.data;
         this.terminationMonth = new Date(this.termination.termination_date).getMonth() + 1;
@@ -731,10 +733,8 @@ console.log(year);
         this.resignationYear = null;
         this.noticePeriod = null;
         this.lastWorkingDay = null;
-
-        this.fnfAttendanceProcessForm.updateValueAndValidity();
       } else {
-        this.separationService.getResignationsByUserId(this.selectedFnfUser).subscribe((res: any) => {
+        this.separationService.getResignationsByUserId(userId).subscribe((res: any) => {
           const resignation = res.data;
           if (resignation) {
             this.resignationMonth = new Date(resignation.resignation_date).getMonth() + 1;
@@ -744,15 +744,11 @@ console.log(year);
 
             this.terminationMonth = null;
             this.terminationYear = null;
-
-            this.fnfAttendanceProcessForm.updateValueAndValidity();
           }
         });
       }
     });
   }
-
-
 
   validateYearMonthAndResignation(group: AbstractControl): ValidationErrors | null {
     const year = group.get('attendanceProcessPeriodYear')?.value;
@@ -786,25 +782,28 @@ console.log(year);
     return null;
   }
 
-
   onSubmissionFnF() {
-    this.fnfAttendanceProcessForm.value.exportToPayroll = 'true';
-    this.fnfAttendanceProcessForm.value.isFNF = true
-    this.fnfAttendanceProcessForm.value.users = [{ user: this.selectedFnfUser, status: 'FnF Attendance Processed' }];
-    if (this.fnfAttendanceProcessForm.valid && !this.terminationDateError && !this.noticePeriodError) {
-      this.attendanceService.addFnFAttendanceProcess(this.fnfAttendanceProcessForm.value).subscribe((res: any) => {
-        this.getFnfAttendanceProcess();
-        this.fnfAttendanceProcessForm.value.users = [{ user: '' }]
-        this.fnfAttendanceProcessForm.reset({
-          users: [{ user: '', status: '' }]
-        });
-        this.toast.success('Full & Final Attendance Processed', 'Successfully!');
-      }, err => {
-        this.toast.error('Full & Final Attendance can not be Processed', 'Error');
-      });
-    } else {
+    this.isSubmitted = true;
+
+    if (this.fnfAttendanceProcessForm.invalid) {
       this.fnfAttendanceProcessForm.markAllAsTouched();
+      return;
     }
+
+    this.fnfAttendanceProcessForm.value.exportToPayroll = 'true';
+    this.fnfAttendanceProcessForm.value.isFNF = true;
+    this.fnfAttendanceProcessForm.value.users = [{ user: this.selectedFnfUser, status: 'FnF Attendance Processed' }];
+
+    this.attendanceService.addFnFAttendanceProcess(this.fnfAttendanceProcessForm.value).subscribe(
+      (res: any) => {
+        this.ngOnInit();
+        this.toast.success('Full & Final Attendance Processed', 'Successfully!');
+        this.fnfAttendanceProcessForm.reset();
+      },
+      err => {
+        this.toast.error('Full & Final Attendance cannot be processed', 'Error');
+      }
+    );
   }
 
   getFnfAttendanceProcess(): Observable<any> {
@@ -816,14 +815,14 @@ console.log(year);
       isFNF: true
     };
 
-  return this.attendanceService.getfnfAttendanceProcess(payload).pipe(
-  map((res: any) => {
-    this.fnfAttendanceProcess = res.data.map(data => ({
-      ...data 
-    }));
-    return this.fnfAttendanceProcess;
-  }),
-);
+    return this.attendanceService.getfnfAttendanceProcess(payload).pipe(
+      map((res: any) => {
+        this.fnfAttendanceProcess = res.data.map(data => ({
+          ...data
+        }));
+        return this.fnfAttendanceProcess;
+      }),
+    );
   }
 
   onFnF_userChange() {

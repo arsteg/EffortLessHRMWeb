@@ -34,10 +34,10 @@ export class UpdateApplicationComponent {
     this.leaveUpdateStatus = this.leaveService.leave.getValue();
     let id = this.leaveService.leave.getValue()._id;
     let payload = {
-      employee: this.leaveUpdateStatus.employee,
+      employee: this.leaveUpdateStatus.employeeId,
       leaveCatgeory: this.leaveUpdateStatus.leaveCategory,
-      startTime: this.leaveUpdateStatus.startTime,
-      endTime: this.leaveUpdateStatus.endTime,
+      startDate: this.leaveUpdateStatus.startDate,
+      endDate: this.leaveUpdateStatus.endDate,
       durationInMinutes: this.leaveUpdateStatus.durationInMinutes,
       comments: this.leaveUpdateStatus.comments,
       status: this.leaveUpdateStatus.status,
@@ -47,7 +47,7 @@ export class UpdateApplicationComponent {
     }
     this.leaveService.updateLeaveApplication(id, payload).subscribe((res: any) => {
       this.shortLeaveRefreshed.emit();
-      this.dialogRef.close();
+      this.dialogRef.close(res);
     });
     this.shortLeaveRefreshed.emit();
   }

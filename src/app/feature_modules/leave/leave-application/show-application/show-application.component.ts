@@ -151,8 +151,7 @@ export class ShowApplicationComponent {
   }
 
   refreshLeaveApplicationTable(data: any) {
-    this.leaveApplication.data.push(data);
-    this.leaveApplication._updateChangeSubscription();
+    this.getLeaveApplication();
   }
 
   exportToCsv() {
@@ -225,7 +224,8 @@ export class ShowApplicationComponent {
             leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
-            leaveCount: leave?.calculatedLeaveDays
+            leaveCount: leave?.calculatedLeaveDays,
+            employeeId: leave?.employee?._id
           };
         });
         this.allData = this.leaveApplication.data;
@@ -235,17 +235,22 @@ export class ShowApplicationComponent {
     if (this.portalView === 'user' && this.tab === 1) {
       const employeeId = this.currentUser.id;
       this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).subscribe((res: any) => {
-       this.leaveApplication.data = res.data;
-        this.allData = res.data;
-        this.totalRecords = res.total;
-        this.leaveApplication.data = res.data.map((leave: any) => {
+        let filteredData = res.data;
+        if (this.status && this.status !== 'All') {
+          filteredData = res.data.filter((leave: any) => leave.status === this.status);
+        }
+       this.leaveApplication.data = filteredData;
+        this.allData = filteredData;
+        this.totalRecords = filteredData.total;
+        this.leaveApplication.data = filteredData.map((leave: any) => {
           return {
             ...leave,
             employee: leave.employee.firstName + ' ' + leave.employee.lastName,
             leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
-            leaveCount: leave?.calculatedLeaveDays
+            leaveCount: leave?.calculatedLeaveDays,
+            employeeId: leave?.employee?._id
           };
         });
         this.allData = this.leaveApplication.data;
@@ -255,17 +260,22 @@ export class ShowApplicationComponent {
     if (this.portalView === 'user' && this.tab === 5) {
       let payload = { skip: '', next: '' };
      this.leaveService.getLeaveApplicationByTeam(payload).subscribe((res: any) => {
-        this.leaveApplication.data = res.data;
-        this.allData = res.data;
+        let filteredData = res.data;
+        if (this.status && this.status !== 'All') {
+          filteredData = res.data.filter((leave: any) => leave.status === this.status);
+        }
+        this.leaveApplication.data = filteredData;
+        this.allData = filteredData;
         this.totalRecords = res.total;
-        this.leaveApplication.data = res.data.map((leave: any) => {
+        this.leaveApplication.data = filteredData.map((leave: any) => {
           return {
             ...leave,
             employee: leave.employee.firstName + ' ' + leave.employee.lastName,
             leaveCategory: leave?.leaveCategory?.label,
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
-            leaveCount: leave?.calculatedLeaveDays
+            leaveCount: leave?.calculatedLeaveDays,
+            employeeId: leave?.employee?._id
           };
         });
         this.allData = this.leaveApplication.data;
