@@ -90,23 +90,23 @@
           </td>
           <td *ngFor="let date of currentMonthDates; trackBy: trackByDate" class="text-center align-middle">
             <ng-container [ngSwitch]="getAttendanceStatus(user, date)">
-              <span *ngSwitchCase="'present'">
+              <span *ngSwitchCase="'present'" matTooltip="Present">
                 <span class="border-2 border-bottom border-success px-1">P</span>
               </span>
 
-              <span *ngSwitchCase="'leave'">
+              <span *ngSwitchCase="'leave'" matTooltip="On Leave">
                 <span class="border-2 border-bottom border-primary px-1">L</span>
               </span>
 
-              <span *ngSwitchCase="'holiday'">
+              <span *ngSwitchCase="'holiday'" matTooltip="Holiday">
                 <span class="border-2 border-bottom border-secondary px-1">H</span>
               </span>
 
-              <span *ngSwitchCase="'weeklyOff'">
+              <span *ngSwitchCase="'weeklyOff'" matTooltip="Weekly Off">
                 <span class="border-2 border-bottom border-dark px-1">W</span>
               </span>
 
-              <span *ngSwitchCase="'halfDay'">
+              <span *ngSwitchCase="'halfDay'" matTooltip="Half Day">
                 <span class="border-2 border-bottom border-info px-1">H</span>
 
               </span>
@@ -115,15 +115,15 @@
                 <span class="border-2 border-bottom border-warning px-1">IH</span>
               </span>
 
-              <span *ngSwitchCase="'notApplicable'">
+              <span *ngSwitchCase="'notApplicable'" matTooltip="Not applicable">
 
               </span>
 
-              <span *ngSwitchCase="'incomplete'">
+              <span *ngSwitchCase="'incomplete'" matTooltip="Incomplete Record">
                 <span class="border-2 border-bottom border-warning px-1">I</span>
               </span>
 
-              <span *ngSwitchDefault>
+              <span *ngSwitchDefault matTooltip="Absent">
                 <span class="border-2 border-bottom border-danger px-1">A</span>
               </span>
             </ng-container>
