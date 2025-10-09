@@ -60,7 +60,7 @@
         At least one day must be selected as Weekly Off.
       </mat-error>
    </div>
-    <div class="my-3">
+    <div class="my-3" *ngIf="false">
       <label class="mb-1">{{ 'attendance.at_weeklyOffHalfDay' | translate }}</label>
       <div class="d-flex flex-wrap gap-2">
         <mat-checkbox *ngFor="let halfDay of weekDays" color="primary"

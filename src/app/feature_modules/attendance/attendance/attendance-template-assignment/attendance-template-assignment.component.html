@@ -64,7 +64,7 @@
                 </mat-error>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="w-100">
+            <mat-form-field *ngIf="false" appearance="outline" class="w-100">
                 <mat-label>{{ 'attendance.ata_effective_date' | translate }}</mat-label>
                 <input matInput [matDatepicker]="picker" formControlName="effectiveFrom"  [min]="minDate" readonly>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -91,7 +91,7 @@
             <button mat-button type="reset" mat-dialog-close>
                 {{ 'attendance.ata_cancel' | translate }}
             </button>
-            <button mat-raised-button color="primary" type="submit" [disabled]="userHasTemplateError || !attendanceTemplateAssignmentForm.valid">
+            <button mat-raised-button color="primary" type="submit" [disabled]="userHasTemplateError">
                 {{ 'attendance.ata_add' | translate }}
             </button>
         </div>

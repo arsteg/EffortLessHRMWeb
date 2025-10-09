@@ -47,11 +47,11 @@ export class ShiftAssignmentsComponent {
       name: 'Shift',
       valueFn: (row: any) => row?.template.name
     },
-    {
-      key: 'startDate',
-      name: 'Start Date',
-      valueFn: (row: any) => new Date(row.startDate).toLocaleDateString()
-    },
+    // {
+    //   key: 'startDate',
+    //   name: 'Start Date',
+    //   valueFn: (row: any) => new Date(row.startDate).toLocaleDateString()
+    // },
     {
       key: 'actions',
       name: 'Action',
@@ -72,7 +72,7 @@ export class ShiftAssignmentsComponent {
     this.shiftForm = this.fb.group({
       template: ['', Validators.required],
       user: ['', Validators.required],
-      startDate: [null, [Validators.required, this.futureDateValidator()]]
+      startDate: [new Date(), [Validators.required, this.futureDateValidator()]]
     })
   }
   ngOnInit() {
@@ -198,6 +198,11 @@ export class ShiftAssignmentsComponent {
   }
 
   onSubmission() {
+    if(this.isSubmitting){
+      return;
+    }
+    this.isSubmitting = true;
+    
     if (this.shiftForm.valid) {
 
       if (!this.isEdit) {
@@ -215,11 +220,11 @@ export class ShiftAssignmentsComponent {
           this.isEdit = false;
         },
           err => {
+            this.isSubmitting = false;
             const errorMessage = err?.error?.message || err?.message || err 
             ||  this.translate.instant('attendance.templateAssignmentError')
             ;
             this.toast.error(errorMessage, this.translate.instant('common.error'));
-             this.isSubmitting = false;
           })
       }
       else if (this.isEdit) {
@@ -233,15 +238,16 @@ export class ShiftAssignmentsComponent {
           this.toast.success(this.translate.instant('attendance.sta_success.updated'), 'Succesfully')
         },
           err => {
+            this.isSubmitting = false;
             const errorMessage = err?.error?.message || err?.message || err 
             ||  this.translate.instant('attendance.update_failed')
             ;
             this.toast.error(errorMessage, this.translate.instant('common.error')); 
-            this.isSubmitting = false;
           })
       }
     }
     else {
+      this.isSubmitting = false;
       this.toast.error(this.translate.instant('attendance.sta_error.required_fields'))
       this.markFormGroupTouched(this.shiftForm);
     }

@@ -73,12 +73,12 @@ export class AttendanceTemplateAssignmentComponent {
             return firstName && lastName ? `${firstName} ${lastName}` : 'N/A';
           }
       },      
-      {
-        key: 'effectiveFrom',
-        name: 'Effective Date',
-        sortable: true,
-        valueFn: (row: any) => new Date(row.effectiveFrom).toLocaleDateString()
-      },
+      // {
+      //   key: 'effectiveFrom',
+      //   name: 'Effective Date',
+      //   sortable: true,
+      //   valueFn: (row: any) => new Date(row.effectiveFrom).toLocaleDateString()
+      // },
       {
         key: 'actions',
         name: 'Actions',
@@ -112,7 +112,7 @@ export class AttendanceTemplateAssignmentComponent {
     this.attendanceTemplateAssignmentForm = this.fb.group({
       employee: ['', Validators.required],
       attendanceTemplate: ['', Validators.required],
-      effectiveFrom: [, Validators.required],
+      effectiveFrom: [new Date(), Validators.required],
       primaryApprover: ['', Validators.required]
     });
     this.updateTemplateAssignForm = this.fb.group({
@@ -356,7 +356,7 @@ export class AttendanceTemplateAssignmentComponent {
         let payload = {
           employee: this.attendanceTemplateAssignmentForm.value.employee,
           attendanceTemplate: this.attendanceTemplateAssignmentForm.value.attendanceTemplate,
-          effectiveFrom: this.attendanceTemplateAssignmentForm.value.effectiveFrom,
+          effectiveFrom: new Date(), //this.attendanceTemplateAssignmentForm.value.effectiveFrom,
           primaryApprover: this.attendanceTemplateAssignmentForm.value.primaryApprover
         }
         if (this.templateById.approversType == 'template-wise' && this.templateById.approvalLevel == '2') {
