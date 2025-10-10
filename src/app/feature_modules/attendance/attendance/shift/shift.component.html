@@ -100,7 +100,7 @@
           <small class="text-danger">{{ 'attendance.shift.start_time_greater_than_end_time' | translate }}</small>
         </div>
 
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-6" *ngIf="false">
           <mat-form-field class="w-100">
             <mat-label>{{ 'attendance.shift.first_half_duration' | translate }}</mat-label>
             <input matInput type="number" formControlName="firstHalfDuration">
@@ -115,7 +115,7 @@
             </mat-error>
           </mat-form-field>
         </div>
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-6" *ngIf="false">
           <mat-form-field class="w-100">
             <mat-label>{{ 'attendance.shift.second_half_duration' | translate }}</mat-label>
             <input matInput type="number" formControlName="secondHalfDuration">
@@ -131,7 +131,7 @@
           </mat-form-field>
         </div>
 
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-6" *ngIf="false">
           <mat-form-field class="w-100">
             <mat-label>{{ 'attendance.shift.earliest_arrival' | translate }}</mat-label>
             <input matInput type="time" formControlName="earliestArrival">
@@ -145,7 +145,7 @@
             <small>{{ 'attendance.shift.earliest_arrival_after_start_time' | translate }}</small>
           </div>
         </div>
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-6" *ngIf="false">
           <mat-form-field class="w-100">
             <mat-label>{{ 'attendance.shift.latest_departure' | translate }}</mat-label>
             <input matInput type="time" formControlName="latestDeparture">
@@ -160,7 +160,7 @@
           </div>
         </div>
 
-        <div class="form-group my-2 col-md-12" *ngIf="shiftForm.get('shiftType')?.value === 'fixed time'">
+        <div class="form-group my-2 col-md-12" *ngIf="false && shiftForm.get('shiftType')?.value === 'fixed time'">
           <label class="small">{{ 'attendance.shift.is_late_coming_allowed' | translate }} <span
               class="text-danger">*</span></label>
           <div class="d-flex">
@@ -274,7 +274,7 @@
           </div>
         </div>
 
-        <div class="form-group my-2 col-md-12">
+        <div class="form-group my-2 col-md-12" *ngIf="false">
           <label class="small">{{ 'attendance.shift.is_early_going_allowed' | translate }} <span
               class="text-danger">*</span></label>
           <div class="d-flex">
@@ -377,7 +377,7 @@
           </mat-form-field>
         </div>
 
-        <div class="form-group my-2 col-md-6" *ngIf="shiftForm.get('shiftType')?.value === 'flexi'">
+        <div class="form-group my-2 col-md-6" *ngIf="false && shiftForm.get('shiftType')?.value === 'flexi'">
           <mat-form-field class="w-100">
             <mat-label>{{ 'attendance.shift.max_late_coming_minutes' | translate }}</mat-label>
             <input matInput type="number" formControlName="maxLateComingAllowedMinutesFirstHalfAttendance">
@@ -399,7 +399,7 @@
       <button mat-flat-button (click)="closeModal()" mat-dialog-close="">
         {{ 'attendance.shift.cancel' | translate }}
       </button>
-      <button mat-flat-button color="primary" type="submit" [disabled]="!shiftForm.valid">
+      <button mat-flat-button color="primary" type="submit">
         {{ (isEdit ? 'attendance.shift.update' : 'attendance.shift.save') | translate }}
       </button>
     </div>

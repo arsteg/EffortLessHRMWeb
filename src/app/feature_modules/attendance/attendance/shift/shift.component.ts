@@ -66,10 +66,10 @@ export class ShiftComponent {
       startTime: ['10:00', Validators.required], // Default to 10 AM
       endTime: ['18:00', Validators.required], // Default to 6 PM
       minHoursPerDayToGetCreditForFullDay: ['', [Validators.required, Validators.min(1), Validators.max(8), CustomValidators.minHoursFullDayValidator()]], 
-      earliestArrival: ['', Validators.required],
-      latestDeparture: ['', Validators.required],
-      firstHalfDuration: ['', [Validators.required, Validators.min(0)]], // Added min
-      secondHalfDuration: ['', [Validators.required, Validators.min(0)]], // Added min
+      earliestArrival: ['10:00', Validators.required], //currently not in use
+      latestDeparture: ['19:00', Validators.required], //currently not in use
+      firstHalfDuration: ['4', [Validators.required, Validators.min(0)]], //currently not in use
+      secondHalfDuration: ['4', [Validators.required, Validators.min(0)]], //currently not in use
       company: [''],
       isLateComingAllowed: [false],
       noOfDaysLateComing: [0],
@@ -283,10 +283,10 @@ export class ShiftComponent {
       startTime: '10:00', // Default to 10 AM
       endTime: '18:00', // Default to 6 PM
       minHoursPerDayToGetCreditForFullDay: '',
-      earliestArrival: '',
-      latestDeparture: '',
-      firstHalfDuration: '',
-      secondHalfDuration: '',
+      earliestArrival: '10:00',//not in use
+      latestDeparture: '21:00',//not in use
+      firstHalfDuration: '4',//not in use
+      secondHalfDuration: '4',//not in use
       company: '',
       isLateComingAllowed: false,
       noOfDaysLateComing: 0,
@@ -371,7 +371,8 @@ export class ShiftComponent {
             this.translate.instant('attendance.successShiftCreate'),
             this.translate.instant('common.success')
           );
-          this.shiftForm.reset();
+          //this.shiftForm.reset();
+          this.closeModal();
         }, (err) => {         
           const errorMessage = err?.error?.message || err?.message || err 
           ||  this.translate.instant('attendance.createShiftError')
@@ -388,7 +389,8 @@ export class ShiftComponent {
             this.translate.instant('attendance.successShiftUpdate'),
             this.translate.instant('common.success')
           );
-          this.shiftForm.reset();
+          //this.shiftForm.reset();
+          this.closeModal();
         }, (err) => {         
           const errorMessage = err?.error?.message || err?.message || err 
           ||  this.translate.instant('attendance.updateShiftError')

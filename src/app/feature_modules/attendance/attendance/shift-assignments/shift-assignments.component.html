@@ -76,7 +76,7 @@
           </mat-form-field>
         </div>
 
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-6" *ngIf="false">
           <mat-form-field class="w-100">
             <mat-label>{{ 'attendance.sta_start_date' | translate }}</mat-label>
             <input matInput [matDatepicker]="picker" formControlName="startDate">

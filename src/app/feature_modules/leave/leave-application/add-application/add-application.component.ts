@@ -284,7 +284,6 @@ export class AddApplicationComponent implements OnDestroy {
 
       this.updateMinDate(new Date());
       this.handleLeaveCategoryChange();
-      this.formSubmitted = false;
     });
 
     if (this.portalView === 'admin' || (this.portalView === 'user' && this.tabIndex === 5)) {
@@ -330,7 +329,6 @@ export class AddApplicationComponent implements OnDestroy {
         // Update form validators after reset
         this.updateFormValidators();
         this.updateAttachmentValidation();
-        this.formSubmitted = false;
 
         setTimeout(() => {
           this.isResettingForm = false;
@@ -879,10 +877,14 @@ export class AddApplicationComponent implements OnDestroy {
     }, 100);
   }
   onSubmission() {
-    // this.formSubmitted = true;
+    if(this.formSubmitted){
+      return; // Prevent multiple submissions
+    }
+    this.formSubmitted = true;
     console.log(this.leaveApplication.value);
     if (this.leaveApplication.invalid || this.leaveApplication.hasError('maxLeaveLimitExceeded') || this.leaveApplication.hasError('maxLeaveLimitExceeded')) {
       this.leaveApplication.markAllAsTouched();
+      this.formSubmitted = false;
       return;
     }
 
@@ -890,6 +892,7 @@ export class AddApplicationComponent implements OnDestroy {
     if (this.documentMandatory && (!this.selectedFiles || this.selectedFiles.length === 0)) {
       this.leaveApplication.get('leaveApplicationAttachments')?.markAsTouched();
       this.toast.error(this.translate.instant('leave.attachmentRequired'));
+      this.formSubmitted = false;
       return;
     }
 
@@ -904,6 +907,7 @@ export class AddApplicationComponent implements OnDestroy {
       if (daysDiff < this.minimumNumberOfDaysAllowed) {
         this.leaveApplication.get('endDate')?.markAsTouched();
         this.toast.error(`Minimum ${this.minimumNumberOfDaysAllowed} days required for this leave category.`);
+        this.formSubmitted = false;
         return;
       }
     }
@@ -924,6 +928,7 @@ export class AddApplicationComponent implements OnDestroy {
     console.log(leaveApplicationPayload);
     if (this.leaveApplication.hasError('duplicateLeave')) {
       this.toast.error(this.translate.instant('leave.duplicateLeaveError'));
+      this.formSubmitted = false;
       return;
     }
     if (!this.selectedFiles || this.selectedFiles.length === 0) {
@@ -933,6 +938,7 @@ export class AddApplicationComponent implements OnDestroy {
         leaveApplicationPayload.leaveApplicationAttachments = attachments;
         this.submitLeaveApplication(leaveApplicationPayload);
       }).catch(error => {
+        this.formSubmitted = false;
         this.toast.error(this.translate.instant('leave.fileProcessingError') + ': ' + error.message);
       });
     }
@@ -983,10 +989,12 @@ export class AddApplicationComponent implements OnDestroy {
           this.toast.warning(res.message);
         }
         this.closeModal()
+        this.formSubmitted = false;
         // this.leaveApplicationRefreshed.emit(res.data);
         // this.resetForm();
       },
       error: (error) => {
+        this.formSubmitted = false;
         const errorMessage = error || this.translate.instant('leave.errorAddLeaveGeneric');
         this.toast.error(errorMessage);
       }
@@ -997,12 +1005,32 @@ export class AddApplicationComponent implements OnDestroy {
     const newFiles: FileList = event.target.files;
     if (newFiles) {
       const previousFiles = this.selectedFiles || [];
-      this.selectedFiles = previousFiles.concat(Array.from(newFiles));
+      const validFiles: File[] = [];
+      Array.from(newFiles).forEach(file => {
+        if (file.size > 5 * 1024 * 1024) {
+          this.toast.error(this.translate.instant('leave.fileSizeExceeded') || 'File size should not exceed 5MB.');
+        } else {
+          validFiles.push(file);
+        }
+      });
+      this.selectedFiles = previousFiles.concat(validFiles);
       this.leaveApplication.get('leaveApplicationAttachments')?.setValue(this.selectedFiles.length > 0 ? 'files_selected' : '');
       this.leaveApplication.get('leaveApplicationAttachments')?.updateValueAndValidity();
       event.target.value = '';
     }
   }
+
+  // onFileSelected(event: any) {
+  //   debugger;
+  //   const newFiles: FileList = event.target.files;
+  //   if (newFiles) {
+  //     const previousFiles = this.selectedFiles || [];
+  //     this.selectedFiles = previousFiles.concat(Array.from(newFiles));
+  //     this.leaveApplication.get('leaveApplicationAttachments')?.setValue(this.selectedFiles.length > 0 ? 'files_selected' : '');
+  //     this.leaveApplication.get('leaveApplicationAttachments')?.updateValueAndValidity();
+  //     event.target.value = '';
+  //   }
+  // }
   removeFile(index: number) {
     if (index !== -1) {
       this.selectedFiles.splice(index, 1);

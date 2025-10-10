@@ -282,6 +282,9 @@ export class GeneralTemplateSettingsComponent {
     this.addTemplateForm.updateValueAndValidity();
   console.log(this.addTemplateForm.valid);
     if (this.addTemplateForm.valid) {
+      if(this.submitted){
+        return; // Prevent multiple submissions
+      }
       this.submitted = true;
 
       this.addTemplateForm.value.leveCategoryHierarchyForAbsentHalfDay = this.selectedCategory;
