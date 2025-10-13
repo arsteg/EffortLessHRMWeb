@@ -13,9 +13,9 @@
             <td mat-cell *matCellDef="let element"> {{element?.PayrollFNFUser?.user?.firstName +  ' ' + element?.PayrollFNFUser?.user?.lastName  || 'No User Specified'}} </td>
         </ng-container>
 
-        <ng-container matColumnDef="totalOvertime">
+        <ng-container matColumnDef="manualArrears">
             <th mat-header-cell *matHeaderCellDef> Manual Arrears </th>
-            <td mat-cell *matCellDef="let element"> {{element?.totalOvertime}} </td>
+            <td mat-cell *matCellDef="let element"> {{element?.manualArrears?.totalArrears}} </td>
         </ng-container>
 
         <ng-container matColumnDef="totalFixedAllowance">

@@ -48,7 +48,7 @@ export class FNFStep9Component {
   dialogRef: any;
   displayedColumns = [
     'PayrollUsers',
-    'totalOvertime',
+    'manualArrears',
     'totalFixedAllowance',
     'totalFixedDeduction',
     'totalLoanRepayment',   
@@ -68,7 +68,6 @@ export class FNFStep9Component {
   ) { }
 
   ngOnInit() {
-    console.log(this.selectedPayroll);
     this.getFNFPayrollStatus();
     this.getGeneratedPayroll();
     this.payrollService.allUsers.subscribe(res => {

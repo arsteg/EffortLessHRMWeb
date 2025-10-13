@@ -48,7 +48,6 @@ export class FNFStep5Component implements OnInit {
       loanCategories: this.getLoanAdvanceCategory(),
       loanAdvances: this.fetchLoanAdvances(this.selectedFnF)
     }).subscribe((results) => {
-      // Handle the results of both observables
       this.loanCategories = results.loanCategories;
       this.loanAdvances.data = results.loanAdvances;
     },
