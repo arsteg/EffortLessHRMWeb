@@ -19,7 +19,7 @@ export class FNFStep3Component implements OnInit {
   manualArrears = new MatTableDataSource<any>();
   manualArrearForm: FormGroup;
   selectedManualArrear: any;
-  salaryPerDay : any; // or fetch dynamically if needed
+  salaryPerDay : any;
   isEdit: boolean = false;
   selectedFNFUser: any;
   @Input() settledUsers: any[];
