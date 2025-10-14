@@ -84,7 +84,7 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
       name: 'Check Out',
     },
     {
-      key: 'duration',
+      key: 'durationFormatted',
       name: 'Duration'
     },
     {
@@ -113,11 +113,15 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
     this.attendanceService.getAttendanceRecordsByMonthByUser(payload).subscribe({
       next: (res: any) => {
         this.attendanceRecords = res.data.map((record: any) => {
+          const durationMinutes = record.duration || 0;
+          const hours = Math.floor(durationMinutes / 60);
+          const minutes = Math.round(durationMinutes % 60);
           return {
             ...record,
             date: this.datePipe.transform(record.date, 'MMM d, yyyy'),
             duration: (record.duration / 60).toFixed(2),
-            deviationHour: record.deviationHour ? (record.deviationHour / 60) : '0'
+            deviationHour: record.deviationHour ? (record.deviationHour / 60) : '0',
+            durationFormatted: `${hours}h ${minutes}m`
           };
         });
 

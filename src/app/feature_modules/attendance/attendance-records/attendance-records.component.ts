@@ -1,6 +1,6 @@
-import { Component, TrackByFunction, OnInit } from '@angular/core';
+import { Component, TrackByFunction, OnInit, ViewChild, TemplateRef, ElementRef } from '@angular/core';
 import * as moment from 'moment';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from 'src/app/_services/common.Service';
 import { EmployeeAttendanceHistoryComponent } from './employee-attendance-history/employee-attendance-history.component';
@@ -39,6 +39,15 @@ export class AttendanceRecordsComponent implements OnInit {
   selectedUser: any;
   attendanceData: any[] = [];
   shifts: any[];
+
+  @ViewChild('uploadPopup') uploadPopup!: TemplateRef<any>;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  //showUploadPopup = false;
+  uploadedRecords: any[] = [];
+  processing = false;
+  displayedColumns: string[] = ['select', 'EmpCode', 'Date', 'StartTime', 'EndTime', 'Status'];
+  selectAll = true;
+  dialogRef: MatDialogRef<any> | null = null;
 
   months = [
     { name: 'January', value: 1 }, { name: 'February', value: 2 }, { name: 'March', value: 3 },
@@ -240,14 +249,24 @@ export class AttendanceRecordsComponent implements OnInit {
 
     if (shiftAssignment) {
       const fullDayDuration = shiftAssignment?.template?.minHoursPerDayToGetCreditForFullDay * 60;
-      const halfDayDuration = this.parseHoursToMinutes(shiftAssignment?.template?.minHoursPerDayToGetCreditforHalfDay);
+      const halfDayDuration = shiftAssignment?.template?.minHoursPerDayToGetCreditforHalfDay * 60;
+      const isHalfDayApplicable = !!shiftAssignment?.template?.isHalfDayApplicable;
 
-      if (attendance.duration >= fullDayDuration) {
+      if (attendance.duration == 0){
+        return 'absent'
+      }
+      else if (attendance.duration >= fullDayDuration) {
         return 'present';
-      } else if (attendance.duration >= halfDayDuration) {
-        return 'halfDay';
-      } else {
-        return 'incomplete halfDay';
+      } 
+      else if (isHalfDayApplicable) {
+        if (attendance.duration >= halfDayDuration) {
+          return 'halfDay';
+        } else {
+          return 'incomplete halfDay';
+        }
+      }
+      else {
+        return 'incomplete';
       }
     }
     // Default return if none of the above conditions are met
@@ -391,7 +410,7 @@ validateAttendanceUploadLock(): Promise<boolean> {
 }
 
 
- async uploadAttendance(event: any) {
+ async uploadAttendanceBackup(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -566,5 +585,140 @@ validateAttendanceUploadLock(): Promise<boolean> {
         this.fetchAndUpdateData();
       }
     });
+  }
+
+  isAllSelected(): boolean {
+    return this.uploadedRecords.every(r => r.selected);
+  }
+
+  isSomeSelected(): boolean {
+    const selectedCount = this.uploadedRecords.filter(r => r.selected).length;
+    return selectedCount > 0 && selectedCount < this.uploadedRecords.length;
+  }
+
+  toggleSelectAll(event: any) {
+    this.uploadedRecords.forEach(record => (record.selected = event.checked));
+  }
+
+  hasSelectedRecords(): boolean {
+    return this.uploadedRecords.some(r => r.selected);
+  }
+
+  async uploadAttendance(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const allowedExtensions = ['xlsx', 'xls'];
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+      this.toast.error(this.translate.instant('attendance.invalid_file_type'));
+      return;
+    }
+
+    const isAttendanceValid = await this.validateAttendanceUploadLock();
+    if (isAttendanceValid) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+
+      const expectedSheetName = this.translate.instant('attendance.sheet_names.data');
+      const defaultHeaders = this.translate.instant('attendance.default_headers');
+      const expectedHeaders: string[] = Object.keys(defaultHeaders[0]);
+
+      if (!workbook.SheetNames.includes(expectedSheetName)) {
+        this.toast.error(this.translate.instant('attendance.sheet_not_found'));
+        return;
+      }
+
+      const worksheet = workbook.Sheets[expectedSheetName];
+      const parsedData: any[] = XLSX.utils.sheet_to_json(worksheet, {
+        defval: '', raw: false
+      });
+
+      const cleanedData = parsedData.filter(row =>
+        Object.values(row).some(cell => String(cell).trim() !== '')
+      );
+
+      if (cleanedData.length === 0) {
+        this.toast.warning(this.translate.instant('attendance.excel_empty_or_invalid'));
+        return;
+      }
+
+      const fileHeaders = Object.keys(cleanedData[0]);
+      const allHeadersPresent = expectedHeaders.every(h => fileHeaders.includes(h));
+      if (!allHeadersPresent) {
+        this.toast.error(this.translate.instant('attendance.invalid_headers'));
+        return;
+      }
+
+      // Store records and add status field
+      this.uploadedRecords = cleanedData.map(record => ({ ...record, status: '', selected: true }));
+
+      // Open the dialog with the ng-template
+      this.dialogRef = this.dialog.open(this.uploadPopup, {
+        width: '80%',
+        height: '80%',
+        disableClose: true,
+      });
+
+      this.dialogRef.afterClosed().subscribe(result => {
+        if (this.fileInput && this.fileInput.nativeElement) {
+          console.log('Resetting file input'); // Debug log
+          this.fileInput.nativeElement.value = '';
+        }
+        this.fetchAndUpdateData();
+        this.uploadedRecords = []; // Clear records after closing
+      });
+    };
+
+    reader.readAsArrayBuffer(file);
+  }
+
+  confirmBeforeClose(): void {
+    if(this.processing) {
+      this.toast.info('Please wait until the current processing is complete.');
+      //const confirmClose = confirm('Uploading process will be stopped if you close. Are you sure you want to close?');
+      // if (confirmClose) {
+      //   this.dialog.closeAll();
+      // }
+    }
+    else{
+      this.dialog.closeAll();
+    }
+  }
+
+  async processRecords() {
+    this.processing = true;
+    const selectedRecords = this.uploadedRecords.filter(r => r.selected);
+    if (selectedRecords.length === 0) {
+      this.toast.warning('Please select at least one record to process.');
+      this.processing = false;
+      return;
+    }
+
+    for (let i = 0; i < selectedRecords.length; i++) {
+      const record = selectedRecords[i];
+      record.status = 'Processing...';
+
+      try {
+        const response: any = await this.attendanceService.uploadAttendanceRecords(record).toPromise();
+
+        record.status = response?.status === 'Success'
+          ? 'Success'
+          : response?.message || 'Unknown error';
+      } catch (error) {
+        record.status = error?.error?.message || error || 'Failed';
+      }
+
+      // Force UI refresh
+      this.uploadedRecords = [...this.uploadedRecords];
+    }
+
+    this.processing = false;
   }
 }

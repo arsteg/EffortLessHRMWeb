@@ -133,3 +133,65 @@
     </table>
   </div>
 </div>
+
+<ng-template #uploadPopup let-dialogRef="dialogRef">
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>Uploaded Attendance Records</h1>
+    <button type="button" class="me-3" mat-icon-button (click)="confirmBeforeClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content>
+    <table mat-table [dataSource]="uploadedRecords">
+
+      <!-- Select Checkbox Column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox color="primary"
+            [(ngModel)]="selectAll"
+            (change)="toggleSelectAll($event)"
+          ></mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let record">
+          <mat-checkbox color="primary" [(ngModel)]="record.selected"></mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="EmpCode">
+        <th mat-header-cell *matHeaderCellDef> EmpCode </th>
+        <td mat-cell *matCellDef="let record"> {{ record.EmpCode }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Date">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let record"> {{ record.Date }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="StartTime">
+        <th mat-header-cell *matHeaderCellDef> StartTime </th>
+        <td mat-cell *matCellDef="let record"> {{ record.StartTime }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="EndTime">
+        <th mat-header-cell *matHeaderCellDef> EndTime </th>
+        <td mat-cell *matCellDef="let record"> {{ record.EndTime }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let record"> {{ record.status || 'Pending' }} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-dialog-content>
+
+  <div class="d-flex justify-content-between mt-3" mat-dialog-actions>
+    <button mat-flat-button class="mx-2" (click)="confirmBeforeClose()">Cancel</button>
+    <button mat-flat-button color="primary" (click)="processRecords()" [disabled]="processing">
+      Process
+    </button>
+  </div>
+</ng-template>
