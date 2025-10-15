@@ -38,7 +38,7 @@ export class FNFStep1Component implements OnInit {
       payrollFNFUser: ['', Validators.required],
       payrollFnf: [''],
       totalDays: [{ value: 0, disabled: true }, Validators.required],
-      lopDays:   [{ value: 0, disabled: true }, Validators.required],
+      lopDays: [{ value: 0, disabled: true }, Validators.required],
       payableDays: [{ value: 0, disabled: true }, Validators.required],
       leaveEncashmentDays: [0, Validators.required],
       leaveBalance: [0, Validators.required],
@@ -51,17 +51,17 @@ export class FNFStep1Component implements OnInit {
   ngOnInit(): void {
     this.fetchAttendanceSummary(this.selectedFnF);
     this.attendanceSummaryForm.get('payableDays').valueChanges.subscribe(() => this.updateAdjustedPayableDays());
-  this.attendanceSummaryForm.get('leaveEncashmentDays').valueChanges.subscribe(() => this.updateAdjustedPayableDays());
-  this.attendanceSummaryForm.get('leaveBalance').valueChanges.subscribe(() => this.updateAdjustedPayableDays());
+    this.attendanceSummaryForm.get('leaveEncashmentDays').valueChanges.subscribe(() => this.updateAdjustedPayableDays());
+    this.attendanceSummaryForm.get('leaveBalance').valueChanges.subscribe(() => this.updateAdjustedPayableDays());
   }
 
   private updateAdjustedPayableDays(): void {
     const payableDays = Number(this.attendanceSummaryForm.get('payableDays').value) || 0;
     const leaveEncashmentDays = Number(this.attendanceSummaryForm.get('leaveEncashmentDays').value) || 0;
     const leaveBalance = Number(this.attendanceSummaryForm.get('leaveBalance').value) || 0;
-  
+
     const adjustedPayableDays = payableDays + leaveEncashmentDays + leaveBalance;
-  
+
     this.attendanceSummaryForm.get('adjustedPayableDays').setValue(adjustedPayableDays, { emitEvent: false });
   }
   onUserChange(fnfUserId: string): void {
