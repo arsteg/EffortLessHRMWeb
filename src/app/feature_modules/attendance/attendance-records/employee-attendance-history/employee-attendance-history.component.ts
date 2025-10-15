@@ -88,7 +88,7 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
       name: 'Duration'
     },
     {
-      key: 'deviationHour',
+      key: 'deviationFormatted',
       name: 'Deviation Hours'
     },
     {
@@ -114,14 +114,18 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
       next: (res: any) => {
         this.attendanceRecords = res.data.map((record: any) => {
           const durationMinutes = record.duration || 0;
+          const deviationMinutes = record.deviationHour || 0;
           const hours = Math.floor(durationMinutes / 60);
           const minutes = Math.round(durationMinutes % 60);
+          const deviationHours = Math.floor(deviationMinutes / 60);
+          const deviationMins = Math.round(deviationMinutes % 60);
           return {
             ...record,
             date: this.datePipe.transform(record.date, 'MMM d, yyyy'),
             duration: (record.duration / 60).toFixed(2),
             deviationHour: record.deviationHour ? (record.deviationHour / 60) : '0',
-            durationFormatted: `${hours}h ${minutes}m`
+            durationFormatted: `${hours}h ${minutes}m`,
+            deviationFormatted: `${deviationHours}h ${deviationMins}m`
           };
         });
 

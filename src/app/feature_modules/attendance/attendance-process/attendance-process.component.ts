@@ -200,8 +200,9 @@ export class AttendanceProcessComponent {
         forkJoin([
           this.commonService.populateUsers().subscribe(usersResult => {
             this.allAssignee = usersResult && usersResult.data && usersResult.data.data;
+            this.getProcessAttendance();
           }),
-          this.getProcessAttendance()
+          //this.getProcessAttendance()
         ]).subscribe(() => { });
 
       } else if (this.activeTab === 'fnfattendanceProcess') {
@@ -612,8 +613,8 @@ export class AttendanceProcessComponent {
         return {
           ...data,
           users: (data.users || [])
-            .filter(user => user?.user?.trim()) // Remove null, undefined, or empty strings (with spaces trimmed)
-            .map(user => this.getUser(user.user)),
+            .filter(user => user?.user && user?.user?._id) // Remove null, undefined, or empty strings (with spaces trimmed)
+            .map(user => this.getUser(user?.user?._id))
         };
       });
     })
