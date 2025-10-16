@@ -168,7 +168,7 @@ export class FNFStep5Component implements OnInit {
       this.loanAdvanceForm.get('payrollFNFUser').enable();
       if (this.isEdit) {
         this.loanAdvanceForm.patchValue({
-          payrollFNFUser: this.selectedLoanAdvance.payrollFNFUser,
+          payrollFNFUser: this.selectedLoanAdvance.payrollFNFUser
         });
 
         this.payrollService.updateFnFLoanAdvance(this.selectedLoanAdvance._id, this.loanAdvanceForm.value).subscribe(
@@ -216,7 +216,7 @@ export class FNFStep5Component implements OnInit {
             this.dialog.closeAll();
           },
           (error: any) => {
-            this.toast.error('Failed to add Loan Advance', 'Error');
+            this.toast.error(error);
           }
         );
       }
