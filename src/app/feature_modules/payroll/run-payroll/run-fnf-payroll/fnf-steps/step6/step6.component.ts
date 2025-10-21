@@ -6,6 +6,7 @@ import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { forkJoin, map, catchError } from 'rxjs';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-step6',
@@ -13,26 +14,52 @@ import { forkJoin, map, catchError } from 'rxjs';
   styleUrls: ['./step6.component.css']
 })
 export class FNFStep6Component implements OnInit {
-  displayedColumns: string[] = [
-    'userName',
-    'GratuityAmount',
-    'ProvidentFundAmount',
-    'ProvidentFundPaymentProcess',
-    'IsProvidentFundWithdrawFormSubmitted',
-    'actions'
-  ];
-
   statutoryBenefits = new MatTableDataSource<any>();
   statutoryBenefitForm: FormGroup;
   selectedStatutoryBenefit: any;
   isEdit: boolean = false;
   selectedFNFUser: any;
-
   @Input() settledUsers: any[] = [];
   @Input() isSteps: boolean = false;
   @Input() selectedFnF: any;
-
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+
+  columns: TableColumn[] = [
+    {
+      key: 'userName',
+      name: 'Payroll User',
+      valueFn: (row) => row.userName || 'Not specified'
+    },
+    {
+      key: 'GratuityAmount',
+      name: 'Gratuity Amount',
+      valueFn: (row) => row.GratuityAmount
+    },
+    {
+      key: 'ProvidentFundAmount',
+      name: 'Provident Fund Amount',
+      valueFn: (row) => row.ProvidentFundAmount
+    },
+    {
+      key: 'ProvidentFundPaymentProcess',
+      name: 'Provident Fund Payment Process',
+      valueFn: (row) => row.ProvidentFundPaymentProcess
+    },
+    {
+      key: 'IsProvidentFundWithdrawFormSubmitted',
+      name: 'Provident Fund Withdraw Form',
+      valueFn: (row) => row.IsProvidentFundWithdrawFormSubmitted ? 'Yes' : 'No'
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      isAction: true,
+      options: [
+        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit', hideCondition: (row) => false },
+        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
+      ]
+    }
+  ];
 
   constructor(
     private fb: FormBuilder,
@@ -50,7 +77,6 @@ export class FNFStep6Component implements OnInit {
   }
 
   ngOnInit(): void {
-    // 👇 Auto fetch on load
     forkJoin({
       statutoryBenefits: this.fetchStatutoryBenefits(this.selectedFnF)
     }).subscribe({
@@ -61,32 +87,20 @@ export class FNFStep6Component implements OnInit {
         console.error('Error while loading statutory benefits:', error);
       }
     });
-
-    // Reset form on init (like step 2)
-    this.resetForm();
-  }
-
-  resetForm(): void {
-    this.statutoryBenefitForm.reset({
-      payrollFNFUser: '',
-      GratuityAmount: 0,
-      ProvidentFundAmount: 0,
-      ProvidentFundPaymentProcess: '',
-      IsProvidentFundWithdrawFormSubmitted: false
-    });
   }
 
   fetchStatutoryBenefits(fnfPayroll: any) {
     return this.payrollService.getFnFStatutoryBenefitByPayrollFnF(fnfPayroll?._id).pipe(
       map((res: any) => {
-        const data = res.data.map((item: any) => {
+        return res.data.map((item: any) => {
           const matchedUser = this.selectedFnF.userList.find(
             (user: any) => user._id === item.payrollFNFUser
           );
-          item.userName = this.getMatchedSettledUser(matchedUser.user);
-          return item;
+          return {
+            ...item,
+            userName: this.getMatchedSettledUser(matchedUser?.user || '')
+          };
         });
-        return data;
       }),
       catchError((error) => {
         this.toast.error('Failed to fetch Statutory Benefits', 'Error');
@@ -95,21 +109,39 @@ export class FNFStep6Component implements OnInit {
     );
   }
 
+  getMatchedSettledUser(userId: string) {
+    const matchedUser = this.settledUsers?.find((user) => user?._id === userId);
+    return matchedUser ? `${matchedUser.firstName} ${matchedUser.lastName}` : 'Not specified';
+  }
+
   onUserChange(fnfUserId: string): void {
     this.selectedFNFUser = fnfUserId;
+    this.statutoryBenefitForm.patchValue({
+      payrollFNFUser: this.getMatchedSettledUser(fnfUserId)
+    });
     this.getTotalPFAmountByUser(fnfUserId);
     this.getTotalGratuityAmountByUser(fnfUserId);
   }
 
   getTotalPFAmountByUser(userId: string): void {
-    this.payrollService.getTotalPFAmountByUser(userId).subscribe((res: any) => {
-      this.statutoryBenefitForm.patchValue({ ProvidentFundAmount: res.data });
+    this.payrollService.getTotalPFAmountByUser(userId).subscribe({
+      next: (res: any) => {
+        this.statutoryBenefitForm.patchValue({ ProvidentFundAmount: res.data });
+      },
+      error: () => {
+        this.toast.error('Failed to fetch Provident Fund Amount', 'Error');
+      }
     });
   }
 
   getTotalGratuityAmountByUser(userId: string): void {
-    this.payrollService.getTotalGratuityAmountByUser(userId).subscribe((res: any) => {
-      this.statutoryBenefitForm.patchValue({ GratuityAmount: res.data });
+    this.payrollService.getTotalGratuityAmountByUser(userId).subscribe({
+      next: (res: any) => {
+        this.statutoryBenefitForm.patchValue({ GratuityAmount: res.data });
+      },
+      error: () => {
+        this.toast.error('Failed to fetch Gratuity Amount', 'Error');
+      }
     });
   }
 
@@ -128,6 +160,7 @@ export class FNFStep6Component implements OnInit {
   editStatutoryBenefit(benefit: any): void {
     this.isEdit = true;
     this.selectedStatutoryBenefit = benefit;
+    this.selectedFNFUser = benefit.payrollFNFUser; // Store for submission
 
     this.statutoryBenefitForm.patchValue({
       payrollFNFUser: benefit.userName,
@@ -138,6 +171,8 @@ export class FNFStep6Component implements OnInit {
     });
 
     this.statutoryBenefitForm.get('payrollFNFUser')?.disable();
+    this.getTotalPFAmountByUser(benefit.payrollFNFUser);
+    this.getTotalGratuityAmountByUser(benefit.payrollFNFUser);
     this.openDialog(true);
   }
 
@@ -147,42 +182,44 @@ export class FNFStep6Component implements OnInit {
     const matchedUser = this.selectedFnF.userList.find(
       (user: any) => user.user === this.selectedFNFUser
     );
-    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+    const payrollFNFUserId = matchedUser ? matchedUser._id : this.selectedStatutoryBenefit?.payrollFNFUser;
 
-    this.statutoryBenefitForm.patchValue({
+    const payload = {
+      ...this.statutoryBenefitForm.getRawValue(),
       payrollFNFUser: payrollFNFUserId
-    });
+    };
 
-    const formValue = this.statutoryBenefitForm.value;
-    if (this.isEdit) {
-      formValue.payrollFNFUser = this.selectedStatutoryBenefit.payrollFNFUser;
+    if (this.statutoryBenefitForm.valid) {
+      const request$ = this.isEdit
+        ? this.payrollService.updateFnFStatutoryBenefit(this.selectedStatutoryBenefit._id, payload)
+        : this.payrollService.addFnFStatutoryBenefit(payload);
+
+      request$.subscribe({
+        next: () => {
+          this.fetchStatutoryBenefits(this.selectedFnF).subscribe((data) => {
+            this.statutoryBenefits.data = data;
+          });
+          this.resetForm();
+          this.toast.success(`Statutory Benefit ${this.isEdit ? 'updated' : 'added'} successfully`, 'Success');
+          this.isEdit = false;
+          this.dialog.closeAll();
+        },
+        error: () => {
+          this.toast.error(`Failed to ${this.isEdit ? 'update' : 'add'} Statutory Benefit`, 'Error');
+        }
+      });
+    } else {
+      this.statutoryBenefitForm.markAllAsTouched();
     }
-    const request$ = this.isEdit
-      ? this.payrollService.updateFnFStatutoryBenefit(this.selectedStatutoryBenefit._id, formValue)
-      : this.payrollService.addFnFStatutoryBenefit(formValue);
+  }
 
-    request$.subscribe({
-      next: () => {
-
-        // 🔁 Refresh and reset form just like step 2
-        this.fetchStatutoryBenefits(this.selectedFnF).subscribe((data) => {
-          this.statutoryBenefits.data = data;
-        });
-        this.toast.success(
-          `Statutory Benefit ${this.isEdit ? 'updated' : 'added'} successfully`,
-          'Success'
-        );
-        this.statutoryBenefitForm.reset();
-        this.resetForm();
-        this.isEdit = false;
-        this.dialog.closeAll();
-      },
-      error: () => {
-        this.toast.error(
-          `Failed to ${this.isEdit ? 'update' : 'add'} Statutory Benefit`,
-          'Error'
-        );
-      }
+  resetForm(): void {
+    this.statutoryBenefitForm.reset({
+      payrollFNFUser: '',
+      GratuityAmount: 0,
+      ProvidentFundAmount: 0,
+      ProvidentFundPaymentProcess: '',
+      IsProvidentFundWithdrawFormSubmitted: false
     });
   }
 
@@ -192,16 +229,27 @@ export class FNFStep6Component implements OnInit {
     this.dialog.closeAll();
   }
 
+  onAction(event: any): void {
+    switch (event.action.label) {
+      case 'Edit':
+        this.editStatutoryBenefit(event.row);
+        break;
+      case 'Delete':
+        this.deleteFnF(event.row._id);
+        break;
+    }
+  }
+
   deleteFnF(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, { width: '400px' });
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'delete') {
         this.payrollService.deleteFnFStatutoryBenefit(id).subscribe({
           next: () => {
-            this.toast.success('Statutory Benefit Deleted', 'Success');
             this.fetchStatutoryBenefits(this.selectedFnF).subscribe((data) => {
               this.statutoryBenefits.data = data;
             });
+            this.toast.success('Statutory Benefit Deleted', 'Success');
           },
           error: () => {
             this.toast.error('Failed to delete Statutory Benefit', 'Error');
@@ -209,10 +257,5 @@ export class FNFStep6Component implements OnInit {
         });
       }
     });
-  }
-
-  getMatchedSettledUser(userId: string) {
-    const matchedUser = this.settledUsers?.find((user) => user?._id === userId);
-    return matchedUser ? `${matchedUser.firstName} ${matchedUser.lastName}` : 'Not specified';
   }
 }

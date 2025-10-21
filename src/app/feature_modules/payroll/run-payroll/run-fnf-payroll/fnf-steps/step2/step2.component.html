@@ -1,11 +1,13 @@
 <div class="border-top">
-    <div class="d-flex justify-content-between pt-2">
+    <div class="position-relative">
+        <div class="position-absolute end-0 d-flex mt-1 gap-2">
         <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF"
             (changeUser)="onUserChange($event)"></app-fnf-users>
         <div>
             <button mat-flat-button color="primary" (click)="openDialog(false)">Add Variable
                 Pay
             </button>
+        </div>
         </div>
     </div>
 
