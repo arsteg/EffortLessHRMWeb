@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
+import { TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-pf-charges',
@@ -14,12 +15,28 @@ export class PfChargesComponent {
   pfCharges: any;
   public sortOrder: string = '';
 
-  // Reference to the dialog template
   @ViewChild('pfChargeDialog') pfChargeDialog!: TemplateRef<any>;
 
-  // Reactive form for PF Charge
   pfChargeForm: FormGroup;
   users: any[] = [];
+
+  columns: TableColumn[] = [
+    {
+      key: 'name',
+      name: 'PF Charges Name',
+      valueFn: (row) => row.name || ''
+    },
+    {
+      key: 'frequency',
+      name: 'Frequency',
+      valueFn: (row) => row.frequency || ''
+    },
+    {
+      key: 'percentage',
+      name: 'Percentage',
+      valueFn: (row) => row.percentage || 0
+    }
+  ];
 
   constructor(
     private payroll: PayrollService,
@@ -27,7 +44,6 @@ export class PfChargesComponent {
     private fb: FormBuilder,
     private toast: ToastrService
   ) {
-    // Initialize the form
     this.pfChargeForm = this.fb.group({
       name: ['', Validators.required],
       frequency: ['annually', Validators.required],
@@ -45,26 +61,23 @@ export class PfChargesComponent {
     });
   }
 
-  // Open the dialog
   openDialog(): void {
     const dialogRef = this.dialog.open(this.pfChargeDialog, {
       width: '400px',
-      disableClose: true // Prevents closing by clicking outside the dialog
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      
     });
   }
 
-  // Handle form submission
   onSubmit(): void {
     if (this.pfChargeForm.valid) {
-      this.dialog.closeAll(); // Close the dialog
+      this.dialog.closeAll();
       this.payroll.addPFCharges(this.pfChargeForm.value).subscribe((res: any) => {
         this.toast.success('PF Charge added successfully');
-        this.loadPFCharges(); // Refresh the list
+        this.loadPFCharges();
       });
     }
   }

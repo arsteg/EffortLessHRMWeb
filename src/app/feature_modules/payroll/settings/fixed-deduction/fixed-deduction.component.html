@@ -1,68 +1,26 @@
-<div class="d-flex align-items-start justify-content-between pt-2 px-2">
-
-    <mat-form-field>
-        <mat-label>Search</mat-label>
-        <input matInput type="text" [(ngModel)]="tableService.searchText" (input)="tableService.applyFilter()">
-    </mat-form-field>
-
-    <button color="primary" mat-flat-button (click)="clearForm(); isEdit= false; open(modal)">{{'payroll.add'|
-        translate}}</button>
-
+<div class="position-relative">
+    <div class="position-absolute end-0 d-flex mt-1 gap-2">
+    <button color="primary" mat-flat-button (click)="clearForm(); isEdit= false; open(modal)">
+        {{'payroll.add' | translate}}
+    </button>
+    </div>
 </div>
-<table mat-table [dataSource]="tableService.dataSource" class="hrm-table" matSort>
-    <ng-container matColumnDef="label">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>
-            {{ 'payroll.fixed_deduction.table.deduction_name' | translate }}
-        </th>
-        <td mat-cell *matCellDef="let fixedContribution"> {{ fixedContribution?.label }} </td>
-    </ng-container>
-    <ng-container matColumnDef="eligibility">
-        <th mat-header-cell *matHeaderCellDef>
-            {{ 'payroll.fixed_deduction.table.deduction_eligilibity' | translate }}
-        </th>
-        <td mat-cell *matCellDef="let fixedContribution">
-            <mat-icon [class.text-success]="fixedContribution?.isEffectAttendanceOnEligibility"
-                [class.text-danger]="!fixedContribution?.isEffectAttendanceOnEligibility">
-                {{ fixedContribution?.isEffectAttendanceOnEligibility ? 'check' : 'cancel' }}
-            </mat-icon>
-        </td>
-    </ng-container>
-    <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>
-            {{ 'payroll.actions' | translate }}
-        </th>
-        <td mat-cell *matCellDef="let fixedContribution">
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item
-                    (click)="open(modal); selectedRecord = fixedContribution; isEdit= true; editRecord();">
-                    <mat-icon>edit</mat-icon>
-                    {{ 'payroll.edit' | translate }}
-                </button>
-                <button mat-menu-item (click)="deleteDialog(fixedContribution?._id)" class="delete-btn">
-                    <mat-icon>delete</mat-icon>
-                    {{ 'payroll.delete' | translate }}
-                </button>
-            </mat-menu>
-            <button mat-icon-button [matMenuTriggerFor]="menu"
-                [attr.aria-label]="'payroll.fixed_deduction.menu.actions_aria' | translate">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-        </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="['label', 'eligibility', 'actions']"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['label', 'eligibility', 'actions'];"></tr>
-</table>
-<mat-paginator [length]="tableService.totalRecords" [pageSize]="tableService.recordsPerPage"
-    [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
-</mat-paginator>
-
-
+<hrm-table
+    [data]="tableService.dataSource.data"
+    [columns]="columns"
+    [showSearch]="true"
+    [showPaginator]="true"
+    [pageSize]="tableService.recordsPerPage"
+    [pageSizeOptions]="[5, 10, 25, 50, 100]"
+    [totalItems]="tableService.totalRecords"
+    [isServerSide]="true"
+    (actionClicked)="onAction($event)"
+    (pageChanged)="onPageChange($event)"
+></hrm-table>
 
 <ng-template #modal>
     <h1 mat-dialog-title>
-        {{ (isEdit ? 'payroll.fixed_deduction.modal.update_title' : 'payroll.fixed_deduction.modal.add_title') |
-        translate }}
+        {{ (isEdit ? 'payroll.fixed_deduction.modal.update_title' : 'payroll.fixed_deduction.modal.add_title') | translate }}
     </h1>
     <form [formGroup]="fixedContributionForm" (ngSubmit)="onSubmission()">
         <div mat-dialog-content>
@@ -70,19 +28,20 @@
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'payroll.fixed_deduction.form.label' | translate }}</mat-label>
                     <input matInput type="text" formControlName="label"
-                        [placeholder]="'payroll.fixed_deduction.form.label_placeholder' | translate">                   
+                        [placeholder]="'payroll.fixed_deduction.form.label_placeholder' | translate">
                     <mat-error class="mb-3" *ngIf="!fixedContributionForm.get('label').valid && fixedContributionForm.get('label').touched">
-                        <span *ngIf="fixedContributionForm.get('label').errors?.['required']">{{ 'payroll.label_required' |
-                          translate }}</span>
-                        <span *ngIf="fixedContributionForm.get('label').errors?.['invalidName']">{{ 'payroll.label_name_invalid' |
-                          translate }}</span>   
-                            <span *ngIf="fixedContributionForm.get('label')?.errors?.['spacesNotAllowed']">      
-                                {{ 'payroll.spacenotallowed' | translate }}
-                              </span>                                    
-                      </mat-error>  
+                        <span *ngIf="fixedContributionForm.get('label').errors?.['required']">
+                            {{ 'payroll.label_required' | translate }}
+                        </span>
+                        <span *ngIf="fixedContributionForm.get('label').errors?.['invalidName']">
+                            {{ 'payroll.label_name_invalid' | translate }}
+                        </span>
+                        <span *ngIf="fixedContributionForm.get('label')?.errors?.['spacesNotAllowed']">
+                            {{ 'payroll.spacenotallowed' | translate }}
+                        </span>
+                    </mat-error>
                 </mat-form-field>
             </div>
-
             <div class="form-group">
                 <mat-slide-toggle formControlName="isEffectAttendanceOnEligibility">
                     {{ 'payroll.fixed_deduction.form.isEffectAttendanceOnEligibility' | translate }}
@@ -95,7 +54,7 @@
             </button>
             <button mat-flat-button type="submit" color="primary" [disabled]="isSubmitting">
                 {{ (isEdit ? 'payroll.update' : 'payroll.add') | translate }}
-            </button> 
+            </button>
         </div>
     </form>
 </ng-template>
