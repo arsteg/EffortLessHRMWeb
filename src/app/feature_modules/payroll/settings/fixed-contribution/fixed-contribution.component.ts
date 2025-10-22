@@ -2,6 +2,8 @@ import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { Offcanvas } from 'bootstrap';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-fixed-contribution',
   templateUrl: './fixed-contribution.component.html',
@@ -20,11 +22,11 @@ export class FixedContributionComponent {
   columns: TableColumn[] = [
     {
       key: 'shortName',
-      name: 'Label Name',
+      name: this.translate.instant('payroll.label_name') ,
     },
     {
       key: 'action',
-      name: 'Action',
+      name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
         { label: 'Edit', visibility: ActionVisibility.LABEL, icon: '' },
@@ -32,7 +34,9 @@ export class FixedContributionComponent {
     }
   ]
 
-  constructor(private payroll: PayrollService) { }
+  constructor(private payroll: PayrollService,
+    private translate: TranslateService
+  ) { }
 
   ngOnInit() {
     this.getFixedContribution();

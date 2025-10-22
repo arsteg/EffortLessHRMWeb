@@ -242,6 +242,7 @@
         "esic_fullname": "Employees State Insurance Contribution",
         "ceiling_amount": "Ceiling Amount",
         "contribution": "Contribution",
+        "fixed_contributions": "Fixed Contributions",
         "minimum_employee_count": "Minimum Employee Count",
         "gross_monthly_salary_limit": "Gross Monthly Salary Limit",
         "add_esic_ceiling_amount": "Add ESIC Ceiling Amount",
