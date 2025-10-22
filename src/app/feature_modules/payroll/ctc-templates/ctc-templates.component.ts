@@ -17,18 +17,27 @@ export class CtcTemplatesComponent implements OnInit {
   showTable = true;
   dataSource = new MatTableDataSource<any>();
   columns: TableColumn[] = [
-    { key: 'templateName', name: 'Template Name' },
-    { key: 'fixedAllowances', name: 'Fixed Allowances' },
-    { key: 'fixedDeductions', name: 'Fixed Deductions' },
-    { key: 'variableAllowances', name: 'Variable Allowances' },
-    { key: 'variableDeductions', name: 'Variable Deductions' },
+    { key: 'templateName', name: this.translate.instant('payroll._ctc_templates.table.template_name') },
+    { key: 'fixedAllowances', name: this.translate.instant('payroll._ctc_templates.table.fixed_allowances') },
+    { key: 'fixedDeductions', name: this.translate.instant('payroll._ctc_templates.table.fixed_deductions') },
+    { key: 'variableAllowances', name: this.translate.instant('payroll._ctc_templates.table.variable_allowances') },
+    { key: 'variableDeductions', name: this.translate.instant('payroll._ctc_templates.table.variable_deductions') },
     {
       key: 'action',
-      name: 'Actions',
+      name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
-        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH },
-        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass:'delete-btn' }
+        { 
+          label: this.translate.instant('payroll.edit'), 
+          icon: 'edit', 
+          visibility: ActionVisibility.BOTH 
+        },
+        { 
+          label: this.translate.instant('payroll.delete'), 
+          icon: 'delete', 
+          visibility: ActionVisibility.BOTH, 
+          cssClass: 'delete-btn' 
+        }
       ]
     }
   ];
@@ -65,7 +74,7 @@ export class CtcTemplatesComponent implements OnInit {
           // Ensure data matches column keys
           this.dataSource.data = res.data.map((item: any) => ({
             ...item,
-            templateName: item.name || 'Not Available',
+            templateName: item.name || this.translate.instant('payroll._ctc_templates.not_available'),
             fixedAllowances: item.ctcTemplateFixedAllowances?.length || '--',
             fixedDeductions: item.ctcTemplateFixedDeductions?.length || '--',
             variableAllowances: item.ctcTemplateVariableAllowances?.length || '--',
@@ -75,21 +84,23 @@ export class CtcTemplatesComponent implements OnInit {
           this.allData = structuredClone(this.dataSource.data);
         } else {
           this.dataSource.data = [];
-          this.toast.warning('No data received from server');
+          this.toast.warning(this.translate.instant('payroll._ctc_templates.toast.no_data'), 
+                            this.translate.instant('payroll._ctc_templates.title'));
         }
       },
       error: () => {
         this.dataSource.data = [];
-        this.toast.error('Failed to load CTC templates');
+        this.toast.error(this.translate.instant('payroll._ctc_templates.toast.error_fetch'), 
+                        this.translate.instant('payroll._ctc_templates.title'));
       }
     });
   }
 
   handleAction(event: any) {
-    if (event.action.label === 'Edit') {
+    if (event.action.label === this.translate.instant('payroll.edit')) {
       this.editTemplate(event.row);
     } 
-    if (event.action.label === 'Delete') {
+    if (event.action.label === this.translate.instant('payroll.delete')) {
       this.deleteDialog(event.row._id);
     }
   }
@@ -115,20 +126,17 @@ export class CtcTemplatesComponent implements OnInit {
     this.payrollService.deleteCTCTemplate(id).subscribe({
       next: () => {
         this.dataSource.data = this.dataSource.data.filter(item => item._id !== id);
-        this.translate.get([
-          'payroll._ctc_templates.toast.success_deleted'
-        ]).subscribe(translations => {
-          this.toast.success(
-            translations['payroll._ctc_templates.toast.success_deleted'],
-          );
-        });
-        this.loadCTCTemplates(); // Refresh data after deletion
+        this.allData = this.allData.filter(item => item._id !== id);
+        this.toast.success(
+          this.translate.instant('payroll._ctc_templates.toast.success_deleted'),
+          this.translate.instant('payroll._ctc_templates.title')
+        );
+        this.loadCTCTemplates();
       },
-      error: (err) => {       
-        const errorMessage = err?.error?.message || err?.message || err 
-        ||  this.translate.instant('payroll._ctc_templates.toast.error_delete')
-        ;
-        this.toast.error(errorMessage);
+      error: (err) => {
+        const errorMessage = err?.error?.message || err?.message || 
+                            this.translate.instant('payroll._ctc_templates.toast.error_delete');
+        this.toast.error(errorMessage, this.translate.instant('payroll._ctc_templates.title'));
       }
     });
   }
@@ -148,7 +156,9 @@ export class CtcTemplatesComponent implements OnInit {
 
   onSortChange(event: any) {
     const sorted = this.dataSource.data.slice().sort((a, b) => {
-      return event.direction === 'asc' ? (a > b ? 1 : -1) : (a < b ? 1 : -1);
+      const key = event.active;
+      const direction = event.direction === 'asc' ? 1 : -1;
+      return a[key] > b[key] ? direction : -direction;
     });
     this.dataSource.data = sorted;
   }
@@ -159,7 +169,6 @@ export class CtcTemplatesComponent implements OnInit {
         return row[col.key]?.toString().toLowerCase().includes(event.toLowerCase());
       });
       return found;
-    }
-    );
+    });
   }
 }

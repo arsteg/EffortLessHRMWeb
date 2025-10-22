@@ -211,10 +211,9 @@
         "name_required": "Name is required",
         "name_invalid": "Name cannot contain numbers, or symbols.",
         "spacenotallowed": "start and end spaces are not allowed.",
-        "ValidNumber":"Must be a valid number",
+        "ValidNumber": "Must be a valid number",
         "RequiredFieldAreMissing": "Please fill all required fields",
         "NegativeNotAllowed": "Negative values are not allowed",
-        
         "GreaterThanOneAllowed": "Value must be greater than 1",
         "NegativeNotAllowedAndGreaterThanZeroAllowed": "Value must be greater than 0",
         "is_tds_affected": "Does this Allowance affect TDS?",
@@ -236,7 +235,7 @@
         "fixed_allowance_update_error": "This cannot be updated as it is already used in the system",
         "fixed_allowance_delete_error": "This cannot be deleted as it is already used in the system",
         "fixed_allowance_title": "Fixed Allowance",
-        "Success_save": "Successfully Saved!",        
+        "Success_save": "Successfully Saved!",
         "success_update": "Successfully Updated!",
         "label_name": "Label Name",
         "esic_fullname": "Employees State Insurance Contribution",
@@ -407,14 +406,13 @@
         },
         "update_variable_allowance": "Update Variable Allowance",
         "add_variable_allowance": "Add Variable Allowance",
-         
         "label_question": "Enter the label of variable allowance?",
         "allowance_rate_question": "What is the allowance rate per day?",
         "it": "IT",
         "frequency": "Frequency",
         "_variable_allowance": {
             "title": "Variable Allowance",
-            "invalid_period": "Variable allowance end period must be later than effective period.",      
+            "invalid_period": "Variable allowance end period must be later than effective period.",
             "table": {
                 "allowance_name": "Allowance Name",
                 "pf": "PF",
@@ -454,7 +452,7 @@
                 "pt_affected": "Does this allowance affect Professional Tax?",
                 "it_affected": "Does this allowance affect Income Tax?",
                 "tax_regime": "For which Tax Regimes will the Income Tax be calculated?",
-                "ctc_question": "Does this Variable deduction show up in CTC structure?",       
+                "ctc_question": "Does this Variable deduction show up in CTC structure?",
                 "tax_regime_type": {
                     "new": "New regime",
                     "old": "Old regime"
@@ -486,7 +484,7 @@
                 "error_update": "Variable allowance cannot be updated",
                 "success_deleted": "Successfully deleted",
                 "error_delete": "Variable allowance cannot be deleted",
-               "error_duplicate": "A variable allowance with this name already exists"
+                "error_duplicate": "A variable allowance with this name already exists"
             }
         },
         "variable_deduction": {
@@ -629,7 +627,10 @@
                 "name": "Template Name",
                 "fixed_allowances": "Fixed Allowances",
                 "fixed_deductions": "Fixed Deductions",
-                "other_allowances": "Other Allowances"
+                "other_allowances": "Other Allowances",
+                "template_name": "Template Name",
+                "variable_allowances": "Variable Allowances",
+                "variable_deductions": "Variable Deductions"
             },
             "toast": {
                 "success_deleted": "CTC Template deleted successfully",
@@ -642,8 +643,10 @@
                 "success_saved": "CTC Template saved successfully",
                 "failed_saved": "Failed to save CTC Template",
                 "template_name": "Template name is required",
-                "one_fixed_allowance_required": "At least one Fixed Allowance is required"
-           
+                "one_fixed_allowance_required": "At least one Fixed Allowance is required",
+                "no_data": "No data received from server",
+                "error_fetch": "Failed to load CTC templates",
+                "error_delete": "Failed to delete CTC template"
             }
         }
     }
