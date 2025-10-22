@@ -27,44 +27,55 @@ export class FixedAllowanceComponent implements AfterViewInit {
   columns: TableColumn[] = [
     {
       key: 'label',
-      name: this.translate.instant('payroll.allowance_name'),
-      valueFn: (row) => row.label || ''
+      name: this.translate.instant('payroll.allowance_name')
     },
     {
       key: 'isProvidentFundAffected',
       name: this.translate.instant('payroll.pf'),
-      valueFn: (row) => row.isProvidentFundAffected ? '<mat-icon class="text-success">check</mat-icon>' : '<mat-icon class="text-danger">close</mat-icon>',
-      isHtml: true
+      icons: [
+        { name: 'check', value: true, class: 'text-success' },
+        { name: 'close', value: false, class: 'text-danger' }
+      ]
     },
     {
       key: 'isESICAffected',
       name: this.translate.instant('payroll.esic'),
-      valueFn: (row) => row.isESICAffected ? '<mat-icon class="text-success">check</mat-icon>' : '<mat-icon class="text-danger">close</mat-icon>',
-      isHtml: true
+      icons: [
+        { name: 'check', value: true, class: 'text-success' },
+        { name: 'close', value: false, class: 'text-danger' }
+      ]
     },
     {
       key: 'isLWFAffected',
       name: this.translate.instant('payroll.lwf'),
-      valueFn: (row) => row.isLWFAffected ? '<mat-icon class="text-success">check</mat-icon>' : '<mat-icon class="text-danger">close</mat-icon>',
-      isHtml: true
+      icons: [
+        { name: 'check', value: true, class: 'text-success' },
+        { name: 'close', value: false, class: 'text-danger' }
+      ]
     },
     {
       key: 'isProfessionalTaxAffected',
       name: this.translate.instant('payroll.pt'),
-      valueFn: (row) => row.isProfessionalTaxAffected ? '<mat-icon class="text-success">check</mat-icon>' : '<mat-icon class="text-danger">close</mat-icon>',
-      isHtml: true
+      icons: [
+        { name: 'check', value: true, class: 'text-success' },
+        { name: 'close', value: false, class: 'text-danger' }
+      ]
     },
     {
       key: 'isTDSAffected',
       name: this.translate.instant('payroll.tds'),
-      valueFn: (row) => row.isTDSAffected ? '<mat-icon class="text-success">check</mat-icon>' : '<mat-icon class="text-danger">close</mat-icon>',
-      isHtml: true
+      icons: [
+        { name: 'check', value: true, class: 'text-success' },
+        { name: 'close', value: false, class: 'text-danger' }
+      ]
     },
     {
       key: 'isGratuityFundAffected',
       name: this.translate.instant('payroll.gratuity'),
-      valueFn: (row) => row.isGratuityFundAffected ? '<mat-icon class="text-success">check</mat-icon>' : '<mat-icon class="text-danger">close</mat-icon>',
-      isHtml: true
+      icons: [
+        { name: 'check', value: true, class: 'text-success' },
+        { name: 'close', value: false, class: 'text-danger' }
+      ]
     },
     {
       key: 'actions',
@@ -87,7 +98,6 @@ export class FixedAllowanceComponent implements AfterViewInit {
       ]
     }
   ];
-
   constructor(
     private payroll: PayrollService,
     private toast: ToastrService,

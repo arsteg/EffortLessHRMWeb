@@ -1,6 +1,9 @@
 {
     "payroll": {
         "settings": "General Settings",
+        "general_settings": "General Payroll Settings",
+        "gratuity_settings": "Gratuity Settings",
+        "additional_settings": "Additional Settings",
         "save_failed": "Failed To Save",
         "next": "Next",
         "ctc_template": "CTC Template",

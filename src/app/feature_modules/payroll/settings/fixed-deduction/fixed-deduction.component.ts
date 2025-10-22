@@ -30,12 +30,12 @@ export class FixedDeductionComponent implements AfterViewInit {
       valueFn: (row) => row.label || ''
     },
     {
-      key: 'eligibility',
+      key: 'isEffectAttendanceOnEligibility', // Changed from 'eligibility'
       name: this.translate.instant('payroll.fixed_deduction.table.deduction_eligilibity'),
-      valueFn: (row) => row.isEffectAttendanceOnEligibility
-        ? '<mat-icon class="text-success">check</mat-icon>'
-        : '<mat-icon class="text-danger">cancel</mat-icon>',
-      isHtml: true
+      icons: [
+        { name: 'check', value: true, class: 'text-success' },
+        { name: 'close', value: false, class: 'text-danger' }
+      ]
     },
     {
       key: 'actions',
@@ -53,7 +53,7 @@ export class FixedDeductionComponent implements AfterViewInit {
           visibility: ActionVisibility.BOTH,
           icon: 'delete',
           cssClass: 'delete-btn',
-          hideCondition: (row) => false // Assuming Delete is always visible; adjust if needed
+          hideCondition: (row) => false
         }
       ]
     }
