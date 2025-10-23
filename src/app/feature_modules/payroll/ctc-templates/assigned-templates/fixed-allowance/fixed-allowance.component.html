@@ -4,7 +4,7 @@
 
       <!-- Category Column -->
       <ng-container matColumnDef="category">
-        <th mat-header-cell *matHeaderCellDef> Category </th>
+        <th mat-header-cell *matHeaderCellDef translate> payroll.category </th>
         <td mat-cell *matCellDef="let allowance">
           {{ allowance.get('fixedAllowanceLabel').value }}
         </td>
@@ -12,11 +12,11 @@
 
       <!-- Criteria Column -->
       <ng-container matColumnDef="criteria">
-        <th mat-header-cell *matHeaderCellDef> Criteria </th>
+        <th mat-header-cell *matHeaderCellDef translate> payroll.criteria </th>
         <td mat-cell *matCellDef="let allowance" [formGroup]="allowance">
           <mat-form-field>
             <mat-select formControlName="criteria" [disabled]="true">
-              <mat-option value="Amount">Amount</mat-option>
+              <mat-option value="Amount">{{'payroll.amount' | translate}}</mat-option>
             </mat-select>
           </mat-form-field>
         </td>
@@ -24,28 +24,28 @@
 
       <!-- Value Column -->
       <ng-container matColumnDef="value">
-        <th mat-header-cell *matHeaderCellDef> Value </th>
+        <th mat-header-cell *matHeaderCellDef translate> payroll.value </th>
         <td mat-cell *matCellDef="let allowance" [formGroup]="allowance">
           <ng-container [ngSwitch]="allowance.get('criteria').value">
             <mat-form-field *ngSwitchCase="'Amount'">
               <input matInput type="number" min="0" formControlName="value" placeholder="Enter Amount"
-                     (input)="allowance.markAsTouched()">
+                (input)="allowance.markAsTouched()">
               <mat-error *ngIf="allowance.get('value').hasError('required')">
                 {{ 'payroll.field_required' | translate }}
               </mat-error>
               <mat-error *ngIf="allowance.get('value').hasError('min')">
-                Value cannot be negative
+                {{'payroll.NegativeNotAllowed' | translate}}
               </mat-error>
             </mat-form-field>
 
             <mat-form-field *ngSwitchCase="'Percentage'">
               <input matInput type="number" min="0" formControlName="value" placeholder="Enter Percentage"
-                     (input)="allowance.markAsTouched()">
+                (input)="allowance.markAsTouched()">
               <mat-error *ngIf="allowance.get('value').hasError('required')">
                 {{ 'payroll.field_required' | translate }}
               </mat-error>
               <mat-error *ngIf="allowance.get('value').hasError('min')">
-                Percentage cannot be negative
+                {{'payroll.NegativeNotAllowed' | translate}}
               </mat-error>
             </mat-form-field>
           </ng-container>
@@ -54,20 +54,19 @@
 
       <!-- Minimum Amount Column -->
       <ng-container matColumnDef="minimumAmount">
-        <th mat-header-cell *matHeaderCellDef> Minimum Amount </th>
+        <th mat-header-cell *matHeaderCellDef translate> payroll.minimum_amount </th>
         <td mat-cell *matCellDef="let allowance" [formGroup]="allowance">
           <mat-form-field>
-            <input matInput type="number" min="0" formControlName="minimumAmount"
-                   placeholder="Enter Minimum Amount">
+            <input matInput type="number" min="0" formControlName="minimumAmount" placeholder="Enter Minimum Amount">
             <mat-error *ngIf="allowance.get('minimumAmount').hasError('required')">
               {{ 'payroll.field_required' | translate }}
             </mat-error>
             <mat-error *ngIf="allowance.get('minimumAmount').hasError('min')">
-              {{ 'payroll._ctc_templates.minimum_amount_positive_only' | translate }}   
+              {{'payroll.NegativeNotAllowed' | translate}}
             </mat-error>
           </mat-form-field>
           <mat-error *ngIf="allowance.hasError('minGreaterThanValue')">
-            {{ 'payroll._ctc_templates.minimum_amount_greater_than_value' | translate }}  
+            {{ 'payroll._ctc_templates.minimum_amount_greater_than_value' | translate }}
           </mat-error>
         </td>
       </ng-container>

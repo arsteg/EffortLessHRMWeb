@@ -5,7 +5,7 @@
 
       <div class="form-group col-md-6">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Enter the Label for CTC Template</mat-label>
+          <mat-label translate>payroll._ctc_templates.label_ctc</mat-label>
           <input matInput type="text" formControlName="name" placeholder="CTC Template...">
           <mat-error class="mb-3" *ngIf="!ctcTemplateForm.get('name').valid && ctcTemplateForm.get('name').touched">
             <span *ngIf="ctcTemplateForm.get('name').errors?.['required']">{{ 'payroll.name_required' |
@@ -21,7 +21,7 @@
 
       <div class="form-group col-md-6">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Fixed Allowances</mat-label>
+          <mat-label translate>payroll._ctc_templates.table.fixed_allowances</mat-label>
           <mat-select multiple formControlName="ctcTemplateFixedAllowance"
                       (selectionChange)="onDropdownChange($event, 'fixedAllowance')">
             <mat-option
@@ -36,7 +36,7 @@
       </div>
       <div class="form-group mt-2 col-md-6">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Fixed Deductions</mat-label>
+          <mat-label translate>payroll._ctc_templates.table.fixed_deductions</mat-label>
           <mat-select multiple formControlName="ctcTemplateFixedDeduction"
             (selectionChange)="onDropdownChange($event, 'fixedDeduction')">
             <mat-option *ngFor="let fa of fixedDeduction" [value]="fa._id">
@@ -48,7 +48,7 @@
 
       <div class="form-group mt-2 col-md-6">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Variable Allowance</mat-label>
+          <mat-label translate>payroll._ctc_templates.table.variable_allowances</mat-label>
           <mat-select multiple formControlName="ctcTemplateVariableAllowance"
             (selectionChange)="onDropdownChange($event, 'variableAllowance')">
             <mat-option *ngFor="let va of variableAllowance" [value]="va?._id">
@@ -60,7 +60,7 @@
 
       <div class="form-group mt-2 col-md-6">
         <mat-form-field appearance="outline" class="w-100">
-          <mat-label>Variable Deductions</mat-label>
+          <mat-label translate>payroll._ctc_templates.table.variable_deductions</mat-label>
           <mat-select multiple formControlName="ctcTemplateVariableDeduction"
             (selectionChange)="onDropdownChange($event, 'variableDeduction')">
             <mat-option *ngFor="let vd of variableDeduction" [value]="vd?._id">

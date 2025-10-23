@@ -9,6 +9,7 @@
         "ctc_template": "CTC Template",
         "lop_reversal": "LOP Reversal",
         "run_payroll": "Run Payroll",
+        "run_fnf_payroll": "Run FnF Payroll",
         "payslips": "Payslips",
         "full_final": "Full & Final",
         "title": "Payslips",
@@ -19,6 +20,14 @@
         "status": "Status",
         "actions": "Actions",
         "select_approver": "Select Payroll Approver",
+        "payroll_user": "Payroll User Selection",
+        "payroll_user_required": "Please select a payroll user",
+        "users_by_status": "Users by Status",
+        "attendance": "Attendance",
+        "variable_pay": "Variable Pay",
+        "loan_advances": "Loan/Advances",
+        "manual_Arrears": "Manual Arrears",
+        "overtime": "Overtime",
         "_history": {
             "title": "Payroll History",
             "table": {
@@ -163,7 +172,6 @@
         "earnings": "Earnings",
         "fixed_allowance_basic_salary": "Fixed Allowance + Basic Salary",
         "variable_allowance": "Variable Allowance",
-        "overtime": "Overtime",
         "_flexi_benefits": "Flexi Benefits",
         "other_benefits": "Other Benefits",
         "total_earnings": "Total Earnings",
@@ -171,6 +179,7 @@
         "fixed_deductions": "Fixed Deductions",
         "professional_tax": "Professional Tax",
         "income_tax": "Income Tax",
+        "generated_payroll": "Generated Payroll",
         "loan_advances_repayment": "Loan/Advances Repayment",
         "disbursed": "Loan/Advances Disbursed",
         "total_deductions": "Total Deductions",
@@ -623,6 +632,7 @@
             "field_required": "Field is required",
             "minimum_amount_positive_only": "Minimum Amount cannot be negative",
             "minimum_amount_greater_than_value": "Minimum Amount cannot be greater than Value",
+            "label_ctc": "Enter the Label for CTC Template",
             "table": {
                 "name": "Template Name",
                 "fixed_allowances": "Fixed Allowances",
@@ -648,6 +658,10 @@
                 "error_fetch": "Failed to load CTC templates",
                 "error_delete": "Failed to delete CTC template"
             }
-        }
+        },
+        "category": "Category",
+        "criteria": "Criteria",
+        "value": "Value",
+        "minimum_amount": "Minimum Amount"
     }
 }

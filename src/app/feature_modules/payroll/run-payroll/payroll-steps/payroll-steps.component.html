@@ -1,90 +1,90 @@
 <mat-stepper orientation="vertical" [linear]="false" #stepper>
     <mat-step>
-        <ng-template matStepLabel>Users by Status</ng-template>
+        <ng-template matStepLabel>{{'payroll.users_by_status' | translate}}</ng-template>
         <ng-template matStepContent>
             <app-step-1 [selectedPayroll]="selectedPayroll"></app-step-1>
             <div>
-                <button mat-button color="primary" matStepperNext>Next</button>
+                <button mat-button color="primary" matStepperNext>{{'payroll.next' | translate}}</button>
             </div>
         </ng-template>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Attendance</ng-template>
+        <ng-template matStepLabel>{{'payroll.attendance' | translate}}</ng-template>
         <ng-template matStepContent>
             <app-step-2 [selectedPayroll]="selectedPayroll" ></app-step-2>
         
         <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button  color="primary" matStepperNext>Next</button>
+            <button mat-button matStepperPrevious>{{'payroll.back' | translate}}</button>
+            <button mat-button  color="primary" matStepperNext>{{'payroll.next' | translate}}</button>
         </div>
     </ng-template>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Variable Pay</ng-template>
+        <ng-template matStepLabel>{{'payroll.variable_pay' | translate}}</ng-template>
         <ng-template matStepContent>
             <app-step-3 [selectedPayroll]="selectedPayroll" ></app-step-3>
             <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button  color="primary" matStepperNext>Next</button>
+                <button mat-button matStepperPrevious>{{'payroll.back' | translate}}</button>
+                <button mat-button  color="primary" matStepperNext>{{'payroll.next' | translate}}</button>
             </div>
         </ng-template>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Loans/Advances</ng-template>
+        <ng-template matStepLabel>{{'payroll.loan_advances' | translate}}</ng-template>
         <ng-template matStepContent>
             <app-step-4 [selectedPayroll]="selectedPayroll" ></app-step-4>
             <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button  color="primary" matStepperNext>Next</button>
+                <button mat-button matStepperPrevious>{{'payroll.back' | translate}}</button>
+                <button mat-button  color="primary" matStepperNext>{{'payroll.next' | translate}}</button>
             </div>
         </ng-template>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Manual Arrears</ng-template>
+        <ng-template matStepLabel>{{'payroll.manual_Arrears' | translate}}</ng-template>
         <ng-template matStepContent>
             <app-step-5 [selectedPayroll]="selectedPayroll" ></app-step-5>
             <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button  color="primary" matStepperNext>Next</button>
+                <button mat-button matStepperPrevious>{{'payroll.back' | translate}}</button>
+                <button mat-button  color="primary" matStepperNext>{{'payroll.next' | translate}}</button>
             </div>
         </ng-template>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Flexi Benefits</ng-template>
+        <ng-template matStepLabel>{{'payroll._flexi_benefits' | translate}}</ng-template>
         <ng-template matStepContent>
             <app-step-6 [selectedPayroll]="selectedPayroll" ></app-step-6>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button  color="primary" matStepperNext>Next</button>
+            <button mat-button matStepperPrevious>{{'payroll.back' | translate}}</button>
+            <button mat-button  color="primary" matStepperNext>{{'payroll.next' | translate}}</button>
             <div>
             </div>
         </ng-template>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Overtime</ng-template>
+        <ng-template matStepLabel>{{'payroll.overtime' | translate}}</ng-template>
         <ng-template matStepContent>
             <app-step-7 [selectedPayroll]="selectedPayroll" ></app-step-7>
             <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button  color="primary" matStepperNext>Next</button>
+                <button mat-button matStepperPrevious>{{'payroll.back' | translate}}</button>
+                <button mat-button  color="primary" matStepperNext>{{'payroll.next' | translate}}</button>
             </div>
         </ng-template>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Income Tax</ng-template>
+        <ng-template matStepLabel>{{'payroll.income_tax' | translate}}</ng-template>
         <ng-template matStepContent>
             <app-step-8 [selectedPayroll]="selectedPayroll" ></app-step-8>
             <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button  color="primary" matStepperNext>Next</button>
+                <button mat-button matStepperPrevious>{{'payroll.back' | translate}}</button>
+                <button mat-button  color="primary" matStepperNext>{{'payroll.next' | translate}}</button>
             </div>
         </ng-template>
     </mat-step>
     <mat-step>
-        <ng-template matStepLabel>Generated Payroll</ng-template>
+        <ng-template matStepLabel>{{'payroll.generated_payroll' | translate}}</ng-template>
         <ng-template matStepContent>
             <app-step-9 [selectedPayroll]="selectedPayroll" ></app-step-9>
             <div>
-                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperPrevious>{{'payroll.back' | translate}}</button>
             </div>
         </ng-template>
     </mat-step>

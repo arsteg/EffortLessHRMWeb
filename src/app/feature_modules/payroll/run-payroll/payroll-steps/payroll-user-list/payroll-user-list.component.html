@@ -1,11 +1,11 @@
 <mat-form-field appearance="outline" class="w-100">
-    <mat-label>Payroll User Selection</mat-label>
+    <mat-label>{{'payroll.payroll_user' | translate}}</mat-label>
     <mat-select [formControl]="controlField" [(value)]="selectedUser" (selectionChange)="onUserSelect($event)">
         <mat-option *ngFor="let user of payrollUsers" [value]="user">
             {{getUser(user?.user)}}
         </mat-option>
     </mat-select>
     <mat-error *ngIf="controlField?.touched && controlField?.invalid">
-        Payroll user is required.
+        {{ 'payroll.payroll_user_required' | translate }}
     </mat-error>
 </mat-form-field>
