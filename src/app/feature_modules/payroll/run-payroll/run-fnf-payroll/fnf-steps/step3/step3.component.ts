@@ -5,21 +5,20 @@ import { MatDialog } from '@angular/material/dialog';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { CommonService } from 'src/app/_services/common.Service';
-import { forkJoin } from 'rxjs';
 import { UserService } from 'src/app/_services/users.service';
+import { catchError, forkJoin, map } from 'rxjs';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
 @Component({
   selector: 'app-step3',
   templateUrl: './step3.component.html',
-  styleUrl: './step3.component.css'
+  styleUrls: ['./step3.component.css']
 })
 export class FNFStep3Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'manualArrears', 'arrearDays', 'lopReversalDays', 'salaryRevisionDays', 'lopReversalArrears', 'totalArrears', 'actions'];
   manualArrears = new MatTableDataSource<any>();
   manualArrearForm: FormGroup;
   selectedManualArrear: any;
-  salaryPerDay : any;
+  salaryPerDay: any;
   isEdit: boolean = false;
   selectedFNFUser: any;
   @Input() settledUsers: any[];
@@ -27,11 +26,60 @@ export class FNFStep3Component implements OnInit {
   @Input() selectedFnF: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
-  constructor(private fb: FormBuilder,
+  columns: TableColumn[] = [
+    {
+      key: 'userName',
+      name: 'Payroll User',
+      valueFn: (row) => row.userName || 'Not specified'
+    },
+    {
+      key: 'manualArrears',
+      name: 'Manual Arrears',
+      valueFn: (row) => row.manualArrears
+    },
+    {
+      key: 'arrearDays',
+      name: 'Arrear Days',
+      valueFn: (row) => row.arrearDays
+    },
+    {
+      key: 'lopReversalDays',
+      name: 'LOP Reversal Days',
+      valueFn: (row) => row.lopReversalDays
+    },
+    {
+      key: 'salaryRevisionDays',
+      name: 'Salary Revision Days',
+      valueFn: (row) => row.salaryRevisionDays
+    },
+    {
+      key: 'lopReversalArrears',
+      name: 'LOP Reversal Arrears',
+      valueFn: (row) => row.lopReversalArrears
+    },
+    {
+      key: 'totalArrears',
+      name: 'Total Arrears',
+      valueFn: (row) => row.totalArrears
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      isAction: true,
+      options: [
+        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit', hideCondition: (row) => false },
+        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
+      ]
+    }
+  ];
+
+  constructor(
+    private fb: FormBuilder,
     private payrollService: PayrollService,
     private userService: UserService,
     public dialog: MatDialog,
-    private toast: ToastrService) {
+    private toast: ToastrService
+  ) {
     this.manualArrearForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
       manualArrears: [0, Validators.required],
@@ -44,36 +92,48 @@ export class FNFStep3Component implements OnInit {
   }
 
   ngOnInit(): void {
-      this.fetchManualArrears(this.selectedFnF);
-      this.manualArrearForm.valueChanges.subscribe(() => {
-        this.recalculateFields();
-      });
-    
+    forkJoin({
+      manualArrears: this.fetchManualArrears(this.selectedFnF)
+    }).subscribe({
+      next: (results) => {
+        this.manualArrears.data = results.manualArrears;
+      },
+      error: (error) => {
+        console.error('Error while loading manual arrears:', error);
+      }
+    });
+
+    this.manualArrearForm.valueChanges.subscribe(() => {
+      this.recalculateFields();
+    });
   }
-  getDailySalaryByUserId(userId: string): void {       
-        this.userService.getDailySalaryByUserId(userId).subscribe(
-          (res: any) => {            
-            this.salaryPerDay = res.data;           
-          },
-          (error: any) => {
-            this.toast.error('Failed to Load Daily Salary', 'Error');
-          })
-    }
+
+  getDailySalaryByUserId(userId: string): void {
+    this.userService.getDailySalaryByUserId(userId).subscribe(
+      (res: any) => {
+        this.salaryPerDay = res.data;
+      },
+      (error: any) => {
+        this.toast.error('Failed to Load Daily Salary', 'Error');
+      }
+    );
+  }
+
   recalculateFields(): void {
     const manualArrears = this.manualArrearForm.get('manualArrears')?.value || 0;
     const arrearDays = this.manualArrearForm.get('arrearDays')?.value || 0;
     const lopReversalDays = this.manualArrearForm.get('lopReversalDays')?.value || 0;
     const salaryRevisionDays = this.manualArrearForm.get('salaryRevisionDays')?.value || 0;
-  
-    const lopReversalArrears = lopReversalDays * this.salaryPerDay;
-    const totalArrears = manualArrears + ((arrearDays + salaryRevisionDays) * this.salaryPerDay) + lopReversalArrears;
-  
+
+    const lopReversalArrears = lopReversalDays * (this.salaryPerDay || 0);
+    const totalArrears = manualArrears + ((arrearDays + salaryRevisionDays) * (this.salaryPerDay || 0)) + lopReversalArrears;
+
     this.manualArrearForm.patchValue({
       lopReversalArrears: lopReversalArrears.toFixed(0),
       totalArrears: totalArrears.toFixed(0)
-    }, { emitEvent: false }); // Prevent recursive loop
+    }, { emitEvent: false });
   }
-  
+
   onUserChange(fnfUserId: string): void {
     this.selectedFNFUser = fnfUserId;
     const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === fnfUserId);
@@ -81,10 +141,14 @@ export class FNFStep3Component implements OnInit {
 
     if (payrollFNFUserId) {
       this.payrollService.getFnFUserById(payrollFNFUserId).subscribe((res: any) => {
-         this.getDailySalaryByUserId(res.data.user);
+        this.getDailySalaryByUserId(res.data.user);
+        this.manualArrearForm.patchValue({
+          payrollFNFUser: this.getMatchedSettledUser(res.data.user)
         });
+      });
     }
   }
+
   onPayrollUserChange(fnfUserId: string): void {
     this.selectedFNFUser = fnfUserId;
     const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === fnfUserId);
@@ -92,17 +156,42 @@ export class FNFStep3Component implements OnInit {
 
     if (payrollFNFUserId) {
       this.payrollService.getFnFManualArrearsByPayrollFnFUser(payrollFNFUserId).subscribe((res: any) => {
-        this.manualArrears.data = res.data;
-        this.manualArrears.data.forEach((arrear: any) => {
-          const user = this.settledUsers.find(user => user?._id === fnfUserId);
-          arrear.userName = user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
-          this.getDailySalaryByUserId(user._id);
+        this.manualArrears.data = res.data.map((item: any) => {
+          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.payrollFNFUser);
+          item.userName = this.getMatchedSettledUser(matchedUser.user);
+          return item;
         });
+        if (this.isEdit && this.selectedManualArrear) {
+          this.manualArrearForm.patchValue({
+            payrollFNFUser: this.selectedManualArrear.userName,
+            ...this.selectedManualArrear
+          });
+        }
       });
     }
   }
+
+  fetchManualArrears(fnfPayroll: any) {
+    return this.payrollService.getFnFManualArrearsByPayrollFnF(fnfPayroll?._id).pipe(
+      map((res: any) => {
+        return res.data.map((item: any) => {
+          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.payrollFNFUser);
+          item.userName = this.getMatchedSettledUser(matchedUser?.user || '');
+          return item;
+        });
+      }),
+      catchError((error) => {
+        this.toast.error('Failed to fetch Manual Arrears', 'Error');
+        throw error;
+      })
+    );
+  }
+
   openDialog(isEdit: boolean): void {
     this.isEdit = isEdit;
+    if (!isEdit) {
+      this.resetForm();
+    }
     this.dialog.open(this.dialogTemplate, {
       width: '50%',
       panelClass: 'custom-dialog-container',
@@ -113,6 +202,7 @@ export class FNFStep3Component implements OnInit {
   editManualArrear(manualArrear: any): void {
     this.isEdit = true;
     this.selectedManualArrear = manualArrear;
+    this.selectedFNFUser = manualArrear.payrollFNFUser; // Store for submission
     this.manualArrearForm.patchValue({
       payrollFNFUser: manualArrear.userName,
       manualArrears: manualArrear.manualArrears,
@@ -129,139 +219,96 @@ export class FNFStep3Component implements OnInit {
   onSubmit(): void {
     this.manualArrearForm.get('lopReversalArrears')?.enable();
     this.manualArrearForm.get('totalArrears')?.enable();
-    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
-    const payrollFNFUserId = matchedUser ? matchedUser._id : null;
+    this.manualArrearForm.get('payrollFNFUser')?.enable();
 
-    this.manualArrearForm.patchValue({
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === this.selectedFNFUser);
+    const payrollFNFUserId = matchedUser ? matchedUser._id : this.selectedManualArrear?.payrollFNFUser;
+
+    const payload = {
+      ...this.manualArrearForm.getRawValue(),
       payrollFNFUser: payrollFNFUserId
-    });
-    
+    };
+
     if (this.manualArrearForm.valid) {
+      const request$ = this.isEdit
+        ? this.payrollService.updateFnFManualArrear(this.selectedManualArrear._id, payload)
+        : this.payrollService.addFnFManualArrear(payload);
 
-      this.manualArrearForm.get('payrollFNFUser').enable();
-
-      if (this.isEdit) {
-
-        this.manualArrearForm.patchValue({
-          payrollFNFUser: this.selectedManualArrear.payrollFNFUser,
-        });
-        this.payrollService.updateFnFManualArrear(this.selectedManualArrear._id, this.manualArrearForm.value).subscribe(
-          (res: any) => {
-            this.toast.success('Manual Arrear updated successfully', 'Success');
-            this.fetchManualArrears(this.selectedFnF);
-            this.isEdit = false;
-            this.manualArrearForm.reset({
-              payrollFNFUser: '',
-              manualArrears: 0,
-              arrearDays: 0,
-              lopReversalDays: 0,
-              salaryRevisionDays: 0,
-              lopReversalArrears: 0,
-              totalArrears: 0
-            })
-            this.dialog.closeAll();
-            this.manualArrearForm.get('payrollFNFUser').disable();
-          },
-          (error: any) => {
-            this.toast.error('Failed to update Manual Arrear', 'Error');
-          }
-        );
-      } else {
-        const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
-        const payrollFNFUserId = matchedUser ? matchedUser._id : null;
-
-        this.manualArrearForm.patchValue({
-          payrollFNFUser: payrollFNFUserId
-        })
-        this.payrollService.addFnFManualArrear(this.manualArrearForm.value).subscribe(
-          (res: any) => {
-            this.toast.success('Manual Arrear added successfully', 'Success');
-            this.fetchManualArrears(this.selectedFnF);
-            this.manualArrearForm.reset({
-              payrollFNFUser: '',
-              manualArrears: 0,
-              arrearDays: 0,
-              lopReversalDays: 0,
-              salaryRevisionDays: 0,
-              lopReversalArrears: 0,
-              totalArrears: 0
-            })
-            this.dialog.closeAll();
-          },
-          (error: any) => {
-            this.toast.error('Failed to add Manual Arrear', 'Error');
-          }
-        );
-      }
+      request$.subscribe({
+        next: () => {
+          this.fetchManualArrears(this.selectedFnF).subscribe((data) => {
+            this.manualArrears.data = data;
+          });
+          this.resetForm();
+          this.toast.success(`Manual Arrear ${this.isEdit ? 'updated' : 'added'} successfully`, 'Success');
+          this.isEdit = false;
+          this.dialog.closeAll();
+        },
+        error: () => {
+          this.toast.error(`Failed to ${this.isEdit ? 'update' : 'add'} Manual Arrear`, 'Error');
+        }
+      });
     } else {
       this.manualArrearForm.markAllAsTouched();
     }
-    this.isEdit = false;
+  }
+
+  resetForm(): void {
+    this.manualArrearForm.reset({
+      payrollFNFUser: '',
+      manualArrears: 0,
+      arrearDays: 0,
+      lopReversalDays: 0,
+      salaryRevisionDays: 0,
+      lopReversalArrears: 0,
+      totalArrears: 0
+    });
   }
 
   onCancel(): void {
-    if (this.isEdit && this.selectedManualArrear) {
-      this.manualArrearForm.patchValue({
-        payrollFNFUser: this.selectedManualArrear.payrollFNFUser,
-        manualArrears: this.selectedManualArrear.manualArrears,
-        arrearDays: this.selectedManualArrear.arrearDays,
-        lopReversalDays: this.selectedManualArrear.lopReversalDays,
-        salaryRevisionDays: this.selectedManualArrear.salaryRevisionDays,
-        lopReversalArrears: this.selectedManualArrear.lopReversalArrears,
-        totalArrears: this.selectedManualArrear.totalArrears
-      });
-    } else {
-      this.manualArrearForm.reset();
+    this.isEdit = false;
+    this.resetForm();
+    this.dialog.closeAll();
+  }
+
+  onAction(event: any): void {
+    switch (event.action.label) {
+      case 'Edit':
+        this.editManualArrear(event.row);
+        break;
+      case 'Delete':
+        this.deleteDialog(event.row._id);
+        break;
     }
   }
 
   deleteRecord(_id: string) {
-
-    this.payrollService.deleteFnFManualArrear(_id).subscribe((res: any) => {
-      this.fetchManualArrears(this.selectedFnF);
-      this.toast.success('Successfully Deleted!!!', 'FNF Manual Arrear');
-    }, (err) => {
-      this.toast.error('FNF Manual Arrear can not be deleted', 'Error');
-    });
+    this.payrollService.deleteFnFManualArrear(_id).subscribe({
+      next: () => {
+        this.fetchManualArrears(this.selectedFnF).subscribe((data) => {
+          this.manualArrears.data = data;
+        });
+        this.toast.success('Manual Arrear Deleted', 'Success');
+      },
+      error: () => {
+        this.toast.error('Failed to delete Manual Arrear', 'Error');
+      }
+  });
   }
 
-  deleteDialog(data: any): void {
+  deleteDialog(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'delete') {
-        this.deleteRecord(data);
+        this.deleteRecord(id);
       }
     });
   }
 
   getMatchedSettledUser(userId: string) {
-    const matchedUser = this.settledUsers?.find(user => user?._id == userId)
-    return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
-  }
-
-  fetchManualArrears(fnfPayroll: any): void {
-    this.payrollService.getFnFManualArrearsByPayrollFnF(fnfPayroll?._id).subscribe(
-      (res: any) => {
-        this.manualArrears.data = res.data;
-        
-        this.manualArrears.data.forEach((item: any) => {
-          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.payrollFNFUser);
-          item.userName = this.getMatchedSettledUser(matchedUser.user);
-        });
-
-        
-        if (this.isEdit && this.selectedManualArrear) {
-          this.manualArrearForm.patchValue({
-            payrollFNFUser: this.selectedManualArrear.payrollFNFUser,
-            ...this.selectedManualArrear,
-          });
-        }
-      },
-      (error: any) => {
-        this.toast.error('Failed to fetch Manual Arrears', 'Error');
-      }
-    );
+    const matchedUser = this.settledUsers?.find(user => user?._id === userId);
+    return matchedUser ? `${matchedUser?.firstName} ${matchedUser?.lastName}` : 'Not specified';
   }
 }

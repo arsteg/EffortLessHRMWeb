@@ -10,9 +10,6 @@
     [totalItems]="tableService.totalRecords" (searchChanged)="onSearch($event)"
     (actionClicked)="onAction($event, modal)" [isServerSide]="true" (pageChanged)="onPageChange($event)"></hrm-table>
 
-
-
-
 <ng-template #modal let-modal>
     <div class="d-flex align-items-center justify-content-between">
         <h1 mat-dialog-title>

@@ -4,9 +4,10 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
-import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { AttendanceService } from 'src/app/_services/attendance.service';
-import { SeparationService } from 'src/app/_services/separation.service';
+import { CommonService } from 'src/app/_services/common.Service';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { forkJoin, map, catchError } from 'rxjs';
 
 @Component({
   selector: 'app-step1',
@@ -14,7 +15,6 @@ import { SeparationService } from 'src/app/_services/separation.service';
   styleUrls: ['./step1.component.css']
 })
 export class FNFStep1Component implements OnInit {
-  displayedColumns: string[] = ['userName', 'totalDays', 'lopDays', 'payableDays', 'leaveEncashmentDays', 'leaveBalance', 'adjustedPayableDays', 'actions'];
   attendanceSummary = new MatTableDataSource<any>();
   attendanceSummaryForm: FormGroup;
   selectedAttendanceSummary: any;
@@ -25,14 +25,67 @@ export class FNFStep1Component implements OnInit {
   @Input() settledUsers: any[];
   @Input() isSteps: boolean;
   @Input() selectedFnF: any;
-
+  users: any[] = [];
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
 
-  constructor(private fb: FormBuilder,
+  columns: TableColumn[] = [
+    {
+      key: 'userName',
+      name: 'Payroll User',
+      valueFn: (row) => this.getUserName(row.payrollFNFUser)
+    },
+    {
+      key: 'totalDays',
+      name: 'Total Days',
+      valueFn: (row) => row.totalDays
+    },
+    {
+      key: 'lopDays',
+      name: 'LOP Days',
+      valueFn: (row) => row.lopDays
+    },
+    {
+      key: 'payableDays',
+      name: 'Payable Days',
+      valueFn: (row) => row.payableDays
+    },
+    {
+      key: 'leaveEncashmentDays',
+      name: 'Leave Encashment Days',
+      valueFn: (row) => row.leaveEncashmentDays
+    },
+    {
+      key: 'leaveBalance',
+      name: 'Leave Balance',
+      valueFn: (row) => row.leaveBalance
+    },
+    {
+      key: 'adjustedPayableDays',
+      name: 'Adjusted Payable Days',
+      valueFn: (row) => row.adjustedPayableDays
+    },
+    {
+      key: 'actions',
+      name: 'Actions',
+      isAction: true,
+      options: [
+        {
+          label: 'Edit',
+          visibility: ActionVisibility.LABEL,
+          icon: 'edit',
+          hideCondition: (row) => false
+        }
+      ]
+    }
+  ];
+
+  constructor(
+    private fb: FormBuilder,
     private payrollService: PayrollService,
     public dialog: MatDialog,
     private toast: ToastrService,
     private attendanceService: AttendanceService,
+    private commonService: CommonService
   ) {
     this.attendanceSummaryForm = this.fb.group({
       payrollFNFUser: ['', Validators.required],
@@ -49,7 +102,18 @@ export class FNFStep1Component implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchAttendanceSummary(this.selectedFnF);
+    // Auto fetch on load
+    forkJoin({
+      attendanceSummary: this.fetchAttendanceSummary(this.selectedFnF)
+    }).subscribe({
+      next: (results) => {
+        this.attendanceSummary.data = results.attendanceSummary;
+      },
+      error: (error) => {
+        console.error('Error while loading attendance summary:', error);
+      }
+    });
+
     this.attendanceSummaryForm.get('payableDays').valueChanges.subscribe(() => this.updateAdjustedPayableDays());
     this.attendanceSummaryForm.get('leaveEncashmentDays').valueChanges.subscribe(() => this.updateAdjustedPayableDays());
     this.attendanceSummaryForm.get('leaveBalance').valueChanges.subscribe(() => this.updateAdjustedPayableDays());
@@ -64,21 +128,64 @@ export class FNFStep1Component implements OnInit {
 
     this.attendanceSummaryForm.get('adjustedPayableDays').setValue(adjustedPayableDays, { emitEvent: false });
   }
+
+  getAllUsers() {
+    return this.commonService.populateUsers();
+  }
+
+  getUserName(payrollFNFUserId: string): string {
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === payrollFNFUserId);
+    if (matchedUser) {
+      const user = this.users.find(u => u._id === matchedUser.user);
+      return user ? `${user.firstName} ${user.lastName}` : 'Not specified';
+    }
+    return 'Not specified';
+  }
+
+  fetchAttendanceSummary(fnfPayroll: any) {
+    return forkJoin([
+      this.payrollService.getFnFAttendanceSummary(fnfPayroll?._id),
+      this.getAllUsers()
+    ]).pipe(
+      map(([attendanceRes, usersRes]) => {
+        this.users = usersRes.data.data;
+        const data = attendanceRes.data.map((item: any) => {
+          item.userName = this.getUserName(item.payrollFNFUser);
+          return item;
+        });
+        return data;
+      }),
+      catchError((error) => {
+        this.toast.error('Failed to fetch Attendance Summary or Users', 'Error');
+        throw error;
+      })
+    );
+  }
+
   onUserChange(fnfUserId: string): void {
     this.selectedUserId = fnfUserId;
-
     const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedUserId);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
-    this.payrollService.getAttendanceRecordsByUserAndPayroll({ payrollFNFUser: payrollFNFUserId, payrollFNF: this.selectedFnF?._id }).subscribe((res: any) => {
-      console.log(res.data);
-      this.attendanceSummaryForm.patchValue({
-        totalDays: res.data.TotalDays,
-        lopDays: res.data.lopDays,
-        payableDays: res.data.payableDays,
-        leaveBalance: res.data.leaveBalance
-      })
+    this.payrollService.getAttendanceRecordsByUserAndPayroll({ payrollFNFUser: payrollFNFUserId, payrollFNF: this.selectedFnF?._id }).subscribe({
+      next: (res: any) => {
+        this.attendanceSummaryForm.patchValue({
+          totalDays: res.data.TotalDays,
+          lopDays: res.data.lopDays,
+          payableDays: res.data.payableDays,
+          leaveBalance: res.data.leaveBalance
+        });
+      },
+      error: (error) => {
+        this.toast.error('Failed to fetch attendance records', 'Error');
+      }
     });
+  }
+
+  onAction(event: any) {
+    if (event.action.label === 'Edit') {
+      this.editAttendanceSummary(event.row);
+    }
   }
 
   get adjustmentDetails(): FormArray {
@@ -100,19 +207,27 @@ export class FNFStep1Component implements OnInit {
   removeAdjustmentDetail(index: number): void {
     this.adjustmentDetails.removeAt(index);
   }
+
+  resetForm(): void {
+    this.attendanceSummaryForm.reset({
+      payrollFNFUser: '',
+      payrollFnf: '',
+      totalDays: 0,
+      lopDays: 0,
+      payableDays: 0,
+      leaveEncashmentDays: 0,
+      leaveBalance: 0,
+      adjustedPayableDays: 0,
+      adjustmentReason: ''
+    });
+    this.adjustmentDetails.clear();
+    this.adjustmentDetails.push(this.createAdjustmentDetail());
+  }
+
   openDialog(isEdit: boolean): void {
     this.isEdit = isEdit;
     if (!isEdit) {
-      this.attendanceSummaryForm.reset({
-        payrollFNFUser: '',
-        totalDays: 0,
-        lopDays: 0,
-        payableDays: 0,
-        leaveEncashmentDays: 0,
-        leaveBalance: 0,
-        adjustedPayableDays: 0,
-        adjustmentReason: 0,
-      });
+      this.resetForm();
     }
     this.action = true;
     this.dialog.open(this.dialogTemplate, {
@@ -128,7 +243,7 @@ export class FNFStep1Component implements OnInit {
     this.selectedAttendanceSummary = attendanceSummary;
 
     this.attendanceSummaryForm.patchValue({
-      payrollFNFUser: attendanceSummary.userName,
+      payrollFNFUser: this.getUserName(attendanceSummary.payrollFNFUser),
       totalDays: attendanceSummary.totalDays,
       lopDays: attendanceSummary.lopDays,
       payableDays: attendanceSummary.payableDays,
@@ -150,73 +265,51 @@ export class FNFStep1Component implements OnInit {
   }
 
   onSubmit(): void {
+    this.attendanceSummaryForm.get('payrollFNFUser')?.enable();
+
     const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedUserId);
     const payrollFNFUserId = matchedUser ? matchedUser._id : null;
 
     this.attendanceSummaryForm.patchValue({
-      payrollFNFUser: payrollFNFUserId,
-      payrollFnf: this.selectedFnF?._id,
+      payrollFNFUser: payrollFNFUserId
     });
 
-    if (this.attendanceSummaryForm.valid) {
-      this.attendanceSummaryForm.get('payrollFNFUser').enable();
+    const formValue = this.attendanceSummaryForm.value;
+    if (this.isEdit) {
+      formValue.payrollFNFUser = this.selectedAttendanceSummary.payrollFNFUser;
+    }
 
-      if (this.isEdit) {
-        this.attendanceSummaryForm.patchValue({
-          payrollFNFUser: this.selectedAttendanceSummary.payrollFNFUser
+    const request$ = this.isEdit
+      ? this.payrollService.updateFnFAttendanceSummary(this.selectedAttendanceSummary._id, formValue)
+      : this.payrollService.addFnFAttendanceSummary(formValue);
+
+    request$.subscribe({
+      next: () => {
+        // Refresh and reset form
+        this.fetchAttendanceSummary(this.selectedFnF).subscribe((data) => {
+          this.attendanceSummary.data = data;
         });
-        this.payrollService.updateFnFAttendanceSummary(this.selectedAttendanceSummary._id, this.attendanceSummaryForm.value).subscribe(
-          (res: any) => {
-            this.toast.success('Attendance Summary updated successfully', 'Success');
-            this.fetchAttendanceSummary(this.selectedFnF);
-            this.attendanceSummaryForm.reset({
-              payrollFNFUser: '',
-              totalDays: 0,
-              lopDays: 0,
-              payableDays: 0,
-              leaveEncashmentDays: 0,
-              leaveBalance: 0,
-              adjustedPayableDays: 0,
-              adjustmentReason: 0
-            });
-            this.isEdit = false;
-            this.dialog.closeAll();
-          },
-          (error: any) => {
-            this.toast.error('Failed to update Attendance Summary', 'Error');
-          }
+        this.toast.success(
+          `Attendance Summary ${this.isEdit ? 'updated' : 'added'} successfully`,
+          'Success'
         );
-      } else {
-        this.payrollService.addFnFAttendanceSummary(this.attendanceSummaryForm.value).subscribe(
-          (res: any) => {
-            this.toast.success('Attendance Summary added successfully', 'Success');
-            this.fetchAttendanceSummary(this.selectedFnF);
-            this.attendanceSummaryForm.reset({
-              payrollFNFUser: '',
-              totalDays: 0,
-              lopDays: 0,
-              payableDays: 0,
-              leaveEncashmentDays: 0,
-              leaveBalance: 0,
-              adjustedPayableDays: 0,
-              adjustmentReason: 0
-            });
-            this.dialog.closeAll();
-          },
-          (error: any) => {
-            this.toast.error('Failed to add Attendance Summary', 'Error');
-          }
+        this.resetForm();
+        this.isEdit = false;
+        this.dialog.closeAll();
+      },
+      error: () => {
+        this.toast.error(
+          `Failed to ${this.isEdit ? 'update' : 'add'} Attendance Summary`,
+          'Error'
         );
       }
-    } else {
-      this.attendanceSummaryForm.markAllAsTouched();
-    }
+    });
   }
 
   onCancel(): void {
     if (this.isEdit && this.selectedAttendanceSummary) {
       this.attendanceSummaryForm.patchValue({
-        payrollFNFUser: this.selectedAttendanceSummary.payrollFNFUser,
+        payrollFNFUser: this.getUserName(this.selectedAttendanceSummary.payrollFNFUser),
         totalDays: this.selectedAttendanceSummary.totalDays,
         lopDays: this.selectedAttendanceSummary.lopDays,
         payableDays: this.selectedAttendanceSummary.payableDays,
@@ -233,35 +326,14 @@ export class FNFStep1Component implements OnInit {
         this.adjustmentDetails.push(detailGroup);
       });
     } else {
-      this.attendanceSummaryForm.reset();
+      this.resetForm();
     }
+    this.dialog.closeAll();
   }
 
   getMatchedSettledUser(userId: string) {
-    const matchedUser = this.settledUsers?.find(user => user?._id == userId)
-    return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
-  }
-
-  fetchAttendanceSummary(fnfPayroll: any): void {
-    this.payrollService.getFnFAttendanceSummary(fnfPayroll?._id).subscribe(
-      (res: any) => {
-        this.attendanceSummary.data = res.data;
-        this.attendanceSummary.data.forEach((item: any) => {
-          const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === item.payrollFNFUser);
-          item.userName = this.getMatchedSettledUser(matchedUser.user);
-        });
-
-        if (this.isEdit && this.selectedAttendanceSummary) {
-          this.attendanceSummaryForm.patchValue({
-            payrollFNFUser: this.selectedAttendanceSummary.payrollFNFUser,
-            ...this.selectedAttendanceSummary
-          });
-        }
-      },
-      (error: any) => {
-        this.toast.error('Failed to fetch Manual Arrears', 'Error');
-      }
-    );
+    const matchedUser = this.settledUsers?.find(user => user?._id === userId);
+    return matchedUser ? `${matchedUser?.firstName} ${matchedUser?.lastName}` : 'Not specified';
   }
 
   getMonthNumber(monthName: string): number {
@@ -279,21 +351,25 @@ export class FNFStep1Component implements OnInit {
       next: '',
       year: this.selectedFnF.year,
       month: this.getMonthNumber(this.selectedFnF.month).toString()
-    }
+    };
 
-    this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((res: any) => {
-      this.attendanceLOPUser = res.data;
-      const matchingUsers = this.attendanceLOPUser.filter((lop: any) => lop.user === this.selectedUserId?.user);
+    this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe({
+      next: (res: any) => {
+        this.attendanceLOPUser = res.data;
+        const matchingUsers = this.attendanceLOPUser.filter((lop: any) => lop.user === this.selectedUserId?.user);
 
-      const lopUserLength = matchingUsers.length || 0;
-      const payableDays = this.getTotalDaysInMonth(payload.year, this.selectedFnF.month) - lopUserLength || 0;
+        const lopUserLength = matchingUsers.length || 0;
+        const payableDays = this.getTotalDaysInMonth(payload.year, this.selectedFnF.month) - lopUserLength || 0;
 
-      this.attendanceSummaryForm.patchValue({
-        lopDays: lopUserLength,
-        payableDays: payableDays,
-        totalDays: this.getTotalDaysInMonth(payload.year, this.selectedFnF.month)
-      });
-    })
+        this.attendanceSummaryForm.patchValue({
+          lopDays: lopUserLength,
+          payableDays: payableDays,
+          totalDays: this.getTotalDaysInMonth(payload.year, this.selectedFnF.month)
+        });
+      },
+      error: (error) => {
+        this.toast.error('Failed to fetch LOP data', 'Error');
+      }
+    });
   }
-
 }

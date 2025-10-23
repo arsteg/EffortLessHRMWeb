@@ -1,7 +1,7 @@
 <form [formGroup]="generalSettingForm" [ngClass]="{'editable-form': isEdit}" (ngSubmit)="saveGeneralSettings()">
     <div class="card">
         <section>
-            <h4 class="section-title mb-4">General Payroll Settings</h4>
+            <h4 class="section-title mb-4" translate>payroll.general_settings</h4>
             <div class="row">
                 <div class="col-md-6 col-12">
                     <mat-form-field class="w-100">
@@ -48,7 +48,7 @@
         </section>
 
         <section class="mt-4">
-            <h4 class="section-title">Gratuity Settings</h4>
+            <h4 class="section-title" translate>payroll.gratuity_settings</h4>
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex flex-wrap align-items-center mb-2">
@@ -81,7 +81,7 @@
         </section>
 
         <section class="mt-4">
-            <h4 class="section-title">Additional Settings</h4>
+            <h4 class="section-title" translate>payroll.additional_settings</h4>
             <div class="row">
                 <div class="d-flex flex-wrap align-items-center mb-2">
                     <label translate>payroll.is_allow_to_calculate_overtime</label>

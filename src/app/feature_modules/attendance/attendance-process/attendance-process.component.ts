@@ -610,11 +610,19 @@ export class AttendanceProcessComponent {
     this.attendanceService.getProcessAttendance(payload).subscribe((res: any) => {
       this.processAttendance = res.data.map((data) => {
         console.log(data.users);
+        let users = (data.users || [])
+          .filter(user => user?.user && user?.user?._id)
+          .map(user => this.getUser(user?.user?._id));
+        
+        if (users.length && (!users.at(-1) || users.at(-1) === '')) {
+          users.pop();
+        }
         return {
           ...data,
-          users: (data.users || [])
-            .filter(user => user?.user && user?.user?._id) // Remove null, undefined, or empty strings (with spaces trimmed)
-            .map(user => this.getUser(user?.user?._id))
+          users
+          // users: (data.users || [])
+          //   .filter(user => user?.user && user?.user?._id) // Remove null, undefined, or empty strings (with spaces trimmed)
+          //   .map(user => this.getUser(user?.user?._id))
         };
       });
     })

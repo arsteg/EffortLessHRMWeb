@@ -1,13 +1,13 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidatorFn } from '@angular/forms'; // Import AbstractControl, ValidatorFn
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { MatPaginator } from '@angular/material/paginator';
 import { TableService } from 'src/app/_services/table.service';
-import { MatSort } from '@angular/material/sort';
+import { map, catchError } from 'rxjs';
+import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
 
 @Component({
@@ -20,10 +20,44 @@ export class FixedDeductionComponent implements AfterViewInit {
   selectedRecord: any;
   fixedContributionForm: FormGroup;
   dialogRef: MatDialogRef<any>;
-  sortOrder: string = '';
   isSubmitting: boolean = false;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('modal') modal: any;
+
+  columns: TableColumn[] = [
+    {
+      key: 'label',
+      name: this.translate.instant('payroll.fixed_deduction.table.deduction_name'),
+      valueFn: (row) => row.label || ''
+    },
+    {
+      key: 'isEffectAttendanceOnEligibility', // Changed from 'eligibility'
+      name: this.translate.instant('payroll.fixed_deduction.table.deduction_eligilibity'),
+      icons: [
+        { name: 'check', value: true, class: 'text-success' },
+        { name: 'close', value: false, class: 'text-danger' }
+      ]
+    },
+    {
+      key: 'actions',
+      name: this.translate.instant('payroll.actions'),
+      isAction: true,
+      options: [
+        {
+          label: this.translate.instant('payroll.edit'),
+          visibility: ActionVisibility.BOTH,
+          icon: 'edit',
+          hideCondition: (row) => false
+        },
+        {
+          label: this.translate.instant('payroll.delete'),
+          visibility: ActionVisibility.BOTH,
+          icon: 'delete',
+          cssClass: 'delete-btn',
+          hideCondition: (row) => false
+        }
+      ]
+    }
+  ];
 
   constructor(
     private toast: ToastrService,
@@ -34,11 +68,10 @@ export class FixedDeductionComponent implements AfterViewInit {
     public tableService: TableService<any>
   ) {
     this.fixedContributionForm = this.fb.group({
-        label: ['', [Validators.required, CustomValidators.noNumbersOrSymbolsValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],        
-        isEffectAttendanceOnEligibility: [false]
+      label: ['', [Validators.required, CustomValidators.noNumbersOrSymbolsValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
+      isEffectAttendanceOnEligibility: [false]
     });
 
-    // Set custom filter predicate to search by label
     this.tableService.setCustomFilterPredicate((data: any, filter: string) => {
       return data.label.toLowerCase().includes(filter);
     });
@@ -50,17 +83,14 @@ export class FixedDeductionComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.tableService.initializeDataSource([]);
-    this.tableService.paginator = this.paginator; // Initialize paginator here
-    this.tableService.dataSource.sort = this.sort;
-    this.getFixedDeduction();
   }
 
   clearForm() {
     this.fixedContributionForm.reset({
       label: '',
-      isEffectAttendanceOnEligibility: false // Reset toggle as well
+      isEffectAttendanceOnEligibility: false
     });
-    this.fixedContributionForm.get('label').enable(); // Ensure label is enabled for new additions
+    this.fixedContributionForm.get('label').enable();
     this.isSubmitting = false;
   }
 
@@ -79,57 +109,37 @@ export class FixedDeductionComponent implements AfterViewInit {
 
   closeModal() {
     this.dialogRef.close(true);
-    this.isSubmitting = false;  
+    this.isSubmitting = false;
   }
 
   onSubmission() {
+    this.markFormGroupTouched(this.fixedContributionForm);
     this.isSubmitting = true;
     if (this.fixedContributionForm.invalid) {
+      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error');
       this.isSubmitting = false;
-      this.markFormGroupTouched(this.fixedContributionForm); // Mark all fields as touched
-      this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');   
-      return; // Stop submission if form is invalid
+      return;
     }
 
-    if (!this.isEdit) {
-      this.payroll.addFixedDeduction(this.fixedContributionForm.value).subscribe({
-        next: (res: any) => {
-          // No need to manually add to dataSource.data if getFixedDeduction() is called
-          this.toast.success(
-            this.translate.instant('payroll.fixed_deduction.toast.success_added'),
-            this.translate.instant('payroll.fixed_deduction.title')
-          );
-          this.closeModal();
-        },
-        error: (err) => {     
-          this.isSubmitting = false;  
-          const errorMessage = err?.error?.message || err?.message || err 
-          ||  this.translate.instant('payroll.fixed_deduction.toast.error_add')
-          ;
-          this.toast.error(errorMessage);
-         
-        }
-      });
-    } else {
-      this.payroll.updateFixedDeduction(this.selectedRecord._id, this.fixedContributionForm.value).subscribe({
-        next: (res: any) => {
-          // No need to manually update dataSource.data if getFixedDeduction() is called
-          this.toast.success(
-            this.translate.instant('payroll.fixed_deduction.toast.success_updated'),
-            this.translate.instant('payroll.fixed_deduction.title')
-          );
-          this.closeModal();
-        },
-        error: (err) => {      
-          this.isSubmitting = false;  
-          const errorMessage = err?.error?.message || err?.message || err 
-          ||  this.translate.instant('payroll.fixed_deduction.toast.error_update')
-          ;
-          this.toast.error(errorMessage);
-         
-        }
-      });
-    }
+    const request$ = this.isEdit
+      ? this.payroll.updateFixedDeduction(this.selectedRecord._id, this.fixedContributionForm.value)
+      : this.payroll.addFixedDeduction(this.fixedContributionForm.value);
+
+    request$.subscribe({
+      next: () => {
+        this.toast.success(
+          this.translate.instant(this.isEdit ? 'payroll.fixed_deduction.toast.success_updated' : 'payroll.fixed_deduction.toast.success_added'),
+          this.translate.instant('payroll.fixed_deduction.title')
+        );
+        this.getFixedDeduction();
+        this.closeModal();
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.message || err?.message || this.translate.instant(this.isEdit ? 'payroll.fixed_deduction.toast.error_update' : 'payroll.fixed_deduction.toast.error_add');
+        this.toast.error(errorMessage);
+        this.isSubmitting = false;
+      }
+    });
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
@@ -143,19 +153,16 @@ export class FixedDeductionComponent implements AfterViewInit {
 
   editRecord() {
     this.fixedContributionForm.patchValue(this.selectedRecord);
-    // Disable label if isDelete is false, otherwise enable it
-    // Assuming 'isDelete' indicates if a record can be deleted/modified.
-    // If your logic is different (e.g., if a fixed deduction is "in use"), adjust this.
-    if (this.selectedRecord.isDelete === false) { // Assuming 'isDelete' flag determines if label can be edited
-        this.fixedContributionForm.get('label').disable();
+    if (this.selectedRecord.isDelete === false) {
+      this.fixedContributionForm.get('label').disable();
     } else {
-        this.fixedContributionForm.get('label').enable();
+      this.fixedContributionForm.get('label').enable();
     }
   }
 
   deleteRecord(_id: string) {
     this.payroll.deleteFixedDeduction(_id).subscribe({
-      next: (res: any) => {
+      next: () => {
         this.tableService.setData(this.tableService.dataSource.data.filter(item => item._id !== _id));
         this.toast.success(
           this.translate.instant('payroll.fixed_deduction.toast.success_deleted'),
@@ -163,10 +170,8 @@ export class FixedDeductionComponent implements AfterViewInit {
         );
       },
       error: (err) => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        ||  this.translate.instant('payroll.fixed_deduction.toast.error_delete')
-        ;
-        this.toast.error(errorMessage);       
+        const errorMessage = err?.error?.message || err?.message || this.translate.instant('payroll.fixed_deduction.toast.error_delete');
+        this.toast.error(errorMessage);
       }
     });
   }
@@ -192,9 +197,31 @@ export class FixedDeductionComponent implements AfterViewInit {
       skip: ((this.tableService.currentPage - 1) * this.tableService.recordsPerPage).toString(),
       next: this.tableService.recordsPerPage.toString(),
     };
-    this.payroll.getFixedDeduction(pagination).subscribe((res: any) => {
-      this.tableService.setData(res.data);
-      this.tableService.totalRecords = res.total;
+    this.payroll.getFixedDeduction(pagination).pipe(
+      map((res: any) => res.data),
+      catchError((error) => {
+        this.toast.error(this.translate.instant('payroll.fixed_deduction.toast.error_fetch'), 'Error');
+        throw error;
+      })
+    ).subscribe({
+      next: (data) => {
+        this.tableService.setData(data);
+        this.tableService.totalRecords = data.total || data.length;
+      },
+      error: (error) => {
+        console.error('Error while fetching fixed deductions:', error);
+      }
     });
+  }
+
+  onAction(event: any): void {
+    this.selectedRecord = event.row;
+    if (event.action.label === this.translate.instant('payroll.edit')) {
+      this.isEdit = true;
+      this.editRecord();
+      this.open(this.modal);
+    } else if (event.action.label === this.translate.instant('payroll.delete')) {
+      this.deleteDialog(event.row._id);
+    }
   }
 }

@@ -399,6 +399,7 @@ validateAttendanceUploadLock(): Promise<boolean> {
         }
       },
       (err) => {
+        this.processing = false;
         this.toast.error(
           err?.error?.message || 'Error validating attendance process.',
           this.translate.instant('attendance.upload_title') || 'Upload Attendance'
@@ -700,6 +701,30 @@ validateAttendanceUploadLock(): Promise<boolean> {
       this.processing = false;
       return;
     }
+    const uniqueMonthYearSet = new Set<string>();
+    for (const rec of selectedRecords) {
+      const date = new Date(rec.Date);
+      const month = date.getMonth() + 1;
+      const year = date.getFullYear();
+      uniqueMonthYearSet.add(`${month}-${year}`);
+    }
+
+    const originalMonth = this.selectedMonth;
+    const originalYear = this.selectedYear;
+    for (const key of uniqueMonthYearSet) {
+      const [month, year] = key.split('-').map(Number);
+      this.selectedMonth = month;
+      this.selectedYear = year;
+      const isLocked = await this.validateAttendanceUploadLock();
+      if (isLocked) {
+        this.processing = false;
+        this.selectedMonth = originalMonth;
+        this.selectedYear = originalYear;
+        return;
+      }
+    }
+    this.selectedMonth = originalMonth;
+    this.selectedYear = originalYear;
 
     for (let i = 0; i < selectedRecords.length; i++) {
       const record = selectedRecords[i];

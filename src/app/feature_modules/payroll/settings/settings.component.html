@@ -1,25 +1,25 @@
 <div class="main-content px-2">
     <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel" class="child-tabs">
         <a mat-tab-link routerLink="general-settings" routerLinkActive #rla1="routerLinkActive"
-            [active]="rla1.isActive">General&nbsp;Settings</a>
+            [active]="rla1.isActive">{{'payroll.settings' | translate}}</a>
         <a mat-tab-link routerLink="fixed-allowances" routerLinkActive #rla2="routerLinkActive"
-            [active]="rla2.isActive">Fixed&nbsp;Allowances</a>
+            [active]="rla2.isActive">{{'payroll.fixed_allowance_title' | translate}}</a>
         <a mat-tab-link routerLink="fixed-deductions" routerLinkActive #rla3="routerLinkActive"
-            [active]="rla3.isActive">Fixed&nbsp;Deductions</a>
+            [active]="rla3.isActive">{{'payroll.fixed_deductions' | translate}}</a>
         <a mat-tab-link routerLink="fixed-contributions" routerLinkActive #rla4="routerLinkActive"
-            [active]="rla4.isActive">Fixed&nbsp;Contributions</a>
+            [active]="rla4.isActive">{{'payroll.fixed_contributions' | translate}}</a>
         <a mat-tab-link routerLink="variable-allowances" routerLinkActive #rla5="routerLinkActive"
-            [active]="rla5.isActive">Variable&nbsp;Allowances</a>
+            [active]="rla5.isActive">{{'payroll.variable_allowance' | translate}}</a>
 
         <a mat-tab-link routerLink="variable-deductions" routerLinkActive #rla6="routerLinkActive"
-            [active]="rla6.isActive">Variable&nbsp;Deductions</a>
+            [active]="rla6.isActive">{{'payroll.variable_deduction.toast.title' | translate}}</a>
         <!-- it may require in future -->
         <!-- <a mat-tab-link routerLink="other-benefits" routerLinkActive #rla7="routerLinkActive"
             [active]="rla7.isActive">Other&nbsp;Benefits</a> -->
         <a mat-tab-link routerLink="loans-advances" routerLinkActive #rla8="routerLinkActive"
-            [active]="rla8.isActive">Loans/Advances</a>
+            [active]="rla8.isActive">{{'payroll._fnf.steps.loans' | translate}}</a>
         <a mat-tab-link routerLink="flexi-benefits" routerLinkActive #rla9="routerLinkActive"
-            [active]="rla9.isActive">Flexi&nbsp;Benefits</a>
+            [active]="rla9.isActive">{{'payroll._flexi_benefits' | translate}}</a>
         <!-- it may require in future -->
         <!-- <a mat-tab-link routerLink="pf-charges" routerLinkActive #rla10="routerLinkActive"
             [active]="rla10.isActive">PF&nbsp;Charges</a> -->
