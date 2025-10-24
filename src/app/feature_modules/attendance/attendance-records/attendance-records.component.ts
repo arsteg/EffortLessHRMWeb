@@ -215,7 +215,7 @@ export class AttendanceRecordsComponent implements OnInit {
     }
 
     // 2. Check for leaves
-    if (this.isDateOnLeave(user._id, date)) {
+    if (this.isDateOnLeave(user._id.id, date)) {
       return 'leave';
     }
 
@@ -277,7 +277,7 @@ export class AttendanceRecordsComponent implements OnInit {
     if (!this.leave || this.leave.length === 0) {
       return false;
     }
-    const userLeaves = this.leave.filter(leave => leave.employee === userId);
+    const userLeaves = this.leave.filter(leave => leave.employee.id === userId);
     for (let leave of userLeaves) {
       const startDate = new Date(leave.startDate);
       const endDate = new Date(leave.endDate);
