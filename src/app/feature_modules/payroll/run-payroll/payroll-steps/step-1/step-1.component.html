@@ -2,15 +2,15 @@
 
     <nav mat-tab-nav-bar mat-stretch-tabs="false" mat-align-tabs="start" [tabPanel]="tabPanel" class="child-tabs">
         <a mat-tab-link (click)="selectTab('tabActiveEmployees')" [active]="activeTab === 'tabActiveEmployees'">
-            Active Employees
+            {{'payroll.active_employees' | translate}}
         </a>
 
         <a mat-tab-link (click)="selectTab('tabEmployeesOnHold')" [active]="activeTab === 'tabEmployeesOnHold'">
-            Employees On-Hold
+            {{'payroll.onhold_employees' | translate}}
         </a>
 
         <a mat-tab-link (click)="selectTab('tabProcessedEmployees')" [active]="activeTab === 'tabProcessedEmployees'">
-            Processed Employees
+            {{'payroll.processed_employees' | translate}}
         </a>
     </nav>
 

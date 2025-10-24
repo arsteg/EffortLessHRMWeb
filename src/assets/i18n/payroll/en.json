@@ -28,6 +28,27 @@
         "loan_advances": "Loan/Advances",
         "manual_Arrears": "Manual Arrears",
         "overtime": "Overtime",
+        "hold": "Hold",
+        "unhold": "Unhold",
+        "re_run": "Re-Run",
+        "payroll_user_label": "Payroll User",
+        "select_loan_advnace": "Select Loans and Advances",
+        "reset_selection": "Reset Selection",
+        "repayment_amount": "Repayment Amount",
+        "required": {
+            "field_variable_pay": "Please select either Variable Deduction or Variable Allowance",
+            "amount": "Amount is required",
+            "amount_negative": "Amount must be greater than 0",
+            "disbursed_required": "Disbursement Amount must be greater than 0."
+        },
+        "messages": {
+            "loan_advances": "Loan/Advance created', 'Successfully!",
+            "loan_advances_error": "Loan/Advance Not Saved",
+            "loan_Advance_updated": "Loan/Advance updated successfully",
+            "loan_advance_delete": "Successfully Deleted!, Loan/Advance",
+            "loan_advance_delete_error": "Unable to Delete Loan/Advance",
+            "loan_advance_update_error": "Loan/Advance Not Updated"
+        },
         "_history": {
             "title": "Payroll History",
             "table": {
@@ -167,6 +188,8 @@
         "gross_pay": "Gross Pay",
         "payable_days": "Payable Days",
         "employee_name": "Employee Name",
+        "total_days": "Total Days",
+        "lop_days": "LOP Days",
         "designation": "Designation",
         "department": "Department",
         "earnings": "Earnings",
@@ -199,7 +222,7 @@
         "gratuity_components_calculation": "Components on which Gratuity is calculated",
         "is_allow_tds_from_effortless_hrm": "Do you wish to calculate your TDS from EffortlessHRM?",
         "edit": "Edit",
-        "cancel": "Close",
+        "cancel": "Cancel",
         "save": "Save",
         "yes": "Yes",
         "no": "No",
@@ -265,6 +288,15 @@
         "esic_ceiling_amount_title": "ESIC Ceiling Amount",
         "employee_percentage": "Employee Percentage",
         "employer_percentage": "Employer Percentage",
+        "active_employees": "Active Employees",
+        "onhold_employees": "Employees On-Hold",
+        "processed_employees": "Processed Employees",
+        "amount_type": "Type of Amount",
+        "disbursement": "Disbursement",
+        "disbursed_amount": "Disbursed Amount",
+        "repayment": "Repayment",
+        "disbursed_label": "Enter Disbursement Amount",
+        "loan_category": "Loan/Advances Category",
         "modal": {
             "add_title": "Add ESIC Contribution",
             "update_title": "Update ESIC Contribution"
