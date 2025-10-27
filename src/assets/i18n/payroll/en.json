@@ -305,7 +305,8 @@
             "employee_percentage": "Employee Percentage",
             "employer_percentage": "Employer Percentage",
             "error": {
-                "required": "Field is required"
+                "required": "Field is required",
+                "failed_to_load_salary": "Failed to load Salary Per Day"
             }
         },
         "toast": {
@@ -314,7 +315,10 @@
             "success_updated": "Successfully Updated!",
             "error_update": "ESIC Contribution cannot be updated",
             "success_deleted": "Successfully Deleted!",
-            "error_delete": "ESIC Contribution cannot be deleted"
+            "error_delete": "ESIC Contribution cannot be deleted",
+            "manual_arrear_successfully": "Manual Arrear Created!",
+            "arrear_updated": "Arrear Updated!",
+            "arrear_deleted": "Arrear Deleted!"
         },
         "professional-tax": {
             "title": "Professional Tax",
@@ -694,6 +698,17 @@
         "category": "Category",
         "criteria": "Criteria",
         "value": "Value",
-        "minimum_amount": "Minimum Amount"
+        "minimum_amount": "Minimum Amount",
+        "arrear_days" : "Arrear Days" ,
+        "lop_reversal_days" : "LOP Reversal Days" ,
+        "salary_revision_days" : "Salary Revision Days",
+        "lop_reversal_arrears": "LOP Reversal Arrears",
+        "total_arrears": "Total Arrears",
+        "number_of_days": "Enter Number of Arrear Days",
+        "enter_lop_reversal_days": "Enter LOP Reversal Days",
+        "enter_lop_reversal": "Enter LOP Reversal Arrears",
+        "enter_total_arrears": "Enter Total Arrears",
+        "add_to_unhold": "Do you want Selected Employee to UnHold?",
+        "re_run_employee": "Do you want to Re-Run for Selected Employee?"
     }
 }

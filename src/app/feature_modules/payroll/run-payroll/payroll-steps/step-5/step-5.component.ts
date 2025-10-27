@@ -1,14 +1,13 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
-import { forkJoin, map } from 'rxjs';
-import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-step-5',
   templateUrl: './step-5.component.html',
@@ -19,7 +18,7 @@ export class Step5Component {
   arrearForm: FormGroup;
   changeMode: 'Add' | 'Update' = 'Add';
   @Input() selectedPayroll: any;
-  salaryPerDay: any; // or fetch dynamically if needed
+  salaryPerDay: any;
   selectedUserId: any;
   arrears: any;
   allUsers: any;
@@ -30,25 +29,26 @@ export class Step5Component {
   isSubmitted: boolean = false;
   payrollUsers: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
+
   columns: TableColumn[] = [
-    { key: 'payrollUserDetails', name: 'Employee Name' },
-    { key: 'manualArrears', name: 'Manual Arrears' },
-    { key: 'arrearDays', name: 'Arrear Days' },
-    { key: 'lopReversalDays', name: 'LOP Reversal Days', },
-    { key: 'salaryRevisionDays', name: 'Salary Revision Days' },
-    { key: 'lopReversalArrears', name: 'LOP Reversal Arrears' },
-    { key: 'totalArrears', name: 'Total Arrears' },
+    { key: 'payrollUserDetails', name: this.translate.instant('payroll.employee_name') },
+    { key: 'manualArrears', name: this.translate.instant('payroll._fnf.steps.arrears') },
+    { key: 'arrearDays', name: this.translate.instant('payroll.arrear_days') },
+    { key: 'lopReversalDays', name: this.translate.instant('payroll.lop_reversal_days') },
+    { key: 'salaryRevisionDays', name: this.translate.instant('payroll.salary_revision_days') },
+    { key: 'lopReversalArrears', name: this.translate.instant('payroll.lop_reversal_arrears') },
+    { key: 'totalArrears', name: this.translate.instant('payroll.total_arrears') },
     {
-      key: 'action', name: 'Action', isAction: true, options: [
-        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit' },
-        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
+      key: 'action', name: this.translate.instant('payroll.actions'), isAction: true, options: [
+        { label: this.translate.instant('payroll.edit'), visibility: ActionVisibility.BOTH, icon: 'edit' },
+        { label: this.translate.instant('payroll.delete'), visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
       ]
     }
   ]
   constructor(
     private fb: FormBuilder,
     private payrollService: PayrollService,
-    private commonService: CommonService,
     private userService: UserService,
     private toast: ToastrService,
     private dialog: MatDialog
@@ -97,7 +97,7 @@ export class Step5Component {
   }
 
   recalculateFields(): void {
-    if (!this.salaryPerDay) return; // Skip until salaryPerDay is loaded
+    if (!this.salaryPerDay) return;
 
     const manualArrears = +this.arrearForm.get('manualArrears')?.value || 0;
     const arrearDays = +this.arrearForm.get('arrearDays')?.value || 0;
@@ -119,9 +119,10 @@ export class Step5Component {
         this.salaryPerDay = res.data;
       },
       (error: any) => {
-        this.toast.error('Failed to load Salary Per Day', 'Error');
+        this.toast.error(this.translate.instant('payroll.form.error.failed_to_load_salary'));
       })
   }
+
   selectTab(tabId: string) {
     this.activeTab = tabId;
   }
@@ -194,12 +195,6 @@ export class Step5Component {
       });
       this.arrears = userRequests
     });
-    // if (this.changeMode == 'Update' && this.selectedRecord) {
-    //   this.arrearForm.patchValue({
-    //     payrollUser: this.selectedRecord.payrollUser,
-    //     ...this.selectedRecord
-    //   });
-    // }
   }
 
   getArrearsByPayroll() {
@@ -229,12 +224,11 @@ export class Step5Component {
         this.getArrears();
         this.selectedUserId = null;
         this.arrearForm.reset();
-        this.toast.success('Manual Arrear Created', 'Successfully!');
+        this.toast.success(this.translate.instant('payroll.toast.manual_arrear_successfully'), this.translate.instant('payroll.success'));
         this.closeDialog();
       },
         err => {
-          const errorMessage = err?.error?.message || err?.message || err
-            || 'Manual arrear can not be Created';
+          const errorMessage = err?.error?.message || err?.message || err;
           this.toast.error(errorMessage, 'Error!');
           this.isSubmitted = true;
         });
@@ -243,15 +237,14 @@ export class Step5Component {
       this.arrearForm.value.payrollUser = this.selectedRecord?.payrollUser;
       this.payrollService.updateArrear(this.selectedRecord?._id, this.arrearForm.value).subscribe((res: any) => {
         this.getArrears();
-        this.toast.success('Arrear Updated', 'Successfully');
+        this.toast.success(this.translate.instant('payroll.toast.arrear_updated'), this.translate.instant('payroll.success'));
         this.selectedUserId = null;
         this.arrearForm.reset();
         this.changeMode = 'Add';
         this.closeDialog();
       },
         err => {
-          const errorMessage = err?.error?.message || err?.message || err
-            || 'Manual arrear can not be Updated';
+          const errorMessage = err?.error?.message || err?.message || err;
           this.toast.error(errorMessage, 'Error!');
           this.isSubmitted = true;
         });
@@ -261,11 +254,10 @@ export class Step5Component {
   deleteTemplate(_id: string) {
     this.payrollService.deleteArrear(_id).subscribe((res: any) => {
       this.getArrears();
-      this.toast.success('Successfully Deleted!!!', 'Arrear');
+      this.toast.success(this.translate.instant('payroll.toast.arrear_deleted'), this.translate.instant('payroll.success'));
     },
       (err) => {
-        const errorMessage = err?.error?.message || err?.message || err
-          || 'This Arrear Can not be deleted!';
+        const errorMessage = err?.error?.message || err?.message || err;
         this.toast.error(errorMessage, 'Error!');
       });
   }

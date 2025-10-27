@@ -1,6 +1,7 @@
 <div class="">
 
-    <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Manual Arrears</label></div>
+    <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | {{'payroll.manual_Arrears' | translate}}</label>
+    </div>
     <div class="position-relative">
         <div class="position-absolute end-0 d-flex gap-2 mt-1">
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
@@ -14,7 +15,7 @@
 </div>
 
 <ng-template #dialogTemplate>
-    <h1 mat-dialog-title>{{changeMode}} Manual Arrear</h1>
+    <h1 mat-dialog-title>{{changeMode}} {{'payroll.manual_Arrears' | translate}}</h1>
     <div mat-dialog-content>
         <form [formGroup]="arrearForm" (ngSubmit)="onSubmission()">
             <div class="row">
@@ -26,7 +27,7 @@
 
                 <div class="form-group col-md-6" *ngIf="changeMode === 'Update'">
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Payroll User</mat-label>
+                        <mat-label>{{'payroll.payroll_user_label' | translate}}</mat-label>
                         <input matInput type="text" formControlName="payrollUser" readonly>
                     </mat-form-field>
                 </div>
@@ -44,7 +45,7 @@
 
                 <div class="form-group col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Enter Number of Arrear Days</mat-label>
+                        <mat-label>{{'payroll.number_of_days' | translate}}</mat-label>
                         <input matInput type="number" formControlName="arrearDays" placeholder="Enter Arrear Days">
                         <mat-error *ngIf="arrearForm.get('arrearDays')?.hasError('negativeNumber')">
                             {{'payroll.NegativeNotAllowed' | translate}}
@@ -54,9 +55,9 @@
 
                 <div class="form-group col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>LOP Reversal Days</mat-label>
+                        <mat-label>{{'payroll.lop_reversal_days' | translate}}</mat-label>
                         <input matInput type="number" formControlName="lopReversalDays"
-                            placeholder="Enter LOP Reversal Days">
+                            placeholder="{{'payroll.enter_lop_reversal_days' | translate}}">
                         <mat-error *ngIf="arrearForm.get('lopReversalDays')?.hasError('negativeNumber')">
                             {{'payroll.NegativeNotAllowed' | translate}}
                         </mat-error> </mat-form-field>
@@ -64,7 +65,7 @@
 
                 <div class="form-group col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Salary Revision Days</mat-label>
+                        <mat-label>{{'payroll.salary_revision_days' | translate}}</mat-label>
                         <input matInput type="number" formControlName="salaryRevisionDays"
                             placeholder="Enter Salary Revision Days">
                         <mat-error *ngIf="arrearForm.get('salaryRevisionDays')?.hasError('negativeNumber')">
@@ -75,9 +76,9 @@
 
                 <div class="form-group col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>LOP Reversal Arrears</mat-label>
+                        <mat-label>{{'payroll.lop_reversal_arrears' | translate}}</mat-label>
                         <input matInput type="number" formControlName="lopReversalArrears"
-                            placeholder="Enter LOP Reversal Arrears">
+                            placeholder="{{'payroll.enter_lop_reversal' | translate}}">
                         <mat-error *ngIf="arrearForm.get('lopReversalArrears')?.hasError('negativeNumber')">
                             {{'payroll.NegativeNotAllowed' | translate}}
                         </mat-error>
@@ -86,8 +87,9 @@
 
                 <div class="form-group col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Total Arrears</mat-label>
-                        <input matInput type="number" formControlName="totalArrears" placeholder="Enter Total Arrears">
+                        <mat-label>{{'payroll.total_arrears' | translate}}</mat-label>
+                        <input matInput type="number" formControlName="totalArrears"
+                            placeholder="{{'payroll.enter_total_arrears' | translate}}">
                         <mat-error *ngIf="arrearForm.get('totalArrears').hasError('required')">
                             {{ 'payroll.required' | translate }}
                         </mat-error>
@@ -98,8 +100,9 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between mt-3">
-                <button mat-flat-button type="button" (click)="closeDialog()">Cancel</button>
-                <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitted">Save</button>
+                <button mat-flat-button type="button" (click)="closeDialog()">{{'payroll.cancel' | translate}}</button>
+                <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitted">{{'payroll.save' |
+                    translate}}</button>
             </div>
         </form>
     </div>
@@ -108,29 +111,29 @@
 <ng-template #modalUnHold let-modal>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
         <div>
-            <h1 class="modal-title text-muted mb-0">Do you want Selected Employee to UnHold?</h1>
+            <h1 class="modal-title text-muted mb-0">{{'payroll.add_to_unhold' | translate}}</h1>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
         </div>
     </div>
     <div class="d-flex justify-content-between">
-        <button mat-flat-button type="button">No</button>
-        <button mat-flat-button type="submit" color="primary">Yes</button>
+        <button mat-flat-button type="button">{{'payroll.no' | translate}}</button>
+        <button mat-flat-button type="submit" color="primary">{{'payroll.yes' | translate}}</button>
     </div>
 </ng-template>
 
 <ng-template #modalReRun let-modal>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
         <div>
-            <h1 class="modal-title text-muted mb-0">Do you want to Re-Run for Selected Employee?</h1>
+            <h1 class="modal-title text-muted mb-0">{{'payroll.re_run_employee' | translate}}</h1>
         </div>
         <div class=""><button type="button" data-bs-dismiss="modal" class="btn-close text-end"
                 (click)="modal.close('Escape clicked')"></button>
         </div>
     </div>
     <div class="d-flex justify-content-between">
-        <button mat-flat-button type="button">No</button>
-        <button mat-flat-button type="submit" color="primary">Yes</button>
+        <button mat-flat-button type="button">{{'payroll.no' | translate}}</button>
+        <button mat-flat-button type="submit" color="primary">{{'payroll.yes' | translate}}</button>
     </div>
 </ng-template>
