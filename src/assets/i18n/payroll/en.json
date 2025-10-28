@@ -35,6 +35,7 @@
         "select_loan_advnace": "Select Loans and Advances",
         "reset_selection": "Reset Selection",
         "repayment_amount": "Repayment Amount",
+        "total_flexi_amount": "Total Flexi Benefits Amount",
         "required": {
             "field_variable_pay": "Please select either Variable Deduction or Variable Allowance",
             "amount": "Amount is required",
@@ -47,7 +48,14 @@
             "loan_Advance_updated": "Loan/Advance updated successfully",
             "loan_advance_delete": "Successfully Deleted!, Loan/Advance",
             "loan_advance_delete_error": "Unable to Delete Loan/Advance",
-            "loan_advance_update_error": "Loan/Advance Not Updated"
+            "loan_advance_update_error": "Loan/Advance Not Updated",
+            "flexi_benefit_created": "Flexi Benefits Added!",
+            "flexi_benefit_created_error": "Flexi Benefits Not Added",
+            "flexi_benefit_updated": "Flexi Benefits Updated!",
+            "flexi_benefit_updated_error": "Flexi Benefits Not Updated",
+            "flexi_benefit_deleted": "Flexi Benefits Deleted!",
+            "flexi_benefit_deleted_error": "Flexi Benefits Not Deleted",
+            "no_salary_found": "No salary records found for the selected user to pass the professional Tax"
         },
         "_history": {
             "title": "Payroll History",
@@ -304,6 +312,7 @@
         "form": {
             "employee_percentage": "Employee Percentage",
             "employer_percentage": "Employer Percentage",
+            "total_flexi_required": "Total Flexi Benefits Amount is required",
             "error": {
                 "required": "Field is required",
                 "failed_to_load_salary": "Failed to load Salary Per Day"
@@ -699,9 +708,9 @@
         "criteria": "Criteria",
         "value": "Value",
         "minimum_amount": "Minimum Amount",
-        "arrear_days" : "Arrear Days" ,
-        "lop_reversal_days" : "LOP Reversal Days" ,
-        "salary_revision_days" : "Salary Revision Days",
+        "arrear_days": "Arrear Days",
+        "lop_reversal_days": "LOP Reversal Days",
+        "salary_revision_days": "Salary Revision Days",
         "lop_reversal_arrears": "LOP Reversal Arrears",
         "total_arrears": "Total Arrears",
         "number_of_days": "Enter Number of Arrear Days",

@@ -1,10 +1,12 @@
 <div class="">
-    <div class="my-2"><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Flexi Benefits</label></div>
+    <div class="my-2"><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | {{'payroll._flexi_benefits' |
+            translate}}</label></div>
     <div class="position-relative">
         <div class="d-flex position-absolute end-0 gap-2 mt-1">
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                 [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-            <button mat-flat-button color="primary" (click)="changeMode = 'Add'; openDialog();">Add</button>
+            <button mat-flat-button color="primary" (click)="changeMode = 'Add'; openDialog();">{{'payroll.add' |
+                translate}}</button>
         </div>
     </div>
     <hrm-table [data]="flexiBenefits" [columns]="columns" [showSearch]="true"
@@ -12,7 +14,7 @@
 </div>
 
 <ng-template #dialogTemplate>
-    <h1 mat-dialog-title>{{changeMode}} Flexi Benefits</h1>
+    <h1 mat-dialog-title>{{changeMode}} {{'payroll._flexi_benefits' | translate}}</h1>
     <div mat-dialog-content>
         <form [formGroup]="flexiBenefitsForm" (ngSubmit)="onSubmission()">
             <div class="row">
@@ -20,27 +22,26 @@
                     <app-payroll-user-list [controlField]="flexiBenefitsForm.get('PayrollUser')"
                         (userSelected)="onUserSelectedFromChild($event)"
                         [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
-                    <div *ngIf="noSalaryRecordFound">No salary records found for the selected user to pass the
-                        professional Tax</div>
+                    <div *ngIf="noSalaryRecordFound">{{'payroll.messages.no_salary_found' | translate}}</div>
                 </div>
 
                 <div class="form-group col-md-6" *ngIf="changeMode === 'Update'">
                     <mat-form-field appearance="outline" class="my-2 w-100">
-                        <mat-label>Payroll User</mat-label>
+                        <mat-label>{{'payroll.payroll_user_label' | translate}}</mat-label>
                         <input matInput type="text" [disabled] formControlName="PayrollUser">
                     </mat-form-field>
                 </div>
 
                 <div class="form-group col-md-6">
                     <mat-form-field appearance="outline" class="my-2 w-100">
-                        <mat-label>Total Flexi Benefits Amount</mat-label>
+                        <mat-label>{{'payroll.total_flexi_amount' | translate}}</mat-label>
                         <input matInput type="number" min="0" formControlName="TotalFlexiBenefitAmount">
                         @if (flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.invalid &&
                         flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.touched) {
-                        <mat-error>@if(flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.errors?.['min']){Negative
-                            Values
-                            are not allowed}
-                            @else {Total Flexi Benefits Amount is required}
+                        <mat-error>@if(flexiBenefitsForm.get('TotalFlexiBenefitAmount')?.errors?.['min']){
+                            {{'payroll.NegativeNotAllowed' | translate}}
+                            }
+                            @else { {{'payroll.form.total_flexi_required' | translate}} }
                         </mat-error>
                         }
                     </mat-form-field>
@@ -48,9 +49,9 @@
 
             </div>
             <div class="d-flex justify-content-between mt-3">
-                <button mat-flat-button type="button" (click)="closeDialog()">Cancel</button>
-                <button mat-flat-button color="primary" [disabled]="isSubmitted"
-                    type="submit">Save</button>
+                <button mat-flat-button type="button" (click)="closeDialog()">{{'payroll.cancel' | translate}}</button>
+                <button mat-flat-button color="primary" [disabled]="isSubmitted" type="submit">{{'payroll.save' |
+                    translate}}</button>
             </div>
         </form>
     </div>
