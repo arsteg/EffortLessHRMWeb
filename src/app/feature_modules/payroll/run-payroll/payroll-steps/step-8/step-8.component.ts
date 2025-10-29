@@ -1,14 +1,8 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
-import { TaxationService } from 'src/app/_services/taxation.service';
-import { UserService } from 'src/app/_services/users.service';
-import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
-import { Observable, forkJoin, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
 import { TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-step-8',
@@ -37,20 +31,18 @@ export class Step8Component {
   ctc: number = 0;
   taxCalulationMethod: boolean = false;
   isIncomeTaxDeductionFalse: boolean = false;
+    private readonly translate = inject(TranslateService);
+  
   columns: TableColumn[] = [
-    { key: 'payrollUserDetails', name: 'Employee Name' },
-    { key: 'TaxCalculatedMethod', name: 'Tax Calculation Method' },
-    { key: 'TaxCalculated', name: 'Tax Calculation By EffortlessHRM (Yearly)' },
-    { key: 'TDSCalculated', name: 'TDS to be Deducted (Monthly)', }
+    { key: 'payrollUserDetails', name: this.translate.instant('payroll.employee_name') },
+    { key: 'TaxCalculatedMethod', name: this.translate.instant('payroll.tax_calculation_method') },
+    { key: 'TaxCalculated', name: this.translate.instant('payroll.tax_calculation_by_effortlesshrm') },
+    { key: 'TDSCalculated', name: this.translate.instant('payroll.tds_to_be_deducted') }
   ]
 
   constructor(
     private fb: FormBuilder,
     private payrollService: PayrollService,
-    private dialog: MatDialog,
-    private toast: ToastrService,
-    private userService: UserService,
-    private taxService: TaxationService
   ) {
     this.taxForm = this.fb.group({
       PayrollUser: ['', Validators.required],

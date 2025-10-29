@@ -1,5 +1,6 @@
 <div class="">
-    <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Income Tax</label></div>
+    <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | {{'payroll.income_tax' | translate}}</label>
+    </div>
 
     <hrm-table [data]="incomeTax" [columns]="columns" [showSearch]="true"></hrm-table>
 </div>

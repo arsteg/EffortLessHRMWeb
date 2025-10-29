@@ -224,7 +224,7 @@ export class Step5Component {
         this.getArrears();
         this.selectedUserId = null;
         this.arrearForm.reset();
-        this.toast.success(this.translate.instant('payroll.toast.manual_arrear_successfully'), this.translate.instant('payroll.success'));
+        this.toast.success(this.translate.instant('payroll.toast.manual_arrear_successfully'), this.translate.instant('payroll.successfully'));
         this.closeDialog();
       },
         err => {
@@ -237,7 +237,7 @@ export class Step5Component {
       this.arrearForm.value.payrollUser = this.selectedRecord?.payrollUser;
       this.payrollService.updateArrear(this.selectedRecord?._id, this.arrearForm.value).subscribe((res: any) => {
         this.getArrears();
-        this.toast.success(this.translate.instant('payroll.toast.arrear_updated'), this.translate.instant('payroll.success'));
+        this.toast.success(this.translate.instant('payroll.toast.arrear_updated'), this.translate.instant('payroll.successfully'));
         this.selectedUserId = null;
         this.arrearForm.reset();
         this.changeMode = 'Add';
@@ -254,7 +254,7 @@ export class Step5Component {
   deleteTemplate(_id: string) {
     this.payrollService.deleteArrear(_id).subscribe((res: any) => {
       this.getArrears();
-      this.toast.success(this.translate.instant('payroll.toast.arrear_deleted'), this.translate.instant('payroll.success'));
+      this.toast.success(this.translate.instant('payroll.toast.arrear_deleted'), this.translate.instant('payroll.successfully'));
     },
       (err) => {
         const errorMessage = err?.error?.message || err?.message || err;

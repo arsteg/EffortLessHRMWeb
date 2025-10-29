@@ -1,5 +1,6 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { TableColumn } from 'src/app/models/table-column';
 
@@ -24,12 +25,14 @@ export class Step7Component {
   overtimeRecords: any;
   selectedPayrollUser: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
+
   columns: TableColumn[] = [
-    { key: 'payrollUserDetails', name: 'Employee Name' },
-    { key: 'LateComing', name: 'Late Coming' },
-    { key: 'EarlyGoing', name: 'Early Going' },
-    { key: 'FinalOvertime', name: 'Final Over Time(HH:MM)', valueFn: (row) => (row.FinalOvertime / 60).toFixed(2) },
-    { key: 'OvertimePayableSalary', name: 'Over Time Amount-(INR)', valueFn: (row) => row.OvertimeAmount ? row.OvertimeAmount.toFixed(2) : '0.00' },
+    { key: 'payrollUserDetails', name: this.translate.instant('payroll.employee_name') },
+    { key: 'LateComing', name: this.translate.instant('payroll.late_coming') },
+    { key: 'EarlyGoing', name: this.translate.instant('payroll.early_going') },
+    { key: 'FinalOvertime', name: this.translate.instant('payroll.final_overtime'), valueFn: (row) => (row.FinalOvertime / 60).toFixed(2) },
+    { key: 'OvertimePayableSalary', name: this.translate.instant('payroll.overtime_amount'), valueFn: (row) => row.OvertimeAmount ? row.OvertimeAmount.toFixed(2) : '0.00' },
   ]
   constructor(
     private payrollService: PayrollService,

@@ -1,24 +1,10 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
-import { receiveMessageOnPort } from 'worker_threads';
-
-interface PayrollStatus {
-  InProgress: string,
-  Pending: string,
-  OnHold: string,
-  Processed: string,
-  Approved: string,
-  Paid: string,
-  Cleared: string,
-  Rejected: string,
-  Finilized: string,
-  Exit_Interview_Completed: string
-}
-
 @Component({
   selector: 'app-step-9',
   templateUrl: './step-9.component.html',
@@ -61,25 +47,26 @@ export class Step9Component {
     'totalTakeHome',
     'actions'
   ];
+    private readonly translate = inject(TranslateService);
 
   columns: TableColumn[] = [
-    { key: 'PayrollUsers', name: 'Employee Name', valueFn: (row) => row?.PayrollUser?.user?.firstName + ' ' + row?.PayrollUser?.user?.lastName },
-    { key: 'totalOvertime', name: 'Total Overtime' },
-    { key: 'totalFixedAllowance', name: 'Total Fixed Allowances' },
-    { key: 'totalFixedDeduction', name: 'Total Fixed Deductions', },
-    { key: 'totalLoanRepayment', name: 'Total Loan Repayment', },
-    { key: 'totalLoanDisbursed', name: 'Total Loan Disbursed', },
-    { key: 'totalFlexiBenefits', name: 'Total Flexi Benefits', },
-    { key: 'totalIncomeTax', name: 'Total TDS', },
-    { key: 'yearlySalary', name: 'Total CTC', },
-    { key: 'monthlySalary', name: 'Total Gross Salary', },
-    { key: 'totalEmployerStatutoryContribution', name: 'Total Employer Statutory Contribution', },
-    { key: 'totalEmployeeStatutoryDeduction', name: 'Total Employee Statutory Deduction', },
-    { key: 'payroll_status', name: 'Payroll Status', valueFn: (row) => row?.PayrollUser?.status },
-    { key: 'totalTakeHome', name: 'Total Take Home', },
+    { key: 'PayrollUsers', name: this.translate.instant('payroll.employee_name'), valueFn: (row) => row?.PayrollUser?.user?.firstName + ' ' + row?.PayrollUser?.user?.lastName },
+    { key: 'totalOvertime', name: this.translate.instant('payroll.total_overtime'), },
+    { key: 'totalFixedAllowance', name: this.translate.instant('payroll.total_fixed_allowances') },
+    { key: 'totalFixedDeduction', name: this.translate.instant('payroll.total_fixed_deductions') },
+    { key: 'totalLoanRepayment', name: this.translate.instant('payroll.total_loan_repayment') },
+    { key: 'totalLoanDisbursed', name: this.translate.instant('payroll.total_loan_disbursed') },
+    { key: 'totalFlexiBenefits', name: this.translate.instant('payroll.total_flexi_benefits') },
+    { key: 'totalIncomeTax', name: this.translate.instant('payroll.total_tds') },
+    { key: 'yearlySalary', name: this.translate.instant('payroll.total_ctc') },
+    { key: 'monthlySalary', name: this.translate.instant('payroll.total_gross_salary') },
+    { key: 'totalEmployerStatutoryContribution', name: this.translate.instant('payroll.total_employer_statutory_contribution')},
+    { key: 'totalEmployeeStatutoryDeduction', name:this.translate.instant('payroll.total_employee_statutory_deduction') },
+    { key: 'payroll_status', name:this.translate.instant('payroll._history.form.status'), valueFn: (row) => row?.PayrollUser?.status },
+    { key: 'totalTakeHome', name: this.translate.instant('payroll._fnf.form.take_home') },
     {
-      key: 'actions', name: 'Actions', isAction: true, options: [
-        { label: 'View', visibility: ActionVisibility.BOTH, icon: 'remove_red_eye' }
+      key: 'actions', name: this.translate.instant('payroll.actions'), isAction: true, options: [
+        { label: this.translate.instant('payroll.view'), visibility: ActionVisibility.BOTH, icon: 'remove_red_eye' }
       ]
     },
   ]
@@ -169,7 +156,7 @@ export class Step9Component {
       status: this.selectedStatus
     };
     this.payrollService.updatePayrollUserStatus(id, payload).subscribe((res: any) => {
-      this.toast.success('Payroll status updated successfully', 'Success');
+      this.toast.success(this.translate.instant('payroll._history.toast.status_updated'));
       this.getGeneratedPayroll();
       this.closeAddDialog();
     })
@@ -202,7 +189,6 @@ export class Step9Component {
         });
       },
       (error) => {
-        console.error('Error fetching generated payroll:', error);
         this.generatedPayroll = [];
       }
     );
