@@ -154,11 +154,17 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
     if (this.data && this.data.records) {
       const statuses = this.data.records.map((record: any) => record.status);
       this.daysPresent = statuses.filter((status: string) => status === 'present').length;
+      this.daysPresent += statuses.filter((status: string) => status === 'halfDayLeave').length/2;
       this.daysAbsent = statuses.filter((status: string) => status === 'noRecord').length;
+      this.daysAbsent += statuses.filter((status: string) => status === 'absent').length;
       this.leaveTaken = statuses.filter((status: string) => status === 'leave').length;
+      this.leaveTaken += statuses.filter((status: string) => status === 'halfDayLeave').length/2;
       this.weeklyOff = statuses.filter((status: string) => status === 'weeklyOff').length;
       this.holidays = statuses.filter((status: string) => status === 'holiday').length;
-      this.incompleteRecords = statuses.filter((status: string) => status.includes('incomplete')).length;
+      //Incomplete records are considered as absent days
+      //this.incompleteRecords = statuses.filter((status: string) => status.includes('incomplete')).length; 
+      this.daysAbsent += statuses.filter((status: string) => status.includes('incomplete')).length;
+      
       this.totalRecords = statuses.length;
 
       this.totalPayableDays = this.daysPresent + this.leaveTaken + this.holidays;
