@@ -1,8 +1,6 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
-import { AttendanceService } from 'src/app/_services/attendance.service';
+import { TranslateService } from '@ngx-translate/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { TableColumn } from 'src/app/models/table-column';
 
@@ -24,18 +22,17 @@ export class Step2Component {
   selectedPayrollUser: string;
   allUsers: any[] = [];
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
+
   columns: TableColumn[] = [
-    {key: 'payrollUserDetails', name: 'Employee Name'},
-    {key: 'totalDays', name: 'Total Days'},
-    {key: 'lopDays', name: 'LOP Days'},
-    {key: 'payableDays', name: 'Payable Days'},
+    {key: 'payrollUserDetails', name: this.translate.instant('payroll.employee_name')},
+    {key: 'totalDays', name: this.translate.instant('payroll.total_days')},
+    {key: 'lopDays', name: this.translate.instant('payroll.lop_days')},
+    {key: 'payableDays', name: this.translate.instant('payroll.payable_days')},
   ]
 
   constructor(private payrollService: PayrollService,
-    private fb: FormBuilder,
-    private dialog: MatDialog,
-    private toast: ToastrService,
-    private attendanceService: AttendanceService
+    private fb: FormBuilder
   ) {
     this.attendanceSummaryForm = this.fb.group({
       payrollUser: ['', Validators.required],

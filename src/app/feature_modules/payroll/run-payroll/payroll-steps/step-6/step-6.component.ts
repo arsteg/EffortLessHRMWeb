@@ -1,6 +1,7 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { UserService } from 'src/app/_services/users.service';
@@ -28,13 +29,15 @@ export class Step6Component {
   @Input() selectedPayroll: any;
   noSalaryRecordFound: boolean = false;
   isSubmitted: boolean = false;
+  private readonly translate = inject(TranslateService);
+
   columns: TableColumn[] = [
-    { key: 'payrollUserDetails', name: 'Employee Name' },
-    { key: 'TotalFlexiBenefitAmount', name: 'Total Flexi Benefit' },
+    { key: 'payrollUserDetails', name: this.translate.instant('payroll.employee_name') },
+    { key: 'TotalFlexiBenefitAmount', name: this.translate.instant('payroll._fnf.form.flexi_benefits') },
     {
-      key: 'action', name: 'Action', isAction: true, options: [
-        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit' },
-        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
+      key: 'action', name: this.translate.instant('payroll.actions'), isAction: true, options: [
+        { label: this.translate.instant('payroll.edit'), visibility: ActionVisibility.BOTH, icon: 'edit' },
+        { label: this.translate.instant('payroll.delete'), visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
       ]
     }
   ]
@@ -228,21 +231,21 @@ export class Step6Component {
       if (this.changeMode == 'Add') {
         this.payrollService.addFlexi(this.flexiBenefitsForm.value).subscribe((res: any) => {
           this.getFlexiBenefitsProfessionalTax();
-          this.toast.success('Flexi Benefits Created', 'Successfully!');
+          this.toast.success(this.translate.instant('payroll.messages.flexi_benefit_created'), this.translate.instant('payroll.successfully'));
           this.closeDialog();
         },
-          (err) => { this.toast.error('Flexi Benefits can not be Added', 'Error!'); }
+          (err) => { this.toast.error(this.translate.instant('payroll.messages.flexi_benefit_created_error')); }
         );
       }
       if (this.changeMode == 'Update') {
-        this.flexiBenefitsForm.patchValue({ PayrollUser: this.selectedPayrollUser});
+        this.flexiBenefitsForm.patchValue({ PayrollUser: this.selectedPayrollUser });
         this.payrollService.updateFlexi(this.selectedRecord._id, this.flexiBenefitsForm.value).subscribe((res: any) => {
           this.selectedPayrollUser = res.data.record.PayrollUser;
           this.getFlexiBenefitsProfessionalTax();
-          this.toast.success('Flexi Benefits Updated', 'Successfully!');
+          this.toast.success(this.translate.instant('payroll.messages.flexi_benefit_updated'), this.translate.instant('payroll.successfully'));
           this.closeDialog();
         },
-          err => { this.toast.error('Flexi Benefits can not be Updated', 'Error!'); });
+          err => { this.toast.error(this.translate.instant('payroll.messages.flexi_benefit_updated_error')); });
       }
     }
   }
@@ -280,10 +283,10 @@ export class Step6Component {
   deleteTemplate(_id: string) {
     this.payrollService.deleteFlexi(_id).subscribe((res: any) => {
       this.getFlexiBenefitsProfessionalTax();
-      this.toast.success('Successfully Deleted!', 'Flexi Benefits');
+      this.toast.success(this.translate.instant('payroll.messages.flexi_benefit_deleted'), this.translate.instant('payroll.successfully'));
     },
       (err) => {
-        this.toast.error('This Flexi Benefits Can not be deleted!');
+        this.toast.error(this.translate.instant('payroll.messages.flexi_benefit_deleted_error'));
       });
   }
 

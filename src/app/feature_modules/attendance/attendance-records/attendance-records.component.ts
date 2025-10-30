@@ -213,9 +213,12 @@ export class AttendanceRecordsComponent implements OnInit {
     if (this.isHolidayForUser(user, date)) {
       return 'holiday';
     }
+    if(this.isDateOnHalfDayLeave(user._id.id, date)){
+      return 'halfDayLeave';
+    }
 
     // 2. Check for leaves
-    if (this.isDateOnLeave(user._id, date)) {
+    if (this.isDateOnLeave(user._id.id, date)) {
       return 'leave';
     }
 
@@ -262,7 +265,7 @@ export class AttendanceRecordsComponent implements OnInit {
         if (attendance.duration >= halfDayDuration) {
           return 'halfDay';
         } else {
-          return 'incomplete halfDay';
+          return 'incomplete';
         }
       }
       else {
@@ -273,11 +276,35 @@ export class AttendanceRecordsComponent implements OnInit {
     return status;
   }
 
+  isDateOnHalfDayLeave(userId: string, date: Date): boolean {
+    if (!this.leave || this.leave.length === 0) {
+        return false;
+    }
+    const userLeaves = this.leave.filter(leave => leave.employee.id === userId);
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0);
+
+    for (let leave of userLeaves) {
+        if (leave.halfDays && leave.halfDays.length > 0 && leave.isHalfDayOption == true) {
+            const halfDayLeave = leave.halfDays.find((h: any) => {
+                const leaveDate = new Date(h.date);
+                leaveDate.setHours(0, 0, 0, 0);
+                return leaveDate.getTime() === compareDate.getTime();
+            });
+
+            if (halfDayLeave) {
+                return true;
+            }
+        }
+    }
+    return false;
+  }
+
   isDateOnLeave(userId: string, date: Date): boolean {
     if (!this.leave || this.leave.length === 0) {
       return false;
     }
-    const userLeaves = this.leave.filter(leave => leave.employee === userId);
+    const userLeaves = this.leave.filter(leave => leave.employee.id === userId);
     for (let leave of userLeaves) {
       const startDate = new Date(leave.startDate);
       const endDate = new Date(leave.endDate);

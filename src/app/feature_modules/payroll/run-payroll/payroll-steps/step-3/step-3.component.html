@@ -5,7 +5,7 @@
             <app-payroll-user-list (userSelected)="onUserSelectedFromChild($event)"
                 [selectedPayroll]="selectedPayroll"></app-payroll-user-list>
             <button mat-flat-button color="primary" type="button"
-                (click)="changeMode = 'Add'; openDialog();">Add</button>
+                (click)="changeMode = 'Add'; openDialog();">{{'payroll.add' | translate}}</button>
         </div>
     </div>
 
@@ -15,7 +15,7 @@
 </div>
 
 <ng-template #dialogTemplate>
-    <h1 mat-dialog-title>Variable Pay</h1>
+    <h1 mat-dialog-title>{{'payroll.variable_pay' | translate}}</h1>
     <div mat-dialog-content>
         <form [formGroup]="variablePayForm" (ngSubmit)="onSubmit()">
             <div class="row mt-2">
@@ -27,16 +27,18 @@
 
                 <div class="col-md-6" *ngIf="changeMode === 'Update'">
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Payroll User</mat-label>
-                        <input matInput type="text" [value]="this.selectedRecord?.payrollUserDetails" formControlName="payrollUser" readonly>
+                        <mat-label>{{'payroll_user_label' | translate}}</mat-label>
+                        <input matInput type="text" [value]="this.selectedRecord?.payrollUserDetails"
+                            formControlName="payrollUser" readonly>
                     </mat-form-field>
                 </div>
 
                 <div class="col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Variable Deduction</mat-label>
+                        <mat-label>{{'payroll.variable_deduction.toast.title' | translate}}</mat-label>
                         <mat-select formControlName="variableDeduction">
-                            <mat-option (click)="resetSelectionDedeuction()">- Reset Selection -</mat-option>
+                            <mat-option (click)="resetSelectionDedeuction()">- {{'payroll.reset_selection' | translate}}
+                                -</mat-option>
                             <mat-option [value]="deduction?.variableDeduction?._id"
                                 *ngFor="let deduction of salary?.variableDeductionList">
                                 {{getVariableDeduction(deduction?.variableDeduction._id)}}</mat-option>
@@ -46,9 +48,10 @@
 
                 <div class="col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Variable Allowance</mat-label>
+                        <mat-label>{{'payroll.variable_allowance' | translate}}</mat-label>
                         <mat-select formControlName="variableAllowance">
-                            <mat-option (click)="resetSelectionAllowance()">- Reset Selection -</mat-option>
+                            <mat-option (click)="resetSelectionAllowance()">- {{'payroll.reset_selection' | translate}}
+                                -</mat-option>
                             <mat-option [value]="allowance?.variableAllowance?._id"
                                 *ngFor="let allowance of salary?.variableAllowanceList">
                                 {{getVariableAllowance(allowance?.variableAllowance._id)}}</mat-option>
@@ -58,47 +61,32 @@
                 <mat-error *ngIf="variablePayForm.hasError('atLeastOneRequired') &&
                   (variablePayForm.get('variableDeduction')?.touched ||
                    variablePayForm.get('variableAllowance')?.touched)">
-                    Please select either Variable Deduction or Variable Allowance.
+                    {{'payroll.required.field_variable_pay' | translate}}.
                 </mat-error>
 
                 <div class="col-md-6">
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Amount</mat-label>
+                        <mat-label>{{'payroll.amount' | translate}}</mat-label>
                         <input matInput type="number" formControlName="amount" min="0" placeholder="Enter Amount">
                         @if (variablePayForm.get('amount')?.invalid &&
                         variablePayForm.get('amount')?.touched) {
                         <mat-error>
-                            @if (variablePayForm.get('amount')?.errors?.['required']) {Amount is required}
-                            @else if (variablePayForm.get('amount')?.errors?.['min']) {Amount must be greater than 0}
+                            @if (variablePayForm.get('amount')?.errors?.['required']) {
+                            {{'payroll.required.amount' | translate}}
+                            }
+                            @else if (variablePayForm.get('amount')?.errors?.['min']) {
+                            {{'payroll.required.amount_negative' | translate}}
+                            }
                         </mat-error>
                         }
                     </mat-form-field>
                 </div>
 
-                <!-- <div class="col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Month</mat-label>
-                        <input matInput type="text" formControlName="month">
-                        <mat-error
-                            *ngIf="variablePayForm.get('month')?.invalid && variablePayForm.get('month')?.touched">
-                            Month is required!
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="col-md-6">
-                    <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Year</mat-label>
-                        <input matInput type="text" formControlName="year">
-                        <mat-error *ngIf="variablePayForm.get('year')?.invalid && variablePayForm.get('year')?.touched">
-                            Year is required!
-                        </mat-error>
-                    </mat-form-field>
-                </div> -->
             </div>
             <div class="mt-4 d-flex justify-content-between">
-                <button type="button" (click)="closeDialog()" mat-flat-button>Cancel</button>
-                <button type="submit" mat-flat-button color="primary" [disabled]="isSubmitted">Submit</button>
+                <button type="button" (click)="closeDialog()" mat-flat-button>{{'payroll.cancel' | translate}}</button>
+                <button type="submit" mat-flat-button color="primary" [disabled]="isSubmitted">{{'payroll.submit' |
+                    translate}}</button>
             </div>
         </form>
     </div>

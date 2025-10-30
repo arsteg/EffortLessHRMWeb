@@ -1,12 +1,12 @@
 <mat-tab-group class="child-tabs" mat-stretch-tabs="false" mat-align-tabs="start"  [(selectedIndex)]="activeTabIndex" (selectedIndexChange)="onTabChange($event)">
 
-  <mat-tab label="Fixed Allowances">
+  <mat-tab label="{{'payroll._ctc_templates.table.fixed_allowances' | translate}}">
     <app-assigned-fixed-allowance #fixedAllowanceChild (formDataChange)="onFixedAllowanceDataChange($event)"
       [selectedRecord]="selectedRecord" [ctcTemplateFixedAllowance]="fixedAllowanceData"
       [isEdit]="isEdit"></app-assigned-fixed-allowance>
   </mat-tab>
 
-  <mat-tab label="Fixed Deductions">
+  <mat-tab label="{{'payroll._ctc_templates.table.fixed_deductions' | translate}}">
     <app-assigned-fixed-deduction #fixedDeductionChild  
       (formDataChange)="onFixedDeductionDataChange($event)" [selectedRecord]="selectedRecord"
       [ctcTemplateFixedDeduction]="fixedDeductionData" [isEdit]="isEdit"></app-assigned-fixed-deduction>

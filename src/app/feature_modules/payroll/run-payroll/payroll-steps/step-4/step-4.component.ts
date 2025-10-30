@@ -1,6 +1,7 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
@@ -29,14 +30,16 @@ export class Step4Component {
   isSubmitted: boolean = false;
   selectedPayrollUser: string;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
+
   columns: TableColumn[] = [
-    { key: 'payrollUserDetails', name: 'Employee Name' },
-    { key: 'loanAndAdvance', name: 'Loan Category', valueFn: (row) => row.loanAndAdvance?.loanAdvancesCategory?.name },
-    { key: 'amount', name: 'Repayment Amount' },
-    { key: 'disbursementAmount', name: 'Disbursed Amount' },
+    { key: 'payrollUserDetails', name: this.translate.instant('payroll.employee_name') },
+    { key: 'loanAndAdvance', name: this.translate.instant('payroll.loan_category'), valueFn: (row) => row.loanAndAdvance?.loanAdvancesCategory?.name },
+    { key: 'amount', name: this.translate.instant('payroll.repayment_amount') },
+    { key: 'disbursementAmount', name: this.translate.instant('payroll.disbursed_amount') },
     {
-      key: 'action', name: 'Action', isAction: true, options: [
-        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
+      key: 'action', name: this.translate.instant('payroll.actions'), isAction: true, options: [
+        { label: this.translate.instant('payroll.delete'), visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
       ]
     }
   ]
@@ -44,7 +47,6 @@ export class Step4Component {
   constructor(
     private payrollService: PayrollService,
     private fb: FormBuilder,
-    private commonService: CommonService,
     private userService: UserService,
     private toast: ToastrService,
     private dialog: MatDialog
@@ -195,13 +197,13 @@ export class Step4Component {
             this.loanAdvanceForm.reset();
             this.userloanAdvances = [];
             this.selectedUserId = null;
-            this.toast.success('Loan/Advance created', 'Successfully!');
+            this.toast.success(this.translate.instant('payroll.messages.loan_advances'));
             this.closeDialog();
           },
           (err) => {
             const errorMessage = err?.error?.message || err?.message || err
-              || 'Loan/Advance Not Saved';
-            this.toast.error(errorMessage, 'Error!');
+              || this.translate.instant('payroll.messages.loan_advances_error');
+            this.toast.error(errorMessage);
             this.isSubmitted = false;
           }
         );
@@ -211,7 +213,7 @@ export class Step4Component {
         this.payrollService.updateLoanAdvance(this.selectedRecord._id, this.loanAdvanceForm.value).subscribe(
           (res: any) => {
             this.getLoanAdvanceByPayroll();
-            this.toast.success('Loan/Advance Updated', 'Successfully');
+            this.toast.success(this.translate.instant('payroll.messages.loan_Advance_updated'));
             this.loanAdvanceForm.reset();
             this.selectedUserId = '';
             this.userloanAdvances = [];
@@ -220,7 +222,7 @@ export class Step4Component {
           },
           (err) => {
             const errorMessage = err?.error?.message || err?.message || err
-              || 'Loan/Advance Not Updated';
+              || this.translate.instant('payroll.messages.loan_advance_update_error');
             this.toast.error(errorMessage, 'Error!');
             this.isSubmitted = false;
           }
@@ -261,12 +263,12 @@ export class Step4Component {
     this.payrollService.deleteLoanAdvance(_id).subscribe(
       (res: any) => {
         this.getLoanAdvanceByPayroll();
-        this.toast.success('Successfully Deleted!!!', 'Loan/Advance');
+        this.toast.success(this.translate.instant('payroll.messages.loan_advance_delete'));
       },
       (err) => {
         const errorMessage = err?.error?.message || err?.message || err
-          || 'Something went wrong.';
-        this.toast.error(errorMessage, 'Error!');
+          || this.translate.instant('payroll.messages.loan_advance_delete_error');
+        this.toast.error(errorMessage);
       }
     );
   }

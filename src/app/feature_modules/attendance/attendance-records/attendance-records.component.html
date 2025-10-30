@@ -63,6 +63,9 @@
     <div class="d-flex align-items-center me-3">
       <span class="border-2 border-start border-primary py-2 px-1"></span>Leave
     </div>
+    <div class="d-flex align-items-center me-3">
+      <span class="border-2 border-start border-half-leave py-2 px-1"></span>Half Day Leave
+    </div>
     <div class="d-flex align-items-center">
       <span class="border p-2 me-2"></span>Not Applicable
     </div>
@@ -92,6 +95,10 @@
             <ng-container [ngSwitch]="getAttendanceStatus(user, date)">
               <span *ngSwitchCase="'present'" matTooltip="Present">
                 <span class="border-2 border-bottom border-success px-1">P</span>
+              </span>
+
+              <span *ngSwitchCase="'halfDayLeave'" matTooltip="Half Day Leave">
+                <span class="border-2 border-bottom border-half-leave px-1">HL</span>
               </span>
 
               <span *ngSwitchCase="'leave'" matTooltip="On Leave">

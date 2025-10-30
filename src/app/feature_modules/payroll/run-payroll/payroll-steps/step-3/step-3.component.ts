@@ -1,4 +1,4 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -9,6 +9,7 @@ import { UserService } from 'src/app/_services/users.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { PayrollUserListComponent } from '../payroll-user-list/payroll-user-list.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-step-3',
@@ -33,16 +34,18 @@ export class Step3Component {
   payrollUsers: any;
   isSubmitted: boolean = false;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
+
   columns: TableColumn[] = [
-    { key: 'payrollUserDetails', name: 'Employee Name' },
-    { key: 'variableAllowance', name: 'Variable Allowance', valueFn: (row) => row.variableAllowance?.label },
-    { key: 'variableDeduction', name: 'Variable Deduction', valueFn: (row) => row.variableDeduction?.label },
-    { key: 'amount', name: 'Amount', },
-    { key: 'period', name: 'Period', valueFn: (row) => `${row.month}-${row.year}` },
+    { key: 'payrollUserDetails', name: this.translate.instant('payroll.employee_name') },
+    { key: 'variableAllowance', name: this.translate.instant('payroll._variable_allowance.title'), valueFn: (row) => row.variableAllowance?.label },
+    { key: 'variableDeduction', name: this.translate.instant('payroll.variable_deduction.toast.title'), valueFn: (row) => row.variableDeduction?.label },
+    { key: 'amount', name: this.translate.instant('payroll.amount'), },
+    { key: 'period', name: this.translate.instant('payroll.period'), valueFn: (row) => `${row.month}-${row.year}` },
     {
-      key: 'action', name: 'Action', isAction: true, options: [
-        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit' },
-        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
+      key: 'action', name: this.translate.instant('payroll.actions'), isAction: true, options: [
+        { label: this.translate.instant('payroll.edit'), visibility: ActionVisibility.BOTH, icon: 'edit' },
+        { label: this.translate.instant('payroll.delete'), visibility: ActionVisibility.BOTH, icon: 'delete', cssClass: 'delete-btn' }
       ]
     }
   ]

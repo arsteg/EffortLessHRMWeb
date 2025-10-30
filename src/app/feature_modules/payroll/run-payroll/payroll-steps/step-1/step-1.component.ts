@@ -1,7 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
@@ -26,6 +27,8 @@ export class Step1Component {
   processedUsers: any[] = [];
   status: 'Active' | 'OnHold' | 'Processed' = 'Active';
   @ViewChild('modalTemplate') modalTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
+  
   columns: TableColumn[] = [
     {
       key: 'user',
@@ -42,9 +45,9 @@ export class Step1Component {
       name: 'Action',
       isAction: true,
       options: [
-        { label: 'Hold', visibility: ActionVisibility.BOTH, icon: 'pause', hideCondition: (row) => row.status !== 'Active'  },
-        { label: 'Unhold', visibility: ActionVisibility.BOTH, icon: 'check', hideCondition: (row) => row.status !== 'OnHold'  },
-        { label: 'Re-Run', visibility: ActionVisibility.BOTH, icon: 'refresh', hideCondition: (row) => row.status !== 'Processed'  }
+        { label: this.translate.instant('payroll.hold'), visibility: ActionVisibility.BOTH, icon: 'pause', hideCondition: (row) => row.status !== 'Active'  },
+        { label: this.translate.instant('payroll.unhold'), visibility: ActionVisibility.BOTH, icon: 'check', hideCondition: (row) => row.status !== 'OnHold'  },
+        { label: this.translate.instant('payroll.re_run'), visibility: ActionVisibility.BOTH, icon: 'refresh', hideCondition: (row) => row.status !== 'Processed'  }
       ]
     }
   ]

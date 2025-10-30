@@ -1,6 +1,6 @@
 <div class="">
 
-    <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | Attendance Summary</label></div>
+    <div><label>{{selectedPayroll?.month}}-{{selectedPayroll?.year}} | {{'payroll._fnf.steps.attendance' | translate}}</label></div>
 
     <hrm-table [data]="attendanceSummary" [columns]="columns" [showSearch]="true"></hrm-table>
 
