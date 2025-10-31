@@ -32,17 +32,17 @@ export class Step1Component {
   columns: TableColumn[] = [
     {
       key: 'user',
-      name: 'Employee Name',
+      name: this.translate.instant('payroll.employee_name'),
       valueFn: (row) => this.getUser(row.user)
     },
   {
   key: 'date',
-  name: 'Joining Date',
+  name: this.translate.instant('payroll.date_of_joining'),
   valueFn: (row) => this.getJoiningDate(row.user)
 },
  {
       key: 'action',
-      name: 'Action',
+      name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
         { label: this.translate.instant('payroll.hold'), visibility: ActionVisibility.BOTH, icon: 'pause', hideCondition: (row) => row.status !== 'Active'  },

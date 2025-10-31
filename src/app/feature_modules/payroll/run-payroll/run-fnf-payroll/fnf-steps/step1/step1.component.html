@@ -14,9 +14,7 @@
     <ng-template #dialogTemplate>
         <div class="modal-header border-bottom justify-content-between d-flex mb-2 p-3" style="z-index: 1050;">
             <div>
-                <h1 class="modal-title text-muted mb-0">{{ isEdit ? 'Edit' : 'Add' }} Employee Attendance Summary For
-                    Fnf
-                    Payroll</h1>
+                <h1 class="modal-title text-muted mb-0">{{ isEdit ? ('payroll.edit' | translate) : ('payroll.add' | translate) }} {{ 'payroll.employee_attendance_summary' | translate }}</h1>
             </div>
             <div class=""><button type="button" class="btn-close text-end" (click)="dialog.closeAll()"></button></div>
         </div>
@@ -25,7 +23,7 @@
                 <div class="row">
                     @if(isEdit){
                     <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Selected FnF User</mat-label>
+                        <mat-label>{{'payroll.selected_fnf_user' | translate}}</mat-label>
                         <input matInput type="text" formControlName="payrollFNFUser">
 
                     </mat-form-field>
@@ -35,94 +33,81 @@
                         (changeUser)="onUserChange($event)"></app-fnf-users>
                     }
                     <mat-form-field appearance="outline" class="col-md-6 my-2">
-                        <mat-label>Total Days</mat-label>
+                        <mat-label>{{'payroll.total_days' | translate}}</mat-label>
                         <input matInput type="number" formControlName="totalDays" readonly>
-                        <mat-error *ngIf="attendanceSummaryForm.get('totalDays').hasError('required')">Total Days is
-                            required</mat-error>
+                        <mat-error *ngIf="attendanceSummaryForm.get('totalDays').hasError('required')">{{'payroll.total_days_required' | translate}}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="col-md-6 my-2">
-                        <mat-label>LOP Days</mat-label>
+                        <mat-label>{{'payroll.lop_days' | translate}}</mat-label>
                         <input matInput type="number" formControlName="lopDays">
-                        <mat-error *ngIf="attendanceSummaryForm.get('lopDays').hasError('required')">LOP Days is
-                            required</mat-error>
+                        <mat-error *ngIf="attendanceSummaryForm.get('lopDays').hasError('required')">{{'payroll.lop_days_is_required' | translate}}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="col-md-6 my-2">
-                        <mat-label>Payable Days</mat-label>
+                        <mat-label>{{'payroll.payable_days' | translate}}</mat-label>
                         <input matInput type="number" formControlName="payableDays">
-                        <mat-error *ngIf="attendanceSummaryForm.get('payableDays').hasError('required')">Payable Days is
-                            required</mat-error>
+                        <mat-error *ngIf="attendanceSummaryForm.get('payableDays').hasError('required')">{{'payroll.payable_days_is_required' | translate}}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="col-md-6 my-2">
-                        <mat-label>Leave Encashment Days</mat-label>
+                        <mat-label>{{'payroll.leave_encashment_days' | translate}}</mat-label>
                         <input matInput type="number" formControlName="leaveEncashmentDays">
-                        <mat-error *ngIf="attendanceSummaryForm.get('leaveEncashmentDays').hasError('required')">Leave
-                            Encashment
-                            Days is required</mat-error>
+                        <mat-error *ngIf="attendanceSummaryForm.get('leaveEncashmentDays').hasError('required')">{{'payroll.leave_encashment_days_required' | translate}}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="col-md-6 my-2">
-                        <mat-label>Leave Balance</mat-label>
+                        <mat-label>{{'payroll.leave_balance' | translate}}</mat-label>
                         <input matInput type="number" formControlName="leaveBalance">
-                        <mat-error *ngIf="attendanceSummaryForm.get('leaveBalance').hasError('required')">Leave Balance
-                            is
-                            required</mat-error>
+                        <mat-error *ngIf="attendanceSummaryForm.get('leaveBalance').hasError('required')">{{'payroll.leave_balance_required' | translate}}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="col-md-6 my-2">
-                        <mat-label>Adjusted Payable Days</mat-label>
+                        <mat-label>{{'payroll.adjusted_payable_days' | translate}}</mat-label>
                         <input matInput type="number" formControlName="adjustedPayableDays">
                         <mat-error
-                            *ngIf="attendanceSummaryForm.get('adjustedPayableDays').hasError('required')">Adjusted
-                            Payable
-                            Days is required</mat-error>
+                            *ngIf="attendanceSummaryForm.get('adjustedPayableDays').hasError('required')">{{'payroll.adjusted_payable_days_required' | translate}}</mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="col-md-6 my-2">
-                        <mat-label>Adjustment Reason</mat-label>
+                        <mat-label>{{'payroll.adjustment_reason' | translate}}</mat-label>
                         <input matInput formControlName="adjustmentReason">
-                        <mat-error *ngIf="attendanceSummaryForm.get('adjustmentReason').hasError('required')">Adjustment
-                            Reason is
-                            required</mat-error>
-                    </mat-form-field>                  
+                        <mat-error *ngIf="attendanceSummaryForm.get('adjustmentReason').hasError('required')">{{'payroll.adjustment_reason_required' | translate}}</mat-error>
+                    </mat-form-field>
                 </div>
 
                 <div formArrayName="adjustmentDetails" class="my-3">
                     <div *ngFor="let detail of adjustmentDetails.controls; let i = index" [formGroupName]="i"
                         class="row">
                         <mat-form-field appearance="outline" class="col-md-4 my-2">
-                            <mat-label>Reason</mat-label>
+                            <mat-label>{{'payroll.reason' | translate}}</mat-label>
                             <input matInput formControlName="reason">
-                            <mat-error *ngIf="detail.get('reason').hasError('required')">Reason is required</mat-error>
+                            <mat-error *ngIf="detail.get('reason').hasError('required')">{{'payroll.reason_required' | translate}}</mat-error>
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
-                            <mat-label>Amount Adjusted</mat-label>
+                            <mat-label>{{'payroll.amount_adjusted' | translate}}</mat-label>
                             <input matInput type="number" formControlName="amountAdjusted">
-                            <mat-error *ngIf="detail.get('amountAdjusted').hasError('required')">Amount Adjusted is
-                                required</mat-error>
+                            <mat-error *ngIf="detail.get('amountAdjusted').hasError('required')">{{'payroll.amount_adjusted_required' | translate}}</mat-error>
                         </mat-form-field>
 
                         <mat-form-field appearance="outline" class="col-md-3 my-2">
-                            <mat-label>Date</mat-label>
+                            <mat-label>{{'payroll.date' | translate}}</mat-label>
                             <input matInput [matDatepicker]="picker" formControlName="date">
                             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                             <mat-datepicker #picker></mat-datepicker>
-                            <mat-error *ngIf="detail.get('date').hasError('required')">Date is required</mat-error>
+                            <mat-error *ngIf="detail.get('date').hasError('required')">{{'payroll.date_required' | translate}}</mat-error>
                         </mat-form-field>
 
                         <button mat-flat-button color="warn" type="button" class="col-md-1 my-2"
                             (click)="removeAdjustmentDetail(i)"><mat-icon>delete</mat-icon></button>
                     </div>
-                    <button mat-flat-button type="button" (click)="addAdjustmentDetail()">Add Adjustment
-                        Detail</button>
+                    <button mat-flat-button type="button" (click)="addAdjustmentDetail()">{{'payroll.add_adjustment_details' | translate}}</button>
                 </div>
 
                 <div class="d-flex justify-content-between mt-3">
-                    <button mat-flat-button type="button" (click)="dialog.closeAll()">Cancel</button>
-                    <button mat-flat-button color="primary" type="submit">Submit</button>
+                    <button mat-flat-button type="button" (click)="dialog.closeAll()">{{'payroll.cancel' | translate}}</button>
+                    <button mat-flat-button color="primary" type="submit">{{'payroll.submit' | translate}}</button>
                 </div>
             </form>
         </div>

@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { forkJoin, Observable } from 'rxjs';
-import { PayrollService } from 'src/app/_services/payroll.service';
-import { CommonService } from 'src/app/_services/common.Service';
 import { UserService } from 'src/app/_services/users.service';
 
 @Component({

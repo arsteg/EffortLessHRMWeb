@@ -1,22 +1,21 @@
 <div class="border-top">
     <div class="position-relative">
         <div class="position-absolute end-0 d-flex mt-1 gap-2">
-            <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onPayrollUserChange($event)"></app-fnf-users>
-            <button mat-flat-button color="primary" class="ms-2 mt-1" (click)="openDialog(false)">Add Manual Arrear</button>
+            <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF"
+                (changeUser)="onPayrollUserChange($event)"></app-fnf-users>
+            <button mat-flat-button color="primary" class="ms-2 mt-1"
+                (click)="openDialog(false)">{{'payroll.add_manual_arrear' | translate}}</button>
         </div>
     </div>
-    <hrm-table
-        [data]="manualArrears.data"
-        [columns]="columns"
-        [showSearch]="true"
-        (actionClicked)="onAction($event)"
-    ></hrm-table>
+    <hrm-table [data]="manualArrears.data" [columns]="columns" [showSearch]="true"
+        (actionClicked)="onAction($event)"></hrm-table>
 </div>
 
 <ng-template #dialogTemplate>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 p-3" style="z-index: 1050;">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{ isEdit ? 'Edit' : 'Add' }} Manual Arrear For FnF Payroll</h1>
+            <h1 class="modal-title text-muted mb-0">{{ isEdit ? ('payroll.edit' | translate) : ('payroll.add' |
+                translate) }} {{'payroll.manual_arrear_for_fnf_payroll' | translate}}</h1>
         </div>
         <div><button type="button" class="btn-close text-end" (click)="dialog.closeAll()"></button></div>
     </div>
@@ -24,47 +23,60 @@
         <form [formGroup]="manualArrearForm" (ngSubmit)="onSubmit()">
             <div class="row">
                 @if(isEdit) {
-                    <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Selected FnF User</mat-label>
-                        <input matInput type="text" formControlName="payrollFNFUser">
-                    </mat-form-field>
+                <mat-form-field appearance="outline" class="my-2">
+                    <mat-label>{{'payroll.selected_fnf_user' | translate}}</mat-label>
+                    <input matInput type="text" formControlName="payrollFNFUser">
+                </mat-form-field>
                 } @else {
-                    <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
+                <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF"
+                    (changeUser)="onUserChange($event)"></app-fnf-users>
                 }
                 <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Manual Arrears</mat-label>
+                    <mat-label>{{'payroll.manual_Arrears' | translate}}</mat-label>
                     <input matInput type="number" formControlName="manualArrears">
-                    <mat-error *ngIf="manualArrearForm.get('manualArrears').hasError('required')">Manual Arrears is required</mat-error>
+                    <mat-error
+                        *ngIf="manualArrearForm.get('manualArrears').hasError('required')">{{'payroll.manual_arrear_required'
+                        | translate}}</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Arrear Days</mat-label>
+                    <mat-label>{{'payroll.arrear_days' | translate}}</mat-label>
                     <input matInput type="number" formControlName="arrearDays">
-                    <mat-error *ngIf="manualArrearForm.get('arrearDays').hasError('required')">Arrear Days is required</mat-error>
+                    <mat-error
+                        *ngIf="manualArrearForm.get('arrearDays').hasError('required')">{{'payroll.arrear_days_required'
+                        | translate}}</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>LOP Reversal Days</mat-label>
+                    <mat-label>{{'payroll.lop_reversal_days' | translate}}</mat-label>
                     <input matInput type="number" formControlName="lopReversalDays">
-                    <mat-error *ngIf="manualArrearForm.get('lopReversalDays').hasError('required')">LOP Reversal Days is required</mat-error>
+                    <mat-error
+                        *ngIf="manualArrearForm.get('lopReversalDays').hasError('required')">{{'payroll.lop_reversal_days_required'
+                        | translate}}</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Salary Revision Days</mat-label>
+                    <mat-label>{{'payroll.salary_revision_days' | translate}}</mat-label>
                     <input matInput type="number" formControlName="salaryRevisionDays">
-                    <mat-error *ngIf="manualArrearForm.get('salaryRevisionDays').hasError('required')">Salary Revision Days is required</mat-error>
+                    <mat-error
+                        *ngIf="manualArrearForm.get('salaryRevisionDays').hasError('required')">{{'payroll.salary_revision_days_required'
+                        | translate}}</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>LOP Reversal Arrears</mat-label>
+                    <mat-label>{{'payroll.lop_reversal_arrears' | translate}}</mat-label>
                     <input matInput type="number" formControlName="lopReversalArrears">
-                    <mat-error *ngIf="manualArrearForm.get('lopReversalArrears').hasError('required')">LOP Reversal Arrears is required</mat-error>
+                    <mat-error
+                        *ngIf="manualArrearForm.get('lopReversalArrears').hasError('required')">{{'payroll.lop_reversal_arrears_required'
+                        | translate}}</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="col-md-6 my-2" style="z-index: 1060;">
-                    <mat-label>Total Arrears</mat-label>
+                    <mat-label>{{'payroll.total_arrears' | translate}}</mat-label>
                     <input matInput type="number" formControlName="totalArrears">
-                    <mat-error *ngIf="manualArrearForm.get('totalArrears').hasError('required')">Total Arrears is required</mat-error>
+                    <mat-error
+                        *ngIf="manualArrearForm.get('totalArrears').hasError('required')">{{'payroll.total_arrears_required'
+                        | translate}}</mat-error>
                 </mat-form-field>
             </div>
             <div class="d-flex justify-content-between mt-3">
-                <button mat-flat-button type="button" (click)="onCancel()">Cancel</button>
-                <button mat-flat-button class="addBtn" type="submit">Submit</button>
+                <button mat-flat-button type="button" (click)="onCancel()">{{'payroll.cancel' | translate}}</button>
+                <button mat-flat-button class="addBtn" type="submit">{{'payroll.submit' | translate}}</button>
             </div>
         </form>
     </div>

@@ -1,22 +1,19 @@
 <div class="border-top">
-   <div class="position-relative">
+    <div class="position-relative">
         <div class="position-absolute end-0 d-flex mt-1 gap-2">
-            <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
-            <button mat-flat-button color="primary" class="ms-auto mt-1" (click)="openDialog(false)">Add Loan Advance</button>
+            <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF"
+                (changeUser)="onUserChange($event)"></app-fnf-users>
+            <button mat-flat-button color="primary" class="ms-auto mt-1" (click)="openDialog(false)">{{'payroll.add_loan_advance' | translate}}</button>
         </div>
     </div>
-    <hrm-table
-        [data]="loanAdvances.data"
-        [columns]="columns"
-        [showSearch]="true"
-        (actionClicked)="onAction($event)"
-    ></hrm-table>
+    <hrm-table [data]="loanAdvances.data" [columns]="columns" [showSearch]="true"
+        (actionClicked)="onAction($event)"></hrm-table>
 </div>
 
 <ng-template #dialogTemplate>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 p-3" style="z-index: 1050;">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{ isEdit ? 'Edit' : 'Add' }} Loan Advance For FnF Payroll</h1>
+            <h1 class="modal-title text-muted mb-0">{{ isEdit ? ('payroll.edit' | translate) : ('payroll.add' | translate) }} {{'payroll.loan_advance_payroll' | translate}}</h1>
         </div>
         <div><button type="button" class="btn-close text-end" (click)="dialog.closeAll()"></button></div>
     </div>
@@ -24,46 +21,55 @@
         <form [formGroup]="loanAdvanceForm" (ngSubmit)="onSubmit()">
             <div class="row">
                 @if(isEdit) {
-                    <mat-form-field appearance="outline" class="my-2">
-                        <mat-label>Selected FnF User</mat-label>
-                        <input matInput type="text" formControlName="payrollFNFUser">
-                    </mat-form-field>
+                <mat-form-field appearance="outline" class="my-2">
+                    <mat-label>{{'payroll.selected_fnf_user' | translate}}</mat-label>
+                    <input matInput type="text" formControlName="payrollFNFUser">
+                </mat-form-field>
                 } @else {
-                    <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)"></app-fnf-users>
+                <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF"
+                    (changeUser)="onUserChange($event)"></app-fnf-users>
                 }
                 <div class="form-group col-md-6">
                     <mat-form-field appearance="outline" class="my-2 w-100">
-                        <mat-label>Select Loans and Advances</mat-label>
+                        <mat-label>{{'payroll.select_loan_advnace' | translate}}</mat-label>
                         <mat-select formControlName="loanAndAdvance">
                             <mat-option *ngFor="let loanAdvance of userLoanAdvances" [value]="loanAdvance?._id">
                                 {{ loanAdvance?.loanAdvancesCategory?.name }}
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="loanAdvanceForm.get('loanAndAdvance').hasError('required')">Loan and Advance is required</mat-error>
+                        <mat-error
+                            *ngIf="loanAdvanceForm.get('loanAndAdvance').hasError('required')">{{'payroll.loan_and_advance_required'
+                            | translate}}</mat-error>
                     </mat-form-field>
                 </div>
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Loan Advance Amount</mat-label>
+                    <mat-label>{{'payroll.loan_advance_amount' | translate}}</mat-label>
                     <input matInput type="number" formControlName="LoanAdvanceAmount" readonly>
-                    <mat-error *ngIf="loanAdvanceForm.get('LoanAdvanceAmount').hasError('required')">Loan Advance Amount is required</mat-error>
+                    <mat-error
+                        *ngIf="loanAdvanceForm.get('LoanAdvanceAmount').hasError('required')">{{'payroll.loan_advance_amount_required'
+                        | translate}}</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Final Settlement Amount</mat-label>
+                    <mat-label>{{'payroll.final_settlement_amount' | translate}}</mat-label>
                     <input matInput type="number" formControlName="finalSettlementAmount">
-                    <mat-error *ngIf="loanAdvanceForm.get('finalSettlementAmount').hasError('required')">Final Settlement Amount is required</mat-error>
+                    <mat-error
+                        *ngIf="loanAdvanceForm.get('finalSettlementAmount').hasError('required')">{{'payroll.final_settlement_amount_required'
+                        | translate}}</mat-error>
                 </mat-form-field>
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Final Clearance Status</mat-label>
+                    <mat-label>{{'payroll.fnf_clearance_status' | translate}}</mat-label>
                     <mat-select formControlName="fnfClearanceStatus">
-                        <mat-option value="Cleared">Cleared</mat-option>
-                        <mat-option value="Partially Cleared">Partially Cleared</mat-option>
+                        <mat-option value="Cleared">{{'payroll.cleared' | translate}}</mat-option>
+                        <mat-option value="Partially Cleared">{{'payroll.partially_cleared' | translate}}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="loanAdvanceForm.get('fnfClearanceStatus').hasError('required')">FnF Clearance Status is required</mat-error>
+                    <mat-error
+                        *ngIf="loanAdvanceForm.get('fnfClearanceStatus').hasError('required')">{{'payroll.fnf_clearance_status_required'
+                        | translate}}</mat-error>
                 </mat-form-field>
             </div>
             <div class="d-flex justify-content-between mt-3">
-                <button mat-flat-button type="button" (click)="onCancel()">Cancel</button>
-                <button mat-flat-button class="addBtn" type="submit">Submit</button>
+                <button mat-flat-button type="button" (click)="onCancel()">{{'payroll.cancel' | translate}}</button>
+                <button mat-flat-button color="primary" type="submit">{{'payroll.submit' | translate}}</button>
             </div>
         </form>
     </div>

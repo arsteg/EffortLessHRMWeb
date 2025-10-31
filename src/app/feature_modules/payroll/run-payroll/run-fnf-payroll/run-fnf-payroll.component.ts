@@ -13,6 +13,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { DatePipe } from '@angular/common';
+import { th } from 'date-fns/locale';
 
 @Component({
   selector: 'app-run-fnf-payroll',
@@ -61,15 +62,15 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
       isAction: true,
       options: [
         {
-          label: 'Add Employee', icon: 'add', visibility: ActionVisibility.BOTH,
+          label: this.translate.instant('payroll._history.actions.add_employee'), icon: 'add', visibility: ActionVisibility.BOTH,
           hideCondition: (row) => row?.status !== 'InProgress'
         },
         {
-          label: 'Edit', icon: 'edit', visibility: ActionVisibility.BOTH,
+          label: this.translate.instant('payroll.edit'), icon: 'edit', visibility: ActionVisibility.BOTH,
           hideCondition: (row) => row?.status !== 'InProgress'
         },
         {
-          label: 'Delete', icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn",
+          label: this.translate.instant('payroll.delete'), icon: 'delete', visibility: ActionVisibility.BOTH, cssClass: "delete-btn",
           hideCondition: (row) => {
             // Hide delete button if any count is greater than 0
             return (row?.processedCount > 0 || row?.activeCount > 0 || row?.onHoldCount > 0);
@@ -378,7 +379,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   open(content: any) {
     if (!this.settledUser || this.settledUser.length === 0) {
       // Show message here
-      this.toast.warning('No settled users available.', 'Warning'); // Or use MatSnackBar
+      this.toast.warning('No settled users available.', 'Warning');
       return;
     }
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
@@ -387,8 +388,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
       },
       (reason) => {
         this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      }
-    );
+      });
   }
 
   editFnF(user: any) {

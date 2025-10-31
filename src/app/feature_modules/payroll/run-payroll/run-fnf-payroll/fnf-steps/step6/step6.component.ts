@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { forkJoin, map, catchError } from 'rxjs';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-step6',
@@ -23,40 +24,41 @@ export class FNFStep6Component implements OnInit {
   @Input() isSteps: boolean = false;
   @Input() selectedFnF: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
 
   columns: TableColumn[] = [
     {
       key: 'userName',
-      name: 'Payroll User',
-      valueFn: (row) => row.userName || 'Not specified'
+      name: this.translate.instant('payroll.payroll_user_label'),
+      valueFn: (row) => row.userName || ''
     },
     {
       key: 'GratuityAmount',
-      name: 'Gratuity Amount',
+      name: this.translate.instant('payroll.gratuity_amount'),
       valueFn: (row) => row.GratuityAmount
     },
     {
       key: 'ProvidentFundAmount',
-      name: 'Provident Fund Amount',
+      name: this.translate.instant('payroll.provident_fund_amount'),
       valueFn: (row) => row.ProvidentFundAmount
     },
     {
       key: 'ProvidentFundPaymentProcess',
-      name: 'Provident Fund Payment Process',
+      name: this.translate.instant('payroll.provident_fund_payment_process'),
       valueFn: (row) => row.ProvidentFundPaymentProcess
     },
     {
       key: 'IsProvidentFundWithdrawFormSubmitted',
       name: 'Provident Fund Withdraw Form',
-      valueFn: (row) => row.IsProvidentFundWithdrawFormSubmitted ? 'Yes' : 'No'
+      valueFn: (row) => row.IsProvidentFundWithdrawFormSubmitted ? this.translate.instant('payroll.yes') : this.translate.instant('payroll.no')
     },
     {
       key: 'actions',
-      name: 'Actions',
+      name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
-        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit', hideCondition: (row) => false },
-        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
+        { label: this.translate.instant('payroll.edit'), visibility: ActionVisibility.BOTH, icon: 'edit', hideCondition: (row) => false },
+        { label: this.translate.instant('payroll.delete'), visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
       ]
     }
   ];
@@ -84,7 +86,6 @@ export class FNFStep6Component implements OnInit {
         this.statutoryBenefits.data = results.statutoryBenefits;
       },
       error: (error) => {
-        console.error('Error while loading statutory benefits:', error);
       }
     });
   }
@@ -103,7 +104,7 @@ export class FNFStep6Component implements OnInit {
         });
       }),
       catchError((error) => {
-        this.toast.error('Failed to fetch Statutory Benefits', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_statutory_benefits'), this.translate.instant('payroll.error'));
         throw error;
       })
     );
@@ -111,7 +112,7 @@ export class FNFStep6Component implements OnInit {
 
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find((user) => user?._id === userId);
-    return matchedUser ? `${matchedUser.firstName} ${matchedUser.lastName}` : 'Not specified';
+    return matchedUser ? `${matchedUser.firstName} ${matchedUser.lastName}` : '';
   }
 
   onUserChange(fnfUserId: string): void {
@@ -129,7 +130,7 @@ export class FNFStep6Component implements OnInit {
         this.statutoryBenefitForm.patchValue({ ProvidentFundAmount: res.data });
       },
       error: () => {
-        this.toast.error('Failed to fetch Provident Fund Amount', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_provident_fund_amount'), this.translate.instant('payroll.error'));
       }
     });
   }
@@ -140,7 +141,7 @@ export class FNFStep6Component implements OnInit {
         this.statutoryBenefitForm.patchValue({ GratuityAmount: res.data });
       },
       error: () => {
-        this.toast.error('Failed to fetch Gratuity Amount', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_to_fetch_gratuity_amount'), this.translate.instant('payroll.error'));
       }
     });
   }
@@ -200,12 +201,22 @@ export class FNFStep6Component implements OnInit {
             this.statutoryBenefits.data = data;
           });
           this.resetForm();
-          this.toast.success(`Statutory Benefit ${this.isEdit ? 'updated' : 'added'} successfully`, 'Success');
+          if (this.isEdit) {
+            this.toast.success(this.translate.instant('payroll.statutory_updated'), this.translate.instant('payroll.successfully'));
+          }
+          else {
+            this.toast.success(this.translate.instant('payroll.statutory_added'), this.translate.instant('payroll.successfully'));
+          }
           this.isEdit = false;
           this.dialog.closeAll();
         },
         error: () => {
-          this.toast.error(`Failed to ${this.isEdit ? 'update' : 'add'} Statutory Benefit`, 'Error');
+          if (this.isEdit) {
+            this.toast.error(this.translate.instant('payroll.failed_update_statutory'), this.translate.instant('payroll.error'));
+          }
+          else {
+            this.toast.error(this.translate.instant('payroll.failed_add_statutory'), this.translate.instant('payroll.error'));
+          }
         }
       });
     } else {
@@ -231,10 +242,10 @@ export class FNFStep6Component implements OnInit {
 
   onAction(event: any): void {
     switch (event.action.label) {
-      case 'Edit':
+      case this.translate.instant('payroll.edit'):
         this.editStatutoryBenefit(event.row);
         break;
-      case 'Delete':
+      case this.translate.instant('payroll.delete'):
         this.deleteFnF(event.row._id);
         break;
     }
@@ -249,10 +260,10 @@ export class FNFStep6Component implements OnInit {
             this.fetchStatutoryBenefits(this.selectedFnF).subscribe((data) => {
               this.statutoryBenefits.data = data;
             });
-            this.toast.success('Statutory Benefit Deleted', 'Success');
+            this.toast.success(this.translate.instant('payroll.statutory_deleted'), this.translate.instant('payroll.successfully'));
           },
           error: () => {
-            this.toast.error('Failed to delete Statutory Benefit', 'Error');
+            this.toast.error(this.translate.instant('payroll.failed_statutory_delete'), this.translate.instant('payroll.error'));
           }
         });
       }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { AttendanceService } from 'src/app/_services/attendance.service';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { forkJoin, map, catchError } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-step1',
@@ -27,50 +28,51 @@ export class FNFStep1Component implements OnInit {
   @Input() selectedFnF: any;
   users: any[] = [];
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
 
   columns: TableColumn[] = [
     {
       key: 'userName',
-      name: 'Payroll User',
+      name: this.translate.instant('payroll.payroll_user_label'),
       valueFn: (row) => this.getUserName(row.payrollFNFUser)
     },
     {
       key: 'totalDays',
-      name: 'Total Days',
+      name: this.translate.instant('payroll.total_days'),
       valueFn: (row) => row.totalDays
     },
     {
       key: 'lopDays',
-      name: 'LOP Days',
+      name: this.translate.instant('payroll.lop_days'),
       valueFn: (row) => row.lopDays
     },
     {
       key: 'payableDays',
-      name: 'Payable Days',
+      name: this.translate.instant('payroll.payable_days'),
       valueFn: (row) => row.payableDays
     },
     {
       key: 'leaveEncashmentDays',
-      name: 'Leave Encashment Days',
+      name: this.translate.instant('payroll.leave_encashment_days'),
       valueFn: (row) => row.leaveEncashmentDays
     },
     {
       key: 'leaveBalance',
-      name: 'Leave Balance',
+      name: this.translate.instant('payroll.leave_balance'),
       valueFn: (row) => row.leaveBalance
     },
     {
       key: 'adjustedPayableDays',
-      name: 'Adjusted Payable Days',
+      name: this.translate.instant('payroll.adjusted_payable_days'),
       valueFn: (row) => row.adjustedPayableDays
     },
     {
       key: 'actions',
-      name: 'Actions',
+      name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
         {
-          label: 'Edit',
+          label: this.translate.instant('payroll.edit'),
           visibility: ActionVisibility.LABEL,
           icon: 'edit',
           hideCondition: (row) => false
@@ -102,7 +104,6 @@ export class FNFStep1Component implements OnInit {
   }
 
   ngOnInit(): void {
-    // Auto fetch on load
     forkJoin({
       attendanceSummary: this.fetchAttendanceSummary(this.selectedFnF)
     }).subscribe({
@@ -110,7 +111,6 @@ export class FNFStep1Component implements OnInit {
         this.attendanceSummary.data = results.attendanceSummary;
       },
       error: (error) => {
-        console.error('Error while loading attendance summary:', error);
       }
     });
 
@@ -123,9 +123,7 @@ export class FNFStep1Component implements OnInit {
     const payableDays = Number(this.attendanceSummaryForm.get('payableDays').value) || 0;
     const leaveEncashmentDays = Number(this.attendanceSummaryForm.get('leaveEncashmentDays').value) || 0;
     const leaveBalance = Number(this.attendanceSummaryForm.get('leaveBalance').value) || 0;
-
     const adjustedPayableDays = payableDays + leaveEncashmentDays + leaveBalance;
-
     this.attendanceSummaryForm.get('adjustedPayableDays').setValue(adjustedPayableDays, { emitEvent: false });
   }
 
@@ -137,9 +135,9 @@ export class FNFStep1Component implements OnInit {
     const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === payrollFNFUserId);
     if (matchedUser) {
       const user = this.users.find(u => u._id === matchedUser.user);
-      return user ? `${user.firstName} ${user.lastName}` : 'Not specified';
+      return user ? `${user.firstName} ${user.lastName}` : '';
     }
-    return 'Not specified';
+    return '';
   }
 
   fetchAttendanceSummary(fnfPayroll: any) {
@@ -156,7 +154,7 @@ export class FNFStep1Component implements OnInit {
         return data;
       }),
       catchError((error) => {
-        this.toast.error('Failed to fetch Attendance Summary or Users', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_to_fetch_attendance_summary'), this.translate.instant('payroll.error'));
         throw error;
       })
     );
@@ -177,7 +175,7 @@ export class FNFStep1Component implements OnInit {
         });
       },
       error: (error) => {
-        this.toast.error('Failed to fetch attendance records', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_to_fetch_attendance_summary'), this.translate.instant('payroll.error'));
       }
     });
   }
@@ -289,19 +287,24 @@ export class FNFStep1Component implements OnInit {
         this.fetchAttendanceSummary(this.selectedFnF).subscribe((data) => {
           this.attendanceSummary.data = data;
         });
-        this.toast.success(
-          `Attendance Summary ${this.isEdit ? 'updated' : 'added'} successfully`,
-          'Success'
-        );
+        if (this.isEdit) {
+          this.toast.success(this.translate.instant('payroll.attendance_summary_updated'));
+        }
+        else {
+          this.toast.success(this.translate.instant('payroll.attendance_summary_added'));
+        }
         this.resetForm();
         this.isEdit = false;
         this.dialog.closeAll();
       },
       error: () => {
-        this.toast.error(
-          `Failed to ${this.isEdit ? 'update' : 'add'} Attendance Summary`,
-          'Error'
-        );
+        if (this.isEdit) {
+          this.toast.error(this.translate.instant('payroll.error_update_attendance_summary'), this.translate.instant('payroll.error'));
+          return;
+        }
+        else {
+          this.toast.error(this.translate.instant('payroll.error_add_attendance_summary'), this.translate.instant('payroll.error'));
+        }
       }
     });
   }
@@ -333,7 +336,7 @@ export class FNFStep1Component implements OnInit {
 
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find(user => user?._id === userId);
-    return matchedUser ? `${matchedUser?.firstName} ${matchedUser?.lastName}` : 'Not specified';
+    return matchedUser ? `${matchedUser?.firstName} ${matchedUser?.lastName}` : '';
   }
 
   getMonthNumber(monthName: string): number {
@@ -368,7 +371,7 @@ export class FNFStep1Component implements OnInit {
         });
       },
       error: (error) => {
-        this.toast.error('Failed to fetch LOP data', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_lop'), this.translate.instant('payroll.error'));
       }
     });
   }

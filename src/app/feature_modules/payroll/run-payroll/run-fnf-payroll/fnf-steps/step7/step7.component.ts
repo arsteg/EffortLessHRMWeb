@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { forkJoin, map, catchError } from 'rxjs';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-step7',
@@ -23,31 +24,32 @@ export class FNFStep7Component implements OnInit {
   @Input() isSteps: boolean = false;
   @Input() selectedFnF: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
 
   columns: TableColumn[] = [
     {
       key: 'userName',
-      name: 'Payroll User',
-      valueFn: (row) => row.userName || 'Not specified'
+      name: this.translate.instant('payroll.payroll_user_label'),
+      valueFn: (row) => row.userName || ''
     },
     {
       key: 'LateComing',
-      name: 'Late Coming',
+      name: this.translate.instant('payroll.late_coming'),
       valueFn: (row) => row.LateComing
     },
     {
       key: 'EarlyGoing',
-      name: 'Early Going',
+      name: this.translate.instant('payroll.early_going'),
       valueFn: (row) => row.EarlyGoing
     },
     {
       key: 'FinalOvertime',
-      name: 'Final Over Time (HH:MM)',
+      name: this.translate.instant('payroll.final_overtime'),
       valueFn: (row) => (row.FinalOvertime / 60).toFixed(2)
     },
     {
       key: 'OvertimeAmount',
-      name: 'Over Time Amount (INR)',
+      name: this.translate.instant('payroll.overtime_amount'),
       valueFn: (row) => row.OvertimeAmount.toFixed(2)
     }
   ];
@@ -75,7 +77,6 @@ export class FNFStep7Component implements OnInit {
         this.overtime.data = results.overtime;
       },
       error: (error) => {
-        console.error('Error while loading overtime records:', error);
       }
     });
   }
@@ -94,7 +95,7 @@ export class FNFStep7Component implements OnInit {
         });
       }),
       catchError((error) => {
-        this.toast.error('Failed to fetch Overtime Records', 'Error');
+        this.toast.error(this.translate.instant('payroll.messages.overtime_fetch_error'), this.translate.instant('payroll.error'));
         throw error;
       })
     );
@@ -102,7 +103,7 @@ export class FNFStep7Component implements OnInit {
 
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find((user) => user?._id === userId);
-    return matchedUser ? `${matchedUser.firstName} ${matchedUser.lastName}` : 'Not specified';
+    return matchedUser ? `${matchedUser.firstName} ${matchedUser.lastName}` : '';
   }
 
   onUserChange(fnfUserId: string): void {
@@ -119,7 +120,7 @@ export class FNFStep7Component implements OnInit {
           }));
         },
         error: () => {
-          this.toast.error('Failed to fetch Overtime Records for User', 'Error');
+          this.toast.error(this.translate.instant('payroll.messages.failed_fetch_overtime'), this.translate.instant('payroll.error'));
         }
       });
     }

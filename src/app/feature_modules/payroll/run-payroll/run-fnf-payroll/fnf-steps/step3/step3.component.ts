@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { UserService } from 'src/app/_services/users.service';
 import { catchError, forkJoin, map } from 'rxjs';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-step3',
@@ -25,50 +26,51 @@ export class FNFStep3Component implements OnInit {
   @Input() isSteps: boolean;
   @Input() selectedFnF: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
 
   columns: TableColumn[] = [
     {
       key: 'userName',
-      name: 'Payroll User',
+      name: this.translate.instant('payroll.payroll_user_label'),
       valueFn: (row) => row.userName || 'Not specified'
     },
     {
       key: 'manualArrears',
-      name: 'Manual Arrears',
+      name: this.translate.instant('payroll.manual_Arrears'),
       valueFn: (row) => row.manualArrears
     },
     {
       key: 'arrearDays',
-      name: 'Arrear Days',
+      name: this.translate.instant('payroll.arrear_days'),
       valueFn: (row) => row.arrearDays
     },
     {
       key: 'lopReversalDays',
-      name: 'LOP Reversal Days',
+      name: this.translate.instant('payroll.lop_reversal_days'),
       valueFn: (row) => row.lopReversalDays
     },
     {
       key: 'salaryRevisionDays',
-      name: 'Salary Revision Days',
+      name: this.translate.instant('payroll.salary_revision_days'),
       valueFn: (row) => row.salaryRevisionDays
     },
     {
       key: 'lopReversalArrears',
-      name: 'LOP Reversal Arrears',
+      name: this.translate.instant('payroll.lop_reversal_arrears'),
       valueFn: (row) => row.lopReversalArrears
     },
     {
       key: 'totalArrears',
-      name: 'Total Arrears',
+      name: this.translate.instant('payroll.total_arrears'),
       valueFn: (row) => row.totalArrears
     },
     {
       key: 'actions',
-      name: 'Actions',
+      name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
-        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit', hideCondition: (row) => false },
-        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
+        { label: this.translate.instant('payroll.edit'), visibility: ActionVisibility.BOTH, icon: 'edit', hideCondition: (row) => false },
+        { label: this.translate.instant('payroll.delete'), visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
       ]
     }
   ];
@@ -99,7 +101,6 @@ export class FNFStep3Component implements OnInit {
         this.manualArrears.data = results.manualArrears;
       },
       error: (error) => {
-        console.error('Error while loading manual arrears:', error);
       }
     });
 
@@ -114,7 +115,7 @@ export class FNFStep3Component implements OnInit {
         this.salaryPerDay = res.data;
       },
       (error: any) => {
-        this.toast.error('Failed to Load Daily Salary', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_daily_salary'), this.translate.instant('payroll.error'));
       }
     );
   }
@@ -181,7 +182,7 @@ export class FNFStep3Component implements OnInit {
         });
       }),
       catchError((error) => {
-        this.toast.error('Failed to fetch Manual Arrears', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_manual_arrear'), this.translate.instant('payroll.error'));
         throw error;
       })
     );
@@ -240,12 +241,22 @@ export class FNFStep3Component implements OnInit {
             this.manualArrears.data = data;
           });
           this.resetForm();
-          this.toast.success(`Manual Arrear ${this.isEdit ? 'updated' : 'added'} successfully`, 'Success');
+          if (this.isEdit) {
+            this.toast.success(this.translate.instant('payroll.manual_arrear_updated'));
+          }
+          else {
+            this.toast.success(this.translate.instant('payroll.manual_arrear_added'));
+          }
           this.isEdit = false;
           this.dialog.closeAll();
         },
         error: () => {
-          this.toast.error(`Failed to ${this.isEdit ? 'update' : 'add'} Manual Arrear`, 'Error');
+          if (this.isEdit) {
+            this.toast.error(this.translate.instant('payroll.failed_to_update_manual_arrear'), this.translate.instant('payroll.error'));
+          }
+          else {
+            this.toast.error(this.translate.instant('payroll.manual_arrear_added_failed'), this.translate.instant('payroll.error'));
+          }
         }
       });
     } else {
@@ -273,10 +284,10 @@ export class FNFStep3Component implements OnInit {
 
   onAction(event: any): void {
     switch (event.action.label) {
-      case 'Edit':
+      case this.translate.instant('payroll.edit'):
         this.editManualArrear(event.row);
         break;
-      case 'Delete':
+      case this.translate.instant('payroll.delete'):
         this.deleteDialog(event.row._id);
         break;
     }
@@ -288,12 +299,12 @@ export class FNFStep3Component implements OnInit {
         this.fetchManualArrears(this.selectedFnF).subscribe((data) => {
           this.manualArrears.data = data;
         });
-        this.toast.success('Manual Arrear Deleted', 'Success');
+        this.toast.success(this.translate.instant('payroll.manual_arrear_deleted'), this.translate.instant('payroll.success'));
       },
       error: () => {
-        this.toast.error('Failed to delete Manual Arrear', 'Error');
+        this.toast.error(this.translate.instant('payroll.manual_arrear_delete_failed'), this.translate.instant('payroll.error'));
       }
-  });
+    });
   }
 
   deleteDialog(id: string): void {
@@ -309,6 +320,6 @@ export class FNFStep3Component implements OnInit {
 
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find(user => user?._id === userId);
-    return matchedUser ? `${matchedUser?.firstName} ${matchedUser?.lastName}` : 'Not specified';
+    return matchedUser ? `${matchedUser?.firstName} ${matchedUser?.lastName}` : '';
   }
 }
