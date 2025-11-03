@@ -22,14 +22,14 @@ export class PayslipsComponent {
   user = JSON.parse(localStorage.getItem('currentUser'));
   private readonly translate = inject(TranslateService);
   columns: TableColumn[] = [
-    { key: 'PayrollUser', name: 'Employee', valueFn: (row: any) => row?.PayrollUser?.user?.firstName + ' ' + row?.PayrollUser?.user?.lastName },
-    { key: 'period', name: 'Period', valueFn: (row: any) =>  row?.PayrollUser?.payroll ? row?.PayrollUser?.payroll?.month + '-' + row?.PayrollUser?.payroll?.year : '' },
-    { key: 'generatedOn', name: 'Generated On', valueFn: (row: any) => row?.PayrollUser?.payroll?.date ? this.datePipe.transform(row?.PayrollUser?.payroll?.date, 'mediumDate') : '' },
-    { key: 'status', name: 'Status', valueFn: (row: any) => row?.PayrollUser?.payroll?.status },
+    { key: 'PayrollUser', name: this.translate.instant('payroll.employee'), valueFn: (row: any) => row?.PayrollUser?.user?.firstName + ' ' + row?.PayrollUser?.user?.lastName },
+    { key: 'period', name: this.translate.instant('payroll.period'), valueFn: (row: any) =>  row?.PayrollUser?.payroll ? row?.PayrollUser?.payroll?.month + '-' + row?.PayrollUser?.payroll?.year : '' },
+    { key: 'generatedOn', name: this.translate.instant('payroll.generated_on'), valueFn: (row: any) => row?.PayrollUser?.payroll?.date ? this.datePipe.transform(row?.PayrollUser?.payroll?.date, 'mediumDate') : '' },
+    { key: 'status', name: this.translate.instant('payroll.status'), valueFn: (row: any) => row?.PayrollUser?.payroll?.status },
     {
-      key: 'actions', name: 'Actions',
+      key: 'actions', name: this.translate.instant('payroll.actions'),
       isAction: true, options: [
-        { label: 'Show Payslip', icon: '', visibility: ActionVisibility.LABEL, cssClass: 'success-btn' }
+        { label: this.translate.instant('payroll.show_payslip'), icon: '', visibility: ActionVisibility.LABEL, cssClass: 'success-btn' }
       ]
     },
   ]

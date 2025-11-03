@@ -1,16 +1,15 @@
 <div class="this.viewPayroll-detail">
-    <div class="d-flex justify-content-between">
-        <button class="backBtn" mat-flat-button (click)="close.emit()">Back</button>
-        <h2>Generated Salary Slip</h2>
+    <div class="text-center mb-4">
+        <h2>{{'payroll.generated_salary_slip' | translate}}</h2>
     </div>
     <div id="this.viewPayrollContainer" #this.viewPayrollContainer class="container bg-white py-5 px-4">
 
         <div class="row mb-4">
             <div class="col-3">
-                <span class="fw-bold">Date of joining:</span><br>
-                <span class="fw-bold">Pay Period:</span><br>
-                <span class="fw-bold">Gross Pay:</span><br>
-                <span class="fw-bold">Payable days:</span><br>
+                <span class="fw-bold">{{'payroll.date_of_joining' | translate}}:</span><br>
+                <span class="fw-bold">{{'payroll.pay_period' | translate}}:</span><br>
+                <span class="fw-bold">{{'payroll.gross_pay' | translate}}:</span><br>
+                <span class="fw-bold">{{'payroll.payable_days' | translate}}:</span><br>
             </div>
             <div class="col-3">
                 <span>05 Dec, 2022</span><br>
@@ -19,14 +18,14 @@
                 <span>{{this.viewPayroll?.attendanceSummary[0]?.payableDays}}</span><br>
             </div>
             <div class="col-3">
-                <span class="fw-bold">Employee Name:</span><br>
-                <span class="fw-bold">Designation:</span><br>
-                <span class="fw-bold">Department:</span><br>
+                <span class="fw-bold">{{'payroll.employee_name' | translate}}:</span><br>
+                <span class="fw-bold">{{'payroll.designation' | translate}}:</span><br>
+                <span class="fw-bold">{{'payroll.department' | translate}}:</span><br>
             </div>
             <div class="col-3">
                 <span>{{this.viewPayroll?.PayrollUser?.user?.name}}</span><br>
-                <span>Software Engineer</span><br>
-                <span>Software Development</span><br>
+                <span></span><br>
+                <span></span><br>
             </div>
         </div>
 
@@ -35,35 +34,35 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Earnings</th>
-                            <th>Amount</th>
+                            <th>{{'payroll.earnings' | translate}}</th>
+                            <th>{{'payroll.amount' | translate}}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Fixed Allowance + Basic Salary</td>
+                            <td>{{'payroll.fixed_allowance_basic_salary' | translate}}</td>
                             <td>{{this.viewPayroll?.totalFixedAllowance}}</td>
                         </tr>
                         <tr>
-                            <td>Variable Allowance</td>
+                            <td>{{'payroll.variable_allowance' | translate}}</td>
                             <td>{{this.viewPayroll?.totalVariableAllowance}}</td>
                         </tr>
                         <tr>
-                            <td>Overtime</td>
+                            <td>{{'payroll.overtime' | translate}}</td>
                             <td>{{this.viewPayroll?.totalOvertime | number:'1.2-2'}}</td>
                         </tr>
                         <tr>
-                            <td>Flexi Benefits</td>
+                            <td>{{'payroll.flexi_benefits' | translate}}</td>
                             <td>{{this.viewPayroll?.totalFlexiBenefits}}</td>
                         </tr>
                         <tr>
-                            <td>Other benefits</td>
+                            <td>{{'payroll.other_benefits' | translate}}</td>
                             <td>{{this.viewPayroll?.totalOtherBenefit}}</td>
                         </tr>
                     </tbody>
                     <tfoot>
                         <tr class="fw-bold">
-                            <td>Total Earnings</td>
+                            <td>{{'payroll.total_earnings' | translate}}</td>
                             <td>{{ totalEarnings | number:'1.2-2' }}</td>
                         </tr>
                     </tfoot>
@@ -73,22 +72,22 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Deductions</th>
-                            <th>Amount</th>
+                            <th>{{'payroll.deductions' | translate}}</th>
+                            <th>{{'payroll.amount' | translate}}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Fixed Deductions</td>
+                            <td>{{'payroll.fixed_deductions' | translate}}</td>
                             <td>{{this.viewPayroll?.totalFixedDeduction}}</td>
                         </tr>
                       
                         <tr>
-                            <td>Income Tax</td>
+                            <td>{{'payroll.income_tax' | translate}}</td>
                             <td>{{this.viewPayroll?.totalIncomeTax}}</td>
                         </tr>
                         <tr>
-                            <td>Loan/Advances</td>
+                            <td>{{'payroll.loan_advances' | translate}}</td>
                             <td>{{this.viewPayroll?.totalLoanAdvance}}</td>
                         </tr>
                         <tr *ngFor="let statutory of this.viewPayroll?.statutoryDetails">
@@ -101,7 +100,7 @@
                     </tbody>
                     <tfoot>
                         <tr class="fw-bold">
-                            <td>Total Deductions</td>
+                            <td>{{'payroll.total_deductions' | translate}}</td>
                             <td>{{ totalDeductions | number:'1.2-2' }}</td>
                         </tr>
                     </tfoot>
@@ -112,8 +111,8 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Employer Contribution</th>
-                            <th>Amount</th>
+                            <th>{{'payroll.employer_contribution' | translate}}</th>
+                            <th>{{'payroll.amount' | translate}}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,7 +130,7 @@
 
         <div class="col-12 text-end">
             <h4>
-                Take Home Salary (Net Pay): ₹ {{ (totalEarnings - totalDeductions) | number:'1.2-2' }}
+                {{'payroll.take_home_salary' | translate}}: ₹ {{ (totalEarnings - totalDeductions) | number:'1.2-2' }}
             </h4>
         </div>
     </div>

@@ -55,12 +55,12 @@ export class FNFStep9Component {
     },
     {
       key: 'manualArrears',
-      name: this.translate.instant('payroll.manual_arrears'),
+      name: this.translate.instant('payroll.manual_Arrears'),
       valueFn: (row) => row.manualArrears?.totalArrears || 0
     },
     {
       key: 'totalFixedAllowance',
-      name: this.translate.instant('payroll.total_variable_allowance'),
+      name: this.translate.instant('payroll.total_variable_allowances'),
       valueFn: (row) => row.totalFixedAllowance || 0
     },
     {

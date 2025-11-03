@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
+import { TranslateService } from '@ngx-translate/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 
@@ -17,15 +17,17 @@ export class FnfPayslipsComponent {
   displayedColumns: string[] = ['PayrollUser', 'period', 'payroll', 'status', 'actions'];
   payslips = [];
   selectedRecord: any;
+  private readonly translate = inject(TranslateService);
+
   columns: TableColumn[] = [
-    { key: 'PayrollUser', name: 'Employee', valueFn: (row: any) => row?.PayrollFNFUser?.user?.name },
-    { key: 'period', name: 'Period', valueFn: (row: any) => row?.payroll?.month + '-' + row?.payroll?.year },
-    { key: 'generatedOn', name: 'Generated On', valueFn: (row: any) => row?.payroll?.date ? this.datePipe.transform(row?.payroll?.date, 'mediumDate') : '' },
-    { key: 'status', name: 'Status', valueFn: (row: any) => row?.payroll?.status },
+    { key: 'PayrollUser', name: this.translate.instant('payroll.employee'), valueFn: (row: any) => row?.PayrollFNFUser?.user?.name },
+    { key: 'period', name: this.translate.instant('payroll.period'), valueFn: (row: any) => row?.payroll?.month + '-' + row?.payroll?.year },
+    { key: 'generatedOn', name: this.translate.instant('payroll.generated_on'), valueFn: (row: any) => row?.payroll?.date ? this.datePipe.transform(row?.payroll?.date, 'mediumDate') : '' },
+    { key: 'status', name: this.translate.instant('payroll.status'), valueFn: (row: any) => row?.payroll?.status },
     {
-      key: 'actions', name: 'Actions',
+      key: 'actions', name: this.translate.instant('payroll.actions'),
       isAction: true, options: [
-        { label: 'Show Payslip', icon: '', visibility: ActionVisibility.LABEL, cssClass: 'success-btn' }
+        { label: this.translate.instant('payroll.show_payslip'), icon: '', visibility: ActionVisibility.LABEL, cssClass: 'success-btn' }
       ]
     },
   ]
@@ -42,7 +44,7 @@ export class FnfPayslipsComponent {
 
   onActionClick(event: any) {
     switch (event.action.label) {
-      case 'Show Payslip':
+      case this.translate.instant('payroll.show_payslip'):
         this.selectedRecord = event.row;
         this.viewPayslip();
         break;
