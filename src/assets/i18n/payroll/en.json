@@ -875,6 +875,7 @@
         "total_fixed_allowance": "Total Fixed Allowance",
         "total_loan_advance": "Total Loan/Advance",
         "failed_fetch_payroll_status": "Failed to fetch Payroll Status",
-        "failed_fetch_generated_payroll": "Failed to fetch Generated Payroll"
+        "failed_fetch_generated_payroll": "Failed to fetch Generated Payroll",
+        "upload_locked": "Attendance process not completed for selected period."
     }
 }
