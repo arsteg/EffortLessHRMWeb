@@ -34,6 +34,7 @@ export class AssignedTemplatesComponent {
   employeeDeductionsData: any;
   form: any;
   selectedRecord: any;
+  isSubmitting = false;
 
   constructor(
     private payroll: PayrollService,
@@ -99,24 +100,32 @@ export class AssignedTemplatesComponent {
   }
 
   onSubmission() {
+    if (this.isSubmitting) {
+      return;
+    }
+    this.isSubmitting = true;
     const template = this.payroll.getFormValues.getValue();
     if (!this.fixedAllowanceChildComponent.isFormValid()) {
       this.toast.error(this.translate.instant('payroll._ctc_templates.toast.fixed_allowance_Invalid_data'));  
+      this.isSubmitting = false;
       return;
     }
     if (!this.fixedDeductionChildComponent.isFormValid()) {
       this.toast.error(this.translate.instant('payroll._ctc_templates.toast.fixed_deduction_Invalid_data'));  
+      this.isSubmitting = false;
       return;
     }
     if (!this.variableAllowanceChildComponent.isFormValid()) {
       this.toast.error(this.translate.instant('payroll._ctc_templates.toast.variable_allowance_Invalid_data'));  
+      this.isSubmitting = false;
       return;
     }
     if (!this.variableDeductionChildComponent.isFormValid()) {
       this.toast.error(this.translate.instant('payroll._ctc_templates.toast.variable_deduction_Invalid_data'));  
+      this.isSubmitting = false;
       return;
     }
-    console.log(this.variableAllowanceData);
+    //console.log(this.variableAllowanceData);
     let payload = {
       name: template.name,
       ctcTemplateFixedAllowance: this.tabChanges[0] ? this.fixedAllowanceData : this.selectedRecord.ctcTemplateFixedAllowances,
@@ -129,8 +138,10 @@ export class AssignedTemplatesComponent {
       const id = this.payroll.selectedCTCTemplate.getValue()._id;
       this.payroll.updateCTCTemplate(id, payload).subscribe((res: any) => {
         this.recordUpdated.emit(res.data);
+        this.isSubmitting = false;
         this.toast.success(this.translate.instant('payroll._ctc_templates.toast.success_updated'));
       }, err => {
+        this.isSubmitting = false;
         const errorMessage = err?.error?.message || err?.message || err 
         ||  this.translate.instant('payroll._ctc_templates.toast.failed_updated')
         ;
@@ -140,7 +151,9 @@ export class AssignedTemplatesComponent {
       this.payroll.addCTCTemplate(payload).subscribe((res: any) => {
         this.recordUpdated.emit(res.data);
         this.toast.success(this.translate.instant('payroll._ctc_templates.toast.success_saved'));
+        this.isSubmitting = false;
       }, err => {
+        this.isSubmitting = false;
         const errorMessage = err?.error?.message || err?.message || err 
         ||  this.translate.instant('payroll._ctc_templates.toast.failed_saved')
         ;

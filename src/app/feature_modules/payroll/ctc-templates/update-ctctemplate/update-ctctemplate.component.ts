@@ -23,6 +23,7 @@ export class UpdateCTCTemplateComponent {
   variableDeduction: any;
   showAssignedTemplates = true;
   ctcTemplateForm: FormGroup;
+  isSubmitting = false;
 
   constructor(
     private fb: FormBuilder,    
@@ -69,14 +70,20 @@ export class UpdateCTCTemplateComponent {
     }
   }
   async onNext() {
+    if (this.isSubmitting) {
+      return;
+    }
+    this.isSubmitting = true;
     const isValid = await this.getAssignedTemplates();
     if (!isValid) 
       {
         this.showAssignedTemplates = true;
+        this.isSubmitting = false;
         return; // Stop here if invalid
       }
       else
       {   
+        this.isSubmitting = false;
         this.showAssignedTemplates = false;
       }
     
