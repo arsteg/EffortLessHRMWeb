@@ -680,8 +680,8 @@ export class AttendanceProcessComponent {
 
   deleteRecord(data) {
     let payload = {
-      attandanaceProcessPeroidMonth: data?.attendanceProcessPeriodMonth,
-      attandanaceProcessPeroidYear: data?.attendanceProcessPeriodYear
+      attendanceProcessPeriodMonth: data?.attendanceProcessPeriodMonth,
+      attendanceProcessPeriodYear: data?.attendanceProcessPeriodYear
     };
     this.attendanceService.deleteProcessAttendance(payload).subscribe((res: any) => {
       this.getProcessAttendance();

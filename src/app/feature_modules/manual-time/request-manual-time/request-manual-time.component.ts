@@ -237,6 +237,7 @@ export class RequestManualTimeComponent implements OnInit {
 
     if (fromDate !== toDate) {
       this.dateMismatchError = true;
+      this.isSubmitting = false;
       return;
     } else {
       this.dateMismatchError = false;
