@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/c
 import { UserService } from 'src/app/_services/users.service';
 import { catchError, forkJoin, map } from 'rxjs';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-step5',
@@ -26,39 +27,40 @@ export class FNFStep5Component implements OnInit {
   @Input() isSteps: boolean;
   @Input() selectedFnF: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
 
   columns: TableColumn[] = [
     {
       key: 'userName',
-      name: 'Payroll User',
-      valueFn: (row) => row.userName || 'Not specified'
+      name: this.translate.instant('payroll.payroll_user_label'),
+      valueFn: (row) => row.userName || ''
     },
     {
       key: 'loanAndAdvance',
-      name: 'Loan and Advance',
-      valueFn: (row) => row.loanAdvanceCategory || 'Unknown Category'
+      name: this.translate.instant('payroll.loan_and_advance'),
+      valueFn: (row) => row.loanAdvanceCategory || ''
     },
     {
       key: 'LoanAdvanceAmount',
-      name: 'Loan Advance Amount',
+      name: this.translate.instant('payroll.loan_advance_amount'),
       valueFn: (row) => row.LoanAdvanceAmount
     },
     {
       key: 'finalSettlementAmount',
-      name: 'Final Settlement Amount',
+      name: this.translate.instant('payroll.final_settlement_amount'),
       valueFn: (row) => row.finalSettlementAmount
     },
     {
       key: 'fnfClearanceStatus',
-      name: 'FnF Clearance Status',
+      name: this.translate.instant('payroll.fnf_clearance_status'),
       valueFn: (row) => row.fnfClearanceStatus
     },
     {
       key: 'actions',
-      name: 'Actions',
+      name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
-        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
+        { label: this.translate.instant('payroll.delete'), visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
       ]
     }
   ];
@@ -89,7 +91,6 @@ export class FNFStep5Component implements OnInit {
         this.loanAdvances.data = results.loanAdvances;
       },
       error: (error) => {
-        console.error('Error while loading loan advances:', error);
       }
     });
 
@@ -117,7 +118,7 @@ export class FNFStep5Component implements OnInit {
     return this.payrollService.getLoans({ skip: '', next: '' }).pipe(
       map((res: any) => res.data),
       catchError((error) => {
-        this.toast.error('Failed to fetch Loan Categories', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_loan_and_advance'), this.translate.instant('payroll.error'));
         throw error;
       })
     );
@@ -125,12 +126,12 @@ export class FNFStep5Component implements OnInit {
 
   getMatchingCategory(loanAdvanceCategory: string) {
     const matchedCategory = this.loanCategories?.find((category: any) => category._id === loanAdvanceCategory);
-    return matchedCategory ? matchedCategory.name : 'Unknown Category';
+    return matchedCategory ? matchedCategory.name : '';
   }
 
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find(user => user?._id === userId);
-    return matchedUser ? `${matchedUser?.firstName} ${matchedUser?.lastName}` : 'Not specified';
+    return matchedUser ? `${matchedUser?.firstName} ${matchedUser?.lastName}` : '';
   }
 
   fetchLoanAdvances(fnfPayroll: any) {
@@ -146,7 +147,7 @@ export class FNFStep5Component implements OnInit {
         });
       }),
       catchError((error) => {
-        this.toast.error('Failed to fetch Loan Advances', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_loan_and_advance'), this.translate.instant('payroll.error'));
         throw error;
       })
     );
@@ -162,16 +163,16 @@ export class FNFStep5Component implements OnInit {
         next: (res: any) => {
           this.userLoanAdvances = res.data;
           if (this.userLoanAdvances.length > 0) {
-            this.userLoanAdvances.unshift({ _id: '', loanAdvancesCategory: { name: 'Select Loan/Advance' } });
+            this.userLoanAdvances.unshift({ _id: '', loanAdvancesCategory: { name: this.translate.instant('payroll.select_loan_and_advance') } });
           } else {
-            this.userLoanAdvances.unshift({ _id: '', loanAdvancesCategory: { name: 'Loans/Advances not Assigned to the Selected User' } });
+            this.userLoanAdvances.unshift({ _id: '', loanAdvancesCategory: { name: this.translate.instant('payroll.loans_and_advances_not_assigned') } });
           }
           this.loanAdvanceForm.patchValue({
             payrollFNFUser: this.getMatchedSettledUser(fnfUserId)
           });
         },
         error: () => {
-          this.toast.error('Failed to fetch User Loan Advances', 'Error');
+          this.toast.error(this.translate.instant('payroll.failed_fetch_loan_and_advance'), this.translate.instant('payroll.error'));
         }
       });
 
@@ -187,7 +188,7 @@ export class FNFStep5Component implements OnInit {
           });
         },
         error: () => {
-          this.toast.error('Failed to fetch Loan Advances for User', 'Error');
+          this.toast.error(this.translate.instant('payroll.failed_fetch_loan_and_advance'), this.translate.instant('payroll.error'));
         }
       });
     }
@@ -217,9 +218,9 @@ export class FNFStep5Component implements OnInit {
       next: (res: any) => {
         this.userLoanAdvances = res.data;
         if (this.userLoanAdvances.length > 0) {
-          this.userLoanAdvances.unshift({ _id: '', loanAdvancesCategory: { name: 'Select Loan/Advance' } });
+          this.userLoanAdvances.unshift({ _id: '', loanAdvancesCategory: { name: this.translate.instant('payroll.select_loan_and_advance') } });
         } else {
-          this.userLoanAdvances.unshift({ _id: '', loanAdvancesCategory: { name: 'Loans/Advances not Assigned to the Selected User' } });
+          this.userLoanAdvances.unshift({ _id: '', loanAdvancesCategory: { name: this.translate.instant('payroll.loans_and_advances_not_assigned') } });
         }
 
         this.loanAdvanceForm.patchValue({
@@ -233,7 +234,7 @@ export class FNFStep5Component implements OnInit {
         this.openDialog(true);
       },
       error: () => {
-        this.toast.error('Failed to fetch User Loan Advances', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_loan_and_advance'), this.translate.instant('payroll.error'));
       }
     });
   }
@@ -261,12 +262,21 @@ export class FNFStep5Component implements OnInit {
             this.loanAdvances.data = data;
           });
           this.resetForm();
-          this.toast.success(`Loan Advance ${this.isEdit ? 'updated' : 'added'} successfully`, 'Success');
+          if (this.isEdit) {
+            this.toast.success(this.translate.instant('payroll.messages.loan_Advance_updated'), this.translate.instant('payroll.success'));
+          } else {
+            this.toast.success(this.translate.instant('payroll.messages.loan_advances'), this.translate.instant('payroll.success'));
+          }
           this.isEdit = false;
           this.dialog.closeAll();
         },
         error: (error) => {
-          this.toast.error(`Failed to ${this.isEdit ? 'update' : 'add'} Loan Advance`, 'Error');
+          if (this.isEdit) {
+            this.toast.error(this.translate.instant('payroll.messages.loan_advance_update_error'), this.translate.instant('payroll.error'));
+          }
+          else {
+            this.toast.error(this.translate.instant('payroll.messages.loan_advances_error'), this.translate.instant('payroll.error'));
+          }
         }
       });
     } else {
@@ -292,7 +302,7 @@ export class FNFStep5Component implements OnInit {
   }
 
   onAction(event: any): void {
-    if (event.action.label === 'Delete') {
+    if (event.action.label === this.translate.instant('payroll.delete')) {
       this.deleteFnF(event.row._id);
     }
   }
@@ -303,10 +313,10 @@ export class FNFStep5Component implements OnInit {
         this.fetchLoanAdvances(this.selectedFnF).subscribe((data) => {
           this.loanAdvances.data = data;
         });
-        this.toast.success('Loan Advance Deleted', 'Success');
+        this.toast.success(this.translate.instant('payroll.messages.loan_advance_delete'), this.translate.instant('payroll.successfully'));
       },
       error: () => {
-        this.toast.error('Failed to delete Loan Advance', 'Error');
+        this.toast.error(this.translate.instant('payroll.messages.loan_advance_delete_error'), this.translate.instant('payroll.error'));
       }
     });
   }

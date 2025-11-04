@@ -14,7 +14,7 @@
 
             <div class="d-flex justify-content-between align-items-center mb-5">
                 @if(companyInfo?.logo){
-                    <img [src]="companyInfo?.logo" width="150px">
+                <img [src]="companyInfo?.logo" width="150px">
                 }
                 <div class="text-end">
                     <label class="fw-bold">{{companyInfo?.companyName}}</label><br>
@@ -31,8 +31,8 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th colspan="4" class="bg-black text-white text-center">
-                            Employee Details
+                        <th colspan="4" class="bg-black text-white text-center" translate>
+                            payroll.employee_details
                         </th>
                     </tr>
                 </thead>
@@ -84,7 +84,7 @@
                     </tr>
 
                     <tr>
-                        <td class="bg-light fw-bold" colspan="2">Compensation</td>
+                        <td class="bg-light fw-bold" colspan="2" translate>payroll._fnf.steps.compensation</td>
                     </tr>
 
                     <tr>
@@ -93,21 +93,23 @@
                     </tr>
 
                     <tr>
-                        <td class="bg-light fw-bold">Manual Arrears</td>
+                        <td class="bg-light fw-bold" translate>payroll.manual_Arrears</td>
                         <td>{{payslip?.manualArrears?.totalArrears}}</td>
                     </tr>
                     <tr>
-                        <td class="bg-light fw-bold" colspan="2">Statutory Benefits</td>
+                        <td class="bg-light fw-bold" colspan="2" translate>payroll._fnf.steps.statutory</td>
                     </tr>
+                    @if(payslip?.statutoryBenefits){
                     <tr>
                         <td class="bg-light fw-bold">{{payslip?.statutoryBenefis?.ProvidentFundPaymentProcess}}</td>
                         <td>{{payslip?.statutoryBenefis?.ProvidentFundAmount}}</td>
                     </tr>
+                    }
                     <tr>
-                        <td class="bg-light fw-bold" colspan="2">Overtime</td>
+                        <td class="bg-light fw-bold" colspan="2" translate>payroll.overtime</td>
                     </tr>
                     <tr>
-                        <td class="bg-light fw-bold">Overtime Hour</td>
+                        <td class="bg-light fw-bold" translate>payroll.overtime_hour</td>
                         <td>{{payslip?.latestOvertime?.FinalOvertime}}</td>
                     </tr>
 
@@ -129,7 +131,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="bg-light fw-bold" colspan="2">Fixed Deductions</td>
+                        <td class="bg-light fw-bold" colspan="2" translate>payroll._ctc_templates.table.fixed_deductions
+                        </td>
                     </tr>
                     <tr *ngFor="let fixedDeduction of payslip?.fixedDeductionsList">
                         <td class="bg-light fw-bold">{{fixedDeduction?.fixedDeduction?.label}}</td>
@@ -137,7 +140,8 @@
                     </tr>
 
                     <tr>
-                        <td class="bg-light fw-bold" colspan="2">Variable Deductions</td>
+                        <td class="bg-light fw-bold" colspan="2" translate>
+                            payroll._ctc_templates.table.variable_deductions</td>
                     </tr>
                     <tr *ngFor="let variableDeduction of payslip?.variableDeductionsList">
                         <td class="bg-light fw-bold">{{variableDeduction?.variableDeduction?.label}}</td>
@@ -145,23 +149,24 @@
                     </tr>
 
                     <tr>
-                        <td class="bg-light fw-bold" colspan="2">Taxes ({{payslip?.incomeTax?.TaxCalculatedMethod}})
+                        <td class="bg-light fw-bold" colspan="2">{{'payroll.taxes' | translate}}
+                            ({{payslip?.incomeTax?.TaxCalculatedMethod}})
                         </td>
                     </tr>
                     <tr>
-                        <td class="bg-light fw-bold">TDS</td>
+                        <td class="bg-light fw-bold" translate>payroll.tds</td>
                         <td>{{payslip?.incomeTax?.TDSCalculated}}</td>
                     </tr>
                     <tr>
-                        <td class="bg-light fw-bold">Tax Calulated</td>
+                        <td class="bg-light fw-bold" translate>payroll.tax_calculated</td>
                         <td>{{payslip?.incomeTax?.TaxCalculated}}</td>
                     </tr>
 
                     <tr>
-                        <td class="bg-light fw-bold" colspan="2">Loans and Advances</td>
+                        <td class="bg-light fw-bold" colspan="2" translate>payroll.loans_and_advances</td>
                     </tr>
                     <tr>
-                        <td class="bg-light fw-bold">Loans/Advances</td>
+                        <td class="bg-light fw-bold" translate>payroll.loans_and_advances</td>
                         <td>{{payslip?.totalLoanAdvance}}</td>
                     </tr>
                 </tbody>

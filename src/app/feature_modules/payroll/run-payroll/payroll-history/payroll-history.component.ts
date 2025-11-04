@@ -47,7 +47,7 @@ export class PayrollHistoryComponent implements AfterViewInit {
   pageSizeOptions = [5, 10, 25, 50, 100];
   searchText: string = '';
   isSubmitting: boolean = false;
-  isSubmittingPayroll: boolean = false;  
+  isSubmittingPayroll: boolean = false;
   isSubmittingStatusPayroll: boolean = false;
   columns: TableColumn[] = [
     { key: 'month', name: this.translate.instant('payroll._history.table.period'), valueFn: (row) => row.month + '-' + row.year },
@@ -204,34 +204,34 @@ export class PayrollHistoryComponent implements AfterViewInit {
       this.duplicatePayrollError = false;
     }
   }
-validateAttendanceBeforePayroll(): Promise<boolean> {
-  const monthName = this.payrollForm.get('month')?.value;
-  const year = this.payrollForm.get('year')?.value;
-  const monthIndex = this.getMonthIndex(monthName) + 1; // convert to 1-based month index
+  validateAttendanceBeforePayroll(): Promise<boolean> {
+    const monthName = this.payrollForm.get('month')?.value;
+    const year = this.payrollForm.get('year')?.value;
+    const monthIndex = this.getMonthIndex(monthName) + 1; // convert to 1-based month index
 
-  return new Promise((resolve, reject) => {
-    this.payrollService.validateAttendanceProcess({ month: monthIndex, year }).subscribe(
-      (res: any) => {
-        if (res.exists) {
-          resolve(true);
-        } else {
+    return new Promise((resolve, reject) => {
+      this.payrollService.validateAttendanceProcess({ month: monthIndex, year }).subscribe(
+        (res: any) => {
+          if (res.exists) {
+            resolve(true);
+          } else {
+            this.toast.error(
+              res.message || this.translate.instant('payroll.upload_locked'),
+              this.translate.instant('payroll._history.title')
+            );
+            resolve(false);
+          }
+        },
+        (err) => {
           this.toast.error(
-            res.message || 'Attendance process not completed for selected period.',
+            err?.error?.message || 'Error validating attendance process.',
             this.translate.instant('payroll._history.title')
           );
-          resolve(false);
+          reject(false);
         }
-      },
-      (err) => {
-        this.toast.error(
-          err?.error?.message || 'Error validating attendance process.',
-          this.translate.instant('payroll._history.title')
-        );
-        reject(false);
-      }
-    );
-  });
-}
+      );
+    });
+  }
 
   getPayroll() {
     const pagination = {
@@ -304,7 +304,7 @@ validateAttendanceBeforePayroll(): Promise<boolean> {
   closeAddDialog() {
     this.isSubmittingPayroll = false;
     this.isSubmittingStatusPayroll = false;
-     this.payrollForm.get('date')?.disable();
+    this.payrollForm.get('date')?.disable();
     this.payrollForm.reset({
       year: '',
       month: '',
@@ -383,7 +383,7 @@ validateAttendanceBeforePayroll(): Promise<boolean> {
           );
         });
         this.closeAddDialog();
-        this.getPayrollWithUserCounts();       
+        this.getPayrollWithUserCounts();
       },
       (err) => {
         this.translate.get('payroll._history.title').subscribe(title => {
@@ -452,22 +452,21 @@ validateAttendanceBeforePayroll(): Promise<boolean> {
 
   async onSubmission() {
     this.isSubmittingPayroll = true;
-     this.payrollForm.get('date')?.enable();
+    this.payrollForm.get('date')?.enable();
     if (this.payrollForm.invalid) {
       this.payrollUserForm.markAllAsTouched();
       this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
       this.isSubmittingPayroll = false;
       return;
     }
-  const isAttendanceValid = await this.validateAttendanceBeforePayroll();
-  if (isAttendanceValid===false) {
-    this.isSubmittingPayroll = false;
-     this.toast.error(this.translate.instant('attendance.upload_locked'));
-  
-    return;
-  }
+    const isAttendanceValid = await this.validateAttendanceBeforePayroll();
+    // if (isAttendanceValid===false) {
+    //   this.isSubmittingPayroll = false;
+    //    this.toast.error(this.translate.instant('payroll.upload_locked'));
+    //   return;
+    // }
     if (this.payrollForm.valid) {
-   
+
       this.payrollForm.patchValue({
         date: this.payrollForm.value.date
       });

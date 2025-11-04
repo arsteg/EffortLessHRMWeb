@@ -1,10 +1,11 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { map, catchError } from 'rxjs';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 interface PayrollStatus {
   InProgress: string;
@@ -39,6 +40,7 @@ export class FNFStep9Component {
   selectedPayrollUser: any;
   @ViewChild('updateStatus') updateStatus: TemplateRef<any>;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
   isEditMode: boolean = false;
 
   payrollForm: FormGroup;
@@ -46,75 +48,74 @@ export class FNFStep9Component {
   columns: TableColumn[] = [
     {
       key: 'PayrollUsers',
-      name: 'Employee Name',
+      name: this.translate.instant('payroll.payroll_user_label'),
       valueFn: (row) => row.PayrollFNFUser?.user
         ? `${row.PayrollFNFUser.user.firstName} ${row.PayrollFNFUser.user.lastName}`
-        : 'No User Specified'
+        : this.translate.instant('payroll.no_user_specified')
     },
     {
       key: 'manualArrears',
-      name: 'Manual Arrears',
+      name: this.translate.instant('payroll.manual_Arrears'),
       valueFn: (row) => row.manualArrears?.totalArrears || 0
     },
     {
       key: 'totalFixedAllowance',
-      name: 'Total Variable Pay',
+      name: this.translate.instant('payroll.total_variable_allowances'),
       valueFn: (row) => row.totalFixedAllowance || 0
     },
     {
       key: 'totalOtherBenefit',
-      name: 'Termination/Resignation Compensation',
+      name: this.translate.instant('payroll._fnf.steps.compensation'),
       valueFn: (row) => row.totalOtherBenefit || 0
     },
     {
       key: 'totalFixedDeduction',
-      name: 'Total Overtime',
+      name: this.translate.instant('payroll.total_overtime'),
       valueFn: (row) => row.totalFixedDeduction || 0
     },
     {
       key: 'totalLoanRepayment',
-      name: 'Total Loans/Advances',
+      name: this.translate.instant('payroll.total_loan_advance'),
       valueFn: (row) => row.totalLoanRepayment || 0
     },
     {
       key: 'totalIncomeTax',
-      name: 'Total TDS',
+      name: this.translate.instant('payroll.total_tds'),
       valueFn: (row) => row.totalIncomeTax || 0
     },
     {
       key: 'yearlySalary',
-      name: 'Total CTC',
+      name: this.translate.instant('payroll.total_ctc'),
       valueFn: (row) => row.yearlySalary || 0
     },
     {
       key: 'monthlySalary',
-      name: 'Total Gross Salary',
+      name: this.translate.instant('payroll.total_gross_salary'),
       valueFn: (row) => row.monthlySalary || 0
     },
     {
       key: 'totalEmployerStatutoryContribution',
-      name: 'Total Employer Statutory Contribution',
+      name: this.translate.instant('payroll.total_employer_statutory_contribution'),
       valueFn: (row) => row.totalEmployerStatutoryContribution || 0
     },
     {
       key: 'totalEmployeeStatutoryDeduction',
-      name: 'Total Employee Statutory Deduction',
+      name: this.translate.instant('payroll.total_employee_statutory_deduction'),
       valueFn: (row) => row.totalEmployeeStatutoryDeduction || 0
     },
     {
       key: 'payroll_status',
-      name: 'Payroll Status',
+      name: this.translate.instant('payroll._history.form.status'),
       valueFn: (row) => row.PayrollFNFUser?.status
         ? row.PayrollFNFUser.status.charAt(0).toUpperCase() + row.PayrollFNFUser.status.slice(1).toLowerCase()
         : 'N/A'
     },
     {
       key: 'actions',
-      name: 'Actions',
+      name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
-        { label: 'View', visibility: ActionVisibility.BOTH, icon: 'remove_red_eye', hideCondition: (row) => false }
-        // Status options will be dynamically added in getFNFPayrollStatus
+        { label: this.translate.instant('payroll.view'), visibility: ActionVisibility.BOTH, icon: 'remove_red_eye', hideCondition: (row) => false }
       ]
     }
   ];
@@ -147,7 +148,7 @@ export class FNFStep9Component {
             return {
               ...column,
               options: [
-                { label: 'View', visibility: ActionVisibility.BOTH, icon: 'remove_red_eye', hideCondition: (row) => false },
+                { label: this.translate.instant('payroll.view'), visibility: ActionVisibility.BOTH, icon: 'remove_red_eye', hideCondition: (row) => false },
                 ...this.payrollStatusArray.map((status: string) => ({
                   label: status,
                   visibility: ActionVisibility.LABEL,
@@ -161,7 +162,7 @@ export class FNFStep9Component {
         });
       },
       error: () => {
-        this.toast.error('Failed to fetch Payroll Status', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_payroll_status'), this.translate.instant('payroll.error'));
       }
     });
   }
@@ -170,7 +171,7 @@ export class FNFStep9Component {
     this.payrollService.getGeneratedFnFPayrollByFNFPayroll(this.selectedFnF?._id).pipe(
       map((res: any) => res.data),
       catchError((error) => {
-        this.toast.error('Failed to fetch Generated Payroll', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_generated_payroll'), this.translate.instant('payroll.error'));
         throw error;
       })
     ).subscribe({
@@ -178,7 +179,6 @@ export class FNFStep9Component {
         this.generatedPayroll = data;
       },
       error: (error) => {
-        console.error('Error while fetching generated payroll:', error);
       }
     });
   }
@@ -200,12 +200,12 @@ export class FNFStep9Component {
     };
     this.payrollService.updateFnFUserStatus(id, payload).subscribe({
       next: () => {
-        this.toast.success('Payroll status updated successfully', 'Success');
+        this.toast.success(this.translate.instant('payroll._history.toast.status_updated'), this.translate.instant('payroll.successfully'));
         this.getGeneratedPayroll();
         this.closeDialog();
       },
       error: () => {
-        this.toast.error('Failed to update Payroll Status', 'Error');
+        this.toast.error(this.translate.instant('payroll._history.toast.error_update_status'), this.translate.instant('payroll.error'));
       }
     });
   }

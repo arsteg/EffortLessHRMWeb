@@ -46,6 +46,7 @@ export class RequestManualTimeComponent implements OnInit {
   isEdit: boolean = false;
   view = localStorage.getItem('adminView');
   dialogRef: MatDialogRef<any>;
+  isSubmitting: boolean = false;
   @ViewChild('requestModal') requestModal: TemplateRef<any>;
   @ViewChild('deleteModal') deleteModal: TemplateRef<any>;
   allData: any[] = [];
@@ -213,6 +214,10 @@ export class RequestManualTimeComponent implements OnInit {
 
 
   onSubmit() {
+    if (this.isSubmitting) {
+      return; // prevent duplicate submit
+    }
+    this.isSubmitting = true;
     var currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     let request = {
@@ -232,6 +237,7 @@ export class RequestManualTimeComponent implements OnInit {
 
     if (fromDate !== toDate) {
       this.dateMismatchError = true;
+      this.isSubmitting = false;
       return;
     } else {
       this.dateMismatchError = false;
@@ -244,9 +250,11 @@ export class RequestManualTimeComponent implements OnInit {
           this.addRequestForm.reset();
           this.fetchManualTimeRequests();
           this.dialogRef.close();
+          this.isSubmitting = false;
         }, 30);
       }, err => {
         this.toastService.error(err.message, "Error")
+        this.isSubmitting = false;
       });
     } else {
       request.requestId = this.selectedRequest._id;
@@ -257,8 +265,10 @@ export class RequestManualTimeComponent implements OnInit {
         this.addRequestForm.reset();
         this.fetchManualTimeRequests();
         this.dialogRef.close();
+        this.isSubmitting = false;
       }, err => {
         this.toastService.error(err.message, "Error")
+        this.isSubmitting = false;
       });
     }
   }

@@ -4,7 +4,7 @@
       <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF" (changeUser)="onUserChange($event)">
       </app-fnf-users>
       <button mat-flat-button color="primary" class="ms-2 mt-1" (click)="openDialog(false)">
-        Add Statutory Benefit
+        {{'payroll.add_statutory_benefit' | translate}}
       </button>
     </div>
   </div>
@@ -15,7 +15,7 @@
 <ng-template #dialogTemplate>
   <div class="modal-header border-bottom justify-content-between d-flex mb-2 p-3" style="z-index: 1050;">
     <h1 class="modal-title text-muted mb-0">
-      {{ isEdit ? 'Edit' : 'Add' }} Statutory Benefit For FnF Payroll
+      {{ isEdit ? ('payroll.edit' | translate) : ('payroll.add' | translate) }} {{'payroll.statutory_benefit_for_fnf_payroll' | translate}}
     </h1>
     <button type="button" class="btn-close" aria-label="Close" (click)="dialog.closeAll()">
     </button>
@@ -25,7 +25,7 @@
       <div class="row">
         <ng-container *ngIf="isEdit; else addModeUserSelect">
           <mat-form-field appearance="outline" class="col-12 my-2">
-            <mat-label>Selected FnF User</mat-label>
+            <mat-label>{{'payroll.selected_fnf_user' | translate}}</mat-label>
             <input matInput type="text" formControlName="payrollFNFUser" readonly />
           </mat-form-field>
         </ng-container>
@@ -34,40 +34,41 @@
           </app-fnf-users>
         </ng-template>
         <mat-form-field appearance="outline" class="col-md-6 my-2">
-          <mat-label>Gratuity Amount</mat-label>
-          <input matInput type="number" formControlName="GratuityAmount" placeholder="Enter Gratuity Amount" />
+          <mat-label>{{'payroll.gratuity_amount' | translate}}</mat-label>
+          <input matInput type="number" formControlName="GratuityAmount"
+            placeholder="{{'payroll.gratuity_amount' | translate}}" />
           <mat-error *ngIf="statutoryBenefitForm.get('GratuityAmount')?.hasError('required')">
-            Gratuity Amount is required
+            {{'payroll.gratuity_amount_required' | translate}}
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="col-md-6 my-2">
-          <mat-label>Provident Fund Amount</mat-label>
+          <mat-label>{{'payroll.provident_fund_amount' | translate}}</mat-label>
           <input matInput type="number" formControlName="ProvidentFundAmount"
-            placeholder="Enter Provident Fund Amount" />
+            placeholder="{{'payroll.provident_fund_amount' | translate}}" />
           <mat-error *ngIf="statutoryBenefitForm.get('ProvidentFundAmount')?.hasError('required')">
-            Provident Fund Amount is required
+            {{'payroll.provident_fund_amount_required' | translate}}
           </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="col-md-6 my-2">
-          <mat-label>Provident Fund Payment Process</mat-label>
+          <mat-label>{{'payroll.provident_fund_payment_process' | translate}}</mat-label>
           <mat-select formControlName="ProvidentFundPaymentProcess">
-            <mat-option value="Transfer">Transfer</mat-option>
-            <mat-option value="Withdraw">Withdraw</mat-option>
+            <mat-option value="Transfer">{{'payroll.transfer' | translate}}</mat-option>
+            <mat-option value="Withdraw">{{'payroll.withdraw' | translate}}</mat-option>
           </mat-select>
           <mat-error *ngIf="statutoryBenefitForm.get('ProvidentFundPaymentProcess')?.hasError('required')">
-            Provident Fund Payment Process is required
+            {{'payroll.provident_fund_payment_process_required' | translate}}
           </mat-error>
         </mat-form-field>
         <div class="col-md-6 my-2 d-flex align-items-center">
           <mat-slide-toggle formControlName="IsProvidentFundWithdrawFormSubmitted">
-            Is Provident Fund Withdraw Form Submitted
+            {{'payroll.is_provident_fund_withdraw_form_submitted' | translate}}
           </mat-slide-toggle>
         </div>
       </div>
       <div class="d-flex justify-content-end gap-2 mt-3">
-        <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
-        <button mat-flat-button color="primary" class="addBtn" type="submit">
-          Submit
+        <button mat-stroked-button type="button" (click)="onCancel()">{{'payroll.cancel' | translate}}</button>
+        <button mat-flat-button color="primary" type="submit">
+          {{'payroll.submit' | translate}}
         </button>
       </div>
     </form>

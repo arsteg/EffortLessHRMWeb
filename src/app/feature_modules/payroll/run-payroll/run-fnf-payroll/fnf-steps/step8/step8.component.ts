@@ -1,13 +1,13 @@
-import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { ToastrService } from 'ngx-toastr';
-import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
 import { forkJoin, map, catchError } from 'rxjs';
-import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-step8',
@@ -24,26 +24,27 @@ export class FNFStep8Component implements OnInit {
   @Input() isSteps: boolean = false;
   @Input() selectedFnF: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
 
   columns: TableColumn[] = [
     {
       key: 'userName',
-      name: 'Payroll User',
-      valueFn: (row) => row.userName || 'Not specified'
+      name: this.translate.instant('payroll.payroll_user_label'),
+      valueFn: (row) => row.userName || ''
     },
     {
       key: 'TaxCalculatedMethod',
-      name: 'Tax Calculated Method',
+      name: this.translate.instant('payroll.tax_calculated_method'),
       valueFn: (row) => row.TaxCalculatedMethod
     },
     {
       key: 'TaxCalculated',
-      name: 'Tax Calculated',
+      name: this.translate.instant('payroll.tax_calculated'),
       valueFn: (row) => row.TaxCalculated.toFixed(2)
     },
     {
       key: 'TDSCalculated',
-      name: 'TDS Calculated',
+      name: this.translate.instant('payroll.tds_calculated'),
       valueFn: (row) => row.TDSCalculated.toFixed(2)
     }
   ];
@@ -71,7 +72,6 @@ export class FNFStep8Component implements OnInit {
         this.incomeTax.data = results.incomeTax;
       },
       error: (error) => {
-        console.error('Error while loading income tax records:', error);
       }
     });
   }
@@ -90,7 +90,7 @@ export class FNFStep8Component implements OnInit {
         });
       }),
       catchError((error) => {
-        this.toast.error('Failed to fetch Income Tax Records', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_income_tax_records'), this.translate.instant('payroll.error'));
         throw error;
       })
     );
@@ -98,7 +98,7 @@ export class FNFStep8Component implements OnInit {
 
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find((user) => user?._id === userId);
-    return matchedUser ? `${matchedUser.firstName} ${matchedUser.lastName}` : 'Not specified';
+    return matchedUser ? `${matchedUser.firstName} ${matchedUser.lastName}` : '';
   }
 
   onUserChange(fnfUserId: string): void {
@@ -115,7 +115,7 @@ export class FNFStep8Component implements OnInit {
           }));
         },
         error: () => {
-          this.toast.error('Failed to fetch Income Tax Records for User', 'Error');
+          this.toast.error(this.translate.instant('payroll.failed_fetch_income_tax_records_for_user'), this.translate.instant('payroll.error'));
         }
       });
     }
@@ -133,9 +133,8 @@ export class FNFStep8Component implements OnInit {
         });
       },
       error: () => {
-        this.toast.error('Failed to calculate FNF TDS Amount', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_calculate_fnf_tds_amount'), this.translate.instant('payroll.error'));
       }
     });
   }
-
- }
+}

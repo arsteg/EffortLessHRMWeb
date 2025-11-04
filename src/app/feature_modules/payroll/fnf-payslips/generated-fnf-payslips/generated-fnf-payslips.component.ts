@@ -28,7 +28,9 @@ export class GeneratedFnfPayslipsComponent {
     })
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    console.log(this.payslip);
+   }
 
   calculateTotals(): void {
     const ps = this.payslip;

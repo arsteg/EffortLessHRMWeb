@@ -4,8 +4,8 @@
         <app-fnf-users [isStep]="isSteps" [selectedFnF]="selectedFnF"
             (changeUser)="onUserChange($event)"></app-fnf-users>
         <div>
-            <button mat-flat-button color="primary" (click)="openDialog(false)">Add Variable
-                Pay
+            <button mat-flat-button color="primary" (click)="openDialog(false)">
+                {{ 'payroll.add_variable_pay' | translate }}
             </button>
         </div>
         </div>
@@ -22,7 +22,7 @@
 <ng-template #dialogTemplate>
     <div class="modal-header border-bottom justify-content-between d-flex mb-2 p-3">
         <div>
-            <h1 class="modal-title text-muted mb-0">{{ isEdit ? 'Edit' : 'Add' }} Variable Pay</h1>
+            <h1 class="modal-title text-muted mb-0">{{ isEdit ? ('payroll.edit' | translate) : ('payroll.add' | translate) }} {{ 'payroll.variable_pay' | translate }}</h1>
         </div>
         <div class=""><button type="button" class="btn-close text-end" (click)="onCancel()"></button></div>
     </div>
@@ -31,7 +31,7 @@
             <div class="row">
                 @if(isEdit) {
                 <mat-form-field appearance="outline" class="my-2">
-                    <mat-label>Selected FnF User</mat-label>
+                    <mat-label>{{'payroll.selected_fnf_user' | translate}}</mat-label>
                     <input matInput type="text" formControlName="payrollFNFUser">
                 </mat-form-field>
                 } @else if (!isEdit) {
@@ -39,51 +39,49 @@
                     (changeUser)="onUserChange($event)"></app-fnf-users>
                 }
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Variable Deduction</mat-label>
+                    <mat-label>{{'payroll.variable_deduction.toast.title' | translate}}</mat-label>
                     <mat-select formControlName="variableDeduction">
                         <mat-option [value]="">-- None --</mat-option>
                         <mat-option *ngFor="let deduction of salary?.variableDeductionList"
                             [value]="deduction?.variableDeduction?._id">{{deduction?.variableDeduction?.label}}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="variablePayForm.get('variableDeduction').hasError('required')">Variable Deduction
-                        is required</mat-error>
+                    <mat-error *ngIf="variablePayForm.get('variableDeduction').hasError('required')">{{ 'payroll.variable_deduction_required' | translate }}</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Variable Allowance</mat-label>
+                    <mat-label>{{'payroll.variable_allowance' | translate}}</mat-label>
                     <mat-select formControlName="variableAllowance">
                         <mat-option [value]="">-- None --</mat-option>
                         <mat-option *ngFor="let allowance of salary?.variableAllowanceList"
                             [value]="allowance?.variableAllowance?._id">{{allowance?.variableAllowance?.label}}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="variablePayForm.get('variableAllowance').hasError('required')">Variable Allowance
-                        is required</mat-error>
+                    <mat-error *ngIf="variablePayForm.get('variableAllowance').hasError('required')">{{'payroll.variable_allowance_required' | translate}}</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Month</mat-label>
+                    <mat-label>{{'payroll.month' | translate}}</mat-label>
                     <mat-select formControlName="month">
                         <mat-option *ngFor="let month of months" [value]="month">{{ month }}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="variablePayForm.get('month').hasError('required')">Month is required</mat-error>
+                    <mat-error *ngIf="variablePayForm.get('month').hasError('required')">{{ 'payroll._history.form.month_required' | translate }}</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Amount</mat-label>
+                    <mat-label>{{ 'payroll.amount' | translate }}</mat-label>
                     <input matInput type="number" formControlName="amount" readonly>
-                    <mat-error *ngIf="variablePayForm.get('amount').hasError('required')">Amount is required</mat-error>
+                    <mat-error *ngIf="variablePayForm.get('amount').hasError('required')">{{'payroll.required.amount' | translate}}</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="col-md-6 my-2">
-                    <mat-label>Year</mat-label>
+                    <mat-label>{{ 'payroll.year' | translate }}</mat-label>
                     <input matInput type="number" formControlName="year">
-                    <mat-error *ngIf="variablePayForm.get('year').hasError('required')">Year is required</mat-error>
+                    <mat-error *ngIf="variablePayForm.get('year').hasError('required')">{{ 'payroll._fnf.form.year_required' | translate }}</mat-error>
                 </mat-form-field>
             </div>
 
             <div class="d-flex justify-content-between mt-3">
-                <button mat-flat-button type="button" (click)="onCancel()">Cancel</button>
-                <button mat-flat-button color="primary" type="submit">Submit</button>
+                <button mat-flat-button type="button" (click)="onCancel()">{{'payroll.cancel' | translate}}</button>
+                <button mat-flat-button color="primary" type="submit">{{'payroll.submit' | translate}}</button>
             </div>
         </form>
     </div>

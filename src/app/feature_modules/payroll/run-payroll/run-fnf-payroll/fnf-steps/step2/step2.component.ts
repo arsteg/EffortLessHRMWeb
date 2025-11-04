@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,6 +9,7 @@ import { UserService } from 'src/app/_services/users.service';
 import { catchError, forkJoin, map } from 'rxjs';
 import { SeparationService } from 'src/app/_services/separation.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-step2',
@@ -35,45 +36,46 @@ export class FNFStep2Component implements OnInit {
   terminationDetails: any;
 
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
 
   columns: TableColumn[] = [
     {
       key: 'userName',
-      name: 'Payroll User',
+      name: this.translate.instant('payroll.payroll_user_label'),
       valueFn: (row) => row.userName
     },
     {
       key: 'variableDeduction',
-      name: 'Variable Deduction',
+      name: this.translate.instant('payroll._ctc_templates.table.variable_deductions'),
       valueFn: (row) => row.variableDeduction?.label || 'not specified'
     },
     {
       key: 'variableAllowance',
-      name: 'Variable Allowance',
+      name: this.translate.instant('payroll._ctc_templates.table.variable_allowances'),
       valueFn: (row) => row.variableAllowance?.label || 'not specified'
     },
     {
       key: 'amount',
-      name: 'Amount',
+      name: this.translate.instant('payroll.amount'),
       valueFn: (row) => row.amount
     },
     {
       key: 'month',
-      name: 'Month',
+      name: this.translate.instant('payroll.month'),
       valueFn: (row) => row.month
     },
     {
       key: 'year',
-      name: 'Year',
+      name: this.translate.instant('payroll.year'),
       valueFn: (row) => row.year
     },
     {
       key: 'actions',
-      name: 'Actions',
+      name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
-        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit', hideCondition: (row) => false },
-        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
+        { label: this.translate.instant('payroll.edit'), visibility: ActionVisibility.BOTH, icon: 'edit', hideCondition: (row) => false },
+        { label: this.translate.instant('payroll.delete'), visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
       ]
     }
   ];
@@ -177,7 +179,7 @@ export class FNFStep2Component implements OnInit {
         return variablePayData;
       }),
       catchError((error) => {
-        this.toast.error('Failed to fetch Variable Pay Summary', 'Error');
+        this.toast.error(this.translate.instant('payroll.messages.variable_pay_fetch_error'), this.translate.instant('payroll.error'));
         throw error;
       })
     );
@@ -258,12 +260,12 @@ export class FNFStep2Component implements OnInit {
     const deduction = this.variablePayForm.get('variableDeduction')?.value;
 
     if (allowance && deduction) {
-      this.toast.error('You can only select either Variable Allowance or Variable Deduction — not both.', 'Validation Error');
+      this.toast.error(this.translate.instant('payroll.messages.variable_pay_selection_error'), this.translate.instant('payroll.error'));
       return;
     }
 
     if (!allowance && !deduction) {
-      this.toast.error('Please select either Variable Allowance or Variable Deduction.', 'Validation Error');
+      this.toast.error(this.translate.instant('payroll.messages.no_selection_error'), this.translate.instant('payroll.error'));
       return;
     }
 
@@ -295,13 +297,22 @@ export class FNFStep2Component implements OnInit {
           this.fetchVariablePaySummary(this.selectedFnF).subscribe((data) => {
             this.variablePaySummary.data = data;
           });
-          this.toast.success(`Variable Pay ${this.isEdit ? 'updated' : 'added'} successfully`, 'Success');
+          if (this.isEdit) {
+            this.toast.success(this.translate.instant('payroll.messages.variable_pay_updated_success'), this.translate.instant('payroll.successfully'));
+          } else {
+            this.toast.success(this.translate.instant('payroll.messages.variable_pay_added_success'), this.translate.instant('payroll.successfully'));
+          }
           this.resetForm();
           this.isEdit = false;
           this.dialog.closeAll();
         },
         error: () => {
-          this.toast.error(`Failed to ${this.isEdit ? 'update' : 'add'} Variable Pay`, 'Error');
+          if (this.isEdit) {
+            this.toast.error(this.translate.instant('payroll.messages.variable_pay_updated_error'), this.translate.instant('payroll.error'));
+          }
+          else {
+            this.toast.error(this.translate.instant('payroll.messages.variable_pay_added_error'), this.translate.instant('payroll.error'));
+          }
         }
       });
     } else {
@@ -331,11 +342,11 @@ export class FNFStep2Component implements OnInit {
   }
 
   onAction(event: any): void {
-    switch(event.action.label){
-      case 'Edit':
+    switch (event.action.label) {
+      case this.translate.instant('payroll.edit'):
         this.editVariablePay(event.row);
         break;
-      case 'Delete':
+      case this.translate.instant('payroll.delete'):
         this.deleteFnF(event.row._id);
         break;
     }
@@ -343,10 +354,10 @@ export class FNFStep2Component implements OnInit {
 
   deleteVariablePay(_id: string) {
     this.payrollService.deleteFnFVariablePay(_id).subscribe((res: any) => {
-      this.toast.success('Variable Pay Deleted', 'Success');
+      this.toast.success(this.translate.instant('payroll.messages.variable_pay_deletion_success'), this.translate.instant('payroll.successfully'));
       this.variablePaySummary.data = this.variablePaySummary.data.filter(item => item._id !== _id);
     }, error => {
-      this.toast.error('Failed to delete Variable Pay', 'Error');
+      this.toast.error(this.translate.instant('payroll.messages.variable_pay_deletion_error'), this.translate.instant('payroll.error'));
     });
   }
 
@@ -359,7 +370,7 @@ export class FNFStep2Component implements OnInit {
 
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find(user => user?._id == userId)
-    return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : 'Not specified'
+    return matchedUser ? `${matchedUser?.firstName}  ${matchedUser?.lastName}` : ''
   }
 
   getSalarydetailsByUser() {

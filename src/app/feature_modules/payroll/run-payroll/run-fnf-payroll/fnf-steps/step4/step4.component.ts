@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, Input, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,6 +9,8 @@ import { UserService } from 'src/app/_services/users.service';
 import { SeparationService } from 'src/app/_services/separation.service';
 import { catchError, forkJoin, map } from 'rxjs';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
+import { TranslateService } from '@ngx-translate/core';
+import { th } from 'date-fns/locale';
 
 @Component({
   selector: 'app-step4',
@@ -27,55 +29,56 @@ export class FNFStep4Component implements OnInit {
   @Input() isSteps: boolean;
   @Input() selectedFnF: any;
   @ViewChild('dialogTemplate') dialogTemplate: TemplateRef<any>;
+  private readonly translate = inject(TranslateService);
 
   columns: TableColumn[] = [
     {
       key: 'userName',
-      name: 'Payroll User',
+      name: this.translate.instant('payroll.payroll_user_label'),
       valueFn: (row) => row.userName || 'Not specified'
     },
     {
       key: 'terminationDate',
-      name: 'Termination/Resigned Date',
+      name: this.translate.instant('payroll.termination_date'),
       valueFn: (row) => new Date(row.terminationDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
     },
     {
       key: 'noticePeriod',
-      name: 'Notice Period',
+      name: this.translate.instant('payroll.notice_period'),
       valueFn: (row) => row.noticePeriod
     },
     {
       key: 'yearsOfService',
-      name: 'Years of Service',
+      name: this.translate.instant('payroll.years_of_services'),
       valueFn: (row) => row.yearsOfService
     },
     {
       key: 'severancePay',
-      name: 'Severance Pay',
+      name: this.translate.instant('payroll.severance_pay'),
       valueFn: (row) => row.severancePay
     },
     {
       key: 'outplacementServices',
-      name: 'Outplacement Services',
+      name: this.translate.instant('payroll.outplacement_services'),
       valueFn: (row) => row.outplacementServices
     },
     {
       key: 'outplacementServicePay',
-      name: 'Outplacement Services Pay',
+      name: this.translate.instant('payroll.outplacement_service_pay'),
       valueFn: (row) => row.outplacementServicePay
     },
     {
       key: 'status',
-      name: 'Status',
+      name: this.translate.instant('payroll.status'),
       valueFn: (row) => row.status
     },
     {
       key: 'actions',
-      name: 'Actions',
+      name: this.translate.instant('payroll.actions'),
       isAction: true,
       options: [
-        { label: 'Edit', visibility: ActionVisibility.BOTH, icon: 'edit', hideCondition: (row) => false },
-        { label: 'Delete', visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
+        { label: this.translate.instant('payroll.edit'), visibility: ActionVisibility.BOTH, icon: 'edit', hideCondition: (row) => false },
+        { label: this.translate.instant('payroll.delete'), visibility: ActionVisibility.BOTH, icon: 'delete', hideCondition: (row) => false }
       ]
     }
   ];
@@ -107,7 +110,6 @@ export class FNFStep4Component implements OnInit {
         this.terminationCompensation.data = results.terminationCompensation;
       },
       error: (error) => {
-        console.error('Error while loading termination compensation:', error);
       }
     });
   }
@@ -123,7 +125,7 @@ export class FNFStep4Component implements OnInit {
         this.tryCalculateYearsOfService();
       },
       (error: any) => {
-        this.toast.error('Failed to fetch Job Information', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_job_information'), this.translate.instant('payroll.error'));
       }
     );
 
@@ -135,7 +137,7 @@ export class FNFStep4Component implements OnInit {
         this.tryCalculateYearsOfService();
       },
       (error: any) => {
-        this.toast.error('Failed to fetch FNF Date Range', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetched_date_range'), this.translate.instant('payroll.error'));
       }
     );
   }
@@ -193,7 +195,7 @@ export class FNFStep4Component implements OnInit {
         });
       }),
       catchError((error) => {
-        this.toast.error('Failed to fetch Termination Compensation', 'Error');
+        this.toast.error(this.translate.instant('payroll.failed_fetch_termination_compensation'), this.translate.instant('payroll.error'));
         throw error;
       })
     );
@@ -214,7 +216,7 @@ export class FNFStep4Component implements OnInit {
   editTerminationCompensation(compensation: any): void {
     this.isEdit = true;
     this.selectedTerminationCompensation = compensation;
-    this.selectedFNFUser = compensation.payrollFNFUser; // Store for submission
+    this.selectedFNFUser = compensation.payrollFNFUser;
     this.terminationCompensationForm.patchValue({
       payrollFNFUser: compensation.userName,
       terminationDate: compensation.terminationDate ? new Date(compensation.terminationDate) : null,
@@ -250,12 +252,21 @@ export class FNFStep4Component implements OnInit {
             this.terminationCompensation.data = data;
           });
           this.resetForm();
-          this.toast.success(`Termination Compensation ${this.isEdit ? 'updated' : 'added'} successfully`, 'Success');
+          if(this.isEdit) {
+            this.toast.success(this.translate.instant('payroll.termination_compensation_updated'), this.translate.instant('payroll.successfully'));
+          } else {
+            this.toast.success(this.translate.instant('payroll.termination_compensation_added'), this.translate.instant('payroll.successfully'));
+          }
           this.isEdit = false;
           this.dialog.closeAll();
         },
         error: () => {
-          this.toast.error(`Failed to ${this.isEdit ? 'update' : 'add'} Termination Compensation`, 'Error');
+          if(this.isEdit) {
+            this.toast.error(this.translate.instant('payroll.termination_compensation_update_failed'), this.translate.instant('payroll.error'));
+          }
+          else {
+            this.toast.error(this.translate.instant('payroll.termination_compensation_add_failed'), this.translate.instant('payroll.error'));
+          }
         }
       });
     } else {
@@ -283,10 +294,10 @@ export class FNFStep4Component implements OnInit {
 
   onAction(event: any): void {
     switch (event.action.label) {
-      case 'Edit':
+      case this.translate.instant('payroll.edit'):
         this.editTerminationCompensation(event.row);
         break;
-      case 'Delete':
+      case this.translate.instant('payroll.delete'):
         this.deleteFnF(event.row._id);
         break;
     }
@@ -298,10 +309,10 @@ export class FNFStep4Component implements OnInit {
         this.fetchTerminationCompensation(this.selectedFnF).subscribe((data) => {
           this.terminationCompensation.data = data;
         });
-        this.toast.success('Termination Compensation Deleted', 'Success');
+        this.toast.success(this.translate.instant('payroll.termination_compensation_deleted'), this.translate.instant('payroll.successfully'));
       },
       error: () => {
-        this.toast.error('Failed to delete Termination Compensation', 'Error');
+        this.toast.error(this.translate.instant('payroll.termination_compensation_delete_failed'), this.translate.instant('payroll.error'));
       }
     });
   }
@@ -317,6 +328,6 @@ export class FNFStep4Component implements OnInit {
 
   getMatchedSettledUser(userId: string) {
     const matchedUser = this.settledUsers?.find(user => user?._id === userId);
-    return matchedUser ? `${matchedUser?.firstName} ${matchedUser?.lastName}` : 'Not specified';
+    return matchedUser ? `${matchedUser?.firstName} ${matchedUser?.lastName}` : '';
   }
 }
