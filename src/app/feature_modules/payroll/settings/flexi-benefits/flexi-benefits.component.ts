@@ -65,7 +65,6 @@ export class FlexiBenefitsComponent implements AfterViewInit {
     this.getFlexiBenefits();
   }
 
-
   onSearch(search: any) {
     const data = this.allData?.filter(row => {
       const found = this.columns.some(col => {
