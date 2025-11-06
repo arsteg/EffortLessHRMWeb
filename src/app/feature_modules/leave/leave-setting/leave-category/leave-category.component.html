@@ -325,7 +325,7 @@
                                 {{ 'leave.duration_negative' | translate }}
                             </span>
                             <span *ngIf="categoryForm.get('minimumNumberOfDaysAllowed')?.errors?.['minNotLessThanMax']">
-                                Minimum number of leave days must be less than maximum consecutive leave days.
+                               {{'leave.minDaysLessThanMaxDays' | translate}}
                             </span>
                         </mat-error>
                     </mat-form-field>
