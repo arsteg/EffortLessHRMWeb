@@ -241,6 +241,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
         this.leaveService.addLeaveCategory(this.categoryForm.value).subscribe(
           (res: any) => {
             this.tableService.setData([...this.tableService.dataSource.data, res.data]);
+            this.isSubmitting = false;
             this.toast.success(res.message);
             this.dialogRef.close(true);
             this.reset();
@@ -254,6 +255,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
         const id = this.selectedLeaveCategory._id;
         this.leaveService.updateLeaveCategory(id, this.categoryForm.value).subscribe(
           (res: any) => {
+            this.isSubmitting = false;
             const updatedData = this.tableService.dataSource.data.map(item =>
               item._id === res.data._id ? res.data : item
             );
