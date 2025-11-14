@@ -27,7 +27,7 @@ export class LeaveService extends baseService {
     super();
   }
 
-  public getAllLeaveCategories(requestBody:any): any {
+  public getAllLeaveCategories(requestBody: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${environment.apiUrlDotNet}/leave/leave-categories-list`, requestBody, this.httpOptions);
@@ -80,14 +80,14 @@ export class LeaveService extends baseService {
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${environment.apiUrlDotNet}/leave/general-settings`, generalSettings, this.httpOptions);
   }
-  
+
   public updateGeneralSettings(generalSettingsId: string, generalSettings: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.put<any>(`${environment.apiUrlDotNet}/leave/general-settings/${generalSettingsId}`, generalSettings, this.httpOptions);
   }
 
-  public getLeavetemplates(requestBody:any): any {
+  public getLeavetemplates(requestBody: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${environment.apiUrlDotNet}/leave/leave-templates-list`, requestBody, this.httpOptions);
@@ -207,6 +207,12 @@ export class LeaveService extends baseService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/leave/get-leave-balance`, leaveBalance, this.httpOptions);
   }
 
+  public getLeaveBalanceByCompany(payload: any): any {
+    const token = this.getToken();
+    this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/get-leave-balance-by-company`, payload, this.httpOptions);
+  }
+
   // Leave application
   public addLeaveApplication(leaveApplication: any): any {
     const token = this.getToken();
@@ -270,10 +276,10 @@ export class LeaveService extends baseService {
     return this.http.delete<any>(`${environment.apiUrlDotNet}/leave/short-leave/${id}`, this.httpOptions);
   }
 
-  public getAppliedLeaveCount(userId: string, requestBody:any): any {
+  public getAppliedLeaveCount(userId: string, requestBody: any): any {
     const token = this.getToken();
     this.httpOptions.headers = this.httpOptions.headers.set('Authorization', `Bearer ${token}`);
-    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/employee-leave-application-by-user/${userId}`, requestBody,this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/leave/employee-leave-application-by-user/${userId}`, requestBody, this.httpOptions);
   }
 
   public getShortLeaveByUserId(userId: string, requestBody: any): any {

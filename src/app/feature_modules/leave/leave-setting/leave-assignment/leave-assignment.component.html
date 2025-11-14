@@ -82,7 +82,8 @@
       <button mat-flat-button (click)="closeModal()">
         {{ 'leave.cancelButton' | translate }}
       </button>
-      <button mat-flat-button color="primary" type="submit" [disabled]="templateAssignmentForm.invalid || isSubmitting || alreadyExist">
+      <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitting">
+      <!-- <button mat-flat-button color="primary" type="submit" [disabled]="templateAssignmentForm.invalid || isSubmitting || alreadyExist"> -->
         {{ (isEdit ? 'leave.updateButton' : 'leave.addButton') | translate }}
       </button>
     </div>

@@ -44,36 +44,49 @@ export class LeaveBalanceComponent {
   ];
   extractedUrl: string = '';
   error: string = '';
-//{ key: 'empCode', name: 'Emp Code', valueFn: (row: any) => row.appointment[0]?.empCode },
   columns: TableColumn[] = [
-    { 
-      key: 'startMonth', 
+    {
+      key: 'startMonth',
       name: this.translate.instant('leave.startMonth'),
       valueFn: (row: any) => this.getMonthName(row.startMonth)
     },
-    { key: 'endMonth', 
+    {
+      key: 'endMonth',
       name: this.translate.instant('leave.endMonth'),
       valueFn: (row: any) => this.getMonthName(row.endMonth)
     },
-    { key: 'openingBalance', 
-      name: this.translate.instant('leave.openingBalance') 
+    {
+      key: 'openingBalance',
+      name: this.translate.instant('leave.openingBalance'),
+      valueFn: (row: any) => this.formatDecimal(row.openingBalance)
     },
-    { key: 'accruedBalance', 
-      name: this.translate.instant('leave.accruedBalance') 
+    {
+      key: 'accruedBalance',
+      name: this.translate.instant('leave.accruedBalance'),
+      valueFn: (row: any) => this.formatDecimal(row.accruedBalance)
     },
-    { key: 'leaveApplied', 
-      name: this.translate.instant('leave.leaveApplied') 
+    {
+      key: 'leaveApplied',
+      name: this.translate.instant('leave.leaveApplied'),
+      valueFn: (row: any) => this.formatDecimal(row.leaveApplied)
     },
-    { key: 'leaveRemaining', 
-      name: this.translate.instant('leave.leaveRemaining') 
+    {
+      key: 'leaveRemaining',
+      name: this.translate.instant('leave.leaveRemaining'),
+      valueFn: (row: any) => this.formatDecimal(row.leaveRemaining)
     },
-    { key: 'closingBalance', 
-      name: this.translate.instant('leave.closingBalance') 
+    {
+      key: 'closingBalance',
+      name: this.translate.instant('leave.closingBalance'),
+      valueFn: (row: any) => this.formatDecimal(row.closingBalance)
     },
-    { key: 'leaveTaken', 
-      name: this.translate.instant('leave.leaveTaken') 
+    {
+      key: 'leaveTaken',
+      name: this.translate.instant('leave.leaveTaken'),
+      valueFn: (row: any) => this.formatDecimal(row.leaveTaken)
     }
   ];
+
   allData: any[] = [];
   totalRecords: number = 0;
 
@@ -112,15 +125,15 @@ export class LeaveBalanceComponent {
     const previousYear = currentYear - 1;
     const nextYear = currentYear + 1;
     this.years = [
-      { 
+      {
         label: `${this.translate.instant('leave.month.january')} ${previousYear.toString()} - ${this.translate.instant('leave.month.december')} ${previousYear.toString()}`,
         value: `${this.translate.instant('leave.month.january')}_${previousYear.toString()}-${this.translate.instant('leave.month.december')}_${previousYear.toString()}`
       },
-      { 
+      {
         label: `${this.translate.instant('leave.month.january')} ${currentYear.toString()} - ${this.translate.instant('leave.month.december')} ${currentYear.toString()}`,
         value: `${this.translate.instant('leave.month.january')}_${currentYear.toString()}-${this.translate.instant('leave.month.december')}_${currentYear.toString()}`
       },
-      { 
+      {
         label: `${this.translate.instant('leave.month.january')} ${nextYear.toString()} - ${this.translate.instant('leave.month.december')} ${nextYear.toString()}`,
         value: `${this.translate.instant('leave.month.january')}_${nextYear.toString()}-${this.translate.instant('leave.month.december')}_${nextYear.toString()}`
       }
@@ -145,6 +158,12 @@ export class LeaveBalanceComponent {
     if (changes['leaveBalanceForm'] && this.leaveBalanceForm.valid) {
       this.getLeaveBalance();
     }
+  }
+
+  formatDecimal(value: any): string {
+    if (value == null || value === '') return '-';
+    const num = Number(value);
+    return isNaN(num) ? '-' : num.toFixed(1);
   }
 
   getMonthName(monthNumber: number): string {

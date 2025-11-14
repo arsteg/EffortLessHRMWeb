@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 import * as jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { CompanyService } from 'src/app/_services/company.service';
+import { LeaveService } from 'src/app/_services/leave.service';
 
 @Component({
   selector: 'app-generate-payslips',
@@ -21,17 +22,41 @@ export class GeneratePayslipsComponent {
   @ViewChild('payslipContainer') payslipContainer: ElementRef;
   companyInfo: any;
 
+  displayLeaveBalanceInPayslip: boolean;
+  isLeaveBalanceAllowedToShow: boolean;
+
+
   constructor(
-    private companyService: CompanyService
+    private companyService: CompanyService,
+    private leaveService: LeaveService
   ) {
     this.companyService.getCompanies().subscribe((res: any) => {
-      this.companyInfo = res.data.find((item)=> item._id === this.payslip.PayrollUser.company._id)
+      this.companyInfo = res.data.find((item) => item._id === this.payslip.PayrollUser.company._id)
     })
   }
 
   ngOnInit(): void {
-    console.log(this.payslip);
+    this.getLeaveBalance();
     this.calculateTotals();
+  }
+
+  getLeaveBalance() {
+    let payload = {
+      skip: '',
+      next: ''
+    };
+
+    this.leaveService.getLeaveBalanceByCompany(payload).subscribe((res: any) => {
+      const fetchDetailsByUserId = res.data.find((item: any) => item?.employee === this.payslip?.PayrollUser?.user?._id);
+      this.leaveService.getLeaveCategorById(fetchDetailsByUserId?.category).subscribe((categoryRes: any) => {
+        this.isLeaveBalanceAllowedToShow = categoryRes.data?.displayLeaveBalanceInPayslip;
+      });
+      if (fetchDetailsByUserId && fetchDetailsByUserId.leaveRemaining) {
+        this.payslip.leaveBalances = fetchDetailsByUserId.leaveRemaining;
+      } else {
+        this.payslip.leaveBalances = [];
+      }
+    });
   }
 
   calculateTotals(): void {
@@ -69,7 +94,6 @@ export class GeneratePayslipsComponent {
       }, 0)
       : 0;
 
-    console.log(fixedDeduction, variableDeduction, incomeTax, loanRepayment);
     this.totalDeductions = fixedDeduction + variableDeduction + incomeTax + loanRepayment;
   }
 
@@ -82,8 +106,6 @@ export class GeneratePayslipsComponent {
       }
     }
     return null;
-
-
   }
 
   downloadPDF() {

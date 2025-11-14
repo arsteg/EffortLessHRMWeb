@@ -1,5 +1,5 @@
 <div class="payslip-detail">
-    
+
     <div class="d-flex justify-content-between align-items-center my-2">
         <button mat-flat-button (click)="close.emit()">
             <mat-icon>arrow_back</mat-icon>{{'payroll.back' | translate}}
@@ -14,7 +14,7 @@
         <div id="payslipContainer" #payslipContainer class="payslipContainer bg-white px-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 @if(companyInfo?.logo){
-                    <img [src]="companyInfo?.logo" width="150px" crossOrigin="anonymous">
+                <img [src]="companyInfo?.logo" width="150px" crossOrigin="anonymous">
                 }
                 <div class="text-end">
                     <label class="fw-bold">{{companyInfo?.companyName}}</label><br>
@@ -27,7 +27,7 @@
                     </label>
                 </div>
             </div>
-    
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -52,6 +52,7 @@
                     <tr>
                         <td class="bg-light fw-bold" translate>payroll.gross_pay</td>
                         <td>{{payslip?.PayrollUser?.totalGrossSalary}}</td>
+
                         <td class="bg-light fw-bold" translate>payroll.department</td>
                         <td>{{payslip?.userEmployment?.department?.departmentName}}</td>
                     </tr>
@@ -60,45 +61,49 @@
                         <td>
                             {{payslip?.latestAttendanceSummary?.payableDays || ''}}
                         </td>
+                        @if(isLeaveBalanceAllowedToShow){
+                        <td class="bg-light fw-bold" translate>payroll.leave_balance</td>
+                        <td>{{payslip?.leaveBalances || ''}}</td>
+                        }
                     </tr>
                 </tbody>
             </table>
-    
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th class="bg-black text-white" translate>payroll.earnings</th>
-                        <th class="bg-black text-white" translate  width="200">payroll.amount</th>
+                        <th class="bg-black text-white" translate width="200">payroll.amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                   
+
                     <tr *ngFor="let fixedAllowances of payslip?.fixedAllowancesList">
                         <td class="bg-light fw-bold">{{fixedAllowances?.fixedAllowance?.label}}</td>
                         <td>{{fixedAllowances?.amount}}</td>
                     </tr>
-    
+
                     <tr *ngFor="let variableAllowances of payslip?.variableAllowancesList">
                         <td class="bg-light fw-bold">{{variableAllowances?.variableAllowance?.label}}</td>
                         <td>{{variableAllowances?.amount}}</td>
                     </tr>
-    
+
                     <tr>
                         <td class="bg-light fw-bold">Flexi Benefits</td>
                         <td>{{payslip?.PayrollUser?.totalFlexiBenefits}}</td>
                     </tr>
-    
+
                     <tr>
                         <td class="bg-light fw-bold">Overtime</td>
                         <td>{{payslip?.latestOvertime?.OvertimeAmount}}</td>
                     </tr>
-    
+
                     <tr *ngFor="let loan of payslip?.allLoanAdvances">
                         @if(loan?.type === 'Disbursement')
                         {<td class="bg-light fw-bold">{{loan?.loanAndAdvance?.loanAdvancesCategory?.name}}</td>
                         <td>{{loan?.disbursementAmount}}</td>}
                     </tr>
-    
+
                     <tr *ngFor="let arrear of payslip?.manualArrears">
                         <td class="bg-light fw-bold">Arrears Days: {{arrear?.arrearDays}}</td>
                         <td>{{arrear?.totalArrears}}</td>
@@ -111,7 +116,7 @@
                     </tr>
                 </tfoot>
             </table>
-    
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -124,12 +129,12 @@
                         <td class="bg-light fw-bold">{{fixedDeductions?.fixedDeduction?.label}}</td>
                         <td>{{fixedDeductions?.amount}}</td>
                     </tr>
-    
+
                     <tr *ngFor="let variableDeductions of payslip?.variableDeductionsList">
                         <td class="bg-light fw-bold">{{variableDeductions?.variableDeduction?.label}}</td>
                         <td>{{variableDeductions?.amount}}</td>
                     </tr>
-    
+
                     <tr *ngFor="let loan of payslip?.allLoanAdvances">
                         @if(loan?.type === 'Repayment')
                         {
@@ -149,12 +154,12 @@
                     </tr>
                 </tfoot>
             </table>
-    
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th class="bg-black text-white" translate>payroll.statutory_deductions</th>
-                        <th class="bg-black text-white" translate  width="200">payroll.amount</th>
+                        <th class="bg-black text-white" translate width="200">payroll.amount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -172,7 +177,7 @@
                     </tr>
                 </tfoot>
             </table>
-    
+
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -195,8 +200,8 @@
                     </tr>
                 </tfoot>
             </table>
-    
-    
+
+
             <div class="col-12 text-end">
                 <h4>
                     <span translate>payroll.take_home_salary</span>: {{ payslip?.PayrollUser?.totalTakeHome |

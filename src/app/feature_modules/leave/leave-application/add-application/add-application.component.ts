@@ -629,7 +629,6 @@ export class AddApplicationComponent implements OnDestroy {
       const formattedEndDate = this.stripTime(new Date(endDate));
 
       const isOverlappingLeave = this.existingLeaves.some((leave: any) => {
-        console.log(leave);
         const leaveStartDate = this.stripTime(new Date(leave.startDate));
         const leaveEndDate = this.stripTime(new Date(leave.endDate));
         return leave?.employee?._id === employeeId &&
@@ -651,7 +650,7 @@ export class AddApplicationComponent implements OnDestroy {
       }
     }
   }
-  
+
   handleLeaveCategoryChange() {
     if (!this.tab) {
       return;
@@ -877,11 +876,10 @@ export class AddApplicationComponent implements OnDestroy {
     }, 100);
   }
   onSubmission() {
-    if(this.formSubmitted){
+    if (this.formSubmitted) {
       return; // Prevent multiple submissions
     }
     this.formSubmitted = true;
-    console.log(this.leaveApplication.value);
     if (this.leaveApplication.invalid || this.leaveApplication.hasError('maxLeaveLimitExceeded') || this.leaveApplication.hasError('maxLeaveLimitExceeded')) {
       this.leaveApplication.markAllAsTouched();
       this.formSubmitted = false;
@@ -925,7 +923,6 @@ export class AddApplicationComponent implements OnDestroy {
       halfDays: this.leaveApplication.get('isHalfDayOption')?.value ? this.leaveApplication.get('halfDays')?.value : [],
       comment: this.leaveApplication.get('comment')?.value
     };
-    console.log(leaveApplicationPayload);
     if (this.leaveApplication.hasError('duplicateLeave')) {
       this.toast.error(this.translate.instant('leave.duplicateLeaveError'));
       this.formSubmitted = false;
@@ -960,7 +957,6 @@ export class AddApplicationComponent implements OnDestroy {
         file: base64String
       });
     }
-
     return attachments;
   }
 
@@ -990,8 +986,6 @@ export class AddApplicationComponent implements OnDestroy {
         }
         this.closeModal()
         this.formSubmitted = false;
-        // this.leaveApplicationRefreshed.emit(res.data);
-        // this.resetForm();
       },
       error: (error) => {
         this.formSubmitted = false;
@@ -1020,17 +1014,6 @@ export class AddApplicationComponent implements OnDestroy {
     }
   }
 
-  // onFileSelected(event: any) {
-  //   debugger;
-  //   const newFiles: FileList = event.target.files;
-  //   if (newFiles) {
-  //     const previousFiles = this.selectedFiles || [];
-  //     this.selectedFiles = previousFiles.concat(Array.from(newFiles));
-  //     this.leaveApplication.get('leaveApplicationAttachments')?.setValue(this.selectedFiles.length > 0 ? 'files_selected' : '');
-  //     this.leaveApplication.get('leaveApplicationAttachments')?.updateValueAndValidity();
-  //     event.target.value = '';
-  //   }
-  // }
   removeFile(index: number) {
     if (index !== -1) {
       this.selectedFiles.splice(index, 1);
@@ -1045,7 +1028,7 @@ export class AddApplicationComponent implements OnDestroy {
   }
 
   getAppliedLeaveCount(userId: string, category: string) {
-    const requestBody = { "skip": "0", "next": "500" };
+    const requestBody = { "skip": "", "next": "" };
     const currentYear = new Date().getFullYear();
     this.leaveService.getAppliedLeaveCount(userId, requestBody).subscribe({
       next: (res: any) => {

@@ -118,6 +118,7 @@ export class LeaveAssignmentComponent implements OnInit {
     this.isSubmitting = true;
     if (this.templateAssignmentForm.invalid) {
       this.templateAssignmentForm.markAllAsTouched();
+      this.isSubmitting = false;
       return;
     }
 
@@ -131,8 +132,16 @@ export class LeaveAssignmentComponent implements OnInit {
     };
 
     if (!this.isEdit) {
+      if (this.alreadyExist) {
+        this.toast.warning(
+          this.translate.instant('leave.leaveAssignmentAlreadyExist')
+        );
+        this.isSubmitting = false;
+        return;
+      }
       this.leaveService.addLeaveTemplateAssignment(payload).subscribe({
         next: (res: any) => {
+          this.isSubmitting = false;
           if (res.status === 'success') {
             const currentData = this.tableService.dataSource.data;
             this.tableService.setData([...currentData, res.data]);
@@ -143,12 +152,14 @@ export class LeaveAssignmentComponent implements OnInit {
           }
         },
         error: () => {
+          this.isSubmitting = false;
           this.toast.error(this.translate.instant('leave.errorAssigned'), this.translate.instant('leave.templateAssignment.title'));
         }
       });
     } else {
       this.leaveService.addLeaveTemplateAssignment(payload).subscribe({
         next: (res: any) => {
+          this.isSubmitting = false;
           if (res.status === 'success') {
             const updatedData = this.tableService.dataSource.data.map(item =>
               item._id === res.data._id ? res.data : item
@@ -160,6 +171,7 @@ export class LeaveAssignmentComponent implements OnInit {
           }
         },
         error: () => {
+          this.isSubmitting = false;
           this.toast.error(this.translate.instant('leave.errorAssignmentUpdated'), this.translate.instant('leave.templateAssignment.title'));
         }
       });
@@ -227,8 +239,10 @@ export class LeaveAssignmentComponent implements OnInit {
     } else {
       primaryApproverControl?.enable();
       primaryApproverControl?.setValidators(Validators.required);
+      // Reset and clear the old value since template changed
+      primaryApproverControl?.reset('');
       this.templateAssignmentForm.patchValue({
-        primaryApprover: this.isEdit ? this.selectedLeaveAssignment?.primaryApprover || '' : '',
+        //primaryApprover: this.isEdit ? this.selectedLeaveAssignment?.primaryApprover || '' : '',
         secondaryApprover: null
       });
       this.showApprovers = true;

@@ -32,6 +32,7 @@ export class AddSalaryDetailsComponent {
   salaryDetails: any;
   payrollCTCTemplates: any;
   addButtons: boolean = true;
+  isSubmitting: boolean = false;
   statutorySettings: any;
   payrollGeneralSettings: any;
   fixedAllowance: any[] = [];
@@ -774,8 +775,15 @@ export class AddSalaryDetailsComponent {
   }
 
   onSubmissionSalaryDetails(): void {
+    // Prevent duplicate submissions
+    if (this.isSubmitting) {
+      this.toast.info('Salary details have already been submitted.', 'Info');
+      return;
+    }
+    this.isSubmitting = true;
     if (this.salaryDetailsForm.invalid) {
       this.toast.error('Please fill all required fields correctly.', 'Error');
+      this.isSubmitting = true;
       return;
     }
 
@@ -826,13 +834,15 @@ export class AddSalaryDetailsComponent {
     this.userService.addSalaryDetails(payload).subscribe(
       (res: any) => {
         this.toast.success(this.translate.instant('manage.users.employee-settings.salary_details_added'));
-        },
+        this.isSubmitting = false;
+      },
       err => {
         const errorMessage = err?.error?.message || err?.message || err 
         || this.translate.instant('manage.users.employee-settings.failed_to_add_salary_details')
         ;
        
         this.toast.error(errorMessage, 'Error!');
+        this.isSubmitting = false;
       }
     );
   }
