@@ -634,8 +634,8 @@ export class AttendanceProcessComponent {
       let payload = {
         skip: '',
         next: '',
-        year: this.selectedYear.toString(),
-        month: this.selectedMonth.toString()
+        year: this.attendanceProcessForm.value.attendanceProcessPeriodYear,
+        month: this.attendanceProcessForm.value.attendanceProcessPeriodMonth
       };
       this.attendanceService.getProcessAttendanceLOPByMonth(payload).subscribe((lopRes: any) => {
         const uniqueUsers = new Set(lopRes.data.map((data) => data.user));
