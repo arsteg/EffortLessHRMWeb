@@ -53,12 +53,6 @@ export class DepartmentComponent {
           visibility: ActionVisibility.BOTH,
           cssClass: 'text-danger border-bottom'
         }
-        // ,
-        // {
-        //   label: 'Assign Sub-Department',
-        //   icon: '',
-        //   visibility: ActionVisibility.LABEL
-        // }
       ],
       isAction: true
     }
