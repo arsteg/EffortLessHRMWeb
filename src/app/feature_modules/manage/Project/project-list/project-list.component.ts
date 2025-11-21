@@ -269,7 +269,7 @@ export class ProjectListComponent implements OnInit {
         this.dialogRef.close(true);
         this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
       }, err => {
-        this.toastr.error(this.translate.instant('manage.project.list.error.cannotAdd'), this.translate.instant('manage.project.list.error.title'))
+        this.toastr.error(err || this.translate.instant('manage.project.list.error.cannotAdd'), this.translate.instant('manage.project.list.error.title'))
       })
     } else {
       this.markFormGroupTouched(this.form);
