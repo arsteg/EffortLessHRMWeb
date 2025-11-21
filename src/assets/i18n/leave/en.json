@@ -474,6 +474,7 @@
             "leaveCreatedError": "A leave grant can not be updated."
         },
         "leaveCreatedSuccessfully": "Leave request created successfully.",
-        "fileSizeExceeded": "File size should not exceed 5MB."
+        "fileSizeExceeded": "File size should not exceed 5MB.",
+        "minDaysLessThanMaxDays": "Minimum number of leave days must be less than maximum consecutive leave days."
     }
 }

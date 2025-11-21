@@ -759,6 +759,8 @@
         "total_employer_statutory_contribution": "Total Employer Statutory Contribution",
         "total_employee_statutory_deduction": "Total Employee Statutory Deduction",
         "total_fixed_deductions": "Total Fixed Deductions",
+        "total_variable_deductions": "Total Variable Deductions",
+        "total_lop_amount": "Total LOP Amount",
         "fnf_payroll_user": "Select FnF Payroll User",
         "employee_attendance_summary": "Employee Attendance Summary For FnF Payroll",
         "total_days_required": "Total Days is required",
