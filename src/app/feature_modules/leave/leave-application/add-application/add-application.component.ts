@@ -13,6 +13,7 @@ import { UserService } from 'src/app/_services/users.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import * as moment from 'moment';
 import { em } from '@fullcalendar/core/internal-common';
+import { toUtcDateOnly, toUtcDateTime } from 'src/app/util/date-utils';
 
 @Component({
   selector: 'app-add-application',
@@ -910,17 +911,24 @@ export class AddApplicationComponent implements OnDestroy {
       }
     }
 
+    // Convert half-day dates to UTC before building payload
+    const rawHalfDays = this.leaveApplication.get('isHalfDayOption')?.value ? (this.leaveApplication.get('halfDays')?.value || []) : [];
+    const halfDaysUtc = rawHalfDays.map((h: any) => ({
+      dayHalf: h.dayHalf,
+      date: toUtcDateOnly(h.date)
+    }));
+
     const leaveApplicationPayload = {
       employee: this.leaveApplication.get('employee')?.value,
       leaveCategory: this.leaveApplication.get('leaveCategory')?.value,
-      startDate: this.stripTime(new Date(this.leaveApplication.get('startDate')?.value)),
-      endDate: this.stripTime(new Date(this.leaveApplication.get('endDate')?.value)),
+      startDate: toUtcDateOnly(this.leaveApplication.get('startDate')?.value), //this.stripTime(new Date(this.leaveApplication.get('startDate')?.value)),
+      endDate: toUtcDateOnly(this.leaveApplication.get('endDate')?.value), //this.stripTime(new Date(this.leaveApplication.get('endDate')?.value)),
       status: 'Level 1 Approval Pending',
       level1Reason: this.leaveApplication.get('level1Reason')?.value || '',
       level2Reason: this.leaveApplication.get('level2Reason')?.value || '',
       leaveApplicationAttachments: [],
       isHalfDayOption: this.leaveApplication.get('isHalfDayOption')?.value,
-      halfDays: this.leaveApplication.get('isHalfDayOption')?.value ? this.leaveApplication.get('halfDays')?.value : [],
+      halfDays: halfDaysUtc,
       comment: this.leaveApplication.get('comment')?.value
     };
     if (this.leaveApplication.hasError('duplicateLeave')) {
