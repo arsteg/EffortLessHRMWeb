@@ -9,6 +9,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { CompanyService } from 'src/app/_services/company.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
+import { toUtcDateOnly, toUtcDateTime } from 'src/app/util/date-utils';
 
 @Component({
   selector: 'app-holidays',
@@ -192,6 +193,7 @@ export class HolidaysComponent {
     formData.year = this.currentYear || this.selectedYear;
     if (this.holidayForm.valid) {
       if (!this.isEdit) {
+        formData.date = toUtcDateOnly(formData.date);
         this.companyService.addHolidays(formData).subscribe(res => {
           this.getHolidays();
           this.toast.success(this.translate.instant('organization.setup.holiday_added')) 
@@ -206,6 +208,7 @@ export class HolidaysComponent {
         );
       }
       else if (this.isEdit) {
+        formData.date = toUtcDateOnly(formData.date);
         this.companyService.updateHolidays(this.selectedRecord._id, formData).subscribe(res => {
           this.toast.success(this.translate.instant('organization.setup.holiday_updated'));
       

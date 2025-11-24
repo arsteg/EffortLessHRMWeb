@@ -11,6 +11,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { DatePipe } from '@angular/common';
+import { toUtcDateOnly, toUtcDateTime } from 'src/app/util/date-utils';
 
 @Component({
   selector: 'app-payroll-history',
@@ -468,9 +469,10 @@ export class PayrollHistoryComponent implements AfterViewInit {
     if (this.payrollForm.valid) {
 
       this.payrollForm.patchValue({
-        date: this.payrollForm.value.date
+        date: toUtcDateOnly(this.payrollForm.value.date)
       });
-      this.payrollService.addPayroll(this.payrollForm.value).subscribe(
+      var paylod = { ...this.payrollForm.value };
+      this.payrollService.addPayroll(paylod).subscribe(
         (res: any) => {
           this.translate.get([
             'payroll._history.toast.created',

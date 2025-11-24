@@ -13,6 +13,7 @@ import { SeparationService } from 'src/app/_services/separation.service';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { TranslateService } from '@ngx-translate/core';
+import { toUtcDateOnly, toUtcDateTime } from 'src/app/util/date-utils';
 
 @Component({
   selector: 'app-attendance-process',
@@ -651,7 +652,12 @@ export class AttendanceProcessComponent {
         this.attendanceProcessForm.get('status')?.enable();
         this.attendanceProcessForm.get('exportToPayroll')?.enable();
 
-        this.attendanceService.addProcessAttendance(this.attendanceProcessForm.value).subscribe((res: any) => {
+        const payload = { ...this.attendanceProcessForm.value };
+        if (payload.runDate) {
+          payload.runDate = toUtcDateOnly(payload.runDate);
+        }
+
+        this.attendanceService.addProcessAttendance(payload).subscribe((res: any) => {
           const processedAttendance = res.data;
           this.selectedMonth = processedAttendance?.attendanceProcess?.attendanceProcessPeriodMonth;
           this.getProcessAttendance();
@@ -803,7 +809,11 @@ export class AttendanceProcessComponent {
     this.fnfAttendanceProcessForm.value.isFNF = true;
     this.fnfAttendanceProcessForm.value.users = [{ user: this.selectedFnfUser, status: 'FnF Attendance Processed' }];
 
-    this.attendanceService.addFnFAttendanceProcess(this.fnfAttendanceProcessForm.value).subscribe(
+    const payload = { ...this.fnfAttendanceProcessForm.value };
+    if (payload.runDate) {
+      payload.runDate = toUtcDateOnly(payload.runDate);
+    }
+    this.attendanceService.addFnFAttendanceProcess(payload).subscribe(
       (res: any) => {
         this.ngOnInit();
         this.toast.success('Full & Final Attendance Processed', 'Successfully!');

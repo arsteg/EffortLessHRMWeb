@@ -12,9 +12,13 @@
 .back-btn {
     color: #9090a7;
 }
-
+.col-md-2 {
+    max-height: 68vw;
+    height: 100%;
+    overflow: hidden;
+}
 .taskDetails {
-    max-height: 42.2rem;
+    max-height: 75vh;
     overflow-y: scroll;
     position: relative;
     overflow-y: auto;

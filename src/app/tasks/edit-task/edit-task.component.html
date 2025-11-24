@@ -1,5 +1,4 @@
-<div class="main-content pt-3">
-    <div class="container-fluid">
+    <div class="container-fluid px-0">
         <div class="" *ngIf="tasks?.data?.task != null">
             <div class="row">
                 <!-- sidebar task lists panel -->
@@ -79,13 +78,12 @@
                         </div>
                     </div>
 
-                    <form class="row taskDetails" [formGroup]="updateForm">
+                    <form class="taskDetails" [formGroup]="updateForm">
                         <div class="row mb-3">
                             <div class="col-12  align-self-center">
                                 <div class="sub-header mt-3 py-3 px-3 align-self-center w-100 rounded">
                                     <div class="d-flex  align-items-center">
                                         <div ngbDropdown class="d-inline-block">
-
                                             <button class="btn dropdown-toggle status" id="dropdownMenuButton"
                                                 ngbDropdownToggle [ngClass]="{
 'bg-warning text-white': (selectedStatus || tasks?.data?.task?.status) === 'In Progress',
@@ -263,7 +261,7 @@
                                                     type="button">Cancel</button>
                                             </div>
                                             <div>
-                                                <button mat-flat-button (click)="updateTask()" class="addBtn"
+                                                <button mat-flat-button (click)="updateTask()" color="primary"
                                                     type="submit">Update</button>
                                             </div>
                                         </div>
@@ -310,7 +308,7 @@
 
                                     <div class="col-12 col-sm-6">
                                         <label for="fileUpload6"
-                                            class="file-upload btn btn-outline-primary btn-block rounded-pill shadow my-3">
+                                            class="file-upload btn btn-block rounded-pill shadow my-3">
                                             <i class="fa fa-paperclip me-2"></i> Add attachment<input id="fileUpload6"
                                                 type="file" (change)="onFileSelect($event)" multiple
                                                 style="display: none;">
@@ -676,7 +674,7 @@
 
                                         <div class="d-flex align-items-center">
                                             <label for="fileUpload7"
-                                                class="file-upload btn btn-outline-primary btn-block rounded-pill shadow my-3">
+                                                class="file-upload btn btn-block rounded-pill shadow my-3">
                                                 <i class="fa fa-paperclip me-2"></i> <input id="fileUpload7"
                                                     formControlName="taskAttachments" type="file" multiple
                                                     (change)="onFileSelects($event)" style="display: none;">
@@ -728,7 +726,6 @@
             </ng-container>
         </div>
     </div>
-</div>
 
 <!-- Delete task modal -->
 <div class="modal" data-bs-backdrop="false" id="deleteModal">
