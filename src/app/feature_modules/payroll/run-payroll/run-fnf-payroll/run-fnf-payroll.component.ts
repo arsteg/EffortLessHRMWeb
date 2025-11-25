@@ -14,6 +14,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { DatePipe } from '@angular/common';
 import { th } from 'date-fns/locale';
+import { toUtcDateOnly } from 'src/app/util/date-utils';
 
 @Component({
   selector: 'app-run-fnf-payroll',
@@ -423,7 +424,8 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
       return;
     }
     if (this.fnfForm.valid) {
-      const payload = this.fnfForm.value;
+      const payload = { ...this.fnfForm.value };
+      payload.date = toUtcDateOnly(payload.date);
       this.payrollService.addFnF(payload).subscribe(
         (res: any) => {
 

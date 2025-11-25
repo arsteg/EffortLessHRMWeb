@@ -8,7 +8,7 @@ import { CommonService } from 'src/app/_services/common.Service';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { UserService } from 'src/app/_services/users.service';
 import { AssetManagementService } from 'src/app/_services/assetManagement.service';
-
+import { toUtcDateOnly } from 'src/app/util/date-utils';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionVisibility } from 'src/app/models/table-column';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
@@ -360,8 +360,12 @@ export class ResignationComponent implements OnInit {
   saveResignation() {
   
     if (this.resignationForm.valid) {
+      var payload = { ...this.resignationForm.value };
+      payload.resignation_date = toUtcDateOnly(payload.resignation_date);
+      payload.last_working_day = toUtcDateOnly(payload.last_working_day);
+      payload.exit_interview_date = toUtcDateOnly(payload.exit_interview_date);
       if (this.isEditMode) {
-        this.separationService.updateResignationById(this.selectedRecord._id, this.resignationForm.value).subscribe(
+        this.separationService.updateResignationById(this.selectedRecord._id, payload).subscribe(
           (res: any) => {
             this.getResignationByUser();
             this.resignationForm.reset();
@@ -375,7 +379,7 @@ export class ResignationComponent implements OnInit {
           }
         );
       } else {
-        this.separationService.addResignation(this.resignationForm.value).subscribe(
+        this.separationService.addResignation(payload).subscribe(
           (res: any) => {
             this.getResignationByUser();
             this.resignationForm.reset();

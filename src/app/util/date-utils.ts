@@ -1,6 +1,8 @@
 // Convert date-only (YYYY-MM-DD) to UTC ISO
-export function toUtcDateOnly(date: string): string {
+export function toUtcDateOnly(date: any): string | null {
+  if (!date) return null;           // if empty, null, undefined → return null
   const d = new Date(date);
+  if (isNaN(d.getTime())) return null;  // if invalid date → return null
   return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())).toISOString();
 }
 
