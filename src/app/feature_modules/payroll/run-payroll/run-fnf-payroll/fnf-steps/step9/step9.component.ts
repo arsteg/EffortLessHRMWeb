@@ -69,9 +69,9 @@ export class FNFStep9Component {
       valueFn: (row) => row.totalOtherBenefit || 0
     },
     {
-      key: 'totalFixedDeduction',
+      key: 'totalOvertime',
       name: this.translate.instant('payroll.total_overtime'),
-      valueFn: (row) => row.totalFixedDeduction || 0
+      valueFn: (row) => row.totalOvertime || 0
     },
     {
       key: 'totalLoanRepayment',
