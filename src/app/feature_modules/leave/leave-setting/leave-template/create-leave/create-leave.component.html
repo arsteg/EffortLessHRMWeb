@@ -53,25 +53,20 @@
                 </div>
             </div>
 
-            @if (addTemplateForm.get('approvalType')?.value === 'template-wise') {
-            <div class="form-group col-12 my-2">
+            <div class="form-group col-12 my-2" *ngIf="addTemplateForm.get('approvalType')?.value === 'template-wise'">
                 <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.createTemplate.primaryApprover' | translate }}</mat-label>
                     <mat-select formControlName="primaryApprover">
-                        <mat-option disabled value="">{{ 'leave.createTemplate.selectPrimaryApprover' | translate
-                            }}</mat-option>
+                        <mat-option [value]="null" disabled>{{ 'leave.createTemplate.selectPrimaryApprover' | translate }}</mat-option>
                         <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">
-                            {{ user?.firstName | titlecase }}
-                            {{ user?.lastName | titlecase }}
+                            {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
                         </mat-option>
                     </mat-select>
-                    <mat-error
-                        *ngIf="addTemplateForm.get('primaryApprover')?.invalid && addTemplateForm.get('primaryApprover')?.touched">
+                    <mat-error *ngIf="addTemplateForm.get('primaryApprover')?.invalid && addTemplateForm.get('primaryApprover')?.touched">
                         {{ 'leave.createTemplate.errorPrimaryApproverRequired' | translate }}
                     </mat-error>
                 </mat-form-field>
             </div>
-            }
         </div>
 
         <div class="row m-0">
@@ -124,75 +119,69 @@
                 </div>
             </div>
         </div>
-        @if (addTemplateForm.get('clubbingRestrictions')?.value === true) {
-        <div class="row m-0">
+        <div *ngIf="addTemplateForm.get('clubbingRestrictions')?.value === true">
+          <div class="row m-0">
             <div class="col-12 my-2">
-                <button mat-flat-button color="primary" type="button" (click)="addClubbedCategory()">
-                    {{ 'leave.createTemplate.addClubbingRestriction' | translate }}
-                </button>
+              <button mat-flat-button color="primary" type="button" (click)="addClubbedCategory()">
+                {{ 'leave.createTemplate.addClubbingRestriction' | translate }}
+              </button>
             </div>
-        </div>
-        <div class="row m-0" formArrayName="clubbingRestrictionCategories">
+          </div>
+          <div class="row m-0" formArrayName="clubbingRestrictionCategories">
             <div class="row m-0 w-100" *ngFor="let fieldGroup of clubbingRestrictionCategories.controls; let i = index">
-                <ng-container [formGroupName]="i">
-                    <mat-form-field appearance="outline" class="col-5 my-2">
-                        <mat-label>{{ 'leave.createTemplate.category' | translate }}</mat-label>
-                        <mat-select formControlName="leaveCategory">
-                            <mat-option [value]="category?._id" *ngFor="let category of categories; let i = index">
-                                {{ getCategoryLabel(category?._id) }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error
-                            *ngIf="fieldGroup.get('leaveCategory')?.invalid && fieldGroup.get('leaveCategory')?.touched">
-                            {{ 'leave.createTemplate.errorCategoryRequired' | translate }}
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="col-5 my-2">
-                        <mat-label>{{ 'leave.createTemplate.restrictedClubbedCategory' | translate }}</mat-label>
-                        <mat-select formControlName="restrictedClubbedLeaveCategory">
-                            <mat-option [value]="category?._id" *ngFor="let category of categories; let i = index">
-                                {{ getCategoryLabel(category?._id) }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error
-                            *ngIf="fieldGroup.get('restrictedClubbedLeaveCategory')?.invalid && fieldGroup.get('restrictedClubbedLeaveCategory')?.touched">
-                            {{ 'leave.createTemplate.errorRestrictedCategoryRequired' | translate }}
-                        </mat-error>
-                    </mat-form-field>
-                    <button mat-icon-button color="warn" class="col-2 my-2"
-                        [matTooltip]="'leave.createTemplate.deleteCategory' | translate" matTooltipPosition="after"
-                        type="button" [attr.aria-label]="'leave.createTemplate.deleteCategory' | translate"
-                        (click)="removeCategory(i)">
-                        <mat-icon>delete</mat-icon>
-                    </button>
-                </ng-container>
+              <ng-container [formGroupName]="i">
+                <mat-form-field appearance="outline" class="col-5 my-2">
+                  <mat-label>{{ 'leave.createTemplate.category' | translate }}</mat-label>
+                  <mat-select formControlName="leaveCategory">
+                    <mat-option [value]="category?._id" *ngFor="let category of categories; let i = index">
+                      {{ getCategoryLabel(category?._id) }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="fieldGroup.get('leaveCategory')?.invalid && fieldGroup.get('leaveCategory')?.touched">
+                    {{ 'leave.createTemplate.errorCategoryRequired' | translate }}
+                  </mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-5 my-2">
+                  <mat-label>{{ 'leave.createTemplate.restrictedClubbedCategory' | translate }}</mat-label>
+                  <mat-select formControlName="restrictedClubbedLeaveCategory">
+                    <mat-option [value]="category?._id" *ngFor="let category of categories; let i = index">
+                      {{ getCategoryLabel(category?._id) }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="fieldGroup.get('restrictedClubbedLeaveCategory')?.invalid && fieldGroup.get('restrictedClubbedLeaveCategory')?.touched">
+                    {{ 'leave.createTemplate.errorRestrictedCategoryRequired' | translate }}
+                  </mat-error>
+                </mat-form-field>
+                <button mat-icon-button color="warn" class="col-2 my-2"
+                  [matTooltip]="'leave.createTemplate.deleteCategory' | translate" matTooltipPosition="after"
+                  type="button" [attr.aria-label]="'leave.createTemplate.deleteCategory' | translate"
+                  (click)="removeCategory(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </ng-container>
             </div>
-        </div>
-        <div class="row m-0">
+          </div>
+          <div class="row m-0">
             <div class="form-group col-12 my-2">
-                <label>{{ 'leave.createTemplate.weeklyOffClubTogether' | translate }}</label>
-                <div class="d-flex">
-                    <mat-radio-group formControlName="weeklyOffClubTogether">
-                        <mat-radio-button color="primary" [value]="true">{{ 'leave.createTemplate.yes' | translate
-                            }}</mat-radio-button>
-                        <mat-radio-button color="primary" [value]="false" class="ms-3">{{ 'leave.createTemplate.no' |
-                            translate }}</mat-radio-button>
-                    </mat-radio-group>
-                </div>
+              <label>{{ 'leave.createTemplate.weeklyOffClubTogether' | translate }}</label>
+              <div class="d-flex">
+                <mat-radio-group formControlName="weeklyOffClubTogether">
+                  <mat-radio-button color="primary" [value]="true">{{ 'leave.createTemplate.yes' | translate }}</mat-radio-button>
+                  <mat-radio-button color="primary" [value]="false" class="ms-3">{{ 'leave.createTemplate.no' | translate }}</mat-radio-button>
+                </mat-radio-group>
+              </div>
             </div>
             <div class="form-group col-12 my-2">
-                <label>{{ 'leave.createTemplate.holidayClubTogether' | translate }}</label>
-                <div class="d-flex">
-                    <mat-radio-group formControlName="holidayClubTogether">
-                        <mat-radio-button color="primary" [value]="true">{{ 'leave.createTemplate.yes' | translate
-                            }}</mat-radio-button>
-                        <mat-radio-button color="primary" [value]="false" class="ms-3">{{ 'leave.createTemplate.no' |
-                            translate }}</mat-radio-button>
-                    </mat-radio-group>
-                </div>
+              <label>{{ 'leave.createTemplate.holidayClubTogether' | translate }}</label>
+              <div class="d-flex">
+                <mat-radio-group formControlName="holidayClubTogether">
+                  <mat-radio-button color="primary" [value]="true">{{ 'leave.createTemplate.yes' | translate }}</mat-radio-button>
+                  <mat-radio-button color="primary" [value]="false" class="ms-3">{{ 'leave.createTemplate.no' | translate }}</mat-radio-button>
+                </mat-radio-group>
+              </div>
             </div>
+          </div>
         </div>
-        }
     </div>
     <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
         <button mat-flat-button (click)="closeModal()">
