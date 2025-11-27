@@ -225,6 +225,7 @@
         "total_earnings": "Total Earnings",
         "deductions": "Deductions",
         "fixed_deductions": "Fixed Deductions",
+        "variable_deductions":"Variable Deductions",
         "professional_tax": "Professional Tax",
         "income_tax": "Income Tax",
         "generated_payroll": "Generated Payroll",
