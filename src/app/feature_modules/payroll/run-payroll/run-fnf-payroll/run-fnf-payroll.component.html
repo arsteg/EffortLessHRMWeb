@@ -119,117 +119,105 @@
   </mat-horizontal-stepper>
 </div>
 
-<ng-template #modal let-modal>
-  <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-    <div>
-      <h1 class="modal-title text-muted mb-0">{{ 'payroll._fnf.add_title' | translate }}</h1>
+<ng-template #modal>
+  <div>
+    <h1 mat-dialog-title>{{ 'payroll._fnf.add_title' | translate }}</h1>
+    <div mat-dialog-content>
+      <form [formGroup]="fnfForm">
+        <div class="form-group my-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'payroll._fnf.form.date' | translate }}</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="date">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="fnfForm.get('date').hasError('required')">
+              {{ 'payroll._fnf.form.date_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-group my-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'payroll._fnf.form.month' | translate }}</mat-label>
+            <mat-select formControlName="month">
+              <mat-option *ngFor="let month of fnfMonths" [value]="month">{{ month }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="fnfForm.get('month').hasError('required')">
+              {{ 'payroll._fnf.form.month_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'payroll._fnf.form.year' | translate }}</mat-label>
+            <mat-select formControlName="year">
+              <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="fnfForm.get('year').hasError('required')">
+              {{ 'payroll._fnf.form.year_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </form>
     </div>
-    <div>
-      <button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-        (click)="modal.close('Escape clicked')"></button>
+    <div mat-dialog-actions class="d-flex justify-content-between">
+      <button mat-flat-button (click)="closeAddDialog()">{{ 'payroll.cancel' | translate }}</button>
+      <button mat-flat-button color="primary" (click)="onSubmission()" [disabled]="isSubmittingPayroll">{{ 'payroll.submit' | translate }}</button>
     </div>
-  </div>
-  <div class="modal-body">
-    <form [formGroup]="fnfForm" (ngSubmit)="onSubmission()">
-      <div class="form-group">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'payroll._fnf.form.date' | translate }}</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="date">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-          <mat-error *ngIf="fnfForm.get('date').hasError('required')">
-            {{ 'payroll._fnf.form.date_required' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="form-group my-2">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'payroll._fnf.form.month' | translate }}</mat-label>
-          <mat-select formControlName="month">
-            <mat-option *ngFor="let month of fnfMonths" [value]="month">{{ month }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="fnfForm.get('month').hasError('required')">
-            {{ 'payroll._fnf.form.month_required' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="form-group">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'payroll._fnf.form.year' | translate }}</mat-label>
-          <mat-select formControlName="year">
-            <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
-          </mat-select>
-          <mat-error *ngIf="fnfForm.get('year').hasError('required')">
-            {{ 'payroll._fnf.form.year_required' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="d-flex justify-content-between mt-3">
-        <button mat-flat-button type="button" (click)="resetForm()">{{ 'payroll.cancel' | translate }}</button>
-        <button mat-flat-button color="primary" type="submit" [disabled]="isSubmittingPayroll">{{ 'payroll.submit' | translate }}</button>
-      </div>
-    </form>
   </div>
 </ng-template>
 
-<ng-template #fnfUserModal let-modal>
-  <div class="modal-header border-bottom justify-content-between d-flex mb-2 pt-0">
-    <div>
-      <h1 class="modal-title text-muted mb-0">{{ 'payroll._fnf.add_user_title' | translate }}</h1>
+<ng-template #fnfUserModal>
+  <div>
+    <h1 mat-dialog-title>{{ 'payroll._fnf.add_user_title' | translate }}</h1>
+    <div mat-dialog-content>
+      <form [formGroup]="fnfUserForm">
+        <div class="form-group my-2">
+          <app-fnf-users [selectedFnF]="selectedFnF" (changeUser)="onUserSelectedFromChild($event)"></app-fnf-users>
+          <mat-error *ngIf="fnfUserForm.get('user').touched && fnfUserForm.get('user').hasError('required')">
+            {{ 'payroll._fnf.form.user_required' | translate }}
+          </mat-error>
+        </div>
+        <div class="form-group my-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'payroll._fnf.form.flexi_benefits' | translate }}</mat-label>
+            <input matInput formControlName="totalFlexiBenefits" type="number" [disabled]="true">
+            <mat-error *ngIf="fnfUserForm.get('totalFlexiBenefits').hasError('required')">
+              {{ 'payroll._fnf.form.flexi_benefits_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-group my-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'payroll._fnf.form.total_ctc' | translate }}</mat-label>
+            <input matInput formControlName="totalCTC" type="number" [disabled]="true">
+            <mat-error *ngIf="fnfUserForm.get('totalCTC').hasError('required')">
+              {{ 'payroll._fnf.form.total_ctc_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-group my-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'payroll._fnf.form.gross_salary' | translate }}</mat-label>
+            <input matInput formControlName="totalGrossSalary" type="number" [disabled]="true">
+            <mat-error *ngIf="fnfUserForm.get('totalGrossSalary').hasError('required')">
+              {{ 'payroll._fnf.form.gross_salary_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="form-group my-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ 'payroll._fnf.form.take_home' | translate }}</mat-label>
+            <input matInput formControlName="totalTakeHome" type="number" [disabled]="true">
+            <mat-error *ngIf="fnfUserForm.get('totalTakeHome').hasError('required')">
+              {{ 'payroll._fnf.form.take_home_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </form>
     </div>
-    <div>
-      <button type="button" data-bs-dismiss="modal" class="btn-close text-end"
-        (click)="modal.close('Escape clicked')"></button>
+    <div mat-dialog-actions class="d-flex justify-content-between">
+      <button mat-flat-button (click)="closeAddDialog()">{{ 'payroll.cancel' | translate }}</button>
+      <button mat-flat-button color="primary" (click)="onFnFUserSubmission()">{{ 'payroll.submit' | translate }}</button>
     </div>
-  </div>
-  <div class="modal-body">
-    <form [formGroup]="fnfUserForm" (ngSubmit)="onFnFUserSubmission()">
-      <div class="form-group my-2">
-        <app-fnf-users [selectedFnF]="selectedFnF" (changeUser)="onUserSelectedFromChild($event)"></app-fnf-users>
-        <mat-error *ngIf="fnfUserForm.get('user').touched && fnfUserForm.get('user').hasError('required')">
-          {{ 'payroll._fnf.form.user_required' | translate }}
-        </mat-error>
-      </div>
-      <div class="form-group my-2">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'payroll._fnf.form.flexi_benefits' | translate }}</mat-label>
-          <input matInput formControlName="totalFlexiBenefits" type="number" [disabled]="true">
-          <mat-error *ngIf="fnfUserForm.get('totalFlexiBenefits').hasError('required')">
-            {{ 'payroll._fnf.form.flexi_benefits_required' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="form-group my-2">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'payroll._fnf.form.total_ctc' | translate }}</mat-label>
-          <input matInput formControlName="totalCTC" type="number" [disabled]="true">
-          <mat-error *ngIf="fnfUserForm.get('totalCTC').hasError('required')">
-            {{ 'payroll._fnf.form.total_ctc_required' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="form-group my-2">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'payroll._fnf.form.gross_salary' | translate }}</mat-label>
-          <input matInput formControlName="totalGrossSalary" type="number" [disabled]="true">
-          <mat-error *ngIf="fnfUserForm.get('totalGrossSalary').hasError('required')">
-            {{ 'payroll._fnf.form.gross_salary_required' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="form-group my-2">
-        <mat-form-field appearance="outline" class="w-100">
-          <mat-label>{{ 'payroll._fnf.form.take_home' | translate }}</mat-label>
-          <input matInput formControlName="totalTakeHome" type="number" [disabled]="true">
-          <mat-error *ngIf="fnfUserForm.get('totalTakeHome').hasError('required')">
-            {{ 'payroll._fnf.form.take_home_required' | translate }}
-          </mat-error>
-        </mat-form-field>
-      </div>
-      <div class="d-flex justify-content-between mt-3">
-        <button mat-flat-button type="button" (click)="modal.close()">{{ 'payroll.cancel' | translate }}</button>
-        <button mat-flat-button class="addBtn" type="submit">{{ 'payroll.submit' | translate }}</button>
-      </div>
-    </form>
   </div>
 </ng-template>

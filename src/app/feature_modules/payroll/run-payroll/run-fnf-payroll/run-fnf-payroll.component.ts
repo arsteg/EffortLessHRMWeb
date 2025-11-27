@@ -1,6 +1,5 @@
 import { Component, Input, OnInit, ViewChild, TemplateRef, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from 'src/app/_services/common.Service';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { MatTableDataSource } from '@angular/material/table';
@@ -83,7 +82,6 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
   allData: any = [];
 
   constructor(
-    private modalService: NgbModal,
     private fb: FormBuilder,
     private payrollService: PayrollService,
     private toast: ToastrService,
@@ -383,13 +381,10 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
       this.toast.warning('No settled users available.', 'Warning');
       return;
     }
-    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title', backdrop: 'static' }).result.then(
-      (result) => {
-        this.closeResult = `Closed with: ${result}`;
-      },
-      (reason) => {
-        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-      });
+    this.dialog.open(content, {
+      width: '600px',
+      disableClose: true
+    });
   }
 
   editFnF(user: any) {
@@ -439,7 +434,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
             );
           });
           this.fetchFnFPayroll();
-          this.modalService.dismissAll();
+          this.dialog.closeAll();
           this.resetForm();
         },
         (err) => {
@@ -539,7 +534,7 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
             );
           });
           this.fetchFnFPayroll();
-          this.modalService.dismissAll();
+          this.dialog.closeAll();
         },
         (error) => {
           this.translate.get('payroll._fnf.title').subscribe(title => {
@@ -617,16 +612,6 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
         translations['payroll._fnf.title']
       );
     });
-  }
-
-  private getDismissReason(reason: any): string {
-    if (reason === ModalDismissReasons.ESC) {
-      return 'by pressing ESC';
-    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-      return 'by clicking on a backdrop';
-    } else {
-      return `with: ${reason}`;
-    }
   }
 
   getUserName(userId: string) {
