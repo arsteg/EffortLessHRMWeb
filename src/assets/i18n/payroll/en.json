@@ -166,7 +166,7 @@
             "actions": {
                 "add_users": "Add Users"
             },
-            "change_status": "Change Payroll Status to {{status}}",
+            "change_status": "Change Payroll Status to ",
             "form": {
                 "date": "Date",
                 "date_required": "Date is required",

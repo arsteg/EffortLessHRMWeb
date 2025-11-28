@@ -1,8 +1,7 @@
 <div class="main-content" *ngIf="showFnFPayroll">
   <div class="position-relative">
 
-    <button color="primary" mat-flat-button class="position-absolute end-0"
-    (click)="open(modal)">
+    <button color="primary" mat-flat-button class="position-absolute end-0" (click)="open(modal)">
       {{ 'payroll._fnf.add' | translate }}
     </button>
   </div>
@@ -14,13 +13,13 @@
 </div>
 <!-- Rest of the template remains unchanged -->
 <ng-template #updateStatus>
-  <h1 mat-dialog-title>{{ 'payroll._fnf.change_status' | translate: { status: ('payroll._fnf.status.' +
-    selectedStatus.toLowerCase() | translate) } }}</h1>
+  <h1 mat-dialog-title>{{ 'payroll._fnf.change_status' | translate}}
+    {{selectedStatus | translate  }}</h1>
   <div mat-dialog-content>
     <div class="d-flex justify-content-between">
       <button mat-flat-button type="button" (click)="closeAddDialog()">{{ 'payroll.close' | translate }}</button>
       <button mat-flat-button type="submit" color="primary" (click)="updatePayrollStatus()">
-        {{ 'payroll._fnf.status.' + selectedStatus.toLowerCase() | translate }}
+        {{ 'payroll.submit' | translate }}
       </button>
     </div>
   </div>
@@ -161,7 +160,8 @@
     </div>
     <div mat-dialog-actions class="d-flex justify-content-between">
       <button mat-flat-button (click)="closeAddDialog()">{{ 'payroll.cancel' | translate }}</button>
-      <button mat-flat-button color="primary" (click)="onSubmission()" [disabled]="isSubmittingPayroll">{{ 'payroll.submit' | translate }}</button>
+      <button mat-flat-button color="primary" (click)="onSubmission()" [disabled]="isSubmittingPayroll">{{
+        'payroll.submit' | translate }}</button>
     </div>
   </div>
 </ng-template>
@@ -217,7 +217,8 @@
     </div>
     <div mat-dialog-actions class="d-flex justify-content-between">
       <button mat-flat-button (click)="closeAddDialog()">{{ 'payroll.cancel' | translate }}</button>
-      <button mat-flat-button color="primary" (click)="onFnFUserSubmission()">{{ 'payroll.submit' | translate }}</button>
+      <button mat-flat-button color="primary" (click)="onFnFUserSubmission()">{{ 'payroll.submit' | translate
+        }}</button>
     </div>
   </div>
 </ng-template>

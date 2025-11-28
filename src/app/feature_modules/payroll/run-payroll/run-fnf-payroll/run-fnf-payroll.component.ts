@@ -137,7 +137,6 @@ export class RunFnfPayrollComponent implements OnInit, AfterViewInit {
       });
       return found;
     });
-    console.log(data)
     this.dataSource.data = data;
   }
 
