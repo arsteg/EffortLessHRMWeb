@@ -36,13 +36,15 @@ export class ViewFnfPayslipComponent {
     const overtime = ps?.totalOvertime || 0;
     const flexi = ps?.totalFlexiBenefits || 0;
     const other = ps?.totalOtherBenefit || 0;
+    const totalArrears = ps?.manualArrears?.totalArrears || 0;
 
     const fixedDeduction = ps?.totalFixedDeduction || 0;
     const incomeTax = ps?.totalIncomeTax || 0;
     const loanAdvance = ps?.totalLoanAdvance || 0;
+    const variableDeduction = ps?.totalVariableDeduction || 0;
 
-    this.totalEarnings = fixed + variable + overtime + flexi + other;
-    this.totalDeductions = fixedDeduction + incomeTax + loanAdvance;
+    this.totalEarnings = fixed + variable + overtime + flexi + other + totalArrears;
+    this.totalDeductions = fixedDeduction + incomeTax + loanAdvance + variableDeduction;
 
     if (ps?.statutoryDetails?.length) {
       const employeeContribs = ps.statutoryDetails

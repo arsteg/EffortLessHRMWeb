@@ -222,7 +222,7 @@ export class FNFStep3Component implements OnInit {
     this.manualArrearForm.get('totalArrears')?.enable();
     this.manualArrearForm.get('payrollFNFUser')?.enable();
 
-    const matchedUser = this.selectedFnF.userList.find((user: any) => user._id === this.selectedFNFUser);
+    const matchedUser = this.selectedFnF.userList.find((user: any) => user.user === this.selectedFNFUser);
     const payrollFNFUserId = matchedUser ? matchedUser._id : this.selectedManualArrear?.payrollFNFUser;
 
     const payload = {

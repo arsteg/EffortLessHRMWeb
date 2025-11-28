@@ -52,8 +52,8 @@
                             <td>{{this.viewPayroll?.totalOvertime | number:'1.2-2'}}</td>
                         </tr>
                         <tr>
-                            <td>{{'payroll.flexi_benefits' | translate}}</td>
-                            <td>{{this.viewPayroll?.totalFlexiBenefits}}</td>
+                            <td>{{'payroll.total_arrears' | translate}}</td>
+                            <td>{{this.viewPayroll?.manualArrears?.totalArrears}}</td>
                         </tr>
                         <tr>
                             <td>{{'payroll.other_benefits' | translate}}</td>
@@ -80,6 +80,11 @@
                         <tr>
                             <td>{{'payroll.fixed_deductions' | translate}}</td>
                             <td>{{this.viewPayroll?.totalFixedDeduction}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>{{'payroll.variable_deductions' | translate}}</td>
+                            <td>{{this.viewPayroll?.totalVariableDeduction}}</td>
                         </tr>
                       
                         <tr>

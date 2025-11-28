@@ -54,24 +54,39 @@ export class FNFStep9Component {
         : this.translate.instant('payroll.no_user_specified')
     },
     {
+      key: 'totalFixedAllowance',
+      name: this.translate.instant('payroll.total_fixed_allowances'),
+      valueFn: (row) => row.totalFixedAllowance || 0
+    },
+    {
+      key: 'totalVariableAllowance',
+      name: this.translate.instant('payroll.total_variable_allowances'),
+      valueFn: (row) => row.totalVariableAllowance || 0
+    },
+    {
       key: 'manualArrears',
       name: this.translate.instant('payroll.manual_Arrears'),
       valueFn: (row) => row.manualArrears?.totalArrears || 0
     },
-    {
-      key: 'totalFixedAllowance',
-      name: this.translate.instant('payroll.total_variable_allowances'),
-      valueFn: (row) => row.totalFixedAllowance || 0
-    },
-    {
-      key: 'totalOtherBenefit',
-      name: this.translate.instant('payroll._fnf.steps.compensation'),
-      valueFn: (row) => row.totalOtherBenefit || 0
-    },
+    // {
+    //   key: 'totalOtherBenefit',
+    //   name: this.translate.instant('payroll._fnf.steps.compensation'),
+    //   valueFn: (row) => row.totalOtherBenefit || 0
+    // },
     {
       key: 'totalOvertime',
       name: this.translate.instant('payroll.total_overtime'),
       valueFn: (row) => row.totalOvertime || 0
+    },
+    {
+      key: 'totalFixedDeduction',
+      name: this.translate.instant('payroll.total_fixed_deductions'),
+      valueFn: (row) => row.totalFixedDeduction || 0
+    },
+    {
+      key: 'totalVariableDeduction',
+      name: this.translate.instant('payroll.total_variable_deductions'),
+      valueFn: (row) => row.totalVariableDeduction || 0
     },
     {
       key: 'totalLoanRepayment',
@@ -109,6 +124,11 @@ export class FNFStep9Component {
       valueFn: (row) => row.PayrollFNFUser?.status
         ? row.PayrollFNFUser.status.charAt(0).toUpperCase() + row.PayrollFNFUser.status.slice(1).toLowerCase()
         : 'N/A'
+    },
+    {
+      key: 'totalTakeHome',
+      name: this.translate.instant('payroll.take_home_salary'),
+      valueFn: (row) => row.totalTakeHome || 0
     },
     {
       key: 'actions',
