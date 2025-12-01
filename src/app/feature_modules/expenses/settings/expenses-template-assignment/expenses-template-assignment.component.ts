@@ -349,6 +349,8 @@ export class ExpensesTemplateAssignmentComponent implements OnInit {
     }
     else {
       this.templateAssignmentForm.markAllAsTouched();
+      this.toast.warning(this.translate.instant('expenses.requiredFields'));
+      this.isSubmitted = false;
     }
   }
 

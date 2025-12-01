@@ -110,6 +110,6 @@
     </div>
     <div mat-dialog-actions class="d-flex align-items-center justify-content-between">
         <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-        <button mat-flat-button color="primary" [disabled]="isSubmitted || !addTemplateForm.valid" type="submit">{{'expenses.next' | translate}}</button>
+        <button mat-flat-button color="primary" [disabled]="isSubmitted" type="submit">{{'expenses.next' | translate}}</button>
     </div>
 </form>

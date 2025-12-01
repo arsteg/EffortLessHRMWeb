@@ -342,6 +342,8 @@ export class AdvanceTemplateAssignmentComponent {
       this.addTemplateAssignmentForm.get('secondaryApprover')?.disable();
       this.addTemplateAssignmentForm.get('user')?.disable();
     } else {
+      this.toast.warning(this.translate.instant('expenses.requiredFields'));  
+      this.isSubmitted = false;
       this.addTemplateAssignmentForm.markAllAsTouched();
     }
   }

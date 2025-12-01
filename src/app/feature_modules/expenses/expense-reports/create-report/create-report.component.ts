@@ -9,6 +9,7 @@ import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Valida
 import { ToastrService } from 'ngx-toastr';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { th } from 'date-fns/locale';
 
 @Component({
   selector: 'app-create-report',
@@ -159,6 +160,11 @@ export class CreateReportComponent {
         this.submitExpenseReport(payload);
       }
     }
+    else {
+      this.expenseReportform.markAllAsTouched();
+      this.toast.warning(this.translate.instant('expenses.requiredFields'));
+      this.isSubmitting = false;
+    }
   }
 
   createPayload() {
@@ -174,7 +180,7 @@ export class CreateReportComponent {
       reason: this.expenseReportform.value.reason,
       expenseReport: '',
       expenseAttachments: [],
-      expenseReportExpenseFields: this.expenseFieldsArray.value,
+      expenseReportExpenseFields: this.expenseFieldsArray.value
     };
   }
 

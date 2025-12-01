@@ -111,7 +111,7 @@
                 } -->
             </div>
             @if(changeMode === 'Update' || changeMode === 'Add'){
-            <button mat-flat-button type="submit" [disabled]="templateAssignmentForm.invalid || isSubmitted" color="primary">{{changeMode === 'Add' ? ('expenses.add' | translate)
+            <button mat-flat-button type="submit" [disabled]="isSubmitted" color="primary">{{changeMode === 'Add' ? ('expenses.add' | translate)
                 : ('expenses.update' | translate)}}</button>
             }
         </div>

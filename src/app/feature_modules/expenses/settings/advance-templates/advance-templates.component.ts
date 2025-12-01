@@ -214,6 +214,8 @@ export class AdvanceTemplatesComponent implements OnInit {
       }
     }
     else {
+      this.toast.warning(this.translate.instant('expenses.requiredFields'));
+      this.isSubmitted = false;
       this.markFormGroupTouched(this.addAdvanceTempForm);
     }
   }
