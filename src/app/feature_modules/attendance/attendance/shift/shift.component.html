@@ -399,7 +399,7 @@
       <button mat-flat-button (click)="closeModal()" mat-dialog-close="">
         {{ 'attendance.shift.cancel' | translate }}
       </button>
-      <button mat-flat-button color="primary" type="submit">
+      <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitted">
         {{ (isEdit ? 'attendance.shift.update' : 'attendance.shift.save') | translate }}
       </button>
     </div>
