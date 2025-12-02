@@ -40,14 +40,12 @@ export class ViewPayslipComponent {
     const perDayPay = monthlySalary / totalDays;
     const lopSalary = perDayPay * payableDays;
     this.salaryAfterLOP = lopSalary.toFixed(2);
-    console.log(this.salaryAfterLOP);
   }
 
   calculateTotalPayWithOvertime() {
     const lopSalary = parseFloat(this.salaryAfterLOP);
     const totalOvertime = parseFloat(this.viewPayroll?.totalOvertime);
     this.totalPayWithOvertime = (lopSalary + totalOvertime).toFixed(2);
-    console.log(this.totalPayWithOvertime);
-    this.totalPayWithOvertime -= (this.viewPayroll?.totalLoanAdvance);
+    this.totalPayWithOvertime -= (this.viewPayroll?.totalLoanRepayment || 0);
   }
 }
