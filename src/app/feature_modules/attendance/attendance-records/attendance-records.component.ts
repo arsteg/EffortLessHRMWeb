@@ -772,5 +772,14 @@ validateAttendanceUploadLock(): Promise<boolean> {
     }
 
     this.processing = false;
+    // Close the upload dialog after processing completes
+    try {
+      if (this.dialogRef) {
+        this.dialogRef.close(true);
+      }
+    } catch (err) {
+      // fallback to closing all dialogs if specific ref fails
+      try { this.dialog.closeAll(); } catch {}
+    }
   }
 }
