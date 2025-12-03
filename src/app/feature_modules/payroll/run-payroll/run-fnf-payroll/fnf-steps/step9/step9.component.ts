@@ -213,7 +213,7 @@ export class FNFStep9Component {
   }
 
   updatePayrollStatus() {
-    const id = this.selectedPayrollUser?.PayrollFNFUser?.id;
+    const id = this.selectedPayrollUser?.PayrollFNFUser?._id;
     const payload = {
       updatedOnDate: new Date(),
       status: this.selectedStatus
