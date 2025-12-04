@@ -318,6 +318,7 @@ export class TaxComponent {
       if (res.data?.taxRegime === 'Old Regime') {
         this.taxService.addIncomeTax(payload).subscribe((res: any) => {
            this.getTaxDeclarationList();
+           this.taxDeclarationForm.reset();
             this.toast.success(this.translate.instant('taxation.tax_declaraton_added'), this.translate.instant('taxation.toast.success'));
             this.dialogRef.close();
           },
