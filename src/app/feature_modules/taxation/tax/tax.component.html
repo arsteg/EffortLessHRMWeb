@@ -2,14 +2,15 @@
 
     <div class="d-flex align-items-center justify-content-between">
 
-        <h2>My Tax Declarations</h2>
+        <h2>{{'taxation.my_tax_declarations' | translate}}</h2>
 
         <div>
-            <button type="button" mat-flat-button color="primary" (click)="isEdit= false;handleAddTaxDeclaration()"
-               >Add&nbsp;Tax&nbsp;Declaration</button>
+            <button type="button" mat-flat-button color="primary"
+                (click)="isEdit= false;handleAddTaxDeclaration()">{{'taxation.add_tax_declaration' |
+                translate}}</button>
 
             <button type="button" class="ms-2 " color="primary" mat-flat-button
-            (click)="handleOpenTaxCalculator();">Tax&nbsp;Calculator</button>
+                (click)="handleOpenTaxCalculator();">{{'taxation.tax_calculator' | translate}}</button>
         </div>
     </div>
 
@@ -22,16 +23,16 @@
 </div>
 
 <div *ngIf="taxView || taxEditView">
-    
+
     <div *ngIf="taxView" class="p-3">
         <div class="d-flex align-items-center">
             <button mat-flat-button (click)="taxView = false">
                 <mat-icon>keyboard_arrow_left</mat-icon>
-                Back
+                {{'taxation.back' | translate}}
             </button>
             <h3 class="mb-0">
                 {{taxList?.user?.firstName | titlecase}}&nbsp;{{taxList?.user?.lastName | titlecase}} |
-                    {{taxList?.financialYear}}
+                {{taxList?.financialYear}}
             </h3>
         </div>
         <app-tax-calculator [selectedRecord]="taxList" [isEdit]="isEdit"></app-tax-calculator>
@@ -43,30 +44,29 @@
 <ng-template #addModal let-modal>
 
     <div class="d-flex align-items-center justify-content-between">
-        <h1 mat-dialog-title>{{isEdit == true ? 'Update': 'Add'}} Tax
+        <h1 mat-dialog-title>{{isEdit ? ('taxation.update' | translate) : ('taxation.add' | translate)}}
+            {{'taxation.tax' | translate}}
         </h1>
     </div>
 
     <div mat-dialog-content>
         <form [formGroup]="taxDeclarationForm" (ngSubmit)="taxDeclaration()">
             <mat-form-field class="w-100">
-                <mat-label for="year">Financial Years</mat-label>
+                <mat-label for="year">{{'taxation.financial_years' | translate}}</mat-label>
                 <mat-select id="year" formControlName="financialYear">
-                    <mat-option value="" disabled selected> Select Years</mat-option>
+                    <mat-option value="" disabled selected> {{'taxation.select_years' | translate}}</mat-option>
                     <mat-option *ngFor="let year of years" [value]="year">{{ year }}</mat-option>
                 </mat-select>
                 <mat-error
-                *ngIf="(taxDeclarationForm.get('financialYear')?.touched || taxDeclarationForm.get('financialYear')?.dirty) && taxDeclarationForm.get('financialYear')?.invalid">
-                Please select financial year
-            </mat-error>
+                    *ngIf="(taxDeclarationForm.get('financialYear')?.touched || taxDeclarationForm.get('financialYear')?.dirty) && taxDeclarationForm.get('financialYear')?.invalid">
+                    {{'taxation.please_select_financial_year' | translate}}
+                </mat-error>
             </mat-form-field>
-    
+
             <div class="d-flex justify-content-between mt-3" mat-dialog-actions>
-                <button type="reset" mat-flat-button mat-dialog-close>Cancel</button>
-                <button type="submit" color="primary" mat-flat-button>Submit</button>
+                <button type="reset" mat-flat-button mat-dialog-close>{{'taxation.cancel' | translate}}</button>
+                <button type="submit" color="primary" mat-flat-button>{{'taxation.submit' | translate}}</button>
             </div>
         </form>
     </div>
-
-
 </ng-template>
