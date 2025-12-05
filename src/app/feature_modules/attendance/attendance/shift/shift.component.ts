@@ -380,8 +380,7 @@ export class ShiftComponent {
           this.closeModal();
         }, (err) => {
           const errorMessage = err?.error?.message || err?.message || err
-            || this.translate.instant('attendance.createShiftError')
-            ;
+            || this.translate.instant('attendance.createShiftError');
           this.toast.error(errorMessage, this.translate.instant('common.error'));
         })
       }

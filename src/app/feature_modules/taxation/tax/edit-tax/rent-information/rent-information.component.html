@@ -2,32 +2,34 @@
     <div class="border rounded p-3">
         <form class="d-flex flex-row flex-wrap gap-2" [formGroup]="formGroup" (ngSubmit)="onSubmission()">
             <div>
-                <mat-form-field 
+                <mat-form-field
                     [class.mb-3]="formGroup.get('cityType').errors?.['required'] && formGroup.get('cityType').touched">
-                    <mat-label>City Type</mat-label>
+                    <mat-label>{{'taxation.city_type' | translate}}</mat-label>
                     <mat-select formControlName="cityType">
-                        <mat-option value="" disabled>Select City Type</mat-option>
-                        <mat-option value="Metro">Metro</mat-option>
-                        <mat-option value="Non-Metro">Non-Metro</mat-option>
+                        <mat-option value="" disabled>{{'taxation.select_city_type' | translate}}</mat-option>
+                        <mat-option value="Metro">{{'taxation.metro' | translate}}</mat-option>
+                        <mat-option value="Non-Metro">{{'taxation.non_metro' | translate}}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="formGroup.get('cityType')?.touched && formGroup.get('cityType')?.hasError('required')">
+                    <mat-error
+                        *ngIf="formGroup.get('cityType')?.touched && formGroup.get('cityType')?.hasError('required')">
                         {{ 'taxation.cityType_required' | translate }}
                     </mat-error>
                 </mat-form-field>
             </div>
 
             <div>
-                <mat-form-field 
+                <mat-form-field
                     [class.mb-3]="formGroup.get('rentDeclared').errors?.['required'] && formGroup.get('rentDeclared').touched"
                     [class.mb-4]="formGroup.get('rentDeclared').errors?.['exceedLimit'] && formGroup.get('rentDeclared').touched">
-                    <mat-label>Per Month Rent </mat-label>
+                    <mat-label>{{'taxation.per_month_rent' | translate}} </mat-label>
                     <input type="number" matInput formControlName="rentDeclared">
                     <mat-error *ngIf="formGroup.get('rentDeclared')?.touched && formGroup.get('rentDeclared')?.errors">
                         <span *ngIf="formGroup.get('rentDeclared')?.hasError('required')">
                             {{ 'taxation.rentDeclared_required' | translate }}
                         </span>
                         <span *ngIf="formGroup.get('rentDeclared')?.hasError('exceedLimit')">
-                            {{ 'taxation.rent_exceeds_limit' | translate }} {{ formGroup.get('cityType')?.value === 'Metro' ? metroDeclaredRent : nonMetroDeclaredRent | number:'1.2-2' }}
+                            {{ 'taxation.rent_exceeds_limit' | translate }} {{ formGroup.get('cityType')?.value ===
+                            'Metro' ? metroDeclaredRent : nonMetroDeclaredRent | number:'1.2-2' }}
                         </span>
                     </mat-error>
                 </mat-form-field>
@@ -35,9 +37,10 @@
 
             <div>
                 <mat-form-field>
-                    <mat-label>Landlord Name </mat-label>
+                    <mat-label>{{'taxation.landlord_name' | translate}} </mat-label>
                     <input type="text" matInput formControlName="landlordName">
-                    <mat-error *ngIf="formGroup.get('landlordName')?.touched && formGroup.get('landlordName')?.hasError('required')">
+                    <mat-error
+                        *ngIf="formGroup.get('landlordName')?.touched && formGroup.get('landlordName')?.hasError('required')">
                         {{ 'taxation.landlordName_required' | translate }}
                     </mat-error>
                 </mat-form-field>
@@ -45,7 +48,7 @@
 
             <div>
                 <mat-form-field>
-                    <mat-label>Landlord PAN Number</mat-label>
+                    <mat-label>{{'taxation.landlord_pan_number' | translate}} </mat-label>
                     <input type="text" matInput formControlName="landlordPan" (input)="convertToUppercase()">
                     <mat-error *ngIf="formGroup.get('landlordPan')?.touched && formGroup.get('landlordPan')?.errors">
                         <span *ngIf="formGroup.get('landlordPan')?.hasError('required')">
@@ -61,40 +64,43 @@
             <div>
                 <mat-form-field
                     [class.mb-5]="formGroup.get('landlordAddress').errors?.['required'] && formGroup.get('landlordAddress').touched">
-                    <mat-label>Landlord Address</mat-label>
+                    <mat-label>{{'taxation.landlord_address' | translate}}</mat-label>
                     <input type="text" matInput formControlName="landlordAddress">
-                    <mat-error *ngIf="formGroup.get('landlordAddress')?.touched && formGroup.get('landlordAddress')?.hasError('required')">
+                    <mat-error
+                        *ngIf="formGroup.get('landlordAddress')?.touched && formGroup.get('landlordAddress')?.hasError('required')">
                         {{ 'taxation.landlordAddress_required' | translate }}
                     </mat-error>
                 </mat-form-field>
             </div>
 
             <div class="ml-auto">
-                <button mat-flat-button color="primary" type="submit">Apply to All</button>
+                <button mat-flat-button color="primary" type="submit">{{'taxation.apply_to_all' | translate}}</button>
             </div>
         </form>
-        <small>For Metro City Max Amount: {{metroDeclaredRent | number:'1.2-2'}}<span class="text-danger">*</span></small><br/>
-        <small>For Non-Metro City Max Amount: {{nonMetroDeclaredRent | number:'1.2-2'}}<span class="text-danger">*</span></small>
+        <small>{{'taxation.for_metro_city_max_amount' | translate}}: {{metroDeclaredRent | number:'1.2-2'}}<span
+                class="text-danger">*</span></small><br />
+        <small>{{'taxation.for_non_metro_city_max_amount' | translate}}: {{nonMetroDeclaredRent | number:'1.2-2'}}<span
+                class="text-danger">*</span></small>
     </div>
 
     <form [formGroup]="formGroup" class="table-responsive">
         <table class="hrm-table mt-2">
             <thead>
                 <tr>
-                    <th>Month</th>
-                    <th>City Type <span class="text-danger">*</span></th>
-                    <th>Rent Declared <span class="text-danger">*</span></th>
-                    <th>Verified Amount</th>
-                    <th>Landlord Name <span class="text-danger">*</span></th>
-                    <th>Landlord PAN <span class="text-danger">*</span></th>
-                    <th>Landlord Address <span class="text-danger">*</span></th>
-                    <th>Approval Status</th>
-                    <th>Attachment</th>
-                    <th>Actions</th>
+                    <th>{{'taxation.month' | translate}}</th>
+                    <th>{{'taxation.city_type' | translate}} <span class="text-danger">*</span></th>
+                    <th>{{'taxation.rent_declared' | translate}} <span class="text-danger">*</span></th>
+                    <th>{{'taxation.verified_amount' | translate}}</th>
+                    <th>{{'taxation.landlord_name' | translate}} <span class="text-danger">*</span></th>
+                    <th>{{'taxation.landlord_pan_number' | translate}} <span class="text-danger">*</span></th>
+                    <th>{{'taxation.landlord_address' | translate}} <span class="text-danger">*</span></th>
+                    <th>{{'taxation.approval_status' | translate}}</th>
+                    <th>{{'taxation.attachment' | translate}}</th>
+                    <th>{{'taxation.actions' | translate}}</th>
                 </tr>
             </thead>
             <tbody formArrayName="employeeIncomeTaxDeclarationHRA">
-                <tr *ngFor="let group of employeeIncomeTaxDeclarationHRA.controls; let i = index" [formGroupName]="i" 
+                <tr *ngFor="let group of employeeIncomeTaxDeclarationHRA.controls; let i = index" [formGroupName]="i"
                     [ngClass]="'error-' + getFirstInvalidControlName(group)">
                     <td class="align-top">
                         <div class="month pt-2">
@@ -104,12 +110,14 @@
 
                     <td style="max-width: 135px;">
                         <mat-form-field class="densed-field w-100">
-                            <mat-select formControlName="cityType" [disabled]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'">
-                                <mat-option value="" disabled>City Type</mat-option>
-                                <mat-option value="Metro">Metro</mat-option>
-                                <mat-option value="Non-Metro">Non-Metro</mat-option>
+                            <mat-select formControlName="cityType"
+                                [disabled]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'">
+                                <mat-option value="" disabled>{{'taxation.city_type' | translate}}</mat-option>
+                                <mat-option value="Metro">{{'taxation.metro' | translate}}</mat-option>
+                                <mat-option value="Non-Metro">{{'taxation.non_metro' | translate}}</mat-option>
                             </mat-select>
-                            <mat-error *ngIf="group.get('cityType')?.touched && group.get('cityType')?.hasError('required')">
+                            <mat-error
+                                *ngIf="group.get('cityType')?.touched && group.get('cityType')?.hasError('required')">
                                 {{ 'taxation.cityType_required' | translate }}
                             </mat-error>
                         </mat-form-field>
@@ -117,13 +125,15 @@
 
                     <td style="max-width: 135px;">
                         <mat-form-field class="densed-field w-100">
-                            <input type="number" matInput formControlName="rentDeclared" [readonly]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'">
+                            <input type="number" matInput formControlName="rentDeclared"
+                                [readonly]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'">
                             <mat-error *ngIf="group.get('rentDeclared')?.touched && group.get('rentDeclared')?.errors">
                                 <span *ngIf="group.get('rentDeclared')?.hasError('required')">
                                     {{ 'taxation.rentDeclared_required' | translate }}
                                 </span>
                                 <span *ngIf="group.get('rentDeclared')?.hasError('exceedLimit')">
-                                    {{ 'taxation.rent_exceeds_limit' | translate }} {{ group.get('cityType')?.value === 'Metro' ? metroDeclaredRent : nonMetroDeclaredRent | number:'1.2-2' }}
+                                    {{ 'taxation.rent_exceeds_limit' | translate }} {{ group.get('cityType')?.value ===
+                                    'Metro' ? metroDeclaredRent : nonMetroDeclaredRent | number:'1.2-2' }}
                                 </span>
                             </mat-error>
                         </mat-form-field>
@@ -137,8 +147,10 @@
 
                     <td style="max-width: 135px;">
                         <mat-form-field class="densed-field w-100">
-                            <input type="text" matInput formControlName="landlordName" [readonly]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'">
-                            <mat-error *ngIf="group.get('landlordName')?.touched && group.get('landlordName')?.hasError('required')">
+                            <input type="text" matInput formControlName="landlordName"
+                                [readonly]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'">
+                            <mat-error
+                                *ngIf="group.get('landlordName')?.touched && group.get('landlordName')?.hasError('required')">
                                 {{ 'taxation.landlordName_required' | translate }}
                             </mat-error>
                         </mat-form-field>
@@ -146,7 +158,9 @@
 
                     <td style="max-width: 135px;">
                         <mat-form-field class="densed-field w-100">
-                            <input type="text" matInput formControlName="landlordPan" [readonly]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'" (input)="convertToUppercaseSelectedPAN(i)">
+                            <input type="text" matInput formControlName="landlordPan"
+                                [readonly]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'"
+                                (input)="convertToUppercaseSelectedPAN(i)">
                             <mat-error *ngIf="group.get('landlordPan')?.touched && group.get('landlordPan')?.errors">
                                 <span *ngIf="group.get('landlordPan')?.hasError('required')">
                                     {{ 'taxation.landlordPan_required' | translate }}
@@ -160,8 +174,10 @@
 
                     <td style="max-width: 135px;">
                         <mat-form-field class="densed-field w-100">
-                            <input type="text" matInput formControlName="landlordAddress" [readonly]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'">
-                            <mat-error *ngIf="group.get('landlordAddress')?.touched && group.get('landlordAddress')?.hasError('required')">
+                            <input type="text" matInput formControlName="landlordAddress"
+                                [readonly]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'">
+                            <mat-error
+                                *ngIf="group.get('landlordAddress')?.touched && group.get('landlordAddress')?.hasError('required')">
                                 {{ 'taxation.landlordAddress_required' | translate }}
                             </mat-error>
                         </mat-form-field>
@@ -169,52 +185,68 @@
 
                     <td>
                         <ng-container [ngSwitch]="group.get('approvalStatus')?.value">
-                            <mat-icon *ngSwitchCase="'Pending'" color="primary" matTooltip="Pending" matTooltipPosition="below">hourglass_empty</mat-icon>
-                            <mat-icon *ngSwitchCase="'Approved'" color="accent" matTooltip="Approved" matTooltipPosition="below">check_circle</mat-icon>
-                            <mat-icon *ngSwitchCase="'Rejected'" color="warn" matTooltip="Rejected" matTooltipPosition="below">cancel</mat-icon>
+                            <mat-icon *ngSwitchCase="'Pending'" color="primary" matTooltip="Pending"
+                                matTooltipPosition="below">hourglass_empty</mat-icon>
+                            <mat-icon *ngSwitchCase="'Approved'" color="accent" matTooltip="Approved"
+                                matTooltipPosition="below">check_circle</mat-icon>
+                            <mat-icon *ngSwitchCase="'Rejected'" color="warn" matTooltip="Rejected"
+                                matTooltipPosition="below">cancel</mat-icon>
                             <span *ngSwitchDefault>{{ group.get('approvalStatus')?.value }}</span>
                         </ng-container>
                     </td>
 
                     <td class="text-center">
                         <div class="attachment-container">
-                            <ng-container *ngIf="getemployeeIncomeTaxDeclarationAttachments(i).controls.length; else noAttachment">
-                                <div *ngFor="let attachment of getemployeeIncomeTaxDeclarationAttachments(i).controls; let j = index">
-                                    <span class="attachment-name me-2" matTooltip="Download Attachment" matTooltipPosition="below">
-                                        <a (click)="downloadAttachment(attachment.value, i, j)" style="cursor: pointer; text-decoration: underline; color: rgba(244, 135, 0, 1);">
+                            <ng-container
+                                *ngIf="getemployeeIncomeTaxDeclarationAttachments(i).controls.length; else noAttachment">
+                                <div
+                                    *ngFor="let attachment of getemployeeIncomeTaxDeclarationAttachments(i).controls; let j = index">
+                                    <span class="attachment-name me-2" matTooltip="Download Attachment"
+                                        matTooltipPosition="below">
+                                        <a (click)="downloadAttachment(attachment.value, i, j)"
+                                            style="cursor: pointer; text-decoration: underline; color: rgba(244, 135, 0, 1);">
                                             {{ attachment.get('attachmentName')?.value || 'Unnamed Attachment' }}
                                         </a>
                                     </span>
-                                    <ng-container *ngIf="group.get('isEditable')?.value && group.get('approvalStatus')?.value !== 'Approved'">
-                                        <mat-icon matTooltip="Remove Attachment" matTooltipPosition="below" style="cursor: pointer;" (click)="removeAttachment(i, j)">
+                                    <ng-container
+                                        *ngIf="group.get('isEditable')?.value && group.get('approvalStatus')?.value !== 'Approved'">
+                                        <mat-icon matTooltip="Remove Attachment" matTooltipPosition="below"
+                                            style="cursor: pointer;" (click)="removeAttachment(i, j)">
                                             cancel
                                         </mat-icon>
                                     </ng-container>
                                 </div>
                             </ng-container>
                             <ng-template #noAttachment>
-                                <label for="attachment-{{ i }}" *ngIf="group.get('isEditable')?.value && group.get('approvalStatus')?.value !== 'Approved'">
-                                    <mat-icon matTooltip="Add Attachment File" matTooltipPosition="below">attachment</mat-icon>
+                                <label for="attachment-{{ i }}"
+                                    *ngIf="group.get('isEditable')?.value && group.get('approvalStatus')?.value !== 'Approved'">
+                                    <mat-icon matTooltip="{{'taxation.add_attachment_file' | translate}}"
+                                        matTooltipPosition="below">attachment</mat-icon>
                                 </label>
                             </ng-template>
-                            <input type="file" id="attachment-{{ i }}" [disabled]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'" (change)="uploadAttachment($event, i)" style="display: none;" />
+                            <input type="file" id="attachment-{{ i }}"
+                                [disabled]="!group.get('isEditable')?.value || group.get('approvalStatus')?.value === 'Approved'"
+                                (change)="uploadAttachment($event, i)" style="display: none;" />
                         </div>
                     </td>
 
                     <td>
                         @if(!group.get('isEditable')?.value && group.get('approvalStatus')?.value !== 'Approved') {
-                            <button mat-icon-button matTooltip="Edit" matTooltipPosition="before" type="button" (click)="selectRow(i)">
-                                <mat-icon>edit</mat-icon>
-                            </button>
+                        <button mat-icon-button matTooltip="{{'taxation.edit' | translate}}" matTooltipPosition="before" type="button"
+                            (click)="selectRow(i)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
                         } @else if(group.get('isEditable')?.value) {
-                            <div class="d-flex">
-                                <button mat-icon-button matTooltip="Update" matTooltipPosition="below" type="button" (click)="onSubmissionRowData(i)" class="success-btn">
-                                    <mat-icon>check</mat-icon>
-                                </button>
-                                <button mat-icon-button matTooltip="Cancel" matTooltipPosition="below" type="button" (click)="cancelEditing(i)" class="delete-btn">
-                                    <mat-icon>close</mat-icon>
-                                </button>
-                            </div>
+                        <div class="d-flex">
+                            <button mat-icon-button matTooltip="{{'taxation.update' | translate}}" matTooltipPosition="below" type="button"
+                                (click)="onSubmissionRowData(i)" class="success-btn">
+                                <mat-icon>check</mat-icon>
+                            </button>
+                            <button mat-icon-button matTooltip="{{'taxation.cancel' | translate}}" matTooltipPosition="below" type="button"
+                                (click)="cancelEditing(i)" class="delete-btn">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </div>
                         }
                     </td>
                 </tr>

@@ -4,8 +4,8 @@
     <div class="table-responsive mt-4">
       <table class="hrm-table">
         <thead>
-          <th class="py-2">Regime</th>
-          <th>Annual Gross Salary</th>
+          <th class="py-2">{{'taxation.regime' | translate}}</th>
+          <th>{{'taxation.annual_gross_salary' | translate}}</th>
         </thead>
         <tbody>
           <tr>
@@ -23,15 +23,15 @@
 
   <!-- Tax Sections -->
   <div class="d-flex justify-content-between mt-3">
-    <h3>Income Tax Section Components</h3>
-    <h3>Amount</h3>
+    <h3>{{'taxation.income_tax_section_components' | translate}}</h3>
+    <h3>{{'taxation.amount' | translate}}</h3>
   </div>
   <ng-container *ngFor="let section of taxSections; trackBy: trackBySection; let i = index">
     <mat-expansion-panel [expanded]="false">
       <mat-expansion-panel-header>
         <mat-panel-title class="d-flex justify-content-between w-100">
-          <span><b>Section: </b>{{ section.section || 'Unnamed Section' }} <span *ngIf="section?.maximumAmount"> |
-              Maximum Amount Limit {{section?.maximumAmount | number: '1.2-2'}}</span></span>
+          <span><b>{{'taxation.section' | translate}}: </b>{{ section.section || 'Unnamed Section' }} <span *ngIf="section?.maximumAmount"> |
+              {{'taxation.maximum_amount_limit' | translate}} {{section?.maximumAmount | number: '1.2-2'}}</span></span>
         </mat-panel-title>
       </mat-expansion-panel-header>
       <div class="p-2">
@@ -40,11 +40,11 @@
           <mat-form-field class="densed-field">
             <input type="number" matInput [formControl]="hraControl" readonly>
           </mat-form-field>
-        <h4>HRA Details</h4>
+        <h4>{{'taxation.hra_detaisls' | translate}}</h4>
         <table class="hrm-table">
           <thead>
-            <th class="py-2">Month</th>
-            <th>Verified Amount</th>
+            <th class="py-2">{{'taxation.month' | translate}}</th>
+            <th>{{'taxation.verified_amount' | translate}}</th>
           </thead>
           <tbody>
             <tr *ngFor="let hra of getAllHraMonths(); trackBy: trackByHra; let i = index">
@@ -63,16 +63,15 @@
            <input type="number" matInput [formControl]="sectionControls[section?._id]" readonly>
          </mat-form-field>
         @if (getAllComponentsForSection(section?._id)?.length) {
-        <h4>Section Components</h4>
+        <h4>{{'taxation.section_components' | translate}}</h4>
         <table class="hrm-table">
           <thead>
-            <th class="py-2">Component Name</th>
-            <th>Approved Amount</th>
+            <th class="py-2">{{'taxation.component_name' | translate}}</th>
+            <th>{{'taxation.approved_amount' | translate}}</th>
           </thead>
           <tbody>
             <tr *ngFor="let component of getAllComponentsForSection(section?._id); trackBy: trackByComponent">
-              <td>{{ component.componantName || 'Unnamed Component' }} <span *ngIf="component?.maximumAmount"> | Maximum
-                  Amount Limit: {{component?.maximumAmount | number: '1.2-2'}}</span></td>
+              <td>{{ component.componantName || 'Unnamed Component' }} <span *ngIf="component?.maximumAmount"> | {{'taxation.maximum_amount_limit' | translate}} {{component?.maximumAmount | number: '1.2-2'}}</span></td>
               <td>
                 <mat-form-field class="densed-field">
                   <input type="number" matInput [formControl]="componentControls[component._id]">
@@ -82,7 +81,7 @@
           </tbody>
         </table>
         } @else {
-        <p>No components available for this section.</p>
+        <p>{{'taxation.no_components_available' | translate}}</p>
         }
         }
       </div>
@@ -92,23 +91,19 @@
 
 <!-- Disclaimer -->
 <div class="mt-3">
-  <i><strong>Disclaimer: </strong> <small>The above calculator is illustrative and designed to enable Employee to get a
-      quick view toward Old vs New Regime tax calculation. Please follow your discretion in deciding which plan suits
-      you the best. The data shown above does not get saved anywhere. The Actual Tax calculation could be different
-      based on actual & additional variable payment and paydays, if applicable, which will be part of your final
-      respective month payroll cycle.</small></i>
+  <i><strong>{{'taxation.disclaimer' | translate}}: </strong> <small>{{'taxation.disclaimer_content' | translate}}</small></i>
 </div>
 
 <!-- Action Buttons -->
 <div class="d-flex justify-content-between mt-2 border-top pt-2">
   <!-- <button type="reset" mat-flat-button>Cancel</button> -->
-  <button type="button" color="primary" mat-flat-button (click)="calculateTax(); open(addModal);">Calculate</button>
+  <button type="button" color="primary" mat-flat-button (click)="calculateTax(); open(addModal);">{{'taxation.calculate' | translate}}</button>
 </div>
 
 <!-- Modal for Tax Calculation -->
 <ng-template #addModal let-modal>
   <div class="d-flex align-items-center justify-content-between">
-    <h1 mat-dialog-title>Computed Amount</h1>
+    <h1 mat-dialog-title>{{'taxation.computed_amount' | translate}}</h1>
     <button type="button" mat-icon-button mat-dialog-close="" class="me-4">
       <mat-icon>close</mat-icon>
     </button>
@@ -117,43 +112,39 @@
   <div mat-dialog-content>
     <table class="hrm-table">
       <thead>
-        <th class="py-2">Section Name</th>
-        <th>According to Old Regime</th>
+        <th class="py-2">{{'taxation.section_name' | translate}}</th>
+        <th>{{'taxation.according_to_old_regime' | translate}}</th>
       </thead>
       <tbody>
         <tr>
-          <td>Net Taxable Salary</td>
+          <td>{{'taxation.net_taxable_salary' | translate}}</td>
           <td>{{ taxableSalary | number: '1.2-2' }}</td>
         </tr>
         <tr>
-          <td>Tax payable on that Income</td>
+          <td>{{'taxation.tax_payable_on_income' | translate}}</td>
           <td>{{ taxPayableOldRegime | number: '1.2-2' }}</td>
         </tr>
         <tr>
-          <td>Less U/S 87 (A) Rebate</td>
+          <td>{{'taxation.less_us_87a_rebate' | translate}}</td>
           <td>0</td>
         </tr>
         <tr>
-          <td>Surcharge</td>
+          <td>{{'taxation.surcharge' | translate}}</td>
           <td>0</td>
         </tr>
         <tr>
-          <td>Education Cess</td>
+          <td>{{'taxation.education_cess' | translate}}</td>
           <td>0</td>
         </tr>
         <tr>
-          <td><strong>Total Tax Payable</strong></td>
+          <td><strong>{{'taxation.total_tax_payable' | translate}}</strong></td>
           <td>{{ taxPayableOldRegime | number: '1.2-2' }}</td>
         </tr>
       </tbody>
     </table>
     <div class="mt-2 border-top pt-2">
-      <strong>Disclaimer: </strong>
-      <i>The above calculator is illustrative and designed to enable Employee to get a quick view toward Old vs New
-        Regime tax calculation. Please follow your discretion in deciding which plan suits you the best. The data shown
-        above does not get saved anywhere. The Actual Tax calculation could be different based on actual & additional
-        variable payment and paydays, if applicable, which will be part of your final respective month payroll
-        cycle.</i>
+      <strong>{{'taxation.disclaimer' | translate}}: </strong>
+      <i>{{'taxation.disclaimer_content2' | translate}}</i>
     </div>
   </div>
 </ng-template>

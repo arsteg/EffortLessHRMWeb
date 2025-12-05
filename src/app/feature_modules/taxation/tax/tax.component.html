@@ -14,7 +14,6 @@
         </div>
     </div>
 
-
     @if(sections?.length){
     <hrm-table [data]="taxDeclarations" [columns]="columns" [showSearch]="true" (actionClicked)="onActionClick($event)"
         (pageChanged)="onPageChange($event)" [totalItems]="totalRecords" [isServerSide]="true"></hrm-table>

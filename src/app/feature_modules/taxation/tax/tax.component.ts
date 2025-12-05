@@ -46,7 +46,7 @@ export class TaxComponent {
   userSalaryDetails: any;
   taxDeclarations: any;
   columns: TableColumn[] = [
-    { key: 'financialYear', name: 'Financial Year' },
+    { key: 'financialYear', name: this.translate.instant('taxation.financial_year') },
   ]
   dialogRef: MatDialogRef<any>;
 
