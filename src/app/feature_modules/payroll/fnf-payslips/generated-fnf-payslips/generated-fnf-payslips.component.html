@@ -110,7 +110,7 @@
                     </tr>
                     <tr>
                         <td class="bg-light fw-bold" translate>payroll.overtime_hour</td>
-                        <td>{{payslip?.latestOvertime?.FinalOvertime}}</td>
+                        <td>{{payslip?.latestOvertime?.OvertimeAmount}}</td>
                     </tr>
 
                 </tbody>
@@ -169,6 +169,13 @@
                         <td class="bg-light fw-bold" translate>payroll.loans_and_advances</td>
                         <td>{{payslip?.totalLoanAdvance}}</td>
                     </tr>
+                    <tr *ngFor="let statutory of payslip?.statutoryDetails">
+                        @if(statutory?.ContributorType == 'Employee')
+                        {
+                        <td class="bg-light fw-bold">{{statutory?.StautoryName}}</td>
+                        <td>{{statutory?.amount}}</td>
+                        }
+                    </tr>
                 </tbody>
                 <tfoot>
                     <tr class="fw-bold">
@@ -179,7 +186,7 @@
             </table>
 
 
-            <table class="table table-bordered">
+            <!-- <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th class="bg-black text-white" translate>payroll.statutory_deductions</th>
@@ -195,7 +202,7 @@
                         }
                     </tr>
                 </tbody>
-            </table>
+            </table> -->
 
             <table class="table table-bordered">
                 <thead>

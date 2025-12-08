@@ -111,7 +111,7 @@
         <app-step9 [isSteps]="showFnFSteps" [settledUsers]="settledUser" [selectedFnF]="selectedFnF"></app-step9>
         <div>
           <button mat-button matStepperPrevious>{{ 'payroll.back' | translate }}</button>
-          <button mat-button (click)="completeFnF()">{{ 'payroll._fnf.complete' | translate }}</button>
+          <button *ngIf="false" mat-button (click)="completeFnF()">{{ 'payroll._fnf.complete' | translate }}</button>
         </div>
       </ng-template>
     </mat-step>
