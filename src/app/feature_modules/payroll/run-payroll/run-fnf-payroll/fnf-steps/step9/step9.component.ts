@@ -158,7 +158,7 @@ export class FNFStep9Component {
   }
 
   getFNFPayrollStatus() {
-    this.payrollService.getFNFPayrollStatus().subscribe({
+    this.payrollService.getFNFPayrollUserStatus().subscribe({
       next: (res: any) => {
         this.payrollStatus = res.data;
         this.payrollStatusArray = Object.values(this.payrollStatus).filter(status => status);
