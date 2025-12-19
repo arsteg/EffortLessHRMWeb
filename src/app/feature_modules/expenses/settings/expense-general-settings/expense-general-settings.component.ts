@@ -132,11 +132,7 @@ export class ExpenseGeneralSettingsComponent {
       });
     }
   }
-  // closeModal() {
-  //   this.isSubmitted = false;
-  //   this.close.emit(true);
-  //   this.expenseService.selectedTemplate.next('')
-  // }
+
   closeModal() {
     this.isSubmitted = false;
     this.checkedFormats = ['DOCX', 'XLS', 'TXT', 'DOC', 'XLSX']; // Reset to default formats

@@ -119,10 +119,19 @@ export class Step3Component {
 
     this.variablePayForm.get('variableAllowance')?.valueChanges.subscribe(val => {
       const deductionCtrl = this.variablePayForm.get('variableDeduction');
+      const amountCtrl = this.variablePayForm.get('amount');
       if (val) {
         deductionCtrl?.disable({ emitEvent: false });
+        // Check if selected allowance has isPayrollEditable true
+        const selectedAllowance = this.varAllowance?.find(item => item._id === val);
+        if (selectedAllowance?.isPayrollEditable) {
+          amountCtrl?.enable({ emitEvent: false });
+        } else {
+          amountCtrl?.disable({ emitEvent: false });
+        }
       } else {
         deductionCtrl?.enable({ emitEvent: false });
+        amountCtrl?.disable({ emitEvent: false });
       }
     });
   }

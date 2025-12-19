@@ -119,9 +119,44 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
           const minutes = Math.round(durationMinutes % 60);
           const deviationHours = Math.floor(deviationMinutes / 60);
           const deviationMins = Math.round(deviationMinutes % 60);
+          
+          // Helper function to format checkIn/checkOut - normalizes to 12-hour format with AM/PM
+          const formatTime = (timeValue: any): string => {
+            if (!timeValue) return '-';
+            
+            // If already a time string in 24-hour format (HH:mm), convert to 12-hour with AM/PM
+            if (typeof timeValue === 'string' && /^\d{1,2}:\d{2}/.test(timeValue)) {
+              const [hoursStr, minsStr] = timeValue.split(':');
+              const hours = parseInt(hoursStr, 10);
+              const mins = minsStr;
+              const period = hours >= 12 ? 'PM' : 'AM';
+              const displayHours = hours % 12 || 12;
+              return `${displayHours}:${mins} ${period}`;
+            }
+            
+            // If already in 12-hour format with AM/PM, return as-is
+            if (typeof timeValue === 'string' && /\s(AM|PM)$/i.test(timeValue)) {
+              return timeValue;
+            }
+            
+            // Try to parse as date and format to 12-hour with AM/PM
+            try {
+              const dateObj = new Date(timeValue);
+              // Check if date is valid
+              if (isNaN(dateObj.getTime())) {
+                return timeValue; // Return original value if parsing fails
+              }
+              return this.datePipe.transform(dateObj, 'h:mm a') || '-';
+            } catch {
+              return timeValue; // Return original value if any error occurs
+            }
+          };
+          
           return {
             ...record,
             date: this.datePipe.transform(record.date, 'MMM d, yyyy'),
+            checkIn: formatTime(record.checkIn),
+            checkOut: formatTime(record.checkOut),
             duration: (record.duration / 60).toFixed(2),
             deviationHour: record.deviationHour ? (record.deviationHour / 60) : '0',
             durationFormatted: `${hours}h ${minutes}m`,
@@ -137,7 +172,6 @@ export class EmployeeAttendanceHistoryComponent implements OnInit {
           const deviation = typeof record.deviationHour === 'number' && !isNaN(record.deviationHour)
             ? record.deviationHour
             : 0;
-            console.log(sum + deviation)
           return sum + deviation;
         }, 0);
 

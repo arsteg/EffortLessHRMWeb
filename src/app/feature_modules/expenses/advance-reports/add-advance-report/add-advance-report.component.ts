@@ -92,7 +92,8 @@ export class AddAdvanceReportComponent {
         })
       }
     }
-    else {
+    else {  
+      this.toast.warning(this.translate.instant('expenses.requiredFields'));
       this.addAdvanceReport.markAllAsTouched();
     }
   }

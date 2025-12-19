@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';

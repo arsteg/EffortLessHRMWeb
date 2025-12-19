@@ -31,7 +31,7 @@
         "loan_advances": "Loan/Advances",
         "manual_Arrears": "Manual Arrears",
         "overtime": "Overtime",
-        "overtime_hour": "Overtime Hour",
+        "overtime_hour": "Overtime Amount",
         "hold": "Hold",
         "unhold": "Unhold",
         "re_run": "Re-Run",
@@ -166,7 +166,7 @@
             "actions": {
                 "add_users": "Add Users"
             },
-            "change_status": "Change Payroll Status to {{status}}",
+            "change_status": "Change Payroll Status to ",
             "form": {
                 "date": "Date",
                 "date_required": "Date is required",
@@ -225,6 +225,7 @@
         "total_earnings": "Total Earnings",
         "deductions": "Deductions",
         "fixed_deductions": "Fixed Deductions",
+        "variable_deductions": "Variable Deductions",
         "professional_tax": "Professional Tax",
         "income_tax": "Income Tax",
         "generated_payroll": "Generated Payroll",
@@ -753,6 +754,11 @@
         "total_loan_repayment": "Total Loan Repayment",
         "total_loan_disbursed": "Total Loan Disbursed",
         "total_flexi_benefits": "Total Flexi Benefits",
+        "total_other_benefits": "Total Other Benefits",
+        "employee_deduction": "Employee Deduction",
+        "employer_contributions": "Employer Contribution",
+        "loan_disbursement_amount": "Loan Disbursment Amount",
+        "lop": "LOP",
         "total_tds": "Total TDS",
         "total_ctc": "Total CTC",
         "total_gross_salary": "Total Gross Salary",
@@ -878,6 +884,13 @@
         "total_loan_advance": "Total Loan/Advance",
         "failed_fetch_payroll_status": "Failed to fetch Payroll Status",
         "failed_fetch_generated_payroll": "Failed to fetch Generated Payroll",
-        "upload_locked": "Attendance process not completed for selected period."
+        "upload_locked": "Attendance process not completed for selected period.",
+        "name_of_employee": "Name of the employee",
+        "month_and_year": "Month & year",
+        "total_days_in_payroll_month": "Total Days in Payroll Month",
+        "loss_of_pay_days": "Loss Of Pay Days",
+        "paid_days": "Paid Days",
+        "total_fixed_allowances_basic_pay": "Total Fixed Allowances (on Basic Pay)",
+        "total_variable_allowances_basic_pay": "Total Variable Allowances (on Basic Pay)"
     }
 }

@@ -9,6 +9,7 @@ import { AssetManagementService } from 'src/app/_services/assetManagement.servic
 import { CommonService } from 'src/app/_services/common.Service';
 import { SeparationService } from 'src/app/_services/separation.service';
 import { ActionVisibility } from 'src/app/models/table-column';
+import { toUtcDateOnly } from 'src/app/util/date-utils';
 
 interface TerminationStatus {
   Appealed: string;
@@ -382,15 +383,18 @@ export class TerminationComponent {
    
   }
   saveTermination() {
+    var payload = { ...this.terminationForm.value };
+    payload.termination_date = toUtcDateOnly(payload.termination_date);
+    payload.exit_interview_date = toUtcDateOnly(payload.exit_interview_date);
     if (this.isEditMode) {
-      this.separationService.updateTerminationById(this.selectedRecord._id, this.terminationForm.value).subscribe((res: any) => {
+      this.separationService.updateTerminationById(this.selectedRecord._id, payload).subscribe((res: any) => {
         this.getTerminations();
         this.toast.success(this.translate.instant('separation.termination_update_success'), this.translate.instant('Successfully'));
         this.resetForm();
         this.closeDialog();
       });
     } else {
-      this.separationService.addTermination(this.terminationForm.value).subscribe((res: any) => {
+      this.separationService.addTermination(payload).subscribe((res: any) => {
         this.getTerminations();
         this.toast.success(this.translate.instant('separation.termination_add_success'), this.translate.instant('Successfully'));
 

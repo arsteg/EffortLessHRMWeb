@@ -112,6 +112,8 @@ export class AdvanceCategoriesComponent implements OnInit {
     this.isSubmitted = true;
     if (this.addCategory.invalid) {
       this.addCategory.markAllAsTouched();
+      this.toast.warning(this.translate.instant('expenses.requiredFields'));
+      this.isSubmitted = false;
     }
     else {
       if (!this.isEdit) {

@@ -40,6 +40,7 @@ export class ExpenseCategorySettingsComponent {
   minDate = new Date();
   expenseCategories: any;
   typeCategory: any;
+  isSubmitted: boolean = false;
   fieldTemplates = {
     distance: [
       { label: 'Label', placeholder: 'Enter Label', formControlName: 'label' },
@@ -70,6 +71,9 @@ export class ExpenseCategorySettingsComponent {
 
 
   ngOnInit() {
+    // this.firstForm.valueChanges.subscribe(() => {
+    //   this.isSubmitted = false;
+    // });
     let id = this.expenseService.selectedTemplate.getValue()._id;
     this.expenseService.getCategoriesByTemplate(id).subscribe((res: any) => {
       this.loader = false;

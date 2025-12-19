@@ -175,7 +175,7 @@
                 <button mat-flat-button type="button" (click)="onCancel()">{{'expenses.cancel' | translate}}</button>
                 <!-- <button mat-stroked-button type="button" (click)="onCancel()">{{'expenses.reset' | translate}}</button> -->
             </div>
-            <button mat-flat-button color="primary" type="submit" [disabled]="!addCategoryForm.valid || isSubmitted">
+            <button mat-flat-button color="primary" type="submit" [disabled]="isSubmitted">
                 {{isEdit? ('expenses.update' | translate): ('expenses.add' | translate)}}
             </button>
         </div>

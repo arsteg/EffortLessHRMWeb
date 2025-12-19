@@ -20,14 +20,9 @@
 </div>
 
 <ng-template #dialogTemplate>
-    <div class="modal-header border-bottom justify-content-between d-flex mb-2 p-3">
-        <div>
-            <h1 class="modal-title text-muted mb-0">{{ isEdit ? ('payroll.edit' | translate) : ('payroll.add' | translate) }} {{ 'payroll.variable_pay' | translate }}</h1>
-        </div>
-        <div class=""><button type="button" class="btn-close text-end" (click)="onCancel()"></button></div>
-    </div>
-    <div class="form-container p-3" style="max-height: 70vh; overflow-y: auto;">
-        <form [formGroup]="variablePayForm" (ngSubmit)="onSubmit()">
+    <h1 mat-dialog-title>{{ isEdit ? ('payroll.edit' | translate) : ('payroll.add' | translate) }} {{ 'payroll.variable_pay' | translate }}</h1>
+    <div mat-dialog-content class="form-container" style="max-height: 70vh; overflow-y: auto;">
+        <form [formGroup]="variablePayForm">
             <div class="row">
                 @if(isEdit) {
                 <mat-form-field appearance="outline" class="my-2">
@@ -78,11 +73,10 @@
                     <mat-error *ngIf="variablePayForm.get('year').hasError('required')">{{ 'payroll._fnf.form.year_required' | translate }}</mat-error>
                 </mat-form-field>
             </div>
-
-            <div class="d-flex justify-content-between mt-3">
-                <button mat-flat-button type="button" (click)="onCancel()">{{'payroll.cancel' | translate}}</button>
-                <button mat-flat-button color="primary" type="submit">{{'payroll.submit' | translate}}</button>
-            </div>
         </form>
+    </div>
+    <div mat-dialog-actions class="d-flex justify-content-between">
+        <button mat-flat-button (click)="onCancel()">{{'payroll.cancel' | translate}}</button>
+        <button mat-flat-button color="primary" (click)="onSubmit()">{{'payroll.submit' | translate}}</button>
     </div>
 </ng-template>

@@ -29,6 +29,7 @@ export class GeneratedFnfPayslipsComponent {
   }
 
   ngOnInit(): void {
+    this.calculateTotals();
     console.log(this.payslip);
    }
 
@@ -38,16 +39,17 @@ export class GeneratedFnfPayslipsComponent {
     // Ensure all values are numbers, defaulting to 0
     const fixed = ps?.totalFixedAllowance || 0;
     const variable = ps?.totalVariableAllowance || 0;
-    const overtime = ps?.totalOvertime || 0;
+    const overtime = ps?.latestOvertime?.OvertimeAmount || 0;
     const flexi = ps?.totalFlexiBenefits || 0;
     const other = ps?.totalOtherBenefit || 0;
+    const manualArrears = ps?.manualArrears?.totalArrears || 0;
 
     const fixedDeduction = ps?.totalFixedDeduction || 0;
 
     const incomeTax = ps?.totalIncomeTax || 0;
     const loanRepayment = ps?.totalLoanRepayment || 0;
 
-    this.totalEarnings = fixed + variable + overtime + flexi + other;
+    this.totalEarnings = fixed + variable + overtime + flexi + other + manualArrears;
     this.totalDeductions = fixedDeduction + incomeTax + loanRepayment;
 
     // Optionally, add statutory deductions (ContributorType === 'Employee')

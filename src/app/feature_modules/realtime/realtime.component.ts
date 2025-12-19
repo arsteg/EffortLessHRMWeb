@@ -9,6 +9,7 @@ import { Observable, switchMap, Subscription } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { LiveScreenComponent } from './live-screen/live-screen.component';
 import { TableColumn, ActionVisibility } from 'src/app/models/table-column';
+import { ChangeDetectorRef,ApplicationRef } from '@angular/core';
 
 @Component({
   selector: 'app-realtime',
@@ -84,7 +85,9 @@ export class RealtimeComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     private exportService: ExportService,
     private dialog: MatDialog,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private cdr: ChangeDetectorRef,
+    private appRef: ApplicationRef,
   ) { }
 
   ngOnInit(): void {
@@ -110,10 +113,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.wsSubscription) {
-      this.wsSubscription.unsubscribe();
-    }
-    this.webSocketService.disconnect();
+   this.disConnectWebSocket();
   }
 
   handleAction(event: any) {
@@ -283,7 +283,12 @@ export class RealtimeComponent implements OnInit, OnDestroy {
       });
     }
   }
-
+  disConnectWebSocket() {
+     if (this.wsSubscription) {
+      this.wsSubscription.unsubscribe();
+    }
+    this.webSocketService.disconnect();
+  }
   updateUserStatus(userId: string, isOnline: boolean) {
     if (this.realtime?.onlineUsers) {
       const user = this.realtime.onlineUsers.find(u => u.user.id === userId);
@@ -291,6 +296,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
         user.isOnline = isOnline;
         this.realtime.activeMember = this.realtime.onlineUsers.filter(u => u.isOnline).length;
         this.showAllUserLiveButton = this.realtime.onlineUsers.filter(u => u.isOnline && u.user.id !== this.currentUser.id).length > 0;
+        this.appRef.tick();  // <-- Force global CD
         console.log('User status updated:', userId, 'isOnline:', isOnline, 'showAllUserLiveButton:', this.showAllUserLiveButton);
       } else if (this.selectedUser.length === 0 || this.selectedUser.includes(userId)) {
         // Refresh if the user is relevant to the current filter
@@ -310,6 +316,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
         isOnline: this.isUserOnline(user.user.id)
       })).filter(user => this.selectedUser.length === 0 || this.selectedUser.includes(user.user.id));
       this.realtime.activeMember = this.realtime.onlineUsers.filter(u => u.isOnline).length;
+     this.appRef.tick();  // <-- Add here too
       console.log('Online status updated with filter:', this.realtime.onlineUsers);
     }
   }
@@ -326,6 +333,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
   }
 
   openLiveScreen(userIds: string[]) {
+    this.disConnectWebSocket();
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '60vw';
     dialogConfig.height = 'auto';
@@ -335,6 +343,7 @@ export class RealtimeComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(LiveScreenComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(result => {
       console.log('The modal was closed');
+      this.setupWebSocket();
     });
   }
 }

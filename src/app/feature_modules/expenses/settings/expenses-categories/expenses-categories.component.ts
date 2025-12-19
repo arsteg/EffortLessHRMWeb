@@ -217,6 +217,7 @@ export class ExpensesCategoriesComponent implements OnInit {
       isMandatory: this.addCategoryForm.value['isMandatory']
     };
 
+    if(this.addCategoryForm.valid){
     this.expenses.addCategory(categoryPayload).subscribe((res: any) => {
       const newCategory = res.data;
       this.expenseCategories.data.push(newCategory)
@@ -239,6 +240,11 @@ export class ExpensesCategoriesComponent implements OnInit {
       err => {
         this.toast.error(err || this.translate.instant('expenses.category_added_error'));
       });
+    }
+    else {
+      this.addCategoryForm.markAllAsTouched();
+      this.toast.warning(this.translate.instant('expenses.requiredFields'));
+    }
 
   }
 

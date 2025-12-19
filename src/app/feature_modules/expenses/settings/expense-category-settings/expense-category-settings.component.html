@@ -267,6 +267,6 @@
 </div>
 <div mat-dialog-actions>
   <button mat-flat-button type="button" (click)="closeModal()">{{'expenses.cancel' | translate}}</button>
-  <button mat-flat-button class="ms-auto" color="primary" [disabled]="firstForm?.invalid"
+  <button mat-flat-button class="ms-auto" color="primary" [disabled]="isSubmitted"
     (click)="onSubmit()">{{'expenses.submit' | translate}}</button>
 </div>

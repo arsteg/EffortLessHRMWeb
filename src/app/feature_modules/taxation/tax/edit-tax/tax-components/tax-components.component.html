@@ -1,47 +1,49 @@
 <form [formGroup]="incomeTaxDecComponentForm" class="table-responsive">
     <table class="hrm-table mt-2">
         <thead>
-            <th class="py-2" style="width:12%">Component Name</th>
-            <th>Maximum Amount</th>
-            <th>Applied Amount</th>
-            <th>Approved Amount</th>
-            <th>Approval Status</th>
-            <th>Remarks</th>
-            <th>Attachment</th>
-            <th class="text-center">Actions</th>
+            <th class="py-2" style="width:12%">{{'taxation.component_name' | translate}}</th>
+            <th>{{'taxation.maximum_amount' | translate}}</th>
+            <th>{{'taxation.applied_amount' | translate}}</th>
+            <th>{{'taxation.approved_amount' | translate}}</th>
+            <th>{{'taxation.approval_status' | translate}}</th>
+            <th>{{'taxation.remarks' | translate}}</th>
+            <th>{{'taxation.attachment' | translate}}</th>
+            <th class="text-center">{{'taxation.actions' | translate}}</th>
         </thead>
         @if(!taxComponents?.length){
-            <tr>
-                <td colspan="8" class="p-3 text-center">
-                    <img src="./assets/images/empty-data.svg" alt="">
-                    <h4>No component available for this section</h4>
-                </td>
-            </tr>
+        <tr>
+            <td colspan="8" class="p-3 text-center">
+                <img src="./assets/images/empty-data.svg" alt="">
+                <h4>{{'taxation.no_components_available' | translate}}</h4>
+            </td>
+        </tr>
         }
         <tbody formArrayName="incomeTaxComponent">
-            <tr *ngFor="let group of incomeTaxDecComponentForm.get('incomeTaxComponent')['controls']; let i = index"          
+            <tr *ngFor="let group of incomeTaxDecComponentForm.get('incomeTaxComponent')['controls']; let i = index"
                 [formGroupName]="i">
                 <td>{{ taxComponents[i]?.componantName }}</td>
                 <td style="max-width: 135px;">
                     <mat-form-field class="densed-field w-100">
-                        <input matInput formControlName="maximumAmount" type="number" [readonly]="true"/>
+                        <input matInput formControlName="maximumAmount" type="number" [readonly]="true" />
                     </mat-form-field>
                 </td>
                 <td style="max-width: 135px;">
                     <mat-form-field class="densed-field w-100" appearance="outline">
-                        <mat-label>Applied Amount </mat-label>
-                        <input matInput type="number" formControlName="appliedAmount" 
-                               [readonly]="!group.get('isEditable')?.value"/>
-                      
-                        <mat-error *ngIf="group.get('appliedAmount')?.hasError('required') && group.get('appliedAmount')?.touched">
-                          Applied amount is required.
+                        <mat-label>{{'taxation.applied_amount' | translate}}</mat-label>
+                        <input matInput type="number" formControlName="appliedAmount"
+                            [readonly]="!group.get('isEditable')?.value" />
+
+                        <mat-error
+                            *ngIf="group.get('appliedAmount')?.hasError('required') && group.get('appliedAmount')?.touched">
+                            {{'taxation.applied_amount_required' | translate}}
                         </mat-error>
-                      
-                        <mat-error *ngIf="group.get('appliedAmount')?.hasError('appliedExceedsMax') && group.get('appliedAmount')?.touched">
-                          Applied amount cannot exceed maximum amount.
+
+                        <mat-error
+                            *ngIf="group.get('appliedAmount')?.hasError('appliedExceedsMax') && group.get('appliedAmount')?.touched">
+                            {{'taxation.applied_amount_exceeds_max' | translate}}
                         </mat-error>
-                      </mat-form-field>
-                      
+                    </mat-form-field>
+
                 </td>
                 <td style="max-width: 135px;">
                     <mat-form-field class="densed-field w-100">
@@ -49,16 +51,18 @@
                     </mat-form-field>
                 </td>
                 <td style="width: 100px;">
-                    <ng-container [ngSwitch]="group.get('approvalStatus')?.value"  [readonly]="true" >
-                        <mat-icon *ngSwitchCase="'Pending'" matTooltip="Pending" color="primary">hourglass_empty</mat-icon>
-                        <mat-icon *ngSwitchCase="'Approved'" matTooltip="Approved" color="accent">check_circle</mat-icon>
-                        <mat-icon *ngSwitchCase="'Rejected'" matTooltip="Rejected"  color="warn">cancel</mat-icon>
+                    <ng-container [ngSwitch]="group.get('approvalStatus')?.value" [readonly]="true">
+                        <mat-icon *ngSwitchCase="'Pending'" matTooltip="Pending"
+                            color="primary">hourglass_empty</mat-icon>
+                        <mat-icon *ngSwitchCase="'Approved'" matTooltip="Approved"
+                            color="accent">check_circle</mat-icon>
+                        <mat-icon *ngSwitchCase="'Rejected'" matTooltip="Rejected" color="warn">cancel</mat-icon>
                         <span *ngSwitchDefault>{{ group.get('approvalStatus')?.value }}</span>
                     </ng-container>
                 </td>
                 <td style="max-width: 135px;">
                     <mat-form-field class="densed-field w-100">
-                        <input matInput formControlName="remark" type="text"  [readonly]="true"  />
+                        <input matInput formControlName="remark" type="text" [readonly]="true" />
                     </mat-form-field>
                 </td>
                 <td class="text-center">
@@ -74,9 +78,8 @@
                                         {{ attachment.attachmentName || 'Unnamed Attachment' }}</a>
                                 </span>
                                 <ng-container *ngIf="group.get('isEditable')?.value">
-                                    <mat-icon matTooltip="Remove Attachment"
-                                        matTooltipPosition="below" style="cursor: pointer;"
-                                        (click)="removeAttachment(i, j)">
+                                    <mat-icon matTooltip="Remove Attachment" matTooltipPosition="below"
+                                        style="cursor: pointer;" (click)="removeAttachment(i, j)">
                                         cancel
                                     </mat-icon>
                                 </ng-container>
@@ -85,8 +88,7 @@
                         <ng-template #noAttachment>
                             <!-- Show only the icon if no attachments -->
                             <label for="attachment-{{i}}" *ngIf="group.get('isEditable')?.value">
-                                <mat-icon matTooltip="Add Attachment File"
-                                    matTooltipPosition="below">
+                                <mat-icon matTooltip="Add Attachment File" matTooltipPosition="below">
                                     attachment_file
                                 </mat-icon>
                             </label>
@@ -98,17 +100,18 @@
 
                 <td>
                     @if(!group.get('isEditable')?.value){
-                    <button mat-icon-button matTooltip="Edit" matTooltipPosition="before" type="button"
-                        (click)="onRowEdit(i)"> 
+                    <button mat-icon-button matTooltip="{{'taxation.edit' | translate}}" matTooltipPosition="before" type="button"
+                        (click)="onRowEdit(i)">
                         <mat-icon>edit</mat-icon>
                     </button>
                     } @else {
-                    <button mat-icon-button matTooltip="Update" matTooltipPosition="below" type="button"  matTooltip="Update"
-                        (click)="selectedComponent = taxComponents[i]?._id; updateRow(i)" class="success-btn"> 
+                    <button mat-icon-button matTooltip="{{'taxation.update' | translate}}" matTooltipPosition="below" type="button"
+                        matTooltip="Update" (click)="selectedComponent = taxComponents[i]?._id; updateRow(i)"
+                        class="success-btn">
                         <mat-icon>check</mat-icon>
                     </button>
-                    <button mat-icon-button matTooltip="Close" matTooltipPosition="below" type="button" matTooltip="Close"
-                        (click)="cancelEditing(i)" class="delete-btn"> 
+                    <button mat-icon-button matTooltip="{{'taxation.close' | translate}}" matTooltipPosition="below" type="button"
+                        matTooltip="Close" (click)="cancelEditing(i)" class="delete-btn">
                         <mat-icon>close</mat-icon>
                     </button>
                     }

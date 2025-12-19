@@ -31,7 +31,7 @@ export class ShiftComponent {
   allData: any[] = [];
   @ViewChild('addModal') addModal: any;
   dialogRef: MatDialogRef<any> | null = null;
-
+  isSubmitted: boolean = false;
   columns: TableColumn[] = [
     { key: 'name', name: 'Shift' },
     { key: 'startTime', name: 'Starts From' },
@@ -65,7 +65,7 @@ export class ShiftComponent {
       shiftType: ['fixed duration', Validators.required],
       startTime: ['10:00', Validators.required], // Default to 10 AM
       endTime: ['18:00', Validators.required], // Default to 6 PM
-      minHoursPerDayToGetCreditForFullDay: ['', [Validators.required, Validators.min(1), Validators.max(8), CustomValidators.minHoursFullDayValidator()]], 
+      minHoursPerDayToGetCreditForFullDay: ['', [Validators.required, Validators.min(1), Validators.max(8), CustomValidators.minHoursFullDayValidator()]],
       earliestArrival: ['10:00', Validators.required], //currently not in use
       latestDeparture: ['19:00', Validators.required], //currently not in use
       firstHalfDuration: ['4', [Validators.required, Validators.min(0)]], //currently not in use
@@ -83,7 +83,7 @@ export class ShiftComponent {
       graceTimeLimitForEarlyGoing: [0],
       isHalfDayApplicable: [false],
       minHoursPerDayToGetCreditforHalfDay: ['0', [Validators.max(6), CustomValidators.minHoursHalfDayValidator()]],  // Added min validator
-      maxLateComingAllowedMinutesFirstHalfAttendance:['0', Validators.min(0)], 
+      maxLateComingAllowedMinutesFirstHalfAttendance: ['0', Validators.min(0)],
     }, {
       validators: this.timeComparisonValidator // Apply the custom validator at the form group level
     });
@@ -108,7 +108,7 @@ export class ShiftComponent {
     if (this.isEarlyGoingAllowedSubscription) {
       this.isEarlyGoingAllowedSubscription.unsubscribe();
     }
-  } 
+  }
 
   setupConditionalValidation(): void {
     this.isLateComingAllowedSubscription = this.shiftForm.get('isLateComingAllowed').valueChanges.subscribe(value => {
@@ -197,7 +197,7 @@ export class ShiftComponent {
     });
     this.shiftForm.get('isHalfDayApplicable')?.valueChanges.subscribe((isApplicable) => {
       const halfDayControl = this.shiftForm.get('minHoursPerDayToGetCreditforHalfDay');
-    
+
       if (isApplicable) {
         halfDayControl.setValidators([
           Validators.required,
@@ -210,8 +210,8 @@ export class ShiftComponent {
         halfDayControl.setValue(null); // or '', depending on type
       }
     });
-    
-  }  
+
+  }
 
 
   // Custom validator for start and end times
@@ -277,6 +277,7 @@ export class ShiftComponent {
   }
 
   clearForm() {
+    this.isSubmitted = false;
     this.shiftForm.reset({
       name: '',
       shiftType: 'fixed duration', // Reset to 'fixed duration'
@@ -305,6 +306,7 @@ export class ShiftComponent {
   }
   closeModal() {
     this.clearForm();
+    this.isSubmitted = false;
     this.dialogRef.close(true);
   }
   private getDismissReason(reason: any): string {
@@ -318,6 +320,7 @@ export class ShiftComponent {
   }
 
   open(content: any) {
+    this.isSubmitted = false;
     this.dialogRef = this.dialog.open(this.addModal, {
       width: '50%',
       disableClose: true
@@ -334,6 +337,7 @@ export class ShiftComponent {
   }
 
   setFormValues(data) {
+    this.isSubmitted = false;
     this.shiftForm.patchValue({
       name: data.name,
       shiftType: data.shiftType,
@@ -363,6 +367,7 @@ export class ShiftComponent {
   }
 
   onSubmission() {
+    this.isSubmitted = true;
     if (this.shiftForm.valid) {
       if (!this.isEdit) {
         this.attendanceService.addShift(this.shiftForm.value).subscribe((res: any) => {
@@ -373,10 +378,9 @@ export class ShiftComponent {
           );
           //this.shiftForm.reset();
           this.closeModal();
-        }, (err) => {         
-          const errorMessage = err?.error?.message || err?.message || err 
-          ||  this.translate.instant('attendance.createShiftError')
-          ;
+        }, (err) => {
+          const errorMessage = err?.error?.message || err?.message || err
+            || this.translate.instant('attendance.createShiftError');
           this.toast.error(errorMessage, this.translate.instant('common.error'));
         })
       }
@@ -391,10 +395,10 @@ export class ShiftComponent {
           );
           //this.shiftForm.reset();
           this.closeModal();
-        }, (err) => {         
-          const errorMessage = err?.error?.message || err?.message || err 
-          ||  this.translate.instant('attendance.updateShiftError')
-          ;
+        }, (err) => {
+          const errorMessage = err?.error?.message || err?.message || err
+            || this.translate.instant('attendance.updateShiftError')
+            ;
           this.toast.error(errorMessage, this.translate.instant('common.error'));
         })
       }
@@ -402,6 +406,7 @@ export class ShiftComponent {
     else {
       this.shiftForm.markAllAsTouched();
     }
+    // this.isSubmitted = false;
   }
 
   deleteTemplate(id: string) {
@@ -413,9 +418,9 @@ export class ShiftComponent {
       );
     },
       (err) => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        ||  this.translate.instant('attendance.deleteError')
-        ;
+        const errorMessage = err?.error?.message || err?.message || err
+          || this.translate.instant('attendance.deleteError')
+          ;
         this.toast.error(errorMessage, this.translate.instant('common.error'));
       })
   }
@@ -429,9 +434,9 @@ export class ShiftComponent {
         this.deleteTemplate(id);
       }
       err => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        ||  this.translate.instant('attendance.deleteError')
-        ;
+        const errorMessage = err?.error?.message || err?.message || err
+          || this.translate.instant('attendance.deleteError')
+          ;
         this.toast.error(errorMessage, this.translate.instant('common.error'));
       }
     });

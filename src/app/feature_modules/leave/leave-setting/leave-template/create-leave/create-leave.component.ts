@@ -52,11 +52,27 @@ export class CreateLeaveComponent {
     this.setFormValues();
     this.getManagers();
     this.getLeaveCategories();
-    this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
-    });
+    // this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
+    //   this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
+    // });
     this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
-      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value)
+      // reset approver fields to null so mat-select reflects cleared selection
+      this.addTemplateForm.patchValue({
+        primaryApprover: null,
+        secondaryApprover: null
+      }, { emitEvent: false });
+      // clear any validation errors and touched state so UI updates
+      const primary = this.addTemplateForm.get('primaryApprover');
+      const secondary = this.addTemplateForm.get('secondaryApprover');
+      primary?.setErrors(null);
+      secondary?.setErrors(null);
+      primary?.markAsPristine();
+      primary?.markAsUntouched();
+      secondary?.markAsPristine();
+      secondary?.markAsUntouched();
+
+      // re-run approver validation logic
+      // this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value);
     });
   }
 

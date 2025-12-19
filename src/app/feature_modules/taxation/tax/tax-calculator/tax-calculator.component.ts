@@ -29,31 +29,28 @@ export class TaxCalculatorComponent implements OnInit, AfterViewInit, OnDestroy 
   hraVerifiedTotal: number = 0;
   taxableSalary: number = 0;
   taxPayableOldRegime: number = 0;
-  taxSlabs: any[] = []; // Initialize as empty array
-
+  taxSlabs: any[] = [];
   user = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
-  // List of all months for HRA
   private allMonths: string[] = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
-  // Form controls
   grossSalaryControl = new FormControl({ value: 0, disabled: true });
   hraControl = new FormControl({ value: 0, disabled: true });
   sectionControls: { [key: string]: FormControl } = {};
   componentControls: { [key: string]: FormControl } = {};
   hraControls: FormControl[] = [];
 
-  // Subscriptions for value changes
   private controlSubscriptions: Subscription[] = [];
 
   constructor(
     private dialog: MatDialog,
     private userService: UserService,
     private taxService: TaxationService,
-    private companyService: CompanyService,private translate: TranslateService,
+    private companyService: CompanyService,
+    private translate: TranslateService,
     private payrollService: PayrollService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef

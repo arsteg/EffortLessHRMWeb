@@ -1,16 +1,18 @@
 <div class="position-relative">
     <div class="position-absolute end-0">
-        <button color="primary" type="button" mat-flat-button (click)="open(addModal);">Add</button>
+        <button color="primary" type="button" mat-flat-button (click)="open(addModal);">{{'taxation.add' |
+            translate}}</button>
     </div>
 </div>
 
-<hrm-table [data]="taxComponents" [columns]="columns" [isServerSide]="true" [showSearch]="true" [totalItems]="totalRecords"
-    (pageChanged)="onPageChange($event)" (actionClicked)="onActionClick($event, addModal)"></hrm-table>
+<hrm-table [data]="taxComponents" [columns]="columns" [isServerSide]="true" [showSearch]="true"
+    [totalItems]="totalRecords" (pageChanged)="onPageChange($event)"
+    (actionClicked)="onActionClick($event, addModal)"></hrm-table>
 
 <ng-template #addModal let-modal>
     <div class="d-flex justify-content-between align-items-center">
-        <h1 mat-dialog-title>{{edit? 'Update' : 'Add'}} Tax Component</h1>
-        <button mat-icon-button mat-dialog-close="" class="me-4">
+        <h1 mat-dialog-title>{{edit? ('taxation.update' | translate) : ('taxation.add' | translate)}} Tax Component</h1>
+        <button mat-icon-button mat-dialog-close="" matTooltip="{{'taxation.close' | translate}}" class="me-4">
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -18,55 +20,62 @@
     <form [formGroup]="taxComponentForm" (ngSubmit)="onSubmission()">
         <div mat-dialog-content>
             <mat-form-field class="w-100">
-                <mat-label>Component Name</mat-label>
+                <mat-label>{{'taxation.component_name' | translate}}</mat-label>
                 <input type="text" matInput formControlName="componantName">
-                <mat-error *ngIf="taxComponentForm.get('componantName')?.invalid && (taxComponentForm.get('componantName')?.touched || taxComponentForm.get('componantName')?.dirty)">
-            
+                <mat-error
+                    *ngIf="taxComponentForm.get('componantName')?.invalid && (taxComponentForm.get('componantName')?.touched || taxComponentForm.get('componantName')?.dirty)">
+
                     <span *ngIf="taxComponentForm.get('componantName')?.errors?.['required']">
-                        componant Name is required
-                      </span>
-                      <span *ngIf="taxComponentForm.get('componantName')?.errors?.['spacesNotAllowed']">
-                        start and end spaces are not allowed
-                      </span>
+                        {{'taxation.component_name_required' | translate}}
+                    </span>
+                    <span *ngIf="taxComponentForm.get('componantName')?.errors?.['spacesNotAllowed']">
+                        {{'taxation.start_end_spaces_not_allowed' | translate}}
+                    </span>
                 </mat-error>
             </mat-form-field>
 
             <mat-form-field class="w-100">
-                <mat-label>Section</mat-label>
+                <mat-label>{{'taxation.section' | translate}}</mat-label>
                 <mat-select formControlName="section" (selectionChange)="checkForHRARecord()">
                     <mat-option [value]="section._id" *ngFor="let section of sections">
                         {{section?.section}}
                     </mat-option>
                 </mat-select>
-                <mat-error *ngIf="taxComponentForm.get('section')?.hasError('required') && taxComponentForm.get('section')?.touched">
-                    Section Name is required
-                  </mat-error> 
+                <mat-error
+                    *ngIf="taxComponentForm.get('section')?.hasError('required') && taxComponentForm.get('section')?.touched">
+                    {{'taxation.section_required' | translate}}
+                </mat-error>
             </mat-form-field>
 
             <mat-form-field class="w-100">
-                <mat-label>Enter Maximum Amount</mat-label>
+                <mat-label>{{'taxation.enter_maximum_amount' | translate}}</mat-label>
                 <input type="number" matInput formControlName="maximumAmount">
-                <mat-error *ngIf="taxComponentForm.get('maximumAmount')?.hasError('required') && taxComponentForm.get('maximumAmount')?.touched">
-                    Maximum amount is required, Enter 0 for no Limit.
-                  </mat-error> <mat-error *ngIf="taxComponentForm.get('maximumAmount')?.hasError('digitsOnly') && taxComponentForm.get('maximumAmount')?.touched">
-                    Maximum amount must contain only digits.
-                  </mat-error>
+                <mat-error
+                    *ngIf="taxComponentForm.get('maximumAmount')?.hasError('required') && taxComponentForm.get('maximumAmount')?.touched">
+                    {{'taxation.maximum_amount_required' | translate}}
+                </mat-error> <mat-error
+                    *ngIf="taxComponentForm.get('maximumAmount')?.hasError('digitsOnly') && taxComponentForm.get('maximumAmount')?.touched">
+                    {{'taxation.digits_only' | translate}}
+                </mat-error>
             </mat-form-field>
-            
+
             <mat-form-field class="w-100">
-                <mat-label>Enter Order of this Component</mat-label>
+                <mat-label>{{'taxation.enter_order_of_component' | translate}}</mat-label>
                 <input type="number" matInput formControlName="order">
-                <mat-error *ngIf="taxComponentForm.get('order')?.hasError('required') && taxComponentForm.get('order')?.touched">
-                    Order is required
-                  </mat-error> <mat-error *ngIf="taxComponentForm.get('order')?.hasError('digitsOnly') && taxComponentForm.get('order')?.touched">
-                    Order must contain only digits.
-                  </mat-error>
+                <mat-error
+                    *ngIf="taxComponentForm.get('order')?.hasError('required') && taxComponentForm.get('order')?.touched">
+                    {{'taxation.order_required' | translate}}
+                </mat-error> <mat-error
+                    *ngIf="taxComponentForm.get('order')?.hasError('digitsOnly') && taxComponentForm.get('order')?.touched">
+                    {{'taxation.order_digits_only' | translate}}
+                </mat-error>
             </mat-form-field>
         </div>
 
         <div mat-dialog-actions class="d-flex justify-content-between mt-2 pt-2">
-            <button type="reset" mat-flat-button>Cancel</button>
-            <button type="submit" color="primary" mat-flat-button  [disabled]="isSubmitting">Save</button>
+            <button type="reset" mat-flat-button>{{'taxation.cancel' | translate}}</button>
+            <button type="submit" color="primary" mat-flat-button [disabled]="isSubmitting">{{'taxation.save' |
+                translate}}</button>
         </div>
     </form>
 </ng-template>

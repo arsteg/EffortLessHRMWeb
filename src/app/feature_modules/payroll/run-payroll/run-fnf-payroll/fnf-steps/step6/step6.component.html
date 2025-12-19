@@ -13,15 +13,11 @@
 </div>
 
 <ng-template #dialogTemplate>
-  <div class="modal-header border-bottom justify-content-between d-flex mb-2 p-3" style="z-index: 1050;">
-    <h1 class="modal-title text-muted mb-0">
-      {{ isEdit ? ('payroll.edit' | translate) : ('payroll.add' | translate) }} {{'payroll.statutory_benefit_for_fnf_payroll' | translate}}
-    </h1>
-    <button type="button" class="btn-close" aria-label="Close" (click)="dialog.closeAll()">
-    </button>
-  </div>
-  <div class="form-container p-3" style="max-height: 70vh; overflow-y: auto; z-index: 1050;">
-    <form [formGroup]="statutoryBenefitForm" (ngSubmit)="onSubmit()">
+  <h1 mat-dialog-title>
+    {{ isEdit ? ('payroll.edit' | translate) : ('payroll.add' | translate) }} {{'payroll.statutory_benefit_for_fnf_payroll' | translate}}
+  </h1>
+  <div mat-dialog-content class="form-container p-3" style="max-height: 70vh; overflow-y: auto;">
+    <form [formGroup]="statutoryBenefitForm">
       <div class="row">
         <ng-container *ngIf="isEdit; else addModeUserSelect">
           <mat-form-field appearance="outline" class="col-12 my-2">
@@ -65,12 +61,10 @@
           </mat-slide-toggle>
         </div>
       </div>
-      <div class="d-flex justify-content-end gap-2 mt-3">
-        <button mat-stroked-button type="button" (click)="onCancel()">{{'payroll.cancel' | translate}}</button>
-        <button mat-flat-button color="primary" type="submit">
-          {{'payroll.submit' | translate}}
-        </button>
-      </div>
     </form>
+  </div>
+  <div mat-dialog-actions class="d-flex justify-content-between">
+    <button mat-flat-button type="button" (click)="onCancel()">{{'payroll.cancel' | translate}}</button>
+    <button mat-flat-button color="primary" type="button" (click)="onSubmit()">{{'payroll.submit' | translate}}</button>
   </div>
 </ng-template>

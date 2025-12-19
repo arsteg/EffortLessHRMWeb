@@ -237,6 +237,7 @@ export class AddExpenseComponent {
         );
       }
     } else {
+      this.toast.warning(this.translate.instant('expenses.requiredFields'));
       this.addExpenseForm.markAllAsTouched();
       this.isSubmitting = false;
     }
