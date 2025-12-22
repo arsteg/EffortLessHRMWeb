@@ -8,6 +8,7 @@ import { forkJoin } from 'rxjs';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CustomValidators } from 'src/app/_helpers/custom-validators';
 import { TranslateService } from '@ngx-translate/core';
+import { toUtcDateOnly } from 'src/app/util/date-utils';
 
 @Component({
   selector: 'app-employment-details',
@@ -99,15 +100,22 @@ export class EmploymentDetailsComponent {
     }
 
     this.appointmentForm.value.user = this.selectedUser[0]._id;
+    const payload = { ...this.appointmentForm.value };
+    if (payload.joiningDate) {
+      payload.joiningDate = toUtcDateOnly(payload.joiningDate);
+    }
+    if (payload.confirmationDate) {
+      payload.confirmationDate = toUtcDateOnly(payload.confirmationDate);
+    }
     this.userService.getAppointmentByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
       if (!res.data) {
-        this.userService.addAppointment(this.appointmentForm.value).subscribe((res: any) => {
+        this.userService.addAppointment(payload).subscribe((res: any) => {
          
           this.toast.success(this.translate.instant('manage.users.employee-settings.appointment_Added'), this.translate.instant('common.success'));
     
         });
       } else {
-        this.userService.updateAppointment(res.data._id, this.appointmentForm.value).subscribe((res: any) => {
+        this.userService.updateAppointment(res.data._id, payload).subscribe((res: any) => {
           this.toast.success(this.translate.instant('manage.users.employee-settings.appointment_updated'), this.translate.instant('common.success'))
         });
       }
@@ -131,6 +139,14 @@ export class EmploymentDetailsComponent {
         formData[field] = null;
       }
     });
+
+    // Convert job information date fields to UTC date-only strings if present
+    if (formData.effectiveFrom) {
+      formData.effectiveFrom = toUtcDateOnly(formData.effectiveFrom);
+    }
+    if (formData.employmentStatusEffectiveFrom) {
+      formData.employmentStatusEffectiveFrom = toUtcDateOnly(formData.employmentStatusEffectiveFrom);
+    }
 
     if (this.isNew === true) {
       this.userService.addJobInformation(formData).subscribe({
