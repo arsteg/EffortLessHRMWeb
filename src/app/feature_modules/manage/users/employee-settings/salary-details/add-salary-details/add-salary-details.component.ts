@@ -8,6 +8,7 @@ import { UserService } from 'src/app/_services/users.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
+import { toUtcDateOnly } from 'src/app/util/date-utils';
 
 @Component({
   selector: 'app-add-salary-details',
@@ -830,6 +831,10 @@ export class AddSalaryDetailsComponent {
 
     payload.salaryComponentPFCharge = payload.salaryComponentPFCharge.filter(item => item?.pfCharge !== '');
     payload.frequencyToEnterCTC = 'Yearly';
+
+    if (payload.payrollEffectiveFrom) {
+      payload.payrollEffectiveFrom = toUtcDateOnly(payload.payrollEffectiveFrom);
+    }
 
     this.userService.addSalaryDetails(payload).subscribe(
       (res: any) => {
