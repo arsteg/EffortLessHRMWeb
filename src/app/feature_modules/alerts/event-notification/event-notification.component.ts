@@ -10,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { CommonComponentsModule } from "src/app/common/commonComponents.module";
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { toUtcDateOnly } from 'src/app/util/date-utils';
 
 @Component({
   selector: 'app-event-notification',
@@ -136,6 +137,9 @@ export class EventNotificationComponent implements OnInit {
         isCreatedFromUI: true,
         view: this.view
       };
+      if(formData.date) {
+        formData.date = toUtcDateOnly(formData.date);
+      }
       await this.eventNotificationService.addEventNotification(formData).toPromise();
       this.toast.success(this.translate.instant('alerts.eventNotification.addSuccess'));
       this.resetNotificationForm();
@@ -179,6 +183,12 @@ export class EventNotificationComponent implements OnInit {
       updatedEventNotification.updatedBy = this.currentUser?.id;
       updatedEventNotification.notificationChannel = this.eventNotificationForm.value.notificationChannel;
 
+      if(updatedEventNotification.date) {
+        const utcDateStr = toUtcDateOnly(updatedEventNotification.date);
+        updatedEventNotification.date = utcDateStr
+          ? new Date(utcDateStr)
+          : null;
+      }
       const response = await this.eventNotificationService.updateEventNotification(updatedEventNotification,this.selectedEventNotification._id).toPromise();
       this.toast.success(this.translate.instant('alerts.eventNotification.updateSuccess'));
       this.resetNotificationForm();
