@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { signup, User, changeUserPassword, webSignup } from '../models/user';
@@ -17,6 +17,8 @@ export class AuthenticationService {
   role: any = new BehaviorSubject('');
   private userIdSubject = new BehaviorSubject<string | null>(null);
   userId$ = this.userIdSubject.asObservable();
+  private menuPermissionsSubject = new BehaviorSubject<string[] | null>(null);
+  private lastCheckedRole: string | null = null;
 
   private getHttpOptions() {
     const token = localStorage.getItem('jwtToken');
@@ -37,7 +39,7 @@ export class AuthenticationService {
     return httpOptions;
   }
   private loginTime: number | null = null;
-  
+
   isLoggedIn(): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       const loginTime = localStorage.getItem('loginTime');
@@ -67,13 +69,21 @@ export class AuthenticationService {
     if (storedUser) {
       const storedUserRole = localStorage.getItem('role');
       if (storedUserRole) {
-          storedUser.role = storedUserRole;
+        storedUser.role = storedUserRole;
       }
       this.currentUserSubject.next(storedUser);
     }
     const subscription = JSON.parse(localStorage.getItem('subscription'));
-    if(subscription) {
+    if (subscription) {
       this.companySubscription.next(subscription);
+    }
+
+    // Load cached permissions
+    const cachedPermissions = localStorage.getItem('cachedPermissions');
+    const cachedRole = localStorage.getItem('cachedRole');
+    if (cachedPermissions && cachedRole) {
+      this.menuPermissionsSubject.next(JSON.parse(cachedPermissions));
+      this.lastCheckedRole = cachedRole;
     }
   }
 
@@ -88,11 +98,11 @@ export class AuthenticationService {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/forgotpassword`, { email: email }, { headers: queryHeaders });
 
   }
-  resetPassword(password, confirm_password, token) : Observable<any> {
+  resetPassword(password, confirm_password, token): Observable<any> {
     const httpOptions = this.defaultHttpOptions();
-    return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetPassword/${token}`, {password: password, passwordConfirm: confirm_password }, httpOptions);
+    return this.http.patch<any>(`${environment.apiUrlDotNet}/users/resetPassword/${token}`, { password: password, passwordConfirm: confirm_password }, httpOptions);
   }
- 
+
   login(user) {
     const httpOptions = this.defaultHttpOptions();
     const loginTime = new Date().getTime();
@@ -103,11 +113,11 @@ export class AuthenticationService {
         this.currentUserSubject.next(
           {
             firstName: user.data.user.firstName,
-            id:  user.data.user.id,
+            id: user.data.user.id,
             lastName: user.data.user.lastName,
             freeCompany: user.data.user.company.freeCompany,
             empCode: user.data.user.appointment?.[0]?.empCode,
-            role: user.data.user.role.name.toLowerCase() == "admin"? Role.Admin : Role.User,
+            role: user.data.user.role.name.toLowerCase() == "admin" ? Role.Admin : Role.User,
             isTrial: user.data.user.trialInfo?.isTrial,
             daysLeft: user.data.user.trialInfo?.daysLeft
           }
@@ -126,6 +136,11 @@ export class AuthenticationService {
       localStorage.removeItem('rememberMe');
       localStorage.removeItem('roleId');
       localStorage.removeItem('loginTime');
+
+      localStorage.removeItem('cachedPermissions');
+      localStorage.removeItem('cachedRole');
+      this.menuPermissionsSubject.next(null);
+      this.lastCheckedRole = null;
 
       // Perform any other necessary logout logic
 
@@ -328,24 +343,31 @@ export class AuthenticationService {
 
   isMenuAccessible(menuName: string, roleName: string): Observable<boolean> {
     const menu = menuName.toLowerCase();
+
+    // Check if we have valid cached permissions for this role
+    if (this.lastCheckedRole === roleName && this.menuPermissionsSubject.value) {
+      const hasAccess = this.menuPermissionsSubject.value.some(p => p.toLowerCase() === menu);
+      return of(hasAccess);
+      // Using BehaviorSubject here just to return an Observable consistent with the signature
+      // or simply of(hasAccess) if we imported 'of'
+    }
+
+    // If not in cache or role changed, fetch from API
     return this.getPermissionsByRole(roleName).pipe(
       map((response: any) => {
         const permissions = response?.data;
         if (Array.isArray(permissions)) {
+          // Update Cache
+          this.menuPermissionsSubject.next(permissions);
+          this.lastCheckedRole = roleName;
+          localStorage.setItem('cachedPermissions', JSON.stringify(permissions));
+          localStorage.setItem('cachedRole', roleName);
+
           return permissions.some((p: string) => p.toLowerCase() === menu);
         }
         return false;
       })
     );
-    // return this.getPermissionsByRole(roleName).pipe(
-    //   map((response: any) => {
-    //     if (response && response.data && Array.isArray(response.data)) {
-    //       const allowedPermissions: string[] = response.data.map((p: string) => p.toLowerCase());
-    //       return allowedPermissions.includes(menuName.toLowerCase());
-    //     }
-    //     return false;
-    //   })
-    // );
   }
 
   getRolePermissionById(id: string): Observable<any> {
