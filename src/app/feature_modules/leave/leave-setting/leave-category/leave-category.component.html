@@ -290,7 +290,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-12 my-2">
+                <div class="form-group col-12 my-2" *ngIf="false">
                     <label>{{ "leave.roundOffAccrual" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isRoundOffLeaveAccrualNearestPointFiveUnit">
@@ -303,7 +303,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                <div class="form-group col-12 my-2">
+                <div class="form-group col-12 my-2" *ngIf="false">
                     <label>{{ "leave.intraCycleLapse" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isIntraCycleLapseApplicableForThisCategory">
@@ -330,7 +330,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-12 my-2">
+                <div class="form-group col-12 my-2" *ngIf="false">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.prorateFirstMonth" | translate }}</mat-label>
                         <mat-select formControlName="isProRateFirstMonthAccrualForNewJoinees">
