@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { LeaveService } from 'src/app/_services/leave.service';
+import { toUtcDateOnly } from 'src/app/util/date-utils';
 
 @Component({
   selector: 'app-update-application',
@@ -36,8 +37,8 @@ export class UpdateApplicationComponent {
     let payload = {
       employee: this.leaveUpdateStatus.employeeId,
       leaveCatgeory: this.leaveUpdateStatus.leaveCategory,
-      startDate: this.leaveUpdateStatus.startDate,
-      endDate: this.leaveUpdateStatus.endDate,
+      startDate: toUtcDateOnly(this.leaveUpdateStatus.startDate),
+      endDate: toUtcDateOnly(this.leaveUpdateStatus.endDate),
       durationInMinutes: this.leaveUpdateStatus.durationInMinutes,
       comments: this.leaveUpdateStatus.comments,
       status: this.leaveUpdateStatus.status,

@@ -88,8 +88,13 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isIntraCycleLapseApplicableForThisCategory: [true],
       minimumNumberOfDaysAllowed: [0, [Validators.required, Validators.min(0)]],
       isProRateFirstMonthAccrualForNewJoinees: [''],
+      dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth: [0],
       maximumNumberConsecutiveLeaveDaysAllowed: [0, [Validators.required, Validators.min(0)]],
       isPaidLeave: [true],
+      carryoverMaxDaysLimit: [0],
+      encashmentMaxDaysLimit: [0],
+      fnfMaxDaysLimit: [0],
+      negativeLeaveBalancePolicy: ['none'],
     }, { validators: this.minLessThanMaxValidator });
     this.leaveTypeSubscription = this.categoryForm.get('leaveType')?.valueChanges.subscribe(value => {
       const leaveAccrualPeriodControl = this.categoryForm.get('leaveAccrualPeriod');
@@ -162,11 +167,16 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isRoundOffLeaveAccrualNearestPointFiveUnit: false,
       isIntraCycleLapseApplicableForThisCategory: false,
       isProRateFirstMonthAccrualForNewJoinees: false,
+      dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth: 0,
       isPaidLeave: false,
       submitBefore: 0,
       minimumNumberOfDaysAllowed: 0,
       maximumNumberConsecutiveLeaveDaysAllowed: 0,
-      leaveAccrualPeriod: ''
+      leaveAccrualPeriod: '',
+      carryoverMaxDaysLimit: 0,
+      encashmentMaxDaysLimit: 0,
+      fnfMaxDaysLimit: 0,
+      negativeLeaveBalancePolicy: 'none',
     });
     this.categoryForm.get('leaveAccrualPeriod')?.clearValidators();
     this.categoryForm.get('leaveAccrualPeriod')?.updateValueAndValidity();
@@ -198,7 +208,12 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
         submitBefore: 0,
         minimumNumberOfDaysAllowed: 0,
         maximumNumberConsecutiveLeaveDaysAllowed: 0,
-        leaveAccrualPeriod: ''
+        leaveAccrualPeriod: '',
+        carryoverMaxDaysLimit: 0,
+        encashmentMaxDaysLimit: 0,
+        fnfMaxDaysLimit: 0,
+        negativeLeaveBalancePolicy: 'none',
+        dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth: 0,
       });
     }
   }
@@ -229,7 +244,7 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       this.isSubmitting = false;
     });
   }
-  
+
   onSubmission() {
     this.isSubmitting = true;
     if (this.categoryForm.invalid) {
@@ -305,10 +320,15 @@ export class LeaveCategoryComponent implements OnInit, OnDestroy {
       isEmployeesAllowedToNegativeLeaveBalance: this.selectedLeaveCategory.isEmployeesAllowedToNegativeLeaveBalance,
       isRoundOffLeaveAccrualNearestPointFiveUnit: this.selectedLeaveCategory.isRoundOffLeaveAccrualNearestPointFiveUnit,
       isIntraCycleLapseApplicableForThisCategory: this.selectedLeaveCategory.isIntraCycleLapseApplicableForThisCategory,
-      minimumNumberOfDaysAllowed: this.selectedLeaveCategory.minimumNumberOfDaysAllowed,
       isProRateFirstMonthAccrualForNewJoinees: this.selectedLeaveCategory.isProRateFirstMonthAccrualForNewJoinees,
+      dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth: this.selectedLeaveCategory.dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth || 0,
+      minimumNumberOfDaysAllowed: this.selectedLeaveCategory.minimumNumberOfDaysAllowed,
       maximumNumberConsecutiveLeaveDaysAllowed: this.selectedLeaveCategory.maximumNumberConsecutiveLeaveDaysAllowed,
       isPaidLeave: this.selectedLeaveCategory.isPaidLeave,
+      carryoverMaxDaysLimit: this.selectedLeaveCategory.carryoverMaxDaysLimit || 0,
+      encashmentMaxDaysLimit: this.selectedLeaveCategory.encashmentMaxDaysLimit || 0,
+      fnfMaxDaysLimit: this.selectedLeaveCategory.fnfMaxDaysLimit || 0,
+      negativeLeaveBalancePolicy: this.selectedLeaveCategory.negativeLeaveBalancePolicy || 'none',
     });
     const leaveAccrualPeriodControl = this.categoryForm.get('leaveAccrualPeriod');
     if (this.selectedLeaveCategory.leaveType === 'general-leave') {

@@ -52,7 +52,8 @@
       "channel_sms": "SMS",
       "channel_ui": "UI",
       "channel_app": "App",
-      "channels": "Channels"
+      "channels": "Channels",
+      "channel_WhatsApp": "WhatsApp"
     },
     "eventviewer": {
       "notifications": "Notifications",

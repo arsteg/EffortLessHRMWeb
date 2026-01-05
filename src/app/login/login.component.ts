@@ -134,6 +134,11 @@ export class LoginComponent implements OnInit {
     ).subscribe();
 
     localStorage.setItem('adminView', this.selectedAppMode);
-    this.router.navigateByUrl(this.returnUrl);
+    if(this.selectedAppMode === 'user'){
+      this.router.navigateByUrl('home/dashboard/user');
+    }
+    else if(this.selectedAppMode === 'admin') {
+      this.router.navigateByUrl(this.returnUrl);
+    }
   }
 } 

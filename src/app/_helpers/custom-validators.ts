@@ -19,9 +19,13 @@ export class CustomValidators {
 
   static ifscCode(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
-    if (value && !/^[A-Z]{4}0\d{6}$/.test(value)) {
+    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+    if (value && !ifscRegex.test(value.toUpperCase())) {
       return { invalidIFSC: true };
     }
+    // if (value && !/^[A-Z]{4}0\d{6}$/.test(value)) {
+    //   return { invalidIFSC: true };
+    // }
     return null;
   }
 
