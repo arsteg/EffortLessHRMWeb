@@ -10,8 +10,8 @@
 </div>
 <hrm-table [data]="allData" [isServerSide]="true" [columns]="columns" [showExport]="'all'" [showSearch]="true"
     [totalItems]="totalRecords" (actionClicked)="handleAction($event, addModal)" (pageChanged)="onPageChange($event)"
-    (sortChanged)="onSortChange($event)" (searchChanged)="onSearchChange($event)"
-    [pageTitle]="'Leave categories'" [mdColumns]="4">
+    (sortChanged)="onSortChange($event)" (searchChanged)="onSearchChange($event)" [pageTitle]="'Leave categories'"
+    [mdColumns]="4">
 </hrm-table>
 
 <ng-template #addModal let-modal>
@@ -237,6 +237,13 @@
                         </mat-radio-group>
                     </div>
                 </div>
+                <div class="form-group col-12 my-2"
+                    *ngIf="categoryForm.value.isEligibleForLeaveEncashmentDuringRollover">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.encashmentMaxDaysLimit" | translate }}</mat-label>
+                        <input matInput type="number" formControlName="encashmentMaxDaysLimit" min="0" />
+                    </mat-form-field>
+                </div>
                 <div class="form-group col-12 my-2">
                     <label>{{ "leave.documentRequired" | translate }}</label>
                     <div class="d-flex">
@@ -263,6 +270,12 @@
                         </mat-radio-group>
                     </div>
                 </div>
+                <div class="form-group col-12 my-2" *ngIf="categoryForm.value.isEligibleForEncashmentRecoveryDuringFNF">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.fnfMaxDaysLimit" | translate }}</mat-label>
+                        <input matInput type="number" formControlName="fnfMaxDaysLimit" min="0" />
+                    </mat-form-field>
+                </div>
                 <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.carryoverLimits" | translate }}</mat-label>
@@ -274,21 +287,37 @@
                             <mat-option value="no-limit">{{
                                 "leave.noLimit" | translate
                                 }}</mat-option>
+                            <mat-option value="Limit">{{
+                                "leave.limit" | translate
+                                }}</mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
+                <div class="form-group col-12 my-2"
+                    *ngIf="categoryForm.value.policyWithRegardsToCarryoverLimits === 'Limit'">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.carryoverMaxDaysLimit" | translate }}</mat-label>
+                        <input matInput type="number" formControlName="carryoverMaxDaysLimit" min="0" />
+                    </mat-form-field>
+                </div>
                 <div class="form-group col-12 my-2">
-                    <label>{{ "leave.negativeLeaveBalance" | translate }}</label>
-                    <div class="d-flex">
-                        <mat-radio-group formControlName="isEmployeesAllowedToNegativeLeaveBalance">
-                            <mat-radio-button color="primary" [value]="true">{{
-                                "leave.yes" | translate
-                                }}</mat-radio-button>
-                            <mat-radio-button color="primary" [value]="false" class="ms-3">{{
-                                "leave.no" | translate
-                                }}</mat-radio-button>
-                        </mat-radio-group>
-                    </div>
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.considerNegativeLeaveBalance" | translate }}</mat-label>
+                        <mat-select formControlName="negativeLeaveBalancePolicy">
+                            <mat-option value="none">{{
+                                "leave.notAllowed" | translate
+                                }}</mat-option>
+                            <mat-option value="no-limit">{{
+                                "leave.noLimit" | translate
+                                }}</mat-option>
+                            <!-- <mat-option value="accrual-period-end">{{
+                                "leave.accrualPeriodEnd" | translate
+                                }}</mat-option> -->
+                            <mat-option value="mark-as-lop">{{
+                                "leave.markAsLOP" | translate
+                                }}</mat-option>
+                        </mat-select>
+                    </mat-form-field>
                 </div>
                 <div class="form-group col-12 my-2" *ngIf="false">
                     <label>{{ "leave.roundOffAccrual" | translate }}</label>
@@ -325,12 +354,12 @@
                                 {{ 'leave.duration_negative' | translate }}
                             </span>
                             <span *ngIf="categoryForm.get('minimumNumberOfDaysAllowed')?.errors?.['minNotLessThanMax']">
-                               {{'leave.minDaysLessThanMaxDays' | translate}}
+                                {{'leave.minDaysLessThanMaxDays' | translate}}
                             </span>
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="form-group col-12 my-2" *ngIf="false">
+                <div class="form-group col-12 my-2">
                     <mat-form-field class="w-100">
                         <mat-label>{{ "leave.prorateFirstMonth" | translate }}</mat-label>
                         <mat-select formControlName="isProRateFirstMonthAccrualForNewJoinees">
@@ -341,6 +370,14 @@
                                 "leave.proRationByJoining" | translate
                                 }}</mat-option>
                         </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="form-group col-12 my-2"
+                    *ngIf="categoryForm.value.isProRateFirstMonthAccrualForNewJoinees === 'fixed'">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.fixedCutoffDay" | translate }}</mat-label>
+                        <input matInput type="number"
+                            formControlName="dayOfTheMonthEmployeeNeedJoinToGetCreditForThatMonth" min="1" max="31" />
                     </mat-form-field>
                 </div>
                 <div class="form-group col-12 my-2">
@@ -408,6 +445,13 @@
                         </mat-radio-group>
                     </div>
                 </div>
+                <div class="form-group col-12 my-2"
+                    *ngIf="categoryForm.value.isEligibleForLeaveEncashmentDuringRollover">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.encashmentMaxDaysLimit" | translate }}</mat-label>
+                        <input matInput type="number" formControlName="encashmentMaxDaysLimit" min="0" />
+                    </mat-form-field>
+                </div>
                 <div class="form-group col-12 my-2">
                     <label>{{ "leave.documentRequired" | translate }}</label>
                     <div class="d-flex">
@@ -433,6 +477,12 @@
                                 }}</mat-radio-button>
                         </mat-radio-group>
                     </div>
+                </div>
+                <div class="form-group col-12 my-2" *ngIf="categoryForm.value.isEligibleForEncashmentRecoveryDuringFNF">
+                    <mat-form-field class="w-100">
+                        <mat-label>{{ "leave.fnfMaxDaysLimit" | translate }}</mat-label>
+                        <input matInput type="number" formControlName="fnfMaxDaysLimit" min="0" />
+                    </mat-form-field>
                 </div>
                 <div class="form-group col-12 my-2">
                     <label>{{ "leave.dateRestriction" | translate }}</label>
