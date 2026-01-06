@@ -6,10 +6,9 @@
   </div>
 </div>
 
-<hrm-table [data]="locations" [columns]="columns" [isServerSide]="false" [totalItems]="totalRecords" 
-    [pageSize]="recordsPerPage" [showExport]="'none'" (pageChanged)="onPageChange($event)"
-    (searchChanged)="onSearchChange($event)" [showSearch]="true"
-  (actionClicked)="onActionClick($event)"></hrm-table>
+<hrm-table [data]="locations" [columns]="columns" [isServerSide]="false" [totalItems]="totalRecords"
+  [pageSize]="recordsPerPage" [showExport]="'none'" (pageChanged)="onPageChange($event)"
+  (searchChanged)="onSearchChange($event)" [showSearch]="true" (actionClicked)="onActionClick($event)"></hrm-table>
 
 <ng-template #addModal let-modal>
   <div class="d-flex align-items-center justify-content-between">
@@ -26,11 +25,11 @@
       <div class="row m-0">
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
-            <mat-label>{{ 'organization.location.form.location_code' | translate }}</mat-label>
-            <input matInput type="text" formControlName="locationCode">
+            <mat-label>{{ 'organization.location.form.location_name' | translate }}</mat-label>
+            <input matInput type="text" formControlName="name">
             <mat-error
-              *ngIf="locationForm.get('locationCode')?.hasError('required') && (locationForm.get('locationCode')?.touched || locationForm.get('locationCode')?.dirty)">
-              {{ 'organization.location.form.error.location_code_required' | translate }}
+              *ngIf="locationForm.get('name')?.hasError('required') && (locationForm.get('name')?.touched || locationForm.get('name')?.dirty)">
+              {{ 'organization.location.form.error.location_name_required' | translate }}
             </mat-error>
           </mat-form-field>
         </div>
@@ -41,15 +40,16 @@
             <input matInput type="text" formControlName="country" [disabled]="true" />
 
           </mat-form-field>
-          
-          
+
+
         </div>
 
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.location.form.state' | translate }}</mat-label>
             <mat-select formControlName="state">
-              <mat-option [value]="null" disabled>{{ 'organization.location.form.state_placeholder' | translate }}</mat-option>
+              <mat-option [value]="null" disabled>{{ 'organization.location.form.state_placeholder' | translate
+                }}</mat-option>
               <mat-option *ngFor="let state of states" [value]="state">{{ state }}</mat-option>
             </mat-select>
             <mat-error
@@ -73,7 +73,7 @@
 
         <div class="form-group col-md-6">
           <mat-form-field class="w-100">
-            <mat-label>{{ 'organization.location.form.organization' | translate }}</mat-label>          
+            <mat-label>{{ 'organization.location.form.organization' | translate }}</mat-label>
             <input matInput type="text" formControlName="organization" [disabled]="true" />
             <mat-error
               *ngIf="locationForm.get('organization')?.hasError('required') && (locationForm.get('organization')?.touched || locationForm.get('organization')?.dirty)">
@@ -124,7 +124,7 @@
               {{ 'organization.location.form.error.lwf_registration_code_format' | translate }}
             </mat-error>
           </mat-form-field>
-        </div>       
+        </div>
       </div>
     </div>
 

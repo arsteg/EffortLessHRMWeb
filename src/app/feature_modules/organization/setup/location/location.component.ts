@@ -65,7 +65,7 @@ export class LocationComponent {
   public sortOrder: string = '';
 
   columns: TableColumn[] = [
-    { key: 'locationCode', name: this.translate.instant('organization.location.table.location_code') },
+    { key: 'name', name: this.translate.instant('organization.location.table.location_name') },
     { key: 'country', name: this.translate.instant('organization.location.table.country') },
     { key: 'state', name: this.translate.instant('organization.location.table.state') },
     { key: 'city', name: this.translate.instant('organization.location.table.city') },
@@ -100,15 +100,23 @@ export class LocationComponent {
     private translate: TranslateService,
     private http: HttpClient) {
     this.locationForm = this.fb.group({
-      locationCode: ['', Validators.required],
-      country: ['India', Validators.required], // ✅ Default value set here
-      state: ['', Validators.required],
-      city: ['', Validators.required],
-      organization: ['', Validators.required],
+      name: ['', Validators.required],
+      country: ['India'], // ✅ Default value set here
+      state: [''],
+      city: [''],
+      organization: [''],
       providentFundRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/\d{5}$/)]],  // Example: TN/12345
       esicRegistrationCode: ['', [Validators.pattern(/^\d{17}$/)]],  // Example: 17-digit ESIC number
       professionalTaxRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/PT\/\d{5}$/)]],  // Example: MH/PT/12345
       lwfRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/LWF\/\d{4}$/)]]
+      // country: ['India', Validators.required], // ✅ Default value set here
+      // state: ['', Validators.required],
+      // city: ['', Validators.required],
+      // organization: ['', Validators.required],
+      // providentFundRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/\d{5}$/)]],  // Example: TN/12345
+      // esicRegistrationCode: ['', [Validators.pattern(/^\d{17}$/)]],  // Example: 17-digit ESIC number
+      // professionalTaxRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/PT\/\d{5}$/)]],  // Example: MH/PT/12345
+      // lwfRegistrationCode: ['', [Validators.pattern(/^[A-Z]{2}\/LWF\/\d{4}$/)]]
     });
   }
 
@@ -116,17 +124,17 @@ export class LocationComponent {
     this.getLocations();
     this.getCompany();
     this.locationForm.get('country')?.enable(); // optional
-this.locationForm.get('country')?.setValue('India');
-this.locationForm.get('country')?.disable(); // optional
-this.locationForm.get('organization')?.enable(); // optional
-this.locationForm.get('organization')?.setValue(this.OrgnaizationName);
-this.locationForm.get('organization')?.disable(); // optional
+    this.locationForm.get('country')?.setValue('India');
+    this.locationForm.get('country')?.disable(); // optional
+    this.locationForm.get('organization')?.enable(); // optional
+    this.locationForm.get('organization')?.setValue(this.OrgnaizationName);
+    this.locationForm.get('organization')?.disable(); // optional
 
   }
 
   getCompany() {
     this.companyService.getCompany().subscribe((res: any) => {
-      this.OrgnaizationName = res.data?.company.companyName;     
+      this.OrgnaizationName = res.data?.company.companyName;
       console.log(this.OrgnaizationName);
       console.log(res.data);
     });
@@ -149,9 +157,8 @@ this.locationForm.get('organization')?.disable(); // optional
 
   getLocations() {
     this.companyService.getLocations().subscribe(res => {
-      //this.locations = res.data;
-      const data = Array.isArray(res.data) ? res.data : [];
-      this.locations = [...data]; // Spread operator to ensure change detection
+      const data = res.data && res.data.offices ? res.data.offices : (Array.isArray(res.data) ? res.data : []);
+      this.locations = [...data];
       this.totalRecords = data.length;
     });
   }
@@ -160,7 +167,7 @@ this.locationForm.get('organization')?.disable(); // optional
     this.isSubmitting = true;
 
     this.locationForm.markAllAsTouched();
-  
+
     if (this.locationForm.invalid) {
       this.isSubmitting = false;
       return;
@@ -174,12 +181,13 @@ this.locationForm.get('organization')?.disable(); // optional
         this.locationForm.reset();
         this.dialogRef.close(true);
       },
-      err => { const errorMessage = err?.error?.message || err?.message || err 
-        || this.translate.instant('organization.setup.location_add_fail')
-        ;
-        this.toast.error(errorMessage, 'Error!'); 
-        this.isSubmitting = false;
-      }
+        err => {
+          const errorMessage = err?.error?.message || err?.message || err
+            || this.translate.instant('organization.setup.location_add_fail')
+            ;
+          this.toast.error(errorMessage, 'Error!');
+          this.isSubmitting = false;
+        }
       );
     }
     // updateZone
@@ -190,45 +198,46 @@ this.locationForm.get('organization')?.disable(); // optional
         this.locationForm.reset();
         this.isEdit = false;
         this.isSubmitting = false;
-        this.locationForm.get('locationCode').enable();
+        this.locationForm.get('name').enable();
         this.dialogRef.close(true);
 
       },
-      err => { const errorMessage = err?.error?.message || err?.message || err 
-        || this.translate.instant('organization.setup.location_add_fail')
-        ;
-        this.toast.error(errorMessage, 'Error!'); 
-        this.isSubmitting = false;
-      }
+        err => {
+          const errorMessage = err?.error?.message || err?.message || err
+            || this.translate.instant('organization.setup.location_add_fail')
+            ;
+          this.toast.error(errorMessage, 'Error!');
+          this.isSubmitting = false;
+        }
       );
     }
   }
 
   edit(data: any) {
     this.locationForm.patchValue({
-      locationCode: data.locationCode,
-      country: data.country,
+      name: data.name,
+      country: data.country || 'India',
       state: data.state,
       city: data.city,
-      organization: data.organization,
+      organization: data.organization || this.OrgnaizationName,
       providentFundRegistrationCode: data.providentFundRegistrationCode,
       esicRegistrationCode: data.esicRegistrationCode,
       professionalTaxRegistrationCode: data.professionalTaxRegistrationCode,
       lwfRegistrationCode: data.lwfRegistrationCode
     });
-    this.locationForm.get('locationCode').disable();
+    this.locationForm.get('name').disable();
   }
 
   clearselectedRequest() {
     this.isEdit = false;
-  this.locationForm.get('locationCode')?.enable();
-  this.locationForm.reset();
+    this.locationForm.get('name')?.enable();
+    this.locationForm.reset();
 
-  // Set default country again after reset
-  this.locationForm.get('country')?.setValue('India');
-  this.locationForm.get('country')?.disable();
-  this.locationForm.get('organization')?.setValue(this.OrgnaizationName);
-  this.locationForm.get('organization')?.disable();
+    // Set default country again after reset
+    this.locationForm.get('country')?.setValue('India');
+    this.locationForm.get('country')?.disable();
+    this.locationForm.get('organization')?.setValue(this.OrgnaizationName);
+    this.locationForm.get('organization')?.disable();
   }
 
   private getDismissReason(reason: any): string {
@@ -252,19 +261,19 @@ this.locationForm.get('organization')?.disable(); // optional
       this.dialogRef = null;
     });
   }
-  
+
 
   deleteLocation(id: string) {
     this.companyService.deleteLocation(id).subscribe((res: any) => {
       this.getLocations();
       this.toast.success(this.translate.instant('organization.setup.location_deleted'));
-   
+
     },
       (err) => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        || this.translate.instant('organization.setup.location_delete_fail')
-        ;
-        this.toast.error(errorMessage, 'Error!'); 
+        const errorMessage = err?.error?.message || err?.message || err
+          || this.translate.instant('organization.setup.location_delete_fail')
+          ;
+        this.toast.error(errorMessage, 'Error!');
       })
   }
 
@@ -282,7 +291,7 @@ this.locationForm.get('organization')?.disable(); // optional
     });
   }
 
-  onClose(){
+  onClose() {
     this.locationForm.reset();
     this.dialogRef.close(true);
   }

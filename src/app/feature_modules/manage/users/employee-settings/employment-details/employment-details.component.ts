@@ -43,14 +43,14 @@ export class EmploymentDetailsComponent {
     private translate: TranslateService,
     public authService: AuthenticationService
   ) {
-   
+
 
     this.appointmentForm = this.fb.group({
       user: [''],
-      salaryTypePaid: ['',Validators.required],
-      joiningDate: [0,Validators.required],
+      salaryTypePaid: ['', Validators.required],
+      joiningDate: [0, Validators.required],
       confirmationDate: [0]
-    }, { validators: CustomValidators.ConfirmationAfterJoiningValidator() });     
+    }, { validators: CustomValidators.ConfirmationAfterJoiningValidator() });
 
     this.jobInformationForm = this.fb.group({
       user: [''],
@@ -95,7 +95,7 @@ export class EmploymentDetailsComponent {
     if (this.appointmentForm.invalid) {
       this.appointmentForm.markAllAsTouched();
       this.toast.error(this.translate.instant('common.missing_required_Field'), this.translate.instant('common.validation_error'));
-    
+
       return;
     }
 
@@ -110,9 +110,9 @@ export class EmploymentDetailsComponent {
     this.userService.getAppointmentByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
       if (!res.data) {
         this.userService.addAppointment(payload).subscribe((res: any) => {
-         
+
           this.toast.success(this.translate.instant('manage.users.employee-settings.appointment_Added'), this.translate.instant('common.success'));
-    
+
         });
       } else {
         this.userService.updateAppointment(res.data._id, payload).subscribe((res: any) => {
@@ -152,13 +152,13 @@ export class EmploymentDetailsComponent {
       this.userService.addJobInformation(formData).subscribe({
         next: (res: any) => {
           this.toast.success(this.translate.instant('manage.users.employee-settings.job_information_Added'), this.translate.instant('common.success'));
-    
+
         },
         error: (err) => {
-          const errorMessage = err?.error?.message || err?.message || err 
-          || this.translate.instant('manage.users.employee-settings.failed_job_information_add')
-          ;
-         
+          const errorMessage = err?.error?.message || err?.message || err
+            || this.translate.instant('manage.users.employee-settings.failed_job_information_add')
+            ;
+
           this.toast.error(errorMessage, 'Error!');
         }
       });
@@ -166,13 +166,13 @@ export class EmploymentDetailsComponent {
       this.userService.updateJobInformation(this.jobInformationId, formData).subscribe({
         next: (res: any) => {
           this.toast.success(this.translate.instant('manage.users.employee-settings.job_information_Updated'), this.translate.instant('common.success'));
-    
+
         },
         error: (err) => {
-          const errorMessage = err?.error?.message || err?.message || err 
-          || this.translate.instant('manage.users.employee-settings.failed_job_information_update')
-          ;
-         
+          const errorMessage = err?.error?.message || err?.message || err
+            || this.translate.instant('manage.users.employee-settings.failed_job_information_update')
+            ;
+
           this.toast.error(errorMessage, 'Error!');
         }
       });
@@ -220,7 +220,7 @@ export class EmploymentDetailsComponent {
       this.subDepartments = results[5].data;
       this.departments = results[6].data;
       this.designations = results[7].data;
-      this.locations = results[8].data;
+      this.locations = results[8].data && results[8].data.offices ? results[8].data.offices : (Array.isArray(results[8].data) ? results[8].data : []);
     });
   }
 }
