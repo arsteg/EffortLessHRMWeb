@@ -33,25 +33,32 @@ export class HolidaysComponent {
   currentPage: number = 1;
   public sortOrder: string = '';
   dialogRef: MatDialogRef<any> | null = null;
-  allData: any[]= [];
+  allData: any[] = [];
+  offices: any[] = [];
   columns: TableColumn[] = [
     {
-      key: 'label', 
+      key: 'label',
       name: this.translate.instant('organization.holiday.table.holiday')
     },
-    { 
-      key: 'date', 
+    {
+      key: 'date',
       name: this.translate.instant('organization.holiday.table.date'),
-      valueFn: (row: any) => { return row.date ? this.datePipe.transform(row.date, 'mediumDate') : '' } },
-    { key: 'isMandatoryForFlexiHoliday',
-       name: this.translate.instant('organization.holiday.table.type'),
+      valueFn: (row: any) => { return row.date ? this.datePipe.transform(row.date, 'mediumDate') : '' }
+    },
+    {
+      key: 'isMandatoryForFlexiHoliday',
+      name: this.translate.instant('organization.holiday.table.type'),
       valueFn: (row: any) => { return row.isMandatoryForFlexiHoliday ? 'Mandatory' : 'Flexi' }
-     },
-    { key: 'isHolidayOccurEveryYearOnSameDay', 
+    },
+    {
+      key: 'isHolidayOccurEveryYearOnSameDay',
       name: this.translate.instant('organization.holiday.table.reoccur'),
-      valueFn: (row: any) => { return row.isHolidayOccurEveryYearOnSameDay ? 'Yes' : 'No' } },
-    { key: 'holidaysAppliesFor', 
-      name: this.translate.instant('organization.holiday.table.applies_to'),
+      valueFn: (row: any) => { return row.isHolidayOccurEveryYearOnSameDay ? 'Yes' : 'No' }
+    },
+    {
+      key: 'locationAppliesTo',
+      name: 'Locations',
+      valueFn: (row: any) => { return row.locationAppliesTo === 'Selected-Locations' ? 'Selected Locations' : 'All Locations' }
     },
     {
       key: 'action',
@@ -87,6 +94,8 @@ export class HolidaysComponent {
       isHolidayOccurEveryYearOnSameDay: [true, Validators.required],
       isMandatoryForFlexiHoliday: [{ value: true, disabled: true }, Validators.required], // ✅ disabled
       holidaysAppliesFor: [{ value: 'All-Employees', disabled: true }, Validators.required], // ✅ disabled
+      locationAppliesTo: ['All-Locations', Validators.required],
+      offices: [[]],
       year: [''],
       users: [[]]
     });
@@ -98,6 +107,9 @@ export class HolidaysComponent {
     this.getHolidays();
     this.commonService.populateUsers().subscribe((res: any) => {
       this.members = res.data.data;
+    });
+    this.companyService.getLocations().subscribe((res: any) => {
+      this.offices = res.data.offices;
     });
     this.holidayForm.reset(this.getDefaultFormValues());
   }
@@ -126,6 +138,8 @@ export class HolidaysComponent {
       isHolidayOccurEveryYearOnSameDay: true,
       isMandatoryForFlexiHoliday: true,
       holidaysAppliesFor: 'All-Employees',
+      locationAppliesTo: 'All-Locations',
+      offices: [],
       year: '',
       users: []
     };
@@ -172,7 +186,7 @@ export class HolidaysComponent {
     this.isSubmitting = true;
 
     this.holidayForm.markAllAsTouched();
-  
+
     if (this.holidayForm.invalid) {
       this.isSubmitting = false;
       return;
@@ -190,38 +204,48 @@ export class HolidaysComponent {
       this.holidayForm.patchValue({ users: formattedUsers });
     }
 
+    if (formData.locationAppliesTo === 'Selected-Locations' && (!formData.offices || formData.offices.length === 0)) {
+      this.holidayForm.get('offices').setErrors({ required: true });
+      this.isSubmitting = false;
+      return;
+    }
+
     formData.year = this.currentYear || this.selectedYear;
     if (this.holidayForm.valid) {
       if (!this.isEdit) {
         formData.date = toUtcDateOnly(formData.date);
         this.companyService.addHolidays(formData).subscribe(res => {
           this.getHolidays();
-          this.toast.success(this.translate.instant('organization.setup.holiday_added')) 
+          this.toast.success(this.translate.instant('organization.setup.holiday_added'))
           this.holidayForm.reset(this.getDefaultFormValues());
           this.dialogRef.close(true);
         },
-          err => {  const errorMessage = err?.error?.message || err?.message || err 
-            || this.translate.instant('organization.setup.holiday_add_fail')
-            ;
-            this.toast.error(errorMessage, 'Error!'); 
-            this.isSubmitting = false;}
+          err => {
+            const errorMessage = err?.error?.message || err?.message || err
+              || this.translate.instant('organization.setup.holiday_add_fail')
+              ;
+            this.toast.error(errorMessage, 'Error!');
+            this.isSubmitting = false;
+          }
         );
       }
       else if (this.isEdit) {
         formData.date = toUtcDateOnly(formData.date);
         this.companyService.updateHolidays(this.selectedRecord._id, formData).subscribe(res => {
           this.toast.success(this.translate.instant('organization.setup.holiday_updated'));
-      
+
           this.getHolidays();
           this.holidayForm.reset(this.getDefaultFormValues());
           this.isEdit = false;
           this.dialogRef.close(true);
         },
-          err => { const errorMessage = err?.error?.message || err?.message || err 
-            || this.translate.instant('organization.setup.holiday_update_fail')
-            ;
-            this.toast.error(errorMessage, 'Error!'); 
-            this.isSubmitting = false; }
+          err => {
+            const errorMessage = err?.error?.message || err?.message || err
+              || this.translate.instant('organization.setup.holiday_update_fail')
+              ;
+            this.toast.error(errorMessage, 'Error!');
+            this.isSubmitting = false;
+          }
         );
       }
     }
@@ -242,6 +266,11 @@ export class HolidaysComponent {
       isHolidayOccurEveryYearOnSameDay: data.isHolidayOccurEveryYearOnSameDay,
       isMandatoryForFlexiHoliday: data.isMandatoryForFlexiHoliday,
       holidaysAppliesFor: data.holidaysAppliesFor,
+      locationAppliesTo: data.locationAppliesTo || (data.holidayapplicableOffice?.length > 0 ? 'Selected-Locations' : 'All-Locations'),
+      offices: (data.holidayapplicableOffice || []).map((o: any) => {
+        const id = o.office?._id || o.office || o;
+        return typeof id === 'object' && id !== null ? id.toString() : id;
+      }),
       year: data.year,
       users: users
     });
@@ -280,10 +309,10 @@ export class HolidaysComponent {
       this.toast.success(this.translate.instant('organization.setup.holiday_deleted'));
     },
       (err) => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        || this.translate.instant('organization.setup.holiday_delete_fail')
-        ;
-        this.toast.error(errorMessage, 'Error!'); 
+        const errorMessage = err?.error?.message || err?.message || err
+          || this.translate.instant('organization.setup.holiday_delete_fail')
+          ;
+        this.toast.error(errorMessage, 'Error!');
       })
   }
 
@@ -296,10 +325,10 @@ export class HolidaysComponent {
         this.deleteHoliday(id);
       }
       err => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        || this.translate.instant('organization.setup.holiday_delete_fail')
-        ;
-        this.toast.error(errorMessage, 'Error!'); 
+        const errorMessage = err?.error?.message || err?.message || err
+          || this.translate.instant('organization.setup.holiday_delete_fail')
+          ;
+        this.toast.error(errorMessage, 'Error!');
       }
     });
   }
@@ -310,11 +339,11 @@ export class HolidaysComponent {
     this.dialogRef.close(true);
   }
 
- onSortChange(event: any) {
+  onSortChange(event: any) {
     const sorted = this.allData.slice().sort((a: any, b: any) => {
       var valueA = this.getNestedValue(a, event.active);
       var valueB = this.getNestedValue(b, event.active);
-      
+
       if (valueA < valueB) return event.direction === 'asc' ? -1 : 1;
       if (valueA > valueB) return event.direction === 'asc' ? 1 : -1;
       return 0;

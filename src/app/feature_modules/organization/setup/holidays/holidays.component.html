@@ -16,17 +16,9 @@
   </div>
 </div>
 
-<hrm-table 
-  [data]="holidays" 
-  [columns]="columns" 
-  [isServerSide]="true" 
-  [showSearch]="true"
-  [totalItems]="totalRecords" 
-  [pageSize]="recordsPerPage"
-  (pageChanged)="onPageChange($event)" 
-  (sortChanged)="onSortChange($event)"
-  (searchChanged)="onSearchChange($event)"
-  (actionClicked)="onActionClick($event)">
+<hrm-table [data]="holidays" [columns]="columns" [isServerSide]="true" [showSearch]="true" [totalItems]="totalRecords"
+  [pageSize]="recordsPerPage" (pageChanged)="onPageChange($event)" (sortChanged)="onSortChange($event)"
+  (searchChanged)="onSearchChange($event)" (actionClicked)="onActionClick($event)">
 </hrm-table>
 
 <ng-template #addModal let-modal>
@@ -45,7 +37,8 @@
         <div class="form-group col-md-12">
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.holiday.form.label' | translate }}</mat-label>
-            <input matInput type="text" formControlName="label" placeholder="{{ 'organization.holiday.form.label_placeholder' | translate }}">
+            <input matInput type="text" formControlName="label"
+              placeholder="{{ 'organization.holiday.form.label_placeholder' | translate }}">
             <mat-error
               *ngIf="holidayForm.get('label')?.hasError('required') && (holidayForm.get('label')?.touched || holidayForm.get('label')?.dirty)">
               {{ 'organization.holiday.form.error.label_required' | translate }}
@@ -56,8 +49,8 @@
         <div class="form-group col-md-12">
           <mat-form-field class="w-100">
             <mat-label>{{ 'organization.holiday.form.date' | translate }}</mat-label>
-            <input matInput [matDatepicker]="pickup" placeholder="{{ 'organization.holiday.form.date_placeholder' | translate }}"
-                   formControlName="date">
+            <input matInput [matDatepicker]="pickup"
+              placeholder="{{ 'organization.holiday.form.date_placeholder' | translate }}" formControlName="date">
             <mat-datepicker-toggle matSuffix [for]="pickup"></mat-datepicker-toggle>
             <mat-datepicker #pickup></mat-datepicker>
             <mat-error
@@ -84,49 +77,68 @@
         </div>
 
         <div class="form-group col-md-12">
+          <mat-label>This Holiday is applicable for?</mat-label>
+          <mat-radio-group color="primary" formControlName="locationAppliesTo" class="d-flex flex-row">
+            <mat-radio-button value="All-Locations" class="me-3">
+              All Locations
+            </mat-radio-button>
+            <mat-radio-button value="Selected-Locations">
+              Selected Locations
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="form-group col-md-12" *ngIf="holidayForm.get('locationAppliesTo').value === 'Selected-Locations'">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Select Offices</mat-label>
+            <mat-select multiple formControlName="offices">
+              <mat-option *ngFor="let office of offices" [value]="office._id">
+                {{ office.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="holidayForm.get('offices')?.hasError('required') && (holidayForm.get('offices')?.touched || holidayForm.get('offices')?.dirty)">
+              Please select at least one office.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Legacy Fields Hidden -->
+        <div class="form-group col-md-12" *ngIf="false">
           <mat-label>{{ 'organization.holiday.form.mandatory_flexi' | translate }}</mat-label>
-          <mat-radio-group color="primary" formControlName="isMandatoryForFlexiHoliday" class="d-flex flex-row" [disabled]="true">
+          <mat-radio-group color="primary" formControlName="isMandatoryForFlexiHoliday" class="d-flex flex-row">
             <mat-radio-button [value]="true" class="me-3">
-              {{ 'organization.holiday.form.mandatory' | translate }}
+              Mandatory Holiday
             </mat-radio-button>
             <mat-radio-button [value]="false">
-              {{ 'organization.holiday.form.flexi' | translate }}
+              Flexi Holiday
             </mat-radio-button>
           </mat-radio-group>
-          <mat-error
-            *ngIf="holidayForm.get('isMandatoryForFlexiHoliday')?.hasError('required') && (holidayForm.get('isMandatoryForFlexiHoliday')?.touched || holidayForm.get('isMandatoryForFlexiHoliday')?.dirty)">
-            {{ 'organization.holiday.form.error.mandatory_flexi_required' | translate }}
-          </mat-error>
-        </div>
 
-        <div class="form-group col-md-12">
-          <mat-label>{{ 'organization.holiday.form.applies_for' | translate }}</mat-label>
-          <mat-radio-group color="primary" formControlName="holidaysAppliesFor" class="d-flex flex-row" [disabled]="true">
+          <mat-label class="mt-3 d-block">Which Employees Does this Holiday Apply to?</mat-label>
+          <mat-radio-group color="primary" formControlName="holidaysAppliesFor" class="d-flex flex-row">
             <mat-radio-button value="All-Employees" class="me-3">
-              {{ 'organization.holiday.form.all_employees' | translate }}
+              All Employees
             </mat-radio-button>
             <mat-radio-button value="Specific-Employees">
-              {{ 'organization.holiday.form.specific_employees' | translate }}
+              Specific Employees
             </mat-radio-button>
           </mat-radio-group>
-          <mat-error
-            *ngIf="holidayForm.get('holidaysAppliesFor')?.hasError('required') && (holidayForm.get('holidaysAppliesFor')?.touched || holidayForm.get('holidaysAppliesFor')?.dirty)">
-            {{ 'organization.holiday.form.error.applies_for_required' | translate }}
-          </mat-error>
-        </div>
 
-        <mat-form-field class="w-100" *ngIf="holidayForm.get('holidaysAppliesFor').value === 'Specific-Employees'">
-          <mat-label>{{ 'organization.holiday.form.select_employees' | translate }}</mat-label>
-          <mat-select multiple formControlName="users">
-            <mat-option [value]="member?._id" *ngFor="let member of members; let i = index">
-              {{ member?.firstName }} {{ member?.lastName }}
-            </mat-option>
-          </mat-select>
-          <mat-error
-            *ngIf="holidayForm.get('users')?.hasError('required') && (holidayForm.get('users')?.touched || holidayForm.get('users')?.dirty)">
-            {{ 'organization.holiday.form.error.employees_required' | translate }}
-          </mat-error>
-        </mat-form-field>
+          <mat-form-field class="w-100 mt-2"
+            *ngIf="holidayForm.get('holidaysAppliesFor').value === 'Specific-Employees'">
+            <mat-label>{{ 'organization.holiday.form.select_employees' | translate }}</mat-label>
+            <mat-select multiple formControlName="users">
+              <mat-option [value]="member?._id" *ngFor="let member of members; let i = index">
+                {{ member?.firstName }} {{ member?.lastName }}
+              </mat-option>
+            </mat-select>
+            <mat-error
+              *ngIf="holidayForm.get('users')?.hasError('required') && (holidayForm.get('users')?.touched || holidayForm.get('users')?.dirty)">
+              {{ 'organization.holiday.form.error.employees_required' | translate }}
+            </mat-error>
+          </mat-form-field>
+        </div>
       </div>
     </div>
 
