@@ -116,16 +116,16 @@ export class CompanyService {
 
   // location Crud
   getLocations(): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrlDotNet}/company/locations-by-company`, this.httpOptions);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/attendance/offices`, this.httpOptions);
   }
   addLocation(payload: any): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrlDotNet}/company/locations`, payload, this.httpOptions);
+    return this.http.post<any>(`${environment.apiUrlDotNet}/attendance/offices`, payload, this.httpOptions);
   }
   updateLocation(id: string, payload: any): Observable<any> {
-    return this.http.put<any>(`${environment.apiUrlDotNet}/company/locations/${id}`, payload, this.httpOptions);
+    return this.http.put<any>(`${environment.apiUrlDotNet}/attendance/offices/${id}`, payload, this.httpOptions);
   }
   deleteLocation(id: string): Observable<any> {
-    return this.http.delete<any>(`${environment.apiUrlDotNet}/company/locations/${id}`, this.httpOptions);
+    return this.http.delete<any>(`${environment.apiUrlDotNet}/attendance/offices/${id}`, this.httpOptions);
   }
 
   // Signatory Details Crud

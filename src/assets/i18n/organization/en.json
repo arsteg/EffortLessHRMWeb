@@ -53,13 +53,13 @@
       "logo_uploaded": "Logo uploaded successfully",
       "logo_upload_failed": "Failed to upload logo",
       "designation_add_fail": "Failed to update Designation",
-      "designation_added": "Designation added successfully",    
+      "designation_added": "Designation added successfully",
       "designation_updated": "Designation updated successfully",
       "designation_update_fail": "Failed to update Designation",
       "designation_delete_fail": "This department cannot be deleted!",
       "designation_deleted": "Department deleted successfully",
       "sub_department_add_fail": "Failed to update Sub Department",
-      "sub_department_added": "Sub Department added successfully",    
+      "sub_department_added": "Sub Department added successfully",
       "sub_department_updated": "Sub Department updated successfully",
       "sub_department_update_fail": "Failed to update Sub Department",
       "sub_department_delete_fail": "This Sub department cannot be deleted!",
@@ -107,19 +107,19 @@
       "deleted": "Successfully Deleted!!!",
       "delete_fail": "Failed to delete"
     },
-      "toast": {
+    "toast": {
       "success": "Success",
       "error": "Error"
     },
     "zone": {
-      "add" : "Add",
+      "add": "Add",
       "update": "Update",
       "delete": "Delete",
       "cancel": "Cancel",
       "close": "Close",
       "submit": "Submit",
       "save": "Submit",
-      "zonetitle" : "Zone",
+      "zonetitle": "Zone",
       "form": {
         "start_date": "Start Date",
         "zone_code": "Zone Code",
@@ -165,7 +165,7 @@
         "update": "Update Location"
       },
       "form": {
-        "location_code": "Location Code",
+        "location_name": "Location Name",
         "country": "Country",
         "country_placeholder": "Countries",
         "country_india": "India",
@@ -183,7 +183,7 @@
         "tax_declaration_approvers": "Tax Declaration Approver",
         "tax_declaration_approvers_placeholder": "Select Approver",
         "error": {
-          "location_code_required": "Location Code is required",
+          "location_name_required": "Location Name is required",
           "country_required": "Country is required",
           "state_required": "State is required",
           "city_required": "City is required",
@@ -195,7 +195,7 @@
         }
       },
       "table": {
-        "location_code": "Location Code",
+        "location_name": "Location Name",
         "country": "Country",
         "state": "State",
         "city": "City",
@@ -293,11 +293,11 @@
         "name": "Full Name",
         "designation": "Designation",
         "name_placeholder": "Enter Full Name of Company's Authorized Signatory",
-          "designation_placeholder": "Enter Designation of Company's Authorized Signatory",
+        "designation_placeholder": "Enter Designation of Company's Authorized Signatory",
         "error": {
           "name_required": "Name is required.",
           "label_invalid": "Label must contain only alphabet",
-          "labelNoLeadingOrTrailingSpaces": "Label cannot have leading or trailing spaces.",       
+          "labelNoLeadingOrTrailingSpaces": "Label cannot have leading or trailing spaces.",
           "designation_required": "Designation is required."
         }
       },
