@@ -33,6 +33,7 @@ export class LeaveAssignmentComponent implements OnInit {
   dialogRef: MatDialogRef<any> | null = null;
   isSubmitting: boolean = false;
   alreadyExist: boolean = false;
+  totalRecords: number = 0;
 
   columns: TableColumn[] = [
     { key: this.translate.instant('leave.leaveassignment.employee'), name: 'Employee', valueFn: (row) => row?.user },
@@ -216,6 +217,7 @@ export class LeaveAssignmentComponent implements OnInit {
           }
         });
         this.allData = this.leaveApplication.data || [];
+        this.totalRecords = res.total;
       }
     },
       error => {

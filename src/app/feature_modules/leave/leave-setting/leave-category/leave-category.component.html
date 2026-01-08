@@ -484,7 +484,7 @@
                         <input matInput type="number" formControlName="fnfMaxDaysLimit" min="0" />
                     </mat-form-field>
                 </div>
-                <div class="form-group col-12 my-2">
+                <div class="form-group col-12 my-2" *ngIf="false">
                     <label>{{ "leave.dateRestriction" | translate }}</label>
                     <div class="d-flex">
                         <mat-radio-group formControlName="isEmployeesAllowedToNegativeLeaveBalance">

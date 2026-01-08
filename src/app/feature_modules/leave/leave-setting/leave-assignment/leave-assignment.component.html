@@ -8,7 +8,7 @@
     </div>
 
     <hrm-table [data]="leaveApplication.data" [isServerSide]="true" [columns]="columns" [showSearch]="true"
-      [totalItems]="tableService.totalRecords" (actionClicked)="handleAction($event, addModal)"
+      [totalItems]="totalRecords" (actionClicked)="handleAction($event, addModal)"
       (pageChanged)="onPageChange($event)" (sortChanged)="onSortChange($event)"
       (searchChanged)="onSearchChange($event)">
     </hrm-table>

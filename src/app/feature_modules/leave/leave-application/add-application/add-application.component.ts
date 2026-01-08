@@ -595,7 +595,7 @@ export class AddApplicationComponent implements OnDestroy {
             const leaveStartDate = this.stripTime(new Date(leave.startDate));
             const leaveEndDate = this.stripTime(new Date(leave.endDate));
             return leave.employee === employeeId &&
-              leave.leaveCategory === leaveCategory &&
+              leave.status !== 'Rejected' && leave.status !== 'Cancelled' &&
               (formattedStartDate <= leaveEndDate && formattedEndDate >= leaveStartDate);
           });
 
@@ -632,8 +632,8 @@ export class AddApplicationComponent implements OnDestroy {
       const isOverlappingLeave = this.existingLeaves.some((leave: any) => {
         const leaveStartDate = this.stripTime(new Date(leave.startDate));
         const leaveEndDate = this.stripTime(new Date(leave.endDate));
-        return leave?.employee?._id === employeeId &&
-          leave?.leaveCategory?._id === leaveCategory &&
+        return (leave?.employee?._id === employeeId || leave?.employee === employeeId) &&
+          leave.status !== 'Rejected' && leave.status !== 'Cancelled' &&
           (formattedStartDate <= leaveEndDate && formattedEndDate >= leaveStartDate);
       });
 
