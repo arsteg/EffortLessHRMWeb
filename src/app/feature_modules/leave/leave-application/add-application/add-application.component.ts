@@ -74,6 +74,7 @@ export class AddApplicationComponent implements OnDestroy {
   private endDateValueChangesSubscription: Subscription;
   private lastFetchedEmployeeId: string | null = null;
   private holidaysFetchedYear: number | null = null;
+  selectedEmployeeLocation: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -226,6 +227,10 @@ export class AddApplicationComponent implements OnDestroy {
   ngOnInit() {
     this.populateMembers();
 
+    //if (this.portalView === 'user' && this.tab === 1 && this.currentUser.id) {
+    this.getEmployeeEmployment(this.currentUser.id);
+    //}
+
     this.leaveCategoryValueChangesSubscription = this.leaveApplication.get('leaveCategory').valueChanges.subscribe(leaveCategory => {
       // Skip if we're in the middle of resetting the form
       if (this.isResettingForm) {
@@ -330,6 +335,8 @@ export class AddApplicationComponent implements OnDestroy {
         // Update form validators after reset
         this.updateFormValidators();
         this.updateAttachmentValidation();
+
+        this.getEmployeeEmployment(employee);
 
         setTimeout(() => {
           this.isResettingForm = false;
@@ -811,10 +818,49 @@ export class AddApplicationComponent implements OnDestroy {
     const selectedDateNormalized = this.stripTime(date);
     const isHoliday = this.holidays.some(holiday => {
       const holidayDateNormalized = this.stripTime(new Date(holiday.date));
-      return holidayDateNormalized === selectedDateNormalized;
+      if (holidayDateNormalized !== selectedDateNormalized) {
+        return false;
+      }
+
+      // If locationAppliesTo is 'All-Locations', it's a holiday for everyone
+      if (holiday.locationAppliesTo === 'All-Locations') {
+        return true;
+      }
+
+      // If 'Selected-Locations', check if user's location is in the list
+      if (holiday.locationAppliesTo === 'Selected-Locations' && holiday.holidayapplicableOffice) {
+        return holiday.holidayapplicableOffice.some((office: any) =>
+          office.office?._id === this.selectedEmployeeLocation || office.office === this.selectedEmployeeLocation
+        );
+      }
+
+      // Fallback for legacy data or if locationAppliesTo is not set
+      if (!holiday.locationAppliesTo) {
+        if (holiday.holidayapplicableEmployee && holiday.holidayapplicableEmployee.length > 0) {
+          return holiday.holidayapplicableEmployee.some((emp: any) => emp.user === this.leaveApplication.get('employee')?.value);
+        }
+        return true; // Default to true if no specific restriction
+      }
+
+      return false;
     });
     return !isHoliday;
   };
+
+  getEmployeeEmployment(userId: string) {
+    this.userService.getJobInformationByUserId(userId).subscribe({
+      next: (res: any) => {
+        if (res.data && res.data.length > 0) {
+          this.selectedEmployeeLocation = res.data[0].location;
+        } else {
+          this.selectedEmployeeLocation = null;
+        }
+      },
+      error: () => {
+        this.selectedEmployeeLocation = null;
+      }
+    });
+  }
 
   populateMembers() {
     if (this.portalView === 'user' && this.tabIndex === 5) {
@@ -861,6 +907,7 @@ export class AddApplicationComponent implements OnDestroy {
     this.maxConsecutiveLeaveDays = 0;
     this.minimumNumberOfDaysAllowed = 0;
     this.maxSelectableEndDate = null;
+    this.selectedEmployeeLocation = null;
     this.endDateBsConfig = {
       ...this.endDateBsConfig,
       maxDate: null
