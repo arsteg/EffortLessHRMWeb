@@ -161,9 +161,9 @@ export class UserService {
     });
   }
   getUserList(): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrlDotNet}/users`, this.httpOptions);  
-  } 
- checkEmailExists(email: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users`, this.httpOptions);
+  }
+  checkEmailExists(email: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/users/checkemailexists/${email}`, this.httpOptions);
   }
   getUserById(userId: any): Observable<newUser> {
@@ -186,7 +186,7 @@ export class UserService {
     return this.http.delete<User>(`${environment.apiUrlDotNet}/users/deleteuser/${id}`, this.httpOptions);
   }
 
-  updateUser(id, updateUser:any): Observable<updateUser> {
+  updateUser(id, updateUser: any): Observable<updateUser> {
     return this.http.patch<updateUser>(`${environment.apiUrlDotNet}/users/updateUser/${id}`, updateUser, this.httpOptions);
   }
 
@@ -203,21 +203,25 @@ export class UserService {
     return this.http.put<any>(`${environment.apiUrlDotNet}/users/user-employment/${id}`, payload, this.httpOptions);
   }
 
+  getUserEmploymentByCompany(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/user-employment-by-company`, this.httpOptions);
+  }
+
   // Salary Details
 
   addSalaryDetails(payload: any): Observable<any> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/salary-details`, payload, this.httpOptions);
   }
   getManagers(): any {
-    var response  = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getManagers`, this.httpOptions);
-   return response;
+    var response = this.http.get<any>(`${environment.apiUrlDotNet}/auth/roles/getManagers`, this.httpOptions);
+    return response;
 
   }
   getusers(ids): any {
-    var response  = this.http.post<any>(`${environment.apiUrlDotNet}/users/getUsers`,{"userId":ids}, this.httpOptions);
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/users/getUsers`, { "userId": ids }, this.httpOptions);
     return response;
-  
-    }
+
+  }
   getSalaryByUserId(id: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/users/salary-details-by-userId/${id}`, this.httpOptions);
   }
@@ -289,7 +293,7 @@ export class UserService {
     return this.http.put<any>(`${environment.apiUrlDotNet}/users/appointments/${id}`, payload, this.httpOptions);
   }
   getUsersByCompany(companyId: string) {
-    return this.http.get<any>(`${environment.apiUrlDotNet}/users/getUsersByCompany/${companyId}`,this.httpOptions);
+    return this.http.get<any>(`${environment.apiUrlDotNet}/users/getUsersByCompany/${companyId}`, this.httpOptions);
   }
   getBasicSalaryByUserId(id: string): Observable<any> {
     return this.http.get<any>(`${environment.apiUrlDotNet}/users/basic-salary-by-userId/${id}`, this.httpOptions);

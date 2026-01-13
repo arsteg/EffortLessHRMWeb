@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import * as XLSX from 'xlsx';
 import { TranslateService } from '@ngx-translate/core';
 import { PayrollService } from 'src/app/_services/payroll.service';
+import { UserService } from 'src/app/_services/users.service';
 
 @Component({
   selector: 'app-attendance-records',
@@ -39,6 +40,7 @@ export class AttendanceRecordsComponent implements OnInit {
   selectedUser: any;
   attendanceData: any[] = [];
   shifts: any[];
+  userEmployments: any[] = [];
 
   @ViewChild('uploadPopup') uploadPopup!: TemplateRef<any>;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
@@ -64,7 +66,8 @@ export class AttendanceRecordsComponent implements OnInit {
     private leaveService: LeaveService,
     private companyService: CompanyService,
     private translate: TranslateService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
@@ -76,15 +79,17 @@ export class AttendanceRecordsComponent implements OnInit {
       leaves: this.getLeaveDetails(),
       holidays: this.getHolidays(),
       shiftData: this.getShiftDetails(),
-      attendanceTemplate: this.getAttendanceTemplateAssignment()
+      attendanceTemplate: this.getAttendanceTemplateAssignment(),
+      userEmployments: this.userService.getUserEmploymentByCompany()
     }).subscribe({
-      next: (results: { users: any; attendance: any; leaves: any; holidays: any; shiftData: any, attendanceTemplate: any }) => {
+      next: (results: { users: any; attendance: any; leaves: any; holidays: any; shiftData: any, attendanceTemplate: any, userEmployments: any }) => {
         this.users = results.users.data.data;
         this.groupedAttendanceRecords = this.groupAttendanceByUser(results.attendance);
         this.leave = results.leaves.data.filter((l: any) => l.status === 'Approved');
         this.holidays = results.holidays.data;
         this.attendanceTemplateAssignment = results.attendanceTemplate.data;
         this.shifts = results.shiftData.data;
+        this.userEmployments = results.userEmployments.data;
       },
       error: (error) => {
         this.toast.error(this.translate.instant('common.initial_data_load_error'));
@@ -208,39 +213,60 @@ export class AttendanceRecordsComponent implements OnInit {
     const today = new Date();
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     let status = 'N/A';
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0);
 
-    // 1. Check for holidays first
-    if (this.isHolidayForUser(user, date)) {
-      return 'holiday';
-    }
-    if(this.isDateOnHalfDayLeave(user._id.id, date)){
-      return 'halfDayLeave';
-    }
+    // 1. Check for leaves first to see if they overlap with anything else
+    const leaveForDate = this.getLeaveForDate(user._id.id, compareDate);
+    const halfDayLeave = this.getHalfDayLeaveForDate(user._id.id, compareDate);
 
-    // 2. Check for leaves
-    if (this.isDateOnLeave(user._id.id, date)) {
-      return 'leave';
-    }
+    const isHoliday = this.isHolidayForUser(user, compareDate);
 
-    // 3. Check for weekly offs
     const assignment = this.attendanceTemplateAssignment?.find(
       (assignment: any) => assignment?.employee?._id === user?._id?.id
     );
     const assignedTemplate = assignment?.attendanceTemplate;
     const weeklyOfDays = assignedTemplate?.weeklyOfDays || [];
-    const dayOfWeekName = dayNames[date.getDay()];
-    if (weeklyOfDays.includes(dayOfWeekName)) {
+    const dayOfWeekName = dayNames[compareDate.getDay()];
+    const isWeeklyOff = weeklyOfDays.includes(dayOfWeekName);
+
+    // 2. Logic for overlapping status
+    if (leaveForDate) {
+      const isWeeklyOffPartOfLeave = leaveForDate.leaveCategory?.isWeeklyOffLeavePartOfNumberOfDaysTaken;
+      const isHolidayPartOfLeave = leaveForDate.leaveCategory?.isAnnualHolidayLeavePartOfNumberOfDaysTaken;
+
+      if (isHoliday && !isHolidayPartOfLeave) {
+        return 'holiday';
+      }
+      if (isWeeklyOff && !isWeeklyOffPartOfLeave) {
+        return 'weeklyOff';
+      }
+      return 'leave';
+    }
+
+    if (halfDayLeave) {
+      // For half day leaves, usually we still show it as half day leave regardless of holiday/weekly off
+      // as applying a half day leave on a non-working day is rare but possible.
+      return 'halfDayLeave';
+    }
+
+    // 3. Independent status checks
+    if (isHoliday) {
+      return 'holiday';
+    }
+
+    if (isWeeklyOff) {
       return 'weeklyOff';
     }
 
     // 4. Check for future dates
-    if (date > today) {
+    if (compareDate > today) {
       return 'notApplicable';
     }
 
     // 5. Check attendance record
     const attendance = user.attendance.find(
-      (att: any) => new Date(att.date).toDateString() === date.toDateString()
+      (att: any) => new Date(att.date).toDateString() === compareDate.toDateString()
     );
 
     if (!attendance) {
@@ -255,12 +281,12 @@ export class AttendanceRecordsComponent implements OnInit {
       const halfDayDuration = shiftAssignment?.template?.minHoursPerDayToGetCreditforHalfDay * 60;
       const isHalfDayApplicable = !!shiftAssignment?.template?.isHalfDayApplicable;
 
-      if (attendance.duration == 0){
+      if (attendance.duration == 0) {
         return 'absent'
       }
       else if (attendance.duration >= fullDayDuration) {
         return 'present';
-      } 
+      }
       else if (isHalfDayApplicable) {
         if (attendance.duration >= halfDayDuration) {
           return 'halfDay';
@@ -272,37 +298,12 @@ export class AttendanceRecordsComponent implements OnInit {
         return 'incomplete';
       }
     }
-    // Default return if none of the above conditions are met
     return status;
   }
 
-  isDateOnHalfDayLeave(userId: string, date: Date): boolean {
+  getLeaveForDate(userId: string, date: Date): any {
     if (!this.leave || this.leave.length === 0) {
-        return false;
-    }
-    const userLeaves = this.leave.filter(leave => leave.employee.id === userId);
-    const compareDate = new Date(date);
-    compareDate.setHours(0, 0, 0, 0);
-
-    for (let leave of userLeaves) {
-        if (leave.halfDays && leave.halfDays.length > 0 && leave.isHalfDayOption == true) {
-            const halfDayLeave = leave.halfDays.find((h: any) => {
-                const leaveDate = new Date(h.date);
-                leaveDate.setHours(0, 0, 0, 0);
-                return leaveDate.getTime() === compareDate.getTime();
-            });
-
-            if (halfDayLeave) {
-                return true;
-            }
-        }
-    }
-    return false;
-  }
-
-  isDateOnLeave(userId: string, date: Date): boolean {
-    if (!this.leave || this.leave.length === 0) {
-      return false;
+      return null;
     }
     const userLeaves = this.leave.filter(leave => leave.employee.id === userId);
     for (let leave of userLeaves) {
@@ -310,29 +311,70 @@ export class AttendanceRecordsComponent implements OnInit {
       const endDate = new Date(leave.endDate);
       startDate.setHours(0, 0, 0, 0);
       endDate.setHours(0, 0, 0, 0);
-      const compareDate = new Date(date);
-      compareDate.setHours(0, 0, 0, 0);
-      if (compareDate >= startDate && compareDate <= endDate) {
-        return true;
+
+      if (date >= startDate && date <= endDate) {
+        return leave;
       }
     }
-    return false;
+    return null;
   }
+
+  getHalfDayLeaveForDate(userId: string, date: Date): any {
+    if (!this.leave || this.leave.length === 0) {
+      return null;
+    }
+    const userLeaves = this.leave.filter(leave => leave.employee.id === userId);
+    for (let leave of userLeaves) {
+      if (leave.halfDays && leave.halfDays.length > 0 && leave.isHalfDayOption == true) {
+        const halfDayLeave = leave.halfDays.find((h: any) => {
+          const leaveDate = new Date(h.date);
+          leaveDate.setHours(0, 0, 0, 0);
+          return leaveDate.getTime() === date.getTime();
+        });
+        if (halfDayLeave) return halfDayLeave;
+      }
+    }
+    return null;
+  }
+
 
   isHolidayForUser(user: any, date: Date): boolean {
     if (!this.holidays || this.holidays.length === 0) {
       return false;
     }
-
+    //debugger;
     const compareDate = new Date(date);
     compareDate.setHours(0, 0, 0, 0);
+
+    // Find user location from userEmployments
+    const userEmp = this.userEmployments.find(emp => emp.user === user._id || emp.user === user.id);
+    const userLocation = userEmp ? userEmp.location : null;
 
     for (let holiday of this.holidays) {
       const holidayDate = new Date(holiday.date);
       holidayDate.setHours(0, 0, 0, 0);
 
       if (holidayDate.getTime() === compareDate.getTime()) {
-        if (Array.isArray(holiday.holidayapplicableEmployee)) {
+        // 1. Check if it applies to All-Locations
+        if (holiday.locationAppliesTo === 'All-Locations') {
+          return true;
+        }
+
+        // 2. Check if it applies to Selected-Locations and matches user location
+        if (holiday.locationAppliesTo === 'Selected-Locations' && userLocation) {
+          const isApplicable = holiday.holidayapplicableOffice.some(hao =>
+            hao.office && (hao.office.name === userLocation || hao.office._id === userLocation)
+          );
+          if (isApplicable) return true;
+        }
+
+        // Fallback for cases where locationAppliesTo might not be set (legacy data)
+        if (!holiday.locationAppliesTo) {
+          if (Array.isArray(holiday.holidayapplicableEmployee) && holiday.holidayapplicableEmployee.length > 0) {
+            // If there's an employee-specific list, it's a holiday if the user is in it
+            return holiday.holidayapplicableEmployee.some(emp => emp.user === user._id || emp.user === user.id);
+          }
+          // If no locationAppliesTo and no employee list, assume it's for everyone (old behavior)
           return true;
         }
       }
@@ -409,36 +451,36 @@ export class AttendanceRecordsComponent implements OnInit {
       link.click();
     });
   }
-validateAttendanceUploadLock(): Promise<boolean> {
-  const month = this.selectedMonth; // 1-based month index
-  const year = this.selectedYear;
+  validateAttendanceUploadLock(): Promise<boolean> {
+    const month = this.selectedMonth; // 1-based month index
+    const year = this.selectedYear;
 
-  return new Promise((resolve, reject) => {
-    this.payrollService.validateAttendanceProcess({ month, year }).subscribe(
-      (res: any) => {
-        if (res.exists) {
+    return new Promise((resolve, reject) => {
+      this.payrollService.validateAttendanceProcess({ month, year }).subscribe(
+        (res: any) => {
+          if (res.exists) {
+            this.toast.error(
+              res.message || 'Attendance is already processed for this month. Upload is not allowed.'
+            );
+            resolve(true); // ❗️true means "locked"
+          } else {
+            resolve(false); // Not locked, safe to proceed
+          }
+        },
+        (err) => {
+          this.processing = false;
           this.toast.error(
-            res.message || 'Attendance is already processed for this month. Upload is not allowed.'
+            err?.error?.message || 'Error validating attendance process.',
+            this.translate.instant('attendance.upload_title') || 'Upload Attendance'
           );
-          resolve(true); // ❗️true means "locked"
-        } else {
-          resolve(false); // Not locked, safe to proceed
+          reject(false);
         }
-      },
-      (err) => {
-        this.processing = false;
-        this.toast.error(
-          err?.error?.message || 'Error validating attendance process.',
-          this.translate.instant('attendance.upload_title') || 'Upload Attendance'
-        );
-        reject(false);
-      }
-    );
-  });
-}
+      );
+    });
+  }
 
 
- async uploadAttendanceBackup(event: any) {
+  async uploadAttendanceBackup(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -450,7 +492,7 @@ validateAttendanceUploadLock(): Promise<boolean> {
       return;
     }
     const isAttendanceValid = await this.validateAttendanceUploadLock();
-    if (isAttendanceValid===true) {   
+    if (isAttendanceValid === true) {
       return;
     }
     const reader = new FileReader();
@@ -598,9 +640,9 @@ validateAttendanceUploadLock(): Promise<boolean> {
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
   }
 
- async uploadAttendanceRecord() {
-       const isAttendanceValid = await this.validateAttendanceUploadLock();
-    if (isAttendanceValid===true) {
+  async uploadAttendanceRecord() {
+    const isAttendanceValid = await this.validateAttendanceUploadLock();
+    if (isAttendanceValid === true) {
       return;
     }
     const dialogRef = this.dialog.open(UploadRecordsComponent, {
@@ -708,14 +750,14 @@ validateAttendanceUploadLock(): Promise<boolean> {
   }
 
   confirmBeforeClose(): void {
-    if(this.processing) {
+    if (this.processing) {
       this.toast.info('Please wait until the current processing is complete.');
       //const confirmClose = confirm('Uploading process will be stopped if you close. Are you sure you want to close?');
       // if (confirmClose) {
       //   this.dialog.closeAll();
       // }
     }
-    else{
+    else {
       this.dialog.closeAll();
     }
   }
@@ -779,7 +821,7 @@ validateAttendanceUploadLock(): Promise<boolean> {
       }
     } catch (err) {
       // fallback to closing all dialogs if specific ref fails
-      try { this.dialog.closeAll(); } catch {}
+      try { this.dialog.closeAll(); } catch { }
     }
   }
 }
