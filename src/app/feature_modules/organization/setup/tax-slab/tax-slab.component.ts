@@ -32,16 +32,18 @@ export class TaxSlabComponent {
   allData: any[] = [];
   dialogRef: MatDialogRef<any> | null = null;
   columns: TableColumn[] = [
-    {key: 'IncomeTaxSlabs', name: this.translate.instant('organization.tax_slab.table.income_tax_slabs')},
-    {key: 'minAmount', name: this.translate.instant('organization.tax_slab.table.min_amount')},
-    {key: 'maxAmount', name: this.translate.instant('organization.tax_slab.table.max_amount')},
-    {key: 'taxPercentage', name: this.translate.instant('organization.tax_slab.table.tax_percentage')},
-    {key: 'cycle', name: this.translate.instant('organization.tax_slab.table.cycle')},
-    {key: 'regime', name: this.translate.instant('organization.tax_slab.table.regime')},
-    {key: 'action', name: 'Action', isAction: true, options:[
-      {label: 'Edit', icon:'edit', visibility:ActionVisibility.LABEL},
-      {label: 'Delete', icon:'delete', visibility:ActionVisibility.LABEL},
-    ]}
+    { key: 'IncomeTaxSlabs', name: this.translate.instant('organization.tax_slab.table.income_tax_slabs') },
+    { key: 'minAmount', name: this.translate.instant('organization.tax_slab.table.min_amount') },
+    { key: 'maxAmount', name: this.translate.instant('organization.tax_slab.table.max_amount') },
+    { key: 'taxPercentage', name: this.translate.instant('organization.tax_slab.table.tax_percentage') },
+    { key: 'cycle', name: this.translate.instant('organization.tax_slab.table.cycle') },
+    { key: 'regime', name: this.translate.instant('organization.tax_slab.table.regime') },
+    {
+      key: 'action', name: 'Action', isAction: true, options: [
+        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
+        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL },
+      ]
+    }
   ]
 
   constructor(
@@ -85,8 +87,9 @@ export class TaxSlabComponent {
 
   getTaxSlabs() {
     let payload = {
-      skip: '',
-      next: ''
+      skip: (this.currentPage - 1) * this.recordsPerPage,
+      next: this.recordsPerPage,
+      cycle: this.selectedCycle || ''
     }
     this.companyService.getTaxSlabByCompany(payload).subscribe((res: any) => {
       this.taxSlabs = res.data;
@@ -96,14 +99,8 @@ export class TaxSlabComponent {
   }
 
   onTaxSlabChange(event) {
-    if (!event.value) { this.getTaxSlabs() }
-    if (event.value) {
-      this.companyService.getTaxSlabByYear(event.value).subscribe((res: any) => {
-        this.taxSlabs = res.data;
-        this.allData = res.data;
-        this.totalRecords = res.total;
-      })
-    }
+    this.currentPage = 1;
+    this.getTaxSlabs();
   }
 
   initializeFiscalYears(): void {
@@ -116,8 +113,9 @@ export class TaxSlabComponent {
       `FY ${startYear}-${startYear + 1}`,
       `FY ${startYear + 1}-${startYear + 2}`,
     ];
-    // Set default value for fiscal year in the form
-    this.taxSlabForm.controls['cycle'].setValue(this.fiscalYears[0]);
+    // Set default value for fiscal year in the form and the filter
+    this.selectedCycle = this.fiscalYears[1];
+    this.taxSlabForm.controls['cycle'].setValue(this.selectedCycle);
   }
 
   onPageChange(event: any) {
@@ -178,32 +176,33 @@ export class TaxSlabComponent {
     if (!this.isEdit) {
       this.companyService.addTaxSlab(this.taxSlabForm.value).subscribe((res: any) => {
         this.toast.success(this.translate.instant('organization.setup.tax_slab_added'), this.translate.instant('organization.toast.success'));
-        this.resetTaxSlabForm();this.isSubmitting = false;
+        this.resetTaxSlabForm(); this.isSubmitting = false;
         this.dialogRef.close(true);
         this.getTaxSlabs();
       },
-        err => { 
-          const errorMessage = err?.error?.message || err?.message || err 
-          || this.translate.instant('organization.setup.tax_slab_add_fail')
-          ;
-          this.toast.error(errorMessage, 'Error!'); 
-          this.isSubmitting = false;   
-         })
+        err => {
+          const errorMessage = err?.error?.message || err?.message || err
+            || this.translate.instant('organization.setup.tax_slab_add_fail')
+            ;
+          this.toast.error(errorMessage, 'Error!');
+          this.isSubmitting = false;
+        })
     }
     if (this.isEdit) {
       this.companyService.updateTaxSlab(this.selectedRecord?._id, this.taxSlabForm.value).subscribe((res: any) => {
         this.getTaxSlabs();
         this.toast.success(this.translate.instant('organization.setup.tax_slab_updated'), this.translate.instant('organization.toast.success'));
-       this.resetTaxSlabForm();this.isSubmitting = false;
-       this.dialogRef.close(true);
+        this.resetTaxSlabForm(); this.isSubmitting = false;
+        this.dialogRef.close(true);
         this.isEdit = false;
       },
-        err => {   const errorMessage = err?.error?.message || err?.message || err 
-          || this.translate.instant('organization.setup.tax_slab_add_fail')
-          ;
-          this.toast.error(errorMessage, 'Error!'); 
-          this.isSubmitting = false;   
-         })
+        err => {
+          const errorMessage = err?.error?.message || err?.message || err
+            || this.translate.instant('organization.setup.tax_slab_add_fail')
+            ;
+          this.toast.error(errorMessage, 'Error!');
+          this.isSubmitting = false;
+        })
     }
   }
   resetTaxSlabForm(): void {
@@ -215,24 +214,24 @@ export class TaxSlabComponent {
       cycle: '',
       regime: ''
     });
-  
+
     this.taxSlabForm.markAsPristine();
     this.taxSlabForm.markAsUntouched();
   }
-  
+
   deleteTaxSlab(id: string) {
     this.companyService.deleteTaxSlab(id).subscribe((res: any) => {
       this.getTaxSlabs();
       this.toast.success(this.translate.instant('organization.setup.deleted'), this.translate.instant('organization.toast.success'));
-     
+
     },
-    (err) => {
-        const errorMessage = err?.error?.message || err?.message || err 
+      (err) => {
+        const errorMessage = err?.error?.message || err?.message || err
           || this.translate.instant('organization.setup.delete_fail')
           ;
-          this.toast.error(errorMessage, 'Error!'); 
-        
-    })
+        this.toast.error(errorMessage, 'Error!');
+
+      })
   }
 
   deleteDialog(id: string): void {
@@ -244,10 +243,10 @@ export class TaxSlabComponent {
         this.deleteTaxSlab(id);
       }
       err => {
-        const errorMessage = err?.error?.message || err?.message || err 
-        || this.translate.instant('organization.setup.delete_fail')
-        ;
-        this.toast.error(errorMessage, 'Error!'); 
+        const errorMessage = err?.error?.message || err?.message || err
+          || this.translate.instant('organization.setup.delete_fail')
+          ;
+        this.toast.error(errorMessage, 'Error!');
       }
     });
   }
