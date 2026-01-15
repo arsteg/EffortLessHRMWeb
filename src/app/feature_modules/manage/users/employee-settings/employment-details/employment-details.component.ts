@@ -152,7 +152,7 @@ export class EmploymentDetailsComponent {
       this.userService.addJobInformation(formData).subscribe({
         next: (res: any) => {
           this.toast.success(this.translate.instant('manage.users.employee-settings.job_information_Added'), this.translate.instant('common.success'));
-
+          this.refreshJobInformation();
         },
         error: (err) => {
           const errorMessage = err?.error?.message || err?.message || err
@@ -166,7 +166,7 @@ export class EmploymentDetailsComponent {
       this.userService.updateJobInformation(this.jobInformationId, formData).subscribe({
         next: (res: any) => {
           this.toast.success(this.translate.instant('manage.users.employee-settings.job_information_Updated'), this.translate.instant('common.success'));
-
+          this.refreshJobInformation();
         },
         error: (err) => {
           const errorMessage = err?.error?.message || err?.message || err
@@ -177,7 +177,9 @@ export class EmploymentDetailsComponent {
         }
       });
     }
+  }
 
+  refreshJobInformation() {
     this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
       const jobInfo = res.data[0];
       if (jobInfo) {
@@ -221,6 +223,7 @@ export class EmploymentDetailsComponent {
     ]).subscribe((results: any[]) => {
       this.appointment = results[0].data;
       this.appointmentForm.patchValue(results[0].data);
+
       const jobInfo = results[1].data[0];
       if (jobInfo) {
         this.jobInformationForm.patchValue({
@@ -236,6 +239,7 @@ export class EmploymentDetailsComponent {
         this.isNew = false;
         this.jobInformationId = jobInfo._id;
       }
+
       this.supervisors = results[2].data.data;
       this.bands = results[3].data;
       this.zones = results[4].data.filter(zone => zone.status === 'Active');
