@@ -179,9 +179,21 @@ export class EmploymentDetailsComponent {
     }
 
     this.userService.getJobInformationByUserId(this.selectedUser[0]._id).subscribe((res: any) => {
-      this.jobInformationForm.patchValue(res.data[0]);
-      this.jobInformationId = res.data[0]._id;
-      this.isNew = false;
+      const jobInfo = res.data[0];
+      if (jobInfo) {
+        this.jobInformationForm.patchValue({
+          ...jobInfo,
+          location: jobInfo.location?._id || jobInfo.location,
+          designation: jobInfo.designation?._id || jobInfo.designation,
+          reportingSupervisor: jobInfo.reportingSupervisor?._id || jobInfo.reportingSupervisor,
+          department: jobInfo.department?._id || jobInfo.department,
+          band: jobInfo.band?._id || jobInfo.band,
+          subDepartments: jobInfo.subDepartments?._id || jobInfo.subDepartments,
+          zone: jobInfo.zone?._id || jobInfo.zone
+        });
+        this.jobInformationId = jobInfo._id;
+        this.isNew = false;
+      }
     });
   }
 
@@ -209,10 +221,20 @@ export class EmploymentDetailsComponent {
     ]).subscribe((results: any[]) => {
       this.appointment = results[0].data;
       this.appointmentForm.patchValue(results[0].data);
-      this.jobInformationForm.patchValue(results[1].data[0]);
-      if (results[1].data[0]) {
+      const jobInfo = results[1].data[0];
+      if (jobInfo) {
+        this.jobInformationForm.patchValue({
+          ...jobInfo,
+          location: jobInfo.location?._id || jobInfo.location,
+          designation: jobInfo.designation?._id || jobInfo.designation,
+          reportingSupervisor: jobInfo.reportingSupervisor?._id || jobInfo.reportingSupervisor,
+          department: jobInfo.department?._id || jobInfo.department,
+          band: jobInfo.band?._id || jobInfo.band,
+          subDepartments: jobInfo.subDepartments?._id || jobInfo.subDepartments,
+          zone: jobInfo.zone?._id || jobInfo.zone
+        });
         this.isNew = false;
-        this.jobInformationId = results[1].data[0]._id;
+        this.jobInformationId = jobInfo._id;
       }
       this.supervisors = results[2].data.data;
       this.bands = results[3].data;
