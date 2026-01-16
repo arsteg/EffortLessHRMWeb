@@ -811,10 +811,18 @@ export class AddApplicationComponent implements OnDestroy {
     if (!date) {
       return true;
     }
+
+    const leaveCategory = this.tempLeaveCategory?.leaveCategory;
+    const isWeeklyOffPartOfDays = leaveCategory?.isWeeklyOffLeavePartOfNumberOfDaysTaken || false;
+    const isHolidayPartOfDays = leaveCategory?.isAnnualHolidayLeavePartOfNumberOfDaysTaken || false;
+
     const dayName = moment(date).format('dddd');
-    if (this.weeklyOffDays.includes(dayName)) {
+    const isWeeklyOff = this.weeklyOffDays.includes(dayName);
+
+    if (isWeeklyOff && !isWeeklyOffPartOfDays) {
       return false;
     }
+
     const selectedDateNormalized = this.stripTime(date);
     const isHoliday = this.holidays.some(holiday => {
       const holidayDateNormalized = this.stripTime(new Date(holiday.date));
@@ -844,7 +852,12 @@ export class AddApplicationComponent implements OnDestroy {
 
       return false;
     });
-    return !isHoliday;
+
+    if (isHoliday && !isHolidayPartOfDays) {
+      return false;
+    }
+
+    return true;
   };
 
   getEmployeeEmployment(userId: string) {
