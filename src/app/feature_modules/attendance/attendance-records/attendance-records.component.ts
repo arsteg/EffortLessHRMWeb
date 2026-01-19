@@ -220,7 +220,7 @@ export class AttendanceRecordsComponent implements OnInit {
     const leaveForDate = this.getLeaveForDate(user._id.id, compareDate);
     const halfDayLeave = this.getHalfDayLeaveForDate(user._id.id, compareDate);
 
-    const isHoliday = this.isHolidayForUser(user, compareDate);
+    const isHoliday = this.isHolidayForUser(user._id, compareDate);
 
     const assignment = this.attendanceTemplateAssignment?.find(
       (assignment: any) => assignment?.employee?._id === user?._id?.id
