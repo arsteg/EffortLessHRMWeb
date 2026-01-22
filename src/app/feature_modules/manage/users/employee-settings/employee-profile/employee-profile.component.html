@@ -129,7 +129,7 @@
                               <mat-error *ngIf="userForm.get('AadharNumber')?.hasError('digitsOnly') && userForm.get('AadharNumber')?.touched">
                                 Aadhar Number must contain only digits.
                               </mat-error>
-                              <mat-error *ngIf="userForm.get('AadharNumber')?.hasError('invalidAadhar') && userForm.get('AadharNumber')?.touched">
+                              <mat-error *ngIf="userForm.get('AadharNumber')?.hasError('invalidAadhar') && !userForm.get('AadharNumber')?.hasError('digitsOnly') && userForm.get('AadharNumber')?.touched">
                                 Aadhar Number must be exactly 12 digits.
                               </mat-error>
                         </mat-form-field>
