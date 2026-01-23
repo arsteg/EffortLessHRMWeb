@@ -53,8 +53,15 @@ export class AssetStatusComponent implements OnInit {
 
   initForm() {
     this.assetStatusForm = this.fb.group({
-      statusName: ['', [Validators.required, this.checkDuplicateStatusName.bind(this)]]
+      statusName: ['', [Validators.required, this.noWhitespaceValidator, this.checkDuplicateStatusName.bind(this)]]
     });
+  }
+
+  noWhitespaceValidator(control: any) {
+    if (control.value && control.value.trim() === '') {
+      return { whitespace: true };
+    }
+    return null;
   }
   // Getter and Setter for isEdit
   get isEdit(): boolean {
@@ -79,7 +86,12 @@ export class AssetStatusComponent implements OnInit {
   }
 
   addAssetStatus() {
-    this.assetManagementService.addAssetStatus(this.assetStatusForm.value).subscribe(response => {
+    this.assetStatusForm.markAllAsTouched();
+    if (this.assetStatusForm.invalid) {
+      return;
+    }
+    const formValue = { ...this.assetStatusForm.value, statusName: this.assetStatusForm.value.statusName?.trim() };
+    this.assetManagementService.addAssetStatus(formValue).subscribe(response => {
       this.toast.success('Asset Status added successfully!');
       this.getAssetStatuses();
       this.assetStatusForm.reset();
@@ -93,7 +105,12 @@ export class AssetStatusComponent implements OnInit {
   }
 
   updateAssetStatus() {
-    this.assetManagementService.updateAssetStatus(this.selectedStatus._id, this.assetStatusForm.value).subscribe(response => {
+    this.assetStatusForm.markAllAsTouched();
+    if (this.assetStatusForm.invalid) {
+      return;
+    }
+    const formValue = { ...this.assetStatusForm.value, statusName: this.assetStatusForm.value.statusName?.trim() };
+    this.assetManagementService.updateAssetStatus(this.selectedStatus._id, formValue).subscribe(response => {
       this.toast.success('Asset Status updated successfully!');
       this.getAssetStatuses();
       this.isEdit = false;

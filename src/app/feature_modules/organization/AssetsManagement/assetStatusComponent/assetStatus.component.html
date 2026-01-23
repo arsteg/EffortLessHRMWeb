@@ -14,6 +14,12 @@
           <label for="assetStatusName">Status</label>
           <input type="text" id="assetStatusName" class="form-control" formControlName="statusName" required
             maxlength="50">
+          <div *ngIf="assetStatusForm.get('statusName').touched && assetStatusForm.get('statusName').hasError('required')" class="text-danger">
+            Status name is required.
+          </div>
+          <div *ngIf="assetStatusForm.get('statusName').touched && assetStatusForm.get('statusName').hasError('whitespace')" class="text-danger">
+            Status name cannot be only whitespace.
+          </div>
           <div *ngIf="assetStatusForm.get('statusName').hasError('duplicate')" class="text-danger">
             Status name already exists.
           </div>
@@ -21,7 +27,7 @@
       </div>
       <div class="form-group d-flex justify-content-between mt-2">
         <div class="">
-          <button type="submit" mat-flat-button color="primary" class="ml-5" [disabled]="assetStatusForm.invalid">
+          <button type="submit" mat-flat-button color="primary" class="ml-5">
             {{ isEdit ? 'Update' : 'Add' }}
           </button>
         </div>
