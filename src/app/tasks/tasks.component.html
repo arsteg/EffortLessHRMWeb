@@ -16,7 +16,7 @@
             <mat-form-field class="mx-1">
                 <mat-label>Select Project</mat-label>
                 <mat-select [(ngModel)]="projectId" (ngModelChange)="onProjectSelectionChange()">
-                    <mat-option (click)="getTaskByIds(); projectId = ''">ALL</mat-option>
+                    <mat-option [value]="''">ALL</mat-option>
                     <mat-option *ngFor="let project of projectList" [value]="project?.id || null">
                         {{project.projectName}}
                     </mat-option>

@@ -335,33 +335,43 @@ export class TasksComponent implements OnInit {
     this.next = this.recordsPerPage.toString();
     this.skip = ((this.currentPage - 1) * this.recordsPerPage).toString();
 
-    if ((!this.userId || !this.currentProfile.id) && !this.projectId) {
+    // Check if "ALL" projects is selected (empty string or null/undefined)
+    const isAllProjects = !this.projectId || this.projectId === '';
+    // Check if "ALL" users is selected (empty string or null/undefined)
+    const isAllUsers = !this.userId || this.userId === '';
+
+    if (isAllProjects && isAllUsers) {
+      // Both ALL users and ALL projects - get all tasks based on role
       if ((this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
         this.listAllTasks();
       } else {
         this.getTasksbyTeam();
       }
-    } else if (this.projectId && this.userId) {
+    } else if (!isAllProjects && !isAllUsers) {
+      // Both specific user and specific project selected
       this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
           this.totalRecords = response;
           this.tasks = response.taskList;
           this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
         });
-    } else if (this.userId) {
+    } else if (!isAllUsers) {
+      // Specific user, ALL projects
       this.getTaskByIds();
-    } else if (this.projectId) {
+    } else if (!isAllProjects) {
+      // ALL users, specific project
       this.getTasksByProject();
     }
   }
 
 
   async getTasksByProject() {
-    const selectedUserId = this.userId && this.currentProfile.id;
-    if (!selectedUserId) {
+    // Check if a specific user is selected (not "ALL" users)
+    const hasSelectedUser = this.userId && this.userId !== '';
+    if (!hasSelectedUser) {
+      // ALL users, specific project - get all tasks for project
       this.tasksService.getTasksByProjectId(this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
-          console.log(response)
           if (response && response.data && Array.isArray(response.data.taskList)) {
             this.totalRecords = response && response.data
             this.tasks = response.data.taskList;
@@ -370,13 +380,14 @@ export class TasksComponent implements OnInit {
         }, (error: any) => { }
       );
     } else {
+      // Specific user and specific project
       this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
         (response: any) => {
           this.totalRecords = response;
           this.tasks = response.taskList;
           this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-        });
-    } (error: any) => { }
+        }, (error: any) => { });
+    }
   }
 
   getUsersByProject() {
@@ -605,32 +616,24 @@ export class TasksComponent implements OnInit {
   }
 
   onProjectSelectionChange() {
-    if (this.projectId) {
-      this.getTasksByProject();
-    }
+    this.skip = '0'; // Always reset pagination when filter changes
 
-    if ((this.view === 'admin' || this.role?.toLowerCase() === 'admin') && (!this.userId && !this.currentProfile.id) && this.projectId === 'ALL') {
-      this.getTasks();
-    } else if (this.projectId !== 'ALL') {
-      this.skip = '0';
-      this.getTasksByProject();
-    } else if (this.userId) {
-      this.skip = '0';
-      this.getTaskByIds();
+    // Check if "ALL" projects is selected (empty string or null/undefined)
+    const isAllProjects = !this.projectId || this.projectId === '';
+    // Check if "ALL" users is selected (empty string or null/undefined)
+    const isAllUsers = !this.userId || this.userId === '';
+
+    if (isAllProjects) {
+      if (isAllUsers) {
+        // Both ALL users and ALL projects selected
+        this.getTasks();
+      } else {
+        // Specific user, ALL projects
+        this.getTaskByIds();
+      }
     } else {
-      if (this.view !== 'admin') {
-        this.projectService.getProjectByUserId(this.currentProfile.id).subscribe(response => {
-          this.projectList = response && response.data && response.data['projectList'];
-          this.projectList = this.projectList.filter(project => project !== null);
-        });
-        this.tasksService.getTaskByUser(this.currentProfile.id, this.skip, this.next).subscribe(response => {
-          this.tasks = response && response.data && response.data['taskList'];
-          this.totalRecords = response && response.data
-          this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
-          this.tasks = this.tasks.filter(task => task !== null);
-
-        });
-      } else this.getTasks();
+      // Specific project selected
+      this.getTasksByProject();
     }
   }
 
@@ -904,14 +907,18 @@ export class TasksComponent implements OnInit {
   }
 
   getTasks() {
-    if ((!this.storedFilters.userId && !this.storedFilters.projectId) && (this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null)) {
+    const isAdmin = (this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null);
+    const hasStoredFilters = this.storedFilters?.userId || this.storedFilters?.projectId;
+
+    if (!hasStoredFilters && isAdmin) {
       this.listAllTasks();
-    }
-    if (this.view === 'user' || this.role?.toLowerCase() === 'user') {
+    } else if (this.view === 'user' || this.role?.toLowerCase() === 'user') {
       this.getTasksbyTeam();
-    }
-    if (this.currentProfile?.id && this.role?.toLowerCase() !== 'admin') {
+    } else if (this.currentProfile?.id && this.role?.toLowerCase() !== 'admin') {
       this.getCurrentUsersTasks();
+    } else {
+      // Fallback for admin with no stored filters
+      this.listAllTasks();
     }
   }
 
