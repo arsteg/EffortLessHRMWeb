@@ -84,7 +84,7 @@
                                 <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
-                        <div class="col-md-6 my-2 border-bottom">
+                        <div class="col-md-6 my-2 border-bottom" *ngIf="false">
                             <mat-form-field appearance="outline">
                                 <mat-label>Fixed Amount For Provident Fund Wage</mat-label>
                                 <input matInput type="number" formControlName="fixedAmountForProvidentFundWage" min="0" [disabled]="edit"
@@ -92,7 +92,7 @@
                                 <input matInput type="number" formControlName="fixedAmountForProvidentFundWage" readonly [disabled]="edit" *ngIf="edit">                              
                             </mat-form-field>
                         </div>
-                        <div class="col-md-6 my-2 border-bottom">
+                        <div class="col-md-6 my-2 border-bottom" *ngIf="false">
                             <mat-form-field appearance="outline">
                                 <mat-label>PF Template</mat-label>
                                 <mat-select formControlName="pfTemplate" [disabled]="edit">
@@ -136,7 +136,7 @@
                                 <mat-radio-button color="primary" class="example-margin" [value]="false">No</mat-radio-button>
                             </mat-radio-group>
                         </div>
-                        <div class="col-md-6 my-2 border-bottom">
+                        <div class="col-md-6 my-2 border-bottom" *ngIf="false">
                             <mat-label>Round Off Applicable</mat-label>
                             <mat-radio-group formControlName="isRoundOffApplicable" [disabled]="edit">
                                 <mat-radio-button color="primary" class="example-margin" [value]="true">Yes</mat-radio-button>
