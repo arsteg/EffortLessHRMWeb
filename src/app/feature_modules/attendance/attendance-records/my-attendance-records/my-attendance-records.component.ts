@@ -134,6 +134,13 @@ export class MyAttendanceRecordsComponent {
   parseTimeString(timeStr: string): Date | null {
     if (!timeStr) return null;
 
+    // Try parsing as full date string first (e.g., "Fri Jan 03 2025 10:10:29 GMT+0530")
+    const fullDate = new Date(timeStr);
+    if (!isNaN(fullDate.getTime())) {
+      return fullDate;
+    }
+
+    // Fall back to simple time format (e.g., "10:00")
     const parts = timeStr.split(':').map(Number);
     if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return null;
 
