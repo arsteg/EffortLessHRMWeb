@@ -41,14 +41,12 @@ export class OvertimeRecordsComponent {
   ) { }
 
   ngOnInit() {
-    this.loadDatesForSelectedMonth();
     this.generateYearList();
+    this.loadDatesForSelectedMonth();
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
       this.getOvertimeByMonth();
     });
-
-
   }
 
   trackByDate: TrackByFunction<string> = (index: number, date: string): string => {
@@ -61,12 +59,11 @@ export class OvertimeRecordsComponent {
   }
 
   loadDatesForSelectedMonth() {
-    const year = new Date().getFullYear();
-    const daysInMonth = new Date(year, this.selectedMonth, 0).getDate();
+    const daysInMonth = new Date(this.selectedYear, this.selectedMonth, 0).getDate();
 
     this.currentMonthDates = [];
     for (let day = 1; day <= daysInMonth; day++) {
-      this.currentMonthDates.push(new Date(year, this.selectedMonth - 1, day));
+      this.currentMonthDates.push(new Date(this.selectedYear, this.selectedMonth - 1, day));
     }
   }
   formatDate(date: Date): string {
@@ -83,7 +80,8 @@ export class OvertimeRecordsComponent {
   }
 
   onYearChange(event: any) {
-    this.selectedYear = event.target.value;
+    this.selectedYear = event.value;
+    this.loadDatesForSelectedMonth();
     this.getOvertimeByMonth();
   }
 
@@ -95,8 +93,10 @@ export class OvertimeRecordsComponent {
   getOvertimeForDate(date: Date, overtimeRecords: any[]): any | null {
     return overtimeRecords.find(record => {
       const recordDate = new Date(record.date);
-      recordDate.setHours(0, 0, 0, 0);
-      return recordDate.getTime() === date.getTime();
+      // Compare year, month, and day only to avoid timezone issues
+      return recordDate.getFullYear() === date.getFullYear() &&
+             recordDate.getMonth() === date.getMonth() &&
+             recordDate.getDate() === date.getDate();
     }) || null;
   }
   getOvertimeByMonth() {
@@ -110,28 +110,34 @@ export class OvertimeRecordsComponent {
       user: this.currentUser.id
     }
     if (this.view == 'user') {
-      this.attendanceService.getAttendanceOvertimeByUser(payloadForUser).subscribe((res: any) => {
-        const userOvertimeMap = new Map();
+      this.attendanceService.getAttendanceOvertimeByUser(payloadForUser).subscribe({
+        next: (res: any) => {
+          const userOvertimeMap = new Map();
 
-        for (const data of res.data) {
-          const user = this.getUser(data.User);
+          for (const data of res.data) {
+            const user = this.getUser(data.User);
 
-          if (!userOvertimeMap.has(data.User)) {
-            userOvertimeMap.set(data.User, {
-              User: user,
-              overtimeRecords: [],
-              TotalOvertime: 0
+            if (!userOvertimeMap.has(data.User)) {
+              userOvertimeMap.set(data.User, {
+                User: user,
+                overtimeRecords: [],
+                TotalOvertime: 0
+              });
+            }
+
+            const userOvertime = userOvertimeMap.get(data.User);
+
+            userOvertime.overtimeRecords.push({
+              date: data.CheckInDate,
+              overtimeValue: data.OverTime
             });
           }
-
-          const userOvertime = userOvertimeMap.get(data.User);
-
-          userOvertime.overtimeRecords.push({
-            date: data.CheckInDate,
-            overtimeValue: data.OverTime
-          });
+          this.overtimeRecords = Array.from(userOvertimeMap.values());
+        },
+        error: () => {
+          // Handle 404 (no records found) gracefully - show empty state
+          this.overtimeRecords = [];
         }
-        this.overtimeRecords = Array.from(userOvertimeMap.values());
       });
     }
 
