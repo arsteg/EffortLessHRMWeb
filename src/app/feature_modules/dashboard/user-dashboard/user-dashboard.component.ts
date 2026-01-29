@@ -138,6 +138,10 @@ export class UserDashboardComponent implements OnInit {
     return `${roundedHours}h ${minutes}m`;
   }
 
+  hasChartData(data: any[]): boolean {
+    return data?.length > 0 && data.some(item => item.value > 0);
+  }
+
   onDateChange(event: MatDatepickerInputEvent<Date>) {
     this.selectedDate = event.value;
     console.log(this.selectedDate)
@@ -227,6 +231,9 @@ export class UserDashboardComponent implements OnInit {
 
     this.dashboardService.taskwiseHours(this.currentUser.id).subscribe(response => {
       this.projectTasks = response.data;
+      this.projectTasks?.forEach(project => {
+        project.tasks?.sort((a, b) => b.totalTime - a.totalTime);
+      });
     },
       err => {
         this.toastr.error(err, 'ERROR!')

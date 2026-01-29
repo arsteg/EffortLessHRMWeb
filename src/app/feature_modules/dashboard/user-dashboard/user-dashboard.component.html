@@ -21,7 +21,7 @@
 <div class="row mt-2">
   <!--Work Hours Log-->
   <div class="col-md-4 mb-4">
-    <div class="card p-2 " #timeSpentCard>
+    <div class="card p-2 " #timeSpentCard style="min-height: 400px;">
       <div class="d-flex align-items-center justify-content-between">
         <h2>Time Spent</h2>
         <mat-form-field class="densed-field w-50">
@@ -34,6 +34,7 @@
       </div>
 
       @if(selectedTimeSpent === 'Daily') {
+      @if(hoursWorked?.today || hoursWorked?.previousDay) {
       <p class="text-center mt-2">
         <span class="h5" [style.color]="hoursWorked?.changeColor">
           {{hoursWorked?.changeDisplay ? hoursWorked?.changeDisplay + '%' : ''}}
@@ -57,24 +58,27 @@
             <h2>{{ formatMillisecondsToTime(hoursWorked?.today)}}</h2>
           </div>
         </div>
-
         <div class="col-5">
           <div class="p-2">
             <h2>{{formatMillisecondsToTime(hoursWorked?.previousDay)}}</h2>
           </div>
         </div>
       </div>
-
-
+      } @else {
+      <div class="d-flex align-items-center justify-content-center flex-grow-1">
+        <p class="text-muted">No time logged for this day</p>
+      </div>
+      }
       }
       @if(selectedTimeSpent === 'Weekly') {
+      @if(weeklySummary?.currentWeek || weeklySummary?.previousWeek) {
       <p class="text-center mt-2">
         <span class="h5" [style.color]="weeklySummary?.changeColor">
           {{weeklySummary?.changeDisplay ? weeklySummary?.changeDisplay + '%' : ''}}
         </span>
         <br>
         <span class="d-flex align-items-center justify-content-center">
-          <span class="text-dark"> last week </span>
+          <span class="text-dark"> Last week </span>
           <mat-icon *ngIf="weeklySummary?.increased" class="text-success">arrow_upward</mat-icon>
           <mat-icon *ngIf="!weeklySummary?.increased" class="text-danger">arrow_downward</mat-icon>
         </span>
@@ -91,22 +95,27 @@
             <h2>{{ formatHoursAndMinutes(weeklySummary?.currentWeek)}}</h2>
           </div>
         </div>
-
         <div class="col-5">
           <div class="p-2">
             <h2>{{formatHoursAndMinutes(weeklySummary?.previousWeek)}}</h2>
           </div>
         </div>
       </div>
+      } @else {
+      <div class="d-flex align-items-center justify-content-center flex-grow-1">
+        <p class="text-muted">No time logged for this week</p>
+      </div>
+      }
       }
       @if(selectedTimeSpent === 'Monthly') {
+      @if(monthlySummary?.currentMonth || monthlySummary?.previousMonth) {
       <p class="text-center mt-2">
         <span class="h5" [style.color]="monthlySummary?.changeColor">
           {{monthlySummary?.changeDisplay ? monthlySummary?.changeDisplay + '%' : ''}}
         </span>
         <br>
         <span class="d-flex align-items-center justify-content-center">
-          <span class="text-dark"> a week before </span>
+          <span class="text-dark"> Last month </span>
           <mat-icon *ngIf="monthlySummary?.increased" class="text-success">arrow_upward</mat-icon>
           <mat-icon *ngIf="!monthlySummary?.increased" class="text-danger">arrow_downward</mat-icon>
         </span>
@@ -123,15 +132,17 @@
             <h2>{{ convertMinutesToHoursAndMinutes(monthlySummary?.currentMonth)}}</h2>
           </div>
         </div>
-
         <div class="col-5">
           <div class="p-2">
             <h2>{{convertMinutesToHoursAndMinutes(monthlySummary?.previousMonth)}}</h2>
           </div>
         </div>
       </div>
-
-
+      } @else {
+      <div class="d-flex align-items-center justify-content-center flex-grow-1">
+        <p class="text-muted">No time logged for this month</p>
+      </div>
+      }
       }
     </div>
   </div>
@@ -140,7 +151,9 @@
   <div class="col-md-8 mb-4">
     <div class="card  p-2">
       <h2>Project-wise time spent on all tasks</h2>
-      <div style="overflow-y: auto;" [style.max-height.px]="timeSpentCardHeight">
+      <div style="overflow-y: auto;" [style.max-height.px]="timeSpentCardHeight"
+        [style.min-height.px]="timeSpentCardHeight">
+        @if(projectTasks?.length > 0) {
         <table class="table">
           <thead>
             <tr>
@@ -164,6 +177,11 @@
             </ng-container>
           </tbody>
         </table>
+        } @else {
+        <div class="d-flex align-items-center justify-content-center h-100">
+          <p class="text-muted">No project-wise time data available</p>
+        </div>
+        }
       </div>
     </div>
   </div>
@@ -174,6 +192,7 @@
   <div class="col-md-6 mb-4">
     <div class="card h-100 p-2" style="min-height: 260px">
       <h2>Project wise time on each task</h2>
+      @if(dayWorkStatusByUser?.length > 0) {
       @for(projectTask of dayWorkStatusByUser; track projectTask; let i = $index) {
       <div class="sticky-top">
         <span class="fw-bold">{{projectTask?.projectName}}</span>
@@ -191,6 +210,11 @@
       </div>
       }
       }
+      } @else {
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <p class="text-muted">No task data available for this date</p>
+      </div>
+      }
     </div>
   </div>
 
@@ -198,8 +222,8 @@
   <div class="col-md-3 mb-4">
     <div class="card p-2 h-100">
       <h2>Productivity</h2>
+      @if(hasChartData(productivityData)) {
       <div class="w-100 mx-auto">
-        <!-- <ngx-charts-pie-chart [results]="productivityData" [legend]="false" [labels]="true" [legendTitle]="''" [scheme]="colorScheme"></ngx-charts-pie-chart> -->
         <ngx-charts-pie-chart [results]="productivityData" [legend]="false" [labels]="false" [doughnut]="true"
           [explodeSlices]="false" [arcWidth]="0.25" [legendTitle]="''" [scheme]="colorScheme"></ngx-charts-pie-chart>
         <div class="d-flex flex-wrap gap-1 chart-legend justify-content-center">
@@ -213,6 +237,11 @@
           }
         </div>
       </div>
+      } @else {
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <p class="text-muted">No productivity data available for this date</p>
+      </div>
+      }
     </div>
   </div>
 
@@ -220,13 +249,11 @@
   <div class="col-md-3 mb-4">
     <div class="card h-100 p-2">
       <h2>Task Summary</h2>
+      @if(hasChartData(taskSummary)) {
       <div class="w-100">
-        <!-- <ngx-charts-pie-chart [results]="taskSummary" [legend]="false" [labels]="true" [legendTitle]="''"
-          [scheme]="colorScheme"></ngx-charts-pie-chart> -->
         <ngx-charts-pie-chart [results]="taskSummary" [legend]="false" [doughnut]="false" [labels]="false"
           [explodeSlices]="false" [gradient]="false" [scheme]="colorScheme">
         </ngx-charts-pie-chart>
-
         <div class="d-flex flex-wrap gap-1 chart-legend justify-content-center">
           @for(task of taskSummary; track task; let i = $index) {
           <div class="text-center">
@@ -238,6 +265,11 @@
           }
         </div>
       </div>
+      } @else {
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <p class="text-muted">No task data available</p>
+      </div>
+      }
     </div>
   </div>
 

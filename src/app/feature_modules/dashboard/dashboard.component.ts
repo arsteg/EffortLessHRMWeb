@@ -202,10 +202,17 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     return `${roundedHours}h ${minutes}m`;
   }
 
+  hasChartData(data: any[]): boolean {
+    return data?.length > 0 && data.some(item => item.value > 0);
+  }
+
   populateTaskwiseHours(selectedUser: string) {
     this.dashboardService.taskwiseHours(selectedUser).subscribe({
       next: response => {
         this.projectTasks = response.data;
+        this.projectTasks?.forEach(project => {
+          project.tasks?.sort((a, b) => b.totalTime - a.totalTime);
+        });
       },
       error: err => {
         this.toastr.error(err, 'ERROR!');
