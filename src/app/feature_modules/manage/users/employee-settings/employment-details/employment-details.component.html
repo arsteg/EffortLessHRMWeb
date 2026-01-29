@@ -8,7 +8,7 @@
       </mat-expansion-panel-header>
 
       <form [formGroup]="appointmentForm" (ngSubmit)="onAppointmentSubmission()">
-        <div class="d-flex justify-content-end mb-2">
+        <div class="d-flex justify-content-end mb-2" *ngIf="!isProfileView">
           <button mat-flat-button color="primary" type="submit">Save</button>
         </div>
         <div class="row">
@@ -71,7 +71,7 @@
       </mat-expansion-panel-header>
 
       <form [formGroup]="jobInformationForm" (ngSubmit)="onSubmissionJobInformation()">
-        <div class="d-flex justify-content-end mb-2">
+        <div class="d-flex justify-content-end mb-2" *ngIf="!isProfileView">
           <button mat-flat-button color="primary">Save</button>
         </div>
         <div class="row">

@@ -4,7 +4,7 @@
             <button class="btn rounded-pill submenuTab active mb-2" type="button" (click)="backToSalaryDetails.emit()">
                 <i class="bi bi-arrow-left"></i> Salary Details
             </button>
-            <button *ngIf="!edit" color="primary" class="mb-2 ms-auto" mat-flat-button type="submit">Save</button>
+            <button *ngIf="!edit && !isProfileView" color="primary" class="mb-2 ms-auto" mat-flat-button type="submit">Save</button>
         </div>
         <!-- Display validation error -->
         <div *ngIf="salaryDetailsForm.errors?.['exceedsGrossSalary']" class="alert alert-danger">

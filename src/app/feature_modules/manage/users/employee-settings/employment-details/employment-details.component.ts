@@ -21,6 +21,7 @@ export class EmploymentDetailsComponent {
   disableSelect = new FormControl(false);
   jobInformationForm: FormGroup;
   appointmentForm: FormGroup;
+  isProfileView: boolean = false;
   supervisors: any;
   bands: any = [];
   zones: any = [];
@@ -70,7 +71,12 @@ export class EmploymentDetailsComponent {
   }
 
   ngOnInit() {
+    this.isProfileView = this.router.url.includes('profile') && !this.router.url.includes('manage');
     this.logUrlSegmentsForUser();
+    if (this.isProfileView) {
+      this.appointmentForm.disable();
+      this.jobInformationForm.disable();
+    }
   }
 
   setStep(index: number) {

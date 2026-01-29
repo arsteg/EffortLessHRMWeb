@@ -5,7 +5,7 @@
     </label>
 
   <form [formGroup]="statutoryDetailsForm" (ngSubmit)="onSubmission()">
-    <div class="d-flex">
+    <div class="d-flex" *ngIf="!isUserMode">
       <button mat-flat-button color="primary" class="ms-auto my-2" type="submit" [disabled]="isSubmitting">
         {{ 'employee.statutory.save' | translate }}
       </button>

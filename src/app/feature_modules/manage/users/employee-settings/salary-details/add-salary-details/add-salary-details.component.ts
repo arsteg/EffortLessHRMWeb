@@ -30,6 +30,7 @@ export class AddSalaryDetailsComponent {
   pfCharge: any;
   @Input() edit: boolean = false;
   @Input() selectedSalaryDetail: any;
+  @Input() isProfileView: boolean = false;
   salaryDetails: any;
   payrollCTCTemplates: any;
   addButtons: boolean = true;
