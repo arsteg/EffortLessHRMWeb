@@ -232,9 +232,9 @@ export class AuthenticationService {
     return this.http.get(`${environment.apiUrlDotNet}/users/getUserProjects/${id}`, httpOptions)
   }
 
-  getUserTaskListByProject(userId, projectId, skip: string, next: string): Observable<any> {
+  getUserTaskListByProject(userId, projectId, skip: string, next: string, search?: string): Observable<any> {
     const httpOptions = this.getHttpOptions();
-    return this.http.post(`${environment.apiUrlDotNet}/task/getUserTaskListByProject`, { userId, projectId, skip, next }, httpOptions)
+    return this.http.post(`${environment.apiUrlDotNet}/task/getUserTaskListByProject`, { userId, projectId, skip, next, search }, httpOptions)
   }
 
   // Roles

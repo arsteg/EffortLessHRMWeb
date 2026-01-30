@@ -12,7 +12,8 @@ import { AuthenticationService } from '../_services/authentication.service';
 import { TimeLogService } from '../_services/timeLogService';
 import { GetTaskService } from '../_services/get-task.service';
 import * as moment from 'moment';
-import { Observable, switchMap } from 'rxjs';
+import { Observable, of, Subject, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Location } from '@angular/common';
@@ -30,6 +31,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 })
 export class TasksComponent implements OnInit {
   searchText = '';
+  private searchSubject = new Subject<string>();
   p: number = 1;
   projectList: any;
   taskList: any;
@@ -192,7 +194,7 @@ export class TasksComponent implements OnInit {
           this.getTasksByProject();
         }
         if (this.storedFilters.projectId && this.storedFilters.userId) {
-          this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
+          this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next, this.searchText).subscribe(
             (response: any) => {
               this.totalRecords = response;
               this.tasks = response.taskList;
@@ -211,6 +213,65 @@ export class TasksComponent implements OnInit {
         item.isChecked = value.includes(item.name);
       });
     });
+
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(text => {
+        this.searchText = text;
+        this.skip = '0';
+      }),
+      switchMap(() => this.getSearchObservable())
+    ).subscribe((response: any) => {
+      if (response) {
+        this.handleSearchResponse(response);
+      }
+    });
+  }
+
+  onSearchChange(text: string) {
+    this.searchSubject.next(text);
+  }
+
+  private getSearchObservable(): Observable<any> {
+    const isAllProjects = !this.projectId || this.projectId === '';
+    const isAllUsers = !this.userId || this.userId === '';
+
+    if (!isAllProjects && !isAllUsers) {
+      return this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next, this.searchText);
+    } else if (!isAllUsers) {
+      return this.tasksService.getTaskByUser(this.userId, this.skip, this.next, this.searchText);
+    } else if (!isAllProjects) {
+      return this.tasksService.getTasksByProjectId(this.projectId, this.skip, this.next, this.searchText);
+    } else {
+      const isAdmin = (this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null);
+      if (isAdmin) {
+        return this.tasksService.getAllTasks(this.skip, this.next, this.searchText);
+      } else {
+        return this.tasksService.getTasklistbyTeam(this.skip, this.next, this.searchText);
+      }
+    }
+  }
+
+  private handleSearchResponse(response: any) {
+    const isAllProjects = !this.projectId || this.projectId === '';
+    const isAllUsers = !this.userId || this.userId === '';
+
+    if (!isAllProjects && !isAllUsers) {
+      this.totalRecords = response;
+      this.tasks = response.taskList;
+    } else if (!isAllUsers) {
+      this.tasks = response?.data?.taskList;
+      this.totalRecords = response?.data;
+      this.tasks = this.tasks?.filter(task => task !== null);
+    } else if (!isAllProjects) {
+      this.totalRecords = response?.data;
+      this.tasks = response?.data?.taskList;
+    } else {
+      this.totalRecords = response?.data;
+      this.tasks = response?.data?.taskList;
+    }
+    this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
   }
   dateValidator(group: AbstractControl) {
     const startDate = group.get('startDate')?.value;
@@ -235,7 +296,7 @@ export class TasksComponent implements OnInit {
 
   getCurrentUsersTasks() {
     if (this.currentProfile.id) {
-      this.tasksService.getTaskByUser(this.currentProfile.id, this.skip, this.next).subscribe(response => {
+      this.tasksService.getTaskByUser(this.currentProfile.id, this.skip, this.next, this.searchText).subscribe(response => {
         this.tasks = response && response.data && response.data['taskList'];
         this.totalRecords = response && response.data;
         this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
@@ -312,7 +373,7 @@ export class TasksComponent implements OnInit {
   }
 
   async listAllTasks() {
-    this.tasksService.getAllTasks(this.skip, this.next).subscribe((response: any) => {
+    this.tasksService.getAllTasks(this.skip, this.next, this.searchText).subscribe((response: any) => {
 
       // this.tasksService.getTasklistbyTeam(this.skip, this.next).subscribe((response: any) => {
       this.totalRecords = response && response.data
@@ -322,7 +383,7 @@ export class TasksComponent implements OnInit {
   }
 
   getTasksbyTeam() {
-    this.tasksService.getTasklistbyTeam(this.skip, this.next).subscribe((response: any) => {
+    this.tasksService.getTasklistbyTeam(this.skip, this.next, this.searchText).subscribe((response: any) => {
       this.totalRecords = response && response.data
       this.tasks = response && response.data && response.data['taskList'];
       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
@@ -349,7 +410,7 @@ export class TasksComponent implements OnInit {
       }
     } else if (!isAllProjects && !isAllUsers) {
       // Both specific user and specific project selected
-      this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
+      this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next, this.searchText).subscribe(
         (response: any) => {
           this.totalRecords = response;
           this.tasks = response.taskList;
@@ -370,7 +431,7 @@ export class TasksComponent implements OnInit {
     const hasSelectedUser = this.userId && this.userId !== '';
     if (!hasSelectedUser) {
       // ALL users, specific project - get all tasks for project
-      this.tasksService.getTasksByProjectId(this.projectId, this.skip, this.next).subscribe(
+      this.tasksService.getTasksByProjectId(this.projectId, this.skip, this.next, this.searchText).subscribe(
         (response: any) => {
           if (response && response.data && Array.isArray(response.data.taskList)) {
             this.totalRecords = response && response.data
@@ -381,7 +442,7 @@ export class TasksComponent implements OnInit {
       );
     } else {
       // Specific user and specific project
-      this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next).subscribe(
+      this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next, this.searchText).subscribe(
         (response: any) => {
           this.totalRecords = response;
           this.tasks = response.taskList;
@@ -638,7 +699,7 @@ export class TasksComponent implements OnInit {
   }
 
   async getTaskByIds() {
-    this.tasksService.getTaskByUser(this.userId, this.skip, this.next).subscribe(response => {
+    this.tasksService.getTaskByUser(this.userId, this.skip, this.next, this.searchText).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
       this.totalRecords = response && response.data
       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
