@@ -867,14 +867,14 @@ export class TasksComponent implements OnInit {
   }
 
   addTaskToDo() {
-    const id: '' = this.currentProfile.id
+    const id = this.currentProfile.id;
     const taskFromBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
       priority: this.createTask_Board.value.priority,
-      user: this.view === 'admin' ? [] : [id],
+      user: this.view === 'admin' ? null : id,
       status: 'ToDo',
       project: this.createTask_Board.value.project
     }
@@ -884,18 +884,20 @@ export class TasksComponent implements OnInit {
       this.ngOnInit();
       this.createTask_Board.reset();
       this.toggleToDoTask();
+    }, error => {
+      this.toast.error(error?.error?.message || 'Task could not be created', 'Error!');
     })
   }
 
   addTaskInProgress() {
-    const id: '' = this.currentProfile.id
+    const id = this.currentProfile.id;
     const taskFromBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
       priority: this.createTask_Board.value.priority,
-      user: this.view === 'admin' ? [] : [id],
+      user: this.view === 'admin' ? null : id,
       status: 'In Progress',
       project: this.createTask_Board.value.project
     }
@@ -905,40 +907,43 @@ export class TasksComponent implements OnInit {
       this.ngOnInit();
       this.createTask_Board.reset();
       this.toggleInProgressTask();
+    }, error => {
+      this.toast.error(error?.error?.message || 'Task could not be created', 'Error!');
     })
   }
 
   addTaskDone() {
-    const id: '' = this.currentProfile.id
+    const id = this.currentProfile.id;
     const taskFromBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
       priority: this.createTask_Board.value.priority,
-      user: this.view === 'admin' ? [] : [id],
+      user: this.view === 'admin' ? null : id,
       status: 'Done',
       project: this.createTask_Board.value.project
     }
     this.tasksService.addTask(taskFromBoard).subscribe(response => {
       this.task = response;
       this.tasks.push(taskFromBoard);
-
       this.ngOnInit();
       this.createTask_Board.reset();
       this.toggleDoneTask();
+    }, error => {
+      this.toast.error(error?.error?.message || 'Task could not be created', 'Error!');
     })
   }
 
   addTaskClosed() {
-    const id: '' = this.currentProfile.id
+    const id = this.currentProfile.id;
     const taskFromBoard = {
       taskName: this.createTask_Board.value.taskName,
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
       priority: this.createTask_Board.value.priority,
-      user: this.view === 'admin' ? [] : [id],
+      user: this.view === 'admin' ? null : id,
       status: 'Closed',
       project: this.createTask_Board.value.project
     }
@@ -948,6 +953,8 @@ export class TasksComponent implements OnInit {
       this.ngOnInit();
       this.createTask_Board.reset();
       this.toggleClosedTask();
+    }, error => {
+      this.toast.error(error?.error?.message || 'Task could not be created', 'Error!');
     })
   }
 
