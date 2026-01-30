@@ -21,6 +21,7 @@ export class EmployeeProfileComponent {
   isEdit = this.userService.getIsEdit();
   bsValue = new Date();
   maxDate: Date;
+  isProfileView: boolean = false;
   expandedPanels = {
     basic: true,
     personal: false,
@@ -82,12 +83,15 @@ export class EmployeeProfileComponent {
   }
 makeRoleDsabledIfinProfile()
 {
-  if (this.router.url.includes('profile') && !this.router.url.includes('manage')) {
-    this.userForm.get('role')?.disable();
+  this.isProfileView = this.router.url.includes('profile') && !this.router.url.includes('manage');
+  if (this.isProfileView) {
+    const sensitiveFields = ['role', 'jobTitle', 'BankName', 'BankAccountNumber', 'BankIFSCCode', 'BankBranch', 'BankAddress'];
+    sensitiveFields.forEach(field => this.userForm.get(field)?.disable());
   } else {
     this.userForm.get('role')?.enable();
+    const sensitiveFields = ['jobTitle', 'BankName', 'BankAccountNumber', 'BankIFSCCode', 'BankBranch', 'BankAddress'];
+    sensitiveFields.forEach(field => this.userForm.get(field)?.enable());
   }
-  
 }
   logUrlSegmentsForUser() {
     const empCode = this.route.parent.snapshot.paramMap.get('empCode') || this.authService.currentUserValue?.empCode;
@@ -110,7 +114,9 @@ makeRoleDsabledIfinProfile()
   }
 
   onSubmit() {
-    this.userForm.get('role')?.enable();
+    if (!this.isProfileView) {
+      this.userForm.get('role')?.enable();
+    }
     if (this.userForm.invalid) {
         this.userForm.markAllAsTouched();
         this.setExpandedPanelsForInvalidFields();

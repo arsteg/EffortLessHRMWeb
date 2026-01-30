@@ -62,14 +62,21 @@ export class AssetComponent implements OnInit {
   }
   initAssetForm() {
     this.assetForm = this.fb.group({
-      assetName: [''],
-      assetType: [''],
+      assetName: ['', [Validators.required, this.noWhitespaceValidator]],
+      assetType: ['', Validators.required],
       purchaseDate: [''],
       warrantyExpiry: [''],
-      status: [''],
+      status: ['', Validators.required],
       image: [''],
       customAttributes: new FormArray([]),
     });
+  }
+
+  noWhitespaceValidator(control: AbstractControl) {
+    if (control.value && control.value.trim() === '') {
+      return { whitespace: true };
+    }
+    return null;
   }
   initCustomAttributes() {
     return this.fb.group({
@@ -114,7 +121,15 @@ export class AssetComponent implements OnInit {
   }
 
   addAsset() {
-    this.assetService.addAsset(this.assetForm.value).subscribe(
+    this.assetForm.markAllAsTouched();
+    if (this.assetForm.invalid) {
+      return;
+    }
+    const formValue = {
+      ...this.assetForm.value,
+      assetName: this.assetForm.value.assetName?.trim()
+    };
+    this.assetService.addAsset(formValue).subscribe(
       (response: any) => {
         this.updateCustomAttributes(response.data._id);
         this.loadAssets(this.selectedAssetType);
@@ -155,8 +170,16 @@ export class AssetComponent implements OnInit {
     return index;
   }
   updateAsset() {
+    this.assetForm.markAllAsTouched();
+    if (this.assetForm.invalid) {
+      return;
+    }
+    const formValue = {
+      ...this.assetForm.value,
+      assetName: this.assetForm.value.assetName?.trim()
+    };
     this.assetService
-      .updateAsset(this.selectedAsset._id, this.assetForm.value)
+      .updateAsset(this.selectedAsset._id, formValue)
       .subscribe(
         (response: any) => {
           this.filteredAssets = response.data;

@@ -70,7 +70,7 @@
 <div class="row mt-4">
   <!--Work Hours Log-->
   <div class="col-md-4 mb-4">
-    <div class="card p-2" #timeSpentCard>
+    <div class="card p-2" #timeSpentCard style="min-height: 400px;">
       <div class="d-flex align-items-center justify-content-between">
         <h2>Time Spent</h2>
         <mat-form-field class="densed-field w-50">
@@ -83,97 +83,115 @@
       </div>
 
       @if(selectedTimeSpent === 'Daily') {
-      <p class="text-center mt-2">
-        <span class="h5" [style.color]="hoursWorked?.changeColor">
-          {{hoursWorked?.changeDisplay ? hoursWorked?.changeDisplay + '%' : ''}}
-        </span>
-        <br>
-        <span class="d-flex align-items-center justify-content-center">
-          <span class="text-dark"> Yesterday </span>
-          <mat-icon *ngIf="hoursWorked?.increased" class="text-success">arrow_upward</mat-icon>
-          <mat-icon *ngIf="!hoursWorked?.increased" class="text-danger">arrow_downward</mat-icon>
-        </span>
-      </p>
-      <hr>
-      <div class="mx-auto w-75">
-        <ngx-charts-bar-vertical [results]="hoursWorked?.chartData" [legend]="false" [xAxis]="true"
-          [tooltipDisabled]="true" [legendPosition]="legendPosition" [customColors]="hoursWorked?.chartColors">
-        </ngx-charts-bar-vertical>
-      </div>
-      <div class="w-100 d-flex justify-content-between align-items-center">
-        <div class="col-5">
-          <div class="text-end p-2">
-            <h2>{{ formatMillisecondsToTime(hoursWorked?.today)}}</h2>
+        @if(hoursWorked?.today || hoursWorked?.previousDay) {
+        <p class="text-center mt-2">
+          <span class="h5" [style.color]="hoursWorked?.changeColor">
+            {{hoursWorked?.changeDisplay ? hoursWorked?.changeDisplay + '%' : ''}}
+          </span>
+          <br>
+          <span class="d-flex align-items-center justify-content-center">
+            <span class="text-dark"> Yesterday </span>
+            <mat-icon *ngIf="hoursWorked?.increased" class="text-success">arrow_upward</mat-icon>
+            <mat-icon *ngIf="!hoursWorked?.increased" class="text-danger">arrow_downward</mat-icon>
+          </span>
+        </p>
+        <hr>
+        <div class="mx-auto w-75">
+          <ngx-charts-bar-vertical [results]="hoursWorked?.chartData" [legend]="false" [xAxis]="true"
+            [tooltipDisabled]="true" [legendPosition]="legendPosition" [customColors]="hoursWorked?.chartColors">
+          </ngx-charts-bar-vertical>
+        </div>
+        <div class="w-100 d-flex justify-content-between align-items-center">
+          <div class="col-5">
+            <div class="text-end p-2">
+              <h2>{{ formatMillisecondsToTime(hoursWorked?.today)}}</h2>
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="p-2">
+              <h2>{{formatMillisecondsToTime(hoursWorked?.previousDay)}}</h2>
+            </div>
           </div>
         </div>
-        <div class="col-5">
-          <div class="p-2">
-            <h2>{{formatMillisecondsToTime(hoursWorked?.previousDay)}}</h2>
-          </div>
+        } @else {
+        <div class="d-flex align-items-center justify-content-center flex-grow-1">
+          <p class="text-muted">No time logged for this day</p>
         </div>
-      </div>
+        }
       }
       @if(selectedTimeSpent === 'Weekly') {
-      <p class="text-center mt-2">
-        <span class="h5" [style.color]="weeklySummary?.changeColor">
-          {{weeklySummary?.changeDisplay ? weeklySummary?.changeDisplay + '%' : ''}}
-        </span>
-        <br>
-        <span class="d-flex align-items-center justify-content-center">
-          <span class="text-dark"> Last week </span>
-          <mat-icon *ngIf="weeklySummary?.increased" class="text-success">arrow_upward</mat-icon>
-          <mat-icon *ngIf="!weeklySummary?.increased" class="text-danger">arrow_downward</mat-icon>
-        </span>
-      </p>
-      <hr>
-      <div class="mx-auto w-75">
-        <ngx-charts-bar-vertical [results]="weeklySummary?.chartData" [legend]="false" [xAxis]="true"
-          [tooltipDisabled]="true" [legendPosition]="legendPosition" [customColors]="weeklySummary?.chartColors">
-        </ngx-charts-bar-vertical>
-      </div>
-      <div class="w-100 d-flex justify-content-between align-items-center">
-        <div class="col-5">
-          <div class="p-2 text-end">
-            <h2>{{ formatHoursAndMinutes(weeklySummary?.currentWeek)}}</h2>
+        @if(weeklySummary?.currentWeek || weeklySummary?.previousWeek) {
+        <p class="text-center mt-2">
+          <span class="h5" [style.color]="weeklySummary?.changeColor">
+            {{weeklySummary?.changeDisplay ? weeklySummary?.changeDisplay + '%' : ''}}
+          </span>
+          <br>
+          <span class="d-flex align-items-center justify-content-center">
+            <span class="text-dark"> Last week </span>
+            <mat-icon *ngIf="weeklySummary?.increased" class="text-success">arrow_upward</mat-icon>
+            <mat-icon *ngIf="!weeklySummary?.increased" class="text-danger">arrow_downward</mat-icon>
+          </span>
+        </p>
+        <hr>
+        <div class="mx-auto w-75">
+          <ngx-charts-bar-vertical [results]="weeklySummary?.chartData" [legend]="false" [xAxis]="true"
+            [tooltipDisabled]="true" [legendPosition]="legendPosition" [customColors]="weeklySummary?.chartColors">
+          </ngx-charts-bar-vertical>
+        </div>
+        <div class="w-100 d-flex justify-content-between align-items-center">
+          <div class="col-5">
+            <div class="p-2 text-end">
+              <h2>{{ formatHoursAndMinutes(weeklySummary?.currentWeek)}}</h2>
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="p-2">
+              <h2>{{formatHoursAndMinutes(weeklySummary?.previousWeek)}}</h2>
+            </div>
           </div>
         </div>
-        <div class="col-5">
-          <div class="p-2">
-            <h2>{{formatHoursAndMinutes(weeklySummary?.previousWeek)}}</h2>
-          </div>
+        } @else {
+        <div class="d-flex align-items-center justify-content-center flex-grow-1">
+          <p class="text-muted">No time logged for this week</p>
         </div>
-      </div>
+        }
       }
       @if(selectedTimeSpent === 'Monthly') {
-      <p class="text-center mt-2">
-        <span class="h5" [style.color]="monthlySummary?.changeColor">
-          {{monthlySummary?.changeDisplay ? monthlySummary?.changeDisplay + '%' : ''}}
-        </span>
-        <br>
-        <span class="d-flex align-items-center justify-content-center">
-          <span class="text-dark"> A month ago </span>
-          <mat-icon *ngIf="monthlySummary?.increased" class="text-success">arrow_upward</mat-icon>
-          <mat-icon *ngIf="!monthlySummary?.increased" class="text-danger">arrow_downward</mat-icon>
-        </span>
-      </p>
-      <hr>
-      <div class="mx-auto w-75">
-        <ngx-charts-bar-vertical [results]="monthlySummary?.chartData" [legend]="false" [xAxis]="true"
-          [tooltipDisabled]="true" [legendPosition]="legendPosition" [customColors]="monthlySummary?.chartColors">
-        </ngx-charts-bar-vertical>
-      </div>
-      <div class="w-100 d-flex justify-content-between align-items-center">
-        <div class="col-5">
-          <div class="p-2 text-end">
-            <h2>{{ convertMinutesToHoursAndMinutes(monthlySummary?.currentMonth)}}</h2>
+        @if(monthlySummary?.currentMonth || monthlySummary?.previousMonth) {
+        <p class="text-center mt-2">
+          <span class="h5" [style.color]="monthlySummary?.changeColor">
+            {{monthlySummary?.changeDisplay ? monthlySummary?.changeDisplay + '%' : ''}}
+          </span>
+          <br>
+          <span class="d-flex align-items-center justify-content-center">
+            <span class="text-dark"> Last month </span>
+            <mat-icon *ngIf="monthlySummary?.increased" class="text-success">arrow_upward</mat-icon>
+            <mat-icon *ngIf="!monthlySummary?.increased" class="text-danger">arrow_downward</mat-icon>
+          </span>
+        </p>
+        <hr>
+        <div class="mx-auto w-75">
+          <ngx-charts-bar-vertical [results]="monthlySummary?.chartData" [legend]="false" [xAxis]="true"
+            [tooltipDisabled]="true" [legendPosition]="legendPosition" [customColors]="monthlySummary?.chartColors">
+          </ngx-charts-bar-vertical>
+        </div>
+        <div class="w-100 d-flex justify-content-between align-items-center">
+          <div class="col-5">
+            <div class="p-2 text-end">
+              <h2>{{ convertMinutesToHoursAndMinutes(monthlySummary?.currentMonth)}}</h2>
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="p-2">
+              <h2>{{convertMinutesToHoursAndMinutes(monthlySummary?.previousMonth)}}</h2>
+            </div>
           </div>
         </div>
-        <div class="col-5">
-          <div class="p-2">
-            <h2>{{convertMinutesToHoursAndMinutes(monthlySummary?.previousMonth)}}</h2>
-          </div>
+        } @else {
+        <div class="d-flex align-items-center justify-content-center flex-grow-1">
+          <p class="text-muted">No time logged for this month</p>
         </div>
-      </div>
+        }
       }
     </div>
   </div>
@@ -184,7 +202,8 @@
       <div class="d-flex justify-content-between align-items-center flex-wrap">
         <h2 class="d-flex align-items-center">Project-wise Time Spent on All Tasks</h2>
       </div>
-      <div style="overflow-y: auto;" [style.max-height.px]="timeSpentCardHeight">
+      <div style="overflow-y: auto;" [style.max-height.px]="timeSpentCardHeight" [style.min-height.px]="timeSpentCardHeight">
+        @if(projectTasks?.length > 0) {
         <table class="table">
           <thead>
             <tr>
@@ -208,6 +227,11 @@
             </ng-container>
           </tbody>
         </table>
+        } @else {
+        <div class="d-flex align-items-center justify-content-center h-100">
+          <p class="text-muted">No project-wise time data available</p>
+        </div>
+        }
       </div>
     </div>
   </div>
@@ -218,22 +242,28 @@
       <div class="d-flex justify-content-between align-items-center flex-wrap">
         <h2 class="d-flex align-items-center">Project-wise Time on Each Task</h2>
       </div>
-      @for(projectTask of dayWorkStatusByUser; track projectTask; let i = $index) {
-      <div class="sticky-top">
-        <span class="fw-bold">{{projectTask?.projectName}}</span>
-      </div>
-      @for(task of projectTask.tasks; track task; let j = $index) {
-      <div class="my-3">
-        <div class="d-flex justify-content-between">
-          <div>{{ task.taskName }}</div>
-          <div><strong>{{ ((task?.count*10)*60*1000) | milliSecondsToTime }} Hours</strong></div>
+      @if(dayWorkStatusByUser?.length > 0) {
+        @for(projectTask of dayWorkStatusByUser; track projectTask; let i = $index) {
+        <div class="sticky-top">
+          <span class="fw-bold">{{projectTask?.projectName}}</span>
         </div>
-        <div class="progress custom-progress mt-1">
-          <div class="progress-bar bg-primary" [style.width.%]="(task.count * 10) / (24 * 60) * 100" role="progressbar">
+        @for(task of projectTask.tasks; track task; let j = $index) {
+        <div class="my-3">
+          <div class="d-flex justify-content-between">
+            <div>{{ task.taskName }}</div>
+            <div><strong>{{ ((task?.count*10)*60*1000) | milliSecondsToTime }} Hours</strong></div>
+          </div>
+          <div class="progress custom-progress mt-1">
+            <div class="progress-bar bg-primary" [style.width.%]="(task.count * 10) / (24 * 60) * 100" role="progressbar">
+            </div>
           </div>
         </div>
+        }
+        }
+      } @else {
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <p class="text-muted">No task data available for this date</p>
       </div>
-      }
       }
     </div>
   </div>
@@ -244,6 +274,7 @@
       <div class="d-flex justify-content-between align-items-center flex-wrap">
         <h2 class="d-flex align-items-center">Productivity</h2>
       </div>
+      @if(hasChartData(productivityData)) {
       <div class="w-100 mx-auto">
         <ngx-charts-pie-chart [results]="productivityData" [legend]="false" [labels]="false" [doughnut]="true"
           [explodeSlices]="false" [arcWidth]="0.25" [legendTitle]="''" [scheme]="colorScheme"></ngx-charts-pie-chart>
@@ -258,6 +289,11 @@
           }
         </div>
       </div>
+      } @else {
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <p class="text-muted">No productivity data available for this date</p>
+      </div>
+      }
     </div>
   </div>
 
@@ -267,6 +303,7 @@
       <div class="d-flex justify-content-between align-items-center flex-wrap">
         <h2 class="d-flex align-items-center">Task Summary</h2>
       </div>
+      @if(hasChartData(taskSummary)) {
       <div class="w-100">
         <ngx-charts-pie-chart [results]="taskSummary" [legend]="false" [doughnut]="false" [labels]="false"
           [explodeSlices]="false" [gradient]="false" [scheme]="colorScheme">
@@ -282,6 +319,11 @@
           }
         </div>
       </div>
+      } @else {
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <p class="text-muted">No task data available</p>
+      </div>
+      }
     </div>
   </div>
 </div>

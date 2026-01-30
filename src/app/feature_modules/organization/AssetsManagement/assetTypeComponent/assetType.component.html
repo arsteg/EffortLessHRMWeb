@@ -9,9 +9,13 @@
       <div class="form-group">
         <label for="typeName">Type Name:</label>
         <input type="text" class="form-control" id="typeName" formControlName="typeName" required maxlength="50">
-        <div *ngIf="assetTypeForm.get('typeName').hasError('required') && assetTypeForm.get('typeName').dirty"
+        <div *ngIf="assetTypeForm.get('typeName').touched && assetTypeForm.get('typeName').hasError('required')"
           class="text-danger">
-          Name is required.
+          Type name is required.
+        </div>
+        <div *ngIf="assetTypeForm.get('typeName').touched && assetTypeForm.get('typeName').hasError('whitespace')"
+          class="text-danger">
+          Type name cannot be only whitespace.
         </div>
         <div *ngIf="assetTypeForm.get('typeName').hasError('duplicate')" class="text-danger">
           Type name already exists.
@@ -20,7 +24,7 @@
       <div class="form-group mt-2">
         <label for="description">Description:</label>
         <input type="text" class="form-control" id="description" formControlName="description" required maxlength="50">
-        <div *ngIf="assetTypeForm.get('description').hasError('required') && assetTypeForm.get('description').dirty"
+        <div *ngIf="assetTypeForm.get('description').touched && assetTypeForm.get('description').hasError('required')"
           class="text-danger">
           Description is required.
         </div>
@@ -49,7 +53,7 @@
                 <td style="padding: 8px;">
                   <input type="text" class="form-control" formControlName="attributeName" required maxlength="50">
                   <div
-                    *ngIf="customAttribute.get('attributeName').hasError('required') && customAttribute.get('attributeName').dirty"
+                    *ngIf="customAttribute.get('attributeName').touched && customAttribute.get('attributeName').hasError('required')"
                     class="text-danger">
                     Name is required.
                   </div>
@@ -57,7 +61,7 @@
                 <td style="padding: 8px;">
                   <input type="text" class="form-control" formControlName="description" required maxlength="50">
                   <div
-                    *ngIf="customAttribute.get('description').hasError('required') && customAttribute.get('description').dirty"
+                    *ngIf="customAttribute.get('description').touched && customAttribute.get('description').hasError('required')"
                     class="text-danger">
                     Description is required.
                   </div>
@@ -99,7 +103,7 @@
           <!-- <button mat-flat-button type="submit" [ngClass]="{'addBtn': true, 'addBtn-disabled': !assetTypeForm.valid}" [disabled]="!assetTypeForm.valid">
             {{isEdit ? 'Save Asset Type' : 'Add Asset Type'}} </button> -->
 
-          <button type="submit" mat-flat-button color="primary" class="ml-5" [disabled]="!assetTypeForm.valid">
+          <button type="submit" mat-flat-button color="primary" class="ml-5">
             {{ isEdit ? 'Update' : 'Add' }}
           </button>
 

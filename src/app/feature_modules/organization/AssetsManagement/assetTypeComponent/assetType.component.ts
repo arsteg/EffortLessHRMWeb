@@ -74,10 +74,17 @@ export class AssetTypeComponent implements OnInit {
 
   initTypeForm() {
     this.assetTypeForm = this.fb.group({
-      typeName: ['', Validators.required],
+      typeName: ['', [Validators.required, this.noWhitespaceValidator, this.checkDuplicateStatusName.bind(this)]],
       description: [''],
       customAttributes: this.fb.array([])
     });
+  }
+
+  noWhitespaceValidator(control: any) {
+    if (control.value && control.value.trim() === '') {
+      return { whitespace: true };
+    }
+    return null;
   }
 
   // Getter and Setter for isEdit
@@ -174,25 +181,32 @@ export class AssetTypeComponent implements OnInit {
   }
 
   createAssetType() {
-    if (this.assetTypeForm.valid) {
-      if (this._isEdit) {
-        this.assetManagementService.updateAssetType(this.selectedAssetType._id, this.assetTypeForm.value).subscribe(response => {
-          this.toast.success('Asset Type Updated Successfully!');
-          this.getAllAssetTypes();
-          this.resetForm();
-        }, (error) => {
-          this.toast.error('Error Saving the Asset Type!', 'Error!');
-        });
-      }
-      else {
-        this.assetManagementService.addAssetType(this.assetTypeForm.value).subscribe(response => {
-          this.toast.success('Asset Type Created Successfully!');
-          this.getAllAssetTypes();
-          this.resetForm();
-        }, (error) => {
-          this.toast.error('Error Saving the Asset Type!', 'Error!');
-        });
-      }
+    this.assetTypeForm.markAllAsTouched();
+    if (this.assetTypeForm.invalid) {
+      return;
+    }
+    const formValue = {
+      ...this.assetTypeForm.value,
+      typeName: this.assetTypeForm.value.typeName?.trim(),
+      description: this.assetTypeForm.value.description?.trim()
+    };
+    if (this._isEdit) {
+      this.assetManagementService.updateAssetType(this.selectedAssetType._id, formValue).subscribe(response => {
+        this.toast.success('Asset Type Updated Successfully!');
+        this.getAllAssetTypes();
+        this.resetForm();
+      }, (error) => {
+        this.toast.error('Error Saving the Asset Type!', 'Error!');
+      });
+    }
+    else {
+      this.assetManagementService.addAssetType(formValue).subscribe(response => {
+        this.toast.success('Asset Type Created Successfully!');
+        this.getAllAssetTypes();
+        this.resetForm();
+      }, (error) => {
+        this.toast.error('Error Saving the Asset Type!', 'Error!');
+      });
     }
   }
   resetAsset() {

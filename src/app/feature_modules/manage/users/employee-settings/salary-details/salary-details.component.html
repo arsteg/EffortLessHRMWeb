@@ -1,5 +1,5 @@
 <div *ngIf="!showAddSalaryDetails" class="bg-white">
-    <div class="position-relative">
+    <div class="position-relative" *ngIf="showAddButton">
       <button mat-flat-button class="position-absolute end-0" color="primary" (click)="isEdit=false; showAddSalaryDetails=true;">
         {{ 'employee.add' | translate }}
       </button>
@@ -16,4 +16,4 @@
 </div>
 
 <app-add-salary-details *ngIf="showAddSalaryDetails" [edit]=isEdit [selectedSalaryDetail]="selectedRecord"
-    [selectedUser]=selectedUser (backToSalaryDetails)="goBackToSalaryDetails()"></app-add-salary-details>
+    [selectedUser]=selectedUser [isProfileView]="!showAddButton" (backToSalaryDetails)="goBackToSalaryDetails()"></app-add-salary-details>

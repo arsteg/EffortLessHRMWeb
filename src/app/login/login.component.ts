@@ -54,64 +54,68 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.errorMessage = null;
     if (this.loginForm.valid) {
-      this.loading = true; 
-   
+      this.loading = true;
+
       this.authenticationService.login(this.loginForm.value).subscribe
-      (data => {
-        this.loading = true;
-        if (!data) {
-          this.loading = false;
-          this.inValidForm = true;
-        } else {
+        (data => {
           this.loading = true;
-          this.user.id = data.data.user.id;
-          this.user.firstName = data.data.user.firstName;
-          this.user.lastName = data.data.user.lastName;
-          this.user.freeCompany = data.data.user.company.freeCompany;
-          this.user.empCode = data.data.user?.appointment[0]?.empCode;
-          this.user.isTrial = data.data.user?.trialInfo?.isTrial;
-          this.user.daysLeft = data.data.user?.trialInfo?.daysLeft;
-          localStorage.setItem('jwtToken', data.token);
-          localStorage.setItem('currentUser', JSON.stringify(this.user));
-          localStorage.setItem('rememberMe', JSON.stringify(this.loginForm.value.rememberMe));
-          localStorage.setItem('role', data.data.user?.role?.name);
-          localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));          
+          if (!data) {
+            this.loading = false;
+            this.inValidForm = true;
+          } else {
+            this.loading = true;
+            this.user.id = data.data.user.id;
+            this.user.firstName = data.data.user.firstName;
+            this.user.lastName = data.data.user.lastName;
+            this.user.freeCompany = data.data.user.company.freeCompany;
+            this.user.empCode = data.data.user?.appointment[0]?.empCode;
+            this.user.isTrial = data.data.user?.trialInfo?.isTrial;
+            this.user.daysLeft = data.data.user?.trialInfo?.daysLeft;
+            localStorage.setItem('jwtToken', data.token);
+            localStorage.setItem('currentUser', JSON.stringify(this.user));
+            localStorage.setItem('rememberMe', JSON.stringify(this.loginForm.value.rememberMe));
+            localStorage.setItem('role', data.data.user?.role?.name);
+            localStorage.setItem('subscription', JSON.stringify(data.data.companySubscription));
 
-          // Check for existing AppMode preference
-          this.preferenceService.getPreferencesByUserId(this.user.id).subscribe({
-            next: (response) => {
-              const preferences = response.data?.preferences || [];
-              const appModePreference = preferences.find(pref =>
-                pref.preferenceOptionId &&
-                typeof pref.preferenceOptionId !== 'string' &&
-                pref.preferenceOptionId.preferenceKey === PreferenceKeys.AppMode
-              );
+            // Check for existing AppMode preference
+            this.preferenceService.getPreferencesByUserId(this.user.id).subscribe({
+              next: (response) => {
+                const roleName = data.data.user?.role?.name?.toLowerCase();
+                const preferences = response.data?.preferences || [];
+                const appModePreference = preferences.find(pref =>
+                  pref.preferenceOptionId &&
+                  typeof pref.preferenceOptionId !== 'string' &&
+                  pref.preferenceOptionId.preferenceKey === PreferenceKeys.AppMode
+                );
 
-              if (appModePreference && typeof appModePreference.preferenceOptionId !== 'string') {
-                this.selectedAppMode = appModePreference.preferenceOptionId.preferenceValue;
-              } else {
-                this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
+                if (roleName === 'user') {
+                  this.selectedAppMode = 'user';
+                } else if (appModePreference && typeof appModePreference.preferenceOptionId !== 'string') {
+                  this.selectedAppMode = appModePreference.preferenceOptionId.preferenceValue;
+                } else {
+                  this.selectedAppMode = roleName === 'admin' ? 'admin' : 'user';
+                }
+                // Store the selected AppMode
+                this.createUserPreference(this.user.id, PreferenceKeys.AppMode, this.selectedAppMode);
+              },
+              error: (error) => {
+                //console.error('Error fetching preferences:', error);
+                const roleName = data.data.user?.role?.name?.toLowerCase();
+                this.selectedAppMode = roleName === 'user' ? 'user' : (roleName === 'admin' ? 'admin' : 'user');
+                this.createUserPreference(this.user.id, PreferenceKeys.AppMode, this.selectedAppMode);
               }
-              // Store the selected AppMode
-              this.createUserPreference(this.user.id, PreferenceKeys.AppMode, this.selectedAppMode);
-            },
-            error: (error) => {
-              //console.error('Error fetching preferences:', error);
-              this.selectedAppMode = data.data.user?.role?.name === 'Admin' ? 'admin' : 'user';
-              this.createUserPreference(this.user.id, PreferenceKeys.AppMode, this.selectedAppMode);
-            }
+            });
+          }
+        },
+          (err) => {
+            this.loading = false;
+            const errorMessage = err?.error?.message || err?.message || err
+              || this.translate.instant('login.unable_login')
+              ;
+
+            this.toast.error(errorMessage, 'Error!');
           });
-        }
-      },
-      (err) => {
-        this.loading = false;
-        const errorMessage = err?.error?.message || err?.message || err 
-          || this.translate.instant('login.unable_login')
-          ;
-         
-          this.toast.error(errorMessage, 'Error!');
-      });
-    } 
+    }
     else {
       this.loginForm.markAllAsTouched();
       this.errorMessage = 'Please fill in all required fields.';
@@ -134,10 +138,10 @@ export class LoginComponent implements OnInit {
     ).subscribe();
 
     localStorage.setItem('adminView', this.selectedAppMode);
-    if(this.selectedAppMode === 'user'){
+    if (this.selectedAppMode === 'user') {
       this.router.navigateByUrl('home/dashboard/user');
     }
-    else if(this.selectedAppMode === 'admin') {
+    else if (this.selectedAppMode === 'admin') {
       this.router.navigateByUrl(this.returnUrl);
     }
   }

@@ -124,7 +124,7 @@ export class StatutoryDetailsComponent {
       control.updateValueAndValidity({ emitEvent: false });
     });
 
-    // Handle taxRegime separately as it’s a select, not a radio button
+    // Handle taxRegime separately as it's a select, not a radio button
     const taxRegimeControl = this.statutoryDetailsForm.get('taxRegime');
     if (taxRegimeControl) {
       if (isDisable) {
@@ -136,6 +136,28 @@ export class StatutoryDetailsComponent {
       }
       taxRegimeControl.updateValueAndValidity({ emitEvent: false });
     }
+
+    // Also disable all remaining text/date input fields in profile view
+    const textFieldsToToggle = [
+      'providentFundJoiningDate',
+      'providentFundNumber',
+      'UANNumber',
+      'fixedAmountForYourProvidentFundWage',
+      'additionalPFContributionInPercentage',
+      'ESICNumber',
+      'taxRegimeUpdated'
+    ];
+
+    textFieldsToToggle.forEach(controlName => {
+      const control = this.statutoryDetailsForm.get(controlName);
+      if (!control) return;
+      if (isDisable) {
+        control.disable({ emitEvent: false });
+      } else {
+        control.enable({ emitEvent: false });
+      }
+      control.updateValueAndValidity({ emitEvent: false });
+    });
   }
 
   setGratuityEligibilityValidator() {

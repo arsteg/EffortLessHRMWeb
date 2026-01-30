@@ -29,12 +29,12 @@ export class TasksService {
     return localStorage.getItem('jwtToken');
   }
 
-  getAllTasks(skip: string, next: string): Observable<Task[]> {
-    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklist`, { skip, next }, this.httpOptions);
+  getAllTasks(skip: string, next: string, search?: string): Observable<Task[]> {
+    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklist`, { skip, next, search }, this.httpOptions);
   }
 
-  getTasklistbyTeam(skip: string, next: string): Observable<Task[]> {
-    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklistbyteam`, { skip, next }, this.httpOptions);
+  getTasklistbyTeam(skip: string, next: string, search?: string): Observable<Task[]> {
+    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklistbyteam`, { skip, next, search }, this.httpOptions);
   }
 
   addTask(task): Observable<Task> {
@@ -53,8 +53,8 @@ export class TasksService {
     return this.http.post<any>(`${this.apiUrl}/task/newtaskuser`, { task, user }, this.httpOptions);
   }
 
-  getTasksByProjectId(projectId: string, skip: string, next: string): Observable<any[]> {
-    return this.http.post<any[]>(`${this.apiUrl}/task/tasklistbyproject/${projectId}`, { skip, next }, this.httpOptions);
+  getTasksByProjectId(projectId: string, skip: string, next: string, search?: string): Observable<any[]> {
+    return this.http.post<any[]>(`${this.apiUrl}/task/tasklistbyproject/${projectId}`, { skip, next, search }, this.httpOptions);
   }
 
   deleteTaskUser(id: string): Observable<void> {
@@ -85,8 +85,8 @@ export class TasksService {
     return this.http.put<Task>(`${environment.apiUrlDotNet}/task/update/${id}`, task, this.httpOptions);
   }
 
-  getTaskByUser(userId: string, skip: string, next: string): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, { userId, skip, next }, this.httpOptions);
+  getTaskByUser(userId: string, skip: string, next: string, search?: string): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, { userId, skip, next, search }, this.httpOptions);
   }
 
   updateTag(tag: Tag): Observable<Tag> {

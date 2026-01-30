@@ -11,7 +11,7 @@
       <div class="col-6">
         <mat-form-field>
           <mat-label>Select&nbsp;Asset&nbsp;Type</mat-label>
-          <mat-select [(ngModel)]="selectedAssetType" (change)="onAssetTypeChange()">
+          <mat-select [(ngModel)]="selectedAssetType" (selectionChange)="onAssetTypeChange()">
             <mat-option *ngFor="let asset of assetTypes" [value]="asset._id">{{ asset.typeName }}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -71,11 +71,14 @@
       <div class="form-group mt-1">
         <label>Asset Name</label>
         <input type="text" formControlName="assetName" [value]="selectedAsset?.assetName" class="form-control"
-          [ngClass]="{ 'is-invalid': !validateOption('string',assetForm.value.assetName) && (assetForm.get('assetName').touched || assetForm.get('assetName').dirty)}">
-        <div
-          *ngIf="!validateOption('string',assetForm.value.assetName) && (assetForm.get('assetName').touched || assetForm.get('assetName').dirty)"
-          class="invalid-feedback">
-          Invalid Asset Name!
+          [ngClass]="{ 'is-invalid': assetForm.get('assetName').touched && assetForm.get('assetName').invalid }">
+        <div *ngIf="assetForm.get('assetName').touched && assetForm.get('assetName').hasError('required')"
+          class="text-danger">
+          Asset name is required.
+        </div>
+        <div *ngIf="assetForm.get('assetName').touched && assetForm.get('assetName').hasError('whitespace')"
+          class="text-danger">
+          Asset name cannot be only whitespace.
         </div>
       </div>
 
@@ -94,13 +97,13 @@
       <div class="form-group mt-1">
         <label for="assetStatus">Select Asset Status:</label>
         <select id="assetStatus" formControlName="status" class="p-1"
-          [ngClass]="{ 'is-invalid': assetForm.get('status').hasError('required') && (assetForm.get('status').touched || assetForm.get('status').dirty) }">
+          [ngClass]="{ 'is-invalid': assetForm.get('status').touched && assetForm.get('status').hasError('required') }">
+          <option value="" disabled>Select Status</option>
           <option *ngFor="let status of assetStatuses" [ngValue]="status._id">{{ status.statusName }}</option>
         </select>
-        <div
-          *ngIf="assetForm.get('status').hasError('required') && (assetForm.get('status').touched || assetForm.get('status').dirty)"
-          class="invalid-feedback">
-          Please select an Asset Status!
+        <div *ngIf="assetForm.get('status').touched && assetForm.get('status').hasError('required')"
+          class="text-danger">
+          Please select an Asset Status.
         </div>
       </div>
 
@@ -147,9 +150,7 @@
 
       <div class="form-group d-flex justify-content-between mt-2">
         <div class="">
-          <button type="submit" class="btn addBtn ml-5" [disabled]="assetForm.invalid">{{ isEdit ? 'Update' :
-            'Add'
-            }}</button>
+          <button type="submit" mat-flat-button color="primary">{{ isEdit ? 'Update' : 'Add' }}</button>
         </div>
         <div class="">
           <button type="button" *ngIf="isEdit" (click)="isEdit = false" mat-flat-button>Cancel</button>

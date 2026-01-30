@@ -5,7 +5,7 @@
     </label>
 
   <form [formGroup]="statutoryDetailsForm" (ngSubmit)="onSubmission()">
-    <div class="d-flex">
+    <div class="d-flex" *ngIf="!isUserMode">
       <button mat-flat-button color="primary" class="ms-auto my-2" type="submit" [disabled]="isSubmitting">
         {{ 'employee.statutory.save' | translate }}
       </button>
@@ -334,7 +334,7 @@
       </div>
 
       <!-- Round Off -->
-      <div class="form-group col-md-6 mb-2">
+      <div class="form-group col-md-6 mb-2" *ngif="false">
         <label class="small">
           {{ 'employee.statutory.statutory_details.round_off' | translate }} 
           <span class="text-danger">*</span>
