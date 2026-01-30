@@ -102,28 +102,34 @@
 }
 
 input:focus-visible {
-    outline: 1px solid #d6d3d3;
+    /* outline: 1px solid #d6d3d3; */
     padding-inline: 10px;
 }
 
-.task-page-search-bar {
-    border-radius: 4px;
-    font-family: "Poppins", sans-serif;
-    font-style: normal;
-    font-weight: normal;
-    font-size: 11px;
-    line-height: 21px;
-    color: #1c1c22;
-    border: 0.439759px solid #c8ccde;
-    padding: 0.15rem;
-    padding-left: 2rem !important;
-    width: 90%;
+/* Search Container */
+.search-container {
+    padding: 0 5px;
 }
 
-.search-task {
-    position: absolute;
-    top: 20%;
-    left: 6px;
+.no-border .mat-mdc-notched-outline {
+  display: none;
+}
+
+.search-container mat-form-field {
+    font-size: 13px;
+}
+
+.search-container .mat-mdc-form-field {
+    width: 100%;
+}
+
+.search-container .mat-mdc-text-field-wrapper {
+    padding: 0;
+}
+
+.search-icon {
+    color: #999;
+    font-size: 20px;
 }
 
 .comment-time {
@@ -198,6 +204,35 @@ input:focus-visible {
 .subtask-list:hover {
     background: #f5f7fb;
     cursor: pointer
+}
+
+/* Subtask Card Styling */
+.subtask-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0 !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.subtask-card:hover {
+    background: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-color: #d0d0d0 !important;
+}
+
+.subtask-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.subtask-name:hover span {
+    text-decoration: underline;
+}
+
+.status-btn {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 4px;
 }
 
 .pagination-option {

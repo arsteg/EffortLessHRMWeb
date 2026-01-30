@@ -1,527 +1,405 @@
-<div class="main-content mt-5 pt-2">
-    <div class="container bg-white p-3">
-        <div class="row" *ngIf="subTaskDetail != null">
-            <span (click)="gotoParentTask(parentTask)" class="text-end"> <button
-                    class="btn btn-outline-primary rounded-pill"><span class="bi bi-arrow-left ">
-                        Back</span></button></span>
-            <div class="child-issue col-md-9 border-end">
-                <form [formGroup]="updateForm" (ngSubmit)="updateTask()">
-                    <div class="d-flex border-end">
-                        <button mat-flat-button class="me-3 addBtn" type="submit" *ngIf="formDirty"> Save
-                        </button>
-                        <button class="btn btn-outline-primary rounded btn-sm" type="button" *ngIf="formDirty"> Cancel
-                        </button>
-                        <button mat-flat-button class="ms-auto addBtn" type="button" data-bs-toggle="modal"
-                            data-bs-target="#deleteModal"> Delete </button>
-                    </div>
-
-                    <div class="issue-header mt-3">
-                        <div class="issue-type my-3"><i class="bi bi-list-task btn-act px-1 rounded"></i><span
-                                (click)="gotoParentTask(parentTask)" class="parent rounded px-2 py-1 "
-                                [tooltip]="(parentTask?.taskNumber || '') + ': ' + (parentTask?.taskName || '')">{{
-                                getProjectNameInitials(parentTask?.project?.projectName)
-                                }}-{{parentTask?.taskNumber}}</span> /
-                            <i class="bi bi-diagram-3 btn-act px-1 rounded mx-2"></i><span
-                                [tooltip]="(subtask?.task?.taskNumber || '') + ': ' + (subtask?.task?.taskName || '')">{{
-                                getProjectNameInitials(subtask?.task?.project?.projectName)
-                                }}-{{subtask?.task?.taskNumber}}</span>
-                        </div>
-                        <div class="issue-key">
-                            <input type="text" name="taskName" id="project"
-                                class="form-control form-feild taskName  px-0 input pt-0" *ngIf="subtask?.task?.id"
-                                formControlName="taskName" [(ngModel)]="subtask?.task.taskName" required>
-
-                            <div *ngIf="updateForm.controls['taskName'].invalid && updateForm.controls['taskName'].touched"
-                                class="alert alert-danger error">
-                                <div *ngIf="updateForm.controls['taskName'].errors['required']">
-                                    Please Select Task Name!
-                                </div>
+<div class="container-fluid px-0">
+    <div class="" *ngIf="subTaskDetail != null">
+        <div class="row">
+            <!-- subtask details main page -->
+            <div class="col-md-12">
+                <div class="row mb-3">
+                    <div class="col-12 align-self-center">
+                        <div class="sub-header py-1 px-3 align-self-center d-sm-flex w-100 rounded">
+                            <div class="w-sm-100 pt-2 mr-auto">
+                                <h3 class="mb-0">Sub Task Details</h3>
                             </div>
+                            <ol class="breadcrumb bg-transparent align-self-center ms-auto m-0 p-0">
+                                <button (click)="goBack()"
+                                    class="btn submenuTab active rounded-pill">
+                                    <span class="bi bi-arrow-left"> Back</span>
+                                </button>
+                            </ol>
                         </div>
                     </div>
-
-                    <div class="issue-description">
-                        <h3>Description</h3>
-                        <div *ngIf="!subtask?.task?.description && !showEditor">
-                            <div (click)="onInputClick()" class="form-control  px-0 form-feild" style="height:50px">
-                            </div>
-                        </div>
-                        <div *ngIf="!showEditor && subtask?.task?.description">
-                            <div (click)="onInputClick()" class="form-control  px-0 form-feild" rows="1"
-                                id="description" name="description" formControlName="description"
-                                [innerHTML]="subtask?.task.description">
-                            </div>
-                        </div>
-                        <div *ngIf="showEditor">
-                            <quill-editor [styles]="{ height: '400px' }" formControlName="description"
-                                [(ngModel)]="subtask?.task.description"></quill-editor>
-                        </div>
-                        <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
-                            class="alert alert-danger error">
-                            <div *ngIf="updateForm.controls['description'].errors['required']">
-                                Description is required!
-                            </div>
-                        </div>
-                    </div>
-
-                </form>
-                <label for="fileUpload6" class="file-upload btn btn-outline-primary btn-block rounded-pill shadow my-3">
-                    <i class="fa fa-paperclip me-2"></i> Add attachment<input id="fileUpload6" type="file"
-                        (change)="onFileSelect($event)" multiple style="display: none;">
-                </label>
-                <ul type="none">
-                    <li class="contentHeading p-2" *ngFor="let files of selectedFiles">
-                        {{files.name}}
-                    </li>
-                </ul>
-
-
-
-                <div class="d-flex row" *ngIf="subTaskDetail != null">
-                    <ng-container *ngFor="let attachment of taskAttachment ; let i = index">
-                        <div class="col-md-2 mb-5" *ngIf="!attachment?.comment">
-
-                            <div class="card cardAttachment"
-                                *ngIf="attachment?.attachmentType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <a href="{{attachment.url}}" class="card-img-top">
-                                    <i class="bi bi-file-earmark-spreadsheet file"></i>
-                                    <div class="card-body py-0  border-top">
-                                        <small class="card-text">
-                                            {{attachment?.attachmentName}}</small>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/png'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <img src="{{attachment.url}}" class="card-img-top" alt="..." data-bs-toggle="modal"
-                                    data-bs-target="#bigAttachmentModal"
-                                    (click)="openTaskAttachmentModal(attachment)" />
-                                <div class="card-body py-0 border-top">
-                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
-                                </div>
-                            </div>
-
-                            <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/jpg'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <img src="{{attachment.url}}" class="card-img-top" alt="..." data-bs-toggle="modal"
-                                    data-bs-target="#bigAttachmentModal"
-                                    (click)="openTaskAttachmentModal(attachment)" />
-                                <div class="card-body py-0  border-top">
-                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
-                                </div>
-                            </div>
-
-                            <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/jpeg'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <img src="{{attachment.url}}" class="card-img-top" alt="..." data-bs-toggle="modal"
-                                    data-bs-target="#bigAttachmentModal"
-                                    (click)="openTaskAttachmentModal(attachment)" />
-                                <div class="card-body py-0  border-top">
-                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
-                                </div>
-                            </div>
-
-                            <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/avif'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <img src="{{attachment.url}}" class="card-img-top" alt="..." data-bs-toggle="modal"
-                                    data-bs-target="#bigAttachmentModal"
-                                    (click)="openTaskAttachmentModal(attachment)" />
-                                <div class="card-body py-0  border-top">
-                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
-                                </div>
-                            </div>
-
-                            <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/webp'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <img src="{{attachment.url}}" class="card-img-top" alt="..." data-bs-toggle="modal"
-                                    data-bs-target="#bigAttachmentModal"
-                                    (click)="openTaskAttachmentModal(attachment)" />
-                                <div class="card-body py-0  border-top">
-                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
-                                </div>
-                            </div>
-
-
-                            <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'image/svg+xml'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <a href="{{attachment.url}}" class="card-img-top">
-                                    <i class="bi bi-filetype-svg file"></i>
-                                    <div class="card-body py-0  border-top">
-                                        <small class="card-text">
-                                            {{attachment?.attachmentName}}</small>
-                                    </div>
-                                </a>
-                            </div>
-
-
-                            <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'application/pdf'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <a href="{{attachment.url}}" class="card-img-top">
-                                    <i class="bi bi-filetype-pdf file"></i>
-                                    <div class="card-body py-0  border-top">
-                                        <small class="card-text">
-                                            {{attachment?.attachmentName}}</small>
-                                    </div>
-                                </a>
-                            </div>
-
-
-
-                            <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'application/json'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <a href="{{attachment.url}}" class="card-img-top">
-                                    <i class="bi bi-filetype-json file"></i>
-                                    <div class="card-body py-0  border-top">
-                                        <small class="card-text">
-                                            {{attachment?.attachmentName}}</small>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'text/plain'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <a href="{{attachment.url}}" class="card-img-top">
-                                    <i class="bi bi-filetype-txt file"></i>
-                                    <div class="card-body py-0  border-top">
-                                        <small class="card-text">
-                                            {{attachment?.attachmentName}}</small>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="card cardAttachment"
-                                *ngIf="attachment?.attachmentType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <a href="{{attachment.url}}" class="card-img-top">
-                                    <i class="bi bi-filetype-docx file"></i>
-                                    <div class="card-body py-0  border-top">
-                                        <small class="card-text">
-                                            {{attachment?.attachmentName}}</small>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="card cardAttachment" *ngIf="attachment?.attachmentType == 'text/csv'">
-                                <button type="button" class="bi bi-trash btn text-danger text-right deleteAttachment"
-                                    (click)="deleteTaskAttachment(attachment.id)"></button>
-                                <a href="{{attachment.url}}" class="card-img-top">
-                                    <i class="bi bi-filetype-csv file"></i>
-                                    <div class="card-body py-0  border-top">
-                                        <small class="card-text">
-                                            {{attachment?.attachmentName}}</small>
-                                    </div>
-                                </a>
-                            </div>
-
-                        </div>
-                    </ng-container>
-                </div>
-                <h3 class="border-bottom">Comments</h3>
-                <!-- Starts Comments -->
-                <app-task-comment-list *ngIf="subTaskDetail != null"></app-task-comment-list>
-            </div>
-
-            <div class="col-md-3">
-
-                <div class="issue-details d-flex">
-                    <div ngbDropdown class="d-inline-block">
-                        <button class="btn dropdown-toggle status" [title]="subtask?.task?.status"
-                            id="dropdownMenuButton" ngbDropdownToggle [ngClass]="{
-                            'bg-warning text-white': (selectedStatus || subtask?.task?.status) === 'In Progress',
-                            'bg-success text-white': (selectedStatus || subtask?.task?.status) === 'Done',
-                            'bg-danger text-white': (selectedStatus || subtask?.task?.status) === 'ToDo',
-                            'bg-secondary text-white': (selectedStatus || subtask?.task?.status) === 'Closed'
-                        }">
-                            <i class="fa fa-tasks"></i>
-                            {{ selectedStatus || currentTaskProject?.status }}
-                        </button>
-
-                        <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
-                            <button ngbDropdownItem *ngFor="let s of statusList"
-                                (click)="updateTaskStatus(task, s.name)">
-                                <span class="d-flex align-items-center">
-                                    <span>{{ s?.name }}</span>
-                                </span>
-                            </button>
-                            <button ngbDropdownItem (click)="updateTaskStatus(task, '')">
-                                <span class="d-flex align-items-center"><span>Remove
-                                        Status</span></span>
-                            </button>
-                        </div>
-                    </div>
-
-
-                    <div ngbDropdown class="d-inline-block">
-                        <button class="btn dropdown-toggle" id="dropdownMenuButton2" ngbDropdownToggle>
-                            <img class="align-self-center"
-                                [src]="selectedPriority ? selectedPriority?.url : getTaskPriorityUrl(subtask?.task?.priority)"
-                                [title]="subtask?.task?.priority" height="24" width="24">
-                        </button>
-
-                        <div ngbDropdownMenu aria-labelledby="dropdownMenuButton2">
-                            <button ngbDropdownItem *ngFor="let priority of priorityList"
-                                (click)="updateTaskPriority(subtask, priority.name)">
-                                <span class="d-flex align-items-center">
-                                    <img [src]="priority?.url" class="me-3" height="18" width="18">
-                                    <span>{{ priority?.name }}</span>
-                                </span>
-                            </button>
-                            <button ngbDropdownItem (click)="updateTaskPriority(task, '')">
-                                <span class="d-flex align-items-center"><span>Remove
-                                        Priority</span></span>
-                            </button>
-                        </div>
-                    </div>
-
                 </div>
 
+                <form class="taskDetails" [formGroup]="updateForm">
+                    <div class="row mb-3">
+                        <div class="col-12 align-self-center">
+                            <div class="sub-header mt-0 py-3 px-3 align-self-center w-100 rounded">
+                                <!-- Breadcrumb: Parent Task > Sub Task -->
+                                <div class="issue-type my-3">
+                                    <i class="bi bi-list-task btn-act px-1 rounded"></i>
+                                    <span (click)="gotoParentTask(parentTask)"
+                                        class="parent rounded px-2 py-1"
+                                        [tooltip]="(parentTask?.taskNumber || '') + ': ' + (parentTask?.taskName || '')">
+                                        {{ getProjectNameInitials(parentTask?.project?.projectName) }}-{{parentTask?.taskNumber}}
+                                    </span> /
+                                    <i class="bi bi-diagram-3 btn-act px-1 rounded mx-2"></i>
+                                    <span [tooltip]="(subtask?.task?.taskNumber || '') + ': ' + (subtask?.task?.taskName || '')">
+                                        {{ getProjectNameInitials(subtask?.task?.project?.projectName) }}-{{subtask?.task?.taskNumber}}
+                                    </span>
+                                </div>
 
+                                <div class="d-flex align-items-center">
+                                    <!-- Status dropdown -->
+                                    <div ngbDropdown class="d-inline-block">
+                                        <button class="btn dropdown-toggle status" [title]="subtask?.task?.status"
+                                            id="dropdownMenuButton" ngbDropdownToggle [ngClass]="{
+                                            'bg-warning text-white': subtask?.task?.status === 'In Progress',
+                                            'bg-success text-white': subtask?.task?.status === 'Done',
+                                            'bg-danger text-white': subtask?.task?.status === 'ToDo',
+                                            'bg-secondary text-white': subtask?.task?.status === 'Closed',
+                                            'bg-primary text-white': subtask?.task?.status === 'Active'
+                                        }">
+                                            <i class="fa fa-tasks"></i>
+                                            {{ subtask?.task?.status }}
+                                        </button>
 
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                Details
-                            </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                            data-bs-parent="#accordionExample">
-                            <div class="accordion-body p-0">
-                                <div>
-                                    <table>
-                                        <tbody>
-                                            <tr class="subTask-details">
-                                                <td class="pt-0">Reporter:</td>
-                                                <td class="pt-0">{{subtask?.task?.createdBy?.firstName}}
-                                                    {{subtask?.task?.createdBy?.lastName}}</td>
-                                            </tr>
-                                            <tr class="subTask-details">
-                                                <td class="pt-0">Assignee:</td>
-                                                <td class="pt-0">
+                                        <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
+                                            <button ngbDropdownItem *ngFor="let s of statusList"
+                                                (click)="updateTaskStatus(task, s.name)">
+                                                <span class="d-flex align-items-center">
+                                                    <span>{{ s?.name }}</span>
+                                                </span>
+                                            </button>
+                                            <button ngbDropdownItem (click)="updateTaskStatus(task, '')">
+                                                <span class="d-flex align-items-center"><span>Remove Status</span></span>
+                                            </button>
+                                        </div>
+                                    </div>
 
-                                                    <div ngbDropdown class="d-inline-block">
-                                                        <ng-container *ngIf="assignee && assignee.length === 0;">
-                                                            <button type="button" class="btn btn-outline-primary"
-                                                                id="dropdownBasic1" ngbDropdownToggle>
-                                                                Toggle dropdown
-                                                            </button>
-                                                            <span type="button"
-                                                                class="btn btn-sm rounded-pill btn-primary px-2 dropdown-toggle dropdown-toggle-no-caret"
-                                                                ngbDropdownToggle>Assignee <i
-                                                                    class="bi bi-chevron-down"></i></span>
+                                    <!-- Priority dropdown -->
+                                    <div ngbDropdown class="d-inline-block">
+                                        <button class="btn dropdown-toggle" id="dropdownMenuButton2" ngbDropdownToggle>
+                                            <img class="align-self-center"
+                                                [src]="selectedPriority ? selectedPriority?.url : getTaskPriorityUrl(subtask?.task?.priority)"
+                                                [title]="subtask?.task?.priority" height="24" width="24">
+                                        </button>
 
-                                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                                                                <button ngbDropdownItem
-                                                                    *ngFor="let assignee of projectUser"
-                                                                    [value]="assignee?.user?.id">
-                                                                    <p *ngIf="assignee.user != null"
-                                                                        class="ps-4 py-2 mb-1" style="font-size: 13px;"
-                                                                        (click)="addUserToTask(subtask?.task?.id, assignee.user.id)">
-                                                                        <span class="letter p-1 rounded text-light"
-                                                                            style="font-size: 12px;"
-                                                                            [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
-                                                                            [style.background-color]="commonservice.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                                                            {{ assignee?.user?.firstName?.charAt(0) |
-                                                                            uppercase }}
-                                                                            {{ assignee?.user?.lastName?.charAt(0) |
-                                                                            uppercase }}
-                                                                        </span>
-                                                                        &nbsp;{{ assignee?.user?.firstName | titlecase
-                                                                        }}
-                                                                        {{ assignee?.user?.lastName | titlecase }}
-                                                                    </p>
-                                                                </button>
-                                                            </div>
-                                                        </ng-container>
+                                        <div ngbDropdownMenu aria-labelledby="dropdownMenuButton2">
+                                            <button ngbDropdownItem *ngFor="let priority of priorityList"
+                                                (click)="updateTaskPriority(subtask, priority.name)">
+                                                <span class="d-flex align-items-center">
+                                                    <img [src]="priority?.url" class="me-3" height="18" width="18">
+                                                    <span>{{ priority?.name }}</span>
+                                                </span>
+                                            </button>
+                                            <button ngbDropdownItem (click)="updateTaskPriority(task, '')">
+                                                <span class="d-flex align-items-center"><span>Remove Priority</span></span>
+                                            </button>
+                                        </div>
+                                    </div>
 
-                                                        <div class="user-container btn-group align-items-center"
-                                                            *ngFor="let user of assignee;" id="dropdownBasic2"
-                                                            ngbDropdown>
-                                                            <span class="letters p-1 rounded text-light"
-                                                                [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
-                                                                [style.background-color]="commonservice.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
-                                                                {{ user?.user?.firstName?.charAt(0) | uppercase
-                                                                }}&nbsp;{{
-                                                                user?.user?.lastName?.charAt(0) | uppercase }}
-                                                            </span>
+                                    <!-- Assignee -->
+                                    <div ngbDropdown class="d-inline-block">
+                                        <ng-container *ngIf="assignee && assignee.length === 0;">
+                                            <button type="button" class="btn btn-outline-primary"
+                                                id="dropdownBasic1" ngbDropdownToggle>
+                                                Toggle dropdown
+                                            </button>
+                                            <span type="button"
+                                                class="btn btn-sm rounded-pill btn-primary px-2 dropdown-toggle dropdown-toggle-no-caret"
+                                                ngbDropdownToggle>Assignee <i class="bi bi-chevron-down"></i></span>
 
-                                                            <button type="button"
-                                                                class="btn dropdown-toggle dropdown-toggle-no-caret"
-                                                                ngbDropdownToggle>
-                                                                <span class="text-muted">{{ user?.user?.firstName }} {{
-                                                                    user?.user?.lastName }}</span>
-                                                            </button>
+                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                                                <button ngbDropdownItem *ngFor="let assignee of projectUser"
+                                                    [value]="assignee?.user?.id">
+                                                    <p *ngIf="assignee.user != null" class="ps-4 py-2 mb-1"
+                                                        style="font-size: 13px;"
+                                                        (click)="addUserToTask(subtask?.task?.id, assignee.user.id)">
+                                                        <span class="letter p-1 rounded text-light"
+                                                            style="font-size: 12px;"
+                                                            [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                            [style.background-color]="commonservice.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                            {{ assignee?.user?.firstName?.charAt(0) | uppercase }}
+                                                            {{ assignee?.user?.lastName?.charAt(0) | uppercase }}
+                                                        </span>
+                                                        &nbsp;{{ assignee?.user?.firstName | titlecase }}
+                                                        {{ assignee?.user?.lastName | titlecase }}
+                                                    </p>
+                                                </button>
+                                            </div>
+                                        </ng-container>
 
-                                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
-                                                                <button ngbDropdownItem (click)="removeAssignee()"
-                                                                    *ngIf="assignee.length === 1 && assignee[0]?.id">
-                                                                    <span class="ps-2 py-2 mb-1"
-                                                                        style="font-size: 13px;">
-                                                                        <i class="bi bi-person-circle me-3 text-secondary"
-                                                                            style="font-size: 20px"></i>
-                                                                        Unassigned
-                                                                    </span>
-                                                                </button>
+                                        <div class="user-container btn-group align-items-center"
+                                            *ngFor="let user of assignee;" id="dropdownBasic2" ngbDropdown>
+                                            <span class="letters p-1 rounded text-light"
+                                                [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
+                                                [style.background-color]="commonservice.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
+                                                {{ user?.user?.firstName?.charAt(0) | uppercase }}&nbsp;{{
+                                                user?.user?.lastName?.charAt(0) | uppercase }}
+                                            </span>
 
-                                                                <button ngbDropdownItem
-                                                                    *ngFor="let assignee of projectUser"
-                                                                    [value]="assignee?.user?.id">
-                                                                    <p *ngIf="assignee.user != null"
-                                                                        class="ps-2 py-2 mb-1" style="font-size: 13px;"
-                                                                        (click)="addUserToTask(subtask?.task?.id, assignee.user.id)">
-                                                                        <span class="letters p-1 rounded text-light"
-                                                                            style="font-size: 12px;"
-                                                                            [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
-                                                                            [style.background-color]="commonservice.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                                                            {{ assignee?.user?.firstName?.charAt(0) |
-                                                                            uppercase
-                                                                            }}&nbsp;{{
-                                                                            assignee?.user?.lastName?.charAt(0) |
-                                                                            uppercase }}
-                                                                        </span>&nbsp;{{ assignee?.user?.firstName |
-                                                                        titlecase
-                                                                        }}&nbsp;{{ assignee?.user?.lastName | titlecase
-                                                                        }}
-                                                                    </p>
-                                                                </button>
-                                                            </div>
-                                                        </div>
+                                            <button type="button"
+                                                class="btn dropdown-toggle dropdown-toggle-no-caret"
+                                                ngbDropdownToggle>
+                                                <span class="text-muted">{{ user?.user?.firstName }} {{
+                                                    user?.user?.lastName }}</span>
+                                            </button>
+
+                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+                                                <button ngbDropdownItem (click)="removeAssignee()"
+                                                    *ngIf="assignee.length === 1 && assignee[0]?.id">
+                                                    <span class="ps-2 py-2 mb-1" style="font-size: 13px;">
+                                                        <i class="bi bi-person-circle me-3 text-secondary"
+                                                            style="font-size: 20px"></i>
+                                                        Unassigned
+                                                    </span>
+                                                </button>
+
+                                                <button ngbDropdownItem *ngFor="let assignee of projectUser"
+                                                    [value]="assignee?.user?.id">
+                                                    <p *ngIf="assignee.user != null" class="ps-2 py-2 mb-1"
+                                                        style="font-size: 13px;"
+                                                        (click)="addUserToTask(subtask?.task?.id, assignee.user.id)">
+                                                        <span class="letters p-1 rounded text-light"
+                                                            style="font-size: 12px;"
+                                                            [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
+                                                            [style.background-color]="commonservice.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
+                                                            {{ assignee?.user?.firstName?.charAt(0) | uppercase
+                                                            }}&nbsp;{{ assignee?.user?.lastName?.charAt(0) |
+                                                            uppercase }}
+                                                        </span>&nbsp;{{ assignee?.user?.firstName | titlecase
+                                                        }}&nbsp;{{ assignee?.user?.lastName | titlecase }}
+                                                    </p>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <span>|</span>
+
+                                    <span class="text-muted">&nbsp;&nbsp;<strong>Reporter:</strong>&nbsp;{{subtask?.task?.createdBy?.firstName | titlecase}}&nbsp;{{subtask?.task?.createdBy?.lastName | titlecase}}&nbsp;&nbsp;</span>
+
+                                    <div class="mx-3 mt-2">
+                                        <i class="bi bi-trash actions" title="Delete Task" data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"></i>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <div>
+                                            <button mat-flat-button class="mx-2" (click)="goBack()"
+                                                type="button">Cancel</button>
+                                        </div>
+                                        <div>
+                                            <button mat-flat-button (click)="updateTask()" color="primary"
+                                                type="submit">Update</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Task Name -->
+                                <div class="row mt-3">
+                                    <label for="taskName" class="text-start">Task</label>
+                                </div>
+                                <input type="text" name="taskName" id="project"
+                                    class="form-control input pt-0" *ngIf="subtask?.task?.id"
+                                    formControlName="taskName"
+                                    onkeydown="return event.key != 'Enter';"
+                                    [(ngModel)]="subtask?.task.taskName" required>
+                                <div *ngIf="updateForm.controls['taskName'].invalid && updateForm.controls['taskName'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['taskName'].errors['required']">
+                                        Please Select Task Name!
+                                    </div>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="row mt-3">
+                                    <b class="text-start">Description</b>
+                                </div>
+                                <div *ngIf="!subtask?.task?.description && !showEditor">
+                                    <div (click)="onInputClick()" class="form-control px-0 form-feild"
+                                        style="height:50px">
+                                    </div>
+                                </div>
+                                <div *ngIf="!showEditor && subtask?.task?.description" (click)="onInputClick()">
+                                    <div id="description" class="editorContent w-100"
+                                        [innerHTML]="subtask?.task?.description">
+                                    </div>
+                                </div>
+                                <div *ngIf="showEditor">
+                                    <quill-editor [styles]="{ height: '400px' }" formControlName="description"
+                                        [(ngModel)]="subtask?.task.description"></quill-editor>
+                                </div>
+                                <div *ngIf="updateForm.controls['description'].invalid && updateForm.controls['description'].touched"
+                                    class="alert alert-danger error">
+                                    <div *ngIf="updateForm.controls['description'].errors['required']">
+                                        Description is required!
+                                    </div>
+                                </div>
+
+                                <!-- Attachments -->
+                                <div class="col-12 col-sm-6">
+                                    <label for="fileUpload6"
+                                        class="file-upload btn btn-block rounded-pill shadow my-3">
+                                        <i class="fa fa-paperclip me-2"></i> Add attachment<input id="fileUpload6"
+                                            type="file" (change)="onFileSelect($event)" multiple
+                                            style="display: none;">
+                                    </label>
+                                    <ul type="none">
+                                        <li class="contentHeading p-2" *ngFor="let files of selectedFiles">
+                                            {{files.name}}
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="d-flex row" *ngIf="subTaskDetail != null">
+                                    <ng-container *ngFor="let attachment of taskAttachment; let i = index">
+                                        <div class="col-md-2 mb-5" *ngIf="!attachment?.comment">
+
+                                            <!-- Image attachments -->
+                                            <div class="cardAttachment text-center"
+                                                *ngIf="attachment?.attachmentType == 'image/png' || attachment?.attachmentType == 'image/jpg' || attachment?.attachmentType == 'image/jpeg' || attachment?.attachmentType == 'image/avif' || attachment?.attachmentType == 'image/webp' || attachment?.attachmentType == 'image/gif'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <img src="{{attachment.url}}" class="card-img-top" alt="..."
+                                                    data-bs-toggle="modal" data-bs-target="#bigAttachmentModal"
+                                                    (click)="openTaskAttachmentModal(attachment)" />
+                                                <div class="card-body py-0 border-top">
+                                                    <small class="card-text"> {{attachment?.attachmentName}}</small>
+                                                </div>
+                                            </div>
+
+                                            <!-- Spreadsheet -->
+                                            <div class="cardAttachment text-center"
+                                                *ngIf="attachment?.attachmentType == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <a href="{{attachment.url}}" class="card-img-top">
+                                                    <i class="bi bi-file-earmark-spreadsheet file"></i>
+                                                    <div class="card-body py-0 border-top">
+                                                        <small class="card-text">{{attachment?.attachmentName}}</small>
                                                     </div>
+                                                </a>
+                                            </div>
 
-                                                    <!-- <div class="ms-2 mt-2">
-                                                        <ng-container *ngIf="assignee.length === 0">
-                                                            <div>
-                                                                <span type="button"
-                                                                    class="btn dropdown-toggle dropdown-toggle-no-caret"
-                                                                    data-bs-toggle="dropdown" aria-expanded="false">Assignee
-                                                                    </span>
-                                                                <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; height: 200px;
-                 overflow-y: scroll;">
-                                                                    <li *ngFor="let assignee of projectUser"
-                                                                        class="border-left "
-                                                                        [value]="assignee?.user?.id">
-                                                                        <p *ngIf="assignee.user != null"
-                                                                            class="ps-4 py-2 mb-1"
-                                                                            style="font-size: 13px;"
-                                                                            (click)="addUserToTask(id, assignee.user.id)">
-                                                                            <span class="letters text-light"
-                                                                                style="font-size: 12px;"
-                                                                                [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
-                                                                                [style.background-color]="commonservice.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                                                                {{ assignee?.user?.firstName?.charAt(0)
-                                                                                | uppercase }}
-                                                                                {{ assignee?.user?.lastName?.charAt(0) |
-                                                                                uppercase }}
-                                                                            </span> &nbsp;{{assignee?.user?.firstName |
-                                                                            titlecase}}
-                                                                            {{assignee?.user?.lastName | titlecase}}
-                                                                        </p>
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
+                                            <!-- SVG -->
+                                            <div class="cardAttachment text-center"
+                                                *ngIf="attachment?.attachmentType == 'image/svg+xml'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <a href="{{attachment.url}}" class="card-img-top">
+                                                    <i class="bi bi-filetype-svg file"></i>
+                                                    <div class="card-body py-0 border-top">
+                                                        <small class="card-text">{{attachment?.attachmentName}}</small>
+                                                    </div>
+                                                </a>
+                                            </div>
 
-                                                        </ng-container>
+                                            <!-- PDF -->
+                                            <div class="cardAttachment text-center"
+                                                *ngIf="attachment?.attachmentType == 'application/pdf'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <a href="{{attachment.url}}" class="card-img-top">
+                                                    <i class="bi bi-filetype-pdf file"></i>
+                                                    <div class="card-body py-0 border-top">
+                                                        <small class="card-text">{{attachment?.attachmentName}}</small>
+                                                    </div>
+                                                </a>
+                                            </div>
 
-                                                        <div class="user-container btn-group align-items-center"
-                                                            *ngFor="let user of assignee;">
+                                            <!-- JSON -->
+                                            <div class="cardAttachment text-center"
+                                                *ngIf="attachment?.attachmentType == 'application/json'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <a href="{{attachment.url}}" class="card-img-top">
+                                                    <i class="bi bi-filetype-json file"></i>
+                                                    <div class="card-body py-0 border-top">
+                                                        <small class="card-text">{{attachment?.attachmentName}}</small>
+                                                    </div>
+                                                </a>
+                                            </div>
 
-                                                            <span class="letters text-light"
-                                                                [tooltip]="(user?.user?.firstName | titlecase) + ' ' + (user?.user?.lastName | titlecase)"
-                                                                [style.background-color]="commonservice.getRandomColor(user?.user?.firstName?.charAt(0) | uppercase)">
-                                                                {{ user?.user?.firstName?.charAt(0) | uppercase }}
-                                                                {{ user?.user?.lastName?.charAt(0) | uppercase }}
-                                                            </span>
+                                            <!-- Text -->
+                                            <div class="cardAttachment text-center"
+                                                *ngIf="attachment?.attachmentType == 'text/plain'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <a href="{{attachment.url}}" target="_blank"
+                                                    download="{{attachment.attachmentName}}" class="card-img-top">
+                                                    <i class="bi bi-filetype-txt file"></i>
+                                                    <div class="card-body py-0 border-top">
+                                                        <small class="card-text">{{attachment?.attachmentName}}</small>
+                                                    </div>
+                                                </a>
+                                            </div>
 
-                                                            <button type="button"
-                                                                class="btn dropdown-toggle dropdown-toggle-no-caret"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                            <!-- DOCX -->
+                                            <div class="cardAttachment text-center"
+                                                *ngIf="attachment?.attachmentType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <a href="{{attachment.url}}" class="card-img-top">
+                                                    <i class="bi bi-filetype-docx file"></i>
+                                                    <div class="card-body py-0 border-top">
+                                                        <small class="card-text">{{attachment?.attachmentName}}</small>
+                                                    </div>
+                                                </a>
+                                            </div>
 
-                                                                <span class="text-muted">
-                                                                    {{ user?.user?.firstName }} {{ user?.user?.lastName
-                                                                    }}
-                                                                </span>
-                                                            </button>
+                                            <!-- CSV -->
+                                            <div class="cardAttachment text-center"
+                                                *ngIf="attachment?.attachmentType == 'text/csv'">
+                                                <button type="button"
+                                                    class="bi bi-trash btn text-danger text-right deleteAttachment"
+                                                    (click)="deleteTaskAttachment(attachment.id)"></button>
+                                                <a href="{{attachment.url}}" class="card-img-top">
+                                                    <i class="bi bi-filetype-csv file"></i>
+                                                    <div class="card-body py-0 border-top">
+                                                        <small class="card-text">{{attachment?.attachmentName}}</small>
+                                                    </div>
+                                                </a>
+                                            </div>
 
+                                        </div>
+                                    </ng-container>
+                                </div>
 
-                                                            <ul class="dropdown-menu" style="width: 225px; transform: translate3d(-29px, 40px, 0px) !important; max-height: 200px;
-                                                                overflow-y: scroll;">
-                                                                <li class="border-left py-1"
-                                                                    *ngIf="assignee.length === 1 && assignee[0]?.id">
-                                                                    <span (click)="removeAssignee()"
-                                                                        class="ps-4 py-2 mb-1"
-                                                                        style="font-size: 13px;"><i
-                                                                            class="bi bi-person-circle me-3 text-secondary"></i>
-                                                                        Unassigned</span>
-                                                                </li>
-                                                                <li *ngFor="let assignee of projectUser"
-                                                                    class="border-left " [value]="assignee?.user?.id">
-                                                                    <p *ngIf="assignee.user != null"
-                                                                        class="ps-4 py-2 mb-1" style="font-size: 13px;"
-                                                                        (click)="addUserToTask(id, assignee.user.id)">
-
-                                                                        <span class="letters text-light"
-                                                                            style="font-size: 12px;"
-                                                                            [tooltip]="(assignee?.user?.firstName | titlecase) + ' ' + (assignee?.user?.lastName | titlecase)"
-                                                                            [style.background-color]="commonservice.getRandomColor(assignee?.user?.firstName?.charAt(0) | uppercase)">
-                                                                            {{ assignee?.user?.firstName?.charAt(0) |
-                                                                            uppercase }}
-                                                                            {{ assignee?.user?.lastName?.charAt(0) |
-                                                                            uppercase }}
-                                                                        </span> &nbsp;{{assignee?.user?.firstName |
-                                                                        titlecase}}
-                                                                        {{assignee?.user?.lastName | titlecase}}
-                                                                    </p>
-                                                                </li>
-                                                            </ul>
-
-                                                        </div>
-
-                                                    </div> -->
-
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
+                                <!-- Dates -->
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <p class="dates mb-0">Created On: {{subtask?.task.createdOn | date: 'MMMM d, y, h:mm:ss a'}}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="dates">Updated On: {{subtask?.task.updatedOn | date: 'MMMM d, y, h:mm:ss a'}}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-
-                </div>
-                <p class="dates mb-0 mt-2">Created On: {{subtask?.task.createdOn | date: 'MMMM d, y, h:mm:ss a'}} </p>
-                <p class="dates">Updated On: {{subtask?.task.updatedOn | date: 'MMMM d, y, h:mm:ss a'}} </p>
+                    <!-- Comments -->
+                    <div class="row mb-3">
+                        <div class="col-12 align-self-center">
+                            <div class="sub-header mt-3 py-3 px-3 align-self-center w-100 rounded">
+                                <div class="w-sm-100 pt-2 mr-auto border-bottom">
+                                    <h3 class="mb-0">Comments</h3>
+                                </div>
+                                <app-task-comment-list></app-task-comment-list>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </div>
-
-        <div *ngIf="subTaskDetail === null" class="text-center mt-5">
-            <a (click)="gotoParentTask(parentTask)"> <button class="btn  shadow"><span
-                        class="back-btn bi bi-arrow-left ">
-                        Back</span></button></a>
-            <h2 class="mt-2">Sub Task Does Not Exist!!!</h2>
         </div>
     </div>
 
+    <div *ngIf="subTaskDetail === null" class="d-flex flex-column align-items-center mt-5">
+        <button (click)="goBack()" class="btn submenuTab active rounded-pill">
+            <span class="bi bi-arrow-left"> Back</span>
+        </button>
+        <h2 class="mt-2">Sub Task Does Not Exist!</h2>
+    </div>
 </div>
 
-
-
-
-<!-- Delete -->
+<!-- Delete task modal -->
 <div class="modal" id="deleteModal" data-bs-backdrop="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -539,15 +417,13 @@
                     <div class="col-md-12 text-center">
                         <h3>Do you really want to Delete?</h3>
                     </div>
-
                 </div>
                 <div class="d-flex justify-content-between m-3">
                     <div>
-
                         <button mat-flat-button class="mx-2" data-bs-dismiss="modal" type="button">Cancel</button>
                     </div>
                     <div>
-                        <button mat-flat-button class=" addBtn" (click)="deleteTask()" data-bs-dismiss="modal"
+                        <button mat-flat-button class="addBtn" (click)="deleteTask()" data-bs-dismiss="modal"
                             type="submit">Delete</button>
                     </div>
                 </div>
@@ -556,7 +432,7 @@
     </div>
 </div>
 
-<div class="modal fade" role="dialog" id="bigAttachmentModal" tabindex="0" aria-labelledby="bigAttachmentModalLabel"
+<div class="modal fade" data-bs-backdrop="false" role="dialog" id="bigAttachmentModal" tabindex="0" aria-labelledby="bigAttachmentModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">

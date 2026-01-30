@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { TasksService } from '../../_services/tasks.service';
 import { ToastrService } from 'ngx-toastr';
@@ -11,6 +11,8 @@ import { NavigationExtras } from '@angular/router';
 import { GetTaskService } from 'src/app/_services/get-task.service';
 import { ProjectService } from 'src/app/_services/project.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
+import { takeUntil, debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
 
 @Component({
   providers: [DatePipe],
@@ -18,7 +20,10 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
   templateUrl: './edit-task.component.html',
   styleUrls: ['./edit-task.component.css']
 })
-export class EditTaskComponent implements OnInit {
+export class EditTaskComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
+  private searchSubject = new Subject<string>();
+
   selectedTask: any;
   updateForm: FormGroup;
   projectList: any = [];
@@ -58,8 +63,8 @@ export class EditTaskComponent implements OnInit {
   view = localStorage.getItem('adminView');
   currentUser = JSON.parse(localStorage.getItem('currentUser'));
   currentTaskProject: any;
-  skip = '0';
-  next = '10';
+  skip: number = 0;
+  next: number = 10;
   newTask: string = '';
   id: string;
   selectedSubtask: any;
@@ -78,6 +83,18 @@ export class EditTaskComponent implements OnInit {
   taskDeleted: boolean = false;
   projectisNull;
   dialogRef: MatDialogRef<any>;
+
+  // Attachment type helpers
+  imageTypes: string[] = ['image/png', 'image/gif', 'image/jpg', 'image/jpeg', 'image/avif', 'image/webp'];
+  fileIconMap: { [key: string]: string } = {
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'bi-file-earmark-spreadsheet',
+    'image/svg+xml': 'bi-filetype-svg',
+    'application/pdf': 'bi-filetype-pdf',
+    'application/json': 'bi-filetype-json',
+    'text/plain': 'bi-filetype-txt',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'bi-filetype-docx',
+    'text/csv': 'bi-filetype-csv'
+  };
 
   constructor(private fb: FormBuilder,
     private tasksService: TasksService,
@@ -101,7 +118,6 @@ export class EditTaskComponent implements OnInit {
       status: ['', Validators.required]
 
     });
-    // console.log(this.tasks?.data?.task)
     this.addForm = this.fb.group({
       taskName: [''],
       title: [''],
@@ -121,19 +137,58 @@ export class EditTaskComponent implements OnInit {
     this.commonService.getFilters();
     this.getprojects();
     this.firstLetter = this.commonService.firstletter;
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
       this.taskId = params['taskId'];
       this.getTaskAttachments();
       this.getTask(this.taskId);
-      this.tasksService.getSubTask(this.taskId).subscribe((response: any) => {
+      this.tasksService.getSubTask(this.taskId).pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
         this.subTask = response && response.data && response.data['taskList']
       })
+    });
+
+    // Setup server-side search
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(text => {
+        this.searchText = text;
+        this.skip = 0;
+      }),
+      switchMap(() => {
+        if (this.view === 'admin') {
+          return this.tasksService.getAllTasks(this.skip.toString(), this.next.toString(), this.searchText);
+        } else {
+          return this.tasksService.getTaskByUser(this.currentUser.id, this.skip.toString(), this.next.toString(), this.searchText);
+        }
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe((response: any) => {
+      this.taskList = response && response.data && response.data['taskList'];
+      this.totalRecords = response && response.data;
+      this.currentPage = Math.floor(this.skip / this.next) + 1;
+      if (this.taskList) {
+        this.taskList = this.taskList.filter(taskList => taskList !== null);
+      }
+    });
+
+    this.getTasks();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private refreshData(): void {
+    this.getTaskAttachments();
+    this.getTask(this.taskId);
+    this.tasksService.getSubTask(this.taskId).pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
+      this.subTask = response && response.data && response.data['taskList']
     });
     this.getTasks();
   }
 
   navigateToManage() {
-    // Use router.navigate with a relative path to go back three steps
     this.router.navigate(['../../../manage'], { relativeTo: this.route });
     console.log(this.route)
   }
@@ -144,7 +199,7 @@ export class EditTaskComponent implements OnInit {
 
   getTask(taskId: string) {
     if (taskId) {
-      this.tasksService.getTaskById(taskId).subscribe(res => {
+      this.tasksService.getTaskById(taskId).pipe(takeUntil(this.destroy$)).subscribe(res => {
         this.tasks = res;
 
         // ------------
@@ -156,7 +211,7 @@ export class EditTaskComponent implements OnInit {
           comment: this.tasks.data.task.comment,
           priority: this.tasks.data.task.priority,
           user: '',
-          project: this.tasks.data.task.project._id,
+          project: this.tasks.data.task.project?._id,
           status: this.tasks.data.task.status
         });
         // ---------------
@@ -167,9 +222,11 @@ export class EditTaskComponent implements OnInit {
         if (this.currentTaskProject === null) {
           this.loading = false;
         }
-        this.projectService.getprojectUser(this.currentTaskProject.project.id).subscribe((res: any) => {
-          this.projectUser = res && res.data && res.data['projectUserList']
-        });
+        if (this.currentTaskProject.project && this.currentTaskProject.project.id) {
+          this.projectService.getprojectUser(this.currentTaskProject.project.id).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+            this.projectUser = res && res.data && res.data['projectUserList']
+          });
+        }
       });
     }
   }
@@ -177,7 +234,7 @@ export class EditTaskComponent implements OnInit {
   removeAssignee() {
     const unassignedUserId = this.assignee[0]?.id;
     if (unassignedUserId) {
-      this.tasksService.deleteTaskUser(unassignedUserId).subscribe(
+      this.tasksService.deleteTaskUser(unassignedUserId).pipe(takeUntil(this.destroy$)).subscribe(
         (res: any) => {
           this.assignee = []
           this.toast.success('Unassigned successfully', `Task Number: ${this.tasks.data.task.taskNumber}`);
@@ -191,7 +248,7 @@ export class EditTaskComponent implements OnInit {
   removeAssigneeFromSubtask() {
     const unassignedUserId = this.assignee[0]?.id;
     if (unassignedUserId) {
-      this.tasksService.deleteTaskUser(unassignedUserId).subscribe(
+      this.tasksService.deleteTaskUser(unassignedUserId).pipe(takeUntil(this.destroy$)).subscribe(
         (res: any) => {
           this.assignee = []
           this.toast.success('Sub task is unassigned', 'Successfully');
@@ -211,30 +268,28 @@ export class EditTaskComponent implements OnInit {
   }
 
   getCurrentUserTasks() {
-    this.tasksService.getTaskByUser(this.currentUser.id, this.skip, this.next).subscribe(response => {
+    this.tasksService.getTaskByUser(this.currentUser.id, this.skip.toString(), this.next.toString(), this.searchText).pipe(takeUntil(this.destroy$)).subscribe(response => {
       this.taskList = response && response.data && response.data['taskList'];
       this.totalRecords = response && response.data;
-      this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
+      this.currentPage = Math.floor(this.skip / this.next) + 1;
       this.taskList = this.taskList.filter(taskList => taskList !== null);
     })
   }
 
   nextPagination() {
-    const newSkip = (parseInt(this.skip) + parseInt(this.next)).toString();
-    this.skip = newSkip;
+    this.skip = this.skip + this.next;
     this.getCurrentUserTasks();
   }
 
   previousPagination() {
-    const newSkip = (parseInt(this.skip) >= parseInt(this.next)) ? (parseInt(this.skip) - parseInt(this.next)).toString() : '0';
-    this.skip = newSkip;
+    this.skip = (this.skip >= this.next) ? (this.skip - this.next) : 0;
     this.getCurrentUserTasks();
   }
 
   updateRecordsPerPage() {
     this.currentPage = 1;
-    this.skip = '0';
-    this.next = this.recordsPerPage.toString();
+    this.skip = 0;
+    this.next = this.recordsPerPage;
     this.getCurrentUserTasks();
   }
 
@@ -244,6 +299,10 @@ export class EditTaskComponent implements OnInit {
       return Math.ceil(totalCount / this.recordsPerPage);
     }
     return 0;
+  }
+
+  onSearchChange(text: string) {
+    this.searchSubject.next(text);
   }
 
   getTasks() {
@@ -265,22 +324,23 @@ export class EditTaskComponent implements OnInit {
   }
 
   listAllTasks() {
-    this.tasksService.getAllTasks(this.skip, this.next).subscribe((response: any) => {
+    this.tasksService.getAllTasks(this.skip.toString(), this.next.toString(), this.searchText).pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
       this.taskList = response && response.data && response.data['taskList'];
+      this.totalRecords = response && response.data;
     });
   }
 
   onTaskChange(taskId: any) {
-    this.tasksService.getTaskById(taskId).subscribe((res: any) => {
+    this.tasksService.getTaskById(taskId).pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       const task = res.data.task;
       const p_Id = task.parentTask;
       const navigationExtras: NavigationExtras = {
         queryParams: { taskId: taskId }
       };
       if (p_Id) {
-        this.router.navigate(['/SubTask'], navigationExtras);
+        this.router.navigate(['home/SubTask'], navigationExtras);
       } else {
-        this.router.navigate(['/edit-task'], navigationExtras);
+        this.router.navigate(['home/edit-task'], navigationExtras);
       }
       this.tasks = task;
       this.getTaskAttachments();
@@ -299,7 +359,7 @@ export class EditTaskComponent implements OnInit {
       comment: this.updateForm.value.comment,
       endDate: this.updateForm.value.endDate
     }
-    this.tasksService.updateTask(this.tasks.data.task.id, updateTask).subscribe(response => {
+    this.tasksService.updateTask(this.tasks.data.task.id, updateTask).pipe(takeUntil(this.destroy$)).subscribe(response => {
       this.showEditor = false;
       this.toast.success('Successfully Updated!', `Task Number: ${this.tasks.data.task.taskNumber}`);
     }, err => {
@@ -312,7 +372,7 @@ export class EditTaskComponent implements OnInit {
   }
 
   getprojects() {
-    this.commonService.getProjectList().subscribe(response => {
+    this.commonService.getProjectList().pipe(takeUntil(this.destroy$)).subscribe(response => {
       this.projectList = response && response.data && response.data['projectList'];
     });
   }
@@ -333,14 +393,14 @@ export class EditTaskComponent implements OnInit {
       description: selectedTask.description,
       comment: selectedTask.comment,
       project: selectedTask.project,
-      title: selectedTask.ttitle,
+      title: selectedTask.title,
       parentTask: selectedTask.parentTask,
       estimate: selectedTask.estimate,
       timeTaken: selectedTask.timeTaken,
     }
     payload.priority = priority;
     console.log(payload)
-    this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
+    this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).pipe(takeUntil(this.destroy$)).subscribe(response => {
       this.tasks.data.task.priority = priority;
       this.toast.success('Task priority updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
     }, err => {
@@ -360,13 +420,13 @@ export class EditTaskComponent implements OnInit {
       comment: selectedTask.comment,
       priority: selectedTask.priority,
       project: selectedTask.project,
-      title: selectedTask.ttitle,
+      title: selectedTask.title,
       parentTask: selectedTask.parentTask,
       estimate: selectedTask.estimate,
       timeTaken: selectedTask.timeTaken,
     }
     payload.status = status
-    this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).subscribe(response => {
+    this.tasksService.updatetaskFlex(this.tasks.data.task.id, payload).pipe(takeUntil(this.destroy$)).subscribe(response => {
       this.showEditor = false;
       this.tasks.data.task.status = status;
       this.toast.success('Task status updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
@@ -377,13 +437,41 @@ export class EditTaskComponent implements OnInit {
 
   deleteTask() {
     this.loading = true;
-    this.tasksService.deleteTask(this.taskId).subscribe(response => {
-      this.ngOnInit();
-      this.toast.success('Successfully Deleted!', `Task Number: ${this.tasks.data.task.taskNumber}`);
+    const taskNumber = this.tasks?.data?.task?.taskNumber;
+    this.tasksService.deleteTask(this.taskId).pipe(takeUntil(this.destroy$)).subscribe(response => {
+      this.loading = false;
+      this.refreshData();
+      this.toast.success('Successfully Deleted!', `Task Number: ${taskNumber}`);
     }, err => {
       this.toast.error('Task Cannot Be Deleted', 'Error!');
       this.loading = false;
     });
+  }
+
+  private convertFilesToAttachments(files: File[], callback: (attachmentsList: attachments[]) => void): void {
+    const attachmentsList: attachments[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file: File = files[i];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result.toString().split(',')[1];
+        const fileSize = file.size;
+        const fileType = file.type;
+        const fileNameParts = file.name.split('.');
+        const extention = fileNameParts[fileNameParts.length - 1];
+        attachmentsList.push({
+          attachmentName: file.name,
+          attachmentType: fileType,
+          attachmentSize: fileSize,
+          extention: extention,
+          file: base64String
+        });
+        if (i === files.length - 1) {
+          callback(attachmentsList);
+        }
+      };
+    }
   }
 
   onFileSelect(event) {
@@ -397,40 +485,19 @@ export class EditTaskComponent implements OnInit {
       }
     }
 
-    // --------------------------
-    const attachments: attachments[] = [];
-    for (let i = 0; i < this.selectedFiles.length; i++) {
-      const file: File = this.selectedFiles[i];
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = reader.result.toString().split(',')[1];
-        const fileSize = file.size;
-        const fileType = file.type;
-        const fileNameParts = file.name.split('.');
-        const extention = fileNameParts[fileNameParts.length - 1];
-        attachments.push({
-          attachmentName: file.name,
-          attachmentType: fileType,
-          attachmentSize: fileSize,
-          extention: extention,
-          file: base64String
-        });
-        if (i === this.selectedFiles.length - 1) {
-          const taskAttachment: taskAttachments = {
-            taskId: this.taskId,
-            taskAttachments: attachments
-          };
-
-          this.tasksService.addTaskAttachment(taskAttachment).subscribe((response) => {
-            this.selectedFiles = [];
-            this.getTaskAttachments();
-          }, (error) => {
-            console.error('Error creating task attachment:', error);
-          });
-        }
+    this.convertFilesToAttachments(this.selectedFiles, (attachmentsList) => {
+      const taskAttachment: taskAttachments = {
+        taskId: this.taskId,
+        taskAttachments: attachmentsList
       };
-    }
+
+      this.tasksService.addTaskAttachment(taskAttachment).pipe(takeUntil(this.destroy$)).subscribe((response) => {
+        this.selectedFiles = [];
+        this.getTaskAttachments();
+      }, (error) => {
+        console.error('Error creating task attachment:', error);
+      });
+    });
   }
 
   openDownloadedFile() {
@@ -446,7 +513,7 @@ export class EditTaskComponent implements OnInit {
   }
 
   getTaskAttachments(): void {
-    this.tasksService.getTaskAttachment(this.taskId).subscribe(result => {
+    this.tasksService.getTaskAttachment(this.taskId).pipe(takeUntil(this.destroy$)).subscribe(result => {
       this.taskAttachment = result.data.newTaskAttachmentList;
     });
   }
@@ -460,7 +527,7 @@ export class EditTaskComponent implements OnInit {
   }
 
   deleteTaskAttachment(taskAttachmentId: string): void {
-    this.tasksService.deleteTaskAttachment(taskAttachmentId).subscribe((response) => {
+    this.tasksService.deleteTaskAttachment(taskAttachmentId).pipe(takeUntil(this.destroy$)).subscribe((response) => {
       // remove the attachment from the taskAttachment array
       this.taskAttachment = this.taskAttachment.filter(attachment => attachment.id !== taskAttachmentId);
     }, (error) => {
@@ -497,51 +564,28 @@ export class EditTaskComponent implements OnInit {
       project: this.currentTaskProject?.project?.id,
       taskAttachments: []
     };
-    const taskAttachments: taskAttachments[] = [];
-    newTask.taskAttachments = taskAttachments;
+    const taskAttachmentsList: taskAttachments[] = [];
+    newTask.taskAttachments = taskAttachmentsList;
     console.log(newTask)
-    this.tasksService.addTask(newTask).subscribe((response: any) => {
+    this.tasksService.addTask(newTask).pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
       this.task = response;
       this.toast.success('Sub Task Created successfully')
       this.addForm.reset();
-      this.ngOnInit();
-      if (taskAttachments) {
-        const attachments: attachments[] = [];
-        for (let i = 0; i < this.selectedFile.length; i++) {
-          const file: File = this.selectedFile[i];
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            const base64String = reader.result.toString().split(',')[1];
-            const fileSize = file.size;
-            const fileType = file.type;
-            const fileNameParts = file.name.split('.');
-            const extention = fileNameParts[fileNameParts.length - 1];
-            attachments.push({
-              attachmentName: file.name,
-              attachmentType: fileType,
-              attachmentSize: fileSize,
-              extention: extention,
-              file: base64String
-            });
-
-            if (i === this.selectedFile.length - 1) {
-              const taskAttachment: taskAttachments = {
-                taskId: this.task.data.newTask.id,
-                taskAttachments: attachments
-              };
-
-              this.tasksService.addTaskAttachment(taskAttachment).subscribe((response) => {
-                this.taskAttachment = response.data['taskAttachmentList']
-                this.ngOnInit();
-              }, (error) => {
-                console.error('Error creating task attachment:', error);
-              });
-            }
+      this.refreshData();
+      if (this.selectedFile.length > 0) {
+        this.convertFilesToAttachments(this.selectedFile, (attachmentsList) => {
+          const taskAttachment: taskAttachments = {
+            taskId: this.task.data.newTask.id,
+            taskAttachments: attachmentsList
           };
-        }
-      } err => {
-        console.log("Error creating task!");
+
+          this.tasksService.addTaskAttachment(taskAttachment).pipe(takeUntil(this.destroy$)).subscribe((response) => {
+            this.taskAttachment = response.data['taskAttachmentList']
+            this.refreshData();
+          }, (error) => {
+            console.error('Error creating task attachment:', error);
+          });
+        });
       }
     }, err => {
       this.toast.error('Sub task Can not be created', 'Error')
@@ -565,8 +609,8 @@ export class EditTaskComponent implements OnInit {
   }
 
   deleteSubTask(taskId: string) {
-    this.tasksService.deleteTask(taskId).subscribe(response => {
-      this.ngOnInit();
+    this.tasksService.deleteTask(taskId).pipe(takeUntil(this.destroy$)).subscribe(response => {
+      this.refreshData();
       this.toast.success('Successfully Deleted!');
     }, err => {
       this.toast.error('Task Cannot be Deleted', 'Error!');
@@ -578,7 +622,7 @@ export class EditTaskComponent implements OnInit {
     const navigationExtras: NavigationExtras = {
       queryParams: { taskId: taskId }
     };
-    this.router.navigate(['/SubTask'], navigationExtras);
+    this.router.navigate(['home/SubTask'], navigationExtras);
   }
 
   onSubtaskIdChanged(subtaskId: string) {
@@ -588,7 +632,7 @@ export class EditTaskComponent implements OnInit {
   updatesubTaskPriority(selectedTask: any, priority: string) {
     const payload = { "priority": priority }
     selectedTask.priority = priority;
-    this.tasksService.updatetaskFlex(selectedTask.id, payload).subscribe(response => {
+    this.tasksService.updatetaskFlex(selectedTask.id, payload).pipe(takeUntil(this.destroy$)).subscribe(response => {
       this.toast.success('Task priority updated successfully', 'Success')
     }, err => {
       this.toast.error('Task could not be updated', 'ERROR!')
@@ -597,7 +641,7 @@ export class EditTaskComponent implements OnInit {
   updatesubTaskStatus(selectedTask: any, status: string) {
     const payload = { "status": status }
     selectedTask.status = status;
-    this.tasksService.updatetaskFlex(selectedTask.id, payload).subscribe(response => {
+    this.tasksService.updatetaskFlex(selectedTask.id, payload).pipe(takeUntil(this.destroy$)).subscribe(response => {
       this.toast.success('Task status updated successfully', 'Success')
     }, err => {
       this.toast.error('Task could not be updated', 'ERROR!')
@@ -606,7 +650,7 @@ export class EditTaskComponent implements OnInit {
 
   addUserToTask(taskId: string, user: string): void {
     console.log(taskId, user)
-    this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
+    this.tasksService.addUserToTask(taskId, user).pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
       this.assignee = response && response.data && response.data['TaskUserList'];
       this.toast.success('Task User updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
     }, err => {
@@ -616,7 +660,7 @@ export class EditTaskComponent implements OnInit {
 
   addUserToSubTask(taskId: string, user: string): void {
     console.log(taskId, user)
-    this.tasksService.addUserToTask(taskId, user).subscribe((response: any) => {
+    this.tasksService.addUserToTask(taskId, user).pipe(takeUntil(this.destroy$)).subscribe((response: any) => {
       this.assignee = response && response.data && response.data['TaskUserList'];
       this.toast.success('Task User updated successfully', `Task Number: ${this.tasks.data.task.taskNumber}`)
     }, err => {
@@ -632,6 +676,23 @@ export class EditTaskComponent implements OnInit {
   getFaclass(status: string): string {
     const statusItem = this.statusList.find(item => item.name === status);
     return statusItem ? statusItem.faclass : ''; // Return the appropriate class or an empty string
+  }
+
+  // Attachment type helpers
+  isImageType(type: string): boolean {
+    return this.imageTypes.includes(type);
+  }
+
+  isFileType(type: string): boolean {
+    return !!this.fileIconMap[type];
+  }
+
+  getFileIcon(type: string): string {
+    return this.fileIconMap[type] || '';
+  }
+
+  isDownloadableTextFile(type: string): boolean {
+    return type === 'text/plain';
   }
 
 }
