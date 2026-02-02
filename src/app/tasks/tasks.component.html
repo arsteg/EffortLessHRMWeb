@@ -58,7 +58,7 @@
             <mat-form-field class="ms-xl-auto mx-1">
                 <mat-label>Search</mat-label>
                 <input #searchInput matInput class="form-control" type="text" placeholder="Search..."
-                    name="searchText" (input)="onSearchChange(searchInput.value)">
+                    name="searchText" [(ngModel)]="searchText" (input)="onSearchChange(searchInput.value)">
             </mat-form-field>
             }
 
@@ -203,18 +203,12 @@
 
                         <!-- Comments -->
                         <td class="text-center">
-                            <span *ngIf="task?.comment?.length==0 else addComment">
-                                <div style="position:relative">
-                                    <img src="assets/images/icon-comment-add.svg" class="me-3" height="24" width="24">
-                                </div>
-                            </span>
-                            <ng-template #addComment>
-                                <div style="position:relative;max-width:60px;">
-                                    <img src="https://www.webwork-tracker.com/images/tasks/icons/icon-comment.svg"
-                                        height="24" width="=24">
-                                    <span class="position-absolute comments-count" style="margin-left:12em;">1</span>
-                                </div>
-                            </ng-template>
+                            <div style="position:relative;max-width:60px;">
+                                <img [src]="getCommentsCount(task) > 0 ? 'https://www.webwork-tracker.com/images/tasks/icons/icon-comment.svg' : 'assets/images/icon-comment-add.svg'"
+                                     class="me-3" height="24" width="24">
+                                <span *ngIf="getCommentsCount(task) > 0" class="position-absolute comments-count"
+                                      style="margin-left:12em;">{{ getCommentsCount(task) }}</span>
+                            </div>
                         </td>
 
                         <!-- Assignee -->

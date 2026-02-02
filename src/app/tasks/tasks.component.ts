@@ -184,8 +184,13 @@ export class TasksComponent implements OnInit {
 
       // Apply stored filters after user data is loaded
       if (this.storedFilters) {
+        // Restore all filter state
         this.userId = this.storedFilters.userId || '';
         this.projectId = this.storedFilters.projectId || '';
+        //this.searchText = this.storedFilters.searchText || '';
+        this.skip = this.storedFilters.skip || '0';
+        this.next = this.storedFilters.next || '10';
+        this.recordsPerPage = this.storedFilters.recordsPerPage || 10;
 
         // Load tasks based on stored filters
         if (this.projectId && this.userId) {
@@ -355,9 +360,14 @@ export class TasksComponent implements OnInit {
     const taskId = task.id.toString();
     const p_Id = task.parentTask;
 
+    // Save current filter state including search text and pagination
     const currentFilters = {
-      userId: this.userId,
-      projectId: this.projectId
+      userId: this.userId || '',
+      projectId: this.projectId || '',
+      searchText: this.searchText || '',
+      skip: this.skip,
+      next: this.next,
+      recordsPerPage: this.recordsPerPage
     };
     this.commonservice.setFilters(currentFilters);
 
@@ -1066,26 +1076,27 @@ export class TasksComponent implements OnInit {
     return statusItem ? statusItem.faclass : '';
   }
 
-  // getCommentsCount(task: any): number {
-  //   // Check multiple possible property names for comments
-  //   if (task?.TaskComments && Array.isArray(task.TaskComments)) {
-  //     return task.TaskComments.length;
-  //   }
-  //   if (task?.taskComments && Array.isArray(task.taskComments)) {
-  //     return task.taskComments.length;
-  //   }
-  //   if (task?.comments && Array.isArray(task.comments)) {
-  //     return task.comments.length;
-  //   }
-  //   if (task?.commentCount !== undefined && task?.commentCount !== null) {
-  //     return task.commentCount;
-  //   }
-  //   if (task?.commentsCount !== undefined && task?.commentsCount !== null) {
-  //     return task.commentsCount;
-  //   }
-  //   // If no comments data available, return 0
-  //   return 0;
-  // }
+  getCommentsCount(task: any): number {
+    // Prioritize the commentsCount field returned from the backend API
+    if (task?.commentsCount !== undefined && task?.commentsCount !== null) {
+      return task.commentsCount;
+    }
+    if (task?.commentCount !== undefined && task?.commentCount !== null) {
+      return task.commentCount;
+    }
+    // Fallback to checking comments arrays (if populated)
+    if (task?.comments && Array.isArray(task.comments)) {
+      return task.comments.length;
+    }
+    if (task?.TaskComments && Array.isArray(task.TaskComments)) {
+      return task.TaskComments.length;
+    }
+    if (task?.taskComments && Array.isArray(task.taskComments)) {
+      return task.taskComments.length;
+    }
+    // If no comments data available, return 0
+    return 0;
+  }
 
 }
 interface priority {
