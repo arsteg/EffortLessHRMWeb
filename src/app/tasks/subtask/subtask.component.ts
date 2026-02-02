@@ -124,7 +124,7 @@ assignee: any;
       comment: selectedTask.comment,
       priority: selectedTask.priority,
       project: selectedTask.project,
-      title: selectedTask.ttitle,
+      title: selectedTask.title,
       parentTask: selectedTask.parentTask,
       estimate: selectedTask.estimate,
       timeTaken: selectedTask.timeTaken,
@@ -149,7 +149,7 @@ assignee: any;
       description: selectedTask.description,
       comment: selectedTask.comment,
       project: selectedTask.project,
-      title: selectedTask.ttitle,
+      title: selectedTask.title,
       parentTask: selectedTask.parentTask,
       estimate: selectedTask.estimate,
       timeTaken: selectedTask.timeTaken,
@@ -261,12 +261,23 @@ assignee: any;
   }
 
   gotoParentTask(task: any) {
+    if (!task || !task.id) return;
     const taskId = task.id.toString();
     const navigationExtras: NavigationExtras = {
       queryParams: { taskId: taskId }
     };
-    console.log(taskId)
-    this.router.navigate(['../edit-task'], navigationExtras);
+    this.router.navigate(['home/edit-task'], navigationExtras);
+  }
+
+  goBack() {
+    const view = localStorage.getItem('adminView');
+    if (this.parentTask && this.parentTask.id) {
+      this.gotoParentTask(this.parentTask);
+    } else if (view === 'admin') {
+      this.router.navigate(['home/manage/tasks']);
+    } else {
+      this.router.navigate(['home/tasks']);
+    }
   }
   onFileSelect(event) {
     const files: FileList = event.target.files;

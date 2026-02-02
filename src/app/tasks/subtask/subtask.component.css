@@ -8,7 +8,6 @@
 }
 
 .parent {
-    /* text-decoration:underline; */
     cursor: pointer;
 }
 
@@ -18,7 +17,6 @@
 
 .form-feild {
     border: none !important;
-
 }
 
 .form-feild:hover {
@@ -40,7 +38,66 @@
     transition: all .2s;
 }
 
-  .btn-act  {
+.btn-act {
     background: #76bc21;
     color: white;
+}
+
+.sub-header {
+    box-shadow: -5px 10px 29px -22px rgba(0, 0, 0, 0.55) !important;
+    background: white !important;
+    border-radius: 5px;
+}
+
+.taskDetails {
+    max-height: 75vh;
+    overflow-y: auto;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.status {
+    color: white;
+}
+
+.actions {
+    font-size: 20px;
+    color: #5d5c5c;
+}
+
+.cardAttachment {
+    box-shadow: 0 1px 1px #bfbbbb;
+    width: 150px;
+    cursor: pointer;
+}
+
+.card-img-top {
+    height: 150px;
+}
+
+.file {
+    font-size: 150px;
+}
+
+.deleteAttachment {
+    position: absolute;
+    margin-left: 100px;
+}
+
+.big-img {
+    min-width: auto;
+    max-width: 1050px;
+}
+
+.modal-image {
+    max-width: 100%;
+    max-height: 80vh;
+    margin: auto !important;
+    display: block !important;
+}
+
+::ng-deep #description p img {
+    width: 97% !important;
+    height: auto;
+    max-width: 100%;
 }
