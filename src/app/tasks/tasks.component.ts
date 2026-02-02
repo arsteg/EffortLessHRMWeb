@@ -174,35 +174,41 @@ export class TasksComponent implements OnInit {
       this.allAssignee = result && result.data && result.data.data;
     });
     this.firstLetter = this.commonservice.firstletter;
+
+    // Retrieve stored filters
     this.storedFilters = this.commonservice.getFilters();
-    if (this.storedFilters) {
-      this.userId = this.storedFilters.userId;
-      this.projectId = this.storedFilters.projectId
-    }
 
     this.getCurrentUser().subscribe(() => {
       this.getprojects();
       this.populateUsers();
 
-      this.userId = this.storedFilters.userId;
-      this.projectId = this.storedFilters.projectId;
+      // Apply stored filters after user data is loaded
       if (this.storedFilters) {
-        if (this.storedFilters.userId) {
-          this.getTaskByIds();
-        }
-        if (this.storedFilters.projectId) {
-          this.getTasksByProject();
-        }
-        if (this.storedFilters.projectId && this.storedFilters.userId) {
+        this.userId = this.storedFilters.userId || '';
+        this.projectId = this.storedFilters.projectId || '';
+
+        // Load tasks based on stored filters
+        if (this.projectId && this.userId) {
+          // Both user and project selected
           this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next, this.searchText).subscribe(
             (response: any) => {
               this.totalRecords = response;
               this.tasks = response.taskList;
               this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
             });
+        } else if (this.userId) {
+          // Only user selected
+          this.getTaskByIds();
+        } else if (this.projectId) {
+          // Only project selected
+          this.getTasksByProject();
         } else {
+          // No filters, load all tasks
           this.getTasks();
         }
+      } else {
+        // No stored filters, load all tasks
+        this.getTasks();
       }
     });
 
@@ -1058,7 +1064,28 @@ export class TasksComponent implements OnInit {
   getFaclass(status: string): string {
     const statusItem = this.statusList.find(item => item.name === status);
     return statusItem ? statusItem.faclass : '';
-}
+  }
+
+  // getCommentsCount(task: any): number {
+  //   // Check multiple possible property names for comments
+  //   if (task?.TaskComments && Array.isArray(task.TaskComments)) {
+  //     return task.TaskComments.length;
+  //   }
+  //   if (task?.taskComments && Array.isArray(task.taskComments)) {
+  //     return task.taskComments.length;
+  //   }
+  //   if (task?.comments && Array.isArray(task.comments)) {
+  //     return task.comments.length;
+  //   }
+  //   if (task?.commentCount !== undefined && task?.commentCount !== null) {
+  //     return task.commentCount;
+  //   }
+  //   if (task?.commentsCount !== undefined && task?.commentsCount !== null) {
+  //     return task.commentsCount;
+  //   }
+  //   // If no comments data available, return 0
+  //   return 0;
+  // }
 
 }
 interface priority {
