@@ -119,7 +119,7 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="col-md-6">
+          <mat-form-field appearance="outline" *ngIf="false" class="col-md-6">
             <mat-label>Reporting Supervisor</mat-label>
             <mat-select formControlName="reportingSupervisor">
               <mat-option *ngFor="let supervisor of supervisors" [value]="supervisor?.id">{{supervisor?.firstName}}
