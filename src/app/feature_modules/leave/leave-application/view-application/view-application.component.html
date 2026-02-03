@@ -8,50 +8,66 @@
 </div>
 
 <div mat-dialog-content>
-  <div class="row m-0">
-    <mat-card>
-      <mat-card-content>
-        <div class="row">
-          <div class="col-6 font-weight-bold">{{ 'leave.employeeName' | translate }}</div>
-          <div class="col-6">{{ leaveApplication?.employee | titlecase }}</div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-6 font-weight-bold">{{ 'leave._status' | translate }}</div>
-          <div class="col-6">{{ leaveApplication?.status }}</div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-6 font-weight-bold">{{ 'leave.startDateLabel' | translate }}</div>
-          <div class="col-6">{{ leaveApplication?.startDate | date: 'yyyy-MM-dd' }}</div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-6 font-weight-bold">{{ 'leave.endDateLabel' | translate }}</div>
-          <div class="col-6">{{ leaveApplication?.endDate | date: 'yyyy-MM-dd' }}</div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-6 font-weight-bold">{{ 'leave.totalLeaveDaysLabel' | translate }}</div>
-          <div class="col-6">{{ totalLeaveDays }}</div>
-        </div>
-        <div class="row mt-2">
-          <div class="col-6 font-weight-bold">{{ 'leave.reason' | translate }}</div>
-          <div class="col-6">{{ leaveService?.leave?.getValue()?.comment }}</div>
-        </div>
+  <mat-list>
+    <mat-list-item>
+      <div class="row w-100">
+        <mat-label class="col-6 label-bold">{{ 'leave.employeeName' | translate }}</mat-label>
+        <mat-label class="col-6">{{ leaveApplication?.employee | titlecase }}</mat-label>
+      </div>
+    </mat-list-item>
 
-        <div class="row mt-2" *ngIf="leaveService.leave.getValue()?.documentLink">
-          <div class="col-6 font-weight-bold">{{ 'leave.documentLabel' | translate }}</div>
-          <div class="col-6">
-            <a [href]="leaveService.leave.getValue()?.documentLink"
-              [attr.aria-label]="'leave.downloadDocument' | translate" class="text-primary">
-              {{ 'leave.downloadDocument' | translate }}
-            </a>
-          </div>
+    <mat-list-item>
+      <div class="row w-100">
+        <mat-label class="col-6 label-bold">{{ 'leave._status' | translate }}</mat-label>
+        <mat-label class="col-6">{{ leaveApplication?.status }}</mat-label>
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <div class="row w-100">
+        <mat-label class="col-6 label-bold">{{ 'leave.startDateLabel' | translate }}</mat-label>
+        <mat-label class="col-6">{{ leaveApplication?.startDate | date: 'yyyy-MM-dd' }}</mat-label>
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <div class="row w-100">
+        <mat-label class="col-6 label-bold">{{ 'leave.endDateLabel' | translate }}</mat-label>
+        <mat-label class="col-6">{{ leaveApplication?.endDate | date: 'yyyy-MM-dd' }}</mat-label>
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <div class="row w-100">
+        <mat-label class="col-6 label-bold">{{ 'leave.totalLeaveDaysLabel' | translate }}</mat-label>
+        <mat-label class="col-6">{{ leaveApplication?.calculatedLeaveDays ?? totalLeaveDays }}</mat-label>
+      </div>
+    </mat-list-item>
+
+    <mat-list-item>
+      <div class="row w-100">
+        <mat-label class="col-6 label-bold">{{ 'leave.reason' | translate }}</mat-label>
+        <mat-label class="col-6">{{ leaveService?.leave?.getValue()?.comment }}</mat-label>
+      </div>
+    </mat-list-item>
+
+    <mat-list-item *ngIf="leaveService.leave.getValue()?.documentLink">
+      <div class="row w-100">
+        <mat-label class="col-6 label-bold">{{ 'leave.documentLabel' | translate }}</mat-label>
+        <div class="col-6">
+          <a [href]="leaveService.leave.getValue()?.documentLink"
+            [attr.aria-label]="'leave.downloadDocument' | translate"
+            class="text-primary">
+            {{ 'leave.downloadDocument' | translate }}
+          </a>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
+      </div>
+    </mat-list-item>
+  </mat-list>
 </div>
 
-<div mat-dialog-actions class="d-flex align-items-center justify-content-end">
-  <button mat-flat-button mat-dialog-close>
+<div mat-dialog-actions class="d-flex align-items-center justify-content-between">
+  <button mat-button type="button" (click)="closeModal()">
     {{ 'leave.close' | translate }}
   </button>
 </div>

@@ -19,7 +19,14 @@ export class ViewApplicationComponent {
 
   ngOnInit() {
     this.leaveApplication = this.leaveService.leave.getValue();
-    this.calculateTotalLeaveDays();
+    // Use backend-calculated value (respects all leave category settings)
+    // Including: weekly off settings, holiday settings, half-days, and negative balance policy
+    if (this.leaveApplication?.calculatedLeaveDays != null) {
+      this.totalLeaveDays = this.leaveApplication.calculatedLeaveDays;
+    } else {
+      // Fallback for old records that might not have calculatedLeaveDays
+      this.calculateTotalLeaveDays();
+    }
   }
 
   calculateTotalLeaveDays() {
