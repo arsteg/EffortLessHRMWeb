@@ -255,7 +255,6 @@ export class LeaveAssignmentComponent implements OnInit {
   editTemplateAssignment(templateAssignment: any) {
     this.isEdit = true;
     this.selectedLeaveAssignment = templateAssignment;
-    console.log(templateAssignment)
     this.templateAssignmentForm.patchValue({
       user: templateAssignment.userId || '',
       leaveTemplate: templateAssignment.leaveTemplate?._id || '',
