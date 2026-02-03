@@ -15,42 +15,42 @@
         <mat-label class="col-6">{{ leaveApplication?.employee | titlecase }}</mat-label>
       </div>
     </mat-list-item>
-
+<mat-divider/>
     <mat-list-item>
       <div class="row w-100">
         <mat-label class="col-6 label-bold">{{ 'leave._status' | translate }}</mat-label>
         <mat-label class="col-6">{{ leaveApplication?.status }}</mat-label>
       </div>
     </mat-list-item>
-
+<mat-divider/>
     <mat-list-item>
       <div class="row w-100">
         <mat-label class="col-6 label-bold">{{ 'leave.startDateLabel' | translate }}</mat-label>
         <mat-label class="col-6">{{ leaveApplication?.startDate | date: 'yyyy-MM-dd' }}</mat-label>
       </div>
     </mat-list-item>
-
+<mat-divider/>
     <mat-list-item>
       <div class="row w-100">
         <mat-label class="col-6 label-bold">{{ 'leave.endDateLabel' | translate }}</mat-label>
         <mat-label class="col-6">{{ leaveApplication?.endDate | date: 'yyyy-MM-dd' }}</mat-label>
       </div>
     </mat-list-item>
-
+<mat-divider/>
     <mat-list-item>
       <div class="row w-100">
         <mat-label class="col-6 label-bold">{{ 'leave.totalLeaveDaysLabel' | translate }}</mat-label>
         <mat-label class="col-6">{{ leaveApplication?.calculatedLeaveDays ?? totalLeaveDays }}</mat-label>
       </div>
     </mat-list-item>
-
+<mat-divider/>
     <mat-list-item>
       <div class="row w-100">
         <mat-label class="col-6 label-bold">{{ 'leave.reason' | translate }}</mat-label>
         <mat-label class="col-6">{{ leaveService?.leave?.getValue()?.comment }}</mat-label>
       </div>
     </mat-list-item>
-
+<mat-divider/>
     <mat-list-item *ngIf="leaveService.leave.getValue()?.documentLink">
       <div class="row w-100">
         <mat-label class="col-6 label-bold">{{ 'leave.documentLabel' | translate }}</mat-label>
