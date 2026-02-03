@@ -82,19 +82,51 @@ export class ShowApplicationComponent {
           label: 'Approve',
           icon: 'check_circle',
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.approve || !this.checkForApproval(row) || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 5))
+          hideCondition: (row: any) => {
+            // Hide if no primary approver assigned
+            if (!row.primaryApproverId) return true;
+
+            // Hide if current user is not the primary approver
+            if (this.currentUser.id !== row.primaryApproverId) return true;
+
+            // Original conditions
+            return !this.actionOptions.approve || !this.checkForApproval(row) || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 5));
+          }
         },
         {
           label: 'Reject',
           icon: 'person_remove',
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.reject || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 5))
+          hideCondition: (row: any) => {
+            // Hide if no primary approver assigned
+            if (!row.primaryApproverId) return true;
+
+            // Hide if current user is not the primary approver
+            if (this.currentUser.id !== row.primaryApproverId) return true;
+
+            // Original conditions
+            return !this.actionOptions.reject || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 5));
+          }
         },
         {
           label: 'Delete',
           icon: 'delete',
           visibility: ActionVisibility.LABEL,
-          hideCondition: (row: any) => !this.actionOptions.delete
+          hideCondition: (row: any) => {
+            // Check if action is enabled in options
+            if (!this.actionOptions.delete) return true;
+
+            // Allow employee to delete their own leave if status is pending or level 1 approval
+            const isOwnLeave = this.currentUser.id === row.employeeId;
+            const isDeletableStatus = row.status === 'pending' || row.status === 'Level 1 Approval Pending';
+            if (isOwnLeave && isDeletableStatus) return false;
+
+            // Allow primary approver to delete
+            if (row.primaryApproverId && this.currentUser.id === row.primaryApproverId) return false;
+
+            // Hide in all other cases
+            return true;
+          }
         },
         {
           label: 'View',
@@ -225,7 +257,8 @@ export class ShowApplicationComponent {
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
             leaveCount: leave?.calculatedLeaveDays,
-            employeeId: leave?.employee?._id
+            employeeId: leave?.employee?._id,
+            primaryApproverId: leave?.primaryApprover?._id || null
           };
         });
         this.allData = this.leaveApplication.data;
@@ -250,7 +283,8 @@ export class ShowApplicationComponent {
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
             leaveCount: leave?.calculatedLeaveDays,
-            employeeId: leave?.employee?._id
+            employeeId: leave?.employee?._id,
+            primaryApproverId: leave?.primaryApprover?._id || null
           };
         });
         this.allData = this.leaveApplication.data;
@@ -275,7 +309,8 @@ export class ShowApplicationComponent {
             startDate: this.datePipe.transform(leave.startDate, 'MMM d, yyyy'),
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
             leaveCount: leave?.calculatedLeaveDays,
-            employeeId: leave?.employee?._id
+            employeeId: leave?.employee?._id,
+            primaryApproverId: leave?.primaryApprover?._id || null
           };
         });
         this.allData = this.leaveApplication.data;
