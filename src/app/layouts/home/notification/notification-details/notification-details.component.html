@@ -7,25 +7,29 @@
             <mat-list role="list">
                 <mat-list-item role="listitem" *ngFor="let notification of eventNotifications"
                     class="notification-item border-bottom">
-                    <div class="d-flex align-items-center">
-                        <div class="example-button-container me-3">
-                            <span class="notification-dot" *ngIf="notification.status === 'unread'"></span>
-                            <button mat-fab disabled aria-label="Example icon button with a filter icon"
-                                [ngClass]="{'bold-text': notification.status === 'unread'}">
-                                <mat-icon>filter_list</mat-icon>
-                            </button>
+                    <div class="d-flex align-items-center w-100">
+                        <div class="d-flex align-items-center flex-grow-1"
+                             [style.cursor]="notification.navigationUrl ? 'pointer' : 'default'"
+                             (click)="notification.navigationUrl && navigateToUrl(notification)">
+                            <div class="example-button-container me-3" *ngIf="notification.navigationUrl">
+                                <span class="notification-dot" *ngIf="notification.status === 'unread'"></span>
+                                <button mat-fab aria-label="Navigate to notification"
+                                    [ngClass]="{'bold-text': notification.status === 'unread'}">
+                                    <mat-icon>launch</mat-icon>
+                                </button>
+                            </div>
+                            <div matListContent>
+                                <span class="notification-text" [ngClass]="{'bold-text': notification.status === 'unread'}">
+                                    {{ notification.name }}<br>{{ notification.description }}
+                                </span>
+                                <span class="notification-date">{{ notification.date | date: 'MMM d, y' }}</span>
+                            </div>
                         </div>
-                        <div matListContent>
-                            <span class="notification-text" [ngClass]="{'bold-text': notification.status === 'unread'}">
-                                {{ notification.name }}<br>{{ notification.description }}
-                            </span>
-                            <span class="notification-date">{{ notification.date | date: 'MMM d, y' }}</span>
-                        </div>
-                    <button mat-icon-button class="ms-auto" (click)="deleteNotification(notification._id)"
-                        aria-label="Delete notification">
-                        <i class="fa fa-times-circle text-danger"></i>
-                    </button>
-                </div>
+                        <button mat-icon-button class="ms-auto" (click)="deleteNotification(notification._id)"
+                            aria-label="Delete notification">
+                            <i class="fa fa-times-circle text-danger"></i>
+                        </button>
+                    </div>
                 </mat-list-item>
                 <mat-list-item *ngIf="eventNotifications.length === 0">
                     <p class="no-notifications">No notifications available.</p>

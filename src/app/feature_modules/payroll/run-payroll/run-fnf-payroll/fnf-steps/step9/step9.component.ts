@@ -101,12 +101,12 @@ export class FNFStep9Component {
     {
       key: 'yearlySalary',
       name: this.translate.instant('payroll.total_ctc'),
-      valueFn: (row) => row.yearlySalary || 0
+      valueFn: (row) => row.totalCTC || 0
     },
     {
       key: 'monthlySalary',
       name: this.translate.instant('payroll.total_gross_salary'),
-      valueFn: (row) => row.monthlySalary || 0
+      valueFn: (row) => row.totalGrossSalary || 0
     },
     {
       key: 'totalEmployerStatutoryContribution',

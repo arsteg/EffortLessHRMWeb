@@ -183,8 +183,8 @@ export class Step9Component {
             totalLoanDisbursed: record.totalLoanDisbursed,
             totalFlexiBenefits: parseFloat(record?.totalFlexiBenefits || 0).toFixed(2),
             totalIncomeTax: record?.incomeTax[0]?.TDSCalculated || 0,
-            yearlySalary: parseFloat(record?.yearlySalary || 0).toFixed(2),
-            monthlySalary: parseFloat(record?.monthlySalary || 0).toFixed(2),
+            yearlySalary: parseFloat(record?.totalCTC || 0).toFixed(2),
+            monthlySalary: parseFloat(record?.totalGrossSalary || 0).toFixed(2),
             totalTakeHome: parseFloat(record?.totalTakeHome || 0).toFixed(2),
 
             payroll_status: record?.payroll_status || 'InProgress'
