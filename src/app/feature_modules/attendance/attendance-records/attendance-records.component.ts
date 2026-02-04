@@ -603,7 +603,6 @@ export class AttendanceRecordsComponent implements OnInit {
   }
 
   viewHistory(user: any) {
-    console.log(user)
     const fullHours = this.fullDayDuration / 60;
     const halfHours = this.halfDayDuration / 60;
 
