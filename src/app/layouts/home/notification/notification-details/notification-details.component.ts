@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 import { NotificationService } from 'src/app/_services/notification.service';
 import { WebSocketService, WebSocketMessage, WebSocketNotificationType } from 'src/app/_services/web-socket.service';
 import { Subscription } from 'rxjs';
@@ -21,7 +22,8 @@ export class NotificationDetailsComponent {
   constructor(
     private notificationService: NotificationService,
     private webSocketService: WebSocketService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -144,6 +146,31 @@ export class NotificationDetailsComponent {
   private updateUnreadStatus() {
     this.hasUnreadNotifications = this.eventNotifications.some(n => n.status === 'unread');
   }
+
+  navigateToUrl(notification: Notification) {
+    if (notification.navigationUrl) {
+      // Extract the route from the full URL
+      // Format: https://domain.com/#/home/edit-task?taskId=123
+      // We need: /home/edit-task?taskId=123
+      let route = notification.navigationUrl;
+
+      // Check if URL contains hash (#)
+      if (route.includes('#')) {
+        route = route.split('#')[1];
+      }
+
+      // Remove leading slash if double slash exists
+      if (route.startsWith('//')) {
+        route = route.substring(1);
+      }
+
+      // Force navigation by first navigating to a dummy route, then to the target
+      // This ensures the route reloads even when already on a child route
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigateByUrl(route);
+      });
+    }
+  }
 }
 
 interface Notification {
@@ -155,4 +182,5 @@ interface Notification {
   notificationType?: { name: string };
   profileImage: string;
   status?: string; // 'unread' or 'read'
+  navigationUrl?: string; // URL to navigate when clicking the notification
 }

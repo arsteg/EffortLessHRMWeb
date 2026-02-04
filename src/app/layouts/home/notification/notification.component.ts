@@ -1,4 +1,6 @@
-import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { NotificationService } from 'src/app/_services/notification.service';
 import { WebSocketService, WebSocketMessage, WebSocketNotificationType } from 'src/app/_services/web-socket.service';
 import { Subscription } from 'rxjs';
@@ -9,6 +11,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./notification.component.css']
 })
 export class NotificationComponent implements OnInit, OnDestroy {
+  @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
   userId: string | null = null;
   dropdownOpen: boolean = false;
   eventNotifications: Notification[] = [];
@@ -19,7 +22,8 @@ export class NotificationComponent implements OnInit, OnDestroy {
   constructor(
     private notificationService: NotificationService,
     private webSocketService: WebSocketService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -146,6 +150,39 @@ export class NotificationComponent implements OnInit, OnDestroy {
   private updateUnreadStatus() {
     this.hasUnreadNotifications = this.eventNotifications.some(n => n.status === 'unread');
   }
+
+  navigateToUrl(event: Event, notification: Notification) {
+    event.stopPropagation();
+    if (notification.navigationUrl) {
+      // Close the menu first
+      if (this.menuTrigger) {
+        this.menuTrigger.closeMenu();
+      }
+
+      // Extract the route from the full URL
+      // Format: https://domain.com/#/home/edit-task?taskId=123
+      // We need: /home/edit-task?taskId=123
+      let route = notification.navigationUrl;
+
+      // Check if URL contains hash (#)
+      if (route.includes('#')) {
+        route = route.split('#')[1];
+      }
+
+      // Remove leading slash if double slash exists
+      if (route.startsWith('//')) {
+        route = route.substring(1);
+      }
+
+      // Use setTimeout to ensure menu closes before navigation
+      setTimeout(() => {
+        // Force navigation by first navigating to a dummy route, then to the target
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+          this.router.navigateByUrl(route);
+        });
+      }, 100);
+    }
+  }
 }
 
 interface Notification {
@@ -157,4 +194,5 @@ interface Notification {
   profileImage?: string;
   status?: string; // 'unread' or 'read'
   name?: string; // Added for displaying name in the notification
+  navigationUrl?: string; // URL to navigate when clicking the notification
 }

@@ -18,23 +18,24 @@
     <!-- Notification Items -->
     <div class="notification-container">
       <ng-container *ngFor="let notification of eventNotifications">
-        <mat-list-item class="border-bottom py-3 px-0" >
+        <div class="notification-item border-bottom py-2 px-2 position-relative"
+             (click)="notification.navigationUrl && navigateToUrl($event, notification)"
+             [style.cursor]="notification.navigationUrl ? 'pointer' : 'default'">
           <span class="new-notification" *ngIf="notification.status === 'unread'"></span>
-          <div class="d-flex align-items-center w-100">
-            <button mat-icon-button class="ps-0">
-            <mat-icon>launch</mat-icon>
-          </button>
-
-            <div class="notification-content">
-              <span
-                class="notification-text"
-                [ngClass]="{'bold-text': notification.status === 'unread'}"
-              >{{ notification.name }}: {{ notification.description }}</span>
+          <div class="d-flex align-items-start w-100">
+            <button mat-icon-button class="notification-icon-btn" *ngIf="notification.navigationUrl" (click)="$event.stopPropagation()">
+              <mat-icon>launch</mat-icon>
+            </button>
+            <div class="notification-content flex-grow-1 ms-2">
+              <div class="notification-text" [ngClass]="{'bold-text': notification.status === 'unread'}">
+                {{ notification.name }}: {{ notification.description }}
+              </div>
               <small class="notification-date">{{ notification.date | date: 'MMM d, y' }}</small>
             </div>
-            <i class="fa fa-times-circle ms-auto text-danger" (click)="deleteNotification($event, notification?._id);"></i>
+            <i class="fa fa-times-circle text-danger notification-delete-icon"
+               (click)="deleteNotification($event, notification?._id)"></i>
           </div>
-        </mat-list-item>
+        </div>
       </ng-container>
     </div>
 
