@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EventNotificationService } from 'src/app/_services/eventNotification.Service';
 import { eventNotification, eventNotificationType } from 'src/app/models/eventNotification/eventNotitication';
@@ -61,11 +62,13 @@ export class EventNotificationComponent implements OnInit {
     }
   ];
 
-  constructor(private fb: FormBuilder, 
-    private eventNotificationService: EventNotificationService, 
+  constructor(private fb: FormBuilder,
+    private eventNotificationService: EventNotificationService,
     private toast: ToastrService,
     private translate: TranslateService ,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -73,6 +76,10 @@ export class EventNotificationComponent implements OnInit {
     this.view = storedRole;
     this.initForm();
     this.getNotificationTypeList();
+  }
+
+  get isAdminView(): boolean {
+    return this.view === Role.Admin.toLowerCase();
   }
 
   initForm() {
@@ -140,11 +147,21 @@ export class EventNotificationComponent implements OnInit {
       if(formData.date) {
         formData.date = toUtcDateOnly(formData.date);
       }
-      await this.eventNotificationService.addEventNotification(formData).toPromise();
+      const response = await this.eventNotificationService.addEventNotification(formData).toPromise();
+      const createdNotificationId = response?.data?._id;
+
       this.toast.success(this.translate.instant('alerts.eventNotification.addSuccess'));
       this.resetNotificationForm();
       this.isEdit = false;
       this.getEventNotificationList();
+
+      // Navigate to viewer tab with notification ID for assignment (admin mode only)
+      if (this.isAdminView && createdNotificationId) {
+        this.router.navigate(['../viewer'], {
+          relativeTo: this.route,
+          queryParams: { notificationId: createdNotificationId }
+        });
+      }
     } catch (err) {
       this.toast.error(this.translate.instant('alerts.eventNotification.addError'), this.translate.instant('alerts.eventNotification.error'));
     }

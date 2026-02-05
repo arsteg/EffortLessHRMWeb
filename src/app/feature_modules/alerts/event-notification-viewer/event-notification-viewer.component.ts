@@ -38,12 +38,62 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.populateTeamOfUsers();
-    this.populateEventNotifications();
+    // Check for notificationId query parameter for auto-selection
+    this.route.queryParams.subscribe(params => {
+      const notificationId = params['notificationId'];
+      if (notificationId) {
+        // For auto-selection, load users first, then notifications with auto-select
+        this.populateTeamOfUsersWithCallback(() => {
+          this.populateEventNotificationsWithAutoSelect(notificationId);
+        });
+      } else {
+        // Load normally
+        this.populateTeamOfUsers();
+        this.populateEventNotifications();
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  populateEventNotificationsWithAutoSelect(notificationId: string): void {
+    this.eventNotificationService.getAllEventNotifications().subscribe({
+      next: result => {
+        this.eventNotifications = result.data.filter(item => item.status === 'scheduled');
+        // Auto-select the notification after loading
+        this.autoSelectNotification(notificationId);
+      },
+      error: (err) => {
+        this.toastr.error(err || this.translate.instant('alerts.eventviewer.messages.failedToLoadNotifications'));
+      }
+    });
+  }
+
+  autoSelectNotification(notificationId: string): void {
+    // Find the notification with matching ID
+    const notification = this.eventNotifications.find(n => n._id === notificationId);
+
+    if (notification) {
+      // Set the selected notification (this will update the radio button via ngModel)
+      this.selectedManager = notification as any;
+      this.selectedEventNotification = notification;
+
+      // Trigger the model change to load assigned users
+      this.onModelChange(true, notification);
+
+      // Optional: Scroll to the selected notification after a short delay
+      setTimeout(() => {
+        const radioButtons = document.querySelectorAll('mat-radio-button');
+        const targetButton = Array.from(radioButtons).find(btn =>
+          btn.textContent?.trim().toLowerCase() === notification.name.toLowerCase()
+        );
+        if (targetButton) {
+          targetButton.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 200);
+    }
   }
 
   populateTeamOfUsers(): void {
@@ -52,6 +102,21 @@ export class EventNotificationViewerComponent implements OnInit, OnDestroy {
         this.teamOfUsers = result.data.data;
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
         this.selectedManager = this.teamOfUsers.find(user => user._id === currentUser.id) || null;
+      },
+      error: (err) => {
+        this.toastr.error(err || this.translate.instant('alerts.eventviewer.messages.failedToLoadUsers'));
+      }
+    });
+  }
+
+  populateTeamOfUsersWithCallback(callback: () => void): void {
+    this.manageTeamService.getAllUsers().subscribe({
+      next: result => {
+        this.teamOfUsers = result.data.data;
+        // Don't set selectedManager here - let the callback handle selection
+        if (callback) {
+          callback();
+        }
       },
       error: (err) => {
         this.toastr.error(err || this.translate.instant('alerts.eventviewer.messages.failedToLoadUsers'));

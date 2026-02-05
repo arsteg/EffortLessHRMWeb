@@ -66,6 +66,17 @@
             <input matInput type="number" formControlName="leadTime" required (focus)="onEditFocus($event)">
           </mat-form-field>
 
+          <!-- Info message for admin to assign users -->
+          <div *ngIf="isAdminView && !isEdit" class="alert alert-info d-flex align-items-start mb-3" role="alert">
+            <mat-icon class="me-2 mt-1" style="font-size: 20px; width: 20px; height: 20px;">info</mat-icon>
+            <div class="small">
+              {{ 'alerts.eventNotification.assignInfoMessage' | translate }}
+              <a routerLink="../viewer" class="alert-link ms-1 fw-bold">
+                {{ 'alerts.eventNotification.viewerLink' | translate }}
+              </a>
+            </div>
+          </div>
+
           <div class="d-flex justify-content-between mt-2">
             <button type="submit" mat-flat-button color="primary" [disabled]="eventNotificationForm.invalid">
               {{ isEdit ? ('alerts.eventNotification.update' | translate) : ('alerts.eventNotification.add' | translate) }}

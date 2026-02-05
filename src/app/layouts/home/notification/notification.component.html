@@ -21,8 +21,9 @@
         <div class="notification-item border-bottom py-2 px-2 position-relative"
              (click)="notification.navigationUrl && navigateToUrl($event, notification)"
              [style.cursor]="notification.navigationUrl ? 'pointer' : 'default'">
-          <span class="new-notification" *ngIf="notification.status === 'unread'"></span>
+          <!-- <span class="new-notification" *ngIf="notification.status === 'unread'"></span> -->
           <div class="d-flex align-items-start w-100">
+            <span class="new-notification" *ngIf="notification.status === 'unread'"></span>&nbsp;
             <button mat-icon-button class="notification-icon-btn" *ngIf="notification.navigationUrl" (click)="$event.stopPropagation()">
               <mat-icon>launch</mat-icon>
             </button>
