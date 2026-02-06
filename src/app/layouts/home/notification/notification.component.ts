@@ -219,51 +219,58 @@ export class NotificationComponent implements OnInit, OnDestroy {
     const isAdmin = userRole.toLowerCase() === 'admin';
 
     // Route mapping based on view mode
-    const routeMap: { [key: string]: { user: string; admin: string; team: string } } = {
+    const routeMap: { [key: string]: { user: string; admin: string } } = {
       '/home/leave/leave-application': {
         user: '/home/leave/my-application',
-        admin: '/home/leave/leave-application',
-        team: '/home/leave/team-application'
+        admin: '/home/leave/leave-application'
       },
       '/home/leave/my-application': {
         user: '/home/leave/my-application',
-        admin: '/home/leave/leave-application',
-        team: '/home/leave/team-application'
+        admin: '/home/leave/leave-application'
       },
       '/home/leave/team-application': {
         user: '/home/leave/my-application',
-        admin: '/home/leave/leave-application',
-        team: '/home/leave/team-application'
+        admin: '/home/leave/leave-application'
       },
       '/home/leave/leave-grant': {
         user: '/home/leave/my-leave-grant',
-        admin: '/home/leave/leave-grant',
-        team: '/home/leave/team-leave-grant'
+        admin: '/home/leave/leave-grant'
       },
       '/home/leave/my-leave-grant': {
         user: '/home/leave/my-leave-grant',
-        admin: '/home/leave/leave-grant',
-        team: '/home/leave/team-leave-grant'
+        admin: '/home/leave/leave-grant'
       },
       '/home/leave/team-leave-grant': {
         user: '/home/leave/my-leave-grant',
-        admin: '/home/leave/leave-grant',
-        team: '/home/leave/team-leave-grant'
+        admin: '/home/leave/leave-grant'
       },
       '/home/leave/short-leave': {
         user: '/home/leave/my-short-leave',
-        admin: '/home/leave/short-leave',
-        team: '/home/leave/team-short-leave'
+        admin: '/home/leave/short-leave'
       },
       '/home/leave/my-short-leave': {
         user: '/home/leave/my-short-leave',
-        admin: '/home/leave/short-leave',
-        team: '/home/leave/team-short-leave'
+        admin: '/home/leave/short-leave'
       },
       '/home/leave/team-short-leave': {
         user: '/home/leave/my-short-leave',
-        admin: '/home/leave/short-leave',
-        team: '/home/leave/team-short-leave'
+        admin: '/home/leave/short-leave'
+      },
+      '/home/expense/my-expense': {
+        user: '/home/expense/my-expense',
+        admin: '/home/expense/expense-reports'
+      },
+      '/home/expense/expense-reports': {
+        user: '/home/expense/my-expense',
+        admin: '/home/expense/expense-reports'
+      },
+      '/home/expense/team-expense': {
+        user: '/home/expense/my-expense',
+        admin: '/home/expense/expense-reports'
+      },
+      '/home/expense/advance-reports': {
+        user: '/home/expense/my-expense',
+        admin: '/home/expense/expense-reports'
       }
     };
     // Find matching route in map
