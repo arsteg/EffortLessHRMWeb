@@ -53,7 +53,10 @@
       "channel_ui": "UI",
       "channel_app": "App",
       "channels": "Channels",
-      "channel_WhatsApp": "WhatsApp"
+      "channel_WhatsApp": "WhatsApp",
+      "channelRequired": "At least one notification channel is required",
+      "assignInfoMessage": "After creating this notification, you can assign users in the",
+      "viewerLink": "Viewer tab"
     },
     "eventviewer": {
       "notifications": "Notifications",

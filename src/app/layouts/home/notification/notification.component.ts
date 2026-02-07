@@ -154,6 +154,20 @@ export class NotificationComponent implements OnInit, OnDestroy {
   navigateToUrl(event: Event, notification: Notification) {
     event.stopPropagation();
     if (notification.navigationUrl) {
+      // Mark notification as read
+      if (notification.status === 'unread' && this.userId) {
+        notification.status = 'read';
+        this.updateUnreadStatus();
+        this.notificationService.updateNotificationStatus(this.userId, notification._id, 'read').subscribe({
+          next: () => {
+            console.log(`Marked notification ${notification._id} as read`);
+          },
+          error: (err) => {
+            console.error(`Failed to update notification ${notification._id}`, err);
+          }
+        });
+      }
+
       // Close the menu first
       if (this.menuTrigger) {
         this.menuTrigger.closeMenu();
@@ -174,14 +188,109 @@ export class NotificationComponent implements OnInit, OnDestroy {
         route = route.substring(1);
       }
 
+      // Adjust route based on user role and current view mode
+      route = this.adjustRouteForUserView(route);
+
+      // Get current route to check if we're already on the target route
+      const currentRoute = this.router.url;
+
       // Use setTimeout to ensure menu closes before navigation
       setTimeout(() => {
-        // Force navigation by first navigating to a dummy route, then to the target
-        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        if (currentRoute === route) {
+          // If we're already on the same route, force reload by navigating away and back
+          // Use a safe route that won't trigger login guards
+          this.router.navigate(['/home'], { skipLocationChange: true }).then(() => {
+            this.router.navigateByUrl(route);
+          });
+        } else {
+          // Direct navigation to the target route
           this.router.navigateByUrl(route);
-        });
+        }
       }, 100);
     }
+  }
+
+  private adjustRouteForUserView(route: string): string {
+    // Get user info from localStorage
+    const userRole = localStorage.getItem('role') || '';
+    const adminView = localStorage.getItem('adminView'); // 'admin' or 'user'
+
+    // Check if user is admin
+    const isAdmin = userRole.toLowerCase() === 'admin';
+
+    // Route mapping based on view mode
+    const routeMap: { [key: string]: { user: string; admin: string } } = {
+      '/home/leave/leave-application': {
+        user: '/home/leave/my-application',
+        admin: '/home/leave/leave-application'
+      },
+      '/home/leave/my-application': {
+        user: '/home/leave/my-application',
+        admin: '/home/leave/leave-application'
+      },
+      '/home/leave/team-application': {
+        user: '/home/leave/my-application',
+        admin: '/home/leave/leave-application'
+      },
+      '/home/leave/leave-grant': {
+        user: '/home/leave/my-leave-grant',
+        admin: '/home/leave/leave-grant'
+      },
+      '/home/leave/my-leave-grant': {
+        user: '/home/leave/my-leave-grant',
+        admin: '/home/leave/leave-grant'
+      },
+      '/home/leave/team-leave-grant': {
+        user: '/home/leave/my-leave-grant',
+        admin: '/home/leave/leave-grant'
+      },
+      '/home/leave/short-leave': {
+        user: '/home/leave/my-short-leave',
+        admin: '/home/leave/short-leave'
+      },
+      '/home/leave/my-short-leave': {
+        user: '/home/leave/my-short-leave',
+        admin: '/home/leave/short-leave'
+      },
+      '/home/leave/team-short-leave': {
+        user: '/home/leave/my-short-leave',
+        admin: '/home/leave/short-leave'
+      },
+      '/home/expense/my-expense': {
+        user: '/home/expense/my-expense',
+        admin: '/home/expense/expense-reports'
+      },
+      '/home/expense/expense-reports': {
+        user: '/home/expense/my-expense',
+        admin: '/home/expense/expense-reports'
+      },
+      '/home/expense/team-expense': {
+        user: '/home/expense/my-expense',
+        admin: '/home/expense/expense-reports'
+      },
+      '/home/expense/advance-reports': {
+        user: '/home/expense/my-expense',
+        admin: '/home/expense/expense-reports'
+      }
+    };
+    // Find matching route in map
+    const mappedRoute = routeMap[route];
+    if (mappedRoute) {
+      if (isAdmin) {
+        // Admin can be in 'user' or 'admin' view
+        if (adminView === 'user') {
+          return mappedRoute.user;
+        } else {
+          return mappedRoute.admin;
+        }
+      } else {
+        // Regular users always use user view
+        return mappedRoute.user;
+      }
+    }
+
+    // Return original route if no mapping found
+    return route;
   }
 }
 
