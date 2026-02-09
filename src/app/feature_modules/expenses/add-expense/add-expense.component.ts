@@ -256,6 +256,10 @@ export class AddExpenseComponent {
     return matchingCategory ? matchingCategory.label : '';
   }
 
+  calculateTotalAmount(): number {
+    return this.expenseReportExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
+  }
+
   deleteExpenseReportExpense(id: string): void {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '400px',
@@ -273,6 +277,7 @@ export class AddExpenseComponent {
     this.expenseService.deleteExpenseReportExpenses(id).subscribe(
       (res: any) => {
         this.expenseReportExpenses = this.expenseReportExpenses.filter(report => report._id !== id);
+        this.setCalculcatedExpenseAmount(); // Recalculate amount after deleting item
         this.toast.success(this.translate.instant('expenses.delete_success'));
       },
       (err) => {
@@ -293,10 +298,15 @@ export class AddExpenseComponent {
 
   setCalculcatedExpenseAmount() {
     if (this.expenseReportExpenses.length > 0 && !this.validations?.expenseTemplate?.advanceAmount) {
-      // this.addExpenseForm.get('amount').setValue(0);
+      // Calculate sum of all line items
+      const calculatedAmount = this.calculateTotalAmount();
+      // Set the calculated amount
+      this.addExpenseForm.get('amount').setValue(calculatedAmount);
+      // Disable the field so users can't edit the calculated amount
       this.addExpenseForm.get('amount').disable();
       this.addExpenseForm.get('amount').updateValueAndValidity();
     } else {
+      // Enable manual entry
       this.addExpenseForm.get('amount').enable();
       this.addExpenseForm.get('amount').updateValueAndValidity();
     }
