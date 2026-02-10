@@ -55,18 +55,17 @@
       
           <!-- Template Type / Id -->
           <div class="col-sm-12 mt-3">
-            <!-- <label>Id: <span class="text-danger">*</span></label>
-            <input type="text" formControlName="templateType" class="form-control">
-            <div *ngIf="form.get('templateType').touched && form.get('templateType').invalid" class="text-danger">
-              Id is required.
-            </div> -->
             <mat-form-field class="w-100">
-              <mat-label>{{ 'manage.email-template.form.id' | translate }}</mat-label>
-              <input matInput type="text" formControlName="templateType">
+              <mat-label>{{ 'manage.email-template.form.template_type' | translate }}</mat-label>
+              <mat-select formControlName="templateType">
+                <mat-option *ngFor="let type of emailTemplateTypes" [value]="type.emailTemplateTypeId">
+                  {{ type.name }}
+                </mat-option>
+              </mat-select>
               <mat-error
                 *ngIf="form.get('templateType')?.invalid && (form.get('templateType')?.touched || form.get('templateType')?.dirty)">
                 <span *ngIf="form.get('templateType')?.errors?.['required']">
-                  {{ 'manage.email-template.form.error.id_required' | translate }}
+                  {{ 'manage.email-template.form.error.template_type_required' | translate }}
                 </span>
               </mat-error>
             </mat-form-field>
@@ -153,12 +152,16 @@
 
           <div class="form-group mt-2">
             <mat-form-field class="w-100">
-              <mat-label>{{ 'manage.email-template.form.id' | translate }}</mat-label>
-              <input matInput type="text" formControlName="templateType">
+              <mat-label>{{ 'manage.email-template.form.template_type' | translate }}</mat-label>
+              <mat-select formControlName="templateType">
+                <mat-option *ngFor="let type of emailTemplateTypes" [value]="type.emailTemplateTypeId">
+                  {{ type.name }}
+                </mat-option>
+              </mat-select>
               <mat-error
                 *ngIf="updateForm.get('templateType')?.invalid && (updateForm.get('templateType')?.touched || updateForm.get('templateType')?.dirty)">
                 <span *ngIf="updateForm.get('templateType')?.errors?.['required']">
-                  {{ 'manage.email-template.form.error.id_required' | translate }}
+                  {{ 'manage.email-template.form.error.template_type_required' | translate }}
                 </span>
               </mat-error>
             </mat-form-field>
