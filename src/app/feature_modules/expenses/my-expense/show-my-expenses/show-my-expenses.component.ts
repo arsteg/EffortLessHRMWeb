@@ -33,7 +33,8 @@ export class ShowMyExpensesComponent {
   currentPage: number = 1;
   @Input() selectedTab: number;
   selectedReport;
-  displayedColumns: string[] = ['title', 'totalAmount', 'amount', 'reimbursable', 'billable', 'status', 'actions'];
+  validations: any;
+  displayedColumns: string[] = ['title', 'totalAmount', 'amount', 'netPayable', 'reimbursable', 'billable', 'status', 'actions'];
   dataSource: any = new MatTableDataSource([]);
   dialogRef: MatDialogRef<any>;
   @ViewChild(MatSort) sort: MatSort;
@@ -56,11 +57,14 @@ export class ShowMyExpensesComponent {
     this.expenseService.getExpenseCatgories(payload).subscribe((res: any) => {
       this.allCategory = res.data;
     });
+    this.expenseService.getEmployeeApplicableSettings(this.currentUser.id).subscribe((res: any) => {
+      this.validations = res.data;
+    });
   }
 
   open(content: any, selectedReport?: any) {
     this.expenseService.tabIndex.next(this.selectedTab);
-    if(selectedReport){
+    if (selectedReport) {
       this.selectedReport = selectedReport;
       this.expenseService.expenseReportExpense.next(selectedReport);
     } else {
@@ -132,13 +136,31 @@ export class ShowMyExpensesComponent {
 
   calculateTotalAmount(expenseReport: any): number {
     let totalAmount = 0;
-    totalAmount += expenseReport.amount || 0;
     if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
       for (const expense of expenseReport.expenseReportExpense) {
         totalAmount += expense.amount;
       }
+    } else {
+      totalAmount = expenseReport.amount || 0;
     }
     return totalAmount;
+  }
+
+  calculateAdvanceAmount(expenseReport: any): number {
+    if (this.validations && !this.validations.advanceAmount) {
+      return 0;
+    }
+    if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
+      const sumItems = expenseReport.expenseReportExpense.reduce((sum, item) => sum + (item.amount || 0), 0);
+      if (Math.abs(expenseReport.amount - sumItems) > 0.01) {
+        return expenseReport.amount || 0;
+      }
+    }
+    return 0;
+  }
+
+  calculateNetPayable(expenseReport: any): number {
+    return this.calculateTotalAmount(expenseReport) - this.calculateAdvanceAmount(expenseReport);
   }
   calculateTotalisReimbursable(expenseReport: any, isReimbursable: boolean, isBillable: boolean): number {
     let totalAmount = 0;
@@ -157,16 +179,13 @@ export class ShowMyExpensesComponent {
 
   exportToCsv() {
     const dataToExport = this.expenseReport.map((report) => {
-      let totalAmount = report.amount || 0;
-      if (report.expenseReportExpense && report.expenseReportExpense.length > 0) {
-        totalAmount += report.expenseReportExpense.reduce((acc, rep) => acc + (rep.amount || 0), 0);
-      }
       return {
         title: report.title,
-        amount: report?.amount,
-        totalAmount: totalAmount,
-        isReimbursable: report?.expenseReportExpense[0]?.isReimbursable ? report?.expenseReportExpense[0]?.amount : 0,
-        isBillable: report?.expenseReportExpense[0]?.isBillable ? report?.expenseReportExpense[0]?.amount : 0,
+        totalAmount: this.calculateTotalAmount(report),
+        advanceAmount: this.calculateAdvanceAmount(report),
+        netPayable: this.calculateNetPayable(report),
+        isReimbursable: this.calculateTotalisReimbursable(report, true, false),
+        isBillable: this.calculateTotalisReimbursable(report, false, true),
         status: report?.status
       };
     });
@@ -188,13 +207,15 @@ export class ShowMyExpensesComponent {
         case 'totalAmount':
           return this.compare(this.calculateTotalAmount(a), this.calculateTotalAmount(b), isAsc);
         case 'amount':
-          return this.compare(a.amount, b.amount, isAsc);
+          return this.compare(this.calculateAdvanceAmount(a), this.calculateAdvanceAmount(b), isAsc);
+        case 'netPayable':
+          return this.compare(this.calculateNetPayable(a), this.calculateNetPayable(b), isAsc);
         case 'reimbursable':
-          return this.compare(this.calculateTotalisReimbursable(a, true, false), 
-                        this.calculateTotalisReimbursable(b, true, false), isAsc);
+          return this.compare(this.calculateTotalisReimbursable(a, true, false),
+            this.calculateTotalisReimbursable(b, true, false), isAsc);
         case 'billable':
-          return this.compare(this.calculateTotalisReimbursable(a, false, true), 
-                        this.calculateTotalisReimbursable(b, false, true), isAsc);
+          return this.compare(this.calculateTotalisReimbursable(a, false, true),
+            this.calculateTotalisReimbursable(b, false, true), isAsc);
         case 'status':
           return this.compare(a.status, b.status, isAsc);
         default:

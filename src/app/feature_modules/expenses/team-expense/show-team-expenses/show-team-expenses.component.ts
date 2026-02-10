@@ -40,7 +40,7 @@ export class ShowTeamExpensesComponent {
   updateExpenseReport: FormGroup;
   @Input() selectedTab: number;
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-  displayedColumns: string[] = ['title', 'employeeName', 'totalAmount', 'amount', 'reimbursable', 'billable', 'comment', 'status', 'actions'];
+  displayedColumns: string[] = ['title', 'employeeName', 'totalAmount', 'amount', 'netPayable', 'reimbursable', 'billable', 'comment', 'status', 'actions'];
   dialogRef: MatDialogRef<any>;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -77,7 +77,9 @@ export class ShowTeamExpensesComponent {
         case 'totalAmount':
           return this.calculateTotalAmount(item);
         case 'amount':
-          return item.amount || 0;
+          return this.calculateAdvanceAmount(item);
+        case 'netPayable':
+          return this.calculateNetPayable(item);
         case 'reimbursable':
           return this.calculateTotalisReimbursable(item, true, false);
         case 'billable':
@@ -230,13 +232,31 @@ export class ShowTeamExpensesComponent {
 
   calculateTotalAmount(expenseReport: any): number {
     let totalAmount = 0;
-    totalAmount += expenseReport.amount || 0;
     if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
       for (const expense of expenseReport.expenseReportExpense) {
         totalAmount += expense.amount;
       }
+    } else {
+      totalAmount = expenseReport.amount || 0;
     }
     return totalAmount;
+  }
+
+  calculateAdvanceAmount(expenseReport: any): number {
+    if (expenseReport.advanceAmountAllowed === false) {
+      return 0;
+    }
+    if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
+      const sumItems = expenseReport.expenseReportExpense.reduce((sum, item) => sum + (item.amount || 0), 0);
+      if (Math.abs(expenseReport.amount - sumItems) > 0.01) {
+        return expenseReport.amount || 0;
+      }
+    }
+    return 0;
+  }
+
+  calculateNetPayable(expenseReport: any): number {
+    return this.calculateTotalAmount(expenseReport) - this.calculateAdvanceAmount(expenseReport);
   }
   calculateTotalisReimbursable(expenseReport: any, isReimbursable: boolean, isBillable: boolean): number {
     let totalAmount = 0;
@@ -262,8 +282,9 @@ export class ShowTeamExpensesComponent {
       return {
         title: report.title || '',
         employeeName: report.employeeName || this.getUser(report.employee) || '',
-        amount: report.amount || 0,
+        advanceAmount: this.calculateAdvanceAmount(report),
         totalAmount: totalAmount,
+        netPayable: this.calculateNetPayable(report),
         reimbursableAmount: reimbursableAmount,
         billableAmount: billableAmount,
         comment: report.comment || '',
