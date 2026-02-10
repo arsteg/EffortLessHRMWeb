@@ -44,6 +44,8 @@ export class LeaveBalanceComponent {
   ];
   extractedUrl: string = '';
   error: string = '';
+  private isSettingDefaults = false;  // Prevent valueChanges during initialization
+  private membersLoaded = false;      // Track if populateMembers completed
   columns: TableColumn[] = [
     {
       key: 'startMonth',
@@ -116,11 +118,8 @@ export class LeaveBalanceComponent {
     }
 
     this.getAllLeaveCatgeories();
-    this.populateMembers();
-    if (this.extractedUrl != 'my-team-balance' && this.extractedUrl != 'leave-balance') {
-      this.getCategoriesByCurrentUser();
-    }
 
+    // Create years array BEFORE async operations
     const currentYear = new Date().getFullYear();
     const previousYear = currentYear - 1;
     const nextYear = currentYear + 1;
@@ -139,18 +138,17 @@ export class LeaveBalanceComponent {
       }
     ];
 
-    // const currentYearCycle = this.years.find(year => year.value.includes(currentYear.toString()))?.value;
-    // if (currentYearCycle) {
-    //   this.leaveBalanceForm.patchValue({ cycle: currentYearCycle });
-    // } else {
-    //   this.error = this.translate.instant('leave.errorNoCurrentYearCycle');
-    //   this.toast.error(this.error);
-    // }
-
+    // Setup valueChanges with flag check
     this.leaveBalanceForm.valueChanges.subscribe(() => {
-      if (this.leaveBalanceForm.valid) {
+      if (!this.isSettingDefaults && this.leaveBalanceForm.valid) {
         this.getLeaveBalance();
       }
+    });
+
+    // Load members with completion callback
+    this.populateMembers(() => {
+      // This runs AFTER members are loaded
+      this.setDefaultValuesAndLoad();
     });
   }
 
@@ -170,11 +168,15 @@ export class LeaveBalanceComponent {
     return this.translate.instant(this.months[monthNumber - 1]);
   }
 
-  populateMembers() {
+  populateMembers(onComplete?: () => void): void {
     this.users = [];
     let currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+    // Always add current user first (synchronous)
     this.users.push({ id: currentUser.id, name: this.translate.instant('leave.userMe'), email: currentUser.email });
     this.user = currentUser;
+
+    // Fetch team members (async)
     this.timeLogService.getTeamMembers(this.user.id).subscribe({
       next: response => {
         this.timeLogService.getusers(response.data).subscribe({
@@ -184,14 +186,20 @@ export class LeaveBalanceComponent {
                 this.users.push({ id: user.id, name: `${user.firstName} ${user.lastName}`, email: user.email });
               }
             });
+            this.membersLoaded = true;
+            if (onComplete) onComplete();  // SUCCESS PATH
           },
           error: () => {
             this.toast.error(this.translate.instant('leave.errorFetchingUsers'));
+            this.membersLoaded = true;
+            if (onComplete) onComplete();  // ERROR PATH
           }
         });
       },
       error: () => {
         this.toast.error(this.translate.instant('leave.errorFetchingTeamMembers'));
+        this.membersLoaded = true;
+        if (onComplete) onComplete();  // ERROR PATH
       }
     });
   }
@@ -247,6 +255,7 @@ export class LeaveBalanceComponent {
     // Clear the error and form controls initially
     this.error = '';
     this.leaveCategories = [];
+    this.isSettingDefaults = true;
     this.leaveBalanceForm.patchValue({ category: '' });
     this.leaveBalanceForm.patchValue({ user: userId });
 
@@ -256,34 +265,78 @@ export class LeaveBalanceComponent {
           if (res.status === 'success') {
             this.leaveCategories = res.data;
             this.error = '';
+
+            // Auto-select first category if available
+            if (this.leaveCategories && this.leaveCategories.length > 0) {
+              const firstCategoryId = this.leaveCategories[0]?.leaveCategory?._id;
+              if (firstCategoryId) {
+                this.leaveBalanceForm.patchValue({ category: firstCategoryId });
+              }
+            }
+
+            // Re-enable auto-trigger and load if form is valid
+            this.isSettingDefaults = false;
+            if (this.leaveBalanceForm.valid) {
+              this.getLeaveBalance();
+            }
           } else if (res.status === 'failure') {
             this.leaveCategories = [];
             this.leaveBalanceForm.patchValue({ category: '' });
             this.error = this.translate.instant('leave.noCategoriesAssigned');
+            this.isSettingDefaults = false;
           }
         },
         error: () => {
           this.leaveCategories = [];
           this.leaveBalanceForm.patchValue({ category: '' });
           this.error = this.translate.instant('leave.errorFetchingCategoriesGeneric');
+          this.isSettingDefaults = false;
         }
       }
     );
   }
 
-  getCategoriesByCurrentUser() {
-    const user = this.currentUser?.id;
-    this.member = user;
-    this.leaveBalanceForm.patchValue({ user: user });
-    this.leaveService.getLeaveCategoriesByUserv1(user).subscribe({
+  private setDefaultValuesAndLoad(): void {
+    this.isSettingDefaults = true;  // Disable valueChanges auto-trigger
+
+    const currentUser = this.currentUser?.id;
+
+    // Set user default (logged-in user)
+    this.leaveBalanceForm.patchValue({ user: currentUser });
+    this.member = currentUser;
+
+    // Set cycle default (current year - index 1 in years array)
+    if (this.years && this.years.length > 1) {
+      const currentYearCycle = this.years[1].value;  // Middle option = current year
+      this.leaveBalanceForm.patchValue({ cycle: currentYearCycle });
+    }
+
+    // Fetch categories for current user
+    this.leaveService.getLeaveCategoriesByUserv1(currentUser).subscribe({
       next: (res: any) => {
-        if (res.status == 'success') {
+        if (res.status === 'success') {
           this.leaveCategories = res.data;
-        } else if (res.status == 'failure') {
+
+          // Auto-select first category if available
+          if (this.leaveCategories && this.leaveCategories.length > 0) {
+            const firstCategoryId = this.leaveCategories[0]?.leaveCategory?._id;
+            if (firstCategoryId) {
+              this.leaveBalanceForm.patchValue({ category: firstCategoryId });
+            }
+          }
+
+          // Form is complete - trigger single load
+          this.isSettingDefaults = false;
+          if (this.leaveBalanceForm.valid) {
+            this.getLeaveBalance();  // Explicit single call
+          }
+        } else {
+          this.isSettingDefaults = false;
           this.toast.error(this.translate.instant('leave.noCategoriesAssigned'));
         }
       },
       error: () => {
+        this.isSettingDefaults = false;
         this.toast.error(this.translate.instant('leave.errorFetchingCategories'));
       }
     });
