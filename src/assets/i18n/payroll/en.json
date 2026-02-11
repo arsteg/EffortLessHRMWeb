@@ -891,6 +891,25 @@
         "loss_of_pay_days": "Loss Of Pay Days",
         "paid_days": "Paid Days",
         "total_fixed_allowances_basic_pay": "Total Fixed Allowances (on Basic Pay)",
-        "total_variable_allowances_basic_pay": "Total Variable Allowances (on Basic Pay)"
+        "total_variable_allowances_basic_pay": "Total Variable Allowances (on Basic Pay)",
+        "payslip_for_the_month": "Payslip For the Month",
+        "fnf_payslip_for_the_month": "Full & Final Payslip For the Month",
+        "employee_summary": "Employee Summary",
+        "employee_net_pay": "Employee Net Pay",
+        "pf_account_number": "PF A/C Number",
+        "uan": "UAN",
+        "basic": "Basic",
+        "employee_pf_contribution": "EPF Contribution",
+        "lop_deduction": "LOP Deduction",
+        "gross_earnings": "Gross Earnings",
+        "total_net_payable": "Total Net Payable",
+        "amount_in_words": "Amount In Words",
+        "auto_generated_disclaimer": "This document has been automatically generated; therefore, a signature is not required.",
+        "employee_statutory": "Employee Statutory",
+        "contribution_type": "Contribution Type",
+        "total_employer_contribution": "Total Employer Contribution",
+        "pay_date": "Pay Date",
+        "employee_id": "Employee ID",
+        "loan_repayment": "Loan Repayment"
     }
 }

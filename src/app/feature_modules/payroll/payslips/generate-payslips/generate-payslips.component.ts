@@ -15,12 +15,18 @@ export class GeneratePayslipsComponent {
   salaryAfterLOP: string;
   totalEarnings: number = 0;
   totalDeductions: number = 0;
+  totalDeductionsWithStatutory: number = 0;
   @Input() payslip: any;
   userJobInformation: any;
   statutoryDeductions: any;
   employerContributions: any;
   @ViewChild('payslipContainer') payslipContainer: ElementRef;
   companyInfo: any;
+  netSalary: number = 0;
+  amountInWords: string = '';
+  payDate: Date = new Date();
+  earningsArray: any[] = [];
+  deductionsArray: any[] = [];
 
   displayLeaveBalanceInPayslip: boolean;
   isLeaveBalanceAllowedToShow: boolean;
@@ -38,6 +44,9 @@ export class GeneratePayslipsComponent {
   ngOnInit(): void {
     this.getLeaveBalance();
     this.calculateTotals();
+    this.prepareEarningsAndDeductions();
+    this.calculateNetSalary();
+    this.convertAmountToWords();
   }
 
   getLeaveBalance() {
@@ -94,7 +103,199 @@ export class GeneratePayslipsComponent {
       }, 0)
       : 0;
 
+    // Get LOP amount from attendance
+    const lopAmount = ps?.totallopDaysAmount || 0;
+
     this.totalDeductions = fixedDeduction + variableDeduction + incomeTax + loanRepayment;
+
+    // Add statutory deductions
+    const employeeStatutory = ps?.PayrollUser?.totalEmployeeStatutoryDeduction || 0;
+    this.totalDeductionsWithStatutory = this.totalDeductions + employeeStatutory + lopAmount;
+  }
+
+  prepareEarningsAndDeductions(): void {
+    const ps = this.payslip;
+    this.earningsArray = [];
+    this.deductionsArray = [];
+
+    // Prepare earnings
+    if (ps?.fixedAllowancesList?.length) {
+      ps.fixedAllowancesList.forEach((item: any) => {
+        this.earningsArray.push({
+          label: item.fixedAllowance?.label,
+          amount: item.amount || 0,
+          ytd: item.amount*12 || 0
+        });
+      });
+    }
+
+    if (ps?.variableAllowancesList?.length) {
+      ps.variableAllowancesList.forEach((item: any) => {
+        this.earningsArray.push({
+          label: item.variableAllowance?.label,
+          amount: item.amount || 0
+          //ytd: item.amount*12 || 0
+        });
+      });
+    }
+
+    if (ps?.PayrollUser?.totalFlexiBenefits) {
+      this.earningsArray.push({
+        label: 'Flexi Benefits',
+        amount: ps.PayrollUser.totalFlexiBenefits || 0
+        //ytd: ps.PayrollUser.totalFlexiBenefits*12 || 0
+      });
+    }
+
+    // Always show overtime even if 0
+    this.earningsArray.push({
+      label: 'Overtime',
+      amount: ps?.latestOvertime?.OvertimeAmount || 0
+      //ytd: 0
+    });
+
+    // Add loan disbursements to earnings
+    if (ps?.allLoanAdvances?.length) {
+      ps.allLoanAdvances.forEach((loan: any) => {
+        if (loan.type === 'Disbursement') {
+          this.earningsArray.push({
+            label: loan.loanAndAdvance?.loanAdvancesCategory?.name || 'Loan Disbursement',
+            amount: loan.disbursementAmount || loan.amount || 0
+            //ytd: loan.disbursementAmountYTD || loan.amountYTD || 0
+          });
+        }
+      });
+    }
+
+    // Add arrears to earnings
+    if (ps?.manualArrears?.length) {
+      ps.manualArrears.forEach((arrear: any) => {
+        this.earningsArray.push({
+          label: `Arrears (${arrear.arrearDays} days)`,
+          amount: arrear.totalArrears || arrear.amount || 0
+          //ytd: arrear.totalArrearsYTD || 0
+        });
+      });
+    }
+
+    // Prepare deductions
+    if (ps?.fixedDeductionsList?.length) {
+      ps.fixedDeductionsList.forEach((item: any) => {
+        this.deductionsArray.push({
+          label: item.fixedDeduction?.label,
+          amount: item.amount || 0,
+          ytd: item.amount*12 || 0
+        });
+      });
+    }
+
+    if (ps?.variableDeductionsList?.length) {
+      ps.variableDeductionsList.forEach((item: any) => {
+        this.deductionsArray.push({
+          label: item.variableDeduction?.label,
+          amount: item.amount || 0
+          //ytd: item.amount*12 || 0
+        });
+      });
+    }
+
+    if (ps?.tdsCalculated) {
+      this.deductionsArray.push({
+        label: 'Income Tax',
+        amount: ps.tdsCalculated || 0
+        //ytd: ps.tdsCalculated*12 || 0
+      });
+    }
+
+    // Add loan repayments
+    if (ps?.allLoanAdvances?.length) {
+      ps.allLoanAdvances.forEach((loan: any) => {
+        if (loan.type === 'Repayment') {
+          this.deductionsArray.push({
+            label: loan.loanAndAdvance?.loanAdvancesCategory?.name || 'Loan Repayment',
+            amount: loan.amount || 0
+            //ytd: 0
+          });
+        }
+      });
+    }
+
+    // Add statutory deductions
+    if (ps?.PayrollUser?.totalEmployeeStatutoryDeduction) {
+      this.deductionsArray.push({
+        label: 'Employee Statutory',
+        amount: ps.PayrollUser.totalEmployeeStatutoryDeduction || 0
+        //ytd: ps.PayrollUser.totalEmployeeStatutoryDeductionYTD || 0
+      });
+    }
+
+    // Always show LOP deduction even if 0
+    this.deductionsArray.push({
+      label: 'LOP Deduction',
+      amount: ps?.totallopDaysAmount || 0
+      //ytd: ps?.latestAttendanceSummary?.lopAmountYTD || 0
+    });
+
+    // Balance arrays if needed
+    const maxLength = Math.max(this.earningsArray.length, this.deductionsArray.length);
+    while (this.earningsArray.length < maxLength) {
+      this.earningsArray.push({ label: ''});
+    }
+    while (this.deductionsArray.length < maxLength) {
+      this.deductionsArray.push({ label: '' });
+    }
+  }
+
+  calculateNetSalary(): void {
+    // Calculate net salary from earnings minus deductions
+    this.netSalary = this.totalEarnings - this.totalDeductionsWithStatutory;
+  }
+
+  convertAmountToWords() {
+    const amount = Math.floor(this.netSalary);
+    this.amountInWords = this.numberToWords(amount) + ' Only';
+  }
+
+  numberToWords(num: number): string {
+    if (num === 0) return 'Zero';
+
+    const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+    const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+    const convert = (n: number): string => {
+      if (n < 10) return ones[n];
+      if (n >= 10 && n < 20) return teens[n - 10];
+      if (n >= 20 && n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
+      if (n >= 100 && n < 1000) return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 !== 0 ? ' ' + convert(n % 100) : '');
+      return '';
+    };
+
+    if (num < 1000) {
+      return convert(num);
+    }
+
+    const crore = Math.floor(num / 10000000);
+    const lakh = Math.floor((num % 10000000) / 100000);
+    const thousand = Math.floor((num % 100000) / 1000);
+    const remainder = num % 1000;
+
+    let result = '';
+
+    if (crore > 0) {
+      result += convert(crore) + ' Crore ';
+    }
+    if (lakh > 0) {
+      result += convert(lakh) + ' Lakh ';
+    }
+    if (thousand > 0) {
+      result += convert(thousand) + ' Thousand ';
+    }
+    if (remainder > 0) {
+      result += convert(remainder);
+    }
+
+    return result.trim();
   }
 
   getCompanyNameFromCookies(): string | null {

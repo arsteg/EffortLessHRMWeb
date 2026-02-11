@@ -16,17 +16,49 @@ export class ViewFnfPayslipComponent {
   salaryAfterLOP: string;
   totalEarnings: number = 0;
   totalDeductions: number = 0;
+  companyName: string = '';
+  companyLocation: string = '';
+  payDate: Date = new Date();
+  netSalary: number = 0;
+  amountInWords: string = '';
+  employeeStatutoryTotal: number = 0;
+  employerStatutoryTotal: number = 0;
+  employeeStatutoryTotalYTD: number = 0;
+  employerStatutoryTotalYTD: number = 0;
 
   @ViewChild('payslipContainer') payslipContainer: ElementRef;
 
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
-    console.log(this.selectedPayroll);
+    this.getCompanyDetails();
     this.getUserDetails();
     this.calculateSalaryAfterLOP();
     this.calculateTotalPayWithOvertime();
     this.calculateTotals();
+    this.calculateStatutoryTotals();
+    this.calculateNetSalary();
+    this.convertAmountToWords();
+  }
+
+  getCompanyDetails() {
+    this.companyName = this.getCompanyNameFromCookies() || 'Company Name';
+    this.companyLocation = 'India';
+  }
+
+  calculateStatutoryTotals(): void {
+    if (this.viewPayroll?.statutoryDetails?.length) {
+      this.employeeStatutoryTotal = this.viewPayroll.statutoryDetails
+        .filter(s => s.ContributorType === 'Employee')
+        .reduce((sum, s) => sum + (s.amount || 0), 0);
+
+      this.employerStatutoryTotal = this.viewPayroll.statutoryDetails
+        .filter(s => s.ContributorType === 'Employer')
+        .reduce((sum, s) => sum + (s.amount || 0), 0);
+
+      this.employeeStatutoryTotalYTD = this.employeeStatutoryTotal;
+      this.employerStatutoryTotalYTD = this.employerStatutoryTotal;
+    }
   }
 
   calculateTotals(): void {
@@ -52,6 +84,11 @@ export class ViewFnfPayslipComponent {
         .reduce((sum, s) => sum + (s.amount || 0), 0);
       this.totalDeductions += employeeContribs;
     }
+  }
+
+  calculateNetSalary(): void {
+    // Calculate net salary from earnings minus deductions
+    this.netSalary = this.totalEarnings - this.totalDeductions;
   }
 
   calculateSalaryAfterLOP() {
@@ -87,5 +124,51 @@ export class ViewFnfPayslipComponent {
     return null;
   }
 
+  convertAmountToWords() {
+    const amount = Math.floor(this.netSalary);
+    this.amountInWords = this.numberToWords(amount) + ' Only';
+  }
+
+  numberToWords(num: number): string {
+    if (num === 0) return 'Zero';
+
+    const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+    const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+    const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+    const convert = (n: number): string => {
+      if (n < 10) return ones[n];
+      if (n >= 10 && n < 20) return teens[n - 10];
+      if (n >= 20 && n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
+      if (n >= 100 && n < 1000) return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 !== 0 ? ' ' + convert(n % 100) : '');
+      return '';
+    };
+
+    if (num < 1000) {
+      return convert(num);
+    }
+
+    const crore = Math.floor(num / 10000000);
+    const lakh = Math.floor((num % 10000000) / 100000);
+    const thousand = Math.floor((num % 100000) / 1000);
+    const remainder = num % 1000;
+
+    let result = '';
+
+    if (crore > 0) {
+      result += convert(crore) + ' Crore ';
+    }
+    if (lakh > 0) {
+      result += convert(lakh) + ' Lakh ';
+    }
+    if (thousand > 0) {
+      result += convert(thousand) + ' Thousand ';
+    }
+    if (remainder > 0) {
+      result += convert(remainder);
+    }
+
+    return result.trim();
+  }
 
 }
