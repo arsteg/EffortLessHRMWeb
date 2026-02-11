@@ -115,6 +115,8 @@
   "email-template.form.id": "Id",
   "email-template.form.insert_variable": "Insert Variable",
   "email-template.form.content_data": "Content Data",
+  "email-template.form.template_type": "Template Type",
+  "email-template.form.error.template_type_required": "Template Type is required",
 
   "email-template.form.error.name_required": "Name is required",
   "email-template.form.error.subject_required": "Subject is required",

@@ -21,12 +21,12 @@
                     <div class="form-group col-md-3">
                         <mat-form-field class="w-100">
                             <mat-label>{{ 'leave.selectTeamMember' | translate }}</mat-label>
-                            <mat-select id="member" name="member" formControlName="member">
-                                <mat-option *ngFor="let m of users" [value]="m|json" (click)="selecteduser(m.id)">
+                            <mat-select id="user" name="user" formControlName="user">
+                                <mat-option *ngFor="let m of users" [value]="m.id" (click)="selecteduser(m.id)">
                                     {{ m.name | titlecase }}
                                 </mat-option>
                             </mat-select>
-                            <mat-error *ngIf="leaveBalanceForm.get('member')?.invalid && (leaveBalanceForm.get('member')?.touched || leaveBalanceForm.get('member')?.dirty)">
+                            <mat-error *ngIf="leaveBalanceForm.get('user')?.invalid && (leaveBalanceForm.get('user')?.touched || leaveBalanceForm.get('user')?.dirty)">
                                 {{ error | translate }}
                             </mat-error>
                         </mat-form-field>

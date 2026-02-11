@@ -3,6 +3,7 @@ import { HelpdeskService } from 'src/app/_services/helpdeskService';
 import { Router } from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { ToastrService } from 'ngx-toastr';
 
 interface HelpRequest {
   id: string;
@@ -38,7 +39,8 @@ export class HelpDeskComponent {
   constructor(private helpdeskService: HelpdeskService,
      private router: Router,
      public dialogRef: MatDialogRef<HelpDeskComponent>,
-     private translate: TranslateService
+     private translate: TranslateService,
+     private toast: ToastrService
     ) {}
 
   ngOnInit() {
@@ -165,7 +167,7 @@ export class HelpDeskComponent {
   
     const handleResponse = (res: any) => {
       this.isSubmitting = false;
-      const tickets = res.data;  
+      const tickets = res.data;
       this.previousRequests = tickets.map((ticket: any) => ({
         createdOn: new Date(ticket.createdOn),
         description: ticket.description,
@@ -175,18 +177,18 @@ export class HelpDeskComponent {
         video: ticket.video || null,
         id: ticket._id,
       }));
-  
+
       // Reset form
       this.description = '';
       this.uploadedFiles = [];
       this.recordedVideoUrl = null;
       this.recordedChunks = [];
-      this.isSubmitting = false;
 
-      this.dialogRef.close();
-      // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      //   this.router.navigate(['/home/helpdesk']);
-      // });
+      // Show success notification
+      this.toast.success(this.translate.instant('helpdesk.ticket_created_success') || 'Ticket created successfully', 'Success');
+
+      // Close dialog and pass success status to parent
+      this.dialogRef.close({ success: true });
     };
   
     if (this.recordedChunks.length > 0) {
@@ -200,6 +202,7 @@ export class HelpDeskComponent {
           error: (err) => {
             this.isSubmitting = false;
             console.error('Failed to submit helpdesk ticket:', err);
+            this.toast.error(err?.error?.message || 'Failed to submit ticket', 'Error');
           },
         });
       };
@@ -210,6 +213,7 @@ export class HelpDeskComponent {
         error: (err) => {
           this.isSubmitting = false;
           console.error('Failed to submit helpdesk ticket:', err);
+          this.toast.error(err?.error?.message || 'Failed to submit ticket', 'Error');
         },
       });
     }

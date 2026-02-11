@@ -335,8 +335,15 @@ export class CreateReportComponent {
             expense.expenseCategory === this.expenseReportform.value.expenseCategory &&
             expense._id !== this.expenseReportform.value.expenseReport;
         });
+        const incurredDateControl = this.expenseReportform.get('incurredDate');
+        const currentErrors = incurredDateControl.errors || {};
+
         if (sameDateRecord) {
-          this.expenseReportform.get('incurredDate').setErrors({ 'duplicate': true });
+          incurredDateControl.setErrors({ ...currentErrors, 'duplicate': true });
+        } else {
+          // Remove only the 'duplicate' error while preserving other errors
+          const { duplicate, ...remainingErrors } = currentErrors;
+          incurredDateControl.setErrors(Object.keys(remainingErrors).length > 0 ? remainingErrors : null);
         }
       }
     }
@@ -344,10 +351,15 @@ export class CreateReportComponent {
     // Max amount permission
     if (this.expenseData?.isMaximumAmountPerExpenseSet) {
       let maxAmount = this.expenseData.maximumAmountPerExpense;
-      if (this.expenseReportform.get('amount').value > maxAmount) {
-        this.expenseReportform.get('amount').setErrors({ 'exceeds': true });
+      const amountControl = this.expenseReportform.get('amount');
+      const currentErrors = amountControl.errors || {};
+
+      if (amountControl.value > maxAmount) {
+        amountControl.setErrors({ ...currentErrors, 'exceeds': true });
       } else {
-        this.expenseReportform.get('amount').setErrors(null);
+        // Remove only the 'exceeds' error while preserving other errors
+        const { exceeds, ...remainingErrors } = currentErrors;
+        amountControl.setErrors(Object.keys(remainingErrors).length > 0 ? remainingErrors : null);
       }
     }
     // Max amount without receipt

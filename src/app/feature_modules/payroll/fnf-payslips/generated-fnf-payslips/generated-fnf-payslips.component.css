@@ -1,4 +1,406 @@
-.table-bordered td,
-.table-bordered th {
-  border: 1px solid var(--bs-border-color) !important;
+.payslip-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 0;
+  background-color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+.company-logo {
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* Header Section */
+.payslip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.company-info {
+  flex: 1;
+}
+
+.company-name {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  color: #2c3e50;
+}
+
+.company-location {
+  margin: 5px 0 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.payslip-title {
+  text-align: right;
+}
+
+.title-label {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.pay-month {
+  margin: 5px 0 0 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.header-divider {
+  border: none;
+  border-top: 2px solid #e0e0e0;
+  margin: 20px 0;
+}
+
+/* Employee Summary Section */
+.employee-summary-section {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 25px;
+}
+
+.employee-details {
+  flex: 1;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-label {
+  color: #666;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.detail-label::after {
+  content: ':';
+  margin-left: 2px;
+}
+
+.detail-value {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Net Pay Box */
+.net-pay-box {
+  min-width: 300px;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border: 2px solid #b8dcc4;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.net-pay-amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #155724;
+  margin: 0 0 10px 0;
+}
+
+.net-pay-label {
+  font-size: 14px;
+  color: #155724;
+  margin: 0 0 20px 0;
+  font-weight: 500;
+}
+
+.attendance-summary {
+  border-top: 1px dashed #b8dcc4;
+  padding-top: 15px;
+}
+
+.attendance-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.attendance-label {
+  color: #155724;
+  font-size: 13px;
+}
+
+.attendance-label::after {
+  content: ':';
+  margin-left: 2px;
+}
+
+.attendance-value {
+  color: #155724;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px dashed #d0d0d0;
+  margin: 20px 0;
+}
+
+/* PF Details Section */
+.pf-details-section {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 20px;
+}
+
+.pf-detail {
+  display: flex;
+  gap: 10px;
+}
+
+.pf-label {
+  color: #666;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.pf-label::after {
+  content: ':';
+  margin-left: 2px;
+}
+
+.pf-value {
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Earnings and Deductions Table */
+.earnings-deductions-table {
+  margin-bottom: 25px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.payslip-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fafafa;
+}
+
+.payslip-table thead {
+  background-color: #f5f5f5;
+}
+
+.payslip-table th {
+  padding: 12px 10px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #e0e0e0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.payslip-table tbody tr {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.payslip-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.payslip-table td {
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.payslip-table .col-earnings,
+.payslip-table .col-deductions {
+  width: 25%;
+}
+
+.payslip-table .col-amount {
+  width: 12%;
+  text-align: right;
+}
+
+.payslip-table .col-ytd {
+  width: 13%;
+  text-align: right;
+  color: #666;
+}
+
+.payslip-table .total-row {
+  background-color: #f0f0f0;
+  font-weight: 600;
+}
+
+.payslip-table .total-row td {
+  padding: 12px 10px;
+  border-top: 2px solid #d0d0d0;
+}
+
+/* Employer Contributions Section */
+.employer-contributions-section {
+  margin-bottom: 25px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.subsection-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.employer-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.employer-table thead {
+  background-color: #f0f0f0;
+}
+
+.employer-table th {
+  padding: 10px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #d0d0d0;
+}
+
+.employer-table tbody tr {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.employer-table td {
+  padding: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.employer-table .total-row {
+  background-color: #e8e8e8;
+  font-weight: 600;
+}
+
+.employer-table .total-row td {
+  padding: 12px 10px;
+  border-top: 2px solid #d0d0d0;
+}
+
+/* Total Net Payable */
+.total-net-payable {
+  margin-bottom: 20px;
+}
+
+.net-payable-box {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border: 2px solid #b8dcc4;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.net-payable-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.net-payable-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #155724;
+  margin: 0 0 5px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.net-payable-formula {
+  font-size: 13px;
+  color: #155724;
+  margin: 0;
+}
+
+.net-payable-amount {
+  font-size: 32px;
+  font-weight: 700;
+  color: #155724;
+  margin: 0;
+}
+
+/* Amount in Words */
+.amount-in-words {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.amount-in-words p {
+  font-size: 14px;
+  color: #555;
+  margin: 10px 0;
+}
+
+.footer-divider {
+  border: none;
+  border-top: 1px solid #d0d0d0;
+  margin: 20px 0;
+}
+
+/* Footer */
+.payslip-footer {
+  text-align: center;
+  padding: 15px 0;
+  color: #888;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.payslip-footer p {
+  margin: 0;
+}
+
+.text-end {
+  text-align: right;
+}
+
+/* Print Styles */
+@media print {
+  .payslip-container {
+    padding: 20px;
+  }
+
+  .net-pay-box,
+  .net-payable-box {
+    background: #e8f5e9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }

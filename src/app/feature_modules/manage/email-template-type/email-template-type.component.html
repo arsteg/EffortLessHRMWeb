@@ -1,0 +1,112 @@
+<div class="row pt-3">
+  <div class="col-md-8">
+    <hrm-table
+      [data]="emailTemplateTypeList"
+      [isServerSide]="false"
+      [columns]="columns"
+      [showSearch]="true"
+      (actionClicked)="handleAction($event, updateModal)">
+    </hrm-table>
+  </div>
+
+  <div class="col-md-4">
+    <h1 mat-dialog-title>
+      Add Email Template Type
+    </h1>
+    <form class="mt-4 p-3 bg-light border rounded" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="row">
+
+        <!-- Type ID -->
+        <div class="col-sm-12">
+          <mat-form-field class="w-100">
+            <mat-label>Type ID</mat-label>
+            <input matInput type="number" formControlName="emailTemplateTypeId">
+            <mat-error *ngIf="form.get('emailTemplateTypeId')?.invalid && (form.get('emailTemplateTypeId')?.touched || form.get('emailTemplateTypeId')?.dirty)">
+              <span *ngIf="form.get('emailTemplateTypeId')?.errors?.['required']">
+                Type ID is required
+              </span>
+              <span *ngIf="form.get('emailTemplateTypeId')?.errors?.['min']">
+                Type ID must be greater than 0
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Name -->
+        <div class="col-sm-12 mt-3">
+          <mat-form-field class="w-100">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name">
+            <mat-error *ngIf="form.get('name')?.invalid && (form.get('name')?.touched || form.get('name')?.dirty)">
+              <span *ngIf="form.get('name')?.errors?.['required']">
+                Name is required
+              </span>
+              <span *ngIf="form.get('name')?.errors?.['minlength']">
+                Name must be at least 2 characters
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="col-sm-12 mt-4">
+          <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || isSubmitting">
+            <span *ngIf="!isSubmitting">Add</span>
+            <span *ngIf="isSubmitting">Saving...</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Update Modal -->
+<ng-template #updateModal let-modal>
+  <div class="d-flex align-items-center justify-content-between">
+    <h1 mat-dialog-title>
+      Update Email Template Type
+    </h1>
+    <button mat-icon-button mat-dialog-close="" class="me-4">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div mat-dialog-content>
+    <form [formGroup]="updateForm">
+      <div class="row">
+
+        <!-- Type ID (disabled for update) -->
+        <div class="col-sm-12">
+          <mat-form-field class="w-100">
+            <mat-label>Type ID</mat-label>
+            <input matInput type="number" formControlName="emailTemplateTypeId" [disabled]="true">
+          </mat-form-field>
+        </div>
+
+        <!-- Name -->
+        <div class="col-sm-12 mt-3">
+          <mat-form-field class="w-100">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name">
+            <mat-error *ngIf="updateForm.get('name')?.invalid && (updateForm.get('name')?.touched || updateForm.get('name')?.dirty)">
+              <span *ngIf="updateForm.get('name')?.errors?.['required']">
+                Name is required
+              </span>
+              <span *ngIf="updateForm.get('name')?.errors?.['minlength']">
+                Name must be at least 2 characters
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div mat-dialog-actions class="justify-content-end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-flat-button color="primary" (click)="onUpdate()" [disabled]="updateForm.invalid || isSubmitting">
+      <span *ngIf="!isSubmitting">Update</span>
+      <span *ngIf="isSubmitting">Updating...</span>
+    </button>
+  </div>
+</ng-template>

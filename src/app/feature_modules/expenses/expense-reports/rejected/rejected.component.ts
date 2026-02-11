@@ -29,7 +29,7 @@ export class RejectedComponent {
   public sortOrder: string = '';
   totalRecords: number
   recordsPerPage: number = 10;
-  displayedColumns: string[] = ['title', 'user', 'totalAmount', 'reimbursable', 'billable', 'reason' , 'status', 'action'];
+  displayedColumns: string[] = ['title', 'user', 'totalAmount', 'reimbursable', 'billable', 'reason', 'status', 'action'];
   dataSource = new MatTableDataSource<any>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -37,36 +37,46 @@ export class RejectedComponent {
   dialogRef: MatDialogRef<any>;
 
   columns: TableColumn[] = [
-    { 
-      key: 'title', 
-      name: this.translate.instant('expenses.report_title') 
+    {
+      key: 'title',
+      name: this.translate.instant('expenses.report_title')
     },
-    { 
-      key: 'user', 
-      name: this.translate.instant('expenses.employee') 
+    {
+      key: 'user',
+      name: this.translate.instant('expenses.employee')
     },
-    { 
-      key: 'totalAmount', 
+    {
+      key: 'totalAmount',
       name: this.translate.instant('expenses.total_amount'),
       valueFn: (row: any) => this.calculateTotalAmount(row)
     },
-    { 
-      key: 'reimbursable', 
+    {
+      key: 'advance',
+      name: this.translate.instant('expenses.advance_recieved'),
+      valueFn: (row: any) => this.calculateAdvanceAmount(row)
+    },
+    {
+      key: 'netPayable',
+      name: this.translate.instant('expenses.net_payable'),
+      valueFn: (row: any) => this.calculateNetPayable(row)
+    },
+    {
+      key: 'reimbursable',
       name: this.translate.instant('expenses.reimbursable'),
       valueFn: (row: any) => this.calculateTotalisReimbursable(row, true, false)
     },
-    { 
-      key: 'billable', 
+    {
+      key: 'billable',
       name: this.translate.instant('expenses.billable'),
       valueFn: (row: any) => this.calculateTotalisReimbursable(row, false, true)
     },
-    { 
-      key: 'primaryApprovalReason', 
-      name: this.translate.instant('reason') 
+    {
+      key: 'primaryApprovalReason',
+      name: this.translate.instant('reason')
     },
-    { 
-      key: 'status', 
-      name: this.translate.instant('status') 
+    {
+      key: 'status',
+      name: this.translate.instant('status')
     },
     {
       key: 'action',
@@ -171,9 +181,11 @@ export class RejectedComponent {
     const dataToExport = this.expenseReport.map((categories) => ({
       title: categories.title,
       employee: this.getUser(categories.employee),
-      amount: categories?.expenseReportExpense[0]?.amount,
-      isReimbursable: categories?.expenseReportExpense[0]?.isReimbursable ? categories?.expenseReportExpense[0]?.amount : 0,
-      isBillable: categories?.expenseReportExpense[0]?.isBillable ? categories?.expenseReportExpense[0]?.amount : 0,
+      totalAmount: this.calculateTotalAmount(categories),
+      advanceAmount: this.calculateAdvanceAmount(categories),
+      netPayable: this.calculateNetPayable(categories),
+      isReimbursable: this.calculateTotalisReimbursable(categories, true, false),
+      isBillable: this.calculateTotalisReimbursable(categories, false, true),
       status: categories.status
     }));
     this.exportService.exportToCSV('Expense-Rejected-Report', 'Expense-Rejected-Report', dataToExport);
@@ -184,8 +196,27 @@ export class RejectedComponent {
       for (const expense of expenseReport.expenseReportExpense) {
         totalAmount += expense.amount;
       }
+    } else {
+      totalAmount = parseFloat(expenseReport.amount) || 0;
     }
     return totalAmount;
+  }
+
+  calculateAdvanceAmount(expenseReport: any): number {
+    if (expenseReport.advanceAmountAllowed === false) {
+      return 0;
+    }
+    if (expenseReport.expenseReportExpense && expenseReport.expenseReportExpense.length > 0) {
+      const sumItems = expenseReport.expenseReportExpense.reduce((sum, item) => sum + (item.amount || 0), 0);
+      if (Math.abs(parseFloat(expenseReport.amount) - sumItems) > 0.01) {
+        return parseFloat(expenseReport.amount) || 0;
+      }
+    }
+    return 0;
+  }
+
+  calculateNetPayable(expenseReport: any): number {
+    return this.calculateTotalAmount(expenseReport) - this.calculateAdvanceAmount(expenseReport);
   }
   calculateTotalisReimbursable(expenseReport: any, isReimbursable: boolean, isBillable: boolean): number {
     let totalAmount = 0;

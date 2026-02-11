@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { EmailtemplateService } from 'src/app/_services/emailtemplate.service';
+import { EmailTemplateTypeService } from 'src/app/_services/emailtemplatetype.service';
 import { Validators, FormGroup, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { ConfirmationDialogComponent } from 'src/app/tasks/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { EmailTemplateType } from 'src/app/models/EmailTemplateType';
 
 @Component({
   selector: 'app-email-template',
@@ -14,6 +16,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 })
 export class EmailTemplateComponent implements OnInit {
   emailList: any = [];
+  emailTemplateTypes: EmailTemplateType[] = [];
   form: FormGroup;
   updateForm: FormGroup;
   emailmodel: boolean = false;
@@ -22,7 +25,7 @@ export class EmailTemplateComponent implements OnInit {
   searchText: string = "";
   selectedOption: string;
   editorContent: string = '';
-  dialogRef: MatDialogRef<any> | null = null; 
+  dialogRef: MatDialogRef<any> | null = null;
 
   isSubmitting: boolean = false;
   dropdownOptions = [
@@ -44,13 +47,13 @@ export class EmailTemplateComponent implements OnInit {
   isFormLoaded = false;
   
   columns: TableColumn[] = [
-    { key: 'templateType', name: this.translate.instant('manage.emails.templateType') },
+    { key: 'templateTypeName', name: this.translate.instant('manage.emails.templateType') },
     { key: 'Name', name: this.translate.instant('manage.emails.templateName') },
     { key: 'subject', name: this.translate.instant('manage.emails.subject') },
-    { 
+    {
       key: 'contentData',
-      isHtml: true, 
-      name: this.translate.instant('manage.emails.content') 
+      isHtml: true,
+      name: this.translate.instant('manage.emails.content')
     },
     {
       key: 'action',
@@ -63,7 +66,10 @@ export class EmailTemplateComponent implements OnInit {
     }
   ];
   
-  constructor(private emailservice: EmailtemplateService, private fb: FormBuilder,
+  constructor(
+    private emailservice: EmailtemplateService,
+    private emailTemplateTypeService: EmailTemplateTypeService,
+    private fb: FormBuilder,
     private translate: TranslateService,
     private dialog: MatDialog,
     private toast: ToastrService) {
@@ -84,11 +90,32 @@ export class EmailTemplateComponent implements OnInit {
   ngOnInit(): void {
     this.isFormLoaded = true;
     this.getEmailList();
+    this.getEmailTemplateTypes();
     this.dropdownOptions;
     setTimeout(() => {
       this.isFormLoaded = true;
     }, 1);
 
+  }
+
+  getEmailTemplateTypes(): void {
+    this.emailTemplateTypeService.getAllEmailTemplateTypes().subscribe({
+      next: (data: EmailTemplateType[]) => {
+        this.emailTemplateTypes = data;
+      },
+      error: (error) => {
+        console.error('Error fetching email template types:', error);
+        this.toast.error(
+          this.translate.instant('manage.emailTemplateType.fetchError') || 'Error fetching email template types',
+          this.translate.instant('common.error') || 'Error'
+        );
+      }
+    });
+  }
+
+  getTemplateTypeName(templateTypeId: number): string {
+    const templateType = this.emailTemplateTypes.find(t => t.emailTemplateTypeId === templateTypeId);
+    return templateType ? templateType.name : templateTypeId?.toString() || '';
   }
   ngOnDestroy(): void {
   }
@@ -108,11 +135,13 @@ export class EmailTemplateComponent implements OnInit {
   }
  
   getEmailList() {
-    this.emailList = [
-    ];
+    this.emailList = [];
     this.emailservice.getAllEmails().subscribe((response: any) => {
-      this.emailList = response;
-    })
+      this.emailList = response.map((email: any) => ({
+        ...email,
+        templateTypeName: this.getTemplateTypeName(email.templateType)
+      }));
+    });
   }
   closemodel() {
     this.emailmodel = false;

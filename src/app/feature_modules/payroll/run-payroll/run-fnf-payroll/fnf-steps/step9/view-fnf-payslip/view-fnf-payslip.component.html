@@ -1,142 +1,193 @@
-<div class="this.viewPayroll-detail">
-    <div class="text-center mb-4">
-        <h2>{{'payroll.generated_salary_slip' | translate}}</h2>
+<div class="payslip-container">
+    <!-- Header Section -->
+    <div class="payslip-header">
+        <div class="company-info">
+            <h2 class="company-name">{{companyName}}</h2>
+            <p class="company-location">{{companyLocation}}</p>
+        </div>
+        <div class="payslip-title">
+            <p class="title-label">{{'payroll.fnf_payslip_for_the_month' | translate}}</p>
+            <h3 class="pay-month">{{this.selectedPayroll?.month}} {{this.selectedPayroll?.year}}</h3>
+        </div>
     </div>
-    <div id="this.viewPayrollContainer" #this.viewPayrollContainer class="container bg-white py-5 px-4">
 
-        <div class="row mb-4">
-            <div class="col-3">
-                <span class="fw-bold">{{'payroll.date_of_joining' | translate}}:</span><br>
-                <span class="fw-bold">{{'payroll.pay_period' | translate}}:</span><br>
-                <span class="fw-bold">{{'payroll.gross_pay' | translate}}:</span><br>
-                <span class="fw-bold">{{'payroll.payable_days' | translate}}:</span><br>
+    <hr class="header-divider">
+
+    <!-- Employee Summary Section -->
+    <div class="employee-summary-section">
+        <div class="employee-details">
+            <h4 class="section-title">{{'payroll.employee_summary' | translate}}</h4>
+
+            <div class="detail-row">
+                <label class="detail-label">{{'payroll.employee_name' | translate}}</label>
+                <span class="detail-value">{{this.viewPayroll?.PayrollUser?.user?.name}}</span>
             </div>
-            <div class="col-3">
-                <span>05 Dec, 2022</span><br>
-                <span>{{this.selectedPayroll?.month}}, {{this.selectedPayroll?.year}}</span><br>
-                <span>{{this.viewPayroll?.monthlySalary}}</span><br>
-                <span>{{this.viewPayroll?.attendanceSummary[0]?.payableDays}}</span><br>
+
+            <div class="detail-row">
+                <label class="detail-label">{{'payroll.designation' | translate}}</label>
+                <span class="detail-value">{{this.viewPayroll?.PayrollUser?.designation || '-'}}</span>
             </div>
-            <div class="col-3">
-                <span class="fw-bold">{{'payroll.employee_name' | translate}}:</span><br>
-                <span class="fw-bold">{{'payroll.designation' | translate}}:</span><br>
-                <span class="fw-bold">{{'payroll.department' | translate}}:</span><br>
+
+            <div class="detail-row">
+                <label class="detail-label">{{'payroll.employee_id' | translate}}</label>
+                <span class="detail-value">{{this.viewPayroll?.PayrollUser?.employeeId || this.viewPayroll?.PayrollUser?.user?.id}}</span>
             </div>
-            <div class="col-3">
-                <span>{{this.viewPayroll?.PayrollUser?.user?.name}}</span><br>
-                <span></span><br>
-                <span></span><br>
+
+            <div class="detail-row">
+                <label class="detail-label">{{'payroll.date_of_joining' | translate}}</label>
+                <span class="detail-value">{{this.viewPayroll?.PayrollUser?.dateOfJoining | date:'dd/MM/yyyy'}}</span>
+            </div>
+
+            <div class="detail-row">
+                <label class="detail-label">{{'payroll.pay_period' | translate}}</label>
+                <span class="detail-value">{{this.selectedPayroll?.month}}, {{this.selectedPayroll?.year}}</span>
+            </div>
+
+            <div class="detail-row">
+                <label class="detail-label">{{'payroll.pay_date' | translate}}</label>
+                <span class="detail-value">{{payDate | date:'dd/MM/yyyy'}}</span>
+            </div>
+
+            <div class="detail-row">
+                <label class="detail-label">{{'payroll.payable_days' | translate}}</label>
+                <span class="detail-value">{{this.viewPayroll?.attendanceSummary[0]?.payableDays}}</span>
             </div>
         </div>
 
-        <div class="row mb-4">
-            <div class="col-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>{{'payroll.earnings' | translate}}</th>
-                            <th>{{'payroll.amount' | translate}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{'payroll.fixed_allowance_basic_salary' | translate}}</td>
-                            <td>{{this.viewPayroll?.totalFixedAllowance}}</td>
-                        </tr>
-                        <tr>
-                            <td>{{'payroll.variable_allowance' | translate}}</td>
-                            <td>{{this.viewPayroll?.totalVariableAllowance}}</td>
-                        </tr>
-                        <tr>
-                            <td>{{'payroll.overtime' | translate}}</td>
-                            <td>{{this.viewPayroll?.totalOvertime | number:'1.2-2'}}</td>
-                        </tr>
-                        <tr>
-                            <td>{{'payroll.total_arrears' | translate}}</td>
-                            <td>{{this.viewPayroll?.manualArrears?.totalArrears}}</td>
-                        </tr>
-                        <tr>
-                            <td>{{'payroll.other_benefits' | translate}}</td>
-                            <td>{{this.viewPayroll?.totalOtherBenefit}}</td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr class="fw-bold">
-                            <td>{{'payroll.total_earnings' | translate}}</td>
-                            <td>{{ totalEarnings | number:'1.2-2' }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="col-6">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>{{'payroll.deductions' | translate}}</th>
-                            <th>{{'payroll.amount' | translate}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{{'payroll.fixed_deductions' | translate}}</td>
-                            <td>{{this.viewPayroll?.totalFixedDeduction}}</td>
-                        </tr>
+        <div class="net-pay-box">
+            <h2 class="net-pay-amount">₹{{netSalary | number:'1.2-2'}}</h2>
+            <p class="net-pay-label">{{'payroll.employee_net_pay' | translate}}</p>
 
-                        <tr>
-                            <td>{{'payroll.variable_deductions' | translate}}</td>
-                            <td>{{this.viewPayroll?.totalVariableDeduction}}</td>
-                        </tr>
-                      
-                        <tr>
-                            <td>{{'payroll.income_tax' | translate}}</td>
-                            <td>{{this.viewPayroll?.totalIncomeTax}}</td>
-                        </tr>
-                        <tr>
-                            <td>{{'payroll.loan_advances' | translate}}</td>
-                            <td>{{this.viewPayroll?.totalLoanAdvance}}</td>
-                        </tr>
-                        <tr *ngFor="let statutory of this.viewPayroll?.statutoryDetails">
-                            @if(statutory?.ContributorType == 'Employee')
-                            {
-                            <td>{{statutory?.StautoryName}}</td>
-                            <td>{{statutory?.amount}}</td>
-                            }
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr class="fw-bold">
-                            <td>{{'payroll.total_deductions' | translate}}</td>
-                            <td>{{ totalDeductions | number:'1.2-2' }}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-
-            <div class="col-12">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>{{'payroll.employer_contribution' | translate}}</th>
-                            <th>{{'payroll.amount' | translate}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let statutory of this.viewPayroll?.statutoryDetails">
-                            @if(statutory?.ContributorType == 'Employer')
-                            {
-                            <td>{{statutory?.StautoryName}}</td>
-                            <td>{{statutory?.amount}}</td>
-                            }
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="attendance-summary">
+                <div class="attendance-row">
+                    <span class="attendance-label">{{'payroll.paid_days' | translate}}</span>
+                    <span class="attendance-value">{{this.viewPayroll?.attendanceSummary[0]?.payableDays}}</span>
+                </div>
+                <div class="attendance-row">
+                    <span class="attendance-label">{{'payroll.loss_of_pay_days' | translate}}</span>
+                    <span class="attendance-value">{{this.viewPayroll?.attendanceSummary[0]?.lopDays || 0}}</span>
+                </div>
             </div>
         </div>
+    </div>
 
-        <div class="col-12 text-end">
-            <h4>
-                {{'payroll.take_home_salary' | translate}}: ₹ {{ (totalEarnings - totalDeductions) | number:'1.2-2' }}
-            </h4>
+    <hr class="section-divider">
+
+    <!-- PF Details Section -->
+    <div class="pf-details-section">
+        <div class="pf-detail">
+            <label class="pf-label">{{'payroll.pf_account_number' | translate}}</label>
+            <span class="pf-value">{{this.viewPayroll?.pfAccountNumber || '-'}}</span>
         </div>
+        <div class="pf-detail">
+            <label class="pf-label">{{'payroll.uan' | translate}}</label>
+            <span class="pf-value">{{this.viewPayroll?.uan || '-'}}</span>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Earnings and Deductions Table -->
+    <div class="earnings-deductions-table">
+        <table class="payslip-table">
+            <thead>
+                <tr>
+                    <th class="col-earnings">{{'payroll.earnings' | translate}}</th>
+                    <th class="col-amount">{{'payroll.amount' | translate}}</th>
+                    <th class="col-deductions">{{'payroll.deductions' | translate}}</th>
+                    <th class="col-amount">{{'payroll.amount' | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{'payroll.fixed_allowance_basic_salary' | translate}}</td>
+                    <td>₹{{this.viewPayroll?.totalFixedAllowance | number:'1.2-2'}}</td>
+                    <td>{{'payroll.fixed_deductions' | translate}}</td>
+                    <td>₹{{this.viewPayroll?.totalFixedDeduction | number:'1.2-2'}}</td>
+                </tr>
+                <tr>
+                    <td>{{'payroll.variable_allowance' | translate}}</td>
+                    <td>₹{{this.viewPayroll?.totalVariableAllowance | number:'1.2-2'}}</td>
+                    <td>{{'payroll.variable_deductions' | translate}}</td>
+                    <td>₹{{this.viewPayroll?.totalVariableDeduction | number:'1.2-2'}}</td>
+                </tr>
+                <tr>
+                    <td>{{'payroll.overtime' | translate}}</td>
+                    <td>₹{{this.viewPayroll?.totalOvertime | number:'1.2-2'}}</td>
+                    <td>{{'payroll.income_tax' | translate}}</td>
+                    <td>₹{{this.viewPayroll?.totalIncomeTax | number:'1.2-2'}}</td>
+                </tr>
+                <tr>
+                    <td>{{'payroll.total_arrears' | translate}}</td>
+                    <td>₹{{this.viewPayroll?.manualArrears?.totalArrears | number:'1.2-2'}}</td>
+                    <td>{{'payroll.loan_advances' | translate}}</td>
+                    <td>₹{{this.viewPayroll?.totalLoanAdvance | number:'1.2-2'}}</td>
+                </tr>
+                <tr>
+                    <td>{{'payroll.other_benefits' | translate}}</td>
+                    <td>₹{{this.viewPayroll?.totalOtherBenefit | number:'1.2-2'}}</td>
+                    <td>{{'payroll.employee_statutory' | translate}}</td>
+                    <td>₹{{employeeStatutoryTotal | number:'1.2-2'}}</td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>{{'payroll.gross_earnings' | translate}}</strong></td>
+                    <td><strong>₹{{ totalEarnings | number:'1.2-2' }}</strong></td>
+                    <td></td>
+                    <td><strong>{{'payroll.total_deductions' | translate}}</strong></td>
+                    <td><strong>₹{{ totalDeductions | number:'1.2-2' }}</strong></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Employer Contributions Table -->
+    <div class="employer-contributions-section">
+        <h5 class="subsection-title">{{'payroll.employer_contribution' | translate}}</h5>
+        <table class="employer-table">
+            <thead>
+                <tr>
+                    <th>{{'payroll.contribution_type' | translate}}</th>
+                    <th class="text-end">{{'payroll.amount' | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let statutory of this.viewPayroll?.statutoryDetails">
+                    <ng-container *ngIf="statutory?.ContributorType == 'Employer'">
+                        <td>{{statutory?.StautoryName}}</td>
+                        <td class="text-end">₹{{statutory?.amount | number:'1.2-2'}}</td>
+                    </ng-container>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>{{'payroll.total_employer_contribution' | translate}}</strong></td>
+                    <td class="text-end"><strong>₹{{employerStatutoryTotal | number:'1.2-2'}}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Total Net Payable Section -->
+    <div class="total-net-payable">
+        <div class="net-payable-box">
+            <div class="net-payable-content">
+                <div>
+                    <p class="net-payable-label">{{'payroll.total_net_payable' | translate}}</p>
+                    <p class="net-payable-formula">{{'payroll.gross_earnings' | translate}} - {{'payroll.total_deductions' | translate}}</p>
+                </div>
+                <h2 class="net-payable-amount">₹{{netSalary | number:'1.2-2'}}</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Amount in Words -->
+    <div class="amount-in-words">
+        <p><strong>{{'payroll.amount_in_words' | translate}} :</strong> {{amountInWords}}</p>
+    </div>
+
+    <hr class="footer-divider">
+
+    <!-- Footer -->
+    <div class="payslip-footer">
+        <p>{{'payroll.auto_generated_disclaimer' | translate}}</p>
     </div>
 </div>

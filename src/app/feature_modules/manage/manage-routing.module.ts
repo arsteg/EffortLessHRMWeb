@@ -5,6 +5,7 @@ import { ProjectListComponent } from './Project/project-list/project-list.compon
 import { TasksComponent } from 'src/app/tasks/tasks.component';
 import { TeammembersComponent } from './teammembers/teammembers.component';
 import { EmailTemplateComponent } from './email-template/email-template.component';
+import { EmailTemplateTypeComponent } from './email-template-type/email-template-type.component';
 import { TagComponent } from 'src/app/tasks/task.tag/tag.component';
 import { ManageComponent } from './manage/manage.component';
 import { AuthGuard } from 'src/app/auth.guard';
@@ -36,6 +37,7 @@ const routes: Routes = [
       { path: 'projects', component: ProjectListComponent },
       { path: 'tasks', component: TasksComponent },
       { path: 'team-members', component: TeammembersComponent },
+      { path: 'email-template-types', component: EmailTemplateTypeComponent },
       { path: 'email-templates', component: EmailTemplateComponent },
       { path: 'tags', component: TagComponent },
       { path: 'manual-time-requests', component: RequestManualTimeComponent },

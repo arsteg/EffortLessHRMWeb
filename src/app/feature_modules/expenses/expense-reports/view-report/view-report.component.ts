@@ -54,7 +54,31 @@ export class ViewReportComponent {
 
   getCategoryById(categoryId: string) {
     const matchingCategory = this.category?.find(cat => cat?._id === categoryId);
-    return matchingCategory ? matchingCategory?.label :  this.translate.instant('expenses.category_not_found');
+    return matchingCategory ? matchingCategory?.label : this.translate.instant('expenses.category_not_found');
+  }
+
+  calculateTotalAmount(): number {
+    if (this.expenseReportExpenses && this.expenseReportExpenses.length > 0) {
+      return this.expenseReportExpenses.reduce((total, expense) => total + expense.amount, 0);
+    }
+    return parseFloat(this.report.amount) || 0;
+  }
+
+  calculateAdvanceAmount(): number {
+    if (this.report.advanceAmountAllowed === false) {
+      return 0;
+    }
+    if (this.expenseReportExpenses && this.expenseReportExpenses.length > 0) {
+      const sumItems = this.expenseReportExpenses.reduce((sum, item) => sum + (item.amount || 0), 0);
+      if (Math.abs(parseFloat(this.report.amount) - sumItems) > 0.01) {
+        return parseFloat(this.report.amount) || 0;
+      }
+    }
+    return 0;
+  }
+
+  calculateNetPayable(): number {
+    return this.calculateTotalAmount() - this.calculateAdvanceAmount();
   }
 
   calculateSumOfReimbursableAmounts(): number {

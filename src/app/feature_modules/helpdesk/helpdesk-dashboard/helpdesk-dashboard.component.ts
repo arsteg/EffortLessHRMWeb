@@ -169,12 +169,18 @@ export class HelpdeskDashboardComponent implements OnInit {
   }
 
   toggleHelpdesk(): void {
-      this.dialog.open(HelpDeskComponent, {
+      const dialogRef = this.dialog.open(HelpDeskComponent, {
         width: '90vw',
         maxWidth: '700px',
         height: 'auto',
         maxHeight: '90vh',
         disableClose: false,
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result?.success) {
+          this.getAllHelpdeskData(); // Refresh the list
+        }
       });
     }
 

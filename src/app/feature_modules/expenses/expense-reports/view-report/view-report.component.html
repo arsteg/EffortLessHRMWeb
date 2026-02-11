@@ -1,5 +1,5 @@
 <div class="d-flex justify-content-between align-items-center">
-    <h1 mat-dialog-title>{{'expenses.expense_report' |  translate}}</h1>
+    <h1 mat-dialog-title>{{'expenses.expense_report' | translate}}</h1>
     <div mat-dialog-actions>
         <button mat-icon-button (click)="closeModal()">
             <mat-icon>close</mat-icon>
@@ -11,79 +11,93 @@
     <div class="table-responsive">
         <table class="table table-bordered">
             <tr>
-                <td class="fw-bold">{{'expenses.employee' |  translate}}</td>
+                <td class="fw-bold">{{'expenses.employee' | translate}}</td>
                 <td>{{getUser(report?.employee)}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">{{'expenses.report_title' |  translate}}</td>
+                <td class="fw-bold">{{'expenses.report_title' | translate}}</td>
                 <td>{{report?.title}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">{{'status' |  translate}}</td>
+                <td class="fw-bold">{{'status' | translate}}</td>
                 <td>{{report?.status}}</td>
             </tr>
             <tr>
-                <td class="fw-bold">{{'expenses.amount' |  translate}}</td>
+                <td class="fw-bold">{{'expenses.total_amount' | translate}}</td>
+                <td>{{calculateTotalAmount()}}</td>
+            </tr>
+            <tr *ngIf="calculateAdvanceAmount() > 0">
+                <td class="fw-bold">{{'expenses.advance_recieved' | translate}}</td>
+                <td>{{calculateAdvanceAmount()}}</td>
+            </tr>
+            <tr *ngIf="calculateAdvanceAmount() > 0">
+                <td class="fw-bold">{{'expenses.net_payable' | translate}}</td>
+                <td>{{calculateNetPayable()}}</td>
+            </tr>
+            <tr *ngIf="calculateAdvanceAmount() == 0">
+                <td class="fw-bold">{{'expenses.amount' | translate}}</td>
                 <td>{{report?.amount}}</td>
             </tr>
         </table>
     </div>
 
     @if(expenseReportExpenses?.length > 0){
-        <div class="mt-4 table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>{{'expenses.incurred_date' |  translate}}</th>
-                        <th>{{'expenses.category' |  translate}}</th>
-                        <th>{{'expenses.amount' |  translate}}</th>
-                        <th>{{'expenses.reimbursable' |  translate}}</th>
-                        <th>{{'expenses.billable' |  translate}}</th>
-                        <th>{{'expenses.attachment' |  translate}}</th>
-                        <th>{{'expenses.actions' |  translate}}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let report of expenseReportExpenses;">
-                        <td>{{report.incurredDate | date: 'mediumDate'}}</td>
-                        <td>{{getCategoryById(report?.expenseCategory)}}</td>
-                        <td>{{report?.amount}}</td>
-                        <td>
-                            @if(report.isReimbursable){
-                            <span>
-                                <mat-icon color="accent">check</mat-icon>
-                            </span>
-                            } @else {
-                            <span>
-                                <mat-icon color="warn">close</mat-icon>
-                            </span>
-                            }
-                        </td>
-                        <td>
-                            @if(report.isBillable){
-                            <span>
-                                <mat-icon color="accent">check</mat-icon>
-                            </span>
-                            } @else {
-                            <span>
-                                <mat-icon color="warn">close</mat-icon>
-                            </span>
-                            }
-                        </td>
-                        <td>
-                            <button mat-icon-button *ngIf="report.documentLink" matTooltip="{{getFileNameFromUrl(report?.documentLink)}}"
-                                matTooltipPosition="below" (click)="selectedReport = report; downloadFile();">
-                                <mat-icon>download</mat-icon>
-                            </button>
-                        </td>
-                        <td>
-                            <button matTooltip="View Expense Report Expenses" mat-icon-button (click)="openSecondModal(report);">
-                                <mat-icon>visibility</mat-icon>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="mt-4 table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>{{'expenses.incurred_date' | translate}}</th>
+                    <th>{{'expenses.category' | translate}}</th>
+                    <th>{{'expenses.amount' | translate}}</th>
+                    <th>{{'expenses.reimbursable' | translate}}</th>
+                    <th>{{'expenses.billable' | translate}}</th>
+                    <th>{{'expenses.attachment' | translate}}</th>
+                    <th>{{'expenses.actions' | translate}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let report of expenseReportExpenses;">
+                    <td>{{report.incurredDate | date: 'mediumDate'}}</td>
+                    <td>{{getCategoryById(report?.expenseCategory)}}</td>
+                    <td>{{report?.amount}}</td>
+                    <td>
+                        @if(report.isReimbursable){
+                        <span>
+                            <mat-icon color="accent">check</mat-icon>
+                        </span>
+                        } @else {
+                        <span>
+                            <mat-icon color="warn">close</mat-icon>
+                        </span>
+                        }
+                    </td>
+                    <td>
+                        @if(report.isBillable){
+                        <span>
+                            <mat-icon color="accent">check</mat-icon>
+                        </span>
+                        } @else {
+                        <span>
+                            <mat-icon color="warn">close</mat-icon>
+                        </span>
+                        }
+                    </td>
+                    <td>
+                        <button mat-icon-button *ngIf="report.documentLink"
+                            matTooltip="{{getFileNameFromUrl(report?.documentLink)}}" matTooltipPosition="below"
+                            (click)="selectedReport = report; downloadFile();">
+                            <mat-icon>download</mat-icon>
+                        </button>
+                    </td>
+                    <td>
+                        <button matTooltip="View Expense Report Expenses" mat-icon-button
+                            (click)="openSecondModal(report);">
+                            <mat-icon>visibility</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     }
 </div>
