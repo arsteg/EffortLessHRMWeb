@@ -27,7 +27,7 @@ export class ShowReportComponent {
   closeResult: string = '';
   @Output() advanceReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
   @Input() status: string;
-  @Input() actionOptions: { approve: boolean, reject: boolean, cancel: boolean, view: boolean, edit: boolean, delete: boolean };
+  @Input() currentUserId: string;
   employee = new FormControl('');
   p: number = 1;
   public sortOrder: string = '';
@@ -132,6 +132,13 @@ export class ShowReportComponent {
   getCategory(categoryId: string) {
     const matchingCategory = this.allCategory?.find(category => category?._id === categoryId);
     return matchingCategory ? `${matchingCategory?.label}` : this.translate.instant('expenses.category_not_found');
+  }
+
+  getActionOptions(advance: any): any {
+    if (!this.currentUserId) {
+      return { view: true, approve: false, reject: false, delete: false, edit: false, cancel: false };
+    }
+    return this.expenseService.getActionOptionsForExpense(advance, this.currentUserId);
   }
 
   open(content: any) {

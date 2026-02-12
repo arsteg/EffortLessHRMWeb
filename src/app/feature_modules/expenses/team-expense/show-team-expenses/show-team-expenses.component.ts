@@ -26,7 +26,7 @@ export class ShowTeamExpensesComponent {
   isEdit: boolean = false;
   changeMode: 'Add' | 'Update' = 'Add';
   @Output() expenseTemplateReportRefreshed: EventEmitter<void> = new EventEmitter<void>();
-  @Input() actionOptions: { approve: boolean, reject: boolean, cancel: boolean, view: boolean, edit: boolean };
+  @Input() currentUserId: string;
   @Input() status: string;
   expenseReport: any;
   allAssignee: any[];
@@ -64,6 +64,13 @@ export class ShowTeamExpensesComponent {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
     });
+  }
+
+  getActionOptions(expense: any): any {
+    if (!this.currentUserId) {
+      return { view: true, approve: false, reject: false, delete: false, edit: false, cancel: false };
+    }
+    return this.expenseService.getActionOptionsForExpense(expense, this.currentUserId);
   }
 
   ngAfterViewInit() {

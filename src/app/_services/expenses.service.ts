@@ -363,4 +363,28 @@ export class ExpensesService {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/expense/advance/${id}`, this.httpOptions);
     return response;
   }
+
+  // Permission utilities for expense approve/reject actions
+  canApproveExpense(expense: any, currentUserId: string): boolean {
+    if (!expense.primaryApproverId || !currentUserId) {
+      return false;
+    }
+    return expense.primaryApproverId === currentUserId;
+  }
+
+  getActionOptionsForExpense(
+    expense: any,
+    currentUserId: string
+  ): { approve: boolean; reject: boolean; delete: boolean; view: boolean; edit: boolean; cancel: boolean } {
+    const canApprove = this.canApproveExpense(expense, currentUserId);
+
+    return {
+      approve: canApprove,
+      reject: canApprove,
+      delete: canApprove,
+      view: true,        // Everyone can view
+      edit: false,       // Preserve existing edit logic
+      cancel: false      // Preserve existing cancel logic
+    };
+  }
 }

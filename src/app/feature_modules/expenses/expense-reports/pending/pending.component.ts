@@ -39,6 +39,7 @@ export class PendingComponent {
   recordsPerPage: number = 10;
   currentPage: number = 1;
   dialogRef: MatDialogRef<any>;
+  currentUserId: string;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatMenuTrigger) menuTrigger: MatMenuTrigger;
@@ -81,11 +82,31 @@ export class PendingComponent {
       name: this.translate.instant('expenses.action'),
       isAction: true,
       options: [
-        { label: 'Approve', icon: 'check_circle', visibility: ActionVisibility.LABEL },
-        { label: 'Reject', icon: 'cancel', visibility: ActionVisibility.LABEL },
+        {
+          label: 'Approve',
+          icon: 'check_circle',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.canApproveExpense(row)
+        },
+        {
+          label: 'Reject',
+          icon: 'cancel',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.canApproveExpense(row)
+        },
         { label: 'View', icon: 'visibility', visibility: ActionVisibility.LABEL },
-        { label: 'Edit', icon: 'edit', visibility: ActionVisibility.LABEL },
-        { label: 'Delete', icon: 'delete', visibility: ActionVisibility.LABEL }
+        {
+          label: 'Edit',
+          icon: 'edit',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => true  // Always hide edit for now
+        },
+        {
+          label: 'Delete',
+          icon: 'delete',
+          visibility: ActionVisibility.LABEL,
+          hideCondition: (row: any) => !this.canApproveExpense(row)
+        }
       ]
     }
   ];
@@ -107,10 +128,19 @@ export class PendingComponent {
   }
 
   ngOnInit() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    this.currentUserId = currentUser?.id || '';
     this.commonService.populateUsers().subscribe((res: any) => {
       this.users = res.data.data;
       this.getExpenseReport();
     });
+  }
+
+  canApproveExpense(expense: any): boolean {
+    if (!this.currentUserId) {
+      return false;
+    }
+    return this.expenseService.canApproveExpense(expense, this.currentUserId);
   }
 
   refreshExpenseReportTable() {
