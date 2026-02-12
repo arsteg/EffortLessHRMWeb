@@ -73,7 +73,7 @@ export class AddExpenseComponent {
     this.addExpenseForm.get('employee').valueChanges.subscribe(() => {
       this.isSubmitting = false;
       this.hasBeenSubmitted = false;
-      this.getCategoryByUser();
+      //this.getCategoryByUser();
     });
     this.addExpenseForm.get('title').valueChanges.subscribe(() => {
       this.hasBeenSubmitted = false;
