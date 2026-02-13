@@ -81,8 +81,14 @@
                 <mat-label>{{'expenses.is_downloadable' | translate}}</mat-label>
                 <div class="d-flex flex-wrap">
                     <ng-container *ngFor="let format of downloadableFormat; let i = index">
-                        <mat-checkbox color="primary" [disabled]="isDisabledFormat(format)"
+                        <!-- disabled because currently we are not using -->
+                        <!-- May be use in future -->
+                        <!-- <mat-checkbox color="primary" [disabled]="isDisabledFormat(format)"
                             [checked]="isCheckedFormats(format)" (change)="onFormatsChange($event, format)">
+                            {{format}}
+                        </mat-checkbox> -->
+                        <mat-checkbox color="primary" [disabled]="true"
+                            [checked]="false" (change)="onFormatsChange($event, format)">
                             {{format}}
                         </mat-checkbox>
                     </ng-container>
