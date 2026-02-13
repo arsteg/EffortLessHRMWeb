@@ -61,7 +61,9 @@ export class TaxSlabComponent {
       taxPercentage: [0, Validators.required],
       cycle: ['', Validators.required],
       regime: ['', Validators.required]
-    })
+    }, {
+      validators: this.minLessThanMaxValidator
+    });
   }
 
   ngOnInit() {
@@ -282,4 +284,22 @@ export class TaxSlabComponent {
     this.taxSlabs = data;
     this.totalRecords = data.length;
   }
+
+  minLessThanMaxValidator(group: FormGroup) {
+  const min = group.get('minAmount')?.value;
+  const max = group.get('maxAmount')?.value;
+
+  if (min != null && max != null && max <= min) {
+    group.get('maxAmount')?.setErrors({ maxLessThanMin: true });
+  } else {
+    const errors = group.get('maxAmount')?.errors;
+    if (errors) {
+      delete errors['maxLessThanMin'];
+      if (!Object.keys(errors).length) {
+        group.get('maxAmount')?.setErrors(null);
+      }
+    }
+  }
+  return null;
+}
 }
