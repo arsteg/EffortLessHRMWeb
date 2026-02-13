@@ -15,57 +15,58 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrl: './zone.component.css'
 })
 export class ZoneComponent {
-    @ViewChild('addModal') addModal: ElementRef;
+  @ViewChild('addModal') addModal: ElementRef;
   zones = new MatTableDataSource([]);
   zoneForm: FormGroup;
   closeResult: string;
   isEdit: boolean = false;
+  isSubmitting: boolean = false;
   searchText: string = '';
   selectedZone: any;
   public sortOrder: string = '';
   dialogRef: MatDialogRef<any> | null = null;
   totalRecords: number = 0;
-  recordsPerPage: number =10;
+  recordsPerPage: number = 10;
   currentPage: number = 1;
   columns: TableColumn[] = [
-      {
-        key: 'startDate',
-        name: this.translate.instant('organization.zone.table.start_date'),
-        valueFn: (row: any)=> {return row.startDate ? this.datePipe.transform(row.startDate, 'mediumDate') : ''}
-      }, {
-        key: 'zoneCode',
-        name: this.translate.instant('organization.zone.table.zone_code')
-      },
-      {
-        key: 'zoneName',
-        name: this.translate.instant('organization.zone.table.zone_name')
-      },{
-        key: 'description',
-        name: this.translate.instant('organization.zone.table.description')
-      },
-      {
-        key: 'status',
-        name: this.translate.instant('organization.zone.table.status')
-      },
-      {
-        key: 'action',
-        name: this.translate.instant('organization.zone.table.action'),
-        options: [
-          {
-            label: 'Edit',
-            icon: 'edit',
-            visibility: ActionVisibility.BOTH, // label | icon | both 
-            cssClass: 'border-bottom',
-          }, {
-            label: 'Delete',
-            icon: 'delete',
-            visibility: ActionVisibility.BOTH,
-            cssClass: 'text-danger'
-          }
-        ],
-        isAction: true
-      }
-    ];
+    {
+      key: 'startDate',
+      name: this.translate.instant('organization.zone.table.start_date'),
+      valueFn: (row: any) => { return row.startDate ? this.datePipe.transform(row.startDate, 'mediumDate') : '' }
+    }, {
+      key: 'zoneCode',
+      name: this.translate.instant('organization.zone.table.zone_code')
+    },
+    {
+      key: 'zoneName',
+      name: this.translate.instant('organization.zone.table.zone_name')
+    }, {
+      key: 'description',
+      name: this.translate.instant('organization.zone.table.description')
+    },
+    {
+      key: 'status',
+      name: this.translate.instant('organization.zone.table.status')
+    },
+    {
+      key: 'action',
+      name: this.translate.instant('organization.zone.table.action'),
+      options: [
+        {
+          label: 'Edit',
+          icon: 'edit',
+          visibility: ActionVisibility.BOTH, // label | icon | both 
+          cssClass: 'border-bottom',
+        }, {
+          label: 'Delete',
+          icon: 'delete',
+          visibility: ActionVisibility.BOTH,
+          cssClass: 'text-danger'
+        }
+      ],
+      isAction: true
+    }
+  ];
 
   constructor(private companyService: CompanyService,
     private datePipe: DatePipe,
@@ -87,12 +88,12 @@ export class ZoneComponent {
     this.getZones();
   }
 
-  onActionClick(event){
+  onActionClick(event) {
     switch (event.action.label) {
       case 'Edit':
-        this.selectedZone = event.row; 
-        this.isEdit= true;
-        this.edit(event.row); 
+        this.selectedZone = event.row;
+        this.isEdit = true;
+        this.edit(event.row);
         this.open(this.addModal)
         break;
 
@@ -120,9 +121,12 @@ export class ZoneComponent {
 
   onSubmission() {
     this.zoneForm.markAllAsTouched();
-    if (this.zoneForm.invalid) {
+    if (this.zoneForm.invalid || this.isSubmitting) {
       return;
     }
+
+    this.isSubmitting = true;
+
     // add zone
     if (!this.isEdit) {
       this.companyService.addZone(this.zoneForm.value).subscribe(res => {
@@ -131,9 +135,11 @@ export class ZoneComponent {
         this.zoneForm.reset();
         this.dialogRef.close(true);
         this.getZones();
+        this.isSubmitting = false;
       },
-        err => { 
+        err => {
           this.toast.error(err?.error?.message || err?.message || err || this.translate.instant('organization.zone.error.add_failed'), this.translate.instant('organization.zone.error.title'));
+          this.isSubmitting = false;
         }
       );
     }
@@ -151,9 +157,11 @@ export class ZoneComponent {
         this.zoneForm.get('zoneName').enable();
         this.dialogRef.close(true);
         this.getZones();
+        this.isSubmitting = false;
       },
-        err => { 
+        err => {
           this.toast.error(err?.error?.message || err?.message || err || this.translate.instant('organization.zone.error.update_failed'), this.translate.instant('organization.zone.error.title'));
+          this.isSubmitting = false;
         }
       );
     }
@@ -230,7 +238,7 @@ export class ZoneComponent {
     });
   }
 
-  onClose(){
+  onClose() {
     this.dialogRef.close(this);
   }
 
