@@ -59,28 +59,28 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item *ngIf="actionOptions.approve" (click)="openStatusModal(report, 'Approved')">
+          <button mat-menu-item *ngIf="getActionOptions(report).approve" (click)="openStatusModal(report, 'Approved')">
             <mat-icon>check_circle</mat-icon>
             <span>{{'expenses.approve' | translate}}</span>
           </button>
-          <button mat-menu-item (click)="openStatusModal(report, 'Rejected')" *ngIf="actionOptions.reject">
+          <button mat-menu-item (click)="openStatusModal(report, 'Rejected')" *ngIf="getActionOptions(report).reject">
             <mat-icon>cancel</mat-icon>
             <span>{{'expenses.reject' | translate}}</span>
           </button>
-          <button mat-menu-item (click)="openStatusModal(report, 'Cancelled')" *ngIf="actionOptions.cancel">
+          <button mat-menu-item (click)="openStatusModal(report, 'Cancelled')" *ngIf="getActionOptions(report).cancel">
             <mat-icon>close</mat-icon>
             <span>{{'expenses.cancel' | translate}}</span>
           </button>
-          <button mat-menu-item (click)="openSecondModal(report)" *ngIf="actionOptions.view">
+          <button mat-menu-item (click)="openSecondModal(report)">
             <mat-icon>visibility</mat-icon>
             <span>{{'expenses.view' | translate}}</span>
           </button>
           <button mat-menu-item (click)="selectedRecord = report; changeMode='Update'; open(addModal);"
-            *ngIf="actionOptions.edit">
+            *ngIf="getActionOptions(report).edit">
             <mat-icon>edit</mat-icon>
             <span>{{'expenses.edit' | translate}}</span>
           </button>
-          <button mat-menu-item (click)="deleteExpenseReport(report?._id)" *ngIf="actionOptions.delete">
+          <button mat-menu-item (click)="deleteExpenseReport(report?._id)" *ngIf="getActionOptions(report).delete">
             <mat-icon>delete</mat-icon>
             <span>{{'expenses.delete' | translate}}</span>
           </button>

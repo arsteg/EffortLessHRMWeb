@@ -71,11 +71,11 @@
                     <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-                    <button mat-menu-item *ngIf="actionOptions.approve" (click)="openApproveDialog(report)">
+                    <button mat-menu-item *ngIf="getActionOptions(report).approve" (click)="openApproveDialog(report)">
                         <mat-icon>check_circle</mat-icon>
                         <span>{{'expenses.approve' | translate}}</span>
                     </button>
-                    <button mat-menu-item *ngIf="actionOptions.reject" (click)="openRejectDialog(report)">
+                    <button mat-menu-item *ngIf="getActionOptions(report).reject" (click)="openRejectDialog(report)">
                         <mat-icon>cancel</mat-icon>
                         <span>{{'expenses.reject' | translate}}</span>
                     </button>

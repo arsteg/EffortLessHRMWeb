@@ -72,6 +72,9 @@
               *ngIf="taxSlabForm.get('maxAmount')?.hasError('required') && (taxSlabForm.get('maxAmount')?.touched || taxSlabForm.get('maxAmount')?.dirty)">
               {{ 'organization.tax_slab.form.error.max_amount_required' | translate }}
             </mat-error>
+            <mat-error *ngIf="taxSlabForm.get('maxAmount')?.hasError('maxLessThanMin') && taxSlabForm.get('maxAmount')?.touched">
+              Maximum amount must be greater than Minimum amount.
+            </mat-error>
           </mat-form-field>
         </div>
 
