@@ -19,6 +19,7 @@ export class AssetStatusComponent implements OnInit {
   private _isEdit = false; // Internal property for isEdit
   selectedStatus: any; // Ideally, this should be of type AssetStatus
   searchQuery: string = '';
+  isSubmitting: boolean = false;
   columns: TableColumn[] = [
     { key: 'statusName', name: 'Status' },
     {
@@ -90,11 +91,19 @@ export class AssetStatusComponent implements OnInit {
     if (this.assetStatusForm.invalid) {
       return;
     }
+    if (this.isSubmitting) {
+        return;
+    }
+    this.isSubmitting = true;
+
     const formValue = { ...this.assetStatusForm.value, statusName: this.assetStatusForm.value.statusName?.trim() };
     this.assetManagementService.addAssetStatus(formValue).subscribe(response => {
       this.toast.success('Asset Status added successfully!');
       this.getAssetStatuses();
       this.assetStatusForm.reset();
+      this.isSubmitting = false;
+    }, error => {
+        this.isSubmitting = false;
     });
   }
 
@@ -109,12 +118,20 @@ export class AssetStatusComponent implements OnInit {
     if (this.assetStatusForm.invalid) {
       return;
     }
+    if (this.isSubmitting) {
+        return;
+    }
+    this.isSubmitting = true;
+
     const formValue = { ...this.assetStatusForm.value, statusName: this.assetStatusForm.value.statusName?.trim() };
     this.assetManagementService.updateAssetStatus(this.selectedStatus._id, formValue).subscribe(response => {
       this.toast.success('Asset Status updated successfully!');
       this.getAssetStatuses();
       this.isEdit = false;
       this.assetStatusForm.reset();
+      this.isSubmitting = false;
+    }, error => {
+        this.isSubmitting = false;
     });
   }
 
@@ -154,7 +171,7 @@ export class AssetStatusComponent implements OnInit {
       return null; // Let the `Validators.required` handle empty values
     }
     const isDuplicate = this.assetStatuses?.find(status =>
-      status.statusName.toLowerCase() === statusName.toLowerCase() &&
+      status.statusName.trim().toLowerCase() === statusName.trim().toLowerCase() &&
       (!this.isEdit || status._id !== this.selectedStatus?._id)
     );
     return isDuplicate ? { duplicate: true } : null;
