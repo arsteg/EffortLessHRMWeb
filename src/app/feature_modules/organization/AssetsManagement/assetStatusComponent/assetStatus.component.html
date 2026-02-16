@@ -27,7 +27,7 @@
       </div>
       <div class="form-group d-flex justify-content-between mt-2">
         <div class="">
-          <button type="submit" mat-flat-button color="primary" class="ml-5">
+          <button type="submit" mat-flat-button color="primary" class="ml-5" [disabled]="isSubmitting">
             {{ isEdit ? 'Update' : 'Add' }}
           </button>
         </div>
