@@ -1,0 +1,69 @@
+<section class="container pb-5" id="plans">
+    <div class="text-center mb-5">
+        <h2 class="sub-title">Choose Your Plan</h2>
+        <p class="text-muted">Select the perfect plan for your business needs</p>
+    </div>
+
+    @if(loading) {
+    <div class="text-center">
+        <span class="spinner-border spinner-border-lg" role="status"></span>
+    </div>
+    } @else {
+    <div class="row gap-4 justify-content-center">
+        <!-- Trial Plan -->
+        <div class="col-12 col-md-3 card p-0 plan-card">
+            <div class="card-header text-center">
+                <h2 class="m-0">Trial</h2>
+            </div>
+            <div class="card-body text-center d-flex flex-column">
+                <h1 class="price">Free <span class="fs-6 text-muted font-weight-normal">/ 1 Month</span></h1>
+
+                <p class="description mt-3 mb-4">Experience all features with our 1-Month free trial.</p>
+
+                <div class="plan-features text-start mb-4 flex-grow-1">
+                    <p><i class="bi bi-check-circle-fill text-primary me-2"></i>Full Access</p>
+                    <p><i class="bi bi-check-circle-fill text-primary me-2"></i>No Credit Card Required</p>
+                    <p><i class="bi bi-check-circle-fill text-primary me-2"></i>Instant Setup</p>
+                </div>
+
+                <button mat-stroked-button color="primary" class="w-100 mt-auto" (click)="startTrial()">Start Free
+                    Trial</button>
+            </div>
+        </div>
+
+        @for(plan of plans; track plan){
+        <div class="col-12 col-md-3 card p-0 plan-card">
+            <div class="card-header text-center">
+                <h2 class="m-0">{{plan.name}}</h2>
+            </div>
+            <div class="card-body text-center d-flex flex-column">
+                <h1 class="price">{{plan.currentprice | currency: 'INR'}} <span
+                        class="fs-6 text-muted font-weight-normal">{{plan.type!=="fixed" ? "per user" : ''}} /
+                        {{plan.frequency}}</span></h1>
+
+                <p class="description mt-3 mb-4">{{plan.description}}</p>
+
+                <div class="plan-features text-start mb-4 flex-grow-1">
+                    <p><i class="bi bi-check-circle-fill text-primary me-2"></i>Full Access</p>
+                    @if(plan.notes) {
+                        @if(plan.notes.note1) {
+                            <p><i class="bi bi-check-circle-fill text-primary me-2"></i>{{plan.notes.note1}}</p>
+                        }
+                        @if(plan.notes.note2) {
+                            <p><i class="bi bi-check-circle-fill text-primary me-2"></i>{{plan.notes.note2}}</p>
+                        }
+                    }
+                    <!-- @else {
+                        <div class="plan-features text-start mb-4 flex-grow-1">
+                            <p><i class="bi bi-check-circle-fill text-success me-2"></i>Full Access</p>
+                        </div>
+                    } -->
+                </div>
+
+                <button mat-flat-button color="primary" class="w-100 mt-auto" (click)="buyPlan(plan)">Buy Now</button>
+            </div>
+        </div>
+        }
+    </div>
+    }
+</section>

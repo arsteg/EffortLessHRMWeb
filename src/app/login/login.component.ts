@@ -138,11 +138,19 @@ export class LoginComponent implements OnInit {
     ).subscribe();
 
     localStorage.setItem('adminView', this.selectedAppMode);
-    if (this.selectedAppMode === 'user') {
-      this.router.navigateByUrl('home/dashboard/user');
-    }
-    else if (this.selectedAppMode === 'admin') {
-      this.router.navigateByUrl(this.returnUrl);
+    const defaultUrl = this.selectedAppMode === 'user' ? 'home/dashboard/user' : this.returnUrl;
+    const selectedPlanId = localStorage.getItem('landingPageSelectedPlanId');
+    if (selectedPlanId) {
+      const subscription = JSON.parse(localStorage.getItem('subscription') || 'null');
+      const hasExistingSubscription = ['active', 'authenticated', 'created'].includes(subscription?.status);
+      if (hasExistingSubscription) {
+        localStorage.removeItem('landingPageSelectedPlanId');
+        this.router.navigateByUrl(defaultUrl);
+      } else {
+        this.router.navigate(['/subscription/plans']);
+      }
+    } else {
+      this.router.navigateByUrl(defaultUrl);
     }
   }
 } 

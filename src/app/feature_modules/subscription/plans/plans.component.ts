@@ -55,6 +55,7 @@ export class PlansComponent {
   confirmPayment = null;
   currentDate = Date.now();
   isProcessing = false;
+  isFromLandingPage = false;
 
   ngOnInit() {
     this.credentials();
@@ -77,7 +78,7 @@ export class PlansComponent {
   }
 
   get hasActiveSubscription() {
-    return this.subscription?.status === 'active' || this.subscription?.status === 'authenticated' 
+    return this.subscription?.status === 'active' || this.subscription?.status === 'authenticated'
   }
 
   get hasCreatedSubscription() {
@@ -85,8 +86,9 @@ export class PlansComponent {
   }
 
   getSubscription(id) {
-  this.loadingSubscription = true;
-  this.subscriptionService.getSubscriptionById(id)
+    localStorage.removeItem('landingPageSelectedPlanId');
+    this.loadingSubscription = true;
+    this.subscriptionService.getSubscriptionById(id)
       .pipe(takeUntilDestroyed(this.destoryRef))
       .subscribe((data: any) => {
         console.log(data);
@@ -104,8 +106,24 @@ export class PlansComponent {
     this.subscriptionService.getPlans()
       .pipe(takeUntilDestroyed(this.destoryRef))
       .subscribe((res: any) => {
-        this.plans = res.data.filter((plan: any) => plan.IsActive);
+        const allPlans = res.data.filter((plan: any) => plan.IsActive);
         this.loadingPlans = false;
+
+        const storedData = localStorage.getItem('landingPageSelectedPlanId');
+        if (storedData) {
+          const { id } = JSON.parse(storedData);
+          const plan = allPlans.find((p: any) => p._id === id);
+          if (plan) {
+            this.plans = [plan];
+            this.selectedPlan = plan;
+            this.isFromLandingPage = true;
+          } else {
+            this.plans = allPlans;
+          }
+          localStorage.removeItem('landingPageSelectedPlanId');
+        } else {
+          this.plans = allPlans;
+        }
       }, () => {
         this.loadingPlans = false;
       });
@@ -122,7 +140,7 @@ export class PlansComponent {
     };
     this.loading = true;
     // if company have already created subscription
-    if(this.hasCreatedSubscription){
+    if (this.hasCreatedSubscription) {
       this.makePayment(this.subscription.id);
     } else {
       // Create new subscription
@@ -206,7 +224,7 @@ export class PlansComponent {
   }
 
   confirmChangePlan() {
-    const payload = {...this.changePlanForm.value};
+    const payload = { ...this.changePlanForm.value };
     payload.confirmation = true;
     this.subscriptionService.changeSubscription(this.subscriptionId, payload)
       .subscribe((response: any) => {
@@ -214,9 +232,9 @@ export class PlansComponent {
         this.dialog.afterAllClosed.subscribe(() => {
           this.confirmPayment = null;
         });
-      }, (error: any)=>{
+      }, (error: any) => {
         const message = error.error.message || 'An error occurred';
-        this.snackBar.open(message, 'Close', {duration: 5000});
+        this.snackBar.open(message, 'Close', { duration: 5000 });
       });
   }
 
@@ -224,7 +242,7 @@ export class PlansComponent {
     if (this.isProcessing) return; // prevent duplicate clicks
     this.isProcessing = true;
 
-    const payload = {...this.changePlanForm.value};
+    const payload = { ...this.changePlanForm.value };
     this.subscriptionService.changeSubscription(this.subscriptionId, payload)
       .subscribe((data: any) => {
         this.isProcessing = false;
@@ -234,19 +252,19 @@ export class PlansComponent {
         this.authService.companySubscription.next(data.data.subscription.razorpaySubscription);
         localStorage.setItem('subscription', JSON.stringify(data.data.subscription.razorpaySubscription));
         this.dialog.closeAll();
-        this.snackBar.open('Plan changed successfully', 'Close', {duration: 5000});
+        this.snackBar.open('Plan changed successfully', 'Close', { duration: 5000 });
         this.dialog.afterAllClosed.subscribe(() => {
           this.confirmPayment = null;
         });
-      }, (error: any)=>{
+      }, (error: any) => {
         this.isProcessing = false;
         this.dialog.closeAll();
         const message = error.error.message || 'An error occurred';
-        this.snackBar.open(message, 'Close', {duration: 5000});
+        this.snackBar.open(message, 'Close', { duration: 5000 });
       });
   }
 
-  cancelChangePlan(){
+  cancelChangePlan() {
     this.subscriptionService.cancelChangeSubscription(this.subscriptionId)
       .subscribe((data: any) => {
         this.subscription = data.data.subscription.razorpaySubscription;
@@ -254,11 +272,11 @@ export class PlansComponent {
         this.authService.companySubscription.next(data.data.subscription.razorpaySubscription);
         localStorage.setItem('subscription', JSON.stringify(data.data.subscription.razorpaySubscription));
         this.dialog.closeAll();
-        this.snackBar.open('Scheduled changes cancelled successfully', 'Close', {duration: 5000});
-      }, (error: any)=>{
+        this.snackBar.open('Scheduled changes cancelled successfully', 'Close', { duration: 5000 });
+      }, (error: any) => {
         this.dialog.closeAll();
         const message = error.error.message || 'An error occurred';
-        this.snackBar.open(message, 'Close', {duration: 5000});
+        this.snackBar.open(message, 'Close', { duration: 5000 });
       });
   }
 }
