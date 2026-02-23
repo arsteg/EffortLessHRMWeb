@@ -6,13 +6,42 @@
                 <div class="col-md-6 col-12">
                     <mat-form-field class="w-100">
                         <mat-label translate>payroll.day_of_month_to_run_payroll</mat-label>
-                        <mat-select formControlName="dayOfMonthToRunPayroll" [disabled]="true">
+                        <mat-select formControlName="dayOfMonthToRunPayroll">
                              <mat-option *ngFor="let number of days" [value]="number">
                                 {{number}}
                             </mat-option>
                         </mat-select>
+                        <!-- <mat-hint *ngIf="!showDayWarning">Select when payroll period should start/end each month</mat-hint> -->
                     </mat-form-field>
+                    @if(showDayWarning){
+                    <div class="alert alert-warning mt-2 p-2 small">
+                        <mat-icon class="align-middle me-1" style="font-size: 18px;">warning</mat-icon>
+                        <strong>Note:</strong> For months with fewer than {{generalSettingForm.get('dayOfMonthToRunPayroll')?.value}} days (e.g., February),
+                        the last available day will be used. This may result in varying period lengths.
+                    </div>
+                    }
                 </div>
+                <div class="col-md-6 col-12">
+                    <mat-form-field class="w-100">
+                        <mat-label>Attendance Cut-off Day</mat-label>
+                        <mat-select formControlName="attendanceCutoffDay">
+                            <mat-option [value]="all">No Cut-off (Use full period)</mat-option>
+                            <mat-option *ngFor="let day of days.slice(1)" [value]="day">
+                                Day {{day}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-hint>For same-month payments: Only process attendance up to this day. Days after are adjusted next month.</mat-hint>
+                    </mat-form-field>
+                    @if(generalSettingForm.get('attendanceCutoffDay')?.value && generalSettingForm.get('attendanceCutoffDay')?.value !== 'all'){
+                    <div class="alert alert-info mt-3 p-2 small">
+                        <mat-icon class="align-middle me-1" style="font-size: 18px;">info</mat-icon>
+                        <strong>Case 1 Scenario:</strong> With cut-off on day {{generalSettingForm.get('attendanceCutoffDay')?.value}},
+                        only attendance up to this day will be processed. Days {{+generalSettingForm.get('attendanceCutoffDay')?.value + 1}}-31 will be included in next month's payroll.
+                    </div>
+                    }
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6 col-12">
                     <mat-form-field class="w-100">
                         <mat-label translate>payroll.payroll_approver</mat-label>
@@ -34,7 +63,7 @@
                             <mat-radio-button [value]="false">{{'payroll.no' | translate}}</mat-radio-button>
                         </mat-radio-group>
                     </div>
-                    @if(generalSettingForm.get('isPasswordForSalaryRegister').value){
+                    @if(generalSettingForm.get('isPasswordForSalaryRegister')?.value){
                     <mat-form-field class="w-100">
                         <mat-label translate>payroll.password_for_salary_register</mat-label>
                         <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password">
@@ -45,6 +74,42 @@
                     }
                 </div>
             </div>
+
+            <!-- Payroll Period Preview -->
+            <!-- @if(periodPreview){
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="alert d-flex align-items-start"
+                         [ngClass]="periodPreview.hasVariablePeriodWarning ? 'alert-warning' : 'alert-info'">
+                        <mat-icon class="me-2">
+                            {{periodPreview.hasVariablePeriodWarning ? 'warning' : 'calendar_today'}}
+                        </mat-icon>
+                        <div class="flex-grow-1">
+                            <strong>Payroll Period Preview:</strong>
+                            <p class="mb-1">{{periodPreview.explanation || periodPreview.periodLabel}}</p>
+                            <small class="text-muted">
+                                {{periodPreview.periodStartDate | date:'mediumDate'}} - {{periodPreview.periodEndDate | date:'mediumDate'}}
+                            </small>
+                            @if(periodPreview.hasVariablePeriodWarning){
+                            <div class="mt-2 small">
+                                <strong>Example period variations:</strong><br>
+                                • February: Day {{periodPreview.settings.dayOfMonthToRunPayroll}} → Day 28/29 (28-29 days)<br>
+                                • April/June/September/November: Uses day 30 (30-31 days)<br>
+                                • Other months: Full {{periodPreview.settings.dayOfMonthToRunPayroll}}-day cycle (30-31 days)
+                            </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
+            @if(loadingPreview){
+            <div class="row mt-2">
+                <div class="col-12 text-center">
+                    <mat-spinner diameter="30"></mat-spinner>
+                </div>
+            </div>
+            } -->
         </section>
 
         <section class="mt-4">
@@ -59,7 +124,7 @@
                         </mat-radio-group>
                     </div>
                 </div>
-                @if(generalSettingForm.get('isGraduityEligible').value){
+                @if(generalSettingForm.get('isGraduityEligible')?.value){
                 <div class="col-12 col-md-6">
                     <mat-form-field class="w-100">
                         <mat-label translate>payroll.percentage_for_gratuity</mat-label>

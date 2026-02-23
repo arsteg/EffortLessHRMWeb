@@ -1,10 +1,59 @@
 .nav-link.activeTab {
-    background-color: #ff7b1d; 
-    color: #fff !important; 
+    background-color: #ff7b1d;
+    color: #fff !important;
   }
   .nav-link{
-    color: #64728c !important; 
+    color: #64728c !important;
   }
   .nav-link:hover {
     border-color: #ffcba6 #ffcba6 #ffcba6 !important ;
+  }
+
+  /* Period Preview Styles */
+  .period-preview-card {
+    background-color: #f8f9fa;
+    border-left: 4px solid #ff7b1d;
+  }
+
+  .period-preview-card mat-card-header {
+    margin-bottom: 16px;
+  }
+
+  .period-preview-card mat-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ff7b1d;
+  }
+
+  .preview-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .preview-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+  }
+
+  .preview-label {
+    font-weight: 500;
+    color: #64728c;
+  }
+
+  .preview-value {
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  .preview-value.badge {
+    padding: 4px 12px;
+    font-size: 12px;
   }

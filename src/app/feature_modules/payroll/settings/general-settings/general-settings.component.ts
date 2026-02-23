@@ -15,11 +15,16 @@ import { UserService } from 'src/app/_services/users.service';
 export class GeneralSettingsComponent implements OnInit {
     generalSettingForm: FormGroup;
     isEdit = false;
-    days: (number | string)[] = [...Array.from({ length: 28 }, (_, i) => i + 1), "Last Day of Month"];
+    days: string[] = ["Last Day of Month", ...Array.from({ length: 31 }, (_, i) => (i + 1).toString())];
     approvers: any[] = [];
     fixedAllowance: any[] = [];
     currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     showPassword = false;
+    periodPreview: any = null;
+    loadingPreview = false;
+    settingsId: string = '';
+    showDayWarning = false;
+    all = 'all'; // For "No Cut-off" option in attendance cut-off day dropdown
 
     constructor(
         private fb: FormBuilder,
@@ -30,14 +35,15 @@ export class GeneralSettingsComponent implements OnInit {
         private authService: AuthenticationService
     ) {
         this.generalSettingForm = this.fb.group({
-            dayOfMonthToRunPayroll:[{ value: 'Last Day of Month', disabled: true }, Validators.required],
+            dayOfMonthToRunPayroll:[{ value: 'Last Day of Month', disabled: false }, Validators.required],
             payrollApprovar: ['',Validators.required],
             password: [''],
             isPasswordForSalaryRegister: [false],
             isGraduityEligible: [false],
             percentageForGraduity: ['0'],
             isAllowTDSFromEffortlessHRM: [false],
-            isAllowToCalculateOvertime: [false]
+            isAllowToCalculateOvertime: [false],
+            attendanceCutoffDay: ['all']
         });
         // this.generalSettingForm.disable();
     }
@@ -46,19 +52,19 @@ export class GeneralSettingsComponent implements OnInit {
         this.loadData();
         this.generalSettingForm.get('isPasswordForSalaryRegister')?.valueChanges.subscribe((value: boolean) => {
             const passwordControl = this.generalSettingForm.get('password');
-          
+
             if (value === true) {
               passwordControl?.setValidators([Validators.required]);
             } else {
               passwordControl?.clearValidators();
               passwordControl?.setValue('');  // optional: clear password when it's not needed
             }
-          
+
             passwordControl?.updateValueAndValidity();
           });
           this.generalSettingForm.get('isGraduityEligible')?.valueChanges.subscribe((value: boolean) => {
             const gratuityControl = this.generalSettingForm.get('percentageForGraduity');
-          
+
             if (value === true) {
               gratuityControl?.setValidators([Validators.required, CustomValidators.greaterThanOneValidator()]);
 
@@ -66,8 +72,28 @@ export class GeneralSettingsComponent implements OnInit {
               gratuityControl?.clearValidators();
               gratuityControl?.setValue('');
             }
-          
+
             gratuityControl?.updateValueAndValidity();
+          });
+
+          // Auto-refresh preview when dayOfMonthToRunPayroll changes
+          this.generalSettingForm.get('dayOfMonthToRunPayroll')?.valueChanges.subscribe((value) => {
+            // Check if day > 28 to show warning
+            const dayNum = parseInt(value);
+            this.showDayWarning = !isNaN(dayNum) && dayNum > 28;
+
+            // Preview functionality not yet implemented on backend
+            // if (this.settingsId) {
+            //     this.previewPeriod();
+            // }
+          });
+
+          // Auto-refresh preview when attendanceCutoffDay changes
+          this.generalSettingForm.get('attendanceCutoffDay')?.valueChanges.subscribe(() => {
+            // Preview functionality not yet implemented on backend
+            // if (this.settingsId) {
+            //     this.previewPeriod();
+            // }
           });
     }
 
@@ -117,6 +143,7 @@ export class GeneralSettingsComponent implements OnInit {
     }
 
     patchFormValues(settings: any) {
+        this.settingsId = settings._id || settings.id || '';
         this.generalSettingForm.patchValue({
           dayOfMonthToRunPayroll: settings.dayOfMonthToRunPayroll ?? 'Last Day of Month',
             payrollApprovar: settings.payrollApprovar,
@@ -125,33 +152,66 @@ export class GeneralSettingsComponent implements OnInit {
             isGraduityEligible: settings.isGraduityEligible ?? false,
             percentageForGraduity: settings.percentageForGraduity ?? '0',
             isAllowTDSFromEffortlessHRM: settings.isAllowTDSFromEffortlessHRM  ?? false,
-            isAllowToCalculateOvertime: settings.isAllowToCalculateOvertime ?? false
+            isAllowToCalculateOvertime: settings.isAllowToCalculateOvertime ?? false,
+            attendanceCutoffDay: settings.attendanceCutoffDay ?? 'all'
         });
+
+        // Load period preview - not yet implemented on backend
+        // if (this.settingsId) {
+        //     this.previewPeriod();
+        // }
     }
+
+    // Preview functionality not yet implemented on backend
+    // previewPeriod() {
+    //     this.loadingPreview = true;
+    //     this.periodPreview = null;
+
+    //     this.payrollService.previewPayrollPeriod({ referenceDate: new Date() }).subscribe({
+    //         next: (res: any) => {
+    //             this.periodPreview = res.data;
+    //             this.loadingPreview = false;
+    //         },
+    //         error: (err) => {
+    //             console.error('Failed to preview period:', err);
+    //             this.loadingPreview = false;
+    //         }
+    //     });
+    // }
 
     saveGeneralSettings() {
         this.generalSettingForm.get('dayOfMonthToRunPayroll')?.enable();
         const companyId = this.fixedAllowance[0]?.company;
         if (!companyId) return;
         if (this.generalSettingForm.invalid) {
-            
+
             this.generalSettingForm.markAllAsTouched();  // This triggers validation errors
-            this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');  
-            this.generalSettingForm.get('dayOfMonthToRunPayroll')?.disable();
+            this.toast.error(this.translate.instant('payroll.RequiredFieldAreMissing'), 'Error!');
+            //this.generalSettingForm.get('dayOfMonthToRunPayroll')?.disable();
             return;
           }
         this.payrollService.getGeneralSettings(companyId).subscribe({
             next: (res: any) => {
                 const settings = res.data;
-                const request = settings.length === 0
-                    ? this.payrollService.addGeneralSettings(this.generalSettingForm.value)
-                    : this.payrollService.updateGeneralSettings(companyId, this.generalSettingForm.value);
+                let request;
+
+                // Send form data as-is (attendanceCutoffDay is now a string in backend)
+                const payload = this.generalSettingForm.value;
+
+                if (settings.length === 0) {
+                    // Create new settings
+                    request = this.payrollService.addGeneralSettings(payload);
+                } else {
+                    // Update existing settings using PUT endpoint
+                    request = this.payrollService.updateGeneralSettings(companyId, payload);
+                }
 
                 request.subscribe(
                   (res) => {
                         this.patchFormValues(res.data);
-                        this.toast.success(`General Settings ${settings.length === 0 ? 'Added' : 'Updated'} Successfully`);                         
+                        this.toast.success(`General Settings ${settings.length === 0 ? 'Added' : 'Updated'} Successfully`);
                         this.resetSettings();
+                        // this.previewPeriod(); // Preview functionality not yet implemented on backend
                     },
                     (err) => {
                       {
@@ -159,7 +219,7 @@ export class GeneralSettingsComponent implements OnInit {
                         this.translate.get('payroll.save_failed').subscribe(title => {
                           this.toast.error(errorMessage, title);
                         });
-                        this.generalSettingForm.get('dayOfMonthToRunPayroll')?.disable();
+                        //this.generalSettingForm.get('dayOfMonthToRunPayroll')?.disable();
                       }
                 });
             },
@@ -175,7 +235,7 @@ export class GeneralSettingsComponent implements OnInit {
 
     resetSettings() {
         this.isEdit = false;
-        this.generalSettingForm.get('dayOfMonthToRunPayroll')?.disable();
+        //this.generalSettingForm.get('dayOfMonthToRunPayroll')?.disable();
         this.loadGeneralSettings();
     }
 

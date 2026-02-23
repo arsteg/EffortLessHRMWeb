@@ -63,6 +63,17 @@ export class PayrollService {
     return response;
   }
 
+  // New payroll period endpoints
+  previewPayrollPeriod(payload: any): Observable<any> {
+    var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/preview-period`, payload, this.httpOptions);
+    return response;
+  }
+
+  updatePayrollGeneralSettings(settingsId: string, payload: any): Observable<any> {
+    var response = this.http.patch<any>(`${environment.apiUrlDotNet}/payroll/general-settings-update/${settingsId}`, payload, this.httpOptions);
+    return response;
+  }
+
   // Gratuity Templates CRUD
   addGratuityTemplate(payload: any): Observable<any> {
     var response = this.http.post<any>(`${environment.apiUrlDotNet}/payroll/gratuity-templates`, payload, this.httpOptions);
