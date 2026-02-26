@@ -71,6 +71,7 @@ import { TrustComponent } from './layouts/landing-page/trust/trust.component';
 import { HrmFeaturesComponent } from './layouts/landing-page/hrm-features/hrm-features.component';
 import { WorkspaceComponent } from './layouts/landing-page/workspace/workspace.component';
 import { FooterComponent } from './layouts/landing-page/footer/footer.component';
+import { LandingPlansComponent } from './layouts/landing-page/landing-plans/landing-plans.component';
 
 const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
 
@@ -108,6 +109,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     HeaderComponent,
   ],
   imports: [
+    LandingPlansComponent,
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
@@ -143,4 +145,4 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

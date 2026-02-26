@@ -424,6 +424,8 @@
         "commentPlaceholder": "Leave a reason",
         "grantLeaveDetailsTitle": "Show Grant Leave Details",
         "showLeaveApplicationDetailsTitle": "Show leave details",
+        "isHalfDayLabel": "Half Day",
+        "halfDayBreakdownLabel": "Half-Day Breakdown",
         "appliedOn": "Applied On",
         "appliedFor": "Applied For",
         "usedOn": "Used On",

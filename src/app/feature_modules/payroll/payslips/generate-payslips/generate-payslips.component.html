@@ -26,7 +26,7 @@
                     </div>
                     <div class="payslip-title">
                         <p class="title-label">{{'payroll.payslip_for_the_month' | translate}}</p>
-                        <h3 class="pay-month">{{payslip?.PayrollUser?.payroll?.month}} {{payslip?.PayrollUser?.payroll?.year}}</h3>
+                        <h3 class="pay-month">{{ getPayrollPeriodDisplay() }}</h3>
                     </div>
                 </div>
 
@@ -59,7 +59,7 @@
 
                         <div class="detail-row">
                             <label class="detail-label">{{'payroll.pay_period' | translate}}</label>
-                            <span class="detail-value">{{payslip?.PayrollUser?.payroll?.month}} {{payslip?.PayrollUser?.payroll?.year}}</span>
+                            <span class="detail-value">{{ getPayrollPeriodDisplay() }}</span>
                         </div>
 
                         <div class="detail-row">
@@ -91,11 +91,11 @@
                 <div class="pf-details-section">
                     <div class="pf-detail">
                         <label class="pf-label">{{'payroll.pf_account_number' | translate}}</label>
-                        <span class="pf-value">{{payslip?.pfAccountNumber || 'NA'}}</span>
+                        <span class="pf-value">{{payslip?.pfAccountNumber || ''}}</span>
                     </div>
                     <div class="pf-detail">
                         <label class="pf-label">{{'payroll.uan' | translate}}</label>
-                        <span class="pf-value">{{payslip?.uan || 'NA'}}</span>
+                        <span class="pf-value">{{payslip?.uan || ''}}</span>
                     </div>
                 </div>
 

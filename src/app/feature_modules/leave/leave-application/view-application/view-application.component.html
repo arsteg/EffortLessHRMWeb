@@ -43,7 +43,18 @@
         <mat-label class="col-6">{{ leaveApplication?.calculatedLeaveDays ?? totalLeaveDays }}</mat-label>
       </div>
     </mat-list-item>
-<mat-divider/>
+    <mat-divider *ngIf="leaveApplication?.isHalfDayOption"/>
+    <mat-list-item *ngIf="leaveApplication?.halfDays?.length > 0">
+      <div class="row w-100">
+        <mat-label class="col-6 label-bold">{{ 'leave.halfDayBreakdownLabel' | translate }}</mat-label>
+        <div class="col-6">
+          <div *ngFor="let hd of leaveApplication.halfDays">
+            {{ hd.date | date: 'dd MMM yyyy' }} ({{ hd.dayHalf }})
+          </div>
+        </div>
+      </div>
+    </mat-list-item>
+    <mat-divider *ngIf="leaveApplication?.halfDays?.length > 0"/>
     <mat-list-item>
       <div class="row w-100">
         <mat-label class="col-6 label-bold">{{ 'leave.reason' | translate }}</mat-label>

@@ -133,7 +133,11 @@
                  </div>
                  @if(!loadingSubscription){
                      <div class="text-center mt-3">
-                        <span>Click on a plan to select and then click on Pay button to continue</span>
+                        @if(isFromLandingPage){
+                            <span>You selected this plan from the pricing page. Click Pay to proceed.</span>
+                        } @else {
+                            <span>Click on a plan to select and then click on Pay button to continue</span>
+                        }
                         <br>
                         <button mat-flat-button color="accent" class="btn btn-block" (click)="payNow()" [disabled]="loading || !selectedPlan">
                             @if(loading){

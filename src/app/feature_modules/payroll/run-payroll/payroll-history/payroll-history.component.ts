@@ -51,7 +51,19 @@ export class PayrollHistoryComponent implements AfterViewInit {
   isSubmittingPayroll: boolean = false;
   isSubmittingStatusPayroll: boolean = false;
   columns: TableColumn[] = [
-    { key: 'month', name: this.translate.instant('payroll._history.table.period'), valueFn: (row) => row.month + '-' + row.year },
+    {
+      key: 'month',
+      name: this.translate.instant('payroll._history.table.period'),
+      valueFn: (row) => {
+        const monthYear = `${row.month}-${row.year}`;
+        // If period label exists (new payrolls), show both
+        if (row.periodLabel) {
+          return `${monthYear} (${row.periodLabel})`;
+        }
+        // Old payrolls without period dates
+        return monthYear;
+      }
+    },
     { key: 'date', name: this.translate.instant('payroll._history.table.date'), valueFn: (row) => this.datePipe.transform(row.date, 'mediumDate') },
     { key: 'processedCount', name: this.translate.instant('payroll._history.table.processed') },
     { key: 'activeCount', name: this.translate.instant('payroll._history.table.active') },

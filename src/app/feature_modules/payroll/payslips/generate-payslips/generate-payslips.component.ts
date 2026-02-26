@@ -309,6 +309,25 @@ export class GeneratePayslipsComponent {
     return null;
   }
 
+  /**
+   * Get formatted payroll period for display
+   * Format: "March 2024 (23 Feb - 22 Mar)" or "March 2024" for old records
+   */
+  getPayrollPeriodDisplay(): string {
+    const payroll = this.payslip?.PayrollUser?.payroll;
+    if (!payroll) return '';
+
+    const monthYear = `${payroll.month} ${payroll.year}`;
+
+    // If period label exists (new payrolls), show both
+    if (payroll.periodLabel) {
+      return `${monthYear} (${payroll.periodLabel})`;
+    }
+
+    // Old payrolls without period dates
+    return monthYear;
+  }
+
   downloadPDF() {
     const element = this.payslipContainer.nativeElement;
 
