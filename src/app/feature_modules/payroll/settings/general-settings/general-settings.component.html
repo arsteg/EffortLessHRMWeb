@@ -32,11 +32,16 @@
                         </mat-select>
                         <mat-hint>For same-month payments: Only process attendance up to this day. Days after are adjusted next month.</mat-hint>
                     </mat-form-field>
+                    @if(generalSettingForm.get('attendanceCutoffDay')?.hasError('cutoffTooLate')){
+                    <mat-error class="mt-2">
+                        Attendance cutoff day must be less than payroll run day
+                    </mat-error>
+                    }
                     @if(generalSettingForm.get('attendanceCutoffDay')?.value && generalSettingForm.get('attendanceCutoffDay')?.value !== 'all'){
                     <div class="alert alert-info mt-3 p-2 small">
                         <mat-icon class="align-middle me-1" style="font-size: 18px;">info</mat-icon>
                         <strong>Case 1 Scenario:</strong> With cut-off on day {{generalSettingForm.get('attendanceCutoffDay')?.value}},
-                        only attendance up to this day will be processed. Days {{+generalSettingForm.get('attendanceCutoffDay')?.value + 1}}-31 will be included in next month's payroll.
+                        only attendance up to this day will be processed. Remanining Days from {{+generalSettingForm.get('attendanceCutoffDay')?.value + 1}} to end of the month will be included in next month's payroll.
                     </div>
                     }
                 </div>

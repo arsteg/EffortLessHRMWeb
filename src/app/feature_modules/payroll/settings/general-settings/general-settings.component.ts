@@ -82,6 +82,9 @@ export class GeneralSettingsComponent implements OnInit {
             const dayNum = parseInt(value);
             this.showDayWarning = !isNaN(dayNum) && dayNum > 28;
 
+            // Validate cutoff vs run day
+            this.validateCutoffVsRunDay();
+
             // Preview functionality not yet implemented on backend
             // if (this.settingsId) {
             //     this.previewPeriod();
@@ -90,11 +93,39 @@ export class GeneralSettingsComponent implements OnInit {
 
           // Auto-refresh preview when attendanceCutoffDay changes
           this.generalSettingForm.get('attendanceCutoffDay')?.valueChanges.subscribe(() => {
+            // Validate cutoff vs run day
+            this.validateCutoffVsRunDay();
+
             // Preview functionality not yet implemented on backend
             // if (this.settingsId) {
             //     this.previewPeriod();
             // }
           });
+    }
+
+    validateCutoffVsRunDay(): void {
+        const cutoff = this.generalSettingForm.get('attendanceCutoffDay')?.value;
+        const runDay = this.generalSettingForm.get('dayOfMonthToRunPayroll')?.value;
+
+        if (cutoff && cutoff !== 'all') {
+            const cutoffNum = parseInt(cutoff);
+            const runDayNum = runDay === 'Last Day of Month' ? 31 : parseInt(runDay);
+
+            if (!isNaN(cutoffNum) && !isNaN(runDayNum) && cutoffNum >= runDayNum) {
+                this.generalSettingForm.get('attendanceCutoffDay')?.setErrors({
+                    cutoffTooLate: 'Cutoff day must be less than payroll run day'
+                });
+            } else {
+                // Clear error if valid
+                const errors = this.generalSettingForm.get('attendanceCutoffDay')?.errors;
+                if (errors && errors['cutoffTooLate']) {
+                    delete errors['cutoffTooLate'];
+                    this.generalSettingForm.get('attendanceCutoffDay')?.setErrors(
+                        Object.keys(errors).length ? errors : null
+                    );
+                }
+            }
+        }
     }
 
     loadData() {

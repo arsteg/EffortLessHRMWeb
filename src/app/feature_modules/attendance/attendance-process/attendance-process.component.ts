@@ -14,6 +14,7 @@ import { ActionVisibility, TableColumn } from 'src/app/models/table-column';
 import { PayrollService } from 'src/app/_services/payroll.service';
 import { TranslateService } from '@ngx-translate/core';
 import { toUtcDateOnly, toUtcDateTime } from 'src/app/util/date-utils';
+import { CookieService } from 'src/app/_services/cookie.service';
 
 @Component({
   selector: 'app-attendance-process',
@@ -60,6 +61,9 @@ export class AttendanceProcessComponent {
   bsValue = new Date();
   selectedMonth: string = (new Date().getMonth() + 1).toString();
   attendanceTemplateAssignment: any;
+  private payrollGeneralSettings: any = null;
+  private companyId: string = '';
+  private settingsLoaded: boolean = false;
 
   months = [
     { name: 'January', value: '1' },
@@ -150,6 +154,7 @@ export class AttendanceProcessComponent {
     private separationService: SeparationService,
     private translate: TranslateService,
     private datePipe: DatePipe,
+    private cookieService: CookieService,
   ) {
     this.lopForm = this.fb.group({
       month: ['', Validators.required],
@@ -190,6 +195,7 @@ export class AttendanceProcessComponent {
 
   ngOnInit() {
     this.generateYearList();
+    this.fetchPayrollSettings();
     this.userService.getUsersByStatus('Settled').subscribe((res: any) => {
       this.setlledUsers = res.data['users'];
     })
@@ -227,6 +233,34 @@ export class AttendanceProcessComponent {
     });
     this.fnfAttendanceProcessForm.valueChanges.subscribe(() => {
       this.isSubmitted = false;
+    });
+  }
+
+  fetchPayrollSettings(): void {
+    this.companyId = this.cookieService.getCookie('companyId');
+
+    if (!this.companyId) {
+      console.warn('Company ID not found in cookies');
+      this.settingsLoaded = true;
+      return;
+    }
+
+    this.payrollService.getGeneralSettings(this.companyId).subscribe({
+      next: (res: any) => {
+        this.payrollGeneralSettings = res.data;
+        this.settingsLoaded = true;
+
+        // Re-validate runDate if already filled
+        const runDateControl = this.attendanceProcessForm.get('runDate');
+        if (runDateControl?.value) {
+          runDateControl.updateValueAndValidity();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch payroll settings:', err);
+        this.settingsLoaded = true;
+        this.toast.warning('Unable to load payroll settings. Validation may be limited.');
+      }
     });
   }
 
@@ -321,44 +355,99 @@ export class AttendanceProcessComponent {
   //   return { outOfRange: true };
   // }
   runDateValidator(control: AbstractControl): ValidationErrors | null {
-    const runDate = new Date(control.value);
+    const runDate = control.value;
     const year = this.attendanceProcessForm?.value?.attendanceProcessPeriodYear;
     const month = this.attendanceProcessForm?.value?.attendanceProcessPeriodMonth;
 
-    if (!control.value) {
+    // Validation 1: Required
+    if (!runDate) {
       return { required: { message: 'Run date is required' } };
     }
+
+    // Validation 2: Year/Month Required
     if (!year || !month) {
+      return null; // Wait for period selection
+    }
+
+    // Validation 3: Settings-Based Period Validation
+    if (!this.settingsLoaded) {
+      return null; // Settings still loading
+    }
+
+    const runDateObj = new Date(runDate);
+    runDateObj.setHours(0, 0, 0, 0);
+
+    const cutoffDay = this.payrollGeneralSettings?.attendanceCutoffDay || 'all';
+
+    // Scenario 1: Full Period (cutoffDay = 'all')
+    if (cutoffDay === 'all') {
+      // Attendance period: Full month (e.g., March 1-31)
+      // Run date: First 5 days of next month (e.g., April 1-5)
+
+      const nextMonth = parseInt(month) === 12 ? 1 : parseInt(month) + 1;
+      const nextYear = parseInt(month) === 12 ? parseInt(year) + 1 : parseInt(year);
+
+      // Min: 1st of next month
+      const minRunDate = new Date(nextYear, nextMonth - 1, 1);
+      minRunDate.setHours(0, 0, 0, 0);
+
+      // Max: 5th of next month
+      const maxRunDate = new Date(nextYear, nextMonth - 1, 5);
+      maxRunDate.setHours(0, 0, 0, 0);
+
+      if (runDateObj < minRunDate || runDateObj > maxRunDate) {
+        const monthName = this.months.find(m => m.value === month.toString())?.name;
+        const nextMonthName = this.months.find(m => m.value === nextMonth.toString())?.name;
+        const minFormatted = this.datePipe.transform(minRunDate, 'mediumDate');
+        const maxFormatted = this.datePipe.transform(maxRunDate, 'mediumDate');
+
+        return {
+          outOfRange: {
+            message: `For full period attendance (${monthName} ${year}), run date must be between ${minFormatted} and ${maxFormatted}`
+          }
+        };
+      }
+
+      return null; // Valid
+    }
+
+    // Scenario 2: Cutoff Date Selected (1-31)
+    const cutoff = parseInt(cutoffDay);
+
+    if (isNaN(cutoff) || cutoff < 1 || cutoff > 31) {
+      console.warn(`Invalid cutoff day in settings: ${cutoffDay}`);
       return null;
     }
 
-    // Get the last day of the selected month
-    const lastDayOfMonth = new Date(year, month, 0); // Corrected to get the last day
-    console.log('Last day of selected month:', lastDayOfMonth);
+    // Handle edge cases: Feb with 28/29 days, months with 30 days
+    const currentMonthMaxDays = new Date(parseInt(year), parseInt(month), 0).getDate();
+    const actualCutoff = Math.min(cutoff, currentMonthMaxDays);
 
-    // Last 5 days of the selected month (e.g., for June, 26th to 30th)
-    const lastFiveDaysStart = new Date(year, month - 1, lastDayOfMonth.getDate() - 4);
-    console.log('Last 5 days start:', lastFiveDaysStart);
+    // Attendance period: (prev month cutoff + 1) to (current month cutoff)
+    // Example: cutoff=25, March => Feb 26 to Mar 25
+    // Run date: cutoff + 1 to cutoff + 5 (Mar 26 to Mar 30)
 
-    // First 5 days of the next month (e.g., for June, July 1st to 5th)
-    const nextMonthStart = new Date(year, month, 1); // First day of next month
-    const firstFiveDaysEnd = new Date(year, month, 5); // 5th day of next month
-    console.log('First 5 days end:', firstFiveDaysEnd);
+    // Min: cutoff + 1
+    const minRunDate = new Date(parseInt(year), parseInt(month) - 1, actualCutoff + 1);
+    minRunDate.setHours(0, 0, 0, 0);
 
-    // Check if runDate is within the last 5 days of the selected month OR the first 5 days of the next month
-    if (
-      (runDate >= lastFiveDaysStart && runDate <= lastDayOfMonth) ||
-      (runDate >= nextMonthStart && runDate <= firstFiveDaysEnd)
-    ) {
-      return null; // Valid date
+    // Max: cutoff + 5
+    const maxRunDate = new Date(parseInt(year), parseInt(month) - 1, actualCutoff + 5);
+    maxRunDate.setHours(0, 0, 0, 0);
+
+    if (runDateObj < minRunDate || runDateObj > maxRunDate) {
+      const monthName = this.months.find(m => m.value === month.toString())?.name;
+      const minFormatted = this.datePipe.transform(minRunDate, 'mediumDate');
+      const maxFormatted = this.datePipe.transform(maxRunDate, 'mediumDate');
+
+      return {
+        outOfRange: {
+          message: `For attendance period ending ${monthName} ${actualCutoff}, run date must be between ${minFormatted} and ${maxFormatted}`
+        }
+      };
     }
 
-    // Return outOfRange error with a message
-    return {
-      outOfRange: {
-        message: `Selected date must be within the last 5 days of ${month}/${year} or the first 5 days of ${month + 1}/${year}.`
-      }
-    };
+    return null; // Valid
   }
 
   onMonthChange(event: any) {
@@ -495,6 +584,8 @@ export class AttendanceProcessComponent {
   onMonthOrYearChange() {
     if (this.activeTab == 'attendanceProcess') {
       this.validateLOPAndAttendance();
+      // Re-validate run date when period changes
+      this.attendanceProcessForm.get('runDate')?.updateValueAndValidity();
     }
     if (this.activeTab == 'fnfattendanceProcess') {
       this.onFnF_userChange();
