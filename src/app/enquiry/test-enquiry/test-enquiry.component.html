@@ -6,17 +6,16 @@
 <div id = 'crmWebToEntityForm' class = 'zcwf_lblLeft crmWebToEntityForm' style = 'background-color: white;color: black;max-width: 600px;'>
 	<meta name = 'viewport' content = 'width=device-width, initial-scale=1.0'>
 		<META HTTP-EQUIV = 'content-type' CONTENT = 'text/html;charset=UTF-8'>
-			<script src = 'https://www.google.com/recaptcha/api.js' async defer >
-		</script>
-		<form id = 'webform1233161000000742027' action = 'https://crm.zoho.in/crm/WebToLeadForm' name = WebToLeads1233161000000742027 method = 'POST' onSubmit = 'javascript:document.charset="UTF-8"; return checkMandatory1233161000000742027()' accept-charset = 'UTF-8'>
-			<input type = 'text' style = 'display:none;' name = 'xnQsjsdp' value = '81bdfcd1a87338e7c338745c8fdde66c7b4dd47b90f00f7aa0d2d000d718e934'>
-			<input type = 'hidden' name = 'zc_gad' id = 'zc_gad' value = ''>
+		<form ngNoForm id = 'webform1233161000000742027' action = 'https://crm.zoho.in/crm/WebToLeadForm' name = WebToLeads1233161000000742027 method = 'POST' (submit) = 'checkMandatory($event)' accept-charset = 'UTF-8'>
+			<input type = 'text' style = 'display:none;' name = 'xnQsjsdp' value = '8396bfcf649513675bc43e94c4c4753576df475b68c50d20594c4d0d9be1f9e7'/>
 			
-			<input type = 'text' style = 'display:none;' name = 'xmIwtLD' value = 'f4cabd9321568eaf61c5c41b172991eca8bcb4b31c718f952de4dbc8dac039b349d23d11c2d295f31a7eea9229058844'>
+			<input type = 'hidden' name = 'zc_gad' id = 'zc_gad' value = ''/>
 			
-			<input type = 'text' style = 'display:none;' name = 'actionType' value = 'TGVhZHM='>
+			<input type = 'text' style = 'display:none;' name = 'xmIwtLD' value = 'ff555505ed29731dd08ff7dd956764021457a259f7f8385f3cdb7c1811a8560deedf4cd47b19907683bdf2979f8b4f26'/>
 			
-			<input type = 'text' style = 'display:none;' name = 'returnURL' value = 'null'>
+			<input type = 'text' style = 'display:none;' name = 'actionType' value = 'TGVhZHM='/>
+			
+			<input type = 'text' style = 'display:none;' name = 'returnURL' value = 'null'/>
 			
 			<!-- Do not remove this code. -->
 			<style>
@@ -193,8 +192,7 @@
 					</label>
 				</div>
 				<div class = 'zcwf_col_fld'>
-					<input type = 'text' id = 'Company' aria-required = 'true' aria-label = 'Company' name = 'Company' aria-valuemax = '200' maxlength = '200'>
-					
+					<input type = 'text' id = 'Company' aria-required = 'true' aria-label = 'Company' name = 'Company' aria-valuemax = '200' maxlength = '200'/>
 					<div class = 'zcwf_col_help'>
 					</div>
 				</div>
@@ -206,8 +204,7 @@
 					</label>
 				</div>
 				<div class = 'zcwf_col_fld'>
-					<input type = 'text' id = 'Last_Name' aria-required = 'true' aria-label = 'Last Name' name = 'Last Name' aria-valuemax = '80' maxlength = '80'>
-					
+					<input type = 'text' id = 'Last_Name' aria-required = 'true' aria-label = 'Last Name' name = 'Last Name' aria-valuemax = '80' maxlength = '80'/>
 					<div class = 'zcwf_col_help'>
 					</div>
 				</div>
@@ -219,8 +216,7 @@
 					</label>
 				</div>
 				<div class = 'zcwf_col_fld'>
-					<input type = 'text' id = 'Mobile' aria-required = 'true' aria-label = 'Mobile' name = 'Mobile' aria-valuemax = '30' maxlength = '30'>
-					
+					<input type = 'text' id = 'Mobile' aria-required = 'true' aria-label = 'Mobile' name = 'Mobile' aria-valuemax = '30' maxlength = '30'/>
 					<div class = 'zcwf_col_help'>
 					</div>
 				</div>
@@ -232,7 +228,7 @@
 					</label>
 				</div>
 				<div class = 'zcwf_col_fld'>
-					<input type = 'text' ftype = 'email' autocomplete = 'false' id = 'Email' aria-required = 'true' aria-label = 'Email' name = 'Email' aria-valuemax = '100' crmlabel = '' maxlength = '100'>
+					<input type = 'text' ftype = 'email' autocomplete = 'false' id = 'Email' aria-required = 'true' aria-label = 'Email' name = 'Email' aria-valuemax = '100' crmlabel = '' maxlength = '100'/>
 					<div class = 'zcwf_col_help'>
 					</div>
 				</div>
@@ -244,7 +240,7 @@
 					</label>
 				</div>
 				<div class = 'zcwf_col_fld'>
-					<select class = 'zcwf_col_fld_slt' role = 'combobox' aria-expanded = 'false' aria-haspopup = 'listbox' id = 'LEADCF7'onChange='addAriaSelected1233161000000742027()' aria-required = 'true' aria-label = 'LEADCF7' name = 'LEADCF7'>
+					<select class = 'zcwf_col_fld_slt' role = 'combobox' aria-expanded = 'false' aria-haspopup = 'listbox' id = 'LEADCF7' (change)='addAriaSelected($event)' aria-required = 'true' aria-label = 'LEADCF7' name = 'LEADCF7'>
 						<option value = '-None-'>-None-</option>
 						<option value = 'Apple'>Apple</option>
 						<option value = 'OnePlus'>OnePlus</option>
@@ -266,7 +262,7 @@
 					</label>
 				</div>
 				<div class = 'zcwf_col_fld'>
-					<select class = 'zcwf_col_fld_slt' role = 'combobox' aria-expanded = 'false' aria-haspopup = 'listbox' id = 'LEADCF4'onChange='addAriaSelected1233161000000742027()' aria-required = 'true' aria-label = 'LEADCF4' name = 'LEADCF4'>
+					<select class = 'zcwf_col_fld_slt' role = 'combobox' aria-expanded = 'false' aria-haspopup = 'listbox' id = 'LEADCF4' (change)='addAriaSelected($event)' aria-required = 'true' aria-label = 'LEADCF4' name = 'LEADCF4'>
 						<option value = '-None-'>-None-</option>
 						<option value = 'Advertisement'>Advertisement</option>
 						<option value = 'Phone&#x20;Call'>Phone Call</option>
@@ -289,7 +285,7 @@
 					</label>
 				</div>
 				<div class = 'zcwf_col_fld'>
-					<select class = 'zcwf_col_fld_slt' role = 'combobox' aria-expanded = 'false' aria-haspopup = 'listbox' id = 'LEADCF5'onChange='addAriaSelected1233161000000742027()' aria-required = 'true' aria-label = 'LEADCF5' name = 'LEADCF5'>
+					<select class = 'zcwf_col_fld_slt' role = 'combobox' aria-expanded = 'false' aria-haspopup = 'listbox' id = 'LEADCF5' (change)='addAriaSelected($event)' aria-required = 'true' aria-label = 'LEADCF5' name = 'LEADCF5'>
 						<option value = '-None-'>-None-</option>
 						<option value = 'Same&#x20;Day'>Same Day</option>
 						<option value = 'Within&#x20;2&#x20;Days'>Within 2 Days</option>
@@ -330,120 +326,5 @@
 						<input type = 'reset' class = 'zcwf_button' role = 'button' name = 'reset' value = 'Reset' aria-label = 'Reset' title = 'Reset'>
 						</div>
 					</div>
-					<script>
-						function addAriaSelected1233161000000742027(){
-							var optionElem = event.target;
-							var previousSelectedOption = optionElem.querySelector('[aria-selected=true]');
-							if (previousSelectedOption) {
-								previousSelectedOption.removeAttribute('aria-selected');
-							}
-							optionElem.querySelectorAll('option') [optionElem.selectedIndex] .ariaSelected = 'true';
-						}
-						/* Do not remove this code. */
-						function rccallback1233161000000742027(){
-							if (document.getElementById ('recap1233161000000742027') != undefined) {
-								document.getElementById('recap1233161000000742027').setAttribute('captcha-verified', true);
-							}
-							if (document.getElementById ('recapErr1233161000000742027') != undefined && document.getElementById ('recapErr1233161000000742027') .style.visibility == 'visible') {
-								document.getElementById('recapErr1233161000000742027').style.visibility = 'hidden';
-							}
-						}
-						function reCaptchaAlert1233161000000742027(){
-							var recap = document.getElementById('recap1233161000000742027');
-							if (recap != undefined && recap.getAttribute ('captcha-verified') == 'false') {
-								document.getElementById('recapErr1233161000000742027').style.visibility = 'visible';
-								return false;
-							}
-							return true;
-						}
-						function validateEmail1233161000000742027(){
-							var form = document.forms['WebToLeads1233161000000742027'];
-							var emailFld = form.querySelectorAll('[ftype=email]');
-							var i;
-							for(i = 0; i < emailFld.length; i++ ) {
-								var emailVal = emailFld[i].value;
-								if ((emailVal.replace (/^\s+|\s+$/g,'') ) .length != 0) {
-									var atpos = emailVal.indexOf('@');
-									var dotpos = emailVal.lastIndexOf('.');
-									if(atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= emailVal.length) {
-										alert('Please enter a valid email address. ');
-										emailFld[i].focus();
-										return false;
-									}
-								}
-							}
-							return true;
-						}
-						function checkMandatory1233161000000742027(){
-							var mndFileds = new Array('Company', 'Last Name', 'Email', 'Mobile', 'LEADCF2', 'LEADCF4', 'LEADCF5', 'LEADCF7');
-							var fldLangVal = new Array('Company', 'Last\x20Name', 'Email', 'Mobile', 'Issue\x20Description', 'Lead\x20Source\x20Channel', 'Urgency', 'Device\x20Brand');
-							for (i = 0; i < mndFileds.length; i++ ) {
-								var fieldObj = document.forms['WebToLeads1233161000000742027'] [mndFileds[i]];
-								if (fieldObj) {
-									if(((fieldObj.value) .replace (/^\s+|\s+$/g,'') ) .length == 0) {
-										if (fieldObj.type == 'file') {
-											alert('Please select a file to upload.');
-											fieldObj.focus();
-											return false;
-										}
-										alert(fldLangVal[i] + ' cannot be empty.');
-										fieldObj.focus();
-										return false;
-									} else if (fieldObj.nodeName == 'SELECT') {
-										if (fieldObj.options[fieldObj.selectedIndex].value == '-None-') {
-											alert(fldLangVal[i] + ' cannot be none.');
-											fieldObj.focus();
-											return false;
-										}
-									} else if (fieldObj.type == 'checkbox') {
-										if (fieldObj.checked == false) {
-											alert('Please accept  ' + fldLangVal[i]);
-											fieldObj.focus();
-											return false;
-										}
-									}
-									try{
-										if (fieldObj.name == 'Last Name') {
-											name = fieldObj.value;
-										}
-									} catch (e){}
-								}
-							}
-							if ( !validateEmail1233161000000742027 () ) {
-								return false;
-							}
-							if ( !reCaptchaAlert1233161000000742027 () ) {
-								return false;
-							}
-							var urlparams = new URLSearchParams(window.location.search);
-							if (urlparams.has ('service') && (urlparams.get ('service') === 'smarturl') ) {
-								var webform = document.getElementById('webform1233161000000742027');
-								var service = urlparams.get('service');
-								var smarturlfield = document.createElement('input');
-								smarturlfield.setAttribute('type', 'hidden');
-								smarturlfield.setAttribute('value', service);
-								smarturlfield.setAttribute('name', 'service');
-								webform.appendChild(smarturlfield);
-							}
-							document.querySelector('.crmWebToEntityForm .formsubmit').setAttribute('disabled', true);
-						}
-						function tooltipShow1233161000000742027(el){
-							var tooltip = el.nextElementSibling;
-							var tooltipDisplay = tooltip.style.display;
-							if (tooltipDisplay == 'none') {
-								var allTooltip = document.getElementsByClassName('zcwf_tooltip_over');
-								for (i = 0; i < allTooltip.length; i++ ) {
-									allTooltip[i].style.display = 'none';
-								}
-								tooltip.style.display = 'block';
-							} else {
-								tooltip.style.display = 'none';
-							}
-						}
-					</script>
-					<!-- Do not remove this --- Analytics Tracking code starts -->
-					<script id = 'wf_anal' src = 'https://crm.zohopublic.in/crm/WebFormAnalyticsServeServlet?rid=c299198235ae18a7a8efdfb2eda57282f32cff8b296143fc342aaa1a00594424590fab0d497accb4ccd868aa0971edc3gidd40829204959fe009cc5e4c4125c3cd9581e7209184d289bab520865511f3a0agid3b263ef8c10f4de03fa9bdcdfd350486ca7d21ce0bfa68ff01d3a0dfc02bc323gidb1bd3a762a1ada607e0b4cd7c58ef29e37dabf47248c9bd5b93714a67598e61a&tw=32ffdbab1730c7e0375ce315d6ad83ca35194938f168cecb64b4da58fe758e0d'>
-				</script>
-				<!-- Do not remove this --- Analytics Tracking code ends. -->
 			</form>
 		</div>
