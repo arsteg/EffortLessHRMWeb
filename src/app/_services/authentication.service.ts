@@ -128,8 +128,10 @@ export class AuthenticationService {
       }));
   }
 
-  logout(): Promise<void> {
+  logout(preserveReturnUrl: boolean = false): Promise<void> {
     return new Promise<void>((resolve) => {
+      const currentUrl = this.router.url;
+
       localStorage.removeItem('jwtToken');
       localStorage.removeItem('currentUser');
       localStorage.removeItem('subscription');
@@ -147,7 +149,13 @@ export class AuthenticationService {
       this.loginTime = null; // Reset the loginTime in memory
       this.currentUserSubject.next(null);
       this.loggedIn.next(false);
-      this.router.navigate(['/login']);
+
+      // Preserve returnUrl for session expiry or 401 errors
+      if (preserveReturnUrl && currentUrl && currentUrl !== '/login' && currentUrl !== '/') {
+        this.router.navigate(['/login'], { queryParams: { returnUrl: currentUrl } });
+      } else {
+        this.router.navigate(['/login']);
+      }
       resolve();
     });
   }
@@ -156,8 +164,12 @@ export class AuthenticationService {
     return localStorage.getItem('adminView');
   }
 
-  redirectToLogin() {
-    this.router.navigate(['/login']);
+  redirectToLogin(returnUrl?: string) {
+    if (returnUrl && returnUrl !== '/login' && returnUrl !== '/') {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl } });
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
   signup(signup: signup): Observable<User> {
     return this.http.post<any>(`${environment.apiUrlDotNet}/users/signup`, signup, {

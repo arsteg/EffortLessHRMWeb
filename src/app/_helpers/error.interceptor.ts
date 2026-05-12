@@ -26,7 +26,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                         })
                     }
                 }
-                this.authenticationService.logout();
+                // Preserve returnUrl on 401 errors so user can return to intended page after re-login
+                this.authenticationService.logout(true);
                // location.reload(true);
             }
 

@@ -138,7 +138,10 @@ export class LoginComponent implements OnInit {
     ).subscribe();
 
     localStorage.setItem('adminView', this.selectedAppMode);
-    const defaultUrl = this.selectedAppMode === 'user' ? 'home/dashboard/user' : this.returnUrl;
+    // Prioritize returnUrl if it's not the default dashboard
+    const defaultUrl = this.returnUrl !== 'home/dashboard'
+      ? this.returnUrl
+      : (this.selectedAppMode === 'user' ? 'home/dashboard/user' : 'home/dashboard');
     const selectedPlanId = localStorage.getItem('landingPageSelectedPlanId');
     if (selectedPlanId) {
       const subscription = JSON.parse(localStorage.getItem('subscription') || 'null');
