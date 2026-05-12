@@ -10,11 +10,11 @@ import { Role } from './models/role.model';
 })
 export class AuthGuard  {
   private isProcessing: boolean = false;
-  private pendingPromise: Promise<boolean | UrlTree> | null = null;
+  private pendingPromise: Promise<boolean> | null = null;
   constructor(private authService: AuthenticationService, private router: Router, private toastrService: ToastrService) {
   }
 
-  async canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
+  async canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
     if (this.isProcessing && this.pendingPromise) {
       return this.pendingPromise;
     }
@@ -33,10 +33,22 @@ export class AuthGuard  {
 private async processActivation(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Promise<boolean | UrlTree> {
+  ): Promise<boolean> {
   const loggedIn = await this.authService.isLoggedIn();
+  debugger;
   if (!loggedIn) {
-    return this.router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+    // Capture the intended URL - use state.url, fallback to current router url
+    const intendedUrl = state.url && state.url !== '/' && state.url !== '/login' ? state.url : this.router.url;
+
+    // For hash routing, navigate directly instead of returning UrlTree
+    if (intendedUrl && intendedUrl !== '/login' && intendedUrl !== '/') {
+      console.log('Auth Guard - Redirecting to login with returnUrl:', intendedUrl);
+      await this.router.navigate(['/login'], { queryParams: { returnUrl: intendedUrl } });
+    } else {
+      console.log('Auth Guard - Redirecting to login without returnUrl');
+      await this.router.navigate(['/login']);
+    }
+    return false;
   }
 
   const subscription = this.authService.companySubscription.getValue();
@@ -68,7 +80,7 @@ private async processActivation(
 
     if (!hasAccess) {
       this.toastrService.error(`You are not authorized to access ${currentMenuName}.`);
-      return this.redirectToDashboardOrLogin(loggedIn, appView);
+      return await this.redirectToDashboardOrLogin(loggedIn, appView, state.url);
     }
     return hasAccess;
     // const hasAccess = await firstValueFrom(this.authService.isMenuAccessible(currentMenuName, userRole));
@@ -82,7 +94,7 @@ private async processActivation(
   } catch (error) {
     this.isProcessing = false;
     this.toastrService.error(`You are not authorized to access ${currentMenuName}.`);
-    return this.redirectToDashboardOrLogin(loggedIn, appView);
+    return await this.redirectToDashboardOrLogin(loggedIn, appView, state.url);
     //return false;
   }
   // finally {
@@ -90,16 +102,21 @@ private async processActivation(
   // }
  }
 
- private redirectToDashboardOrLogin(loggedIn: boolean, appView: string): boolean | UrlTree {
+ private async redirectToDashboardOrLogin(loggedIn: boolean, appView: string, returnUrl?: string): Promise<boolean> {
     if (!loggedIn) {
-      //return this.router.createUrlTree(['/login'], { queryParams: { returnUrl: this.router.url } });
-      this.router.navigate(['/login']);
-      return true;
+      const urlToReturn = returnUrl || this.router.url;
+      if (urlToReturn && urlToReturn !== '/login' && urlToReturn !== '/') {
+        await this.router.navigate(['/login'], { queryParams: { returnUrl: urlToReturn } });
+      } else {
+        await this.router.navigate(['/login']);
+      }
+      return false;
     }
     else{
+      // User is logged in but doesn't have permission - redirect to dashboard
       const dashboardUrl = appView?.trim() === 'user' ? '/home/dashboard/user' : '/home/dashboard';
-      this.router.navigate([dashboardUrl]);
-      return true;
+      await this.router.navigate([dashboardUrl]);
+      return false; // Prevent access to unauthorized route
     }
   }
 

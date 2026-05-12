@@ -22,6 +22,7 @@ import { NotificationDetailsComponent } from './layouts/home/notification/notifi
 import { TranslationResolver } from './_helpers/translation.resolver';
 import { HelpdeskDashboardComponent } from './feature_modules/helpdesk/helpdesk-dashboard/helpdesk-dashboard.component';
 import { LandingPageComponent } from './layouts//landing-page/landing-page.component';
+import { TestEnquiryComponent } from './enquiry/test-enquiry/test-enquiry.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'landing', pathMatch: 'full' },
@@ -245,6 +246,7 @@ const routes: Routes = [
   { path: 'resetPassword/:token', component: ResetPasswordComponent },
   { path: 'live-logs', component: LogComponent },
   { path: 'submit-feedback', component: FeedbackSubmissionComponent },
+  { path: 'app-test-enquiry', component: TestEnquiryComponent },
   // Fallback route
   { path: '**', redirectTo: 'landing' },
 
