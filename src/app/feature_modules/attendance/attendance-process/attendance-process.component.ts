@@ -270,10 +270,18 @@ export class AttendanceProcessComponent {
       if (!selectedUserIds || selectedUserIds.length === 0) {
         return null;
       }
-      const hasTemplateAssigned = selectedUserIds.every(userId =>
-        this.attendanceTemplateAssignment?.find(template => template?.employee?._id === userId)
+      const usersWithoutTemplate = selectedUserIds.filter(userId =>
+        !this.attendanceTemplateAssignment?.find(template => template?.employee?._id === userId)
       );
-      return hasTemplateAssigned ? null : { 'noAttendanceTemplate': true };
+      if (usersWithoutTemplate.length === 0) {
+        return null;
+      }
+      // Get user names for affected users
+      const affectedUsers = usersWithoutTemplate.map(userId => {
+        const user = this.allAssignee?.find(assignee => assignee.id === userId);
+        return user ? `${user.firstName} ${user.lastName}` : 'Unknown User';
+      });
+      return { 'noAttendanceTemplate': { users: affectedUsers } };
     };
   }
 
