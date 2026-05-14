@@ -1,4 +1,15 @@
 .colorPicker{
     position: absolute;
+}
 
+.form-group {
+    margin-bottom: 1rem;
+}
+
+mat-form-field {
+    margin-bottom: 0.5rem;
+}
+
+mat-error {
+    min-height: 20px;
 }
