@@ -60,11 +60,16 @@
         "notes": "Notes",
         "error": {
           "project_name_required": "Project Name is required.",
+          "project_name_max_length": "Project Name cannot exceed 200 characters.",
           "estimated_time_required": "Estimated Time is required.",
+          "estimated_time_min": "Estimated Time cannot be negative.",
+          "estimated_time_pattern": "Please enter a valid number for Estimated Time.",
           "start_date_required": "Start Date is required.",
           "end_date_required": "End Date is required.",
+          "end_date_before_start_date": "End Date cannot be before Start Date.",
           "notes_required": "Note is required.",
-          "whitespace_error": "Leading or trailing spaces are not allowed"
+          "whitespace_error": "Leading or trailing spaces are not allowed.",
+          "validation_failed": "Please correct the errors in the form before submitting."
         }
       },
       "cancel": "Cancel",
@@ -97,6 +102,7 @@
           "cannotAdd": "Can not be Added",
           "cannotDelete": "Can not be Deleted",
           "cannotUpdate": "Can not be Updated",
+          "duplicateProjectName": "A project with this name already exists.",
           "memberExists": "Member Already Exist",
           "allUsersExist": "All selected users already exist",
           "cannotRemove": "{{name}} Can not be Removed",

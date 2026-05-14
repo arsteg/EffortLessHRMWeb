@@ -50,6 +50,7 @@ export class ProjectListComponent implements OnInit {
   @ViewChild('updateModal') updateModal !: ElementRef;
   @ViewChild('deleteModal') deleteModal !: ElementRef;
   allData = [];
+  isSubmitting = false; // Track submission state
   columns: TableColumn[] = [
     {
       key: 'projectName',
@@ -117,21 +118,21 @@ export class ProjectListComponent implements OnInit {
     private translate: TranslateService
   ) {
     this.form = this.fb.group({
-      projectName: ['', [Validators.required, CustomValidators.noLeadingOrTrailingSpaces]],
+      projectName: ['', [Validators.required, Validators.maxLength(200), CustomValidators.noLeadingOrTrailingSpaces]],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      estimatedTime: [0, Validators.required],
+      estimatedTime: [0, [Validators.required, Validators.min(0)]],
       notes: ['', [Validators.required, CustomValidators.noLeadingOrTrailingSpaces]]
-    });
+    }, { validators: this.dateRangeValidator });
 
     this.updateForm = this.fb.group({
-      projectName: ['', [Validators.required, CustomValidators.noLeadingOrTrailingSpaces]],
+      projectName: ['', [Validators.required, Validators.maxLength(200), CustomValidators.noLeadingOrTrailingSpaces]],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
-      estimatedTime: [0, Validators.required],
+      estimatedTime: [0, [Validators.required, Validators.min(0)]],
       notes: ['', [Validators.required, CustomValidators.noLeadingOrTrailingSpaces]],
       //firstName: ['', Validators.required]
-    });
+    }, { validators: this.dateRangeValidator });
 
     this.addUserForm = this.fb.group({
       userName: {
@@ -191,6 +192,22 @@ export class ProjectListComponent implements OnInit {
     });
 
     this.manageUsersForm = this.fb.group({});
+
+    // Subscribe to date changes for Add form to trigger validation
+    this.form.get('startDate')?.valueChanges.subscribe(() => {
+      this.form.updateValueAndValidity();
+    });
+    this.form.get('endDate')?.valueChanges.subscribe(() => {
+      this.form.updateValueAndValidity();
+    });
+
+    // Subscribe to date changes for Update form to trigger validation
+    this.updateForm.get('startDate')?.valueChanges.subscribe(() => {
+      this.updateForm.updateValueAndValidity();
+    });
+    this.updateForm.get('endDate')?.valueChanges.subscribe(() => {
+      this.updateForm.updateValueAndValidity();
+    });
     // this.getProjectUser(this.selectedProject.id);
   }
 
@@ -231,6 +248,37 @@ export class ProjectListComponent implements OnInit {
     return null;
   }
 
+  // Custom validator to ensure end date is not before start date
+  dateRangeValidator(group: AbstractControl): { [key: string]: any } | null {
+    const startDateControl = group.get('startDate');
+    const endDateControl = group.get('endDate');
+    const startDate = startDateControl?.value;
+    const endDate = endDateControl?.value;
+
+    // Clear previous errors
+    if (endDateControl?.hasError('dateRangeInvalid')) {
+      const errors = { ...endDateControl.errors };
+      delete errors['dateRangeInvalid'];
+      endDateControl.setErrors(Object.keys(errors).length > 0 ? errors : null);
+    }
+
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      // Reset time part for accurate date comparison
+      start.setHours(0, 0, 0, 0);
+      end.setHours(0, 0, 0, 0);
+
+      if (end < start) {
+        // Set error on both form and endDate control
+        endDateControl?.setErrors({ ...endDateControl.errors, dateRangeInvalid: true });
+        return { 'dateRangeInvalid': true };
+      }
+    }
+    return null;
+  }
+
   drop(event: CdkDragDrop<any[]>) {
     moveItemInArray(this.projectList, event.previousIndex, event.currentIndex);
   }
@@ -261,6 +309,12 @@ export class ProjectListComponent implements OnInit {
 
   addProject() {
     if (this.form.valid) {
+      // Prevent multiple submissions
+      if (this.isSubmitting) {
+        return;
+      }
+      this.isSubmitting = true;
+
       this.projectService.addproject(this.form.value).subscribe((result: any) => {
         const projects = result && result.data && result.data.newProject;
         this.projectList.push(projects);
@@ -268,21 +322,31 @@ export class ProjectListComponent implements OnInit {
         this.form.reset();
         this.dialogRef.close(true);
         this.userId === '' ? this.getProjectList() : this.getProjectsByUser();
+        this.isSubmitting = false;
       }, err => {
         this.toastr.error(err || this.translate.instant('manage.project.list.error.cannotAdd'), this.translate.instant('manage.project.list.error.title'))
+        this.isSubmitting = false;
       })
     } else {
       this.markFormGroupTouched(this.form);
+      this.toastr.error(
+        this.translate.instant('manage.project.form.error.validation_failed'),
+        this.translate.instant('manage.project.list.error.title')
+      );
     }
   }
 
   markFormGroupTouched(formGroup: FormGroup) {
-    Object.values(formGroup.controls).forEach(control => {
+    (<any>Object).values(formGroup.controls).forEach(control => {
       control.markAsTouched();
+      control.markAsDirty();
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
       }
     });
+    // Mark the form itself as touched for form-level validators
+    formGroup.markAsTouched();
+    formGroup.markAsDirty();
   }
 
   deleteProject() {
@@ -297,7 +361,25 @@ export class ProjectListComponent implements OnInit {
 
   updateProject(updateForm: FormGroup) {
     if (this.updateForm.valid) {
+      // Prevent multiple submissions
+      if (this.isSubmitting) {
+        return;
+      }
+
       const updatedProjectData = this.updateForm.value;
+
+      // Check for duplicate project name (excluding current project)
+      const isDuplicate = this.projectList.some(project =>
+        project.projectName?.toLowerCase() === updatedProjectData.projectName?.toLowerCase() &&
+        project._id !== this.selectedProject._id
+      );
+
+      if (isDuplicate) {
+        this.toastr.error(this.translate.instant('manage.project.list.error.duplicateProjectName'), this.translate.instant('manage.project.list.error.title'));
+        return;
+      }
+
+      this.isSubmitting = true;
 
       this.projectService.updateproject(this.selectedProject._id, updatedProjectData).subscribe(response => {
         this.toastr.success(this.translate.instant('manage.project.list.success.updatedProject'), this.translate.instant('manage.project.list.success.updated'));
@@ -307,14 +389,20 @@ export class ProjectListComponent implements OnInit {
         setTimeout(() => {
           this.getProjectList();
           this.selectedProject = this.projectList.find(p => p._id === this.selectedProject._id);
+          this.isSubmitting = false;
         }, 500);
       }, err => {
         console.error('Error updating project:', err); // Debugging
         this.toastr.error(this.translate.instant('manage.project.list.error.cannotUpdate'), this.translate.instant('manage.project.list.error.title'))
+        this.isSubmitting = false;
       })
     }
     else{
       this.markFormGroupTouched(this.updateForm);
+      this.toastr.error(
+        this.translate.instant('manage.project.form.error.validation_failed'),
+        this.translate.instant('manage.project.list.error.title')
+      );
     }
   }
 
@@ -336,12 +424,25 @@ export class ProjectListComponent implements OnInit {
 
   openModal(template, selectedProject?, width = "50%") {
     this.selectedProject = selectedProject;
+
+    // Initialize update form with selected project data if it's the update modal
+    if (template === this.updateModal && selectedProject) {
+      this.updateForm.patchValue({
+        projectName: selectedProject.projectName,
+        startDate: selectedProject.startDate,
+        endDate: selectedProject.endDate,
+        estimatedTime: selectedProject.estimatedTime,
+        notes: selectedProject.notes
+      });
+    }
+
     this.dialogRef = this.dialog.open(template, {
       width: width,
       disableClose: true
     })
     this.dialogRef.afterClosed().subscribe((result) => {
-
+      // Reset submission flag when modal closes
+      this.isSubmitting = false;
     });
   }
 
