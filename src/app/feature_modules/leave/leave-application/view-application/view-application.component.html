@@ -74,7 +74,80 @@
         </div>
       </div>
     </mat-list-item>
+
   </mat-list>
+
+  <!-- Approval History Section - Outside mat-list for better layout -->
+  <div class="approval-history-section mt-3 p-3"
+       *ngIf="leaveApplication?.level1Approver || leaveApplication?.level2Approver || leaveApplication?.leaveTemplate?.approvalLevel === '2 Level'"
+       style="background-color: #f5f5f5; border-radius: 8px; max-height: 300px; overflow-y: auto;">
+
+    <h6 class="mb-3" style="font-weight: 600; color: #333;">Approval History</h6>
+
+    <!-- Level 1 Approval -->
+    <div class="approval-step mb-3 p-3" style="background: white; border-radius: 6px; border-left: 4px solid {{ leaveApplication?.level1Approver ? '#4caf50' : '#ccc' }};">
+      <div class="d-flex align-items-start">
+        <mat-icon [style.color]="leaveApplication?.level1Approver ? '#4caf50' : '#999'" class="me-2">
+          {{ leaveApplication?.level1Approver ? 'check_circle' : 'radio_button_unchecked' }}
+        </mat-icon>
+        <div class="flex-grow-1">
+          <div style="font-weight: 600; font-size: 14px; margin-bottom: 8px;">Level 1 Approval</div>
+
+          <div *ngIf="leaveApplication?.level1Approver" style="font-size: 13px; color: #666;">
+            <div class="mb-1">
+              <strong>Approved by:</strong>
+              <span style="color: #333;">{{ leaveApplication.level1Approver.firstName }} {{ leaveApplication.level1Approver.lastName }}</span>
+            </div>
+            <div class="mb-1">
+              <strong>Date:</strong>
+              <span style="color: #333;">{{ leaveApplication.level1ApprovedDate | date: 'MMM d, yyyy h:mm a' }}</span>
+            </div>
+            <div *ngIf="leaveApplication.level1Reason" class="mb-1">
+              <strong>Reason:</strong>
+              <span style="color: #333;">{{ leaveApplication.level1Reason }}</span>
+            </div>
+          </div>
+
+          <div *ngIf="!leaveApplication?.level1Approver" style="font-size: 13px; color: #999; font-style: italic;">
+            Pending approval
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Level 2 Approval (only for 2-level templates) -->
+    <div class="approval-step p-3"
+         *ngIf="leaveApplication?.leaveTemplate?.approvalLevel === '2 Level'"
+         style="background: white; border-radius: 6px; border-left: 4px solid {{ leaveApplication?.level2Approver ? '#4caf50' : '#ccc' }};">
+      <div class="d-flex align-items-start">
+        <mat-icon [style.color]="leaveApplication?.level2Approver ? '#4caf50' : '#999'" class="me-2">
+          {{ leaveApplication?.level2Approver ? 'check_circle' : 'radio_button_unchecked' }}
+        </mat-icon>
+        <div class="flex-grow-1">
+          <div style="font-weight: 600; font-size: 14px; margin-bottom: 8px;">Level 2 Approval</div>
+
+          <div *ngIf="leaveApplication?.level2Approver" style="font-size: 13px; color: #666;">
+            <div class="mb-1">
+              <strong>Approved by:</strong>
+              <span style="color: #333;">{{ leaveApplication.level2Approver.firstName }} {{ leaveApplication.level2Approver.lastName }}</span>
+            </div>
+            <div class="mb-1">
+              <strong>Date:</strong>
+              <span style="color: #333;">{{ leaveApplication.level2ApprovedDate | date: 'MMM d, yyyy h:mm a' }}</span>
+            </div>
+            <div *ngIf="leaveApplication.level2Reason" class="mb-1">
+              <strong>Reason:</strong>
+              <span style="color: #333;">{{ leaveApplication.level2Reason }}</span>
+            </div>
+          </div>
+
+          <div *ngIf="!leaveApplication?.level2Approver" style="font-size: 13px; color: #999; font-style: italic;">
+            {{ leaveApplication?.level1Approver ? 'Pending Level 2 approval' : 'Awaiting Level 1 approval first' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div mat-dialog-actions class="d-flex align-items-center justify-content-between">

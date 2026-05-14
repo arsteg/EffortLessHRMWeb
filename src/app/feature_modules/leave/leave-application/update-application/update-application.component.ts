@@ -34,6 +34,16 @@ export class UpdateApplicationComponent {
   updateApprovedReport() {
     this.leaveUpdateStatus = this.leaveService.leave.getValue();
     let id = this.leaveService.leave.getValue()._id;
+
+    // Get the reason from the form based on the original status
+    const formValues = this.updateLeaveReport.value;
+    const level1Reason = this.leaveUpdateStatus.originalStatus === 'Level 1 Approval Pending'
+      ? formValues.level1Reason
+      : this.leaveUpdateStatus.level1Reason;
+    const level2Reason = this.leaveUpdateStatus.originalStatus === 'Level 2 Approval Pending'
+      ? formValues.level2Reason
+      : this.leaveUpdateStatus.level2Reason;
+
     let payload = {
       employee: this.leaveUpdateStatus.employeeId,
       leaveCatgeory: this.leaveUpdateStatus.leaveCategory,
@@ -42,8 +52,8 @@ export class UpdateApplicationComponent {
       durationInMinutes: this.leaveUpdateStatus.durationInMinutes,
       comments: this.leaveUpdateStatus.comments,
       status: this.leaveUpdateStatus.status,
-      level1Reason: this.leaveUpdateStatus.level1Reason,
-      level2Reason: this.leaveUpdateStatus.level2Reason,
+      level1Reason: level1Reason,
+      level2Reason: level2Reason,
       isHalfDayOption: this.leaveUpdateStatus.isHalfDayOption
     }
     this.leaveService.updateLeaveApplication(id, payload).subscribe((res: any) => {

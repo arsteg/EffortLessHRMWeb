@@ -71,7 +71,31 @@ export class ShowApplicationComponent {
     {
       key: 'status',
       name: this.translate.instant('leave._status'),
-      valueFn: (row: any) => row.status || ''
+      valueFn: (row: any) => {
+        const status = row.status || '';
+        let statusText = status;
+
+        // Format status for better readability
+        if (status === 'Level 1 Approval Pending') {
+          statusText = 'L1 Pending';
+          if (row.primaryApprover) {
+            statusText += ` (${row.primaryApprover.firstName} ${row.primaryApprover.lastName})`;
+          }
+        } else if (status === 'Level 2 Approval Pending') {
+          statusText = 'L2 Pending';
+          if (row.secondaryApprover) {
+            statusText += ` (${row.secondaryApprover.firstName} ${row.secondaryApprover.lastName})`;
+          }
+        } else if (status === 'Approved') {
+          if (row.level2Approver) {
+            statusText = `Approved by ${row.level2Approver.firstName} ${row.level2Approver.lastName}`;
+          } else if (row.level1Approver) {
+            statusText = `Approved by ${row.level1Approver.firstName} ${row.level1Approver.lastName}`;
+          }
+        }
+
+        return statusText;
+      }
     },
     {
       key: 'action',
@@ -83,13 +107,27 @@ export class ShowApplicationComponent {
           icon: 'check_circle',
           visibility: ActionVisibility.LABEL,
           hideCondition: (row: any) => {
-            // Hide if no primary approver assigned
-            if (!row.primaryApproverId) return true;
+            // Level 1 Approval Check
+            if (row.status === 'Level 1 Approval Pending') {
+              // Hide if no primary approver assigned
+              if (!row.primaryApproverId) return true;
+              // Show if current user is the primary approver
+              if (this.currentUser.id === row.primaryApproverId) return false;
+              // Hide if current user is not the primary approver
+              return true;
+            }
 
-            // Hide if current user is not the primary approver
-            if (this.currentUser.id !== row.primaryApproverId) return true;
+            // Level 2 Approval Check
+            if (row.status === 'Level 2 Approval Pending') {
+              // Hide if no secondary approver assigned
+              if (!row.secondaryApproverId) return true;
+              // Show if current user is the secondary approver
+              if (this.currentUser.id === row.secondaryApproverId) return false;
+              // Hide if current user is not the secondary approver
+              return true;
+            }
 
-            // Original conditions
+            // For other statuses, use original conditions
             return !this.actionOptions.approve || !this.checkForApproval(row) || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 5));
           }
         },
@@ -98,13 +136,27 @@ export class ShowApplicationComponent {
           icon: 'person_remove',
           visibility: ActionVisibility.LABEL,
           hideCondition: (row: any) => {
-            // Hide if no primary approver assigned
-            if (!row.primaryApproverId) return true;
+            // Level 1 Approval Check
+            if (row.status === 'Level 1 Approval Pending') {
+              // Hide if no primary approver assigned
+              if (!row.primaryApproverId) return true;
+              // Show if current user is the primary approver
+              if (this.currentUser.id === row.primaryApproverId) return false;
+              // Hide if current user is not the primary approver
+              return true;
+            }
 
-            // Hide if current user is not the primary approver
-            if (this.currentUser.id !== row.primaryApproverId) return true;
+            // Level 2 Approval Check
+            if (row.status === 'Level 2 Approval Pending') {
+              // Hide if no secondary approver assigned
+              if (!row.secondaryApproverId) return true;
+              // Show if current user is the secondary approver
+              if (this.currentUser.id === row.secondaryApproverId) return false;
+              // Hide if current user is not the secondary approver
+              return true;
+            }
 
-            // Original conditions
+            // For other statuses, use original conditions
             return !this.actionOptions.reject || ( this.portalView === 'user' && ( this.portalView === 'user' && this.tab != 5));
           }
         },
@@ -116,13 +168,20 @@ export class ShowApplicationComponent {
             // Check if action is enabled in options
             if (!this.actionOptions.delete) return true;
 
-            // Allow employee to delete their own leave if status is pending or level 1 approval
+            // Never allow deletion for Level 2 Approval Pending or Approved/Rejected status
+            if (row.status === 'Level 2 Approval Pending' || row.status === 'Approved' || row.status === 'Rejected') {
+              return true;
+            }
+
+            // Allow employee to delete their own leave if status is Level 1 Approval Pending
             const isOwnLeave = this.currentUser.id === row.employeeId;
-            const isDeletableStatus = row.status === 'pending' || row.status === 'Level 1 Approval Pending';
+            const isDeletableStatus = row.status === 'Level 1 Approval Pending';
             if (isOwnLeave && isDeletableStatus) return false;
 
-            // Allow primary approver to delete
-            if (row.primaryApproverId && this.currentUser.id === row.primaryApproverId) return false;
+            // Allow primary approver to delete only at Level 1 Approval Pending
+            if (row.status === 'Level 1 Approval Pending' && row.primaryApproverId && this.currentUser.id === row.primaryApproverId) {
+              return false;
+            }
 
             // Hide in all other cases
             return true;
@@ -171,6 +230,9 @@ export class ShowApplicationComponent {
   }
 
   openStatusModal(report: any, status: string): void {
+    // Store the original status before changing it
+    report.originalStatus = report.status;
+    report.newStatus = status;
     report.status = status;
     this.leaveService.leave.next(report);
     const dialogRef = this.dialog.open(UpdateApplicationComponent, {
@@ -258,7 +320,18 @@ export class ShowApplicationComponent {
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
             leaveCount: leave?.calculatedLeaveDays,
             employeeId: leave?.employee?._id,
-            primaryApproverId: leave?.primaryApprover?._id || null
+            primaryApproverId: leave?.primaryApprover?._id || null,
+            secondaryApproverId: leave?.secondaryApprover?._id || null,
+            leaveTemplate: leave?.leaveTemplate || null,
+            // Explicitly preserve approver objects for view modal
+            level1Approver: leave?.level1Approver || null,
+            level1ApprovedDate: leave?.level1ApprovedDate || null,
+            level1Reason: leave?.level1Reason || null,
+            level2Approver: leave?.level2Approver || null,
+            level2ApprovedDate: leave?.level2ApprovedDate || null,
+            level2Reason: leave?.level2Reason || null,
+            primaryApprover: leave?.primaryApprover || null,
+            secondaryApprover: leave?.secondaryApprover || null
           };
         });
         this.allData = this.leaveApplication.data;
@@ -270,7 +343,14 @@ export class ShowApplicationComponent {
       this.leaveService.getLeaveApplicationbyUser(requestBody, employeeId).subscribe((res: any) => {
         let filteredData = res.data;
         if (this.status && this.status !== 'All') {
-          filteredData = res.data.filter((leave: any) => leave.status === this.status);
+          // Handle "Pending" status to include both Level 1 and Level 2 pending
+          if (this.status === 'Pending') {
+            filteredData = res.data.filter((leave: any) =>
+              leave.status === 'Level 1 Approval Pending' || leave.status === 'Level 2 Approval Pending'
+            );
+          } else {
+            filteredData = res.data.filter((leave: any) => leave.status === this.status);
+          }
         }
        this.leaveApplication.data = filteredData;
         this.allData = filteredData;
@@ -284,7 +364,9 @@ export class ShowApplicationComponent {
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
             leaveCount: leave?.calculatedLeaveDays,
             employeeId: leave?.employee?._id,
-            primaryApproverId: leave?.primaryApprover?._id || null
+            primaryApproverId: leave?.primaryApprover?._id || null,
+            secondaryApproverId: leave?.secondaryApprover?._id || null,
+            leaveTemplate: leave?.leaveTemplate || null
           };
         });
         this.allData = this.leaveApplication.data;
@@ -296,7 +378,14 @@ export class ShowApplicationComponent {
      this.leaveService.getLeaveApplicationByTeam(payload).subscribe((res: any) => {
         let filteredData = res.data;
         if (this.status && this.status !== 'All') {
-          filteredData = res.data.filter((leave: any) => leave.status === this.status);
+          // Handle "Pending" status to include both Level 1 and Level 2 pending
+          if (this.status === 'Pending') {
+            filteredData = res.data.filter((leave: any) =>
+              leave.status === 'Level 1 Approval Pending' || leave.status === 'Level 2 Approval Pending'
+            );
+          } else {
+            filteredData = res.data.filter((leave: any) => leave.status === this.status);
+          }
         }
         this.leaveApplication.data = filteredData;
         this.allData = filteredData;
@@ -310,7 +399,9 @@ export class ShowApplicationComponent {
             endDate: this.datePipe.transform(leave.endDate, 'MMM d, yyyy'),
             leaveCount: leave?.calculatedLeaveDays,
             employeeId: leave?.employee?._id,
-            primaryApproverId: leave?.primaryApprover?._id || null
+            primaryApproverId: leave?.primaryApprover?._id || null,
+            secondaryApproverId: leave?.secondaryApprover?._id || null,
+            leaveTemplate: leave?.leaveTemplate || null
           };
         });
         this.allData = this.leaveApplication.data;
