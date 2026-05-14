@@ -36,6 +36,7 @@ export class CreateLeaveComponent {
     this.addTemplateForm = this.fb.group({
       label: ['', [Validators.required, CustomValidators.labelValidator, CustomValidators.noLeadingOrTrailingSpaces.bind(this)]],
       approvalType: ['employee-wise', Validators.required],
+      approvalLevel: ['1 Level', Validators.required],
       primaryApprover: [''],
       secondaryApprover: [''],
       isCommentMandatory: [true],
@@ -52,9 +53,9 @@ export class CreateLeaveComponent {
     this.setFormValues();
     this.getManagers();
     this.getLeaveCategories();
-    // this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
-    //   this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
-    // });
+    this.addTemplateForm.get('approvalLevel').valueChanges.subscribe((value: any) => {
+      this.validateApprovers(this.addTemplateForm.get('approvalType').value, value)
+    });
     this.addTemplateForm.get('approvalType').valueChanges.subscribe((value: any) => {
       // reset approver fields to null so mat-select reflects cleared selection
       this.addTemplateForm.patchValue({
@@ -72,20 +73,35 @@ export class CreateLeaveComponent {
       secondary?.markAsUntouched();
 
       // re-run approver validation logic
-      // this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value);
+      this.validateApprovers(value, this.addTemplateForm.get('approvalLevel').value);
     });
   }
 
   validateApprovers(approverType, approverLevel) {
-    if (approverLevel == 1 && approverType == 'template-wise') {
-      this.addTemplateForm.get('firstApprovalEmployee').setValidators([Validators.required]);
-      this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
+    const primaryApproverControl = this.addTemplateForm.get('primaryApprover');
+    const secondaryApproverControl = this.addTemplateForm.get('secondaryApprover');
+
+    if (approverType === 'template-wise') {
+      // Primary approver always required for template-wise
+      primaryApproverControl?.setValidators([Validators.required]);
+
+      // Secondary approver required only for 2-level approval
+      if (approverLevel === '2 Level') {
+        secondaryApproverControl?.setValidators([Validators.required]);
+      } else {
+        secondaryApproverControl?.clearValidators();
+        secondaryApproverControl?.setValue(null);
+      }
     } else {
-      this.addTemplateForm.get('firstApprovalEmployee').clearValidators();
-      this.addTemplateForm.get('secondApprovalEmployee').clearValidators();
+      // For employee-wise, clear all validators
+      primaryApproverControl?.clearValidators();
+      secondaryApproverControl?.clearValidators();
+      primaryApproverControl?.setValue(null);
+      secondaryApproverControl?.setValue(null);
     }
-    this.addTemplateForm.get('firstApprovalEmployee').updateValueAndValidity();
-    this.addTemplateForm.get('secondApprovalEmployee').updateValueAndValidity();
+
+    primaryApproverControl?.updateValueAndValidity();
+    secondaryApproverControl?.updateValueAndValidity();
   }
 
 
@@ -94,6 +110,7 @@ export class CreateLeaveComponent {
       this.addTemplateForm.reset({
         label: '',
         approvalType: 'employee-wise',
+        approvalLevel: '1 Level',
         primaryApprover: '',
         secondaryApprover: '',
         isCommentMandatory: true,
@@ -113,6 +130,7 @@ export class CreateLeaveComponent {
       this.addTemplateForm.patchValue({
         label: templateData.label,
         approvalType: templateData.approvalType,
+        approvalLevel: templateData.approvalLevel || '1 Level',
         primaryApprover: templateData.primaryApprover,
         secondaryApprover: templateData.secondaryApprover,
         isCommentMandatory: templateData.isCommentMandatory,

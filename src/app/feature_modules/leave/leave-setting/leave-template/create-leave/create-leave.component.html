@@ -55,6 +55,19 @@
 
             <div class="form-group col-12 my-2" *ngIf="addTemplateForm.get('approvalType')?.value === 'template-wise'">
                 <mat-form-field class="w-100">
+                    <mat-label>{{ 'leave.createTemplate.approvalLevel' | translate }}</mat-label>
+                    <mat-select formControlName="approvalLevel">
+                        <mat-option value="1 Level">{{ 'leave.createTemplate.oneLevel' | translate }}</mat-option>
+                        <mat-option value="2 Level">{{ 'leave.createTemplate.twoLevel' | translate }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="addTemplateForm.get('approvalLevel')?.invalid && addTemplateForm.get('approvalLevel')?.touched">
+                        {{ 'leave.createTemplate.errorApprovalLevelRequired' | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="form-group col-12 my-2" *ngIf="addTemplateForm.get('approvalType')?.value === 'template-wise'">
+                <mat-form-field class="w-100">
                     <mat-label>{{ 'leave.createTemplate.primaryApprover' | translate }}</mat-label>
                     <mat-select formControlName="primaryApprover">
                         <mat-option [value]="null" disabled>{{ 'leave.createTemplate.selectPrimaryApprover' | translate }}</mat-option>
@@ -64,6 +77,21 @@
                     </mat-select>
                     <mat-error *ngIf="addTemplateForm.get('primaryApprover')?.invalid && addTemplateForm.get('primaryApprover')?.touched">
                         {{ 'leave.createTemplate.errorPrimaryApproverRequired' | translate }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div class="form-group col-12 my-2" *ngIf="addTemplateForm.get('approvalType')?.value === 'template-wise' && addTemplateForm.get('approvalLevel')?.value === '2 Level'">
+                <mat-form-field class="w-100">
+                    <mat-label>{{ 'leave.createTemplate.secondaryApprover' | translate }}</mat-label>
+                    <mat-select formControlName="secondaryApprover">
+                        <mat-option [value]="null" disabled>{{ 'leave.createTemplate.selectSecondaryApprover' | translate }}</mat-option>
+                        <mat-option [value]="user?.id" *ngFor="let user of users; let i = index">
+                            {{ user?.firstName | titlecase }} {{ user?.lastName | titlecase }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="addTemplateForm.get('secondaryApprover')?.invalid && addTemplateForm.get('secondaryApprover')?.touched">
+                        {{ 'leave.createTemplate.errorSecondaryApproverRequired' | translate }}
                     </mat-error>
                 </mat-form-field>
             </div>

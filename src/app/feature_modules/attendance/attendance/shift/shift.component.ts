@@ -379,6 +379,7 @@ export class ShiftComponent {
           //this.shiftForm.reset();
           this.closeModal();
         }, (err) => {
+          this.isSubmitted = false;
           const errorMessage = err?.error?.message || err?.message || err
             || this.translate.instant('attendance.createShiftError');
           this.toast.error(errorMessage, this.translate.instant('common.error'));
@@ -396,6 +397,7 @@ export class ShiftComponent {
           //this.shiftForm.reset();
           this.closeModal();
         }, (err) => {
+          this.isSubmitted = false;
           const errorMessage = err?.error?.message || err?.message || err
             || this.translate.instant('attendance.updateShiftError')
             ;
@@ -404,9 +406,9 @@ export class ShiftComponent {
       }
     }
     else {
+      this.isSubmitted = false;
       this.shiftForm.markAllAsTouched();
     }
-    // this.isSubmitted = false;
   }
 
   deleteTemplate(id: string) {

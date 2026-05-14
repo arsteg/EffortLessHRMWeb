@@ -44,6 +44,7 @@ export class AttendanceTemplateAssignmentComponent {
   dialogRef: MatDialogRef<any> | null = null;
   private cdr: ChangeDetectorRef;
   allData = [];
+  allAssignedEmployeeIds: Set<string> = new Set();
 
   columns = [
       {
@@ -107,8 +108,10 @@ export class AttendanceTemplateAssignmentComponent {
     private commonService: CommonService,
     private dialog: MatDialog,
     private timelog: TimeLogService,
-    private toast: ToastrService
+    private toast: ToastrService,
+    cdr: ChangeDetectorRef
   ) {
+    this.cdr = cdr;
     this.attendanceTemplateAssignmentForm = this.fb.group({
       employee: ['', Validators.required],
       attendanceTemplate: ['', Validators.required],
@@ -123,12 +126,25 @@ export class AttendanceTemplateAssignmentComponent {
   ngOnInit() {
     this.commonService.populateUsers().subscribe(result => {
       this.allAssignee = result && result.data && result.data.data;
-    }); 
+    });
     this.getAllManagers();
     const today = new Date();
     this.minDate = new Date(today.setDate(today.getDate()));
     this.getAllTemplates();
     this.loadRecords();
+    this.loadAllAssignedEmployeeIds();
+  }
+
+  loadAllAssignedEmployeeIds() {
+    this.attendanceService.getAllAssignedEmployeeIds().subscribe((res: any) => {
+      this.allAssignedEmployeeIds.clear();
+      res.data?.forEach((assignment: any) => {
+        const empId = assignment.employee?._id || assignment.employee?.id;
+        if (empId) {
+          this.allAssignedEmployeeIds.add(empId);
+        }
+      });
+    });
   }
 
   getAllManagers() {
@@ -154,11 +170,9 @@ export class AttendanceTemplateAssignmentComponent {
   onEmployeeChange(event: any) {
     const selectedEmployeeId = event.value;
     const employeeControl = this.attendanceTemplateAssignmentForm.get('employee');
-    
+
     if (selectedEmployeeId) {
-      this.userHasTemplateError = this.attendanceTemplateAssignment.some(
-        (assignment: any) => assignment.employee === selectedEmployeeId
-      );
+      this.userHasTemplateError = this.allAssignedEmployeeIds.has(selectedEmployeeId);
       if (this.userHasTemplateError) {
         employeeControl?.setErrors({ employeeAlreadyAssigned: true });
       } else {
@@ -340,13 +354,10 @@ export class AttendanceTemplateAssignmentComponent {
     const selectedEmployeeId = this.attendanceTemplateAssignmentForm.get('employee')?.value;
 
     // Check if the employee already has a template assigned
-    const isAlreadyAssigned = this.attendanceTemplateAssignment.some(
-      (assignment: any) => assignment.employeeId === selectedEmployeeId
-    );
-
-    if (isAlreadyAssigned) {
-      this.userHasTemplateError = true; // Show error
-      return; // Stop form submission
+    if (this.allAssignedEmployeeIds.has(selectedEmployeeId)) {
+      this.userHasTemplateError = true;
+      this.attendanceTemplateAssignmentForm.get('employee')?.setErrors({ employeeAlreadyAssigned: true });
+      return;
     }
 
     this.userHasTemplateError = false;
@@ -367,11 +378,12 @@ export class AttendanceTemplateAssignmentComponent {
         }
         this.attendanceService.addAttendanceAssignment(payload).subscribe((res: any) => {
           this.loadRecords();
+          this.loadAllAssignedEmployeeIds();
           this.toast.success(
             this.translate.instant('attendance.templateAssignedSuccess')
           );
           this.dialogRef.close(true);
-         this.resetAssignmentForm();
+          this.resetAssignmentForm();
         },
         err => {
           const errorMessage = err?.error?.message || err?.message || err 
@@ -433,6 +445,7 @@ export class AttendanceTemplateAssignmentComponent {
   deleteTempAssignment(id: string) {
     this.attendanceService.deleteAttendanceAssignment(id).subscribe((res: any) => {
       this.loadRecords();
+      this.loadAllAssignedEmployeeIds();
       this.toast.success('Successfully Deleted!!!', 'Attendance Template Assignment')
     },
       (err) => {

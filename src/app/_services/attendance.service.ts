@@ -148,6 +148,11 @@ export class AttendanceService {
     return response;
   }
 
+  getAllAssignedEmployeeIds(): Observable<response<any>> {
+    var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-assignments-by-company`, { skip: 0 }, this.httpOptions);
+    return response;
+  }
+
   getAttendanceAssignmentById(id: string): Observable<response<any>> {
     var response = this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/attendance-assignments/${id}`, this.httpOptions);
     return response;

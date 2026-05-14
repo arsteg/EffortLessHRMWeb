@@ -291,8 +291,7 @@ export class AdminTimesheetComponent implements OnInit {
     } else {
       this.selectedUser = [];
     }
-    // this.selectAll = !this.selectAll;
-    this.selectAll = false;
+    this.selectAll = !this.selectAll;
     this.filterData();
   }
 }

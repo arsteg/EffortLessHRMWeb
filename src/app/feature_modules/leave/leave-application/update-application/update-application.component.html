@@ -1,7 +1,8 @@
 <div class="d-flex align-items-center justify-content-between">
   <h1 mat-dialog-title>
-    {{ (leaveService.leave.getValue().status === 'Rejected' ? 'leave.rejectRequestConfirmation' :
-         leaveService.leave.getValue().status === 'Approved' ? 'leave.approveRequestConfirmation' :
+    {{ (leaveService.leave.getValue().newStatus === 'Rejected' ? 'leave.rejectRequestConfirmation' :
+         leaveService.leave.getValue().newStatus === 'Approved' && leaveService.leave.getValue().originalStatus === 'Level 2 Approval Pending' ? 'leave.approveRequestLevel2Confirmation' :
+         leaveService.leave.getValue().newStatus === 'Approved' ? 'leave.approveRequestConfirmation' :
          leaveService.leave.getValue().status === 'Cancelled' ? 'leave.cancelRequestConfirmation' :
          'leave.defaultRequestConfirmation') | translate }}
   </h1>
@@ -13,13 +14,27 @@
 <form [formGroup]="updateLeaveReport" (ngSubmit)="updateApprovedReport()">
   <div mat-dialog-content>
     <div class="row m-0">
-      <div class="form-group col-md-12">
+      <!-- Level 1 Reason - shown when approving/rejecting at Level 1 -->
+      <div class="form-group col-md-12" *ngIf="leaveService.leave.getValue().originalStatus === 'Level 1 Approval Pending'">
         <mat-form-field class="w-100">
-          <mat-label>{{ 'leave.reasonLabel' | translate }}</mat-label>
+          <mat-label>{{ 'leave.reasonLabel' | translate }} (Level 1)</mat-label>
           <textarea matInput formControlName="level1Reason" rows="3"
                     [placeholder]="'leave.reasonPlaceholder' | translate"
                     [attr.aria-label]="'leave.reasonInput' | translate"></textarea>
           <mat-error *ngIf="updateLeaveReport.get('level1Reason')?.invalid && updateLeaveReport.get('level1Reason')?.touched">
+            {{ 'leave.reasonRequiredError' | translate }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Level 2 Reason - shown when approving/rejecting at Level 2 -->
+      <div class="form-group col-md-12" *ngIf="leaveService.leave.getValue().originalStatus === 'Level 2 Approval Pending'">
+        <mat-form-field class="w-100">
+          <mat-label>{{ 'leave.reasonLabel' | translate }} (Level 2)</mat-label>
+          <textarea matInput formControlName="level2Reason" rows="3"
+                    [placeholder]="'leave.reasonPlaceholder' | translate"
+                    [attr.aria-label]="'leave.reasonInput' | translate"></textarea>
+          <mat-error *ngIf="updateLeaveReport.get('level2Reason')?.invalid && updateLeaveReport.get('level2Reason')?.touched">
             {{ 'leave.reasonRequiredError' | translate }}
           </mat-error>
         </mat-form-field>

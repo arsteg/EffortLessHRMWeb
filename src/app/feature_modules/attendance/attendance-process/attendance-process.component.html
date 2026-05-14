@@ -174,7 +174,10 @@
                         </mat-select>
                         <mat-error
                             *ngIf="lopForm.get('user')?.touched && lopForm.get('user')?.errors?.['noAttendanceTemplate']">
-                            No attendance template assigned for selected user(s).
+                            No attendance template assigned for:
+                            <span *ngFor="let user of lopForm.get('user')?.errors?.['noAttendanceTemplate']?.users; let last = last">
+                                {{ user | titlecase }}{{ last ? '' : ', ' }}
+                            </span>
                         </mat-error>
                         <mat-error
                             *ngIf="lopForm.controls['user'].hasError('required') && lopForm.controls['user'].touched">
