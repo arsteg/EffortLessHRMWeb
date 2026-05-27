@@ -1,0 +1,1669 @@
+<!--Greetings & Date Picker-->
+<div class="row align-items-center">
+  <div class="col-lg-6 col-md-4 col-12">
+    <h1 class="mb-0">{{'dashboard.greeting' | translate}} <span class="text-primary">{{currentProfile?.firstName}}
+        {{currentProfile?.lastName}}</span>!</h1>
+    <p translate>dashboard.welcome</p>
+  </div>
+  <div class="col-lg-3 col-md-4 col-12 ms-md-auto pe-3">
+    <mat-form-field class="densed-field">
+      <mat-label>Member</mat-label>
+      <mat-select [(ngModel)]="projectwiseTimeSelectedMemberofAllTasks"
+        (selectionChange)="onMemberSelectionChange(projectwiseTimeSelectedMemberofAllTasks)">
+        @for(m of members; track m) {
+        <mat-option [value]="m">{{m.name | titlecase}}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="col-lg-3 col-md-4 col-12 ms-md-auto pe-3">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label class="">Select Date</mat-label>
+      <input matInput [matDatepicker]="picker1" [(ngModel)]="selectedDate" (dateChange)="onDateChange($event)">
+      <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+  </div>
+</div>
+
+<!--Subscription Info-->
+<div class="card subscription-card mt-2" *ngIf="subscription">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-2 mt-0">Subscription</h1>
+    </div>
+    <ng-container>
+      <div class="col-12 col-sm-4">
+        <div class="card h-100">
+          <p class="text-muted">{{subscription?.currentPlanId.frequency | titlecase}} Subscription</p>
+          <h3 class="m-0">{{subscription?.currentPlanId.name}}</h3>
+          <h3 class="m-0">{{subscription?.razorpaySubscription.status | titlecase}}</h3>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container>
+      <div class="col-12 col-sm-4" *ngIf="upcomingPayment">
+        <div class="card h-100">
+          <p class="text-muted">Next payment</p>
+          <h3 class="m-0">Due Date: {{(upcomingPayment?.due_date | date) || ''}}</h3>
+          <h3 class="m-0">Amount: {{(upcomingPayment?.total_due_amount | currency: 'INR') || ''}}</h3>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container>
+      <div class="col-12 col-sm-4" *ngIf="lastInvoice">
+        <div class="card h-100">
+          <p class="text-muted">Last payment</p>
+          <h3 class="m-0">Amount: {{(lastInvoice?.amount | currency: 'INR') || ''}}</h3>
+          <h3 class="m-0">Method:
+            {{lastInvoice?.payment_method | titlecase}}
+            <mat-icon svgIcon="upi" *ngIf="lastInvoice?.payment_method === 'upi'" style="line-height: 0.2;"></mat-icon>
+            <mat-icon svgIcon="card" *ngIf="lastInvoice?.payment_method === 'card'"
+              style="line-height: 0.2;"></mat-icon>
+          </h3>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <!--Work Hours Log-->
+  <div class="col-md-4 mb-4">
+    <div class="card p-2" #timeSpentCard style="min-height: 400px;">
+      <div class="d-flex align-items-center justify-content-between">
+        <h2>Time Spent</h2>
+        <mat-form-field class="densed-field w-50">
+          <mat-select [(ngModel)]="selectedTimeSpent" (selectionChange)="onTimeSpentChange($event.value)">
+            <mat-option value="Daily">Daily</mat-option>
+            <mat-option value="Weekly">Weekly</mat-option>
+            <mat-option value="Monthly">Monthly</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      @if(selectedTimeSpent === 'Daily') {
+        @if(hoursWorked?.today || hoursWorked?.previousDay) {
+        <p class="text-center mt-2">
+          <span class="h5" [style.color]="hoursWorked?.changeColor">
+            {{hoursWorked?.changeDisplay ? hoursWorked?.changeDisplay + '%' : ''}}
+          </span>
+          <br>
+          <span class="d-flex align-items-center justify-content-center">
+            <span class="text-dark"> Yesterday </span>
+            <mat-icon *ngIf="hoursWorked?.increased" class="text-success">arrow_upward</mat-icon>
+            <mat-icon *ngIf="!hoursWorked?.increased" class="text-danger">arrow_downward</mat-icon>
+          </span>
+        </p>
+        <hr>
+        <div class="mx-auto w-75">
+          <ngx-charts-bar-vertical [results]="hoursWorked?.chartData" [legend]="false" [xAxis]="true"
+            [tooltipDisabled]="true" [legendPosition]="legendPosition" [customColors]="hoursWorked?.chartColors">
+          </ngx-charts-bar-vertical>
+        </div>
+        <div class="w-100 d-flex justify-content-between align-items-center">
+          <div class="col-5">
+            <div class="text-end p-2">
+              <h2>{{ formatMillisecondsToTime(hoursWorked?.today)}}</h2>
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="p-2">
+              <h2>{{formatMillisecondsToTime(hoursWorked?.previousDay)}}</h2>
+            </div>
+          </div>
+        </div>
+        } @else {
+        <div class="d-flex align-items-center justify-content-center flex-grow-1">
+          <p class="text-muted">No time logged for this day</p>
+        </div>
+        }
+      }
+      @if(selectedTimeSpent === 'Weekly') {
+        @if(weeklySummary?.currentWeek || weeklySummary?.previousWeek) {
+        <p class="text-center mt-2">
+          <span class="h5" [style.color]="weeklySummary?.changeColor">
+            {{weeklySummary?.changeDisplay ? weeklySummary?.changeDisplay + '%' : ''}}
+          </span>
+          <br>
+          <span class="d-flex align-items-center justify-content-center">
+            <span class="text-dark"> Last week </span>
+            <mat-icon *ngIf="weeklySummary?.increased" class="text-success">arrow_upward</mat-icon>
+            <mat-icon *ngIf="!weeklySummary?.increased" class="text-danger">arrow_downward</mat-icon>
+          </span>
+        </p>
+        <hr>
+        <div class="mx-auto w-75">
+          <ngx-charts-bar-vertical [results]="weeklySummary?.chartData" [legend]="false" [xAxis]="true"
+            [tooltipDisabled]="true" [legendPosition]="legendPosition" [customColors]="weeklySummary?.chartColors">
+          </ngx-charts-bar-vertical>
+        </div>
+        <div class="w-100 d-flex justify-content-between align-items-center">
+          <div class="col-5">
+            <div class="p-2 text-end">
+              <h2>{{ formatHoursAndMinutes(weeklySummary?.currentWeek)}}</h2>
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="p-2">
+              <h2>{{formatHoursAndMinutes(weeklySummary?.previousWeek)}}</h2>
+            </div>
+          </div>
+        </div>
+        } @else {
+        <div class="d-flex align-items-center justify-content-center flex-grow-1">
+          <p class="text-muted">No time logged for this week</p>
+        </div>
+        }
+      }
+      @if(selectedTimeSpent === 'Monthly') {
+        @if(monthlySummary?.currentMonth || monthlySummary?.previousMonth) {
+        <p class="text-center mt-2">
+          <span class="h5" [style.color]="monthlySummary?.changeColor">
+            {{monthlySummary?.changeDisplay ? monthlySummary?.changeDisplay + '%' : ''}}
+          </span>
+          <br>
+          <span class="d-flex align-items-center justify-content-center">
+            <span class="text-dark"> Last month </span>
+            <mat-icon *ngIf="monthlySummary?.increased" class="text-success">arrow_upward</mat-icon>
+            <mat-icon *ngIf="!monthlySummary?.increased" class="text-danger">arrow_downward</mat-icon>
+          </span>
+        </p>
+        <hr>
+        <div class="mx-auto w-75">
+          <ngx-charts-bar-vertical [results]="monthlySummary?.chartData" [legend]="false" [xAxis]="true"
+            [tooltipDisabled]="true" [legendPosition]="legendPosition" [customColors]="monthlySummary?.chartColors">
+          </ngx-charts-bar-vertical>
+        </div>
+        <div class="w-100 d-flex justify-content-between align-items-center">
+          <div class="col-5">
+            <div class="p-2 text-end">
+              <h2>{{ convertMinutesToHoursAndMinutes(monthlySummary?.currentMonth)}}</h2>
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="p-2">
+              <h2>{{convertMinutesToHoursAndMinutes(monthlySummary?.previousMonth)}}</h2>
+            </div>
+          </div>
+        </div>
+        } @else {
+        <div class="d-flex align-items-center justify-content-center flex-grow-1">
+          <p class="text-muted">No time logged for this month</p>
+        </div>
+        }
+      }
+    </div>
+  </div>
+
+  <!--Project-wise Time Spent on All Tasks-->
+  <div class="col-md-8 mb-4">
+    <div class="card p-2">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <h2 class="d-flex align-items-center">Project-wise Time Spent on All Tasks</h2>
+      </div>
+      <div style="overflow-y: auto;" [style.max-height.px]="timeSpentCardHeight" [style.min-height.px]="timeSpentCardHeight">
+        @if(projectTasks?.length > 0) {
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let projectTask of projectTasks">
+              <tr class="sticky-top">
+                <td colspan="2">
+                  <span class="fw-bold">{{projectTask?.projectName}}</span>
+                </td>
+              </tr>
+              <tr *ngFor="let task of projectTask.tasks; let i = index">
+                <td class="py-2">{{task?.taskName}}</td>
+                <td>
+                  <span> {{ task?.totalTime | milliSecondsToTime }} </span>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        } @else {
+        <div class="d-flex align-items-center justify-content-center h-100">
+          <p class="text-muted">No project-wise time data available</p>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!--Project-wise Time Spent on Each Task-->
+  <div class="col-md-6 mb-4">
+    <div class="card h-100 p-2" style="min-height: 290px">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <h2 class="d-flex align-items-center">Project-wise Time on Each Task</h2>
+      </div>
+      @if(dayWorkStatusByUser?.length > 0) {
+        @for(projectTask of dayWorkStatusByUser; track projectTask; let i = $index) {
+        <div class="sticky-top">
+          <span class="fw-bold">{{projectTask?.projectName}}</span>
+        </div>
+        @for(task of projectTask.tasks; track task; let j = $index) {
+        <div class="my-3">
+          <div class="d-flex justify-content-between">
+            <div>{{ task.taskName }}</div>
+            <div><strong>{{ ((task?.count*10)*60*1000) | milliSecondsToTime }} Hours</strong></div>
+          </div>
+          <div class="progress custom-progress mt-1">
+            <div class="progress-bar bg-primary" [style.width.%]="(task.count * 10) / (24 * 60) * 100" role="progressbar">
+            </div>
+          </div>
+        </div>
+        }
+        }
+      } @else {
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <p class="text-muted">No task data available for this date</p>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!--Productivity-->
+  <div class="col-md-3 mb-4">
+    <div class="card h-100 p-2">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <h2 class="d-flex align-items-center">Productivity</h2>
+      </div>
+      @if(hasChartData(productivityData)) {
+      <div class="w-100 mx-auto">
+        <ngx-charts-pie-chart [results]="productivityData" [legend]="false" [labels]="false" [doughnut]="true"
+          [explodeSlices]="false" [arcWidth]="0.25" [legendTitle]="''" [scheme]="colorScheme"></ngx-charts-pie-chart>
+        <div class="d-flex flex-wrap gap-1 chart-legend justify-content-center">
+          @for(productivity of productivityData; track productivity; let i = $index) {
+          <div class="text-center">
+            <span class="chart-badge border border-light rounded-circle"
+              [style.background]="colorScheme.domain[i]"></span>
+            <span>{{productivity.name}}</span>
+            <h3 class="m-0">{{productivity.value | number}}</h3>
+          </div>
+          }
+        </div>
+      </div>
+      } @else {
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <p class="text-muted">No productivity data available for this date</p>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!--Task Summary-->
+  <div class="col-md-3 mb-4">
+    <div class="card h-100 p-2">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <h2 class="d-flex align-items-center">Task Summary</h2>
+      </div>
+      @if(hasChartData(taskSummary)) {
+      <div class="w-100">
+        <ngx-charts-pie-chart [results]="taskSummary" [legend]="false" [doughnut]="false" [labels]="false"
+          [explodeSlices]="false" [gradient]="false" [scheme]="colorScheme">
+        </ngx-charts-pie-chart>
+        <div class="d-flex flex-wrap gap-1 chart-legend justify-content-center">
+          @for(task of taskSummary; track task; let i = $index) {
+          <div class="text-center">
+            <span class="chart-badge border border-light rounded-circle"
+              [style.background]="colorScheme.domain[i]"></span>
+            <span>{{task.name}}</span>
+            <h3 class="m-0">{{task.value}}</h3>
+          </div>
+          }
+        </div>
+      </div>
+      } @else {
+      <div class="d-flex align-items-center justify-content-center h-100">
+        <p class="text-muted">No task data available</p>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Attendance Reports Section -->
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Mobile App Attendance Overview</h2>
+        <!-- Office Filter Dropdown -->
+        <mat-form-field class="densed-field" style="width: 250px;">
+          <mat-label>Select Office</mat-label>
+          <mat-select [(ngModel)]="selectedOffice" (selectionChange)="onOfficeChange($event.value)">
+            <mat-option value="all">All Offices</mat-option>
+            @for(office of attendanceOffices; track office._id) {
+              <mat-option [value]="office._id">{{office.name}} - {{office.city}}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="row mb-4">
+        <div class="col-md-4 col-sm-6 mb-3">
+          <div class="card bg-primary text-white p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h3 class="mb-0">{{attendanceSummary?.totalEmployees || 0}}</h3>
+                <p class="mb-0 small">Total Employees</p>
+              </div>
+              <i class="fas fa-users fa-2x opacity-50"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-3">
+          <div class="card bg-success text-white p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h3 class="mb-0">{{attendanceSummary?.checkedInToday || 0}}</h3>
+                <p class="mb-0 small">Checked In Today</p>
+              </div>
+              <i class="fas fa-sign-in-alt fa-2x opacity-50"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-3">
+          <div class="card bg-info text-white p-3">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h3 class="mb-0">{{attendanceSummary?.checkedOutToday || 0}}</h3>
+                <p class="mb-0 small">Checked Out</p>
+              </div>
+              <i class="fas fa-sign-out-alt fa-2x opacity-50"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabs Navigation -->
+      <ul class="nav nav-tabs mb-3" id="attendanceTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="daily-tab" data-bs-toggle="tab" data-bs-target="#daily" type="button" role="tab" aria-controls="daily" aria-selected="true" (click)="onAttendanceViewChange('daily')">
+            <i class="fas fa-calendar-day"></i> Daily
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="weekly-tab" data-bs-toggle="tab" data-bs-target="#weekly" type="button" role="tab" aria-controls="weekly" aria-selected="false" (click)="onAttendanceViewChange('weekly')">
+            <i class="fas fa-calendar-week"></i> Weekly
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="monthly-tab" data-bs-toggle="tab" data-bs-target="#monthly" type="button" role="tab" aria-controls="monthly" aria-selected="false" (click)="onAttendanceViewChange('monthly')">
+            <i class="fas fa-calendar-alt"></i> Monthly
+          </button>
+        </li>
+      </ul>
+
+      <!-- Tab Content -->
+      <div class="tab-content" id="attendanceTabContent">
+
+        <!-- Daily Tab -->
+        <div class="tab-pane fade show active" id="daily" role="tabpanel" aria-labelledby="daily-tab">
+          <div class="table-responsive">
+            <h5 class="mb-3">Today's Attendance</h5>
+            @if(selectedAttendanceView === 'daily' && attendanceOverviewData && attendanceOverviewData.length > 0) {
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>Employee Name</th>
+                    <th>Position</th>
+                    <th>Status</th>
+                    <th>Check-In</th>
+                    <th>Check-Out</th>
+                    <th>Working Hours</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for(employee of attendanceOverviewData; track employee.userId) {
+                    <tr>
+                      <td>
+                        <strong>{{employee.name}}</strong><br>
+                        <small class="text-muted">{{employee.email}}</small>
+                      </td>
+                      <td>{{employee.position}}</td>
+                      <td>
+                        @if(employee.status === 'Present') {
+                          <span class="badge bg-success">Present</span>
+                        } @else if(employee.status === 'Checked In') {
+                          <span class="badge bg-info">Checked In</span>
+                        } @else {
+                          <span class="badge bg-danger">Absent</span>
+                        }
+                      </td>
+                      <td>{{employee.checkIn}}</td>
+                      <td>{{employee.checkOut}}</td>
+                      <td>{{employee.workingHours}}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            } @else {
+              <div class="text-center py-5">
+                <p class="text-muted">No attendance data available for today</p>
+              </div>
+            }
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="row mt-3">
+            <div class="col-md-4 mb-2">
+              <div class="border rounded p-3 text-center">
+                <h5 class="text-success mb-1">{{attendanceSummary?.attendanceRate || '0%'}}</h5>
+                <small class="text-muted">Daily Attendance Rate</small>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2">
+              <div class="border rounded p-3 text-center">
+                <h5 class="text-primary mb-1">{{attendanceSummary?.avgWorkingHours || '0h'}}</h5>
+                <small class="text-muted">Avg Working Hours Today</small>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2">
+              <div class="border rounded p-3 text-center">
+                <h5 class="text-info mb-1">{{attendanceSummary?.avgCheckInTime || '-'}}</h5>
+                <small class="text-muted">Avg Check-In Time</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly Tab -->
+        <div class="tab-pane fade" id="weekly" role="tabpanel" aria-labelledby="weekly-tab">
+          <h5 class="mb-3">Weekly Attendance Calendar</h5>
+
+          <!-- Weekly Stats -->
+          <div class="row mb-4">
+            <div class="col-md-4 mb-2">
+              <div class="border rounded p-3 text-center">
+                <h5 class="text-success mb-1">{{attendanceSummary?.attendanceRate || '0%'}}</h5>
+                <small class="text-muted">Weekly Attendance</small>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2">
+              <div class="border rounded p-3 text-center">
+                <h5 class="text-primary mb-1">{{attendanceSummary?.avgWorkingHours || '0h'}}</h5>
+                <small class="text-muted">Avg Daily Hours</small>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2">
+              <div class="border rounded p-3 text-center">
+                <h5 class="text-info mb-1">{{attendanceSummary?.avgCheckInTime || '-'}}</h5>
+                <small class="text-muted">Avg Check-In</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Compact Weekly Calendar Grid -->
+          @if(selectedAttendanceView === 'weekly' && attendanceOverviewData && attendanceOverviewData.length > 0) {
+            <div class="table-responsive">
+              <table class="table table-bordered attendance-calendar-table">
+                <thead class="table-light">
+                  <tr>
+                    <th class="employee-name-col">Employee</th>
+                    @for(day of getWeekDays(); track day) {
+                      <th class="text-center" [class.weekend-header]="isWeekend(day)">{{getDayName(day)}}</th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for(employee of attendanceOverviewData; track employee.userId) {
+                    <tr>
+                      <td class="employee-name-col">
+                        <strong>{{employee.name}}</strong><br>
+                        <small class="text-muted">{{employee.position}}</small>
+                      </td>
+                      @for(day of getWeekDays(); track day) {
+                        @if(isWeekend(day)) {
+                          <td class="attendance-cell weekend">
+                            <div class="cell-date">{{formatDate(day)}}</div>
+                            <span class="badge bg-secondary mb-1">W</span>
+                            <div class="time-info">-</div>
+                          </td>
+                        } @else {
+                          <td class="attendance-cell" [class.status-present]="getAttendanceForDate(employee, day).status === 'Present'"
+                              [class.status-absent]="getAttendanceForDate(employee, day).status === 'Absent'">
+                            <div class="cell-date">{{formatDate(day)}}</div>
+                            <span class="badge mb-1" [ngClass]="getStatusBadgeClass(getAttendanceForDate(employee, day).status)">
+                              {{getStatusLabel(getAttendanceForDate(employee, day).status)}}
+                            </span>
+                            @if(getAttendanceForDate(employee, day).status !== 'Absent') {
+                              <div class="time-info">In: {{getAttendanceForDate(employee, day).checkIn}}</div>
+                              <div class="time-info" [class.text-muted]="getAttendanceForDate(employee, day).checkOut === 'Working...'">
+                                Out: {{getAttendanceForDate(employee, day).checkOut}}
+                              </div>
+                              <div class="time-info fw-bold">{{getAttendanceForDate(employee, day).hours}}</div>
+                            } @else {
+                              <div class="time-info">-</div>
+                            }
+                          </td>
+                        }
+                      }
+                    </tr>
+                  }
+              </tbody>
+            </table>
+          </div>
+          } @else {
+            <div class="text-center py-5">
+              <p class="text-muted">No attendance data available for this week</p>
+            </div>
+          }
+        </div>
+
+        <!-- Monthly Tab -->
+        <div class="tab-pane fade" id="monthly" role="tabpanel" aria-labelledby="monthly-tab">
+          <h5 class="mb-3">Monthly Attendance Calendar</h5>
+
+          <!-- Monthly Stats -->
+          <div class="row mb-4">
+            <div class="col-md-4 mb-2">
+              <div class="border rounded p-3 text-center">
+                <h5 class="text-success mb-1">{{attendanceSummary?.attendanceRate || '0%'}}</h5>
+                <small class="text-muted">Monthly Attendance</small>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2">
+              <div class="border rounded p-3 text-center">
+                <h5 class="text-primary mb-1">{{attendanceSummary?.avgWorkingHours || '0h'}}</h5>
+                <small class="text-muted">Avg Daily Hours</small>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2">
+              <div class="border rounded p-3 text-center">
+                <h5 class="text-info mb-1">{{attendanceSummary?.avgCheckInTime || '-'}}</h5>
+                <small class="text-muted">Avg Check-In</small>
+              </div>
+            </div>
+          </div>
+          @if(selectedAttendanceView === 'monthly' && attendanceOverviewData && attendanceOverviewData.length > 0) {
+          <div class="table-responsive">
+            <table class="table table-bordered attendance-calendar-table-monthly">
+              <thead class="table-light">
+                <tr>
+                  <th class="employee-name-col-monthly">Employee</th>
+                  <th class="text-center" colspan="15">Monthly Attendance Data (First Half)</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(employee of attendanceOverviewData; track employee.userId) {
+                  <tr>
+                    <td class="employee-name-col-monthly">
+                      <strong>{{employee.name}}</strong><br>
+                      <small class="text-muted">{{employee.position}}</small>
+                    </td>
+                    @for(day of getMonthDays(); track day; let i = $index) {
+                      @if(i < 15) {
+                        @if(isWeekend(day)) {
+                          <td class="attendance-cell-monthly weekend">
+                            <div class="cell-date-monthly">{{formatDate(day, 'D MMM')}}</div>
+                            <span class="badge bg-secondary mb-1">W</span>
+                            <div class="time-info-mini">-</div>
+                          </td>
+                        } @else {
+                          <td class="attendance-cell-monthly"
+                              [class.status-present]="getAttendanceForDate(employee, day).status === 'Present'"
+                              [class.status-absent]="getAttendanceForDate(employee, day).status === 'Absent'">
+                            <div class="cell-date-monthly">{{formatDate(day, 'D MMM')}}</div>
+                            <span class="badge mb-1" [ngClass]="getStatusBadgeClass(getAttendanceForDate(employee, day).status)">
+                              {{getStatusLabel(getAttendanceForDate(employee, day).status)}}
+                            </span>
+                            @if(getAttendanceForDate(employee, day).status !== 'Absent') {
+                              <div class="time-info-mini">In: {{getAttendanceForDate(employee, day).checkIn}}</div>
+                              <div class="time-info-mini">Out: {{getAttendanceForDate(employee, day).checkOut}}</div>
+                              <div class="time-info-mini hours">{{getAttendanceForDate(employee, day).hours}}</div>
+                            } @else {
+                              <div class="time-info-mini">-</div>
+                            }
+                          </td>
+                        }
+                      }
+                    }
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">2 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:10</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">9h 05m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">3 May</div>
+                    <span class="badge bg-secondary mb-1">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">4 May</div>
+                    <span class="badge bg-secondary mb-1">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">5 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:08</div>
+                    <div class="time-info-mini">Out: 18:25</div>
+                    <div class="time-info-mini hours">9h 17m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">6 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:12</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 58m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">7 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:15</div>
+                    <div class="time-info-mini">Out: 18:30</div>
+                    <div class="time-info-mini hours">9h 15m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">8 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:18</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 52m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">9 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 18:20</div>
+                    <div class="time-info-mini hours">9h 15m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">10 May</div>
+                    <span class="badge bg-secondary mb-1">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">11 May</div>
+                    <span class="badge bg-secondary mb-1">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">12 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:08</div>
+                    <div class="time-info-mini">Out: 18:22</div>
+                    <div class="time-info-mini hours">9h 14m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">13 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 18:20</div>
+                    <div class="time-info-mini hours">9h 15m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">14 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:10</div>
+                    <div class="time-info-mini">Out: 18:00</div>
+                    <div class="time-info-mini hours">8h 50m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">15 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:15</div>
+                    <div class="time-info-mini">Out: 18:30</div>
+                    <div class="time-info-mini hours">9h 15m</div>
+                  </td>
+                </tr>
+                <!-- John Smith - Row 2 (Days 16-31) -->
+                <tr class="second-row">
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">16 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:12</div>
+                    <div class="time-info-mini">Out: 18:25</div>
+                    <div class="time-info-mini hours">9h 13m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">17 May</div>
+                    <span class="badge bg-secondary mb-1">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">18 May</div>
+                    <span class="badge bg-secondary mb-1">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">19 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:08</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">9h 07m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">20 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:10</div>
+                    <div class="time-info-mini">Out: 18:20</div>
+                    <div class="time-info-mini hours">9h 10m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">21 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 18:25</div>
+                    <div class="time-info-mini hours">9h 20m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">22 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:12</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">9h 03m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">23 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:08</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">9h 02m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">24 May</div>
+                    <span class="badge bg-secondary mb-1">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">25 May</div>
+                    <span class="badge bg-secondary mb-1">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">26 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:15</div>
+                    <div class="time-info-mini">Out: 18:30</div>
+                    <div class="time-info-mini hours">9h 15m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">27 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:10</div>
+                    <div class="time-info-mini">Out: 18:20</div>
+                    <div class="time-info-mini hours">9h 10m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">28 May</div>
+                    <span class="badge bg-success mb-1">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">9h 10m</div>
+                  </td>
+                  <td class="attendance-cell-monthly future">
+                    <div class="cell-date-monthly">29 May</div>
+                    <span class="badge bg-light mb-1">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly future">
+                    <div class="cell-date-monthly">30 May</div>
+                    <span class="badge bg-light mb-1">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend future">
+                    <div class="cell-date-monthly">31 May</div>
+                    <span class="badge bg-light mb-1">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                </tr>
+
+                <!-- Sarah Johnson - Row 1 (Days 1-15) -->
+                <tr>
+                  <td class="employee-name-col-monthly" rowspan="2">
+                    <strong>Sarah Johnson</strong><br>
+                    <small class="text-muted">EMP002</small><br>
+                    <span class="badge bg-warning text-dark mt-1">19 Days</span><br>
+                    <small class="text-muted">159h 00m</small>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">1 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-late">
+                    <div class="cell-date-monthly">2 May</div>
+                    <span class="badge bg-warning">L</span>
+                    <div class="time-info-mini">In: 10:05</div>
+                    <div class="time-info-mini">Out: 18:30</div>
+                    <div class="time-info-mini hours">8h 25m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">3 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">4 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">5 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:35</div>
+                    <div class="time-info-mini">Out: 18:20</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-late">
+                    <div class="cell-date-monthly">6 May</div>
+                    <span class="badge bg-warning">L</span>
+                    <div class="time-info-mini">In: 10:10</div>
+                    <div class="time-info-mini">Out: 18:40</div>
+                    <div class="time-info-mini hours">8h 30m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">7 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:40</div>
+                    <div class="time-info-mini">Out: 18:25</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-late">
+                    <div class="cell-date-monthly">8 May</div>
+                    <span class="badge bg-warning">L</span>
+                    <div class="time-info-mini">In: 10:20</div>
+                    <div class="time-info-mini">Out: 18:40</div>
+                    <div class="time-info-mini hours">8h 20m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">9 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 40m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">10 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">11 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">12 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:28</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">8h 47m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-late">
+                    <div class="cell-date-monthly">13 May</div>
+                    <span class="badge bg-warning">L</span>
+                    <div class="time-info-mini">In: 10:05</div>
+                    <div class="time-info-mini">Out: 18:25</div>
+                    <div class="time-info-mini hours">8h 20m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-late">
+                    <div class="cell-date-monthly">14 May</div>
+                    <span class="badge bg-warning">L</span>
+                    <div class="time-info-mini">In: 10:15</div>
+                    <div class="time-info-mini">Out: 18:45</div>
+                    <div class="time-info-mini hours">8h 30m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-late">
+                    <div class="cell-date-monthly">15 May</div>
+                    <span class="badge bg-warning">L</span>
+                    <div class="time-info-mini">In: 10:45</div>
+                    <div class="time-info-mini">Out: 19:00</div>
+                    <div class="time-info-mini hours">8h 15m</div>
+                  </td>
+                </tr>
+                <!-- Sarah Johnson - Row 2 (Days 16-31) -->
+                <tr class="second-row">
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">16 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:20</div>
+                    <div class="time-info-mini">Out: 18:30</div>
+                    <div class="time-info-mini hours">9h 10m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">17 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">18 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">19 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:35</div>
+                    <div class="time-info-mini">Out: 18:25</div>
+                    <div class="time-info-mini hours">8h 50m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">20 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 18:20</div>
+                    <div class="time-info-mini hours">8h 50m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-absent">
+                    <div class="cell-date-monthly">21 May</div>
+                    <span class="badge bg-danger">A</span>
+                    <div class="time-info-mini">-</div>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">22 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:40</div>
+                    <div class="time-info-mini">Out: 18:30</div>
+                    <div class="time-info-mini hours">8h 50m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">23 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:35</div>
+                    <div class="time-info-mini">Out: 18:20</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">24 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">25 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">26 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">27 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:35</div>
+                    <div class="time-info-mini">Out: 18:25</div>
+                    <div class="time-info-mini hours">8h 50m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">28 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 18:20</div>
+                    <div class="time-info-mini hours">8h 50m</div>
+                  </td>
+                  <td class="attendance-cell-monthly future">
+                    <div class="cell-date-monthly">29 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly future">
+                    <div class="cell-date-monthly">30 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend future">
+                    <div class="cell-date-monthly">31 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                </tr>
+
+                <!-- Michael Brown - Row 1 (Days 1-15) -->
+                <tr>
+                  <td class="employee-name-col-monthly" rowspan="2">
+                    <strong>Michael Brown</strong><br>
+                    <small class="text-muted">EMP003</small><br>
+                    <span class="badge bg-success mt-1">20 Days</span><br>
+                    <small class="text-muted">171h 00m</small>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">1 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:00</div>
+                    <div class="time-info-mini">Out: 18:45</div>
+                    <div class="time-info-mini hours">9h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">2 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 19:00</div>
+                    <div class="time-info-mini hours">9h 55m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">3 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">4 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">5 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:10</div>
+                    <div class="time-info-mini">Out: 18:50</div>
+                    <div class="time-info-mini hours">9h 40m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">6 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:00</div>
+                    <div class="time-info-mini">Out: 18:40</div>
+                    <div class="time-info-mini hours">9h 40m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">7 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 18:45</div>
+                    <div class="time-info-mini hours">9h 40m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">8 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:12</div>
+                    <div class="time-info-mini">Out: 19:15</div>
+                    <div class="time-info-mini hours">10h 03m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">9 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:00</div>
+                    <div class="time-info-mini">Out: 18:30</div>
+                    <div class="time-info-mini hours">9h 30m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">10 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">11 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">12 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:15</div>
+                    <div class="time-info-mini">Out: 18:50</div>
+                    <div class="time-info-mini hours">9h 35m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">13 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:00</div>
+                    <div class="time-info-mini">Out: 18:45</div>
+                    <div class="time-info-mini hours">9h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">14 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 19:00</div>
+                    <div class="time-info-mini hours">9h 55m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">15 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:00</div>
+                    <div class="time-info-mini text-muted">Work...</div>
+                    <div class="time-info-mini hours">6h 30m</div>
+                  </td>
+                </tr>
+                <!-- Michael Brown - Row 2 (Days 16-31) -->
+                <tr class="second-row">
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">16 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:10</div>
+                    <div class="time-info-mini">Out: 18:40</div>
+                    <div class="time-info-mini hours">9h 30m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">17 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">18 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">19 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:00</div>
+                    <div class="time-info-mini">Out: 18:30</div>
+                    <div class="time-info-mini hours">9h 30m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">20 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 18:45</div>
+                    <div class="time-info-mini hours">9h 40m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">21 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:00</div>
+                    <div class="time-info-mini">Out: 18:50</div>
+                    <div class="time-info-mini hours">9h 50m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">22 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:10</div>
+                    <div class="time-info-mini">Out: 18:40</div>
+                    <div class="time-info-mini hours">9h 30m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">23 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 18:35</div>
+                    <div class="time-info-mini hours">9h 30m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">24 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">25 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">26 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:00</div>
+                    <div class="time-info-mini">Out: 18:45</div>
+                    <div class="time-info-mini hours">9h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">27 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 18:50</div>
+                    <div class="time-info-mini hours">9h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">28 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:00</div>
+                    <div class="time-info-mini">Out: 18:40</div>
+                    <div class="time-info-mini hours">9h 40m</div>
+                  </td>
+                  <td class="attendance-cell-monthly future">
+                    <div class="cell-date-monthly">29 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly future">
+                    <div class="cell-date-monthly">30 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend future">
+                    <div class="cell-date-monthly">31 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                </tr>
+
+                <!-- Emily Davis - Row 1 (Days 1-15) -->
+                <tr>
+                  <td class="employee-name-col-monthly" rowspan="2">
+                    <strong>Emily Davis</strong><br>
+                    <small class="text-muted">EMP004</small><br>
+                    <span class="badge bg-warning text-dark mt-1">17 Days</span><br>
+                    <small class="text-muted">136h 00m</small>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">1 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:15</div>
+                    <div class="time-info-mini">Out: 18:00</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">2 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:20</div>
+                    <div class="time-info-mini">Out: 18:05</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">3 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">4 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">5 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:10</div>
+                    <div class="time-info-mini">Out: 17:50</div>
+                    <div class="time-info-mini hours">8h 40m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-absent">
+                    <div class="cell-date-monthly">6 May</div>
+                    <span class="badge bg-danger">A</span>
+                    <div class="time-info-mini">-</div>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">7 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:25</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">8 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:05</div>
+                    <div class="time-info-mini">Out: 17:45</div>
+                    <div class="time-info-mini hours">8h 40m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">9 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:20</div>
+                    <div class="time-info-mini">Out: 18:00</div>
+                    <div class="time-info-mini hours">8h 40m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">10 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">11 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-absent">
+                    <div class="cell-date-monthly">12 May</div>
+                    <span class="badge bg-danger">A</span>
+                    <div class="time-info-mini">-</div>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">13 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:15</div>
+                    <div class="time-info-mini">Out: 18:00</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-absent">
+                    <div class="cell-date-monthly">14 May</div>
+                    <span class="badge bg-danger">A</span>
+                    <div class="time-info-mini">-</div>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-absent">
+                    <div class="cell-date-monthly">15 May</div>
+                    <span class="badge bg-danger">A</span>
+                    <div class="time-info-mini">-</div>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                </tr>
+                <!-- Emily Davis - Row 2 (Days 16-31) -->
+                <tr class="second-row">
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">16 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:25</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">17 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">18 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">19 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:18</div>
+                    <div class="time-info-mini">Out: 17:50</div>
+                    <div class="time-info-mini hours">8h 32m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">20 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:15</div>
+                    <div class="time-info-mini">Out: 18:00</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">21 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:20</div>
+                    <div class="time-info-mini">Out: 18:05</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">22 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:10</div>
+                    <div class="time-info-mini">Out: 17:55</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">23 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:25</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">24 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">25 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">26 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:15</div>
+                    <div class="time-info-mini">Out: 18:00</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">27 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:20</div>
+                    <div class="time-info-mini">Out: 18:05</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">28 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:10</div>
+                    <div class="time-info-mini">Out: 17:55</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly future">
+                    <div class="cell-date-monthly">29 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly future">
+                    <div class="cell-date-monthly">30 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend future">
+                    <div class="cell-date-monthly">31 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                </tr>
+
+                <!-- David Wilson - Row 1 (Days 1-15) -->
+                <tr>
+                  <td class="employee-name-col-monthly" rowspan="2">
+                    <strong>David Wilson</strong><br>
+                    <small class="text-muted">EMP005</small><br>
+                    <span class="badge bg-success mt-1">19 Days</span><br>
+                    <small class="text-muted">160h 30m</small>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">1 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:25</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">2 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">3 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">4 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">5 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:28</div>
+                    <div class="time-info-mini">Out: 18:05</div>
+                    <div class="time-info-mini hours">8h 37m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">6 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:35</div>
+                    <div class="time-info-mini">Out: 18:20</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">7 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 40m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">8 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:22</div>
+                    <div class="time-info-mini">Out: 18:05</div>
+                    <div class="time-info-mini hours">8h 43m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">9 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:28</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">8h 47m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">10 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">11 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">12 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:32</div>
+                    <div class="time-info-mini">Out: 18:08</div>
+                    <div class="time-info-mini hours">8h 36m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">13 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:25</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">14 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">15 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 17:45</div>
+                    <div class="time-info-mini hours">8h 15m</div>
+                  </td>
+                </tr>
+                <!-- David Wilson - Row 2 (Days 16-31) -->
+                <tr class="second-row">
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">16 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:35</div>
+                    <div class="time-info-mini">Out: 18:05</div>
+                    <div class="time-info-mini hours">8h 30m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">17 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">18 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">19 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:28</div>
+                    <div class="time-info-mini">Out: 18:18</div>
+                    <div class="time-info-mini hours">8h 50m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">20 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-absent">
+                    <div class="cell-date-monthly">21 May</div>
+                    <span class="badge bg-danger">A</span>
+                    <div class="time-info-mini">-</div>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">22 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:32</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 38m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">23 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:28</div>
+                    <div class="time-info-mini">Out: 18:05</div>
+                    <div class="time-info-mini hours">8h 37m</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">24 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend">
+                    <div class="cell-date-monthly">25 May</div>
+                    <span class="badge bg-secondary">W</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">26 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:30</div>
+                    <div class="time-info-mini">Out: 18:15</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">27 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:35</div>
+                    <div class="time-info-mini">Out: 18:20</div>
+                    <div class="time-info-mini hours">8h 45m</div>
+                  </td>
+                  <td class="attendance-cell-monthly status-present">
+                    <div class="cell-date-monthly">28 May</div>
+                    <span class="badge bg-success">P</span>
+                    <div class="time-info-mini">In: 09:28</div>
+                    <div class="time-info-mini">Out: 18:10</div>
+                    <div class="time-info-mini hours">8h 42m</div>
+                  </td>
+                  <td class="attendance-cell-monthly future">
+                    <div class="cell-date-monthly">29 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly future">
+                    <div class="cell-date-monthly">30 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                  <td class="attendance-cell-monthly weekend future">
+                    <div class="cell-date-monthly">31 May</div>
+                    <span class="badge bg-light">-</span>
+                    <div class="time-info-mini">-</div>
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          } @else {
+            <div class="text-center py-5">
+              <p class="text-muted">No attendance data available for this month</p>
+            </div>
+          }
+
+          <!-- Legend -->
+          <div class="mt-3 d-flex flex-wrap gap-3 justify-content-center">
+            <div><span class="badge bg-success">P</span> Present</div>
+            <div><span class="badge bg-warning text-dark">L</span> Late</div>
+            <div><span class="badge bg-danger">A</span> Absent</div>
+            <div><span class="badge bg-secondary">W</span> Weekend</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

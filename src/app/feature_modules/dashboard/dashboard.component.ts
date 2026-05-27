@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, inject, ViewEncapsulation, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
@@ -21,6 +21,8 @@ import { SubscriptionService } from 'src/app/_services/subscription.service';
 import { LegendPosition, Color, ScaleType } from '@swimlane/ngx-charts';
 import { PreferenceService } from 'src/app/_services/user-preference.service';
 import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
+import { AttendanceService } from 'src/app/_services/attendance.service';
+import { WebSocketService, WebSocketNotificationType } from 'src/app/_services/web-socket.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,7 +30,7 @@ import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
   styleUrls: ['./dashboard.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class DashboardComponent extends StatefulComponent implements OnInit {
+export class DashboardComponent extends StatefulComponent implements OnInit, OnDestroy {
   @ViewChild('timeSpentCard', { static: false }) timeSpentCard: ElementRef;
   timeSpentCardHeight: number = 400;
 
@@ -74,6 +76,18 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
   selectedTimeSpent = 'Daily';
   styles: any;
 
+  // Mobile App Attendance Overview
+  attendanceOffices: any[] = [];
+  selectedOffice: string = 'all';
+  selectedAttendanceView: string = 'daily';
+  attendanceOverviewData: any = null;
+  attendanceSummary: any = null;
+  private attendanceWebSocketSubscription: Subscription;
+
+  // Cache for week and month days
+  private cachedWeekDays: Date[] | null = null;
+  private cachedMonthDays: Date[] | null = null;
+
   constructor(
     private timelog: TimeLogService,
     private manageTeamService: ManageTeamService,
@@ -84,7 +98,9 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     activatedRoute: ActivatedRoute,
     private subscriptionService: SubscriptionService,
     router: Router,
-    private preferenceService: PreferenceService
+    private preferenceService: PreferenceService,
+    private attendanceService: AttendanceService,
+    private webSocketService: WebSocketService
   ) {
     super(commonService, activatedRoute, router);
   }
@@ -138,6 +154,12 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
     this.populateUpcomingPayment();
     this.populateLastInvoice();
     this.getPreferences();
+
+    // Mobile App Attendance Overview
+    this.loadAttendanceOffices();
+    this.loadMobileAttendanceOverview();
+    this.setupAttendanceWebSocketListener();
+
     super.ngOnInit();
   }
 
@@ -473,5 +495,190 @@ export class DashboardComponent extends StatefulComponent implements OnInit {
         this.selectedTabIndex = 0;
       }
     });
+  }
+
+  // Mobile App Attendance Overview Methods
+  loadAttendanceOffices(): void {
+    this.attendanceService.getAttendanceOffices().subscribe({
+      next: (response: any) => {
+        if (response?.status === 'success' && response?.data?.offices) {
+          this.attendanceOffices = response.data.offices;
+        }
+      },
+      error: (err) => {
+        console.error('Error loading attendance offices:', err);
+      }
+    });
+  }
+
+  loadMobileAttendanceOverview(): void {
+    const officeId = this.selectedOffice === 'all' ? undefined : this.selectedOffice;
+
+    // Clear cache when loading new data
+    this.cachedWeekDays = null;
+    this.cachedMonthDays = null;
+
+    this.attendanceService.getMobileAttendanceOverview(officeId, this.selectedAttendanceView).subscribe({
+      next: (response: any) => {
+        console.log('Attendance Overview Response:', response);
+        if (response?.status === 'success' && response?.data) {
+          this.attendanceOverviewData = response.data.attendanceData;
+          this.attendanceSummary = response.data.summary;
+          console.log('Attendance Data:', this.attendanceOverviewData);
+          console.log('Summary:', this.attendanceSummary);
+        } else {
+          console.warn('Unexpected response format:', response);
+        }
+      },
+      error: (err) => {
+        console.error('Error loading mobile attendance overview:', err);
+        this.toastr.error('Failed to load attendance overview');
+      }
+    });
+  }
+
+  onOfficeChange(officeId: string): void {
+    this.selectedOffice = officeId;
+    this.loadMobileAttendanceOverview();
+  }
+
+  onAttendanceViewChange(viewType: string): void {
+    this.selectedAttendanceView = viewType;
+    this.loadMobileAttendanceOverview();
+  }
+
+  setupAttendanceWebSocketListener(): void {
+    this.attendanceWebSocketSubscription = this.webSocketService
+      .getMessagesByType(WebSocketNotificationType.ATTENDANCE_UPDATE)
+      .subscribe({
+        next: (message: any) => {
+          try {
+            const content = typeof message.content === 'string' ? JSON.parse(message.content) : message.content;
+            if (content?.type === 'mobile-overview-update' && content?.data) {
+              this.attendanceOverviewData = content.data.attendanceData;
+              this.attendanceSummary = content.data.summary;
+            }
+          } catch (error) {
+            console.error('Error processing attendance WebSocket message:', error);
+          }
+        },
+        error: (err) => {
+          console.error('Attendance WebSocket error:', err);
+        }
+      });
+  }
+
+  // Helper methods for weekly/monthly attendance views
+  getWeekDays(): Date[] {
+    if (this.cachedWeekDays) {
+      return this.cachedWeekDays;
+    }
+
+    const today = new Date();
+    const currentDay = today.getDay();
+    const monday = new Date(today);
+    // Get Monday of current week (day 1 = Monday, 0 = Sunday)
+    monday.setDate(today.getDate() - currentDay + (currentDay === 0 ? -6 : 1));
+    monday.setHours(0, 0, 0, 0);
+
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(monday.getTime());
+      day.setDate(day.getDate() + i);
+      weekDays.push(day);
+    }
+
+    this.cachedWeekDays = weekDays;
+    return weekDays;
+  }
+
+  getMonthDays(): Date[] {
+    if (this.cachedMonthDays) {
+      return this.cachedMonthDays;
+    }
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const monthDays = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+      monthDays.push(new Date(year, month, i));
+    }
+
+    this.cachedMonthDays = monthDays;
+    return monthDays;
+  }
+
+  getDayName(date: Date): string {
+    return date.toLocaleDateString('en-US', { weekday: 'short' });
+  }
+
+  formatDate(date: Date, format: string = 'DD MMM'): string {
+    const day = date.getDate();
+    const month = date.toLocaleDateString('en-US', { month: 'short' });
+    return `${day} ${month}`;
+  }
+
+  getAttendanceForDate(employee: any, date: Date): any {
+    if (!employee.dailyRecords) return null;
+
+    const dateKey = date.toISOString().split('T')[0];
+    const record = employee.dailyRecords[dateKey];
+
+    if (!record || !record.checkIn) {
+      return { status: 'Absent', checkIn: null, checkOut: null, hours: '-' };
+    }
+
+    const checkInTime = new Date(record.checkIn);
+    const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
+
+    let hours = '-';
+    if (checkOutTime) {
+      const diff = checkOutTime.getTime() - checkInTime.getTime();
+      const totalHours = diff / (1000 * 60 * 60);
+      const h = Math.floor(totalHours);
+      const m = Math.round((totalHours % 1) * 60);
+      hours = `${h}h ${m}m`;
+    } else if (record.checkIn) {
+      const now = new Date();
+      const diff = now.getTime() - checkInTime.getTime();
+      const totalHours = diff / (1000 * 60 * 60);
+      const h = Math.floor(totalHours);
+      const m = Math.round((totalHours % 1) * 60);
+      hours = `${h}h ${m}m`;
+    }
+
+    return {
+      status: record.status || 'Present',
+      checkIn: checkInTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+      checkOut: checkOutTime ? checkOutTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : (record.checkIn ? 'Working...' : '-'),
+      hours: hours
+    };
+  }
+
+  isWeekend(date: Date): boolean {
+    const day = date.getDay();
+    return day === 0 || day === 6;
+  }
+
+  getStatusBadgeClass(status: string): string {
+    if (status === 'Present' || status === 'Checked In') return 'bg-success';
+    if (status === 'Absent') return 'bg-danger';
+    return 'bg-secondary';
+  }
+
+  getStatusLabel(status: string): string {
+    if (status === 'Present') return 'P';
+    if (status === 'Absent') return 'A';
+    if (status === 'Checked In') return 'P';
+    return 'W';
+  }
+
+  override ngOnDestroy(): void {
+    if (this.attendanceWebSocketSubscription) {
+      this.attendanceWebSocketSubscription.unsubscribe();
+    }
   }
 }

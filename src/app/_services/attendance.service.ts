@@ -506,4 +506,28 @@ export class AttendanceService {
     var response = this.http.post<response<any>>(`${environment.apiUrlDotNet}/attendance/process-attendance-fnf-by-month`, payload, this.httpOptions);
     return response;
   }
+
+  // Mobile App Attendance Overview
+  getMobileAttendanceOverview(officeId?: string, viewType: string = 'daily', date?: string): Observable<response<any>> {
+    let params = new HttpParams();
+    if (officeId) {
+      params = params.set('officeId', officeId);
+    }
+    params = params.set('viewType', viewType);
+    if (date) {
+      params = params.set('date', date);
+    }
+
+    const options = {
+      ...this.httpOptions,
+      params: params
+    };
+
+    return this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/mobile-overview`, options);
+  }
+
+  // Get Attendance Offices for dropdown
+  getAttendanceOffices(): Observable<response<any>> {
+    return this.http.get<response<any>>(`${environment.apiUrlDotNet}/attendance/offices`, this.httpOptions);
+  }
 }
