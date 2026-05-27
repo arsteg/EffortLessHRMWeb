@@ -10,7 +10,8 @@ export enum WebSocketNotificationType {
   ALERT = 'alert',
   NOTIFICATION = 'notification',
   SCREENSHOT = 'screenshot',
-  CHAT = 'chat'
+  CHAT = 'chat',
+  ATTENDANCE_UPDATE = 'attendance-update'
 }
 
 export enum WebSocketContentType {
