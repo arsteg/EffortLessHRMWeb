@@ -624,13 +624,18 @@ export class DashboardComponent extends StatefulComponent implements OnInit, OnD
   getAttendanceForDate(employee: any, date: Date): any {
     if (!employee.dailyRecords) return null;
 
-    const dateKey = date.toISOString().split('T')[0];
+    // Use local date components to avoid timezone shift when matching records
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateKey = `${year}-${month}-${day}`;
     const record = employee.dailyRecords[dateKey];
 
     if (!record || !record.checkIn) {
       return { status: 'Absent', checkIn: null, checkOut: null, hours: '-' };
     }
 
+    // Convert UTC timestamps to user's local timezone for display
     const checkInTime = new Date(record.checkIn);
     const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
 
