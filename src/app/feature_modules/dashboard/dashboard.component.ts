@@ -681,6 +681,28 @@ export class DashboardComponent extends StatefulComponent implements OnInit, OnD
     return 'W';
   }
 
+  /**
+   * Converts UTC time string to local time string
+   * Used for displaying check-in/check-out times in daily view
+   */
+  formatTimeToLocal(timeString: string): string {
+    if (!timeString || timeString === '-' || timeString === 'Working...') {
+      return timeString;
+    }
+
+    try {
+      const date = new Date(timeString);
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return timeString;
+      }
+      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    } catch (error) {
+      console.error('Error formatting time:', error);
+      return timeString;
+    }
+  }
+
   override ngOnDestroy(): void {
     if (this.attendanceWebSocketSubscription) {
       this.attendanceWebSocketSubscription.unsubscribe();
