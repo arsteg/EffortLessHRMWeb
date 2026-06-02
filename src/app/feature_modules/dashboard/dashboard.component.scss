@@ -205,9 +205,13 @@
     min-width: 85px !important;
     max-width: 85px !important;
     border: 1px solid #dee2e6;
-    cursor: pointer;
+    cursor: default;
     position: relative;
     box-sizing: border-box;
+
+    &.has-logs {
+      cursor: pointer;
+    }
 
     .cell-date {
       font-size: 8px;
@@ -232,8 +236,11 @@
       transition: font-size 0.2s ease;
 
       &.fw-bold {
-        font-weight: 600;
+        font-weight: 700;
         color: #212529;
+        background: none;
+        border: none;
+        padding: 0;
       }
     }
 
@@ -457,9 +464,13 @@
     min-width: 50px !important;
     max-width: 50px !important;
     border: 1px solid #dee2e6;
-    cursor: pointer;
+    cursor: default;
     position: relative;
     box-sizing: border-box;
+
+    &.has-logs {
+      cursor: pointer;
+    }
 
     .cell-date-monthly {
       font-size: 7px;
@@ -486,9 +497,12 @@
       transition: font-size 0.2s ease;
 
       &.hours {
-        font-weight: 600;
+        font-weight: 700;
         color: #212529;
         margin-top: 1px;
+        background: none;
+        border: none;
+        padding: 0;
       }
     }
 
@@ -855,20 +869,6 @@
             }
           }
 
-          &.status-late {
-            background-color: #fef3c7;
-            color: #92400e;
-            border-color: #fbbf24;
-
-            &:hover {
-              background-color: #fde68a;
-              transform: scale(1.15);
-              z-index: 10;
-              box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
-              font-size: 11px;
-            }
-          }
-
           &.status-absent {
             background-color: #fee2e2;
             color: #991b1b;
@@ -958,4 +958,53 @@
       }
     }
   }
+}
+
+// Clickable Time Cells for Daily Attendance View
+.clickable-time {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+
+  &.has-logs {
+    color: #0d6efd;
+    font-weight: 500;
+
+    &:hover {
+      background-color: #e7f3ff;
+      transform: scale(1.02);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    mat-icon {
+      color: #0d6efd;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    &:hover mat-icon {
+      opacity: 1;
+    }
+  }
+
+  &:not(.has-logs) {
+    cursor: default;
+  }
+}
+
+// Missing checkout text styling - Simple text only
+.checkout-missing {
+  color: #dc3545 !important;
+  font-weight: 600;
+  font-size: 10px;
+}
+
+.time-info .checkout-missing,
+.time-info-mini .checkout-missing {
+  font-size: 8px;
+}
+
+// For daily table view
+.table .checkout-missing {
+  font-size: 11px;
 }
