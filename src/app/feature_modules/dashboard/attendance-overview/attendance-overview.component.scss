@@ -1,0 +1,973 @@
+// Attendance Reports Section
+.table {
+  font-size: 14px;
+
+  th {
+    font-weight: 600;
+    color: #495057;
+  }
+
+  td {
+    vertical-align: middle;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 5px 10px;
+    font-weight: 600;
+  }
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.btn-sm {
+  font-size: 13px;
+  padding: 6px 16px;
+}
+
+// Attendance Tabs
+.nav-tabs {
+  border-bottom: 2px solid #dee2e6;
+
+  .nav-link {
+    color: #6c757d;
+    font-weight: 500;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: transparent;
+      color: #0d6efd;
+      background-color: transparent;
+    }
+
+    &.active {
+      color: #0d6efd;
+      background-color: transparent;
+      border-bottom-color: #0d6efd;
+    }
+
+    i {
+      margin-right: 5px;
+    }
+  }
+}
+
+// Accordion Styles for Daily Data
+.accordion {
+  .accordion-item {
+    border: 1px solid #e9ecef;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    overflow: hidden;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .accordion-header {
+    .accordion-button {
+      font-weight: 500;
+      font-size: 14px;
+      padding: 12px 16px;
+      background-color: #f8f9fa;
+      color: #495057;
+
+      &:not(.collapsed) {
+        background-color: #e7f3ff;
+        color: #0d6efd;
+        box-shadow: none;
+      }
+
+      &:focus {
+        box-shadow: none;
+        border-color: rgba(0,0,0,.125);
+      }
+
+      i {
+        color: #6c757d;
+      }
+
+      &:not(.collapsed) i {
+        color: #0d6efd;
+      }
+    }
+  }
+
+  .accordion-body {
+    padding: 16px;
+
+    .table {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Attendance Calendar Table Styles
+.attendance-calendar-table {
+  font-size: 13px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: visible;
+  table-layout: fixed;
+
+  .employee-name-col {
+    min-width: 120px;
+    max-width: 120px;
+    width: 120px;
+    font-weight: 500;
+    background-color: #f8f9fa;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    vertical-align: middle;
+    text-align: center;
+    padding: 8px 6px;
+
+    strong {
+      font-size: 12px;
+      display: block;
+    }
+
+    small {
+      font-size: 9px;
+      display: block;
+    }
+  }
+
+  thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    padding: 10px 8px;
+    border: 1px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+
+    &.employee-name-col {
+      z-index: 4;
+    }
+
+    .fw-bold {
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    small {
+      font-size: 10px;
+    }
+  }
+
+  .attendance-cell {
+    padding: 4px;
+    text-align: center;
+    vertical-align: middle;
+    width: 85px !important;
+    min-width: 85px !important;
+    max-width: 85px !important;
+    border: 1px solid #dee2e6;
+    cursor: default;
+    position: relative;
+    box-sizing: border-box;
+
+    &.has-logs {
+      cursor: pointer;
+    }
+
+    .cell-date {
+      font-size: 8px;
+      font-weight: 600;
+      color: #6c757d;
+      margin-bottom: 2px;
+      transition: font-size 0.2s ease;
+    }
+
+    .badge {
+      font-size: 9px;
+      padding: 2px 6px;
+      display: inline-block;
+      transition: font-size 0.2s ease, padding 0.2s ease;
+    }
+
+    .time-info {
+      font-size: 8px;
+      line-height: 1.3;
+      margin: 1px 0;
+      white-space: nowrap;
+      transition: font-size 0.2s ease;
+
+      &.fw-bold {
+        font-weight: 700;
+        color: #212529;
+        background: none;
+        border: none;
+        padding: 0;
+      }
+    }
+
+    // Status-based background colors
+    &.status-present {
+      background-color: #f0fdf4;
+
+      &:hover {
+        background-color: #dcfce7;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+
+        .cell-date {
+          font-size: 10px;
+        }
+
+        .badge {
+          font-size: 12px;
+          padding: 3px 8px;
+        }
+
+        .time-info {
+          font-size: 12px;
+        }
+      }
+    }
+
+    &.status-absent {
+      background-color: #fef2f2;
+
+      &:hover {
+        background-color: #fee2e2;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+
+        .cell-date {
+          font-size: 10px;
+        }
+
+        .badge {
+          font-size: 12px;
+          padding: 3px 8px;
+        }
+
+        .time-info {
+          font-size: 12px;
+        }
+      }
+    }
+
+    &.weekend {
+      background-color: #f8f9fa;
+      color: #adb5bd;
+      cursor: default;
+    }
+  }
+
+  thead th.weekend-header {
+    background-color: #e9ecef;
+    color: #6c757d;
+  }
+
+  tbody {
+    overflow: visible;
+
+    tr {
+      &:hover {
+        background-color: transparent;
+      }
+
+      // Alternating employee backgrounds
+      &:nth-child(odd) {
+        .employee-name-col {
+          background-color: #f1f3f5;
+        }
+      }
+
+      &:nth-child(even) {
+        .employee-name-col {
+          background-color: #e9ecef;
+        }
+      }
+    }
+  }
+}
+
+// Responsive handling for smaller screens
+@media (max-width: 1200px) {
+  .attendance-calendar-table {
+    .attendance-cell {
+      min-width: 75px;
+      max-width: 75px;
+      padding: 4px;
+
+      .time-info {
+        font-size: 7px;
+      }
+
+      &:hover .time-info {
+        font-size: 10px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .attendance-calendar-table {
+    font-size: 11px;
+
+    .employee-name-col {
+      min-width: 100px;
+      max-width: 100px;
+
+      strong {
+        font-size: 11px;
+      }
+
+      small {
+        font-size: 9px;
+      }
+    }
+
+    .attendance-cell {
+      min-width: 65px;
+      max-width: 65px;
+      padding: 3px;
+
+      .badge {
+        font-size: 8px;
+        padding: 1px 4px;
+      }
+
+      .time-info {
+        font-size: 7px;
+        line-height: 1.2;
+      }
+
+      &:hover {
+        .badge {
+          font-size: 9px;
+          padding: 2px 6px;
+        }
+
+        .time-info {
+          font-size: 9px;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+}
+
+// Monthly Attendance Table Styles (2 rows per employee, 15 days each)
+.attendance-calendar-table-monthly {
+  font-size: 11px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: visible;
+  table-layout: fixed;
+
+  .employee-name-col-monthly {
+    min-width: 120px;
+    max-width: 120px;
+    font-weight: 500;
+    background-color: #f8f9fa;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    vertical-align: middle;
+    text-align: center;
+    padding: 8px 6px;
+
+    strong {
+      font-size: 12px;
+      display: block;
+    }
+
+    small {
+      font-size: 9px;
+      display: block;
+    }
+
+    .badge {
+      font-size: 9px;
+      padding: 2px 6px;
+      margin-top: 4px;
+    }
+  }
+
+  thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    padding: 6px 4px;
+    border: 1px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+
+    &.employee-name-col-monthly {
+      z-index: 4;
+    }
+
+    &.day-header {
+      font-size: 11px;
+      padding: 8px 4px;
+    }
+
+    &.day-num-header {
+      font-size: 10px;
+      padding: 4px 2px;
+      font-weight: 600;
+      color: #495057;
+    }
+  }
+
+  .attendance-cell-monthly {
+    padding: 2px;
+    text-align: center;
+    vertical-align: middle;
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+    border: 1px solid #dee2e6;
+    cursor: default;
+    position: relative;
+    box-sizing: border-box;
+
+    &.has-logs {
+      cursor: pointer;
+    }
+
+    .cell-date-monthly {
+      font-size: 7px;
+      font-weight: 600;
+      color: #6c757d;
+      margin-bottom: 2px;
+      transition: font-size 0.2s ease;
+    }
+
+    .badge {
+      font-size: 8px;
+      padding: 1px 5px;
+      display: inline-block;
+      font-weight: 600;
+      transition: font-size 0.2s ease, padding 0.2s ease;
+      border-radius: 3px;
+    }
+
+    .time-info-mini {
+      font-size: 6px;
+      line-height: 1.2;
+      margin: 0;
+      white-space: nowrap;
+      transition: font-size 0.2s ease;
+
+      &.hours {
+        font-weight: 700;
+        color: #212529;
+        margin-top: 1px;
+        background: none;
+        border: none;
+        padding: 0;
+      }
+    }
+
+    // Status-based background colors
+    &.status-present {
+      background-color: #f0fdf4;
+
+      &:hover {
+        background-color: #dcfce7;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+
+        .cell-date-monthly {
+          font-size: 9px;
+        }
+
+        .badge {
+          font-size: 10px;
+          padding: 2px 6px;
+        }
+
+        .time-info-mini {
+          font-size: 9px;
+        }
+      }
+    }
+
+    &.status-absent {
+      background-color: #fef2f2;
+
+      &:hover {
+        background-color: #fee2e2;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+
+        .cell-date-monthly {
+          font-size: 9px;
+        }
+
+        .badge {
+          font-size: 10px;
+          padding: 2px 6px;
+        }
+
+        .time-info-mini {
+          font-size: 9px;
+        }
+      }
+    }
+
+    &.weekend {
+      background-color: #f8f9fa;
+      color: #adb5bd;
+      cursor: default;
+    }
+
+    &.future {
+      background-color: #fafafa;
+      color: #ced4da;
+      opacity: 0.6;
+      cursor: default;
+    }
+  }
+
+  tbody {
+    overflow: visible;
+
+    tr {
+      &:hover {
+        background-color: transparent;
+      }
+
+      &.second-row {
+        border-bottom: 3px solid #495057;
+      }
+
+      // Alternating employee backgrounds (every 2 rows)
+      &:nth-child(4n+1), &:nth-child(4n+2) {
+        .employee-name-col-monthly {
+          background-color: #f1f3f5;
+        }
+      }
+
+      &:nth-child(4n+3), &:nth-child(4n+4) {
+        .employee-name-col-monthly {
+          background-color: #e9ecef;
+        }
+      }
+    }
+  }
+}
+
+// Responsive handling for monthly table
+@media (max-width: 1400px) {
+  .attendance-calendar-table-monthly {
+    .attendance-cell-monthly {
+      min-width: 45px;
+      max-width: 45px;
+      padding: 2px;
+
+      .badge-mini {
+        font-size: 6px;
+        padding: 1px 3px;
+      }
+
+      .time-info-mini {
+        font-size: 5px;
+      }
+
+      &:hover {
+        .badge-mini {
+          font-size: 8px;
+        }
+
+        .time-info-mini {
+          font-size: 8px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 992px) {
+  .attendance-calendar-table-monthly {
+    font-size: 10px;
+
+    .employee-name-col-monthly {
+      min-width: 100px;
+      max-width: 100px;
+      padding: 6px 4px;
+
+      strong {
+        font-size: 11px;
+      }
+
+      small {
+        font-size: 8px;
+      }
+
+      .badge {
+        font-size: 8px;
+        padding: 1px 4px;
+      }
+    }
+
+    .attendance-cell-monthly {
+      min-width: 40px;
+      max-width: 40px;
+      padding: 2px;
+
+      .badge-mini {
+        font-size: 6px;
+        padding: 1px 2px;
+      }
+
+      .time-info-mini {
+        font-size: 5px;
+        line-height: 1.1;
+      }
+
+      &:hover {
+        .badge-mini {
+          font-size: 7px;
+        }
+
+        .time-info-mini {
+          font-size: 7px;
+          line-height: 1.3;
+        }
+      }
+    }
+
+    thead th {
+      &.day-num-header {
+        font-size: 9px;
+        padding: 3px 1px;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .attendance-calendar-table-monthly {
+    .employee-name-col-monthly {
+      min-width: 80px;
+      max-width: 80px;
+
+      strong {
+        font-size: 10px;
+      }
+
+      small {
+        font-size: 7px;
+      }
+
+      .badge {
+        font-size: 7px;
+        padding: 1px 3px;
+      }
+    }
+
+    .attendance-cell-monthly {
+      min-width: 35px;
+      max-width: 35px;
+      padding: 1px;
+
+      .badge-mini {
+        font-size: 5px;
+        padding: 1px 2px;
+      }
+
+      .time-info-mini {
+        font-size: 4px;
+        line-height: 1.1;
+      }
+
+      &:hover {
+        .badge-mini {
+          font-size: 6px;
+        }
+
+        .time-info-mini {
+          font-size: 6px;
+        }
+      }
+    }
+
+    thead th {
+      &.day-header {
+        font-size: 10px;
+        padding: 6px 2px;
+      }
+
+      &.day-num-header {
+        font-size: 8px;
+        padding: 2px 1px;
+      }
+    }
+  }
+}
+
+// Old Monthly Calendar Heatmap Styles (keeping for backward compatibility if needed)
+.monthly-attendance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+
+  .employee-month-card {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    .employee-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e9ecef;
+
+      strong {
+        font-size: 14px;
+        color: #212529;
+      }
+
+      small {
+        display: block;
+        font-size: 10px;
+        color: #6c757d;
+        margin-top: 2px;
+      }
+
+      .employee-stats {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+
+        .badge {
+          font-size: 10px;
+          padding: 3px 8px;
+        }
+
+        .text-muted {
+          font-size: 11px;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .month-calendar {
+      .calendar-header {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+        margin-bottom: 4px;
+
+        .day-label {
+          text-align: center;
+          font-size: 10px;
+          font-weight: 600;
+          color: #6c757d;
+          padding: 4px 0;
+        }
+      }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+
+        .day-cell {
+          aspect-ratio: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 4px;
+          font-size: 9px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+          border: 1px solid #e9ecef;
+
+          .day-num {
+            position: relative;
+            z-index: 1;
+          }
+
+          &.empty {
+            background-color: transparent;
+            border: none;
+            cursor: default;
+          }
+
+          &.weekend {
+            background-color: #f8f9fa;
+            color: #adb5bd;
+            border-color: #e9ecef;
+          }
+
+          &.future {
+            background-color: #f8f9fa;
+            color: #ced4da;
+            border-color: #e9ecef;
+            opacity: 0.6;
+            cursor: default;
+          }
+
+          &.status-present {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-color: #34d399;
+
+            &:hover {
+              background-color: #a7f3d0;
+              transform: scale(1.15);
+              z-index: 10;
+              box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+              font-size: 11px;
+            }
+          }
+
+          &.status-absent {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-color: #f87171;
+
+            &:hover {
+              background-color: #fecaca;
+              transform: scale(1.15);
+              z-index: 10;
+              box-shadow: 0 4px 12px rgba(248, 113, 113, 0.3);
+              font-size: 11px;
+            }
+          }
+
+          &:not(.empty):not(.future):hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            white-space: pre-line;
+            z-index: 100;
+            min-width: 150px;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            line-height: 1.4;
+            pointer-events: none;
+            margin-bottom: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive for monthly calendar
+@media (max-width: 992px) {
+  .monthly-attendance-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .monthly-attendance-grid {
+    grid-template-columns: 1fr;
+
+    .employee-month-card {
+      padding: 12px;
+
+      .employee-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+
+        .employee-stats {
+          flex-direction: row;
+          align-items: center;
+          width: 100%;
+          justify-content: space-between;
+        }
+      }
+
+      .month-calendar {
+        .calendar-header .day-label {
+          font-size: 9px;
+          padding: 3px 0;
+        }
+
+        .calendar-grid .day-cell {
+          font-size: 8px;
+
+          &:hover {
+            font-size: 10px;
+          }
+
+          &:not(.empty):not(.future):hover::after {
+            font-size: 10px;
+            min-width: 130px;
+            padding: 6px 10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Clickable Time Cells for Daily Attendance View
+.clickable-time {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+
+  &.has-logs {
+    color: #0d6efd;
+    font-weight: 500;
+
+    &:hover {
+      background-color: #e7f3ff;
+      transform: scale(1.02);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    mat-icon {
+      color: #0d6efd;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    &:hover mat-icon {
+      opacity: 1;
+    }
+  }
+
+  &:not(.has-logs) {
+    cursor: default;
+  }
+}
+
+// Missing checkout text styling - Simple text only
+.checkout-missing {
+  color: #dc3545 !important;
+  font-weight: 600;
+  font-size: 10px;
+}
+
+.time-info .checkout-missing,
+.time-info-mini .checkout-missing {
+  font-size: 8px;
+}
+
+// For daily table view
