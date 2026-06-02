@@ -438,8 +438,8 @@
                           <span class="badge bg-danger">Absent</span>
                         }
                       </td>
-                      <td>{{employee.checkIn}}</td>
-                      <td>{{employee.checkOut}}</td>
+                      <td>{{formatTimeToLocal(employee.checkIn)}}</td>
+                      <td>{{formatTimeToLocal(employee.checkOut)}}</td>
                       <td>{{employee.workingHours}}</td>
                     </tr>
                   }
