@@ -23,6 +23,7 @@ import { PreferenceService } from 'src/app/_services/user-preference.service';
 import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
 import { AttendanceService } from 'src/app/_services/attendance.service';
 import { WebSocketService, WebSocketNotificationType } from 'src/app/_services/web-socket.service';
+import { AttendanceLogsDialogComponent } from './attendance-logs-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -632,34 +633,61 @@ export class DashboardComponent extends StatefulComponent implements OnInit, OnD
     const record = employee.dailyRecords[dateKey];
 
     if (!record || !record.checkIn) {
-      return { status: 'Absent', checkIn: null, checkOut: null, hours: '-' };
+      return { status: 'Absent', checkIn: null, checkOut: null, hours: '-', allLogs: [], dateKey };
     }
+
+    // Check if the date is in the past (not today)
+    const now = new Date();
+    const recordDate = new Date(date);
+    recordDate.setHours(23, 59, 59, 999);
+    const isPastDate = recordDate < now;
 
     // Convert UTC timestamps to user's local timezone for display
     const checkInTime = new Date(record.checkIn);
-    const checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
+    let checkOutTime = record.checkOut ? new Date(record.checkOut) : null;
+
+    // Validate check-out is after check-in
+    if (checkOutTime && checkOutTime.getTime() <= checkInTime.getTime()) {
+      checkOutTime = null; // Invalid checkout, ignore it
+    }
 
     let hours = '-';
+    let checkOutDisplay = '-';
+    let status = record.status || 'Absent';
+
     if (checkOutTime) {
+      // Valid checkout exists
       const diff = checkOutTime.getTime() - checkInTime.getTime();
       const totalHours = diff / (1000 * 60 * 60);
       const h = Math.floor(totalHours);
       const m = Math.round((totalHours % 1) * 60);
       hours = `${h}h ${m}m`;
+      checkOutDisplay = checkOutTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      status = 'Present';
+    } else if (record.checkIn && isPastDate) {
+      // Past date with missing checkout
+      hours = '-';
+      checkOutDisplay = 'Missing';
+      status = 'Absent';
     } else if (record.checkIn) {
+      // Today and still working
       const now = new Date();
       const diff = now.getTime() - checkInTime.getTime();
       const totalHours = diff / (1000 * 60 * 60);
       const h = Math.floor(totalHours);
       const m = Math.round((totalHours % 1) * 60);
       hours = `${h}h ${m}m`;
+      checkOutDisplay = 'Working...';
+      status = 'Checked In';
     }
 
     return {
-      status: record.status || 'Present',
+      status: status,
       checkIn: checkInTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
-      checkOut: checkOutTime ? checkOutTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : (record.checkIn ? 'Working...' : '-'),
-      hours: hours
+      checkOut: checkOutDisplay,
+      hours: hours,
+      allLogs: record.allLogs || [],
+      dateKey: dateKey
     };
   }
 
@@ -686,7 +714,7 @@ export class DashboardComponent extends StatefulComponent implements OnInit, OnD
    * Used for displaying check-in/check-out times in daily view
    */
   formatTimeToLocal(timeString: string): string {
-    if (!timeString || timeString === '-' || timeString === 'Working...') {
+    if (!timeString || timeString === '-' || timeString === 'Working...' || timeString === 'Checkout Missing') {
       return timeString;
     }
 
@@ -701,6 +729,60 @@ export class DashboardComponent extends StatefulComponent implements OnInit, OnD
       console.error('Error formatting time:', error);
       return timeString;
     }
+  }
+
+  /**
+   * Check if checkout is missing
+   */
+  isCheckoutMissing(checkoutValue: string): boolean {
+    return checkoutValue === 'Checkout Missing' || checkoutValue === 'Missing';
+  }
+
+  /**
+   * Opens a dialog showing all check-in/check-out entries for a specific employee on a specific day
+   * @param employee - Employee data
+   * @param date - Optional date (for weekly/monthly views)
+   * @param attendanceData - Optional attendance data (for weekly/monthly views)
+   */
+  openAttendanceLogsDialog(employee: any, date?: Date, attendanceData?: any): void {
+    let logs = [];
+    let dateString = '';
+
+    // For daily view
+    if (!date && employee.allLogs) {
+      logs = employee.allLogs;
+      const today = new Date();
+      dateString = today.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+    // For weekly/monthly views
+    else if (date && attendanceData && attendanceData.allLogs) {
+      logs = attendanceData.allLogs;
+      dateString = date.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    if (!logs || logs.length === 0) {
+      this.toastr.info('No attendance logs available for this day', 'Info');
+      return;
+    }
+
+    this.dialog.open(AttendanceLogsDialogComponent, {
+      width: '500px',
+      data: {
+        employeeName: employee.name,
+        date: dateString,
+        logs: logs
+      }
+    });
   }
 
   override ngOnDestroy(): void {

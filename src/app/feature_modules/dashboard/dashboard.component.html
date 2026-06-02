@@ -438,8 +438,22 @@
                           <span class="badge bg-danger">Absent</span>
                         }
                       </td>
-                      <td>{{formatTimeToLocal(employee.checkIn)}}</td>
-                      <td>{{formatTimeToLocal(employee.checkOut)}}</td>
+                      <td class="clickable-time" (click)="openAttendanceLogsDialog(employee)" [class.has-logs]="employee.allLogs && employee.allLogs.length > 0">
+                        {{formatTimeToLocal(employee.checkIn)}}
+                        @if(employee.allLogs && employee.allLogs.length > 1) {
+                          <mat-icon class="ms-1" style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle;">info</mat-icon>
+                        }
+                      </td>
+                      <td class="clickable-time" (click)="openAttendanceLogsDialog(employee)" [class.has-logs]="employee.allLogs && employee.allLogs.length > 0">
+                        @if(isCheckoutMissing(employee.checkOut)) {
+                          <span class="checkout-missing">{{formatTimeToLocal(employee.checkOut)}}</span>
+                        } @else {
+                          {{formatTimeToLocal(employee.checkOut)}}
+                        }
+                        @if(employee.allLogs && employee.allLogs.length > 1) {
+                          <mat-icon class="ms-1" style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle;">info</mat-icon>
+                        }
+                      </td>
                       <td>{{employee.workingHours}}</td>
                     </tr>
                   }
@@ -532,15 +546,25 @@
                           </td>
                         } @else {
                           <td class="attendance-cell" [class.status-present]="getAttendanceForDate(employee, day).status === 'Present'"
-                              [class.status-absent]="getAttendanceForDate(employee, day).status === 'Absent'">
+                              [class.status-absent]="getAttendanceForDate(employee, day).status === 'Absent'"
+                              [class.has-logs]="getAttendanceForDate(employee, day).allLogs && getAttendanceForDate(employee, day).allLogs.length > 0"
+                              (click)="openAttendanceLogsDialog(employee, day, getAttendanceForDate(employee, day))">
                             <div class="cell-date">{{formatDate(day)}}</div>
                             <span class="badge mb-1" [ngClass]="getStatusBadgeClass(getAttendanceForDate(employee, day).status)">
                               {{getStatusLabel(getAttendanceForDate(employee, day).status)}}
+                              @if(getAttendanceForDate(employee, day).allLogs && getAttendanceForDate(employee, day).allLogs.length > 1) {
+                                <mat-icon style="font-size: 10px; width: 10px; height: 10px; vertical-align: middle;">info</mat-icon>
+                              }
                             </span>
-                            @if(getAttendanceForDate(employee, day).status !== 'Absent') {
+                            @if(getAttendanceForDate(employee, day).checkIn) {
                               <div class="time-info">In: {{getAttendanceForDate(employee, day).checkIn}}</div>
                               <div class="time-info" [class.text-muted]="getAttendanceForDate(employee, day).checkOut === 'Working...'">
-                                Out: {{getAttendanceForDate(employee, day).checkOut}}
+                                Out:
+                                @if(isCheckoutMissing(getAttendanceForDate(employee, day).checkOut)) {
+                                  <span class="checkout-missing">{{getAttendanceForDate(employee, day).checkOut}}</span>
+                                } @else {
+                                  {{getAttendanceForDate(employee, day).checkOut}}
+                                }
                               </div>
                               <div class="time-info fw-bold">{{getAttendanceForDate(employee, day).hours}}</div>
                             } @else {
@@ -613,14 +637,26 @@
                         } @else {
                           <td class="attendance-cell-monthly"
                               [class.status-present]="getAttendanceForDate(employee, day).status === 'Present'"
-                              [class.status-absent]="getAttendanceForDate(employee, day).status === 'Absent'">
+                              [class.status-absent]="getAttendanceForDate(employee, day).status === 'Absent'"
+                              [class.has-logs]="getAttendanceForDate(employee, day).allLogs && getAttendanceForDate(employee, day).allLogs.length > 0"
+                              (click)="openAttendanceLogsDialog(employee, day, getAttendanceForDate(employee, day))">
                             <div class="cell-date-monthly">{{formatDate(day, 'D MMM')}}</div>
                             <span class="badge mb-1" [ngClass]="getStatusBadgeClass(getAttendanceForDate(employee, day).status)">
                               {{getStatusLabel(getAttendanceForDate(employee, day).status)}}
+                              @if(getAttendanceForDate(employee, day).allLogs && getAttendanceForDate(employee, day).allLogs.length > 1) {
+                                <mat-icon style="font-size: 8px; width: 8px; height: 8px; vertical-align: middle;">info</mat-icon>
+                              }
                             </span>
-                            @if(getAttendanceForDate(employee, day).status !== 'Absent') {
+                            @if(getAttendanceForDate(employee, day).checkIn) {
                               <div class="time-info-mini">In: {{getAttendanceForDate(employee, day).checkIn}}</div>
-                              <div class="time-info-mini">Out: {{getAttendanceForDate(employee, day).checkOut}}</div>
+                              <div class="time-info-mini">
+                                Out:
+                                @if(isCheckoutMissing(getAttendanceForDate(employee, day).checkOut)) {
+                                  <span class="checkout-missing">{{getAttendanceForDate(employee, day).checkOut}}</span>
+                                } @else {
+                                  {{getAttendanceForDate(employee, day).checkOut}}
+                                }
+                              </div>
                               <div class="time-info-mini hours">{{getAttendanceForDate(employee, day).hours}}</div>
                             } @else {
                               <div class="time-info-mini">-</div>
@@ -646,14 +682,26 @@
                         } @else {
                           <td class="attendance-cell-monthly"
                               [class.status-present]="getAttendanceForDate(employee, day).status === 'Present'"
-                              [class.status-absent]="getAttendanceForDate(employee, day).status === 'Absent'">
+                              [class.status-absent]="getAttendanceForDate(employee, day).status === 'Absent'"
+                              [class.has-logs]="getAttendanceForDate(employee, day).allLogs && getAttendanceForDate(employee, day).allLogs.length > 0"
+                              (click)="openAttendanceLogsDialog(employee, day, getAttendanceForDate(employee, day))">
                             <div class="cell-date-monthly">{{formatDate(day, 'D MMM')}}</div>
                             <span class="badge mb-1" [ngClass]="getStatusBadgeClass(getAttendanceForDate(employee, day).status)">
                               {{getStatusLabel(getAttendanceForDate(employee, day).status)}}
+                              @if(getAttendanceForDate(employee, day).allLogs && getAttendanceForDate(employee, day).allLogs.length > 1) {
+                                <mat-icon style="font-size: 8px; width: 8px; height: 8px; vertical-align: middle;">info</mat-icon>
+                              }
                             </span>
-                            @if(getAttendanceForDate(employee, day).status !== 'Absent') {
+                            @if(getAttendanceForDate(employee, day).checkIn) {
                               <div class="time-info-mini">In: {{getAttendanceForDate(employee, day).checkIn}}</div>
-                              <div class="time-info-mini">Out: {{getAttendanceForDate(employee, day).checkOut}}</div>
+                              <div class="time-info-mini">
+                                Out:
+                                @if(isCheckoutMissing(getAttendanceForDate(employee, day).checkOut)) {
+                                  <span class="checkout-missing">{{getAttendanceForDate(employee, day).checkOut}}</span>
+                                } @else {
+                                  {{getAttendanceForDate(employee, day).checkOut}}
+                                }
+                              </div>
                               <div class="time-info-mini hours">{{getAttendanceForDate(employee, day).hours}}</div>
                             } @else {
                               <div class="time-info-mini">-</div>
@@ -676,7 +724,6 @@
           <!-- Legend -->
           <div class="mt-3 d-flex flex-wrap gap-3 justify-content-center">
             <div><span class="badge bg-success">P</span> Present</div>
-            <div><span class="badge bg-warning text-dark">L</span> Late</div>
             <div><span class="badge bg-danger">A</span> Absent</div>
             <div><span class="badge bg-secondary">W</span> Weekend</div>
           </div>
