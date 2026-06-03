@@ -94,9 +94,37 @@ export class AttendanceOverviewComponent implements OnInit, OnDestroy {
         next: (message: any) => {
           try {
             const content = typeof message.content === 'string' ? JSON.parse(message.content) : message.content;
+
             if (content?.type === 'mobile-overview-update' && content?.data) {
-              this.attendanceOverviewData = content.data.attendanceData;
-              this.attendanceSummary = content.data.summary;
+              const receivedOfficeId = content.data.officeId || 'all';
+              const receivedCompanyId = content.data.companyId;
+
+              // SECURITY: Additional frontend validation (backend already ensures this)
+              // Note: Backend already filters by company, this is defense in depth
+              if (!receivedCompanyId) {
+                console.warn('⚠ Received attendance update without companyId');
+              }
+
+              // Only update if the viewType matches AND the office matches
+              const viewTypeMatches = content.data.viewType === this.selectedAttendanceView;
+              const officeMatches = this.selectedOffice === 'all' ||
+                                   receivedOfficeId === 'all' ||
+                                   receivedOfficeId === this.selectedOffice;
+
+              if (viewTypeMatches && officeMatches) {
+                console.log(`✓ Received real-time attendance update (${content.data.viewType} view, office: ${receivedOfficeId}, company: ${receivedCompanyId})`);
+
+                this.attendanceOverviewData = content.data.attendanceData;
+                this.attendanceSummary = content.data.summary;
+
+                // Show subtle notification that data was updated
+                this.toastr.info('Attendance data updated', '', {
+                  timeOut: 2000,
+                  positionClass: 'toast-top-right'
+                });
+              } else {
+                console.log(`Skipping update: viewType=${content.data.viewType} (selected: ${this.selectedAttendanceView}), office=${receivedOfficeId} (selected: ${this.selectedOffice})`);
+              }
             }
           } catch (error) {
             console.error('Error processing attendance WebSocket message:', error);

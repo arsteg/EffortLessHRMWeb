@@ -208,7 +208,7 @@
                         <small class="text-muted">{{employee.position}}</small>
                       </td>
                       @for(day of getWeekDays(); track day) {
-                        @if(isWeekend(day)) {
+                        @if(isWeekend(day) && !getAttendanceForDate(employee, day).checkIn) {
                           <td class="attendance-cell weekend">
                             <div class="cell-date">{{formatDate(day)}}</div>
                             <span class="badge bg-secondary mb-1">W</span>
@@ -217,6 +217,7 @@
                         } @else {
                           <td class="attendance-cell" [class.status-present]="getAttendanceForDate(employee, day).status === 'Present'"
                               [class.status-absent]="getAttendanceForDate(employee, day).status === 'Absent'"
+                              [class.weekend-worked]="isWeekend(day) && getAttendanceForDate(employee, day).checkIn"
                               [class.has-logs]="getAttendanceForDate(employee, day).allLogs && getAttendanceForDate(employee, day).allLogs.length > 0"
                               (click)="openAttendanceLogsDialog(employee, day, getAttendanceForDate(employee, day))">
                             <div class="cell-date">{{formatDate(day)}}</div>
@@ -298,7 +299,7 @@
                     </td>
                     @for(day of getMonthDays(); track day; let i = $index) {
                       @if(i < 15) {
-                        @if(isWeekend(day)) {
+                        @if(isWeekend(day) && !getAttendanceForDate(employee, day).checkIn) {
                           <td class="attendance-cell-monthly weekend">
                             <div class="cell-date-monthly">{{formatDate(day, 'D MMM')}}</div>
                             <span class="badge bg-secondary mb-1">W</span>
@@ -308,6 +309,7 @@
                           <td class="attendance-cell-monthly"
                               [class.status-present]="getAttendanceForDate(employee, day).status === 'Present'"
                               [class.status-absent]="getAttendanceForDate(employee, day).status === 'Absent'"
+                              [class.weekend-worked]="isWeekend(day) && getAttendanceForDate(employee, day).checkIn"
                               [class.has-logs]="getAttendanceForDate(employee, day).allLogs && getAttendanceForDate(employee, day).allLogs.length > 0"
                               (click)="openAttendanceLogsDialog(employee, day, getAttendanceForDate(employee, day))">
                             <div class="cell-date-monthly">{{formatDate(day, 'D MMM')}}</div>

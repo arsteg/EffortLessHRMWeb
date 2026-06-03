@@ -262,6 +262,22 @@
       color: #adb5bd;
       cursor: default;
     }
+
+    // Weekend work - special highlight
+    &.weekend-worked {
+      background-color: #fff4e6 !important;
+      border: 2px solid #ff9800 !important;
+
+      &:hover {
+        background-color: #ffe0b2 !important;
+        box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+      }
+
+      .badge {
+        background-color: #ff9800 !important;
+        color: white;
+      }
+    }
   }
 
   thead th.weekend-header {
@@ -523,6 +539,22 @@
       background-color: #f8f9fa;
       color: #adb5bd;
       cursor: default;
+    }
+
+    // Weekend work - special highlight for monthly view
+    &.weekend-worked {
+      background-color: #fff4e6 !important;
+      border: 2px solid #ff9800 !important;
+
+      &:hover {
+        background-color: #ffe0b2 !important;
+        box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+      }
+
+      .badge {
+        background-color: #ff9800 !important;
+        color: white;
+      }
     }
 
     &.future {
