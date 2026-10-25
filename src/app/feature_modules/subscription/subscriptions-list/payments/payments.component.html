@@ -2,6 +2,7 @@
   @if(loading()) {
     Loading...
   } @else {
+    <div class="table-responsive">
     <table mat-table [dataSource]="dataSource()">
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef> Date </th>
@@ -26,5 +27,6 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    </div>
   }
 </div>

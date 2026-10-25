@@ -1,5 +1,6 @@
 <div class="mt-2 px-2">
   <form [formGroup]="fixedDeductionForm">
+    <div class="table-responsive">
     <table mat-table class="hrm-table" [dataSource]="deductions">
       <ng-container matColumnDef="category">
         <th mat-header-cell *matHeaderCellDef translate> payroll.category </th>
@@ -69,5 +70,6 @@
       <tr mat-header-row *matHeaderRowDef="['category', 'criteria', 'value', 'minimumAmount']"></tr>
       <tr mat-row *matRowDef="let row; columns: ['category', 'criteria', 'value', 'minimumAmount']"></tr>
     </table>
+    </div>
   </form>
 </div>

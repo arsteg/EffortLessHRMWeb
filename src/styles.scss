@@ -300,6 +300,7 @@ select {
 
 .dash-report {
   width: 410px;
+  max-width: 100%;
   border-radius: 1.2rem
 }
 
@@ -467,6 +468,7 @@ select {
 
 .dash-boxes {
   width: 365px !important;
+  max-width: 100%;
   border-radius: 1.2rem
 }
 
@@ -612,6 +614,21 @@ select {
   z-index: 991;
 }
 
+@media (max-width: 767.98px) {
+  .subMenu {
+    padding: 8px 16px;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+    padding-left: 8px;
+  }
+
+  .submenuTab {
+    margin-right: 8px;
+  }
+}
+
 .addBtn {
   background-color: #76bc21 !important;
   color: white !important;
@@ -656,7 +673,23 @@ button.active {
 
 @media (min-width: 576px) {
   .modal-dialog {
-    max-width: 764px !important;
+    /* keep the wide dialog but never exceed the viewport */
+    max-width: min(764px, calc(100vw - 2rem)) !important;
+  }
+}
+
+/* Dialogs and overlays must fit the viewport on small screens */
+@media (max-width: 767.98px) {
+  .cdk-overlay-pane {
+    max-width: 100vw !important;
+  }
+
+  .mat-mdc-dialog-container {
+    max-width: 100vw;
+  }
+
+  .mat-mdc-menu-panel {
+    max-width: calc(100vw - 16px) !important;
   }
 }
 
@@ -785,8 +818,15 @@ option:hover {
 }
 
 .payslipContainer {
+  /* fixed document width — html2canvas PDF capture depends on it;
+     .payslip-scroll-area on the parent contains overflow on small screens */
   width: 240mm;
   margin: auto;
+}
+
+.payslip-scroll-area {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .attachment {

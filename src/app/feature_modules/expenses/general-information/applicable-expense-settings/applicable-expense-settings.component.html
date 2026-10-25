@@ -1,4 +1,5 @@
 <div class="py-3">
+    <div class="table-responsive">
     <table mat-table [dataSource]="dataSource" class="hrm-table">
         <ng-container matColumnDef="expenseCategory">
             <th mat-header-cell *matHeaderCellDef> {{'expenses.expense_category' | translate}} </th>
@@ -17,4 +18,5 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    </div>
 </div>

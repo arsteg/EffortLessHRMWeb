@@ -71,6 +71,7 @@
     </div>
   </div>
   <div class="table-wrapper border-start border-end ">
+    <div class="table-responsive">
     <table class="table table-bordered table-hover">
       <thead>
         <tr>
@@ -138,6 +139,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
   </div>
 </div>
 
@@ -150,6 +152,7 @@
   </div>
 
   <mat-dialog-content>
+    <div class="table-responsive">
     <table mat-table [dataSource]="uploadedRecords">
 
       <!-- Select Checkbox Column -->
@@ -193,6 +196,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+    </div>
   </mat-dialog-content>
 
   <div class="d-flex justify-content-between mt-3" mat-dialog-actions>

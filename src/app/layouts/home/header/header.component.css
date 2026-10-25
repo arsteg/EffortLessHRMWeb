@@ -4,6 +4,17 @@
     padding: var(--size-2) 0;
 }
 
+@media (max-width: 991.98px) {
+    .navbar .container-fluid {
+        flex-wrap: wrap;
+    }
+
+    .trial-banner {
+        flex-wrap: wrap;
+        row-gap: var(--size-4);
+    }
+}
+
 .profile-menu {
     cursor: pointer;
     border-radius: var(--size-20);

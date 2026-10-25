@@ -1,5 +1,5 @@
 @media (min-width: 576px) {
     .modal-dialog {
-        max-width: 950px !important;
+        max-width: min(950px, calc(100vw - 2rem)) !important;
     }
 }

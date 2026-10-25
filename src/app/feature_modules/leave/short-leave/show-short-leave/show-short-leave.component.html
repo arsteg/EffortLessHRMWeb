@@ -24,6 +24,7 @@
         (recordsPerPageChange)="onRecordsPerPageChange($event)">
     </app-pagination>
 
+    <div class="table-responsive">
     <table class="mt-2">
         <thead>
             <th *ngIf="portalView === 'admin' || (portalView === 'user' && extractedUrl === 'team-short-leave')"
@@ -111,6 +112,7 @@
             </tr>
         </tbody>
     </table>
+    </div>
 </div>
 
 <ng-template #addModal let-modal>

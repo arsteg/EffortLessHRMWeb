@@ -4,6 +4,6 @@
         <button id="btnStop{{user.id}}" (click)="StopLivePreview(user.id)" *ngIf="user.isLivePreviewStarted">Stop ({{user.name}})</button>
     </div>
     <div class="row m-5">
-        <img [src]="imageVideo[user.id]" alt="{{user.name}} screen" style="width: 500px; height: 200px;"/>
+        <img [src]="imageVideo[user.id]" alt="{{user.name}} screen" style="width: 100%; max-width: 500px; height: auto; aspect-ratio: 5 / 2;"/>
     </div>
 </div>

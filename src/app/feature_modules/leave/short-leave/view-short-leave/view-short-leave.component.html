@@ -13,6 +13,7 @@
     <hr class="my-0">
     <div class="row pt-0" mat-dialog-content>
         <div class="tableContainer">
+            <div class="table-responsive">
             <table>
                 <tr>
                     <th class="w-50">{{ 'leave.employeeName' | translate }}</th>
@@ -39,6 +40,7 @@
                     <td>{{ leaveService?.leave?.getValue()?.comments }}</td>
                 </tr>
             </table>
+            </div>
         </div>
     </div>
 </div>

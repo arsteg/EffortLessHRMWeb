@@ -17,6 +17,7 @@
             name="searchText" aria-label="default input example">
     <button mat-flat-button class="addBtn ms-auto" (click)="open(modal); isEdit= false">Add</button>
 </div>
+    <div class="table-responsive">
     <table>
         <thead>
             <th class="w-50">State</th>
@@ -42,6 +43,7 @@
             </tr>
         </tbody>
     </table>
+    </div>
 </div>
 
 <ng-template #modal let-modal>

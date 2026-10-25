@@ -204,6 +204,7 @@
       </div>
       <div style="overflow-y: auto;" [style.max-height.px]="timeSpentCardHeight" [style.min-height.px]="timeSpentCardHeight">
         @if(projectTasks?.length > 0) {
+        <div class="table-responsive">
         <table class="table">
           <thead>
             <tr>
@@ -227,6 +228,7 @@
             </ng-container>
           </tbody>
         </table>
+        </div>
         } @else {
         <div class="d-flex align-items-center justify-content-center h-100">
           <p class="text-muted">No project-wise time data available</p>

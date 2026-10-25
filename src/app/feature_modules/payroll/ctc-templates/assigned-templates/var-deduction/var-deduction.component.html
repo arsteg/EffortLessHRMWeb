@@ -1,5 +1,6 @@
 <div class="mt-2 px-2">
   <form [formGroup]="variableDeductionForm">
+    <div class="table-responsive">
     <table mat-table [dataSource]="deductions" class="w-100">
       <!-- Category Column -->
       <ng-container matColumnDef="category">
@@ -69,5 +70,6 @@
       <tr mat-header-row *matHeaderRowDef="['category', 'criteria', 'value', 'minimumAmount']"></tr>
       <tr mat-row *matRowDef="let row; columns: ['category', 'criteria', 'value', 'minimumAmount']"></tr>
     </table>
+    </div>
   </form>
 </div>

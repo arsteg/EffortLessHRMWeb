@@ -83,6 +83,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
 
+          <div class="table-responsive">
           <table mat-table [dataSource]="group.permissions" class="mat-elevation-z1 mb-3">
             
             <ng-container matColumnDef="permission">
@@ -113,6 +114,7 @@
             <tr mat-header-row *matHeaderRowDef="['permission', 'actions']"></tr>
             <tr mat-row *matRowDef="let row; columns: ['permission', 'actions']"></tr>
           </table>
+          </div>
         </mat-expansion-panel>
       </mat-accordion>
     </div>
