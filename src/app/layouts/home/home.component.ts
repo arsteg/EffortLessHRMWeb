@@ -3,7 +3,7 @@ import {
   AfterViewInit,
   OnDestroy
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { Spinkit } from 'ng-http-loader';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { CommonService } from 'src/app/_services/common.Service';
@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SideBarAdminMenu, SideBarUserMenu } from './menu.const';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Role } from 'src/app/models/role.model';
-import { map, Observable, timer  } from 'rxjs';
+import { map, Observable, Subscription, timer  } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   isCollapsedMenu: boolean = false;
   isMobile = false;
   drawerOpened = false; // for mobile
+  private navigationSubscription?: Subscription;
   menuList: any = SideBarUserMenu;
   spinnerStyle = Spinkit;
   portalType: string = localStorage.getItem('role');
@@ -98,6 +99,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // }
   ngOnInit(): void {
       this.checkScreen();
+      this.navigationSubscription = this.router.events.subscribe(event => {
+        if (event instanceof NavigationEnd && this.isMobile) this.drawerOpened = false;
+      });
       let role = localStorage.getItem('role');
       this.adminView = localStorage.getItem('adminView');
       this.commonService.setCurrentUserRole(role);
@@ -156,6 +160,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.navigationSubscription?.unsubscribe();
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
     }
@@ -163,7 +168,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @HostListener('window:resize')
   checkScreen() {
-    this.isMobile = window.innerWidth < 768;
+    const mobile = window.innerWidth < 768;
+    if (mobile !== this.isMobile) this.drawerOpened = false;
+    this.isMobile = mobile;
   }
 
   toggleDrawer(collapsed: boolean) {

@@ -95,3 +95,73 @@ For more info see: https://angular.io/guide/build#configuring-commonjs-dependenc
 
 
 √ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files | Names   | Raw Size
+runtime.js          | runtime | 14.48 kB |
+
+40 unchanged chunks
+
+Build at: 2026-10-25T15:04:19.612Z - Hash: b63e2d26f89f8b44 - Time: 72283ms
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                | Names                                |  Raw Size
+runtime.js                                         | runtime                              |  14.48 kB |
+
+Lazy Chunk Files                                   | Names                                |  Raw Size
+src_app_feature_modules_manage_manage_module_ts.js | feature_modules-manage-manage-module | 317.70 kB |
+
+39 unchanged chunks
+
+Build at: 2026-10-25T15:10:02.063Z - Hash: 8edcdf174bf5e77e - Time: 38460ms
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files | Names   | Raw Size
+main.js             | main    |  2.17 MB |
+runtime.js          | runtime | 14.48 kB |
+
+39 unchanged chunks
+
+Build at: 2026-10-25T15:25:19.221Z - Hash: 0cecba1f0d873437 - Time: 54281ms
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                        | Names                                        |  Raw Size
+runtime.js                                                 | runtime                                      |  14.48 kB |
+
+Lazy Chunk Files                                           | Names                                        |  Raw Size
+src_app_feature_modules_attendance_attendance_module_ts.js | feature_modules-attendance-attendance-module |   2.63 MB |
+src_app_feature_modules_payroll_payroll_module_ts.js       | feature_modules-payroll-payroll-module       |   1.80 MB |
+src_app_feature_modules_reports_reports_module_ts.js       | feature_modules-reports-reports-module       | 242.09 kB |
+
+37 unchanged chunks
+
+Build at: 2026-10-25T16:04:58.443Z - Hash: c910745b2d256288 - Time: 39945ms
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files | Names   | Raw Size
+main.js             | main    |  2.17 MB |
+runtime.js          | runtime | 14.48 kB |
+
+39 unchanged chunks
+
+Build at: 2026-10-25T16:08:15.164Z - Hash: c4a8ccf4ed21a84e - Time: 29685ms
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files | Names   | Raw Size
+runtime.js          | runtime | 14.48 kB |
+
+40 unchanged chunks
+
+Build at: 2026-10-25T16:11:42.431Z - Hash: 6664dfb00ba82d48 - Time: 6906ms
+
+√ Compiled successfully.

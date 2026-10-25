@@ -1,0 +1,246 @@
+
+> effort-less-hrmweb@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless
+
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+25 10 2026 21:45:14.286:INFO [karma-server]: Karma v6.3.20 server started at http://localhost:9876/
+25 10 2026 21:45:14.290:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+25 10 2026 21:45:14.296:INFO [launcher]: Starting browser ChromeHeadless
+25 10 2026 21:45:15.136:INFO [Chrome Headless 155.0.0.0 (Windows 10)]: Connected on socket 72YyJHaWqFI30WDsAAAB with id 38818613
+Chrome Headless 155.0.0.0 (Windows 10): Executed 0 of 144[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 1 of 144[32m SUCCESS[39m (0 secs / 0.1 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 2 of 144[32m SUCCESS[39m (0 secs / 0.117 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 3 of 144[32m SUCCESS[39m (0 secs / 0.12 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 4 of 144[32m SUCCESS[39m (0 secs / 0.182 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 5 of 144[32m SUCCESS[39m (0 secs / 0.185 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 6 of 144[32m SUCCESS[39m (0 secs / 0.238 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 7 of 144[32m SUCCESS[39m (0 secs / 0.263 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 8 of 144[32m SUCCESS[39m (0 secs / 0.312 secs)
+[1A[2KLOG: [36m'unit-test-user'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 8 of 144[32m SUCCESS[39m (0 secs / 0.312 secs)
+LOG: 'unit-test-user'
+[1A[2KWARN: [36m'
+  It looks like you're using ngModel on the same form field as formControlName.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlName#use-with-ngmodel
+  '[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 8 of 144[32m SUCCESS[39m (0 secs / 0.312 secs)
+WARN: '
+  It looks like you're using ngModel on the same form field as formControlName.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlName#use-with-ngmodel
+  '
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 9 of 144[32m SUCCESS[39m (0 secs / 0.4 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 10 of 144[32m SUCCESS[39m (0 secs / 0.425 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 11 of 144[32m SUCCESS[39m (0 secs / 0.444 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 12 of 144[32m SUCCESS[39m (0 secs / 0.446 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 13 of 144[32m SUCCESS[39m (0 secs / 0.463 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 14 of 144[32m SUCCESS[39m (0 secs / 0.486 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 15 of 144[32m SUCCESS[39m (0 secs / 0.495 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 16 of 144[32m SUCCESS[39m (0 secs / 0.509 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 17 of 144[32m SUCCESS[39m (0 secs / 0.541 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 18 of 144[32m SUCCESS[39m (0 secs / 0.553 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 19 of 144[32m SUCCESS[39m (0 secs / 0.561 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 20 of 144[32m SUCCESS[39m (0 secs / 0.573 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 21 of 144[32m SUCCESS[39m (0 secs / 0.588 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 22 of 144[32m SUCCESS[39m (0 secs / 0.59 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 23 of 144[32m SUCCESS[39m (0 secs / 0.61 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 24 of 144[32m SUCCESS[39m (0 secs / 0.621 secs)
+[1A[2KLOG: [36mElementRef{nativeElement: <section _ngcontent-a-c3310946234="" id="hrmFeatures" class="manage hrmFeatures pt-5"><div _ngcontent-a-c3310946234="" class="section-container"><div _ngcontent-a-c3310946234="" data-aos="fade-up" class="manage__head aos-init"><h2 _ngcontent-a-c3310946234="" class="manage__title">HRM Features</h2><div _ngcontent-a-c3310946234="" class="manage__subtitle">EffortlessHRM streamlines HR management and time tracking with innovative features tailored to enhance the employee experience and organizational efficiency.</div></div><div _ngcontent-a-c3310946234="" class="row mt-5 d-flex justify-content-evenly"><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_1"><img _ngcontent-a-c3310946234="" src="assets/main/1.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Organization Set-up</h5><p _ngcontent-a-c3310946234="">Effortlessly set up your organization, assign templates, managers, and create an organizational hierarchy. Bulk upload employee data and manage leaves, expenses, and attendance with ease.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_2"><img _ngcontent-a-c3310946234="" src="assets/main/2.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Management Dashboards &amp; Reports</h5><p _ngcontent-a-c3310946234="">Access actionable insights and analytics to drive better business outcomes. Govern data access and share insights with customizable reports in various formats.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_3"><img _ngcontent-a-c3310946234="" src="assets/main/3.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Employee Onboarding</h5><p _ngcontent-a-c3310946234="">Simplify employee onboarding with integrated HR management. Set up multiple office locations, departments, designations, and streamline the onboarding process for new hires.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_4"><img _ngcontent-a-c3310946234="" src="assets/main/4.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Payroll</h5><p _ngcontent-a-c3310946234="">Organize payroll tasks efficiently with automated salary slip generation and CTC calculations, ensuring accurate and timely employee payments.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_5"><img _ngcontent-a-c3310946234="" src="assets/main/5.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Expense Management</h5><p _ngcontent-a-c3310946234="">Streamline expense reporting with easy-to-use modules that sync with employee reporting managers for seamless approval processes. Define expense policies, track expenses, and optimize expenditures. </p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_6"><img _ngcontent-a-c3310946234="" src="assets/main/6.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Attendance Management</h5><p _ngcontent-a-c3310946234="">Adapt to complex labor environments with automated attendance tracking and comprehensive reporting features. Manage time logs, approvals, and off-site worker attendance effortlessly.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_7"><img _ngcontent-a-c3310946234="" src="assets/main/7.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Leave Management</h5><p _ngcontent-a-c3310946234="">Customize leave policies and structures, automate leave approvals, and manage leave entitlements with ease. Configure different templates and workflows to suit departmental requirements.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_8"><img _ngcontent-a-c3310946234="" src="assets/main/8.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Recruitment System</h5><p _ngcontent-a-c3310946234="">Simplify recruitment processes with EffortlessHRM's intuitive features for job requisition, candidate engagement, collaboration, and onboarding.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_9"><img _ngcontent-a-c3310946234="" src="assets/main/9.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Interview Process</h5><p _ngcontent-a-c3310946234="">Create custom templates to streamline candidate data storage, interview scheduling, and feedback collection. Conduct interviews online and efficiently manage the entire recruitment process.</p></div></div></div></section>}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 24 of 144[32m SUCCESS[39m (0 secs / 0.621 secs)
+LOG: ElementRef{nativeElement: <section _ngcontent-a-c3310946234="" id="hrmFeatures" class="manage hrmFeatures pt-5"><div _ngcontent-a-c3310946234="" class="section-container"><div _ngcontent-a-c3310946234="" data-aos="fade-up" class="manage__head aos-init"><h2 _ngcontent-a-c3310946234="" class="manage__title">HRM Features</h2><div _ngcontent-a-c3310946234="" class="manage__subtitle">EffortlessHRM streamlines HR management and time tracking with innovative features tailored to enhance the employee experience and organizational efficiency.</div></div><div _ngcontent-a-c3310946234="" class="row mt-5 d-flex justify-content-evenly"><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_1"><img _ngcontent-a-c3310946234="" src="assets/main/1.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Organization Set-up</h5><p _ngcontent-a-c3310946234="">Effortlessly set up your organization, assign templates, managers, and create an organizational hierarchy. Bulk upload employee data and manage leaves, expenses, and attendance with ease.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_2"><img _ngcontent-a-c3310946234="" src="assets/main/2.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Management Dashboards &amp; Reports</h5><p _ngcontent-a-c3310946234="">Access actionable insights and analytics to drive better business outcomes. Govern data access and share insights with customizable reports in various formats.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_3"><img _ngcontent-a-c3310946234="" src="assets/main/3.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Employee Onboarding</h5><p _ngcontent-a-c3310946234="">Simplify employee onboarding with integrated HR management. Set up multiple office locations, departments, designations, and streamline the onboarding process for new hires.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_4"><img _ngcontent-a-c3310946234="" src="assets/main/4.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Payroll</h5><p _ngcontent-a-c3310946234="">Organize payroll tasks efficiently with automated salary slip generation and CTC calculations, ensuring accurate and timely employee payments.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_5"><img _ngcontent-a-c3310946234="" src="assets/main/5.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Expense Management</h5><p _ngcontent-a-c3310946234="">Streamline expense reporting with easy-to-use modules that sync with employee reporting managers for seamless approval processes. Define expense policies, track expenses, and optimize expenditures. </p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_6"><img _ngcontent-a-c3310946234="" src="assets/main/6.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Attendance Management</h5><p _ngcontent-a-c3310946234="">Adapt to complex labor environments with automated attendance tracking and comprehensive reporting features. Manage time logs, approvals, and off-site worker attendance effortlessly.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_7"><img _ngcontent-a-c3310946234="" src="assets/main/7.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Leave Management</h5><p _ngcontent-a-c3310946234="">Customize leave policies and structures, automate leave approvals, and manage leave entitlements with ease. Configure different templates and workflows to suit departmental requirements.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_8"><img _ngcontent-a-c3310946234="" src="assets/main/8.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Recruitment System</h5><p _ngcontent-a-c3310946234="">Simplify recruitment processes with EffortlessHRM's intuitive features for job requisition, candidate engagement, collaboration, and onboarding.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_9"><img _ngcontent-a-c3310946234="" src="assets/main/9.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Interview Process</h5><p _ngcontent-a-c3310946234="">Create custom templates to streamline candidate data storage, interview scheduling, and feedback collection. Conduct interviews online and efficiently manage the entire recruitment process.</p></div></div></div></section>}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 25 of 144[32m SUCCESS[39m (0 secs / 0.77 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 26 of 144[32m SUCCESS[39m (0 secs / 0.788 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 27 of 144[32m SUCCESS[39m (0 secs / 0.812 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 28 of 144[32m SUCCESS[39m (0 secs / 0.828 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 29 of 144[32m SUCCESS[39m (0 secs / 0.834 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 30 of 144[32m SUCCESS[39m (0 secs / 0.848 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 31 of 144[32m SUCCESS[39m (0 secs / 0.863 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 32 of 144[32m SUCCESS[39m (0 secs / 0.876 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 33 of 144[32m SUCCESS[39m (0 secs / 0.914 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 34 of 144[32m SUCCESS[39m (0 secs / 0.928 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 35 of 144[32m SUCCESS[39m (0 secs / 0.946 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 36 of 144[32m SUCCESS[39m (0 secs / 0.963 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 37 of 144[32m SUCCESS[39m (0 secs / 0.983 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 38 of 144[32m SUCCESS[39m (0 secs / 1.011 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 39 of 144[32m SUCCESS[39m (0 secs / 1.076 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 40 of 144[32m SUCCESS[39m (0 secs / 1.085 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 41 of 144[32m SUCCESS[39m (0 secs / 1.132 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 42 of 144[32m SUCCESS[39m (0 secs / 1.159 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 43 of 144[32m SUCCESS[39m (0 secs / 1.177 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 44 of 144[32m SUCCESS[39m (0 secs / 1.206 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 45 of 144[32m SUCCESS[39m (0 secs / 1.223 secs)
+[1A[2KLOG: [36mtrue[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 45 of 144[32m SUCCESS[39m (0 secs / 1.223 secs)
+LOG: true
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 46 of 144[32m SUCCESS[39m (0 secs / 1.24 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 47 of 144[32m SUCCESS[39m (0 secs / 1.261 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 48 of 144[32m SUCCESS[39m (0 secs / 1.276 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 49 of 144[32m SUCCESS[39m (0 secs / 1.296 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 50 of 144[32m SUCCESS[39m (0 secs / 1.304 secs)
+[1A[2KWARN: [36m'
+  It looks like you're using ngModel on the same form field as formControl.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlDirective#use-with-ngmodel
+  '[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 50 of 144[32m SUCCESS[39m (0 secs / 1.304 secs)
+WARN: '
+  It looks like you're using ngModel on the same form field as formControl.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlDirective#use-with-ngmodel
+  '
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 51 of 144[32m SUCCESS[39m (0 secs / 1.326 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 52 of 144[32m SUCCESS[39m (0 secs / 1.334 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 53 of 144[32m SUCCESS[39m (0 secs / 1.365 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 54 of 144[32m SUCCESS[39m (0 secs / 1.369 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 55 of 144[32m SUCCESS[39m (0 secs / 1.383 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 56 of 144[32m SUCCESS[39m (0 secs / 1.387 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 57 of 144[32m SUCCESS[39m (0 secs / 1.402 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 58 of 144[32m SUCCESS[39m (0 secs / 1.422 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 59 of 144[32m SUCCESS[39m (0 secs / 1.453 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 60 of 144[32m SUCCESS[39m (0 secs / 1.464 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 61 of 144[32m SUCCESS[39m (0 secs / 1.481 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 62 of 144[32m SUCCESS[39m (0 secs / 1.495 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 63 of 144[32m SUCCESS[39m (0 secs / 1.519 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 64 of 144[32m SUCCESS[39m (0 secs / 1.521 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 65 of 144[32m SUCCESS[39m (0 secs / 1.605 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 66 of 144[32m SUCCESS[39m (0 secs / 1.627 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 67 of 144[32m SUCCESS[39m (0 secs / 1.655 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 68 of 144[32m SUCCESS[39m (0 secs / 1.673 secs)
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 68 of 144[32m SUCCESS[39m (0 secs / 1.673 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 68 of 144[32m SUCCESS[39m (0 secs / 1.673 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KLOG: [36m[][39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 68 of 144[32m SUCCESS[39m (0 secs / 1.673 secs)
+LOG: []
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 69 of 144[32m SUCCESS[39m (0 secs / 1.747 secs)
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 69 of 144[32m SUCCESS[39m (0 secs / 1.747 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 70 of 144[32m SUCCESS[39m (0 secs / 1.764 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 70 of 144[32m SUCCESS[39m (0 secs / 1.764 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 71 of 144[32m SUCCESS[39m (0 secs / 1.777 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 71 of 144[32m SUCCESS[39m (0 secs / 1.777 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 72 of 144[32m SUCCESS[39m (0 secs / 1.783 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 72 of 144[32m SUCCESS[39m (0 secs / 1.783 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 73 of 144[32m SUCCESS[39m (0 secs / 1.788 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 74 of 144[32m SUCCESS[39m (0 secs / 1.818 secs)
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 74 of 144[32m SUCCESS[39m (0 secs / 1.818 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 75 of 144[32m SUCCESS[39m (0 secs / 1.865 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 76 of 144[32m SUCCESS[39m (0 secs / 1.88 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 77 of 144[32m SUCCESS[39m (0 secs / 1.896 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 78 of 144[32m SUCCESS[39m (0 secs / 1.9 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 79 of 144[32m SUCCESS[39m (0 secs / 1.902 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 80 of 144[32m SUCCESS[39m (0 secs / 1.912 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 81 of 144[32m SUCCESS[39m (0 secs / 1.934 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 82 of 144[32m SUCCESS[39m (0 secs / 1.95 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 83 of 144[32m SUCCESS[39m (0 secs / 1.964 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 84 of 144[32m SUCCESS[39m (0 secs / 1.994 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 85 of 144[32m SUCCESS[39m (0 secs / 2.008 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 86 of 144[32m SUCCESS[39m (0 secs / 2.017 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 87 of 144[32m SUCCESS[39m (0 secs / 2.028 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 88 of 144[32m SUCCESS[39m (0 secs / 2.037 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 89 of 144[32m SUCCESS[39m (0 secs / 2.062 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 90 of 144[32m SUCCESS[39m (0 secs / 2.067 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 91 of 144[32m SUCCESS[39m (0 secs / 2.086 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 92 of 144[32m SUCCESS[39m (0 secs / 2.087 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 93 of 144[32m SUCCESS[39m (0 secs / 2.099 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 94 of 144[32m SUCCESS[39m (0 secs / 2.114 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 95 of 144[32m SUCCESS[39m (0 secs / 2.133 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 96 of 144[32m SUCCESS[39m (0 secs / 2.152 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 97 of 144[32m SUCCESS[39m (0 secs / 2.158 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 98 of 144[32m SUCCESS[39m (0 secs / 2.182 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 99 of 144[32m SUCCESS[39m (0 secs / 2.186 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 100 of 144[32m SUCCESS[39m (0 secs / 2.188 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 101 of 144[32m SUCCESS[39m (0 secs / 2.19 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 102 of 144[32m SUCCESS[39m (0 secs / 2.198 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 103 of 144[32m SUCCESS[39m (0 secs / 2.339 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 104 of 144[32m SUCCESS[39m (0 secs / 2.348 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 105 of 144[32m SUCCESS[39m (0 secs / 2.354 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 106 of 144[32m SUCCESS[39m (0 secs / 2.361 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 107 of 144[32m SUCCESS[39m (0 secs / 2.373 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 108 of 144[32m SUCCESS[39m (0 secs / 2.39 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 109 of 144[32m SUCCESS[39m (0 secs / 2.406 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 110 of 144[32m SUCCESS[39m (0 secs / 2.42 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 111 of 144[32m SUCCESS[39m (0 secs / 2.439 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 112 of 144[32m SUCCESS[39m (0 secs / 2.453 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 113 of 144[32m SUCCESS[39m (0 secs / 2.461 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 114 of 144[32m SUCCESS[39m (0 secs / 2.468 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 115 of 144[32m SUCCESS[39m (0 secs / 2.48 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 116 of 144[32m SUCCESS[39m (0 secs / 2.5 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 117 of 144[32m SUCCESS[39m (0 secs / 2.511 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 118 of 144[32m SUCCESS[39m (0 secs / 2.55 secs)
+[1A[2KLOG: [36m2026[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 118 of 144[32m SUCCESS[39m (0 secs / 2.55 secs)
+LOG: 2026
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 119 of 144[32m SUCCESS[39m (0 secs / 2.573 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 120 of 144[32m SUCCESS[39m (0 secs / 2.578 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 121 of 144[32m SUCCESS[39m (0 secs / 2.592 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 122 of 144[32m SUCCESS[39m (0 secs / 2.621 secs)
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 122 of 144[32m SUCCESS[39m (0 secs / 2.621 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 122 of 144[32m SUCCESS[39m (0 secs / 2.621 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 122 of 144[32m SUCCESS[39m (0 secs / 2.621 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 123 of 144[32m SUCCESS[39m (0 secs / 3.517 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 124 of 144[32m SUCCESS[39m (0 secs / 3.525 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 125 of 144[32m SUCCESS[39m (0 secs / 3.527 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 126 of 144[32m SUCCESS[39m (0 secs / 3.562 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 127 of 144[32m SUCCESS[39m (0 secs / 3.586 secs)
+[1A[2KLOG: [36m'Log received:', Object{message: 'Isolated unit test log'}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 127 of 144[32m SUCCESS[39m (0 secs / 3.586 secs)
+LOG: 'Log received:', Object{message: 'Isolated unit test log'}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 128 of 144[32m SUCCESS[39m (0 secs / 3.599 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 129 of 144[32m SUCCESS[39m (0 secs / 3.607 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 130 of 144[32m SUCCESS[39m (0 secs / 3.615 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 131 of 144[32m SUCCESS[39m (0 secs / 3.62 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 132 of 144[32m SUCCESS[39m (0 secs / 3.627 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 133 of 144[32m SUCCESS[39m (0 secs / 3.628 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 134 of 144[32m SUCCESS[39m (0 secs / 3.628 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 135 of 144[32m SUCCESS[39m (0 secs / 3.628 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 136 of 144[32m SUCCESS[39m (0 secs / 3.628 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 137 of 144[32m SUCCESS[39m (0 secs / 3.641 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 138 of 144[32m SUCCESS[39m (0 secs / 3.692 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 139 of 144[32m SUCCESS[39m (0 secs / 3.694 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 140 of 144[32m SUCCESS[39m (0 secs / 3.697 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 141 of 144[32m SUCCESS[39m (0 secs / 3.708 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 142 of 144[32m SUCCESS[39m (0 secs / 3.716 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 143 of 144[32m SUCCESS[39m (0 secs / 3.724 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 144 of 144[32m SUCCESS[39m (0 secs / 3.728 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 144 of 144[32m SUCCESS[39m (4.163 secs / 3.728 secs)
+[32mTOTAL: 144 SUCCESS[39m
+√ Browser application bundle generation complete.
+25 10 2026 21:45:26.677:WARN [launcher]: ChromeHeadless was not killed in 2000 ms, sending SIGKILL.
+√ Browser application bundle generation complete.

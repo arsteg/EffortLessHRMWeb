@@ -88,6 +88,12 @@ app-sidebar .menu-item:focus-visible {
   outline-offset: 3px;
 }
 @media (max-width: 575.98px) {
+  // Legacy dialogs request 50% width, which leaves only 160px on a phone.
+  .cdk-overlay-pane:has(.mat-mdc-dialog-container) {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+  .mat-mdc-dialog-container .mat-mdc-dialog-title { overflow-wrap: anywhere; }
   app-home .content-wrapper h1 { font-size: 21px; }
   .modal-content { padding: 12px; }
   .mat-mdc-paginator-container { justify-content: center; }

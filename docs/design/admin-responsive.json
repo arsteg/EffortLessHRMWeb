@@ -1,0 +1,597 @@
+[
+  {
+    "scroll": 320,
+    "url": "#/home/dashboard",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/screenshots",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/realtime",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/organization/organization-setup/organization-profile",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/manage/employees",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/attendance/settings/attendance-templates",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/leave/settings/leave-category",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/expense/settings/expense-category",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/alerts/notification",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/payroll/settings/general-settings",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/taxation/sections",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/reports",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/separation/termination",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/settings",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/permissions",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/approvals",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/helpdesk",
+    "width": 320
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/dashboard",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/screenshots",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/realtime",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/organization/organization-setup/organization-profile",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/manage/employees",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/attendance/settings/attendance-templates",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/leave/settings/leave-category",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/expense/settings/expense-category",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/alerts/notification",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/payroll/settings/general-settings",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/taxation/sections",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/reports",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/separation/termination",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/settings",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/permissions",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/approvals",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/helpdesk",
+    "width": 390
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/dashboard",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/screenshots",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/realtime",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/organization/organization-setup/organization-profile",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/manage/employees",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/attendance/settings/attendance-templates",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/leave/settings/leave-category",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/expense/settings/expense-category",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/alerts/notification",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/payroll/settings/general-settings",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/taxation/sections",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/reports",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/separation/termination",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/settings",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/permissions",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/approvals",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/helpdesk",
+    "width": 430
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/dashboard",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/screenshots",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/realtime",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/organization/organization-setup/organization-profile",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/manage/employees",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/attendance/settings/attendance-templates",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/leave/settings/leave-category",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/expense/settings/expense-category",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/alerts/notification",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/payroll/settings/general-settings",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/taxation/sections",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/reports",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/separation/termination",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/settings",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/permissions",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/approvals",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/helpdesk",
+    "width": 768
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/dashboard",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/screenshots",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/realtime",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/organization/organization-setup/organization-profile",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/manage/employees",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/attendance/settings/attendance-templates",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/leave/settings/leave-category",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/expense/settings/expense-category",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/alerts/notification",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/payroll/settings/general-settings",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/taxation/sections",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/reports",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/separation/termination",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/settings",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/permissions",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/approvals",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/helpdesk",
+    "width": 1024
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/dashboard",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/screenshots",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/realtime",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/organization/organization-setup/organization-profile",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/manage/employees",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/attendance/settings/attendance-templates",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/leave/settings/leave-category",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/expense/settings/expense-category",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/alerts/notification",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/payroll/settings/general-settings",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/taxation/sections",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/reports",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/separation/termination",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/settings",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/permissions",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/approvals",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/helpdesk",
+    "width": 1440
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/dashboard",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/screenshots",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/realtime",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/organization/organization-setup/organization-profile",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/manage/employees",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/attendance/settings/attendance-templates",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/leave/settings/leave-category",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/expense/settings/expense-category",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/alerts/notification",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/payroll/settings/general-settings",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/taxation/sections",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/reports",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/separation/termination",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/settings",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/permissions",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/approvals",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/helpdesk",
+    "width": 1920
+  }
+]

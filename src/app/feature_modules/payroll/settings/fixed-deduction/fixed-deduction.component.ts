@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
@@ -15,7 +15,7 @@ import { CustomValidators } from 'src/app/_helpers/custom-validators';
   templateUrl: './fixed-deduction.component.html',
   styleUrls: ['./fixed-deduction.component.css']
 })
-export class FixedDeductionComponent implements AfterViewInit {
+export class FixedDeductionComponent {
   isEdit: boolean = false;
   selectedRecord: any;
   fixedContributionForm: FormGroup;
@@ -78,11 +78,8 @@ export class FixedDeductionComponent implements AfterViewInit {
   }
 
   ngOnInit() {
-    this.getFixedDeduction();
-  }
-
-  ngAfterViewInit() {
     this.tableService.initializeDataSource([]);
+    this.getFixedDeduction();
   }
 
   clearForm() {

@@ -161,7 +161,9 @@ export class TimelineComponent implements OnInit {
     timeline.users = (this.view === "admin" || null) ? this.selectedUser : [this.currentUser.id];
     console.log(timeline)
     this.reportService.getTimeline(timeline).subscribe(result => {
-      this.timeline = result.data;
+      this.timeline = result.data || [];
+      this.hours = [];
+      this.logs = [];
       console.log(this.timeline)
       const newHours = [];
       let earliestLogTime = Infinity;
@@ -191,6 +193,9 @@ export class TimelineComponent implements OnInit {
       if (earliestLogTime !== Infinity && latestLogTime !== -Infinity) {
         this.startTime = new Date(earliestLogTime);
         this.endTime = new Date(latestLogTime);
+      } else {
+        // An empty date must clear the previous timeline without reading unset dates.
+        return;
       }
 
       this.hours = Array.from(

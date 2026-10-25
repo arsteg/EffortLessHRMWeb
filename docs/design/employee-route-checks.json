@@ -1,0 +1,92 @@
+[
+  {
+    "scroll": 1440,
+    "text": "Hi, Eli Employee!\n\nWelcome to Effortless HRM\n\nSelect Date\nTime Spent\nDaily\n\nNo time logged for this day\n\nProject-wise time spent on all tasks\n\nNo project-wise time data available\n\nProject wise time on each task\n\nNo task data available for t",
+    "url": "#/home/dashboard/user",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "keyboard_arrow_left\nChoose a date\nkeyboard_arrow_right\nMember\nToday: 00 h 00 mThis week: 00 h 00 m\nThis month: 00 h 00 m\nsync\ndelete",
+    "url": "#/home/screenshots",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "Realtime Monitoring\nNumber of Members\ngroup\nWorking Now\ncircle\nCurrently Non-Productive\ncircle\nsearch\nExport\ndownload\nSelect User\n\t\nUser\n\t\nProject\n\t\nTask\n\t\nApp/Website\n\t\nAction\n\nNo records to display",
+    "url": "#/home/realtime",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "Select User\nSelect Project\nALL\nStatus\nToDo (+3 others)\nBoard View\nleaderboard\nSearch\nAdd New\nKey \tTask Name \tDue Date \tPriority \tStatus \tComments\tAssignee\tReporter\tAction\nItems per page:\n10\n0 of 0",
+    "url": "#/home/tasks",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "Notification\nsearch\nName\n\t\nDescription\n\t\nType\n\t\nDate\n\t\nRecurring\n\t\nFrequency\n\t\nLead Time\n\t\nActions\n\nNo records to display\n\nAdd/Edit Event Notification\nName\nDescription\nType\nChannels\nDate\nRecurring\nLead Time\nAdd",
+    "url": "#/home/alerts/notification",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "My Leave Application\nMy Leave Balance\nTeam Application\nMy Team Balance\nPending\nApproved\nRejected\nAdd New\nsearch\nExport\ndownload\nEmployee\n\t\nLeave Category\n\t\nStart Date\n\t\nEnd Date\n\t\nTotal Leave Days\n\t\nStatus\n\t\nActions\n\nNo records to display\n\n",
+    "url": "#/home/leave/my-application",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "My Attendance Records\nOverTime Records\nSelect Month\nOctober\nSelect Year\n2026\nsearch\nDate\n\t\nCheckIn\n\t\nCheckOut\n\t\nWorking Hours\n\t\nDeviation Hours\n\t\nShift Timings\n\t\nLate Coming Remarks\n\nNo records to display",
+    "url": "#/home/attendance/my-attendance-records",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "My Tax Declarations\nAdd Tax Declaration\nTax Calculator\nsearch\nFinancial Year\n\t\nChapter VI Deductions\n\t\n80C Deduction\n\t\n80CCC Pension Funds\n\t\n80CCD - NPS Contribution\n\t\n80CCD(1B) Additional NPS\n\t\n80D Health Insurance\n\t\n80DD - Dependent Disab",
+    "url": "#/home/taxation/tax-declaration",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "My Expenses\nTeam Expenses\nGeneral Information\nSearch\nsearch\nExport\ndownload\nAdd New\nReport Title\n\t\nTotal Amount\n\t\nAdvance Received\n\t\nNet Payable\n\t\nReimbursable\n\t\nBillable\n\t\nStatus\n\tActions\nItems per page:\n10\n0 of 0",
+    "url": "#/home/expense/my-expense",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "search\nEmployee\n\t\nPeriod\n\t\nGenerated On\n\t\nStatus\n\t\nActions\n\nNo records to display",
+    "url": "#/home/payroll/my-payslips",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "Resignation\nTermination\nCreate Resignation\nsearch\nUser\n\t\nResignation Date\n\t\nLast Working Day\n\t\nNotice Period\n\t\nResignation Reason\n\t\nExit Interview Date\n\t\nHandover Complete\n\t\nCompany Property Returned\n\t\nFinal Pay Processed\n\t\nExit Feedback\n\t\n",
+    "url": "#/home/separation/resignation",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "Timeline\nBrowser History\nApps and Websites\nProductivity\nTimesheets\nMember\nSelect Project\nDate\nrefresh\ndownload\nTracked\nMedium Activity\nManual\nLow Activity\nProjects \tTime ",
+    "url": "#/home/reports",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "Add New\nsearch\nDate\n\t\nProject\n\t\nManager\n\t\nTask\n\t\nFrom Date\n\t\nTo Date\n\t\nReason\n\t\nStatus\n\t\nAction\n\nNo records to display\n\nItems per page:\n10\n0 of 0",
+    "url": "#/home/manual-time",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "User Preferences\nScreenshot Sound Disable\nScreenshot Notification Disable\nSave",
+    "url": "#/home/settings",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "text": "Add Ticket\nsearch\nDate\n\t\nDescription\n\t\nFiles\n\t\nVideos\n\t\nStatus\n\t\nRemarks\n\t\nActions\n\nNo records to display\n\nItems per page:\n10\n0 of 0",
+    "url": "#/home/helpdesk",
+    "width": 1440
+  }
+]

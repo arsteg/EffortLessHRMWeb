@@ -2,7 +2,7 @@
 
 ## Status
 
-Implemented a shared visual refresh and targeted screen improvements in the existing Angular application. **This is not a completed page-by-page product sign-off.** Authenticated screens still need visual and interaction testing with safe role accounts. The local API is now reachable and the user has authorized use of the existing local test admin. The browser available to this chat is logged out; its authenticated test session is still pending.
+Implemented a shared visual refresh and targeted screen improvements in the existing Angular application. **This is not a completed page-by-page product sign-off.** The local access blocker is now resolved: admin, manager and employee login succeeded. The latest pass records 47 role/page render checks, 224 authenticated responsive checks, five additional fixes, 144 passing unit tests and a successful development build. See [Authenticated review](AUTHENTICATED_REVIEW.md) for current evidence and remaining scope. The earlier verification and limitations below describe the preceding public-screen phase; statements about unavailable authenticated access are superseded by that review.
 
 ### Local environment recheck
 

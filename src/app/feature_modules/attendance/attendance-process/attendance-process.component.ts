@@ -204,17 +204,14 @@ export class AttendanceProcessComponent {
       this.activeTabIndex = this.activeTab === 'attendanceProcess' ? 0 : 1;
 
       if (this.activeTab === 'attendanceProcess') {
-        forkJoin([
-          this.commonService.populateUsers().subscribe(usersResult => {
+        this.commonService.populateUsers().subscribe(usersResult => {
             this.allAssignee = usersResult && usersResult.data && usersResult.data.data;
             this.getProcessAttendance();
-          }),
-          //this.getProcessAttendance()
-        ]).subscribe(() => { });
+          });
 
       } else if (this.activeTab === 'fnfattendanceProcess') {
+        this.changeMode = 'Update';
         forkJoin([
-          this.changeMode = 'Update',
           this.getUsersByStatus(),
           this.getFnfAttendanceProcess()
         ]).subscribe(([users, attendanceProcess]) => {
