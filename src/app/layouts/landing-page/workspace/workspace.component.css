@@ -1,4 +1,10 @@
 .workspace {
+  .eyebrow {
+    margin-bottom: var(--size-8);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
   .overflow-auto {
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;

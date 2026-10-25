@@ -1,9 +1,14 @@
 <section class="intro-container">
     <div class="container text-center">
         <div class="intro-text-container">
-            <h1 class="fs-6 text-primary tracking-in-contract">{{ 'landing.title' | translate }}</h1>
-            <h2 class="sub-title text-focus-in text-fade-out">{{ 'landing.subtitle' | translate }}</h2>
+            <p class="eyebrow fs-6 text-primary tracking-in-contract">{{ 'landing.title' | translate }}</p>
+            <h1 class="sub-title text-focus-in text-fade-out">{{ 'landing.subtitle' | translate }}</h1>
             <p class="lead text-focus-in text-fade-out">{{ 'landing.header_desc' | translate }}</p>
+            <div class="hero-ctas text-focus-in text-fade-out">
+                <a routerLink="/register" mat-flat-button color="primary" class="rounded-pill px-4 fs-6">Start free trial</a>
+                <a href="#hrm-features" class="hero-secondary-link">See how it works</a>
+            </div>
+            <p class="hero-reassurance text-focus-in text-fade-out">1-month free trial &middot; No credit card required</p>
         </div>
     </div>
     <div class="intro-image text-center">
