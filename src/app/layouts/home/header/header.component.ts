@@ -54,7 +54,7 @@ export class HeaderComponent {
         const preferences = response?.data?.preferences || [];
         if (!preferences || preferences.length === 0) {
           this.isMenuCollapsed = false;
-          this.onMenuToggled.emit(false);
+          if (window.innerWidth >= 768) this.onMenuToggled.emit(false);
           return;
         }
         const match = preferences.find((pref: any) =>
@@ -62,16 +62,16 @@ export class HeaderComponent {
         );
         if (match?.preferenceOptionId?.preferenceValue === 'collapsed') {
           this.isMenuCollapsed = true;
-          this.onMenuToggled.emit(true); // Emit to update layout
+          if (window.innerWidth >= 768) this.onMenuToggled.emit(true);
         } else {
           this.isMenuCollapsed = false;
-          this.onMenuToggled.emit(false);
+          if (window.innerWidth >= 768) this.onMenuToggled.emit(false);
         }
       },
       error: (err) => {
         console.error('Failed to load menu preference', err);
         this.isMenuCollapsed = false;
-        this.onMenuToggled.emit(false);
+        if (window.innerWidth >= 768) this.onMenuToggled.emit(false);
       }
     });
   }

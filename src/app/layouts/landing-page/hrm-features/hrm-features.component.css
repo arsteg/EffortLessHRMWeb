@@ -2,15 +2,57 @@
   view-timeline-name: --hrm-features-timeline;
   padding-top: var(--size-42);
   padding-bottom: 110px;
-  .card {
-    border: 1px solid var(--orange-10);
-    border-radius: var(--size-24);
-    margin-top: var(--size-16);
 
-    p {
-      font-size: var(--size-16);
-      line-height: 1.2;
-    }
+  .eyebrow {
+    margin-bottom: var(--size-8);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .outcome-block {
+    padding: var(--size-32) 0;
+    border-bottom: 1px solid var(--hrm-border, var(--orange-10));
+  }
+
+  .outcome-block:last-of-type {
+    border-bottom: none;
+  }
+
+  .outcome-block h3 {
+    font-size: var(--size-24);
+    font-weight: 700;
+    margin-bottom: var(--size-12);
+  }
+
+  .outcome-block > div > p {
+    font-size: var(--size-16);
+    line-height: 1.5;
+    color: var(--hrm-muted, var(--light-grey));
+  }
+
+  .outcome-list {
+    margin: var(--size-16) 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-10);
+  }
+
+  .outcome-list li {
+    position: relative;
+    padding-left: var(--size-24);
+    font-size: var(--size-16);
+    line-height: 1.4;
+  }
+
+  .outcome-list li::before {
+    content: "\e5ca";
+    font-family: "Material Icons Outlined";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--hrm-brand, var(--primary));
   }
 }
 

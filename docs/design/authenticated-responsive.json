@@ -1,0 +1,527 @@
+[
+  {
+    "scroll": 320,
+    "url": "#/home/dashboard/user",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/screenshots",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/realtime",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/tasks?view=list",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/alerts/notification",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/leave/my-application",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/attendance/my-attendance-records",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/taxation/tax-declaration",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/expense/my-expense",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/payroll/my-payslips",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/separation/resignation",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/reports",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/manual-time",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/settings",
+    "width": 320
+  },
+  {
+    "scroll": 320,
+    "url": "#/home/helpdesk",
+    "width": 320
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/dashboard/user",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/screenshots",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/realtime",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/tasks?view=list",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/alerts/notification",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/leave/my-application",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/attendance/my-attendance-records",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/taxation/tax-declaration",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/expense/my-expense",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/payroll/my-payslips",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/separation/resignation",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/reports",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/manual-time",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/settings",
+    "width": 390
+  },
+  {
+    "scroll": 390,
+    "url": "#/home/helpdesk",
+    "width": 390
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/dashboard/user",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/screenshots",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/realtime",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/tasks?view=list",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/alerts/notification",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/leave/my-application",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/attendance/my-attendance-records",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/taxation/tax-declaration",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/expense/my-expense",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/payroll/my-payslips",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/separation/resignation",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/reports",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/manual-time",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/settings",
+    "width": 430
+  },
+  {
+    "scroll": 430,
+    "url": "#/home/helpdesk",
+    "width": 430
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/dashboard/user",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/screenshots",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/realtime",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/tasks?view=list",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/alerts/notification",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/leave/my-application",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/attendance/my-attendance-records",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/taxation/tax-declaration",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/expense/my-expense",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/payroll/my-payslips",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/separation/resignation",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/reports",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/manual-time",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/settings",
+    "width": 768
+  },
+  {
+    "scroll": 768,
+    "url": "#/home/helpdesk",
+    "width": 768
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/dashboard/user",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/screenshots",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/realtime",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/tasks?view=list",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/alerts/notification",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/leave/my-application",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/attendance/my-attendance-records",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/taxation/tax-declaration",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/expense/my-expense",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/payroll/my-payslips",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/separation/resignation",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/reports",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/manual-time",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/settings",
+    "width": 1024
+  },
+  {
+    "scroll": 1024,
+    "url": "#/home/helpdesk",
+    "width": 1024
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/dashboard/user",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/screenshots",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/realtime",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/tasks?view=list",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/alerts/notification",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/leave/my-application",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/attendance/my-attendance-records",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/taxation/tax-declaration",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/expense/my-expense",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/payroll/my-payslips",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/separation/resignation",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/reports",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/manual-time",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/settings",
+    "width": 1440
+  },
+  {
+    "scroll": 1440,
+    "url": "#/home/helpdesk",
+    "width": 1440
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/dashboard/user",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/screenshots",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/realtime",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/tasks?view=list",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/alerts/notification",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/leave/my-application",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/attendance/my-attendance-records",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/taxation/tax-declaration",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/expense/my-expense",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/payroll/my-payslips",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/separation/resignation",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/reports",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/manual-time",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/settings",
+    "width": 1920
+  },
+  {
+    "scroll": 1920,
+    "url": "#/home/helpdesk",
+    "width": 1920
+  }
+]

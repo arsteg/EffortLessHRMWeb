@@ -27,6 +27,34 @@
     font-size: var(--size-18);
     line-height: 1.5;
   }
+
+  .recognition-list {
+    margin: 0 0 var(--size-20);
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-12);
+  }
+
+  .recognition-list li {
+    position: relative;
+    padding-left: var(--size-24);
+    font-size: var(--size-16);
+    line-height: 1.5;
+    color: var(--hrm-text);
+  }
+
+  .recognition-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.55em;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--hrm-brand);
+  }
 }
 @media (prefers-reduced-motion: no-preference) {
   .slide-in-left {

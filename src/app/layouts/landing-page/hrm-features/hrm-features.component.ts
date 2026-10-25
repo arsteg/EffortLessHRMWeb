@@ -6,6 +6,4 @@ import { Component } from '@angular/core';
   styleUrl: './hrm-features.component.css'
 })
 export class HrmFeaturesComponent {
-  showMoreFeatures: boolean = false;
-
 }

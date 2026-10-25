@@ -7,6 +7,35 @@
     padding: 46px 20px;
   }
 
+  .eyebrow {
+    margin-bottom: var(--size-8);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .hero-ctas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--size-20);
+    flex-wrap: wrap;
+    margin-top: var(--size-28);
+  }
+
+  .hero-secondary-link {
+    color: var(--hrm-text);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .hero-reassurance {
+    margin-top: var(--size-16);
+    margin-bottom: 0;
+    color: var(--hrm-muted);
+    font-size: var(--size-14);
+  }
+
   .intro-image {
     isolation: isolate;
     position: relative;

@@ -5,24 +5,140 @@
     <!-- Hero Section -->
     <app-hero></app-hero>
 
-    <!-- Features Section -->
+    <!-- Recognition: the problem -->
+    <app-about-us></app-about-us>
+
+    <!-- Attendance & time tracking outcome -->
     <app-features></app-features>
 
-    <!--About Us Section-->
-    <app-about-us></app-about-us>
+    <!-- Leave, payroll, expenses, onboarding outcomes -->
+    <app-hrm-features></app-hrm-features>
+
+    <!-- Work, tasks and chat in the same place -->
+    <app-trust></app-trust>
+
+    <!-- Why one system instead of three -->
+    <app-workspace></app-workspace>
+
+    <!-- Getting started -->
+    <section class="lp-section lp-steps-section" id="getting-started">
+        <div class="container">
+            <p class="eyebrow fs-6 text-primary">GETTING STARTED</p>
+            <h2 class="sub-title">What actually happens when you sign up</h2>
+            <div class="row lp-steps gy-4">
+                <div class="col-12 col-md-4">
+                    <div class="lp-step">
+                        <span class="lp-step-number">1</span>
+                        <h3>Create your account</h3>
+                        <p>Sign up with your name, email, and company name. We verify your email with a one-time
+                            code before your account is active.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="lp-step">
+                        <span class="lp-step-number">2</span>
+                        <h3>Set up your organization</h3>
+                        <p>Add your departments, designations, and locations, then add your team members with a
+                            role and a reporting manager from the Manage and Permissions sections.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="lp-step">
+                        <span class="lp-step-number">3</span>
+                        <h3>Start tracking</h3>
+                        <p>Employees clock in through the web or desktop tracker. Attendance, leave, and payroll
+                            prep start using that data straight away.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audience benefits -->
+    <section class="lp-section lp-audience-section">
+        <div class="container">
+            <p class="eyebrow fs-6 text-primary">WHO IT HELPS, AND HOW</p>
+            <h2 class="sub-title">The same system, a different view for each seat</h2>
+            <div class="row lp-audience gy-4">
+                <div class="col-12 col-md-4">
+                    <div class="lp-audience-card">
+                        <h3>Owners &amp; HR</h3>
+                        <p>See attendance, leave, and payroll prep in one place, instead of reconciling a time
+                            tracker against a separate HR spreadsheet every month.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="lp-audience-card">
+                        <h3>Managers</h3>
+                        <p>Approve leave and expenses for your own team, and see their tracked hours without
+                            sending a message to ask for a status update.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="lp-audience-card">
+                        <h3>Employees</h3>
+                        <p>Clock in, request leave, and check your payslip and leave balance from the same
+                            account — no separate login for a time tracker.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Plans Section -->
     <app-landing-plans></app-landing-plans>
 
+    <!-- Credibility & FAQ -->
+    <section class="lp-section lp-faq-section">
+        <div class="container">
+            <p class="eyebrow fs-6 text-primary">BEFORE YOU SIGN UP</p>
+            <h2 class="sub-title">Questions worth answering honestly</h2>
+            <div class="lp-faq">
+                <details class="lp-faq-item">
+                    <summary>Do I need a credit card to try it?</summary>
+                    <p>No. The trial runs for one month with full access, and no credit card is required to
+                        start it.</p>
+                </details>
+                <details class="lp-faq-item">
+                    <summary>How do I add my team?</summary>
+                    <p>You add employees directly in the Manage section with their role, department, and
+                        reporting manager — there's no import file to prepare first.</p>
+                </details>
+                <details class="lp-faq-item">
+                    <summary>Is screenshot and activity tracking mandatory?</summary>
+                    <p>No. Screenshots and real-time activity are separate modules controlled through the
+                        Permissions module, so you decide which roles can see them.</p>
+                </details>
+                <details class="lp-faq-item">
+                    <summary>Can employees see their own leave balance and payslips?</summary>
+                    <p>Yes. Employees can check their leave balance and payslips from their own account without
+                        going through HR each time.</p>
+                </details>
+                <details class="lp-faq-item">
+                    <summary>What about access and data visibility?</summary>
+                    <p>Access is controlled by the roles and permissions you set up. Not everyone sees everything
+                        by default — you decide who sees what.</p>
+                </details>
+                <details class="lp-faq-item">
+                    <summary>What if I get stuck setting something up?</summary>
+                    <p>Raise a ticket from the Helpdesk section inside the product and describe what's happening.</p>
+                </details>
+            </div>
+        </div>
+    </section>
 
-    <!-- Trust Section-->
-    <app-trust></app-trust>
-
-    <!--HRM FEATURES-->
-    <app-hrm-features></app-hrm-features>
-
-    <!-- Workspace Potential -->
-    <app-workspace></app-workspace>
+    <!-- Final CTA -->
+    <section class="lp-section lp-final-cta">
+        <div class="container text-center">
+            <h2 class="sub-title">Try it with your own team, not a demo account</h2>
+            <p class="lp-final-cta-sub">Set up your organization, add your team, and see attendance flow into
+                leave and payroll from day one.</p>
+            <div class="lp-final-cta-actions">
+                <a routerLink="/register" mat-flat-button color="primary" class="rounded-pill px-4 fs-6">Start free trial</a>
+                <a routerLink="/login" class="lp-final-cta-login">Already have an account? Log in</a>
+            </div>
+        </div>
+    </section>
 
     <!--Footer-->
     <app-footer></app-footer>

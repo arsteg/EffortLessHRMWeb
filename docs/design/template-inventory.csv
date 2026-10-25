@@ -6,12 +6,12 @@ src\app\common\form-controls\form-controls.component.html,0,0,False,Targeted sou
 src\app\common\hrm-table\hrm-table.component.html,0,1,False,Targeted source review; authenticated/populated browser review pending
 src\app\common\language-selector\language-selector.component.html,0,0,False,Targeted source review; authenticated/populated browser review pending
 src\app\common\subordinateSelection\subordinateSelection.component.html,0,0,False,Targeted source review; authenticated/populated browser review pending
-src\app\enquiry\test-enquiry\test-enquiry.component.html,1,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\alerts\alerts.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\alerts\event-notification\event-notification.component.html,2,2,False,Structural inventory; individual visual review pending
-src\app\feature_modules\alerts\event-notification-viewer\event-notification-viewer.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\alerts\notification-type\notification-type.component.html,1,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\approvals\approvals.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\enquiry\test-enquiry\test-enquiry.component.html,1,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\alerts\alerts.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\alerts\event-notification\event-notification.component.html,2,2,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\alerts\event-notification-viewer\event-notification-viewer.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\alerts\notification-type\notification-type.component.html,1,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\approvals\approvals.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\approvals\productivityAppsApproval\productivityAppsApproval.component.html,0,2,False,Structural inventory; individual visual review pending
 src\app\feature_modules\attendance\attendance\attendance-template\attendance-template.component.html,0,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\attendance\attendance\attendance-template\general-template-settings\general-template-settings.component.html,1,0,True,Structural inventory; individual visual review pending
@@ -19,7 +19,7 @@ src\app\feature_modules\attendance\attendance\attendance-template-assignment\att
 src\app\feature_modules\attendance\attendance\generalSettings\generalSettings.component.html,3,2,False,Structural inventory; individual visual review pending
 src\app\feature_modules\attendance\attendance\on-duty-template-assignment\on-duty-template-assignment.component.html,1,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\attendance\attendance\on-duty-templates\on-duty-templates.component.html,1,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\attendance\attendance\overtime\overtime.component.html,0,1,False,Structural inventory; individual visual review pending
+src\app\feature_modules\attendance\attendance\overtime\overtime.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\attendance\attendance\shift\shift.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\attendance\attendance\shift-assignments\shift-assignments.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\attendance\attendance-management\attendance-management.component.html,0,0,False,Structural inventory; individual visual review pending
@@ -31,11 +31,11 @@ src\app\feature_modules\attendance\attendance-records\upload-records\upload-reco
 src\app\feature_modules\attendance\attendance-settings\attendance-management-settings.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\attendance\date-range\date-range.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\attendance\on-duty-records\on-duty-records.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\attendance\on-duty-records\add-on-duty\add-on-duty.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\attendance\on-duty-records\approved\approved.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\attendance\on-duty-records\cancelled\cancelled.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\attendance\on-duty-records\add-on-duty\add-on-duty.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\attendance\on-duty-records\approved\approved.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\attendance\on-duty-records\cancelled\cancelled.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\attendance\on-duty-records\pending\pending.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\attendance\on-duty-records\rejected\rejected.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\attendance\on-duty-records\rejected\rejected.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\attendance\on-duty-records\show-on-duty\show-on-duty.component.html,0,2,False,Structural inventory; individual visual review pending
 src\app\feature_modules\attendance\on-duty-records\update-on-duty\update-on-duty.component.html,1,0,True,Structural inventory; individual visual review pending
 src\app\feature_modules\attendance\on-duty-records\view-on-duty\view-on-duty.component.html,0,2,True,Structural inventory; individual visual review pending
@@ -47,7 +47,7 @@ src\app\feature_modules\calendar\user-calendar\user-calendar.component.html,0,0,
 src\app\feature_modules\dashboard\dashboard.component.html,0,1,False,Targeted source review; authenticated/populated browser review pending
 src\app\feature_modules\dashboard\attendance-overview\attendance-overview.component.html,0,3,False,Targeted source review; authenticated/populated browser review pending
 src\app\feature_modules\dashboard\user-dashboard\user-dashboard.component.html,0,1,False,Targeted source review; authenticated/populated browser review pending
-src\app\feature_modules\expenses\expenses.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\expenses\expenses.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\expenses\add-expense\add-expense.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\expenses\advance-reports\advance-reports.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\expenses\advance-reports\add-advance-report\add-advance-report.component.html,1,0,True,Structural inventory; individual visual review pending
@@ -88,19 +88,19 @@ src\app\feature_modules\feedback\barcode-generator\barcode-list.component.html,1
 src\app\feature_modules\feedback\feedback-field-list\feedback-field-list.component.html,0,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\feedback\feedback-submission\feedback-submission.component.html,1,0,False,Targeted source review; authenticated/populated browser review pending
 src\app\feature_modules\feedback\feedback-viewer\feedback-viewer.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\helpdesk\help-desk\help-desk.component.html,0,0,True,Structural inventory; individual visual review pending
+src\app\feature_modules\helpdesk\help-desk\help-desk.component.html,0,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\helpdesk\helpdesk-dashboard\helpdesk-dashboard.component.html,0,2,False,Targeted source review; authenticated/populated browser review pending
-src\app\feature_modules\helpdesk\update-helpdesk-task\update-helpdesk-task.component.html,1,0,True,Structural inventory; individual visual review pending
-src\app\feature_modules\interview-process\application-status\application-status.component.html,1,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\interview-process\candidate-data-field\candidate-data-field.component.html,1,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\interview-process\candidate-feedback\candidate-feedback.component.html,1,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\interview-process\candidates\candidates.component.html,1,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\interview-process\feedback-field\feedback-field.component.html,1,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\interview-process\interview-process-main\interview-process-main.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\interview-process\schedule-interview\schedule-interview.component.html,1,1,False,Structural inventory; individual visual review pending
+src\app\feature_modules\helpdesk\update-helpdesk-task\update-helpdesk-task.component.html,1,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\interview-process\application-status\application-status.component.html,1,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\interview-process\candidate-data-field\candidate-data-field.component.html,1,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\interview-process\candidate-feedback\candidate-feedback.component.html,1,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\interview-process\candidates\candidates.component.html,1,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\interview-process\feedback-field\feedback-field.component.html,1,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\interview-process\interview-process-main\interview-process-main.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\interview-process\schedule-interview\schedule-interview.component.html,1,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\interview-process\schedule-interview\editInterviewerDialog\editInterviewerDialogComponent.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\leave\leave.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\general-information\general\general.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\leave\general-information\general\general.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\leave\general-information\holidays\holidays.component.html,0,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\leave\general-information\supervisors\supervisors.component.html,0,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\leave\leave-application\leave-application.component.html,0,0,False,Structural inventory; individual visual review pending
@@ -110,17 +110,17 @@ src\app\feature_modules\leave\leave-application\cancelled\cancelled-application.
 src\app\feature_modules\leave\leave-application\pending\pending-application.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\leave\leave-application\rejected\rejected-application.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\leave\leave-application\show-application\show-application.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\leave-application\update-application\update-application.component.html,1,0,True,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\leave-application\view-application\view-application.component.html,0,0,True,Structural inventory; individual visual review pending
+src\app\feature_modules\leave\leave-application\update-application\update-application.component.html,1,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\leave\leave-application\view-application\view-application.component.html,0,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\leave\leave-balance\leave-balance.component.html,1,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\leave\leave-grant\leave-grant.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\leave-grant\add-leave\add-leave.component.html,1,0,True,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\leave-grant\approved\approved.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\leave-grant\pending\pending.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\leave-grant\rejected\rejected.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\leave-grant\show-status\show-status.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\leave-grant\update-status\update-status.component.html,1,0,True,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\leave-grant\view-leave\view-leave.component.html,0,0,True,Structural inventory; individual visual review pending
+src\app\feature_modules\leave\leave-grant\add-leave\add-leave.component.html,1,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\leave\leave-grant\approved\approved.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\leave\leave-grant\pending\pending.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\leave\leave-grant\rejected\rejected.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\leave\leave-grant\show-status\show-status.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\leave\leave-grant\update-status\update-status.component.html,1,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\leave\leave-grant\view-leave\view-leave.component.html,0,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\leave\leave-setting\leave-setting.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\leave\leave-setting\general-settings\general-settings.component.html,1,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\leave\leave-setting\leave-assignment\leave-assignment.component.html,1,1,True,Structural inventory; individual visual review pending
@@ -135,27 +135,27 @@ src\app\feature_modules\leave\short-leave\cancelled-short-leave\cancelled-short-
 src\app\feature_modules\leave\short-leave\pending-short-leave\pending-short-leave.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\leave\short-leave\rejected-short-leave\rejected-short-leave.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\leave\short-leave\show-short-leave\show-short-leave.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\leave\short-leave\update-short-leave\update-short-leave.component.html,1,0,True,Structural inventory; individual visual review pending
+src\app\feature_modules\leave\short-leave\update-short-leave\update-short-leave.component.html,1,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\leave\short-leave\view-short-leave\view-short-leave.component.html,0,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\logs\log.component\log.component.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\manage\email-template\email-template.component.html,2,1,True,Structural inventory; individual visual review pending
+src\app\feature_modules\logs\log.component\log.component.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\manage\email-template\email-template.component.html,2,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\manage\email-template-type\email-template-type.component.html,2,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\manage\manage\manage.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\manage\permissonModel\permission-model\permission-model.component.html,2,1,True,Structural inventory; individual visual review pending
+src\app\feature_modules\manage\permissonModel\permission-model\permission-model.component.html,2,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\manage\Project\project-list\project-list.component.html,5,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\manage\teammembers\teammembers.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\manage\users\employee-settings\employee-settings.component.html,0,0,False,Targeted source review; authenticated/populated browser review pending
 src\app\feature_modules\manage\users\employee-settings\employee-profile\employee-profile.component.html,1,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\manage\users\employee-settings\employment-details\employment-details.component.html,2,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\manage\users\employee-settings\loans-advances\loans-advances.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\manage\users\employee-settings\loans-advances\view-loans-advances\view-loans-advances.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\manage\users\employee-settings\loans-advances\view-loans-advances\view-loans-advances.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\manage\users\employee-settings\salary-details\salary-details.component.html,0,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\manage\users\employee-settings\salary-details\add-salary-details\add-salary-details.component.html,1,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\manage\users\employee-settings\statutory-details\statutory-details.component.html,1,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\manage\users\user-list\user-list.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\manage\users\user-profile\user-profile.component.html,1,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\manage\users\user-profile\user-form-control\user-form-control.component.html,1,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\manual-time\addManualTime\add-manual-time.component.html,1,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\manage\users\user-profile\user-form-control\user-form-control.component.html,1,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\manual-time\addManualTime\add-manual-time.component.html,1,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\manual-time\request-manual-time\request-manual-time.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\manual-time\requestApproval\requestApproval.component.html,0,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\organization\AssetsManagement\asset\asset.component.html,1,1,False,Structural inventory; individual visual review pending
@@ -172,19 +172,19 @@ src\app\feature_modules\organization\documentManager\document\document.component
 src\app\feature_modules\organization\documentManager\document\documentCategory\documentCategory.component.html,1,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\organization\documentManager\document\userDocument\userDocument.component.html,1,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\organization\documentManager\template\documentTemplate.component.html,2,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\employee-fields\employee-fields.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\employee-tree\employee-tree.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\organization\employee-fields\employee-fields.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\organization\employee-tree\employee-tree.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\organization\organization\organization.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\organization\setup\setup.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\setup\band\band.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\setup\department\department.component.html,2,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\setup\designation\designation.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\setup\flexi-holidays\flexi-holidays.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\setup\holidays\holidays.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\setup\location\location.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\setup\profile\profile.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\setup\signatory-details\signatory-details.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\organization\setup\sub-department\sub-department.component.html,1,1,False,Structural inventory; individual visual review pending
+src\app\feature_modules\organization\setup\band\band.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\organization\setup\department\department.component.html,2,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\organization\setup\designation\designation.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\organization\setup\flexi-holidays\flexi-holidays.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\organization\setup\holidays\holidays.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\organization\setup\location\location.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\organization\setup\profile\profile.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\organization\setup\signatory-details\signatory-details.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\organization\setup\sub-department\sub-department.component.html,1,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\organization\setup\tax-slab\tax-slab.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\organization\setup\zone\zone.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\payroll.component.html,0,0,False,Structural inventory; individual visual review pending
@@ -193,7 +193,7 @@ src\app\feature_modules\payroll\ctc-templates\assigned-templates\assigned-templa
 src\app\feature_modules\payroll\ctc-templates\assigned-templates\fixed-allowance\fixed-allowance.component.html,1,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\ctc-templates\assigned-templates\fixed-deduction\fixed-deduction.component.html,1,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\ctc-templates\assigned-templates\var-allowance\var-allowance.component.html,1,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\ctc-templates\assigned-templates\var-deduction\var-deduction.component.html,1,1,False,Structural inventory; individual visual review pending
+src\app\feature_modules\payroll\ctc-templates\assigned-templates\var-deduction\var-deduction.component.html,1,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\payroll\ctc-templates\update-ctctemplate\update-ctctemplate.component.html,1,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\fnf-payslips\fnf-payslips.component.html,0,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\fnf-payslips\generated-fnf-payslips\generated-fnf-payslips.component.html,0,2,False,Structural inventory; individual visual review pending
@@ -228,64 +228,64 @@ src\app\feature_modules\payroll\run-payroll\run-fnf-payroll\fnf-steps\step9\step
 src\app\feature_modules\payroll\run-payroll\run-fnf-payroll\fnf-steps\step9\view-fnf-payslip\view-fnf-payslip.component.html,0,2,False,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\settings\settings.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\settings\fixed-allowance\fixed-allowance.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\fixed-contribution\fixed-contribution.component.html,0,1,False,Structural inventory; individual visual review pending
+src\app\feature_modules\payroll\settings\fixed-contribution\fixed-contribution.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\payroll\settings\fixed-contribution\esic\esic.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\settings\fixed-contribution\esic\ceiling-amount\ceiling-amount.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\settings\fixed-contribution\esic\contribution\contribution.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\fixed-contribution\lwf\lwf.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\fixed-contribution\lwf\deduction\deduction.component.html,1,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\fixed-contribution\lwf\lwf-slab\lwf-slab.component.html,1,1,True,Structural inventory; individual visual review pending
+src\app\feature_modules\payroll\settings\fixed-contribution\lwf\lwf.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\payroll\settings\fixed-contribution\lwf\deduction\deduction.component.html,1,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\payroll\settings\fixed-contribution\lwf\lwf-slab\lwf-slab.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\payroll\settings\fixed-contribution\pt\pt.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\settings\fixed-contribution\pt\eligible-states\eligible-states.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\fixed-contribution\pt\eligible-states\configure-state\configure-state.component.html,0,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\fixed-contribution\pt\eligible-states\configure-state\update-state\update-state.component.html,1,0,True,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\fixed-contribution\pt\pt-deduction\pt-deduction.component.html,1,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\fixed-contribution\pt\pt-slab\pt-slab.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\fixed-deduction\fixed-deduction.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\flexi-benefits\flexi-benefits.component.html,1,1,True,Structural inventory; individual visual review pending
+src\app\feature_modules\payroll\settings\fixed-contribution\pt\eligible-states\configure-state\configure-state.component.html,0,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\payroll\settings\fixed-contribution\pt\eligible-states\configure-state\update-state\update-state.component.html,1,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\payroll\settings\fixed-contribution\pt\pt-deduction\pt-deduction.component.html,1,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\payroll\settings\fixed-contribution\pt\pt-slab\pt-slab.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\payroll\settings\fixed-deduction\fixed-deduction.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\payroll\settings\flexi-benefits\flexi-benefits.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\payroll\settings\general-settings\general-settings.component.html,1,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\payroll\settings\loans-advances\loans-advances.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\pf-charges\pf-charges.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\payroll\settings\variable-allowance\variable-allowance.component.html,1,1,True,Structural inventory; individual visual review pending
+src\app\feature_modules\payroll\settings\pf-charges\pf-charges.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\payroll\settings\variable-allowance\variable-allowance.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\payroll\settings\variable-deduction\variable-deduction.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\permissions\permission-dialog\permission-dialog.component.html,1,0,True,Structural inventory; individual visual review pending
-src\app\feature_modules\permissions\permissions\permissions.component.html,0,4,False,Structural inventory; individual visual review pending
+src\app\feature_modules\permissions\permissions\permissions.component.html,0,4,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\permissions\role-dialog\role-dialog.component.html,1,0,True,Structural inventory; individual visual review pending
 src\app\feature_modules\permissions\role-permission-dialog\role-permission-dialog.component.html,1,0,True,Structural inventory; individual visual review pending
 src\app\feature_modules\permissions\user-role-dialog\user-role-dialog.component.html,1,0,True,Structural inventory; individual visual review pending
 src\app\feature_modules\realtime\realtime.component.html,0,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\realtime\live-screen\live-screen.component.html,0,0,True,Targeted source review; authenticated/populated browser review pending
-src\app\feature_modules\reports\reports.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\reports\activity-description\activity-description.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\reports\AI-Reporting\ai-reports\ai-reports.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\reports\app-and-website-usage\app-and-website-usage.component.html,0,1,False,Structural inventory; individual visual review pending
+src\app\feature_modules\reports\reports.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\reports\activity-description\activity-description.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\reports\AI-Reporting\ai-reports\ai-reports.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\reports\app-and-website-usage\app-and-website-usage.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\reports\browserHistory\browserHistory.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\reports\leave-report\leave-report.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\reports\productivity-report\productivity-report.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\reports\timeline\timeline.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\reports\timeline\timeline-management\timeline-management\timeline-management.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\role-permission\role-permission\role-permission.component.html,2,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\roles\roles\roles.component.html,2,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\screenshots\screenshots\screenshots.component.html,0,0,True,Structural inventory; individual visual review pending
-src\app\feature_modules\separation\separation.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\reports\leave-report\leave-report.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\reports\productivity-report\productivity-report.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\reports\timeline\timeline.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\reports\timeline\timeline-management\timeline-management\timeline-management.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\role-permission\role-permission\role-permission.component.html,2,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\roles\roles\roles.component.html,2,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\screenshots\screenshots\screenshots.component.html,0,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\separation\separation.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\separation\resignation\resignation.component.html,1,2,True,Structural inventory; individual visual review pending
 src\app\feature_modules\separation\termination\termination.component.html,3,2,True,Structural inventory; individual visual review pending
-src\app\feature_modules\settings\settings.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\settings\app-website-settings\app-website-settings.component.html,2,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\settings\features-settings\features-settings.component.html,1,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\settings\generic-settings\generic-settings.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\settings\leave-settings\leave-settings.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\settings\profile-settings\profile-settings.component.html,2,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\settings\settings.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\settings\app-website-settings\app-website-settings.component.html,2,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\settings\features-settings\features-settings.component.html,1,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\settings\generic-settings\generic-settings.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\settings\leave-settings\leave-settings.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\settings\profile-settings\profile-settings.component.html,2,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\settings\userPreferences\userPreferences.Component.html,1,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\settings\workspace-settings\workspace-settings.component.html,1,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\subscription\plans\plans.component.html,1,0,True,Structural inventory; individual visual review pending
-src\app\feature_modules\subscription\plans-list\plans-list.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\subscription\plans-list\create-plan\create-plan.component.html,1,0,True,Structural inventory; individual visual review pending
-src\app\feature_modules\subscription\subscriptions\subscriptions.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\feature_modules\subscription\subscriptions-list\subscriptions-list.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\subscription\subscriptions-list\confirm-cancel\confirm-cancel.component.html,0,0,True,Structural inventory; individual visual review pending
-src\app\feature_modules\subscription\subscriptions-list\payments\payments.component.html,0,1,False,Structural inventory; individual visual review pending
-src\app\feature_modules\subscription\subscriptions-list\plan-details\plan-details.component.html,0,0,True,Structural inventory; individual visual review pending
+src\app\feature_modules\settings\workspace-settings\workspace-settings.component.html,1,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\subscription\plans\plans.component.html,1,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\subscription\plans-list\plans-list.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\subscription\plans-list\create-plan\create-plan.component.html,1,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\subscription\subscriptions\subscriptions.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\subscription\subscriptions-list\subscriptions-list.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\subscription\subscriptions-list\confirm-cancel\confirm-cancel.component.html,0,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\subscription\subscriptions-list\payments\payments.component.html,0,1,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\feature_modules\subscription\subscriptions-list\plan-details\plan-details.component.html,0,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\taxation\taxation.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\taxation\tax\tax.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\taxation\tax\edit-tax\edit-tax.component.html,0,0,False,Structural inventory; individual visual review pending
@@ -293,42 +293,42 @@ src\app\feature_modules\taxation\tax\edit-tax\rent-information\rent-information.
 src\app\feature_modules\taxation\tax\edit-tax\tax-components\tax-components.component.html,1,1,False,Structural inventory; individual visual review pending
 src\app\feature_modules\taxation\tax\tax-calculator\tax-calculator.component.html,0,4,True,Structural inventory; individual visual review pending
 src\app\feature_modules\taxation\tax-component-by-section\tax-component-by-section.component.html,1,1,True,Structural inventory; individual visual review pending
-src\app\feature_modules\taxation\tax-declaration\tax-declaration.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\taxation\tax-declaration\tax-declaration.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\taxation\tax-declaration-by-company\tax-declaration-by-company.component.html,5,3,False,Structural inventory; individual visual review pending
 src\app\feature_modules\taxation\tax-section\tax-section.component.html,1,1,True,Structural inventory; individual visual review pending
 src\app\feature_modules\taxation\user-tax-declaration\user-tax-declaration.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\feature_modules\timesheets\admin-timesheet\admin-timesheet.component.html,0,1,False,Targeted source review; authenticated/populated browser review pending
 src\app\feature_modules\timesheets\user-timesheet\user-timesheet.component.html,0,1,False,Targeted source review; authenticated/populated browser review pending
-src\app\feature_modules\view-live-screen\view-live-screen\view-live-screen.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\feature_modules\view-live-screen\view-live-screen\view-live-screen.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\layouts\home\home.component.html,0,0,False,Targeted source review; authenticated/populated browser review pending
 src\app\layouts\home\header\header.component.html,0,0,False,Targeted source review; authenticated/populated browser review pending
 src\app\layouts\home\notification\notification.component.html,0,0,False,Targeted source review; authenticated/populated browser review pending
 src\app\layouts\home\notification\notification-details\notification-details.component.html,0,0,False,Targeted source review; authenticated/populated browser review pending
 src\app\layouts\home\sidebar\sidebar.component.html,0,0,False,Targeted source review; authenticated/populated browser review pending
 src\app\layouts\landing-page\landing-page.component.html,0,0,False,Source and public browser review; see REVIEW.md for exact state/viewport coverage
-src\app\layouts\landing-page\about-us\about-us.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\layouts\landing-page\features\features.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\layouts\landing-page\about-us\about-us.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\layouts\landing-page\features\features.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\layouts\landing-page\footer\footer.component.html,0,0,False,Source and public browser review; see REVIEW.md for exact state/viewport coverage
-src\app\layouts\landing-page\hero\hero.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\layouts\landing-page\hrm-features\hrm-features.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\layouts\landing-page\hero\hero.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\layouts\landing-page\hrm-features\hrm-features.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\layouts\landing-page\landing-plans\landing-plans.component.html,0,0,False,Structural inventory; individual visual review pending
 src\app\layouts\landing-page\navbar\navbar.component.html,0,0,True,Source and public browser review; see REVIEW.md for exact state/viewport coverage
-src\app\layouts\landing-page\trust\trust.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\layouts\landing-page\workspace\workspace.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\layouts\main\main.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\layouts\subscription\subscription.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\layouts\landing-page\trust\trust.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\layouts\landing-page\workspace\workspace.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\layouts\main\main.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\layouts\subscription\subscription.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\login\login.component.html,1,0,False,Source and public browser review; see REVIEW.md for exact state/viewport coverage
 src\app\login\change-password\change-password.component.html,1,0,False,Source and public browser review; see REVIEW.md for exact state/viewport coverage
 src\app\login\forgot-password\forgot-password.component.html,1,0,False,Source and public browser review; see REVIEW.md for exact state/viewport coverage
 src\app\login\register\register.component.html,1,0,False,Source and public browser review; see REVIEW.md for exact state/viewport coverage
 src\app\login\reset-password\reset-password.component.html,1,0,False,Structural inventory; individual visual review pending
-src\app\pagination\pagination.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\profile\profile.component.html,0,0,False,Structural inventory; individual visual review pending
+src\app\pagination\pagination.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\profile\profile.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\tasks\tasks.component.html,6,1,True,Structural inventory; individual visual review pending
-src\app\tasks\confirmation-dialog\confirmation-dialog.component.html,0,0,True,Structural inventory; individual visual review pending
+src\app\tasks\confirmation-dialog\confirmation-dialog.component.html,0,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\tasks\edit-task\edit-task.component.html,2,0,True,Structural inventory; individual visual review pending
-src\app\tasks\subtask\subtask.component.html,1,0,True,Structural inventory; individual visual review pending
-src\app\tasks\task-comment\task-comment.component.html,0,0,False,Structural inventory; individual visual review pending
-src\app\tasks\task-comment-list\task-comment-list.component.html,0,0,True,Structural inventory; individual visual review pending
-src\app\tasks\task.tag\tag.component.html,1,1,True,Structural inventory; individual visual review pending
+src\app\tasks\subtask\subtask.component.html,1,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\tasks\task-comment\task-comment.component.html,0,0,False,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\tasks\task-comment-list\task-comment-list.component.html,0,0,True,Structural audit and isolated component test rendering; individual live-data visual review pending
+src\app\tasks\task.tag\tag.component.html,1,1,True,Structural audit and isolated component test rendering; individual live-data visual review pending
 src\app\feature_modules\organization\AssetsManagement\asset-reports\asset-reports.component.html,0,0,False,Incoming placeholder preserved in authorized merge; no report implemented
