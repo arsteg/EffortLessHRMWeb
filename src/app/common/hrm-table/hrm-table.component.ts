@@ -148,8 +148,15 @@ export class HrmTableComponent {
     );
   }
 
+  private paginatorVisibility: boolean | undefined;
+
+  @Input()
   get showPaginator(): boolean {
-    return this.isServerSide || this.data?.length > this.pageSize;
+    return this.paginatorVisibility ?? (this.isServerSide || this.data?.length > this.pageSize);
+  }
+
+  set showPaginator(value: boolean) {
+    this.paginatorVisibility = value;
   }
 
   exportToExcel() {

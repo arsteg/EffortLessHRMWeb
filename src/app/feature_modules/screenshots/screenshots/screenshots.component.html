@@ -137,7 +137,7 @@
       <button *ngIf="isMaximized" mat-icon-button
         (click)="toggleImageSize()"><mat-icon>fullscreen_exit</mat-icon></button>
       <button *ngIf="!isMaximized" mat-icon-button (click)="toggleImageSize()"><mat-icon>fullscreen</mat-icon></button>
-      <button mat-icon-button mat-dialog-close>
+      <button mat-icon-button mat-dialog-close aria-label="Close dialog">
         <mat-icon>close</mat-icon>
       </button>
     </div>

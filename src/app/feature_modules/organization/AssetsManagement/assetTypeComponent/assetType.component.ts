@@ -19,7 +19,7 @@ export class AssetTypeComponent implements OnInit {
   assetTypes: AssetType[] = [];
   filteredAssetTypes: AssetType[] = [];
   assetTypeForm: FormGroup;
-  _isEdit = false;
+  _isEdit: boolean | null = null;
   selectedAssetType: any;
   p = 1;
   newCustomAttribute: any;
@@ -88,15 +88,15 @@ export class AssetTypeComponent implements OnInit {
   }
 
   // Getter and Setter for isEdit
-  get isEdit(): boolean {
+  get isEdit(): boolean | null {
     return this._isEdit;
   }
 
-  set isEdit(value: boolean) {
+  set isEdit(value: boolean | null) {
     this._isEdit = value;
     this.onIsEditChange(value); // Action to take when isEdit changes
   }
-  onIsEditChange(value: boolean): void {
+  onIsEditChange(value: boolean | null): void {
     if (value === false) {
       this.resetForm();
     }
@@ -140,8 +140,19 @@ export class AssetTypeComponent implements OnInit {
   }
 
   removeCustomAttribute(index: number) {
-    const customAttributesArray = this.assetTypeForm.get('customAttributes') as FormArray;
-    customAttributesArray.removeAt(index);
+    const attribute = this.selectedAssetType?.customAttributes?.[index];
+    if (!attribute?._id) {
+      this.customAttributes.removeAt(index);
+      return;
+    }
+    this.assetManagementService.deleteCustomAttributes(attribute._id).subscribe({
+      next: () => {
+        this.selectedAssetType.customAttributes.splice(index, 1);
+        this.customAttributes.removeAt(index);
+        this.toast.success('Custom Attribute is Deleted Successfully!');
+      },
+      error: () => this.toast.error('Can not be Deleted', 'Error!')
+    });
   }
 
   deleteCustomAttribute(index: number): void {
@@ -211,6 +222,11 @@ export class AssetTypeComponent implements OnInit {
   }
   resetAsset() {
     this.resetForm();
+    this.isEdit = null;
+  }
+
+  onAddAssetType(): void {
+    this.selectedAssetType = { customAttributes: [] };
     this.isEdit = false;
   }
 

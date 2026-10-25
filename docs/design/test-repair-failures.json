@@ -1,0 +1,106 @@
+[
+  {
+    "test": "CandidatesComponent should create",
+    "firstError": "Error: Cannot find control with name: 'candidate._id'"
+  },
+  {
+    "test": "ActivityDescriptionComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]:"
+  },
+  {
+    "test": "UserTimesheetComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]:"
+  },
+  {
+    "test": "UpdateStatusComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "ProductivityReportComponent should create",
+    "firstError": "TypeError: Cannot read properties of null (reading 'id')"
+  },
+  {
+    "test": "UpdateApplicationComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "DashboardComponent should create",
+    "firstError": "TypeError: Cannot read properties of null (reading 'id')"
+  },
+  {
+    "test": "AppAndWebsiteUsageComponent should create",
+    "firstError": "TypeError: Cannot read properties of null (reading 'id')"
+  },
+  {
+    "test": "LeaveReportComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]:"
+  },
+  {
+    "test": "AppWebsiteSettingsComponent should create",
+    "firstError": "Error: NG01350:"
+  },
+  {
+    "test": "UpdateHelpdeskTaskComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "ViewApplicationComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "AdminTimesheetComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]:"
+  },
+  {
+    "test": "AddManualTimeComponent should create",
+    "firstError": "TypeError: Cannot read properties of null (reading 'email')"
+  },
+  {
+    "test": "TimelineComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]:"
+  },
+  {
+    "test": "HolidaysComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]:"
+  },
+  {
+    "test": "HelpDeskComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "ScreenshotsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]:"
+  },
+  {
+    "test": "EmailTemplateComponent should create",
+    "firstError": "Error: NG01203: No value accessor for form control name: 'contentData'. Find more at https://angular.io/errors/NG01203"
+  },
+  {
+    "test": "UserFormCOntrolComponent should create",
+    "firstError": "TypeError: Cannot read properties of null (reading 'data')"
+  },
+  {
+    "test": "ConfirmationDialogComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "UserDashboardComponent should create",
+    "firstError": "TypeError: Cannot read properties of null (reading 'id')"
+  },
+  {
+    "test": "ConfirmCancelComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[ConfirmCancelComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "PlanDetailsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[PlanDetailsComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "CreatePlanComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[CreatePlanComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "PaymentsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[PaymentsComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]:"
+  }
+]

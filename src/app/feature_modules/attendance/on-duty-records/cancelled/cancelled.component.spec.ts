@@ -1,23 +1,28 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component, Input } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { CancelledOnDutyComponent } from './cancelled.component';
 
-import { CancelledComponent } from './cancelled.component';
+@Component({ selector: 'app-show-on-duty', template: '' })
+class OnDutyTableStub {
+  @Input() status: string;
+  @Input() tab: number;
+  @Input() actionOptions: any;
+}
 
-describe('CancelledComponent', () => {
-  let component: CancelledComponent;
-  let fixture: ComponentFixture<CancelledComponent>;
-
-  beforeEach(async () => {
+describe('CancelledOnDutyComponent', () => {
+  it('passes the selected tab, status and allowed actions to the table', async () => {
     await TestBed.configureTestingModule({
-      declarations: [CancelledComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(CancelledComponent);
-    component = fixture.componentInstance;
+      declarations: [CancelledOnDutyComponent, OnDutyTableStub],
+      errorOnUnknownElements: true,
+      errorOnUnknownProperties: true
+    }).compileComponents();
+    const fixture = TestBed.createComponent(CancelledOnDutyComponent);
+    fixture.componentInstance.selectedTab = 2;
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    const table = fixture.debugElement.query(By.directive(OnDutyTableStub)).componentInstance;
+    expect(table.status).toBe('Cancelled');
+    expect(table.tab).toBe(2);
+    expect(table.actionOptions).toEqual({ approve: false, reject: false, cancel: false, view: true });
   });
 });

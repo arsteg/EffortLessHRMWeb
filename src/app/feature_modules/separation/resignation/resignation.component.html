@@ -37,7 +37,7 @@
 <ng-template #dialogTemplate>
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>{{isEditMode ? 'Update' : 'Create'}} Resignation</h1>
-    <button class="me-3" mat-icon-button mat-dialog-close (click)="closeDialog()">
+    <button class="me-3" mat-icon-button mat-dialog-close (click)="closeDialog()" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -146,7 +146,7 @@
 <ng-template #updateStatusResignation>
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>Confirm Status Change</h1>
-    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()">
+    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>

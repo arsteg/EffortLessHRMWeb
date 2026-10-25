@@ -1,12 +1,12 @@
-<div class="mt-5 pt-5">
+<div class="crud-content">
     <form [formGroup]="crudForm" *ngIf="!readOnly" (ngSubmit)="submitted($event)"
-        class="w-50 bg-white p-3 tableContainer">
+        class="crud-form bg-white p-3 tableContainer">
         <ng-container>
             <ng-container *ngFor="let field of fields">
                 <!--Input-->
                 <ng-container *ngIf="field.type == 'text'">
-                    <label for="">{{field.name}}</label>
-                    <input type="text" [formControlName]="field.id" class="form-control">
+                    <label [for]="'crud-' + field.id">{{field.name}}</label>
+                    <input type="text" [id]="'crud-' + field.id" [formControlName]="field.id" class="form-control">
                 </ng-container>
                 <!--Radio-->
                 <ng-container *ngIf="field.type == 'radio'">
@@ -26,25 +26,25 @@
                     <label>{{field.name}}</label>
                     <div class="d-flex" formArrayName="check">
                       <div class="form-check mx-2" *ngFor="let check of check.controls; let i=index">
-                        <input class="form-check-input" type="checkbox" [formControlName]="i" 
+                        <input class="form-check-input" type="checkbox" [formControlName]="i"
                                (change)="onCheckboxChange($event, i)">
                         <label class="form-check-label">{{field?.options[i]?.value}}</label>
                       </div>
                     </div>
                   </ng-container>
-                  
+
                 <!--TextArea-->
                 <!--Date-->
                 <ng-container *ngIf="field.type == 'date'">
-                    <label for="">{{field.name}}</label>
-                    <input placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
+                    <label [for]="'crud-' + field.id">{{field.name}}</label>
+                    <input [id]="'crud-' + field.id" placeholder="YYYY-MM-DD" class="form-control" #datepickerYMD="bsDatepicker" bsDatepicker
                         [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }" [formControlName]="field.id">
                 </ng-container>
                 <!--File Upload-->
                 <!--Select-->
                 <ng-container *ngIf="field.type == 'select'">
-                    <label for="">{{field.name}}</label>
-                    <select class="form-select" aria-label="Default select example" [formControlName]="field.id">
+                    <label [for]="'crud-' + field.id">{{field.name}}</label>
+                    <select [id]="'crud-' + field.id" class="form-select" [formControlName]="field.id">
                         <option *ngFor="let option of field.options">{{option.value}}</option>
                     </select>
                 </ng-container>

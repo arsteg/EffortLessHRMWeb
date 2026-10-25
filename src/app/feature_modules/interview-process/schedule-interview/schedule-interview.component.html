@@ -59,7 +59,7 @@
           <!-- Basic Fields -->
           <div class="form-group">
             <label for="assetType">Candidate</label>
-            <select class="custom-select  p-2" formControlName="candidate._id" required>
+            <select class="custom-select  p-2" formControlName="candidate" required>
               <option [value]="candidate._id" *ngFor="let candidate of candidateList">
                   {{candidate.name}}</option>
             </select>

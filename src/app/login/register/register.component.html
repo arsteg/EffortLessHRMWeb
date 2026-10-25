@@ -2,13 +2,13 @@
 <div class="row h-100 m-0">
   <div class="col-md-6 d-none d-md-block login-intro-container">
     <div class="logo-container">
-      <img src="assets/logo/expanded-logo.svg" alt="" class="login-logo" />
+      <img src="assets/logo/expanded-logo.svg" alt="Effortless HRM" class="login-logo" />
     </div>
     <div class="login-intro text-center">
       <h1 class="login-intro-text">
         {{ 'login.intro' | translate }}
       </h1>
-      <img src="assets/png/login-intro-1.png" class="img-fluid" />
+      <img src="assets/png/login-intro-1.png" alt="" class="img-fluid" />
     </div>
   </div>
 
@@ -16,7 +16,7 @@
     <!--mobile logo & intro-->
     <div class="d-md-none">
       <div class="logo-container text-center">
-        <img src="assets/logo/expanded-logo.svg" alt="" class="login-logo" />
+        <img src="assets/logo/expanded-logo.svg" alt="Effortless HRM" class="login-logo" />
       </div>
       <div class="login-intro text-center">
         <h1 class="login-intro-text text-primary pt-3 pb-5">
@@ -45,7 +45,7 @@
                        <span *ngIf="registerNewUser.get('firstName')?.hasError('minlength')">
                         {{ 'login.first_name_too_short' | translate }}
                       </span>
-                </mat-error>  
+                </mat-error>
               </mat-form-field>
             </div>
 
@@ -74,7 +74,7 @@
                 <input matInput id="email" type="email" name="email" formControlName="email" required email>
                 <mat-error *ngIf="!registerNewUser.get('email').valid && registerNewUser.get('email').touched">
                   <span *ngIf="registerNewUser.get('email').errors?.['required']">{{ 'login.email_required' | translate
-                    }}</span>                
+                    }}</span>
                       <span *ngIf="registerNewUser.get('email')?.hasError('invalidEmail')">
                         {{ 'login.email_invalid' | translate
                     }}
@@ -140,14 +140,14 @@
             <mat-label>{{ 'login.password' | translate }}</mat-label>
             <input matInput [type]="hidePassword ? 'password' : 'text'" id="password" formControlName="password"
               name="password" required>
-            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
-              [attr.aria-pressed]="hidePassword" type="button">
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword"
+              [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'" [attr.aria-pressed]="!hidePassword" type="button">
               <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
             <mat-error *ngIf="registerNewUser.get('password')?.touched && registerNewUser.get('password')?.invalid">
               <span *ngIf="registerNewUser.get('password')?.errors?.['required']">
                 {{ 'login.password_required' | translate }}
-              </span>             
+              </span>
               <span *ngIf="registerNewUser.get('password')?.errors?.['weakPassword']">
                 {{ 'login.password_format'
                 | translate }}   </span>
@@ -159,7 +159,7 @@
             <input matInput [type]="hideConfirmPassword ? 'password' : 'text'" id="passwordConfirm"
               formControlName="passwordConfirm" name="passwordConfirm" required>
             <button mat-icon-button matSuffix (click)="hideConfirmPassword = !hideConfirmPassword"
-              [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirmPassword" type="button">
+               [attr.aria-label]="hideConfirmPassword ? 'Show confirm password' : 'Hide confirm password'" [attr.aria-pressed]="!hideConfirmPassword" type="button">
               <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
             <mat-error *ngIf="registerNewUser.hasError('notMatching') && registerNewUser.get('passwordConfirm')?.touched">

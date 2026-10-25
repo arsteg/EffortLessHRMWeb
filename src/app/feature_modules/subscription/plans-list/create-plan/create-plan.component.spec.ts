@@ -1,3 +1,5 @@
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreatePlanComponent } from './create-plan.component';
@@ -8,7 +10,8 @@ describe('CreatePlanComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreatePlanComponent]
+      providers: [{ provide: MatDialogRef, useValue: jasmine.createSpyObj('MatDialogRef', ['close']) }, { provide: MAT_DIALOG_DATA, useValue: {} }],
+      imports: [UiTestingModule, CreatePlanComponent]
     })
     .compileComponents();
     

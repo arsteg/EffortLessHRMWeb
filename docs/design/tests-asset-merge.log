@@ -1,0 +1,21 @@
+
+> effort-less-hrmweb@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless --include=src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.merge.spec.ts
+
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+25 10 2026 12:45:17.381:INFO [karma-server]: Karma v6.3.20 server started at http://localhost:9876/
+25 10 2026 12:45:17.392:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+25 10 2026 12:45:17.407:INFO [launcher]: Starting browser ChromeHeadless
+25 10 2026 12:45:24.036:INFO [Chrome Headless 155.0.0.0 (Windows 10)]: Connected on socket asQ_9OZ51C_WCKg0AAAB with id 89196027
+Chrome Headless 155.0.0.0 (Windows 10): Executed 0 of 4[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 1 of 4[32m SUCCESS[39m (0 secs / 0.013 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 2 of 4[32m SUCCESS[39m (0 secs / 0.015 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 3 of 4[32m SUCCESS[39m (0 secs / 0.017 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 4 of 4[32m SUCCESS[39m (0 secs / 0.018 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 4 of 4[32m SUCCESS[39m (0.09 secs / 0.018 secs)
+[32mTOTAL: 4 SUCCESS[39m
+√ Browser application bundle generation complete.
+25 10 2026 12:45:29.992:WARN [launcher]: ChromeHeadless was not killed in 2000 ms, sending SIGKILL.
+25 10 2026 12:45:31.994:WARN [launcher]: ChromeHeadless was not killed by SIGKILL in 2000 ms, continuing.
+√ Browser application bundle generation complete.

@@ -7,7 +7,7 @@
     <h1 mat-dialog-title>
       {{ (isEdit ? 'organization.setup.update_company' : 'organization.setup.add_company') | translate }}
     </h1>
-    <button mat-icon-button (click)="dialogRef.close()" class="me-4">
+    <button mat-icon-button (click)="dialogRef.close()" class="me-4" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -133,7 +133,7 @@
 <ng-template #uploadLogoDialog>
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>{{ 'organization.setup.upload_company_logo' | translate }}</h1>
-    <button mat-icon-button (click)="dialogRef.close()" class="me-4">
+    <button mat-icon-button (click)="dialogRef.close()" class="me-4" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>

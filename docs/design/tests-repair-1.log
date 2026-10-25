@@ -1,0 +1,1195 @@
+
+> effort-less-hrmweb@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless
+
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+25 10 2026 13:07:47.469:INFO [karma-server]: Karma v6.3.20 server started at http://localhost:9876/
+25 10 2026 13:07:47.477:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+25 10 2026 13:07:47.489:INFO [launcher]: Starting browser ChromeHeadless
+25 10 2026 13:07:48.046:INFO [Chrome Headless 155.0.0.0 (Windows 10)]: Connected on socket Dd--c7skLEjBiT_MAAAB with id 25134973
+Chrome Headless 155.0.0.0 (Windows 10): Executed 0 of 137[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 1 of 137[32m SUCCESS[39m (0 secs / 0.232 secs)
+[1A[2KERROR: [36m'NG0304: 'app-show-status' is not a known element (used in the 'PendingComponent' component template):
+1. If 'app-show-status' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 1 of 137[32m SUCCESS[39m (0 secs / 0.232 secs)
+ERROR: 'NG0304: 'app-show-status' is not a known element (used in the 'PendingComponent' component template):
+1. If 'app-show-status' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'status' since it isn't a known property of 'app-show-status' (used in the 'PendingComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'status' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 1 of 137[32m SUCCESS[39m (0 secs / 0.232 secs)
+ERROR: 'NG0303: Can't bind to 'status' since it isn't a known property of 'app-show-status' (used in the 'PendingComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'status' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'tab' since it isn't a known property of 'app-show-status' (used in the 'PendingComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'tab' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 1 of 137[32m SUCCESS[39m (0 secs / 0.232 secs)
+ERROR: 'NG0303: Can't bind to 'tab' since it isn't a known property of 'app-show-status' (used in the 'PendingComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'tab' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'actionOptions' since it isn't a known property of 'app-show-status' (used in the 'PendingComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'actionOptions' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 1 of 137[32m SUCCESS[39m (0 secs / 0.232 secs)
+ERROR: 'NG0303: Can't bind to 'actionOptions' since it isn't a known property of 'app-show-status' (used in the 'PendingComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'actionOptions' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 2 of 137[32m SUCCESS[39m (0 secs / 0.286 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 3 of 137[32m SUCCESS[39m (0 secs / 0.292 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 4 of 137[32m SUCCESS[39m (0 secs / 0.304 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 5 of 137[32m SUCCESS[39m (0 secs / 0.38 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 6 of 137[32m SUCCESS[39m (0 secs / 0.428 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 7 of 137[32m SUCCESS[39m (0 secs / 0.581 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 8 of 137[32m SUCCESS[39m (0 secs / 0.696 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 9 of 137[32m SUCCESS[39m (0 secs / 0.766 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 10 of 137[32m SUCCESS[39m (0 secs / 0.924 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) CandidatesComponent should create FAILED[39m
+	Error: Cannot find control with name: 'candidate._id'
+	    at _throwError (node_modules/@angular/forms/fesm2022/forms.mjs:3162:11)
+	    at setUpControl (node_modules/@angular/forms/fesm2022/forms.mjs:2945:13)
+	    at FormGroupDirective.addControl (node_modules/@angular/forms/fesm2022/forms.mjs:4794:9)
+	    at FormControlName._setUpControl (node_modules/@angular/forms/fesm2022/forms.mjs:5382:43)
+	    at FormControlName.ngOnChanges (node_modules/@angular/forms/fesm2022/forms.mjs:5327:18)
+	    at FormControlName.call (node_modules/@angular/core/fesm2022/core.mjs:2565:14)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3630:9)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 11 of 137[31m (1 FAILED)[39m (0 secs / 0.991 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 12 of 137[31m (1 FAILED)[39m (0 secs / 1.02 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 13 of 137[31m (1 FAILED)[39m (0 secs / 1.034 secs)
+[1A[2KERROR: [36m'NG0303: Can't bind to 'aria-label' since it isn't a known property of 'button' (used in the 'AddLeaveComponent' component template).
+1. If 'button' is an Angular component and it has the 'aria-label' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 13 of 137[31m (1 FAILED)[39m (0 secs / 1.034 secs)
+ERROR: 'NG0303: Can't bind to 'aria-label' since it isn't a known property of 'button' (used in the 'AddLeaveComponent' component template).
+1. If 'button' is an Angular component and it has the 'aria-label' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'aria-label' since it isn't a known property of 'input' (used in the 'AddLeaveComponent' component template).
+1. If 'input' is an Angular component and it has the 'aria-label' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 13 of 137[31m (1 FAILED)[39m (0 secs / 1.034 secs)
+ERROR: 'NG0303: Can't bind to 'aria-label' since it isn't a known property of 'input' (used in the 'AddLeaveComponent' component template).
+1. If 'input' is an Angular component and it has the 'aria-label' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'aria-label' since it isn't a known property of 'textarea' (used in the 'AddLeaveComponent' component template).
+1. If 'textarea' is an Angular component and it has the 'aria-label' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 13 of 137[31m (1 FAILED)[39m (0 secs / 1.034 secs)
+ERROR: 'NG0303: Can't bind to 'aria-label' since it isn't a known property of 'textarea' (used in the 'AddLeaveComponent' component template).
+1. If 'textarea' is an Angular component and it has the 'aria-label' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 14 of 137[31m (1 FAILED)[39m (0 secs / 1.12 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ActivityDescriptionComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'DatePipe', 'DatePipe' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///ActivityDescriptionComponent/ɵfac.js:5:7)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/reports/activity-description/activity-description.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 15 of 137[31m (2 FAILED)[39m (0 secs / 1.753 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 16 of 137[31m (2 FAILED)[39m (0 secs / 1.773 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) UserTimesheetComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'DatePipe', 'DatePipe' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///UserTimesheetComponent/ɵfac.js:4:50)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/timesheets/user-timesheet/user-timesheet.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 17 of 137[31m (3 FAILED)[39m (0 secs / 1.817 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 18 of 137[31m (3 FAILED)[39m (0 secs / 1.989 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 19 of 137[31m (3 FAILED)[39m (0 secs / 1.997 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) UpdateStatusComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MatDialogRef', 'MatDialogRef' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///UpdateStatusComponent/ɵfac.js:5:50)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/leave/leave-grant/update-status/update-status.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 20 of 137[31m (4 FAILED)[39m (0 secs / 2.021 secs)
+[1A[2KERROR: [36m'NG0304: 'app-supervisors' is not a known element (used in the 'GeneralComponent' component template):
+1. If 'app-supervisors' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-supervisors' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 20 of 137[31m (4 FAILED)[39m (0 secs / 2.021 secs)
+ERROR: 'NG0304: 'app-supervisors' is not a known element (used in the 'GeneralComponent' component template):
+1. If 'app-supervisors' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-supervisors' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 21 of 137[31m (4 FAILED)[39m (0 secs / 2.03 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 22 of 137[31m (4 FAILED)[39m (0 secs / 2.068 secs)
+[1A[2KERROR: [36m'NG0304: 'app-show-status' is not a known element (used in the 'ApprovedComponent' component template):
+1. If 'app-show-status' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 22 of 137[31m (4 FAILED)[39m (0 secs / 2.068 secs)
+ERROR: 'NG0304: 'app-show-status' is not a known element (used in the 'ApprovedComponent' component template):
+1. If 'app-show-status' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'status' since it isn't a known property of 'app-show-status' (used in the 'ApprovedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'status' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 22 of 137[31m (4 FAILED)[39m (0 secs / 2.068 secs)
+ERROR: 'NG0303: Can't bind to 'status' since it isn't a known property of 'app-show-status' (used in the 'ApprovedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'status' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'tab' since it isn't a known property of 'app-show-status' (used in the 'ApprovedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'tab' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 22 of 137[31m (4 FAILED)[39m (0 secs / 2.068 secs)
+ERROR: 'NG0303: Can't bind to 'tab' since it isn't a known property of 'app-show-status' (used in the 'ApprovedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'tab' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'actionOptions' since it isn't a known property of 'app-show-status' (used in the 'ApprovedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'actionOptions' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 22 of 137[31m (4 FAILED)[39m (0 secs / 2.068 secs)
+ERROR: 'NG0303: Can't bind to 'actionOptions' since it isn't a known property of 'app-show-status' (used in the 'ApprovedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'actionOptions' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 23 of 137[31m (4 FAILED)[39m (0 secs / 2.083 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ProductivityReportComponent should create FAILED[39m
+	TypeError: Cannot read properties of null (reading 'id')
+	    at ProductivityReportComponent.populateUsers (src/app/feature_modules/reports/productivity-report/productivity-report.component.ts:127:46)
+	    at ProductivityReportComponent.call [as ngOnInit] (src/app/feature_modules/reports/productivity-report/productivity-report.component.ts:99:10)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3626:13)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13505:21)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewWhileDirty (node_modules/@angular/core/fesm2022/core.mjs:13431:5)
+	    at detectChangesInternal (node_modules/@angular/core/fesm2022/core.mjs:13413:9)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 24 of 137[31m (5 FAILED)[39m (0 secs / 2.121 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 25 of 137[31m (5 FAILED)[39m (0 secs / 2.204 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) UpdateApplicationComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MatDialogRef', 'MatDialogRef' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///UpdateApplicationComponent/ɵfac.js:5:50)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/leave/leave-application/update-application/update-application.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 26 of 137[31m (6 FAILED)[39m (0 secs / 2.228 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 27 of 137[31m (6 FAILED)[39m (0 secs / 2.306 secs)
+[1A[2KERROR: [36m'NG0304: 'app-attendance-overview' is not a known element (used in the 'DashboardComponent' component template):
+1. If 'app-attendance-overview' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-attendance-overview' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 27 of 137[31m (6 FAILED)[39m (0 secs / 2.306 secs)
+ERROR: 'NG0304: 'app-attendance-overview' is not a known element (used in the 'DashboardComponent' component template):
+1. If 'app-attendance-overview' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-attendance-overview' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) DashboardComponent should create FAILED[39m
+	TypeError: Cannot read properties of null (reading 'id')
+	    at DashboardComponent.call [as ngOnInit] (src/app/feature_modules/dashboard/dashboard.component.ts:127:36)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3626:13)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13505:21)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewWhileDirty (node_modules/@angular/core/fesm2022/core.mjs:13431:5)
+	    at detectChangesInternal (node_modules/@angular/core/fesm2022/core.mjs:13413:9)
+	    at ViewRef$1.detectChanges (node_modules/@angular/core/fesm2022/core.mjs:14009:9)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 28 of 137[31m (7 FAILED)[39m (0 secs / 2.372 secs)
+[1A[2KERROR: [36m'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolePermissionComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 28 of 137[31m (7 FAILED)[39m (0 secs / 2.372 secs)
+ERROR: 'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolePermissionComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolePermissionComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 28 of 137[31m (7 FAILED)[39m (0 secs / 2.372 secs)
+ERROR: 'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolePermissionComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolePermissionComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 28 of 137[31m (7 FAILED)[39m (0 secs / 2.372 secs)
+ERROR: 'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolePermissionComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KWARN: [36m'
+  It looks like you're using ngModel on the same form field as formControlName.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlName#use-with-ngmodel
+  '[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 28 of 137[31m (7 FAILED)[39m (0 secs / 2.372 secs)
+WARN: '
+  It looks like you're using ngModel on the same form field as formControlName.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlName#use-with-ngmodel
+  '
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 29 of 137[31m (7 FAILED)[39m (0 secs / 2.434 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 30 of 137[31m (7 FAILED)[39m (0 secs / 2.49 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 31 of 137[31m (7 FAILED)[39m (0 secs / 2.522 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 32 of 137[31m (7 FAILED)[39m (0 secs / 2.548 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 33 of 137[31m (7 FAILED)[39m (0 secs / 2.556 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 34 of 137[31m (7 FAILED)[39m (0 secs / 2.602 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 35 of 137[31m (7 FAILED)[39m (0 secs / 2.633 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 36 of 137[31m (7 FAILED)[39m (0 secs / 2.654 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 37 of 137[31m (7 FAILED)[39m (0 secs / 2.683 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) AppAndWebsiteUsageComponent should create FAILED[39m
+	TypeError: Cannot read properties of null (reading 'id')
+	    at AppAndWebsiteUsageComponent.populateUsers (src/app/feature_modules/reports/app-and-website-usage/app-and-website-usage.component.ts:108:46)
+	    at AppAndWebsiteUsageComponent.call [as ngOnInit] (src/app/feature_modules/reports/app-and-website-usage/app-and-website-usage.component.ts:83:10)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3626:13)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13505:21)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewWhileDirty (node_modules/@angular/core/fesm2022/core.mjs:13431:5)
+	    at detectChangesInternal (node_modules/@angular/core/fesm2022/core.mjs:13413:9)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 38 of 137[31m (8 FAILED)[39m (0 secs / 2.722 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 39 of 137[31m (8 FAILED)[39m (0 secs / 2.763 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 40 of 137[31m (8 FAILED)[39m (0 secs / 2.789 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 41 of 137[31m (8 FAILED)[39m (0 secs / 2.841 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 42 of 137[31m (8 FAILED)[39m (0 secs / 2.912 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 43 of 137[31m (8 FAILED)[39m (0 secs / 2.949 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 44 of 137[31m (8 FAILED)[39m (0 secs / 2.953 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 45 of 137[31m (8 FAILED)[39m (0 secs / 2.957 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 46 of 137[31m (8 FAILED)[39m (0 secs / 2.96 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 47 of 137[31m (8 FAILED)[39m (0 secs / 2.962 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 48 of 137[31m (8 FAILED)[39m (0 secs / 3.004 secs)
+[1A[2KERROR: [36m'NG0304: 'app-timeline' is not a known element (used in the 'TimelineManagementComponent' component template):
+1. If 'app-timeline' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-timeline' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 48 of 137[31m (8 FAILED)[39m (0 secs / 3.004 secs)
+ERROR: 'NG0304: 'app-timeline' is not a known element (used in the 'TimelineManagementComponent' component template):
+1. If 'app-timeline' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-timeline' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'tab' since it isn't a known property of 'app-timeline' (used in the 'TimelineManagementComponent' component template).
+1. If 'app-timeline' is an Angular component and it has the 'tab' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-timeline' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 48 of 137[31m (8 FAILED)[39m (0 secs / 3.004 secs)
+ERROR: 'NG0303: Can't bind to 'tab' since it isn't a known property of 'app-timeline' (used in the 'TimelineManagementComponent' component template).
+1. If 'app-timeline' is an Angular component and it has the 'tab' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-timeline' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 49 of 137[31m (8 FAILED)[39m (0 secs / 3.035 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 50 of 137[31m (8 FAILED)[39m (0 secs / 3.065 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 51 of 137[31m (8 FAILED)[39m (0 secs / 3.106 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) LeaveReportComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'DatePipe', 'DatePipe' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///LeaveReportComponent/ɵfac.js:4:48)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/reports/leave-report/leave-report.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 52 of 137[31m (9 FAILED)[39m (0 secs / 3.199 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 53 of 137[31m (9 FAILED)[39m (0 secs / 3.223 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) AppWebsiteSettingsComponent should create FAILED[39m
+	Error: NG01350: 
+	    ngModel cannot be used to register form controls with a parent formGroup directive.  Try using
+	    formGroup's partner directive "formControlName" instead.  Example:
+	
+	    
+	  <div [formGroup]="myGroup">
+	    <input formControlName="firstName">
+	  </div>
+	
+	  In your class:
+	
+	  this.myGroup = new FormGroup({
+	      firstName: new FormControl()
+	  });
+	
+	    Or, if you'd like to avoid registering this form control, indicate that it's standalone in ngModelOptions:
+	
+	    Example:
+	
+	    
+	  <div [formGroup]="myGroup">
+	      <input formControlName="firstName">
+	      <input [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}">
+	  </div>
+	
+	error properties: Object({ code: 1350 })
+	Error: NG01350: 
+	    ngModel cannot be used to register form controls with a parent formGroup directive.  Try using
+	    formGroup's partner directive "formControlName" instead.  Example:
+	    
+	  <div [formGroup]="myGroup">
+	    <input formControlName="firstName">
+	  </div>
+	  In your class:
+	  this.myGroup = new FormGroup({
+	      firstName: new FormControl()
+	  });
+	    Or, if you'd like to avoid registering this form control, indicate that it's standalone in ngModelOptions:
+	    Example:
+	    
+	  <div [formGroup]="myGroup">
+	      <input formControlName="firstName">
+	      <input [(ngModel)]="showMoreControls" [ngModelOptions]="{standalone: true}">
+	  </div>
+	    at modelParentException (node_modules/@angular/forms/fesm2022/forms.mjs:3723:12)
+	    at NgModel._checkParentType (node_modules/@angular/forms/fesm2022/forms.mjs:4062:23)
+	    at NgModel._checkForErrors (node_modules/@angular/forms/fesm2022/forms.mjs:4051:18)
+	    at NgModel.ngOnChanges (node_modules/@angular/forms/fesm2022/forms.mjs:3980:14)
+	    at NgModel.call (node_modules/@angular/core/fesm2022/core.mjs:2565:14)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3630:9)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+	    at selectIndexInternal (node_modules/@angular/core/fesm2022/core.mjs:12024:17)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 54 of 137[31m (10 FAILED)[39m (0 secs / 3.291 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 55 of 137[31m (10 FAILED)[39m (0 secs / 3.319 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 56 of 137[31m (10 FAILED)[39m (0 secs / 3.326 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 57 of 137[31m (10 FAILED)[39m (0 secs / 3.393 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 58 of 137[31m (10 FAILED)[39m (0 secs / 3.456 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 59 of 137[31m (10 FAILED)[39m (0 secs / 3.462 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 60 of 137[31m (10 FAILED)[39m (0 secs / 3.493 secs)
+[1A[2KERROR: [36m'NG0304: 'app-show-status' is not a known element (used in the 'RejectedComponent' component template):
+1. If 'app-show-status' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 60 of 137[31m (10 FAILED)[39m (0 secs / 3.493 secs)
+ERROR: 'NG0304: 'app-show-status' is not a known element (used in the 'RejectedComponent' component template):
+1. If 'app-show-status' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'status' since it isn't a known property of 'app-show-status' (used in the 'RejectedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'status' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 60 of 137[31m (10 FAILED)[39m (0 secs / 3.493 secs)
+ERROR: 'NG0303: Can't bind to 'status' since it isn't a known property of 'app-show-status' (used in the 'RejectedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'status' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'tab' since it isn't a known property of 'app-show-status' (used in the 'RejectedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'tab' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 60 of 137[31m (10 FAILED)[39m (0 secs / 3.493 secs)
+ERROR: 'NG0303: Can't bind to 'tab' since it isn't a known property of 'app-show-status' (used in the 'RejectedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'tab' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'actionOptions' since it isn't a known property of 'app-show-status' (used in the 'RejectedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'actionOptions' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 60 of 137[31m (10 FAILED)[39m (0 secs / 3.493 secs)
+ERROR: 'NG0303: Can't bind to 'actionOptions' since it isn't a known property of 'app-show-status' (used in the 'RejectedComponent' component template).
+1. If 'app-show-status' is an Angular component and it has the 'actionOptions' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-show-status' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 61 of 137[31m (10 FAILED)[39m (0 secs / 3.509 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 62 of 137[31m (10 FAILED)[39m (0 secs / 3.514 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 63 of 137[31m (10 FAILED)[39m (0 secs / 3.549 secs)
+[1A[2KERROR: [36m'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolesComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 63 of 137[31m (10 FAILED)[39m (0 secs / 3.549 secs)
+ERROR: 'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolesComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolesComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 63 of 137[31m (10 FAILED)[39m (0 secs / 3.549 secs)
+ERROR: 'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolesComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolesComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 63 of 137[31m (10 FAILED)[39m (0 secs / 3.549 secs)
+ERROR: 'NG0303: Can't bind to 'order' since it isn't a known property of 'th' (used in the 'RolesComponent' component template).
+1. If 'th' is an Angular component and it has the 'order' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 64 of 137[31m (10 FAILED)[39m (0 secs / 3.59 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 65 of 137[31m (10 FAILED)[39m (0 secs / 3.622 secs)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 65 of 137[31m (10 FAILED)[39m (0 secs / 3.622 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 65 of 137[31m (10 FAILED)[39m (0 secs / 3.622 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 65 of 137[31m (10 FAILED)[39m (0 secs / 3.622 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 65 of 137[31m (10 FAILED)[39m (0 secs / 3.622 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 65 of 137[31m (10 FAILED)[39m (0 secs / 3.622 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 65 of 137[31m (10 FAILED)[39m (0 secs / 3.622 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 66 of 137[31m (10 FAILED)[39m (0 secs / 3.654 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 67 of 137[31m (10 FAILED)[39m (0 secs / 3.666 secs)
+[1A[2KERROR: [36m'NG0304: 'app-login' is not a known element (used in the 'ApprovalsComponent' component template):
+1. If 'app-login' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-login' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 67 of 137[31m (10 FAILED)[39m (0 secs / 3.666 secs)
+ERROR: 'NG0304: 'app-login' is not a known element (used in the 'ApprovalsComponent' component template):
+1. If 'app-login' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-login' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-request-manual-time' is not a known element (used in the 'ApprovalsComponent' component template):
+1. If 'app-request-manual-time' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-request-manual-time' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 67 of 137[31m (10 FAILED)[39m (0 secs / 3.666 secs)
+ERROR: 'NG0304: 'app-request-manual-time' is not a known element (used in the 'ApprovalsComponent' component template):
+1. If 'app-request-manual-time' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-request-manual-time' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 68 of 137[31m (10 FAILED)[39m (0 secs / 3.699 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 69 of 137[31m (10 FAILED)[39m (0 secs / 3.726 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 70 of 137[31m (10 FAILED)[39m (0 secs / 3.732 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 71 of 137[31m (10 FAILED)[39m (0 secs / 3.795 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 72 of 137[31m (10 FAILED)[39m (0 secs / 3.833 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 73 of 137[31m (10 FAILED)[39m (0 secs / 3.849 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) UpdateHelpdeskTaskComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MatDialogRef', 'MatDialogRef' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///UpdateHelpdeskTaskComponent/ɵfac.js:4:55)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/helpdesk/update-helpdesk-task/update-helpdesk-task.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 74 of 137[31m (11 FAILED)[39m (0 secs / 3.917 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ViewApplicationComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MatDialogRef', 'MatDialogRef' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///ViewApplicationComponent/ɵfac.js:5:7)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/leave/leave-application/view-application/view-application.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 75 of 137[31m (12 FAILED)[39m (0 secs / 3.96 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) AdminTimesheetComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'DatePipe', 'DatePipe' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///AdminTimesheetComponent/ɵfac.js:4:51)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/timesheets/admin-timesheet/admin-timesheet.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 76 of 137[31m (13 FAILED)[39m (0 secs / 4.012 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 77 of 137[31m (13 FAILED)[39m (0 secs / 4.025 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) AddManualTimeComponent should create FAILED[39m
+	TypeError: Cannot read properties of null (reading 'email')
+	    at AddManualTimeComponent.call [as ngOnInit] (src/app/feature_modules/manual-time/addManualTime/add-manual-time.component.ts:55:34)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3626:13)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13505:21)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewWhileDirty (node_modules/@angular/core/fesm2022/core.mjs:13431:5)
+	    at detectChangesInternal (node_modules/@angular/core/fesm2022/core.mjs:13413:9)
+	    at ViewRef$1.detectChanges (node_modules/@angular/core/fesm2022/core.mjs:14009:9)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 78 of 137[31m (14 FAILED)[39m (0 secs / 4.078 secs)
+[1A[2KERROR: [36m'NG0304: 'app-tax-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 78 of 137[31m (14 FAILED)[39m (0 secs / 4.078 secs)
+ERROR: 'NG0304: 'app-tax-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-tax-component-by-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-component-by-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-component-by-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 78 of 137[31m (14 FAILED)[39m (0 secs / 4.078 secs)
+ERROR: 'NG0304: 'app-tax-component-by-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-component-by-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-component-by-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'isEdit' since it isn't a known property of 'app-tax-section' (used in the 'TaxDeclarationComponent' component template).
+1. If 'app-tax-section' is an Angular component and it has the 'isEdit' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 78 of 137[31m (14 FAILED)[39m (0 secs / 4.078 secs)
+ERROR: 'NG0303: Can't bind to 'isEdit' since it isn't a known property of 'app-tax-section' (used in the 'TaxDeclarationComponent' component template).
+1. If 'app-tax-section' is an Angular component and it has the 'isEdit' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 79 of 137[31m (14 FAILED)[39m (0 secs / 4.088 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 80 of 137[31m (14 FAILED)[39m (0 secs / 4.11 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 81 of 137[31m (14 FAILED)[39m (0 secs / 4.116 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 82 of 137[31m (14 FAILED)[39m (0 secs / 4.141 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 83 of 137[31m (14 FAILED)[39m (0 secs / 4.166 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 84 of 137[31m (14 FAILED)[39m (0 secs / 4.172 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 85 of 137[31m (14 FAILED)[39m (0 secs / 4.212 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) TimelineComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'DatePipe', 'DatePipe' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///TimelineComponent/ɵfac.js:6:53)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/reports/timeline/timeline.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 86 of 137[31m (15 FAILED)[39m (0 secs / 4.445 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 87 of 137[31m (15 FAILED)[39m (0 secs / 4.45 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 88 of 137[31m (15 FAILED)[39m (0 secs / 4.464 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 89 of 137[31m (15 FAILED)[39m (0 secs / 4.467 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 90 of 137[31m (15 FAILED)[39m (0 secs / 4.51 secs)
+[1A[2KLOG: [36m'Log received:', Object{message: 'Isolated unit test log'}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 90 of 137[31m (15 FAILED)[39m (0 secs / 4.51 secs)
+LOG: 'Log received:', Object{message: 'Isolated unit test log'}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 91 of 137[31m (15 FAILED)[39m (0 secs / 4.547 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) HolidaysComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'DatePipe', 'DatePipe' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///HolidaysComponent/ɵfac.js:8:7)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/organization/setup/holidays/holidays.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 92 of 137[31m (16 FAILED)[39m (0 secs / 4.599 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 93 of 137[31m (16 FAILED)[39m (0 secs / 4.639 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 94 of 137[31m (16 FAILED)[39m (0 secs / 4.686 secs)
+[1A[2KLOG: [36mtrue[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 94 of 137[31m (16 FAILED)[39m (0 secs / 4.686 secs)
+LOG: true
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 95 of 137[31m (16 FAILED)[39m (0 secs / 4.705 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) HelpDeskComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MatDialogRef', 'MatDialogRef' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///HelpDeskComponent/ɵfac.js:5:45)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/helpdesk/help-desk/help-desk.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 96 of 137[31m (17 FAILED)[39m (0 secs / 4.821 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ScreenshotsComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'DatePipe', 'DatePipe' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]: 
+	  NullInjectorError: No provider for DatePipe!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///ScreenshotsComponent/ɵfac.js:6:7)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/screenshots/screenshots/screenshots.component.spec.ts:25:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 97 of 137[31m (18 FAILED)[39m (0 secs / 4.851 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 98 of 137[31m (18 FAILED)[39m (0 secs / 4.89 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 99 of 137[31m (18 FAILED)[39m (0 secs / 4.923 secs)
+[1A[2KERROR: [36m'NG0303: Can't bind to 'styles' since it isn't a known property of 'quill-editor' (used in the 'EmailTemplateComponent' component template).
+1. If 'quill-editor' is an Angular component and it has the 'styles' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'quill-editor' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 99 of 137[31m (18 FAILED)[39m (0 secs / 4.923 secs)
+ERROR: 'NG0303: Can't bind to 'styles' since it isn't a known property of 'quill-editor' (used in the 'EmailTemplateComponent' component template).
+1. If 'quill-editor' is an Angular component and it has the 'styles' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'quill-editor' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) EmailTemplateComponent should create FAILED[39m
+	Error: NG01203: No value accessor for form control name: 'contentData'. Find more at https://angular.io/errors/NG01203
+	error properties: Object({ code: -1203 })
+	Error: NG01203: No value accessor for form control name: 'contentData'. Find more at https://angular.io/errors/NG01203
+	    at _throwMissingValueAccessorError (node_modules/@angular/forms/fesm2022/forms.mjs:3174:11)
+	    at setUpControl (node_modules/@angular/forms/fesm2022/forms.mjs:2947:13)
+	    at FormGroupDirective.addControl (node_modules/@angular/forms/fesm2022/forms.mjs:4794:9)
+	    at FormControlName._setUpControl (node_modules/@angular/forms/fesm2022/forms.mjs:5382:43)
+	    at FormControlName.ngOnChanges (node_modules/@angular/forms/fesm2022/forms.mjs:5327:18)
+	    at FormControlName.call (node_modules/@angular/core/fesm2022/core.mjs:2565:14)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3630:9)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 100 of 137[31m (19 FAILED)[39m (0 secs / 4.971 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 101 of 137[31m (19 FAILED)[39m (0 secs / 4.985 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) UserFormCOntrolComponent should create FAILED[39m
+	TypeError: Cannot read properties of null (reading 'data')
+	    at UserFormCOntrolComponent.call [as ngOnInit] (src/app/feature_modules/manage/users/user-profile/user-form-control/user-form-control.component.ts:30:56)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3626:13)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13505:21)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewWhileDirty (node_modules/@angular/core/fesm2022/core.mjs:13431:5)
+	    at detectChangesInternal (node_modules/@angular/core/fesm2022/core.mjs:13413:9)
+	    at ViewRef$1.detectChanges (node_modules/@angular/core/fesm2022/core.mjs:14009:9)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 102 of 137[31m (20 FAILED)[39m (0 secs / 5.002 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 103 of 137[31m (20 FAILED)[39m (0 secs / 5.054 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 104 of 137[31m (20 FAILED)[39m (0 secs / 5.098 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 105 of 137[31m (20 FAILED)[39m (0 secs / 5.114 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 106 of 137[31m (20 FAILED)[39m (0 secs / 5.131 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 107 of 137[31m (20 FAILED)[39m (0 secs / 5.153 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 108 of 137[31m (20 FAILED)[39m (0 secs / 5.169 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 109 of 137[31m (20 FAILED)[39m (0 secs / 5.177 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 110 of 137[31m (20 FAILED)[39m (0 secs / 5.182 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ConfirmationDialogComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MatDialogRef', 'MatDialogRef' ] })
+	NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///ConfirmationDialogComponent/ɵfac.js:4:55)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	    at createRootComponent (node_modules/@angular/core/fesm2022/core.mjs:15693:35)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/tasks/confirmation-dialog/confirmation-dialog.component.spec.ts:23:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 111 of 137[31m (21 FAILED)[39m (0 secs / 5.199 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 112 of 137[31m (21 FAILED)[39m (0 secs / 5.218 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 113 of 137[31m (21 FAILED)[39m (0 secs / 5.24 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) UserDashboardComponent should create FAILED[39m
+	TypeError: Cannot read properties of null (reading 'id')
+	    at UserDashboardComponent.populateDashboard (src/app/feature_modules/dashboard/user-dashboard/user-dashboard.component.ts:155:56)
+	    at UserDashboardComponent.call [as ngOnInit] (src/app/feature_modules/dashboard/user-dashboard/user-dashboard.component.ts:76:10)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3626:13)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13505:21)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewWhileDirty (node_modules/@angular/core/fesm2022/core.mjs:13431:5)
+	    at detectChangesInternal (node_modules/@angular/core/fesm2022/core.mjs:13413:9)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 114 of 137[31m (22 FAILED)[39m (0 secs / 5.286 secs)
+[1A[2KERROR: [36m'NG0304: 'hrm-language-selector' is not a known element (used in the 'MainComponent' component template):
+1. If 'hrm-language-selector' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'hrm-language-selector' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 114 of 137[31m (22 FAILED)[39m (0 secs / 5.286 secs)
+ERROR: 'NG0304: 'hrm-language-selector' is not a known element (used in the 'MainComponent' component template):
+1. If 'hrm-language-selector' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'hrm-language-selector' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KLOG: [36mElementRef{nativeElement: <section _ngcontent-a-c3310946234="" id="hrmFeatures" class="manage hrmFeatures pt-5"><div _ngcontent-a-c3310946234="" class="section-container"><div _ngcontent-a-c3310946234="" data-aos="fade-up" class="manage__head aos-init"><h2 _ngcontent-a-c3310946234="" class="manage__title">HRM Features</h2><div _ngcontent-a-c3310946234="" class="manage__subtitle">EffortlessHRM streamlines HR management and time tracking with innovative features tailored to enhance the employee experience and organizational efficiency.</div></div><div _ngcontent-a-c3310946234="" class="row mt-5 d-flex justify-content-evenly"><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_1"><img _ngcontent-a-c3310946234="" src="assets/main/1.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Organization Set-up</h5><p _ngcontent-a-c3310946234="">Effortlessly set up your organization, assign templates, managers, and create an organizational hierarchy. Bulk upload employee data and manage leaves, expenses, and attendance with ease.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_2"><img _ngcontent-a-c3310946234="" src="assets/main/2.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Management Dashboards &amp; Reports</h5><p _ngcontent-a-c3310946234="">Access actionable insights and analytics to drive better business outcomes. Govern data access and share insights with customizable reports in various formats.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_3"><img _ngcontent-a-c3310946234="" src="assets/main/3.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Employee Onboarding</h5><p _ngcontent-a-c3310946234="">Simplify employee onboarding with integrated HR management. Set up multiple office locations, departments, designations, and streamline the onboarding process for new hires.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_4"><img _ngcontent-a-c3310946234="" src="assets/main/4.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Payroll</h5><p _ngcontent-a-c3310946234="">Organize payroll tasks efficiently with automated salary slip generation and CTC calculations, ensuring accurate and timely employee payments.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_5"><img _ngcontent-a-c3310946234="" src="assets/main/5.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Expense Management</h5><p _ngcontent-a-c3310946234="">Streamline expense reporting with easy-to-use modules that sync with employee reporting managers for seamless approval processes. Define expense policies, track expenses, and optimize expenditures. </p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_6"><img _ngcontent-a-c3310946234="" src="assets/main/6.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Attendance Management</h5><p _ngcontent-a-c3310946234="">Adapt to complex labor environments with automated attendance tracking and comprehensive reporting features. Manage time logs, approvals, and off-site worker attendance effortlessly.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_7"><img _ngcontent-a-c3310946234="" src="assets/main/7.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Leave Management</h5><p _ngcontent-a-c3310946234="">Customize leave policies and structures, automate leave approvals, and manage leave entitlements with ease. Configure different templates and workflows to suit departmental requirements.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_8"><img _ngcontent-a-c3310946234="" src="assets/main/8.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Recruitment System</h5><p _ngcontent-a-c3310946234="">Simplify recruitment processes with EffortlessHRM's intuitive features for job requisition, candidate engagement, collaboration, and onboarding.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_9"><img _ngcontent-a-c3310946234="" src="assets/main/9.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Interview Process</h5><p _ngcontent-a-c3310946234="">Create custom templates to streamline candidate data storage, interview scheduling, and feedback collection. Conduct interviews online and efficiently manage the entire recruitment process.</p></div></div></div></section>}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 114 of 137[31m (22 FAILED)[39m (0 secs / 5.286 secs)
+LOG: ElementRef{nativeElement: <section _ngcontent-a-c3310946234="" id="hrmFeatures" class="manage hrmFeatures pt-5"><div _ngcontent-a-c3310946234="" class="section-container"><div _ngcontent-a-c3310946234="" data-aos="fade-up" class="manage__head aos-init"><h2 _ngcontent-a-c3310946234="" class="manage__title">HRM Features</h2><div _ngcontent-a-c3310946234="" class="manage__subtitle">EffortlessHRM streamlines HR management and time tracking with innovative features tailored to enhance the employee experience and organizational efficiency.</div></div><div _ngcontent-a-c3310946234="" class="row mt-5 d-flex justify-content-evenly"><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_1"><img _ngcontent-a-c3310946234="" src="assets/main/1.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Organization Set-up</h5><p _ngcontent-a-c3310946234="">Effortlessly set up your organization, assign templates, managers, and create an organizational hierarchy. Bulk upload employee data and manage leaves, expenses, and attendance with ease.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_2"><img _ngcontent-a-c3310946234="" src="assets/main/2.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Management Dashboards &amp; Reports</h5><p _ngcontent-a-c3310946234="">Access actionable insights and analytics to drive better business outcomes. Govern data access and share insights with customizable reports in various formats.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_3"><img _ngcontent-a-c3310946234="" src="assets/main/3.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Employee Onboarding</h5><p _ngcontent-a-c3310946234="">Simplify employee onboarding with integrated HR management. Set up multiple office locations, departments, designations, and streamline the onboarding process for new hires.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_4"><img _ngcontent-a-c3310946234="" src="assets/main/4.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Payroll</h5><p _ngcontent-a-c3310946234="">Organize payroll tasks efficiently with automated salary slip generation and CTC calculations, ensuring accurate and timely employee payments.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_5"><img _ngcontent-a-c3310946234="" src="assets/main/5.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Expense Management</h5><p _ngcontent-a-c3310946234="">Streamline expense reporting with easy-to-use modules that sync with employee reporting managers for seamless approval processes. Define expense policies, track expenses, and optimize expenditures. </p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_6"><img _ngcontent-a-c3310946234="" src="assets/main/6.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Attendance Management</h5><p _ngcontent-a-c3310946234="">Adapt to complex labor environments with automated attendance tracking and comprehensive reporting features. Manage time logs, approvals, and off-site worker attendance effortlessly.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_7"><img _ngcontent-a-c3310946234="" src="assets/main/7.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Leave Management</h5><p _ngcontent-a-c3310946234="">Customize leave policies and structures, automate leave approvals, and manage leave entitlements with ease. Configure different templates and workflows to suit departmental requirements.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_8"><img _ngcontent-a-c3310946234="" src="assets/main/8.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Recruitment System</h5><p _ngcontent-a-c3310946234="">Simplify recruitment processes with EffortlessHRM's intuitive features for job requisition, candidate engagement, collaboration, and onboarding.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_9"><img _ngcontent-a-c3310946234="" src="assets/main/9.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Interview Process</h5><p _ngcontent-a-c3310946234="">Create custom templates to streamline candidate data storage, interview scheduling, and feedback collection. Conduct interviews online and efficiently manage the entire recruitment process.</p></div></div></div></section>}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 115 of 137[31m (22 FAILED)[39m (0 secs / 5.51 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 115 of 137[31m (22 FAILED)[39m (0 secs / 5.51 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 116 of 137[31m (22 FAILED)[39m (0 secs / 5.524 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 116 of 137[31m (22 FAILED)[39m (0 secs / 5.524 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 117 of 137[31m (22 FAILED)[39m (0 secs / 5.532 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 117 of 137[31m (22 FAILED)[39m (0 secs / 5.532 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 118 of 137[31m (22 FAILED)[39m (0 secs / 5.542 secs)
+[1A[2KWARN: [36m'User ID not found in localStorage.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 118 of 137[31m (22 FAILED)[39m (0 secs / 5.542 secs)
+WARN: 'User ID not found in localStorage.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 119 of 137[31m (22 FAILED)[39m (0 secs / 5.579 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 120 of 137[31m (22 FAILED)[39m (0 secs / 5.582 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 121 of 137[31m (22 FAILED)[39m (0 secs / 5.621 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 122 of 137[31m (22 FAILED)[39m (0 secs / 5.687 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ConfirmCancelComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(Standalone[ConfirmCancelComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MatDialogRef', 'MatDialogRef', 'MatDialogRef' ] })
+	NullInjectorError: R3InjectorError(Standalone[ConfirmCancelComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///ConfirmCancelComponent/ɵfac.js:4:50)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/subscription/subscriptions-list/confirm-cancel/confirm-cancel.component.spec.ts:22:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 123 of 137[31m (23 FAILED)[39m (0 secs / 5.705 secs)
+[1A[2KERROR: [36m'NG0304: 'app-navbar' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-navbar' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-navbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 123 of 137[31m (23 FAILED)[39m (0 secs / 5.705 secs)
+ERROR: 'NG0304: 'app-navbar' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-navbar' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-navbar' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-hero' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-hero' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-hero' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 123 of 137[31m (23 FAILED)[39m (0 secs / 5.705 secs)
+ERROR: 'NG0304: 'app-hero' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-hero' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-hero' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-features' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-features' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-features' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 123 of 137[31m (23 FAILED)[39m (0 secs / 5.705 secs)
+ERROR: 'NG0304: 'app-features' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-features' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-features' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-about-us' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-about-us' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-about-us' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 123 of 137[31m (23 FAILED)[39m (0 secs / 5.705 secs)
+ERROR: 'NG0304: 'app-about-us' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-about-us' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-about-us' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-landing-plans' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-landing-plans' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-landing-plans' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 123 of 137[31m (23 FAILED)[39m (0 secs / 5.705 secs)
+ERROR: 'NG0304: 'app-landing-plans' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-landing-plans' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-landing-plans' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-trust' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-trust' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-trust' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 123 of 137[31m (23 FAILED)[39m (0 secs / 5.705 secs)
+ERROR: 'NG0304: 'app-trust' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-trust' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-trust' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-hrm-features' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-hrm-features' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-hrm-features' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 123 of 137[31m (23 FAILED)[39m (0 secs / 5.705 secs)
+ERROR: 'NG0304: 'app-hrm-features' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-hrm-features' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-hrm-features' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-workspace' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-workspace' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-workspace' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 123 of 137[31m (23 FAILED)[39m (0 secs / 5.705 secs)
+ERROR: 'NG0304: 'app-workspace' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-workspace' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-workspace' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-footer' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-footer' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-footer' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 123 of 137[31m (23 FAILED)[39m (0 secs / 5.705 secs)
+ERROR: 'NG0304: 'app-footer' is not a known element (used in the 'LandingPageComponent' component template):
+1. If 'app-footer' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-footer' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 124 of 137[31m (23 FAILED)[39m (0 secs / 5.719 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 125 of 137[31m (23 FAILED)[39m (0 secs / 5.721 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 126 of 137[31m (23 FAILED)[39m (0 secs / 5.733 secs)
+[1A[2KERROR: [36m'NG0303: Can't bind to 'ngModel' since it isn't a known property of 'select' (used in the 'PaginationComponent' component template).
+1. If 'select' is an Angular component and it has the 'ngModel' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 126 of 137[31m (23 FAILED)[39m (0 secs / 5.733 secs)
+ERROR: 'NG0303: Can't bind to 'ngModel' since it isn't a known property of 'select' (used in the 'PaginationComponent' component template).
+1. If 'select' is an Angular component and it has the 'ngModel' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 127 of 137[31m (23 FAILED)[39m (0 secs / 5.74 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 128 of 137[31m (23 FAILED)[39m (0 secs / 5.743 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 129 of 137[31m (23 FAILED)[39m (0 secs / 5.805 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) PlanDetailsComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(Standalone[PlanDetailsComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MatDialogRef', 'MatDialogRef', 'MatDialogRef' ] })
+	NullInjectorError: R3InjectorError(Standalone[PlanDetailsComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///PlanDetailsComponent/ɵfac.js:4:48)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/subscription/subscriptions-list/plan-details/plan-details.component.spec.ts:22:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 130 of 137[31m (24 FAILED)[39m (0 secs / 5.823 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 131 of 137[31m (24 FAILED)[39m (0 secs / 5.874 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 132 of 137[31m (24 FAILED)[39m (0 secs / 5.914 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) CreatePlanComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(Standalone[CreatePlanComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MatDialogRef', 'MatDialogRef', 'MatDialogRef' ] })
+	NullInjectorError: R3InjectorError(Standalone[CreatePlanComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at NodeInjectorFactory.factory (ng:///CreatePlanComponent/ɵfac.js:4:47)
+	    at getNodeInjectable (node_modules/@angular/core/fesm2022/core.mjs:4447:44)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/subscription/plans-list/create-plan/create-plan.component.spec.ts:22:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 133 of 137[31m (25 FAILED)[39m (0 secs / 5.938 secs)
+[1A[2KERROR: [36m'NG0303: Can't bind to 'showPaginator' since it isn't a known property of 'hrm-table' (used in the 'FixedDeductionComponent' component template).
+1. If 'hrm-table' is an Angular component and it has the 'showPaginator' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'hrm-table' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 133 of 137[31m (25 FAILED)[39m (0 secs / 5.938 secs)
+ERROR: 'NG0303: Can't bind to 'showPaginator' since it isn't a known property of 'hrm-table' (used in the 'FixedDeductionComponent' component template).
+1. If 'hrm-table' is an Angular component and it has the 'showPaginator' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'hrm-table' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 134 of 137[31m (25 FAILED)[39m (0 secs / 5.985 secs)
+[1A[2KERROR: [36m'NG0304: 'app-lwf-slab' is not a known element (used in the 'LwfComponent' component template):
+1. If 'app-lwf-slab' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-lwf-slab' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 134 of 137[31m (25 FAILED)[39m (0 secs / 5.985 secs)
+ERROR: 'NG0304: 'app-lwf-slab' is not a known element (used in the 'LwfComponent' component template):
+1. If 'app-lwf-slab' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-lwf-slab' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'selectedRecord' since it isn't a known property of 'app-lwf-slab' (used in the 'LwfComponent' component template).
+1. If 'app-lwf-slab' is an Angular component and it has the 'selectedRecord' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-lwf-slab' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 134 of 137[31m (25 FAILED)[39m (0 secs / 5.985 secs)
+ERROR: 'NG0303: Can't bind to 'selectedRecord' since it isn't a known property of 'app-lwf-slab' (used in the 'LwfComponent' component template).
+1. If 'app-lwf-slab' is an Angular component and it has the 'selectedRecord' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-lwf-slab' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 135 of 137[31m (25 FAILED)[39m (0 secs / 6.018 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) PaymentsComponent should create FAILED[39m
+	NullInjectorError: R3InjectorError(Standalone[PaymentsComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	error properties: Object({ ngTempTokenPath: null, ngTokenPath: [ 'MatDialogRef', 'MatDialogRef', 'MatDialogRef' ] })
+	NullInjectorError: R3InjectorError(Standalone[PaymentsComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]: 
+	  NullInjectorError: No provider for MatDialogRef!
+	    at NullInjector.get (node_modules/@angular/core/fesm2022/core.mjs:5682:27)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at R3Injector.get (node_modules/@angular/core/fesm2022/core.mjs:6125:33)
+	    at ChainedInjector.get (node_modules/@angular/core/fesm2022/core.mjs:15427:36)
+	    at lookupTokenUsingModuleInjector (node_modules/@angular/core/fesm2022/core.mjs:4193:39)
+	    at getOrCreateInjectable (node_modules/@angular/core/fesm2022/core.mjs:4241:12)
+	    at ɵɵdirectiveInject (node_modules/@angular/core/fesm2022/core.mjs:12045:19)
+	    at ɵɵinject (node_modules/@angular/core/fesm2022/core.mjs:998:60)
+	    at inject (node_modules/@angular/core/fesm2022/core.mjs:1082:12)
+	Error: Expected undefined to be truthy.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/subscription/subscriptions-list/payments/payments.component.spec.ts:22:23)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 136 of 137[31m (26 FAILED)[39m (0 secs / 6.036 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 137 of 137[31m (26 FAILED)[39m (0 secs / 6.08 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 137 of 137[31m (26 FAILED)[39m (6.883 secs / 6.08 secs)
+[31mTOTAL: 26 FAILED, 111 SUCCESS[39m
+√ Browser application bundle generation complete.
+√ Browser application bundle generation complete.

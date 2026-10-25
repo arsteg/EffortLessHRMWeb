@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CandidateDataFieldComponent } from './candidate-data-field.component';
@@ -8,7 +9,7 @@ describe('CandidateDataFieldComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CandidateDataFieldComponent]
+      imports: [UiTestingModule, CandidateDataFieldComponent]
     })
     .compileComponents();
     

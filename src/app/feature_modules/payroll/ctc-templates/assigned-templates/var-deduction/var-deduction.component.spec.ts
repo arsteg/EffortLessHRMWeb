@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { VarDeductionComponent } from './var-deduction.component';
@@ -8,6 +9,8 @@ describe('VarDeductionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      imports: [UiTestingModule],
       declarations: [VarDeductionComponent]
     })
     .compileComponents();

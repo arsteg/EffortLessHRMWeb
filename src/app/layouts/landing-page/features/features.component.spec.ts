@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FeaturesComponent } from './features.component';
@@ -8,7 +9,9 @@ describe('FeaturesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FeaturesComponent]
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      declarations: [FeaturesComponent],
+      imports: [UiTestingModule]
     })
     .compileComponents();
     

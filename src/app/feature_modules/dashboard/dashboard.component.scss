@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 .densed-field {
-  @include mat.form-field-density(-5); 
+  @include mat.form-field-density(-5);
 }
 
 .subscription-box {
@@ -24,7 +24,7 @@
 }
 
 .chart-legend{
-    span { font-size: var(--size-10);}
+    span { font-size: var(--size-12);}
     h3 { font-size: var(--size-14);}
 }
 
@@ -46,7 +46,7 @@
   }
 
   .badge {
-    font-size: 11px;
+    font-size: 12px;
     padding: 5px 10px;
     font-weight: 600;
   }
@@ -169,7 +169,7 @@
     }
 
     small {
-      font-size: 9px;
+      font-size: 12px;
       display: block;
     }
   }
@@ -193,7 +193,7 @@
     }
 
     small {
-      font-size: 10px;
+      font-size: 12px;
     }
   }
 
@@ -201,9 +201,9 @@
     padding: 4px;
     text-align: center;
     vertical-align: middle;
-    width: 85px !important;
-    min-width: 85px !important;
-    max-width: 85px !important;
+    width: 112px !important;
+    min-width: 112px !important;
+    max-width: 112px !important;
     border: 1px solid #dee2e6;
     cursor: default;
     position: relative;
@@ -214,7 +214,7 @@
     }
 
     .cell-date {
-      font-size: 8px;
+      font-size: 12px;
       font-weight: 600;
       color: #6c757d;
       margin-bottom: 2px;
@@ -222,14 +222,14 @@
     }
 
     .badge {
-      font-size: 9px;
+      font-size: 12px;
       padding: 2px 6px;
       display: inline-block;
       transition: font-size 0.2s ease, padding 0.2s ease;
     }
 
     .time-info {
-      font-size: 8px;
+      font-size: 12px;
       line-height: 1.3;
       margin: 1px 0;
       white-space: nowrap;
@@ -254,7 +254,7 @@
         z-index: 100;
 
         .cell-date {
-          font-size: 10px;
+          font-size: 12px;
         }
 
         .badge {
@@ -277,7 +277,7 @@
         z-index: 100;
 
         .cell-date {
-          font-size: 10px;
+          font-size: 12px;
         }
 
         .badge {
@@ -331,16 +331,16 @@
 @media (max-width: 1200px) {
   .attendance-calendar-table {
     .attendance-cell {
-      min-width: 75px;
-      max-width: 75px;
+      min-width: 112px;
+      max-width: 112px;
       padding: 4px;
 
       .time-info {
-        font-size: 7px;
+        font-size: 12px;
       }
 
       &:hover .time-info {
-        font-size: 10px;
+        font-size: 12px;
       }
     }
   }
@@ -348,44 +348,44 @@
 
 @media (max-width: 768px) {
   .attendance-calendar-table {
-    font-size: 11px;
+    font-size: 12px;
 
     .employee-name-col {
       min-width: 100px;
       max-width: 100px;
 
       strong {
-        font-size: 11px;
+        font-size: 12px;
       }
 
       small {
-        font-size: 9px;
+        font-size: 12px;
       }
     }
 
     .attendance-cell {
-      min-width: 65px;
-      max-width: 65px;
+      min-width: 112px;
+      max-width: 112px;
       padding: 3px;
 
       .badge {
-        font-size: 8px;
+        font-size: 12px;
         padding: 1px 4px;
       }
 
       .time-info {
-        font-size: 7px;
+        font-size: 12px;
         line-height: 1.2;
       }
 
       &:hover {
         .badge {
-          font-size: 9px;
+          font-size: 12px;
           padding: 2px 6px;
         }
 
         .time-info {
-          font-size: 9px;
+          font-size: 12px;
           line-height: 1.4;
         }
       }
@@ -395,7 +395,7 @@
 
 // Monthly Attendance Table Styles (2 rows per employee, 15 days each)
 .attendance-calendar-table-monthly {
-  font-size: 11px;
+  font-size: 12px;
   border-collapse: separate;
   border-spacing: 0;
   overflow: visible;
@@ -419,12 +419,12 @@
     }
 
     small {
-      font-size: 9px;
+      font-size: 12px;
       display: block;
     }
 
     .badge {
-      font-size: 9px;
+      font-size: 12px;
       padding: 2px 6px;
       margin-top: 4px;
     }
@@ -444,12 +444,12 @@
     }
 
     &.day-header {
-      font-size: 11px;
+      font-size: 12px;
       padding: 8px 4px;
     }
 
     &.day-num-header {
-      font-size: 10px;
+      font-size: 12px;
       padding: 4px 2px;
       font-weight: 600;
       color: #495057;
@@ -460,9 +460,9 @@
     padding: 2px;
     text-align: center;
     vertical-align: middle;
-    width: 50px !important;
-    min-width: 50px !important;
-    max-width: 50px !important;
+    width: 112px !important;
+    min-width: 112px !important;
+    max-width: 112px !important;
     border: 1px solid #dee2e6;
     cursor: default;
     position: relative;
@@ -473,7 +473,7 @@
     }
 
     .cell-date-monthly {
-      font-size: 7px;
+      font-size: 12px;
       font-weight: 600;
       color: #6c757d;
       margin-bottom: 2px;
@@ -481,7 +481,7 @@
     }
 
     .badge {
-      font-size: 8px;
+      font-size: 12px;
       padding: 1px 5px;
       display: inline-block;
       font-weight: 600;
@@ -490,7 +490,7 @@
     }
 
     .time-info-mini {
-      font-size: 6px;
+      font-size: 12px;
       line-height: 1.2;
       margin: 0;
       white-space: nowrap;
@@ -516,16 +516,16 @@
         z-index: 100;
 
         .cell-date-monthly {
-          font-size: 9px;
+          font-size: 12px;
         }
 
         .badge {
-          font-size: 10px;
+          font-size: 12px;
           padding: 2px 6px;
         }
 
         .time-info-mini {
-          font-size: 9px;
+          font-size: 12px;
         }
       }
     }
@@ -539,16 +539,16 @@
         z-index: 100;
 
         .cell-date-monthly {
-          font-size: 9px;
+          font-size: 12px;
         }
 
         .badge {
-          font-size: 10px;
+          font-size: 12px;
           padding: 2px 6px;
         }
 
         .time-info-mini {
-          font-size: 9px;
+          font-size: 12px;
         }
       }
     }
@@ -599,26 +599,26 @@
 @media (max-width: 1400px) {
   .attendance-calendar-table-monthly {
     .attendance-cell-monthly {
-      min-width: 45px;
-      max-width: 45px;
+      min-width: 112px;
+      max-width: 112px;
       padding: 2px;
 
       .badge-mini {
-        font-size: 6px;
+        font-size: 12px;
         padding: 1px 3px;
       }
 
       .time-info-mini {
-        font-size: 5px;
+        font-size: 12px;
       }
 
       &:hover {
         .badge-mini {
-          font-size: 8px;
+          font-size: 12px;
         }
 
         .time-info-mini {
-          font-size: 8px;
+          font-size: 12px;
         }
       }
     }
@@ -627,7 +627,7 @@
 
 @media (max-width: 992px) {
   .attendance-calendar-table-monthly {
-    font-size: 10px;
+    font-size: 12px;
 
     .employee-name-col-monthly {
       min-width: 100px;
@@ -635,41 +635,41 @@
       padding: 6px 4px;
 
       strong {
-        font-size: 11px;
+        font-size: 12px;
       }
 
       small {
-        font-size: 8px;
+        font-size: 12px;
       }
 
       .badge {
-        font-size: 8px;
+        font-size: 12px;
         padding: 1px 4px;
       }
     }
 
     .attendance-cell-monthly {
-      min-width: 40px;
-      max-width: 40px;
+      min-width: 112px;
+      max-width: 112px;
       padding: 2px;
 
       .badge-mini {
-        font-size: 6px;
+        font-size: 12px;
         padding: 1px 2px;
       }
 
       .time-info-mini {
-        font-size: 5px;
+        font-size: 12px;
         line-height: 1.1;
       }
 
       &:hover {
         .badge-mini {
-          font-size: 7px;
+          font-size: 12px;
         }
 
         .time-info-mini {
-          font-size: 7px;
+          font-size: 12px;
           line-height: 1.3;
         }
       }
@@ -677,7 +677,7 @@
 
     thead th {
       &.day-num-header {
-        font-size: 9px;
+        font-size: 12px;
         padding: 3px 1px;
       }
     }
@@ -691,53 +691,53 @@
       max-width: 80px;
 
       strong {
-        font-size: 10px;
+        font-size: 12px;
       }
 
       small {
-        font-size: 7px;
+        font-size: 12px;
       }
 
       .badge {
-        font-size: 7px;
+        font-size: 12px;
         padding: 1px 3px;
       }
     }
 
     .attendance-cell-monthly {
-      min-width: 35px;
-      max-width: 35px;
+      min-width: 112px;
+      max-width: 112px;
       padding: 1px;
 
       .badge-mini {
-        font-size: 5px;
+        font-size: 12px;
         padding: 1px 2px;
       }
 
       .time-info-mini {
-        font-size: 4px;
+        font-size: 12px;
         line-height: 1.1;
       }
 
       &:hover {
         .badge-mini {
-          font-size: 6px;
+          font-size: 12px;
         }
 
         .time-info-mini {
-          font-size: 6px;
+          font-size: 12px;
         }
       }
     }
 
     thead th {
       &.day-header {
-        font-size: 10px;
+        font-size: 12px;
         padding: 6px 2px;
       }
 
       &.day-num-header {
-        font-size: 8px;
+        font-size: 12px;
         padding: 2px 1px;
       }
     }
@@ -773,7 +773,7 @@
 
       small {
         display: block;
-        font-size: 10px;
+        font-size: 12px;
         color: #6c757d;
         margin-top: 2px;
       }
@@ -785,12 +785,12 @@
         gap: 4px;
 
         .badge {
-          font-size: 10px;
+          font-size: 12px;
           padding: 3px 8px;
         }
 
         .text-muted {
-          font-size: 11px;
+          font-size: 12px;
           font-weight: 500;
         }
       }
@@ -805,7 +805,7 @@
 
         .day-label {
           text-align: center;
-          font-size: 10px;
+          font-size: 12px;
           font-weight: 600;
           color: #6c757d;
           padding: 4px 0;
@@ -823,7 +823,7 @@
           align-items: center;
           justify-content: center;
           border-radius: 4px;
-          font-size: 9px;
+          font-size: 12px;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.3s ease;
@@ -862,10 +862,10 @@
 
             &:hover {
               background-color: #a7f3d0;
-              transform: scale(1.15);
+              transform: none;
               z-index: 10;
               box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-              font-size: 11px;
+              font-size: 12px;
             }
           }
 
@@ -876,10 +876,10 @@
 
             &:hover {
               background-color: #fecaca;
-              transform: scale(1.15);
+              transform: none;
               z-index: 10;
               box-shadow: 0 4px 12px rgba(248, 113, 113, 0.3);
-              font-size: 11px;
+              font-size: 12px;
             }
           }
 
@@ -893,7 +893,7 @@
             color: #fff;
             padding: 8px 12px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 12px;
             white-space: pre-line;
             z-index: 100;
             min-width: 150px;
@@ -938,19 +938,19 @@
 
       .month-calendar {
         .calendar-header .day-label {
-          font-size: 9px;
+          font-size: 12px;
           padding: 3px 0;
         }
 
         .calendar-grid .day-cell {
-          font-size: 8px;
+          font-size: 12px;
 
           &:hover {
-            font-size: 10px;
+            font-size: 12px;
           }
 
           &:not(.empty):not(.future):hover::after {
-            font-size: 10px;
+            font-size: 12px;
             min-width: 130px;
             padding: 6px 10px;
           }
@@ -972,7 +972,7 @@
 
     &:hover {
       background-color: #e7f3ff;
-      transform: scale(1.02);
+      transform: none;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
@@ -996,15 +996,19 @@
 .checkout-missing {
   color: #dc3545 !important;
   font-weight: 600;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .time-info .checkout-missing,
 .time-info-mini .checkout-missing {
-  font-size: 8px;
+  font-size: 12px;
 }
 
 // For daily table view
 .table .checkout-missing {
-  font-size: 11px;
+  font-size: 12px;
 }
+
+:host { display: block; min-width: 0; }
+.card > .d-flex { flex-wrap: wrap; gap: 8px; }
+.card h2 { overflow-wrap: anywhere; }

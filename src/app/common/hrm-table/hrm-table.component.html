@@ -1,13 +1,13 @@
-<div class="row m-0 mt-1 g-0">
-    <div *ngIf="showSearch" class="col-md-3 col-12">
+<div class="table-toolbar mt-1">
+    <div *ngIf="showSearch" class="table-toolbar-search">
         <mat-form-field appearance="outline" *ngIf="showSearch">
             <mat-icon matPrefix class="pe-0">search</mat-icon>
-            <input matInput placeholder="Search" (keyup)="onSearch($event.target)" [value]="searchText" />
+            <input matInput placeholder="Search" aria-label="Search table" (keyup)="onSearch($event.target)" [value]="searchText" />
         </mat-form-field>
     </div>
 
-    <div class="offset-md-4 col-12" [ngClass]="'col-md-' + mdColumns" [class.pe-3]="mdColumns < 5">
-        <div class="d-md-flex justify-content-end align-center">
+    <div class="table-toolbar-actions">
+        <div class="table-toolbar-actions">
             <div *ngIf="showExport !== 'none'">
                 <button color="primary" class="btn btn-light d-flex align-items-center dropdown-toggle mb-4 me-2"
                     [matMenuTriggerFor]="menu">
@@ -19,7 +19,7 @@
                     <button mat-menu-item (click)="exportToPdf()">PDF</button>
                 </mat-menu>
             </div>
-        
+
             <div *ngIf="showUserfilter">
                 <mat-form-field appearance="outline">
                     <mat-label>Select User</mat-label>
@@ -37,7 +37,7 @@
 
 
 
-<div #table class="table-responsive mb-2">
+<div #table class="table-responsive mb-2" tabindex="0" role="region" aria-label="Table results">
     <table mat-table [dataSource]="pagedData" matSort (matSortChange)="onSort($event)" class="table hrm-table mb-0">
         @for(column of columns; track column){
         <ng-container [matColumnDef]="column.key">
@@ -45,7 +45,7 @@
                 [disabled]="column.sortable === false || column.isCheckbox || column.isAction">
                 @if (column.isCheckbox) {
                 <mat-checkbox (change)="toggleAllRows()" [checked]="isAllSelected()"
-                    [indeterminate]="isPartialSelected()" color="primary"></mat-checkbox>
+                    [indeterminate]="isPartialSelected()" color="primary" aria-label="Select all rows"></mat-checkbox>
                 } @else {
                 {{ column.name }}
                 }
@@ -57,13 +57,13 @@
                 @if(column.options?.length === 1){
                     @if(!(column.options[0]?.hideCondition && column.options[0]?.hideCondition(row))){
                         @switch(column.options[0].visibility){
-                            @case ('icon') { 
+                            @case ('icon') {
                                 <button mat-icon-button (click)="onAction(column.options[0], row)"
-                                    [class]="column.options[0].cssClass">
+                                    [class]="column.options[0].cssClass" [attr.aria-label]="column.options[0].label || column.options[0].icon">
                                     <mat-icon>{{column.options[0].icon}}</mat-icon>
                                 </button>
                             }
-                            @case ('label') { 
+                            @case ('label') {
                                 <button mat-stroked-button (click)="onAction(column.options[0], row)"
                                     [class]="column.options[0].cssClass">
                                     {{column.options[0].label}}
@@ -84,13 +84,13 @@
 
                 <!-- Multiple Actions: Show menu -->
                 @if(column.options?.length > 1){
-                <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+                <button mat-icon-button [matMenuTriggerFor]="actionMenu" aria-label="Row actions">
                     <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #actionMenu="matMenu">
                     @for(opt of column.options; track opt){
                     @if(!(opt?.hideCondition && opt.hideCondition(row))){
-                    <button mat-menu-item (click)="onAction(opt, row)" [class]="opt.cssClass">
+                    <button mat-menu-item (click)="onAction(opt, row)" [class]="opt.cssClass" [attr.aria-label]="opt.label || opt.icon">
                         @switch(opt.visibility){
                         @case ('icon') { <mat-icon>{{opt.icon}}</mat-icon> }
                         @case ('label') { <span>{{ opt.label }}</span> }
@@ -115,7 +115,7 @@
                 } @else if(column.isCheckbox){
 
                 <mat-checkbox (click)="$event.stopPropagation()" (change)="toggleRow(row)"
-                    [checked]="selection.isSelected(row)" color="primary"></mat-checkbox>
+                    [checked]="selection.isSelected(row)" color="primary" aria-label="Select row"></mat-checkbox>
 
                 } @else if(column.isImage){
                     <img [src]="row[column.key]" class="img-fluid" width="140"/>
@@ -138,8 +138,9 @@
     </table>
 
     @if(!pagedData?.length){
-    <div class="border border-top-0 text-center">
+    <div class="table-empty text-center" role="status">
         <img src="./assets/images/empty-data.svg" width="200px" alt="">
+        <p>No records to display</p>
     </div>
 }
 </div>

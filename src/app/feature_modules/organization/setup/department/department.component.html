@@ -23,7 +23,7 @@
     <h1 mat-dialog-title>
       {{ (isEdit ? 'organization.department.modal.update' : 'organization.department.modal.add') | translate }}
     </h1>
-    <button mat-icon-button (click)="onClose()" class="me-4">
+    <button mat-icon-button (click)="onClose()" class="me-4" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -71,7 +71,7 @@
     <h1 mat-dialog-title>
       {{ 'organization.department.sub_department.assign' | translate }}
     </h1>
-    <button mat-icon-button (click)="onClose()" class="me-4">
+    <button mat-icon-button (click)="onClose()" class="me-4" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>

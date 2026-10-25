@@ -6,7 +6,7 @@
   resize: both;
   overflow-y: auto;
   overflow-x: hidden;
-  min-width: 300px;
+  min-width: min(300px, 100%);
   min-height: 200px;
   max-height: 100vh;
   background: #ffffff;
@@ -190,7 +190,7 @@
 
 .screens-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: 15px;
   width: 100%;
   max-width: 100%;

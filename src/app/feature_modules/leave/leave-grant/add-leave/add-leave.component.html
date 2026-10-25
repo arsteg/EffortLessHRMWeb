@@ -2,7 +2,7 @@
     <h1 mat-dialog-title>
       {{ 'leave.addLeaveGrantTitle' | translate }}
     </h1>
-    <button mat-icon-button (click)="closeModal()" class="me-4" aria-label="{{ 'leave.closeButtonAriaLabel' | translate }}">
+    <button mat-icon-button (click)="closeModal()" class="me-4" [attr.aria-label]="'leave.closeButtonAriaLabel' | translate">
       <mat-icon>close</mat-icon>
     </button>
 </div>
@@ -46,7 +46,7 @@
         <div class="form-group col-md-12">
             <mat-form-field class="w-100">
             <mat-label>{{ 'leave.effectiveDateLabel' | translate }}</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="date" aria-label="{{ 'leave.dateInputAriaLabel' | translate }}">
+            <input matInput [matDatepicker]="picker" formControlName="date" [attr.aria-label]="'leave.dateInputAriaLabel' | translate">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
             <mat-error *ngIf="leaveGrant.get('date')?.invalid && leaveGrant.get('date')?.touched">
@@ -60,7 +60,7 @@
         <div class="form-group col-md-12">
             <mat-form-field class="w-100">
             <mat-label>{{ 'leave.comment' | translate }}</mat-label>
-            <textarea matInput formControlName="comment" rows="3" aria-label="{{ 'leave.commentAriaLabel' | translate }}"></textarea>
+            <textarea matInput formControlName="comment" rows="3" [attr.aria-label]="'leave.commentAriaLabel' | translate"></textarea>
             </mat-form-field>
         </div>
         </div>

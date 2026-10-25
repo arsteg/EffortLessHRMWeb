@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ApplicationStatusComponent } from './application-status.component';
@@ -8,7 +9,7 @@ describe('ApplicationStatusComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ApplicationStatusComponent]
+      imports: [UiTestingModule, ApplicationStatusComponent]
     })
     .compileComponents();
     

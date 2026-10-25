@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PermissionModelComponent } from './permission-model.component';
@@ -8,6 +9,8 @@ describe('PermissionModelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      imports: [UiTestingModule],
       declarations: [ PermissionModelComponent ]
     })
     .compileComponents();

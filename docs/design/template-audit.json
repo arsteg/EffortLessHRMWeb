@@ -1,0 +1,2666 @@
+[
+  {
+    "file": "src/app/app.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/chat/chatbot/chatbot.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/common/crud/crud.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/common/form-controls/form-controls.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/common/hrm-table/hrm-table.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/common/language-selector/language-selector.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/common/subordinateSelection/subordinateSelection.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/enquiry/test-enquiry/test-enquiry.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/alerts/alerts.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/alerts/event-notification/event-notification.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/alerts/event-notification-viewer/event-notification-viewer.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/alerts/notification-type/notification-type.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/approvals/approvals.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/approvals/productivityAppsApproval/productivityAppsApproval.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance/attendance-template/attendance-template.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance/attendance-template/general-template-settings/general-template-settings.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance/attendance-template-assignment/attendance-template-assignment.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance/generalSettings/generalSettings.component.html",
+    "parseErrors": [],
+    "forms": 3,
+    "tables": 2,
+    "clickOnlyNonButtons": 2,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance/on-duty-template-assignment/on-duty-template-assignment.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance/on-duty-templates/on-duty-templates.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance/overtime/overtime.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance/shift/shift.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance/shift-assignments/shift-assignments.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance-management/attendance-management.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance-process/attendance-process.component.html",
+    "parseErrors": [],
+    "forms": 3,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance-records/attendance-records.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance-records/employee-attendance-history/employee-attendance-history.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance-records/my-attendance-records/my-attendance-records.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance-records/upload-records/upload-records.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/attendance-settings/attendance-management-settings.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/date-range/date-range.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/on-duty-records/add-on-duty/add-on-duty.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/on-duty-records/approved/approved.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/on-duty-records/cancelled/cancelled.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/on-duty-records/on-duty-records.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/on-duty-records/pending/pending.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/on-duty-records/rejected/rejected.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/on-duty-records/show-on-duty/show-on-duty.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 2,
+    "clickOnlyNonButtons": 6,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/on-duty-records/update-on-duty/update-on-duty.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/on-duty-records/view-on-duty/view-on-duty.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/overtime-records/overtime-records.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/roster-records/roster-records.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/attendance/roster-records/upload-roster-record/upload-roster-record.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/calendar/admin-calendar/admin-calendar.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/calendar/user-calendar/user-calendar.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/dashboard/attendance-overview/attendance-overview.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 3,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/dashboard/dashboard.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/dashboard/user-dashboard/user-dashboard.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/add-expense/add-expense.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/advance-reports/add-advance-report/add-advance-report.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/advance-reports/advance-approved/advance-approved.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/advance-reports/advance-cancelled/advance-cancelled.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/advance-reports/advance-pending/advance-pending.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/advance-reports/advance-rejected/advance-rejected.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/advance-reports/advance-reports.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/advance-reports/show-report/show-report.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/advance-reports/status-update/status-update.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/advance-reports/view-reports/view-reports.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/expense-reports/approved/approved.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/expense-reports/cancelled/cancelled.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/expense-reports/create-report/create-report.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 2,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/expense-reports/expense-reports.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/expense-reports/pending/pending.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/expense-reports/rejected/rejected.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/expense-reports/view-expense-report-expenses/view-expense-report-expenses.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/expense-reports/view-report/view-report.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/expenses.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/general-information/applicable-expense-settings/applicable-expense-settings.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/general-information/general-information.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/general-information/supervisors/supervisors.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/my-expense/show-my-expenses/show-my-expenses.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/settings/advance-categories/advance-categories.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/settings/advance-template-assignment/advance-template-assignment.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/settings/advance-templates/advance-templates.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/settings/expense-category-settings/expense-category-settings.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/settings/expense-general-settings/expense-general-settings.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/settings/expenses-categories/expenses-categories.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/settings/expenses-template-assignment/expenses-template-assignment.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/settings/expenses-templates/expenses-templates.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/settings/settings.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/team-expense/approved-team-expenses/approved-team-expenses.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/team-expense/pending-team-expenses/pending-team-expenses.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/team-expense/rejected-team-expenses/rejected-team-expenses.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/team-expense/show-team-expenses/show-team-expenses.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/expenses/team-expense/team-expense.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/feedback/barcode-generator/barcode-list.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/feedback/feedback-field-list/feedback-field-list.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/feedback/feedback-submission/feedback-submission.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/feedback/feedback-viewer/feedback-viewer.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 3,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/helpdesk/help-desk/help-desk.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/helpdesk/helpdesk-dashboard/helpdesk-dashboard.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/helpdesk/update-helpdesk-task/update-helpdesk-task.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/interview-process/application-status/application-status.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/interview-process/candidate-data-field/candidate-data-field.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/interview-process/candidate-feedback/candidate-feedback.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/interview-process/candidates/candidates.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/interview-process/feedback-field/feedback-field.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/interview-process/interview-process-main/interview-process-main.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/interview-process/schedule-interview/editInterviewerDialog/editInterviewerDialogComponent.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/interview-process/schedule-interview/schedule-interview.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/general-information/general/general.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/general-information/holidays/holidays.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/general-information/supervisors/supervisors.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-application/add-application/add-application.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-application/approved/approved-application.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-application/cancelled/cancelled-application.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-application/leave-application.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-application/pending/pending-application.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-application/rejected/rejected-application.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-application/show-application/show-application.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-application/update-application/update-application.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-application/view-application/view-application.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-balance/leave-balance.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-grant/add-leave/add-leave.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-grant/approved/approved.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-grant/leave-grant.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-grant/pending/pending.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-grant/rejected/rejected.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-grant/show-status/show-status.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-grant/update-status/update-status.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-grant/view-leave/view-leave.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-setting/general-settings/general-settings.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-setting/leave-assignment/leave-assignment.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-setting/leave-category/leave-category.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-setting/leave-setting.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-setting/leave-template/add-category-leave/add-category-leave.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-setting/leave-template/create-leave/create-leave.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave-setting/leave-template/leave-template.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/leave.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/short-leave/add-short-leave/add-short-leave.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/short-leave/approved-short-leave/approved-short-leave.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/short-leave/cancelled-short-leave/cancelled-short-leave.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/short-leave/pending-short-leave/pending-short-leave.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/short-leave/rejected-short-leave/rejected-short-leave.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/short-leave/short-leave.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/short-leave/show-short-leave/show-short-leave.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 4,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/short-leave/update-short-leave/update-short-leave.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/leave/short-leave/view-short-leave/view-short-leave.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/logs/log.component/log.component.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/email-template/email-template.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/email-template-type/email-template-type.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/manage/manage.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/permissonModel/permission-model/permission-model.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/Project/project-list/project-list.component.html",
+    "parseErrors": [],
+    "forms": 5,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/teammembers/teammembers.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/employee-settings/employee-profile/employee-profile.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/employee-settings/employee-settings.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/employee-settings/employment-details/employment-details.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/employee-settings/loans-advances/loans-advances.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/employee-settings/loans-advances/view-loans-advances/view-loans-advances.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/employee-settings/salary-details/add-salary-details/add-salary-details.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/employee-settings/salary-details/salary-details.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/employee-settings/statutory-details/statutory-details.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/user-list/user-list.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/user-profile/user-form-control/user-form-control.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manage/users/user-profile/user-profile.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manual-time/addManualTime/add-manual-time.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manual-time/request-manual-time/request-manual-time.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/manual-time/requestApproval/requestApproval.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/AssetsManagement/asset/asset.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/AssetsManagement/asset-reports/asset-reports.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/AssetsManagement/assetAssetManager/asset.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/AssetsManagement/assetAssignment/assetAssignment.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/AssetsManagement/assetStatusComponent/assetStatus.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/AssetsManagement/user-asset-assignment/user-asset-assignment.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/AssetsManagement/vendorAssets/vendorAssets..component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/AssetsManagement/vendorComponent/vendor.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/documentManager/companyPolicy/companyPolicyDocument.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/documentManager/document/document.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/documentManager/document/documentCategory/documentCategory.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/documentManager/document/userDocument/userDocument.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/documentManager/documentManager.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/documentManager/template/documentTemplate.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/employee-fields/employee-fields.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/employee-tree/employee-tree.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/organization/organization.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/band/band.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/department/department.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/designation/designation.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/flexi-holidays/flexi-holidays.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/holidays/holidays.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/location/location.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/profile/profile.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/setup.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/signatory-details/signatory-details.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/sub-department/sub-department.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/tax-slab/tax-slab.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/organization/setup/zone/zone.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/ctc-templates/assigned-templates/assigned-templates.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/ctc-templates/assigned-templates/fixed-allowance/fixed-allowance.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/ctc-templates/assigned-templates/fixed-deduction/fixed-deduction.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/ctc-templates/assigned-templates/var-allowance/var-allowance.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/ctc-templates/assigned-templates/var-deduction/var-deduction.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/ctc-templates/ctc-templates.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/ctc-templates/update-ctctemplate/update-ctctemplate.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/fnf-payslips/fnf-payslips.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/fnf-payslips/generated-fnf-payslips/generated-fnf-payslips.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/lop-reversal/lop-reversal.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/payroll.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/payslips/generate-payslips/generate-payslips.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/payslips/payslips.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-history/payroll-history.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/payroll-steps.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/payroll-user-list/payroll-user-list.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/step-1/step-1.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 3,
+    "clickOnlyNonButtons": 3,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/step-2/step-2.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/step-3/step-3.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/step-4/step-4.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/step-5/step-5.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/step-6/step-6.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/step-7/step-7.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/step-8/step-8.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/step-9/step-9.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/payroll-steps/step-9/view-payslip/view-payslip.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/fnf-users/fnf-users.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/step1/step1.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/step2/step2.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/step3/step3.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/step4/step4.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/step5/step5.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/step6/step6.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/step7/step7.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/step8/step8.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/step9/step9.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/fnf-steps/step9/view-fnf-payslip/view-fnf-payslip.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-fnf-payroll/run-fnf-payroll.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/run-payroll/run-payroll.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-allowance/fixed-allowance.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/esic/ceiling-amount/ceiling-amount.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/esic/contribution/contribution.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/esic/esic.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 2,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/fixed-contribution.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/lwf/deduction/deduction.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/lwf/lwf-slab/lwf-slab.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/lwf/lwf.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 2,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/pt/eligible-states/configure-state/configure-state.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/pt/eligible-states/configure-state/update-state/update-state.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/pt/eligible-states/eligible-states.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/pt/pt-deduction/pt-deduction.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/pt/pt-slab/pt-slab.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-contribution/pt/pt.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/fixed-deduction/fixed-deduction.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/flexi-benefits/flexi-benefits.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/general-settings/general-settings.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/loans-advances/loans-advances.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/pf-charges/pf-charges.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/settings.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/variable-allowance/variable-allowance.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/payroll/settings/variable-deduction/variable-deduction.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/permissions/permission-dialog/permission-dialog.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/permissions/permissions/permissions.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 3,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/permissions/role-dialog/role-dialog.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/permissions/role-permission-dialog/role-permission-dialog.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/permissions/user-role-dialog/user-role-dialog.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/realtime/live-screen/live-screen.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/realtime/realtime.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/reports/activity-description/activity-description.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/reports/AI-Reporting/ai-reports/ai-reports.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/reports/app-and-website-usage/app-and-website-usage.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/reports/browserHistory/browserHistory.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/reports/leave-report/leave-report.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 3,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/reports/productivity-report/productivity-report.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/reports/reports.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 10,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/reports/timeline/timeline-management/timeline-management/timeline-management.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 2,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/reports/timeline/timeline.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 5,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/role-permission/role-permission/role-permission.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/roles/roles/roles.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/screenshots/screenshots/screenshots.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/separation/resignation/resignation.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/separation/separation.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/separation/termination/termination.component.html",
+    "parseErrors": [],
+    "forms": 3,
+    "tables": 2,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/settings/app-website-settings/app-website-settings.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 2,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/settings/features-settings/features-settings.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/settings/generic-settings/generic-settings.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/settings/leave-settings/leave-settings.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/settings/profile-settings/profile-settings.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/settings/settings.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/settings/userPreferences/userPreferences.Component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/settings/workspace-settings/workspace-settings.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/subscription/plans/plans.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/subscription/plans-list/create-plan/create-plan.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/subscription/plans-list/plans-list.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/subscription/subscriptions/subscriptions.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/subscription/subscriptions-list/confirm-cancel/confirm-cancel.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/subscription/subscriptions-list/payments/payments.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/subscription/subscriptions-list/plan-details/plan-details.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/subscription/subscriptions-list/subscriptions-list.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/tax/edit-tax/edit-tax.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/tax/edit-tax/rent-information/rent-information.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 1,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/tax/edit-tax/tax-components/tax-components.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/tax/tax-calculator/tax-calculator.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 4,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/tax/tax.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/tax-component-by-section/tax-component-by-section.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/tax-declaration/tax-declaration.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 2,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/tax-declaration-by-company/tax-declaration-by-company.component.html",
+    "parseErrors": [],
+    "forms": 5,
+    "tables": 3,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/tax-section/tax-section.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/taxation.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/taxation/user-tax-declaration/user-tax-declaration.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/timesheets/admin-timesheet/admin-timesheet.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/timesheets/user-timesheet/user-timesheet.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/feature_modules/view-live-screen/view-live-screen/view-live-screen.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/home/header/header.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/home/home.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/home/notification/notification-details/notification-details.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/home/notification/notification.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/home/sidebar/sidebar.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/landing-page/about-us/about-us.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/landing-page/features/features.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/landing-page/footer/footer.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/landing-page/hero/hero.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/landing-page/hrm-features/hrm-features.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/landing-page/landing-page.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/landing-page/landing-plans/landing-plans.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/landing-page/navbar/navbar.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/landing-page/trust/trust.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/landing-page/workspace/workspace.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/main/main.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 6,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/layouts/subscription/subscription.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/login/change-password/change-password.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/login/forgot-password/forgot-password.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/login/login.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/login/register/register.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/login/reset-password/reset-password.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/pagination/pagination.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 4,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/profile/profile.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/tasks/confirmation-dialog/confirmation-dialog.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/tasks/edit-task/edit-task.component.html",
+    "parseErrors": [],
+    "forms": 2,
+    "tables": 0,
+    "clickOnlyNonButtons": 8,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/tasks/subtask/subtask.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 0,
+    "clickOnlyNonButtons": 3,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/tasks/task-comment/task-comment.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/tasks/task-comment-list/task-comment-list.component.html",
+    "parseErrors": [],
+    "forms": 0,
+    "tables": 0,
+    "clickOnlyNonButtons": 1,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/tasks/task.tag/tag.component.html",
+    "parseErrors": [],
+    "forms": 1,
+    "tables": 1,
+    "clickOnlyNonButtons": 0,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  },
+  {
+    "file": "src/app/tasks/tasks.component.html",
+    "parseErrors": [],
+    "forms": 5,
+    "tables": 1,
+    "clickOnlyNonButtons": 6,
+    "browserReview": "See template-inventory.csv; parser coverage is not visual or workflow validation."
+  }
+]

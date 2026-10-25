@@ -7,8 +7,7 @@
     <mat-form-field appearance="outline">
       <mat-label>{{ 'reports.timeline.select_project' | translate }}</mat-label>
       <mat-select multiple [(ngModel)]="selectedProject">
-        <mat-option *ngFor="let project of projectList" [value]="project?.id" (click)="filterData()"
-          [selected]="selectedProject?.includes(project?.id)">
+        <mat-option *ngFor="let project of projectList" [value]="project?.id" (click)="filterData()">
           {{project?.projectName | titlecase}}
         </mat-option>
       </mat-select>
@@ -81,17 +80,17 @@
 <table class="hrm-table" id="timeSheet" #timeSheet>
   <thead>
     <tr>
-      <th class="pe-lg-0 pe-5" scope="col" *ngIf="showMembersColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
+      <th class="pe-lg-0 pe-5" scope="col" *ngIf="showMembersColumn" [appSort]="timeline" attr.data-order="{{ sortOrder }}"
         data-name="logs" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
         {{ 'reports.timeline.users' | translate }}&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
       </th>
 
-      <th class="pe-lg-0 pe-5" scope="col" *ngIf="showProjectsColumn" [appSort]="timeline" data-order="{{ sortOrder }}"
+      <th class="pe-lg-0 pe-5" scope="col" *ngIf="showProjectsColumn" [appSort]="timeline" attr.data-order="{{ sortOrder }}"
         data-name="logs" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
         {{ 'reports.timeline.projects' | translate }}&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
       </th>
 
-      <th class="pe-lg-0 pe-5" scope="col" [appSort]="timeline" data-order="{{ sortOrder }}" data-name="logs"
+      <th class="pe-lg-0 pe-5" scope="col" [appSort]="timeline" attr.data-order="{{ sortOrder }}" data-name="logs"
         (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
         {{ 'reports.timeline.time' | translate }}&nbsp;<i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
       </th>

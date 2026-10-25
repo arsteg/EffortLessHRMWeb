@@ -1,6 +1,6 @@
-<div class="chat-container">
-    <h2 class="chat-header m-0">Effortless Chatbot</h2>
-    <div class="chat-messages" #chatMessages>
+<section class="chat-container" aria-labelledby="chat-heading">
+    <h2 id="chat-heading" class="chat-header m-0">Effortless Chatbot</h2>
+    <div class="chat-messages" #chatMessages role="log" aria-live="polite" aria-relevant="additions text">
         <div *ngFor="let message of messages" [ngClass]="{'bot': message.sender === 'bot', 'user': message.sender === 'user'}" class="message">
             <div class="message-bubble">
                 <div *ngIf="message.text">{{ message.text }}</div>
@@ -17,17 +17,18 @@
         <input 
             type="text" 
             placeholder="Type your message..." 
+            aria-label="Message"
             #messageInput 
             (keydown)="onKeyDown($event, messageInput.value)"
         >
-        <button mat-icon-button color="primary" (click)="sendMessage(messageInput.value)" [disabled]="isLoading" matTooltip="Send">
+        <button type="button" mat-icon-button color="primary" (click)="sendMessage(messageInput.value)" [disabled]="isLoading" matTooltip="Send" aria-label="Send message">
             <mat-icon>send</mat-icon>
         </button>
-        <button mat-icon-button color="primary" (click)="toggleVoiceInput(messageInput)" [disabled]="isLoading" matTooltip="Voice Input">
+        <button type="button" mat-icon-button color="primary" (click)="toggleVoiceInput(messageInput)" [disabled]="isLoading" matTooltip="Voice Input" [attr.aria-label]="isRecording ? 'Stop voice input' : 'Start voice input'" [attr.aria-pressed]="isRecording">
             <mat-icon>{{ isRecording ? 'stop_circle' : 'mic' }}</mat-icon>
         </button>
     </div>
-</div>
+</section>
 
 
 <!-- <div class="chat-messages" #chatMessages>

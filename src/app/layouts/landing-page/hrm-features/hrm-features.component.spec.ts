@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HrmFeaturesComponent } from './hrm-features.component';
@@ -8,7 +9,9 @@ describe('HrmFeaturesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HrmFeaturesComponent]
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      declarations: [HrmFeaturesComponent],
+      imports: [UiTestingModule]
     })
     .compileComponents();
     

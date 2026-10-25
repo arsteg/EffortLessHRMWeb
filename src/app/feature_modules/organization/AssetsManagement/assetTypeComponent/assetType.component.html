@@ -1,9 +1,13 @@
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 py-2">
+  <h2 class="contentHeading m-0">Total Asset Types: {{ assetTypes?.length }}</h2>
+  <button type="button" mat-flat-button color="primary" (click)="onAddAssetType()">Add Asset Type</button>
+</div>
 <div class="row me-0 py-2">
-  <div class="col-md-6 col-12">
+  <div [ngClass]="isEdit === null ? 'col-12' : 'col-xl-6 col-12'">
     <hrm-table [data]="filteredAssetTypes" [columns]="columns" [showExport]="'none'" [showSearch]="true"
       (actionClicked)="onActionClick($event)"></hrm-table>
   </div>
-  <div class="col-md-6 col-12 border-start">
+  <div *ngIf="isEdit !== null" class="col-xl-6 col-12 border-start">
     <h2 class="contentHeading p-2">{{isEdit?'Edit Asset Type':'Add Asset Type'}}</h2>
     <form [formGroup]="assetTypeForm" (ngSubmit)="createAssetType()" class="me-3">
       <div class="form-group">
@@ -34,7 +38,7 @@
         <fieldset style="border: 2px solid #ccc; padding: 10px; border-radius: 8px; margin-top: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
             <legend style="font-size: 1.2em; font-weight: bold; color: #333; padding: 0 5px;">Fields</legend>
-            <button mat-flat-button color="primary" class="add-attribute-button" (click)="addNewCustomAttribute()">
+            <button type="button" aria-label="Add custom attribute" mat-flat-button color="primary" class="add-attribute-button" (click)="addNewCustomAttribute()">
               <mat-icon>add</mat-icon>
             </button>
           </div>
@@ -52,7 +56,7 @@
             <tbody>
               <tr *ngFor="let customAttribute of customAttributes.controls; let i = index" [formGroupName]="i">
                 <td style="padding: 8px;">
-                  <input type="text" class="form-control" formControlName="attributeName" required maxlength="50">
+                  <input type="text" class="form-control" formControlName="attributeName" aria-label="Attribute name" required maxlength="50">
                   <div
                     *ngIf="customAttribute.get('attributeName').touched && customAttribute.get('attributeName').hasError('required')"
                     class="text-danger">
@@ -68,7 +72,7 @@
                   </div>
                 </td>
                 <td style="padding: 8px;">
-                  <select class="form-control" formControlName="dataType">
+                  <select class="form-control" formControlName="dataType" aria-label="Data type">
                     <option value="string">String</option>
                     <option value="number">Number</option>
                     <option value="date">Date</option>
@@ -76,7 +80,7 @@
                   </select>
                 </td>
                 <td style="text-align: center; padding: 8px;">
-                  <input type="checkbox" class="form-check-input" formControlName="isRequired">
+                  <input type="checkbox" class="form-check-input" formControlName="isRequired" aria-label="Required attribute">
                 </td>
                 <td style="text-align: right; padding: 8px;">
                   <div class="d-flex justify-content-end gap-2">
@@ -114,4 +118,4 @@
       </div>
     </form>
   </div>
-</div>
+</div> -->

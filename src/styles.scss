@@ -1,4 +1,5 @@
 @use 'app/styles/theme.scss';
+@use 'app/styles/tokens';
 @import '~quill/dist/quill.snow.css';
 
 :root {
@@ -20,7 +21,7 @@
   --light-red: #fce7e7;
   --green: #00b69b;
   --light-green: #e6f8f5;
-  --primary: var(--orange-60);
+  --primary: var(--hrm-action);
   --bs-primary: var(--orange-60);
   --bs-primary-rgb: 228, 113, 18;
   --bs-dark-rgb: 14, 35, 50;
@@ -428,9 +429,7 @@ select {
 }
 
 .common:hover {
-  transform: scale(1.01);
-  background: #edf5fe !important;
-  color: blue
+  border-color: var(--hrm-control-border);
 }
 
 .comment-btn {
@@ -630,7 +629,7 @@ select {
 }
 
 .addBtn {
-  background-color: #76bc21 !important;
+  background-color: var(--hrm-accent) !important;
   color: white !important;
 }
 
@@ -698,15 +697,15 @@ button.active {
 }
 
 .btn-outline-primary {
-  color: #76bc21 !important;
+  color: var(--hrm-accent) !important;
   margin: 0 3px 0 3px;
-  border: none !important;
+  border: 1px solid var(--hrm-accent) !important;
 }
 
 .btn-outline-primary:hover {
-  color: #76bc21 !important;
-  background-color: white !important;
-  border: 1px solid #76bc21 !important;
+  color: var(--hrm-accent) !important;
+  background-color: #f3f8ee !important;
+  border: 1px solid var(--hrm-accent) !important;
 }
 
 .modal-content {
@@ -777,12 +776,12 @@ option:hover {
 
 
 .nav-link.activeTab {
-  background-color: #ff7b1d !important;
+  background-color: var(--hrm-action) !important;
   color: #fff !important;
 }
 
 .nav-tabs .nav-link.active {
-  background-color: #ff7b1d !important;
+  background-color: var(--hrm-action) !important;
   color: #fff !important;
 }
 
@@ -842,3 +841,5 @@ option:hover {
 .details-attach-file{
   cursor: pointer;
 }
+
+@import 'app/styles/workspace';

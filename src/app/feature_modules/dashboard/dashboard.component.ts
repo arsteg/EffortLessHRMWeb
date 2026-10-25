@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ViewEncapsulation, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, ViewEncapsulation, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CommonService } from 'src/app/_services/common.Service';
 import { ManageTeamService } from 'src/app/_services/manage-team.service';
 import { TimeLogService } from 'src/app/_services/timeLogService';
@@ -29,6 +29,7 @@ import { PreferenceKeys } from 'src/app/constants/preference-keys.constant';
   encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent extends StatefulComponent implements OnInit, OnDestroy {
+  private readonly viewChangeDetector = inject(ChangeDetectorRef);
   @ViewChild('timeSpentCard', { static: false }) timeSpentCard: ElementRef;
   timeSpentCardHeight: number = 400;
 
@@ -121,6 +122,8 @@ export class DashboardComponent extends StatefulComponent implements OnInit, OnD
       this.styles.getPropertyValue('--red')
     ];
     this.timeSpentCardHeight = this.timeSpentCard?.nativeElement?.offsetHeight - 108;
+    // Commit dimensions measured after view creation before the development check.
+    this.viewChangeDetector.detectChanges();
   }
 
   override ngOnInit(): void {

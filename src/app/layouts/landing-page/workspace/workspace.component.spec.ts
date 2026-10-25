@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WorkspaceComponent } from './workspace.component';
@@ -8,7 +9,9 @@ describe('WorkspaceComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WorkspaceComponent]
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      declarations: [WorkspaceComponent],
+      imports: [UiTestingModule]
     })
     .compileComponents();
     

@@ -1,3 +1,5 @@
+import { QuillModule } from 'ngx-quill';
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { EmailTemplateComponent } from './email-template.component';
@@ -8,6 +10,8 @@ describe('EmailTemplateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      imports: [UiTestingModule, QuillModule.forRoot()],
       declarations: [ EmailTemplateComponent ]
     })
     .compileComponents();

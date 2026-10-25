@@ -2,7 +2,7 @@
   scroll-behavior: smooth;
 }
 
-section {
+.landing-page section {
   padding: 0 var(--size-20);
 }
 

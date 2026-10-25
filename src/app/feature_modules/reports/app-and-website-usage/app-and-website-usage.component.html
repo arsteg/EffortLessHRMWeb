@@ -3,8 +3,7 @@
         <mat-form-field appearance="outline" class="w-100">
             <mat-label>{{ 'reports.website.selectUser' | translate }}</mat-label>
             <mat-select multiple [(ngModel)]="selectedUser" (selectionChange)="filterData()">
-            <mat-option *ngFor="let member of members" [value]="member.id"
-                        [selected]="selectedUser?.includes(member?.id)">
+            <mat-option *ngFor="let member of members" [value]="member.id">
                 {{ member.name | titlecase }}
             </mat-option>
             </mat-select>
@@ -15,8 +14,7 @@
         <mat-form-field appearance="outline" class="w-100">
             <mat-label>{{ 'reports.website.selectProject' | translate }}</mat-label>
             <mat-select multiple [(ngModel)]="selectedProject" (selectionChange)="filterData()">
-            <mat-option *ngFor="let project of projectList" [value]="project?.id"
-                        [selected]="selectedProject?.includes(project?.id)">
+            <mat-option *ngFor="let project of projectList" [value]="project?.id">
                 {{ project?.projectName | titlecase }}
             </mat-option>
             </mat-select>

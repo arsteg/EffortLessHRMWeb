@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, inject, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { ToastrService } from 'ngx-toastr';
@@ -17,6 +17,7 @@ import { LegendPosition, Color, ScaleType } from '@swimlane/ngx-charts';
   styleUrls: ['./user-dashboard.component.scss']
 })
 export class UserDashboardComponent implements OnInit {
+  private readonly viewChangeDetector = inject(ChangeDetectorRef);
   @ViewChild('timeSpentCard', { static: false }) timeSpentCard: ElementRef;
   timeSpentCardHeight: number =  400;
   selectedManager: any;
@@ -69,6 +70,8 @@ export class UserDashboardComponent implements OnInit {
       this.styles.getPropertyValue('--red')
     ];
     this.timeSpentCardHeight = this.timeSpentCard?.nativeElement?.offsetHeight - 86;
+    // Commit dimensions measured after view creation before the development check.
+    this.viewChangeDetector.detectChanges();
   }
 
   ngOnInit(): void {
