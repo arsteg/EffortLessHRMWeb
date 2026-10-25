@@ -2,7 +2,16 @@
 
 ## Status
 
-Implemented a shared visual refresh and targeted screen improvements in the existing Angular application. **This is not a completed page-by-page product sign-off.** Authenticated screens still need visual and interaction testing with safe role accounts. The user explicitly chose source review and public screens rather than providing a test session.
+Implemented a shared visual refresh and targeted screen improvements in the existing Angular application. **This is not a completed page-by-page product sign-off.** Authenticated screens still need visual and interaction testing with safe role accounts. The local API is now reachable and the user has authorized use of the existing local test admin. The browser available to this chat is logged out; its authenticated test session is still pending.
+
+### Local environment recheck
+
+- Read-only requests to `http://localhost:8080/api/v1/userPreferences/structure` and `/api/v1/common/countrylist` returned HTTP 200 JSON.
+- CORS allows `http://localhost:4200` with credentials enabled.
+- An unauthenticated GET to `/api/v1/users/` returned HTTP 401 with the expected login-required message.
+- The chat browser can inspect the running frontend at `http://localhost:4200/#/login`. Chrome's other session is not shared with this browser.
+- API root `/api/v1` returns HTTP 500 because the `welcome` view is missing; the tested JSON endpoints respond successfully. GET `/api/v1/users/me` is not a valid route (the source defines POST), so its 404 is not treated as an API defect.
+- No credentials, tokens, or employee data were copied into this report. No HR data was changed by these checks. Earlier statements about an unavailable backend describe the earlier testing phase, not current connectivity.
 
 ## Direction and references
 
@@ -35,7 +44,7 @@ Research was limited to public product content and documentation, not authentica
 - Improved public feedback form width, dynamic field names and keyboard rating controls; removed helpdesk toolbar overlap and raised task-count text from 9px to 12px.
 - Resolved five externally introduced asset-management merge conflicts at the user's request, preserving current validation/custom fields and incoming report/panel behavior. No unmerged files remain.
 
-The redesign leaves routes, dependencies, services, calculations, permissions and API contracts unchanged. Test TypeScript was repaired. Production TypeScript changed only in the separately authorized asset-management conflict resolution; see `ASSET_MERGE.md`. Payslip capture dimensions and existing table scroll wrappers remain in place.
+Routes, package dependencies, services, calculations, permissions and API contracts remain unchanged. Production TypeScript includes the separately authorized asset merge, the table paginator input already used by payroll templates, dashboard post-render measurement synchronization, and restoration of the interview form controls already defined in its constructor. See `ASSET_MERGE.md` and `TEST_REPAIR.md` for the exact scope. Payslip capture dimensions and existing table scroll wrappers remain in place.
 
 ## Coverage checklist
 
@@ -45,6 +54,8 @@ The redesign leaves routes, dependencies, services, calculations, permissions an
 - [x] Source-review dashboard, attendance overview, employee-profile sections and representative leave form.
 - [x] Structural sweep across feature templates for tables, forms, dialogs, tiny inline text, fixed widths and unnamed icon buttons.
 - [x] Apply shared styling through the workspace and Material overlays.
+- [x] Repair and run the entire unit suite with strict template diagnostics (143 passing).
+- [x] Parse all 333 templates and record structural review coverage.
 - [x] Browser-review login, registration, password recovery, landing/mobile navigation, chat and the change-password form.
 - [x] Additional source review of public feedback, helpdesk toolbar, timesheet export/scroll controls and asset-management merge.
 - [ ] Individually review every authenticated page and significant state with realistic safe data. Inventory coverage is not a claim of individual visual review.
@@ -55,11 +66,13 @@ Feature inventory includes alerts, approvals, attendance, calendar, dashboard, e
 
 ## Verification
 
-- `npm run build -- --configuration=development`: passed after continuation and asset merge, hash `7cfac6f361f36e10`; see `build-continuation.log`. Existing CommonJS and autoprefixer warnings remain.
-- Repaired seven stale test-compilation issues. Focused tests: **11 passed** (`tests-focused.log`), plus **4 asset-merge regression tests passed** (`tests-asset-merge.log`). No tests were disabled and no schemas were added to suppress errors.
-- Final full suite: **34 passed, 103 failed, 137 total** (`tests-final.log`). Of the remaining failures, 80 first report missing providers, 19 invalid test-module configuration, and four other errors. `test-failures.json` lists each failure. The earlier compile-only failure is retained in `tests.log`; the suite is still not green.
+- `npm run build -- --configuration=development`: passed after continuation and asset merge, hash `a13b8ff369ba9255`; see `build-final.log`. Existing CommonJS and autoprefixer warnings remain.
+- **Full suite passes: 143 tests, zero failures**, with unknown-template-element/property errors enabled globally. See `tests-repair-final.log`. The final run contains no logged ERROR, NG0303 or NG0304 messages; existing ngModel/reactive-form deprecation warnings remain.
+- Repaired test dependencies, standalone declarations, required inputs, role/session fixtures and child-component setup. HTTP uses Angular's test backend; WebSockets use an isolated test double; SVG loading uses Material's testing registry. No tests were disabled or schemas added to suppress diagnostics.
+- Added regression checks for shared table search/empty state, server paging/search/sort/selection outputs, export mappings, paginator configuration, report selection, productivity radios, chat, sidebar and the asset merge. Earlier failing logs and `test-failures.json` are historical, not current failures.
+- `node docs/design/audit-templates.mjs`: all **333 templates parse successfully**. `template-audit.json` records per-template structure and review candidates; this is not individual visual/workflow sign-off.
 - No lint script or Angular lint target is configured. No lint check claimed.
-- `node docs/design/verify-template-contracts.cjs`: passed; 1,202 existing event/form/route bindings preserved across 94 modified templates. This is a source guard, not an end-to-end behavior test.
+- `node docs/design/verify-template-contracts.cjs 96807616`: passed against the pre-redesign baseline; 1,336 event/form/route bindings checked across 106 modified templates; exact exceptions document the skip link, asset add panel and regression-tested candidate/productivity field repairs. This is a source guard, not an end-to-end behavior test.
 - `git diff --check` and `git diff --cached --check`: passed; `git ls-files -u` is empty.
 - Final login, registration, password recovery and landing checks at 320, 390, 430, 768, 1024, 1440 and 1920 CSS pixels: all 28 checks have no page-level horizontal overflow or completed broken images. See `public-responsive-final.json`. Landing was rechecked at 320px after the footer fix (312px document width).
 - Login visually inspected at phone, tablet and desktop widths; short 430×400 viewport remains vertically scrollable. Registration and recovery inspected at phone widths; change-password at 390px. Browser automation became intermittently unavailable during later navigation; remaining public-page checks and zoom checks are not claimed.
@@ -87,3 +100,39 @@ Authenticated screenshots, populated dashboard/list/form visual validation, perm
 - `screenshots/login-final.png`, `register-mobile.png`, `recovery-mobile.png`, `landing-mobile.png`, `navigation-mobile.png`, `chat-320.png`.
 - `ASSET_MERGE.md`: exact conflict-resolution scope and regression evidence.
 - No authenticated account was available; the user reconfirmed continuing with source and public checks only. Full page-by-page authenticated review remains a release prerequisite, not a completed deliverable.
+
+
+## Final repair pass
+
+Strict component rendering uncovered and fixed invalid translated ARIA/data attribute bindings; redundant unsupported Material option selection inputs; disconnected productivity radio controls; the interview form reset that discarded its declared fields; dashboard post-view sizing errors; and a paginator property that payroll templates attempted to bind without an Angular input. Existing event handlers, route destinations and API endpoints remain intact. No live HR operations were performed. These fixes are protected by the full passing suite; real backend and role-specific visual validation still need a test environment.
+
+## Authenticated-session review — 25 October 2026 (continuation)
+
+The prior review's main open gap was authenticated-page verification: no test account existed. This session built one.
+
+### Local environment
+
+A local MongoDB 6 container (`docker run ... mongo:6`), the existing Node/Express API pointed at it (`ARSTEG.EffortlessHRM.API/config.env` `DATABASE` changed to `mongodb://localhost:27017/EffortlessHRM`, local-only, not committed with real secrets since the tracked copy of that file is empty), and the already-running `ng serve --configuration=localhost` dev server. A test company ("Acme Test Co") with an Admin, a Manager and an Employee account (`admin@acmetest.local` / `manager@acmetest.local` / `employee@acmetest.local`, all `Passw0rd!`) was created through the product's own `/users/websignup` and `/users/signup` endpoints, with the manager assigned as the employee's reporting manager via `/auth/roles/addSubordinate`. A fresh database has no global `Permission` catalog (it's expected to already exist in the real deployment and is not seeded by signup), so the shared navigation rendered with an empty sidebar until one was seeded from `config/rolePermissions.json` via a throwaway local script (`ARSTEG.EffortlessHRM.API/seed-local-permissions.js`, not part of the product). Chrome automation was driven directly over CDP (Playwright `connectOverCDP`/headless) since the Claude-in-Chrome extension did not connect this session.
+
+### Verified
+
+Admin, Manager and Employee dashboards; Organization (setup, zone/location/department/designation/band/holiday/tax slab tabs); Manage (employee list, profile/employment/salary/statutory/loans tabs); Leave (categories, settings, "Add Leave Category" dialog); Attendance (templates/shifts); Payroll (general settings); Reports (timeline); Permissions (roles/permissions/assignment lists). Role-based navigation correctly differs between the Admin role (full menu) and the User role (Maya/Eli — no Organization, Manage, Payroll, Permissions or Approvals). Table toolbars, tabs, dialogs, empty states and status text render consistently with the design system described above. Responsive behavior was re-checked at 1440px (desktop), and at a true 390px viewport and the narrowest a real Windows Chrome window will report (~500px): the shell collapses to a hamburger-triggered overlay drawer, header controls stay reachable, data tables scroll horizontally within their own container with no page-level overflow, and the "Add Leave Category" dialog stacks its fields and stays scrollable with pinned actions. No page-level horizontal overflow was found at either width once the app had fully settled.
+
+### Issues found and fixed
+
+- Toast notifications (`ngx-toastr`, default `toast-top-right`) rendered on top of the fixed header and covered the language/notification/account controls while visible. Pinned the toast container 80px from the top in `src/styles.scss` so it clears the header.
+- Clicking "Settings" on an employee row with no appointment record (e.g., one created by an admin through `/signup` rather than through self-registration) silently did nothing but `console.error('empCode is not defined')` — no feedback to the user. `user-list.component.ts` `toggleView()` now shows a toast explaining the record is incomplete instead of failing silently. This is a front-end presentation fix only; it does not change the underlying backend behavior that some admin-created employees can lack an appointment/employee-code record.
+- `WorkspaceComponent` (the landing page's decorative dashboard-mockup graphic, `layouts/landing-page/workspace/`) mutated a template-bound property (`hasScroll`) inside `ngAfterViewInit`, which is a reliably-reproducible `NG0100: ExpressionChangedAfterItHasBeenCheckedError` in dev mode. Deferred the update with `Promise.resolve().then(...)` and added a `ChangeDetectorRef.markForCheck()` call, the standard fix for this Angular pattern. DOM inspection during this investigation confirmed this error does not affect what authenticated users actually see (the dashboard rendered correctly throughout); it's a dev-mode console error, not a rendering defect, but it's worth keeping fixed as hygiene.
+
+### Verification
+
+- `npm run build -- --configuration=development`: passed.
+- Full unit suite: **143 passing, 0 failures** (ChromeHeadless), same as before this session's changes.
+- No lint script is configured (unchanged from before).
+
+### Remaining limitations
+
+- Browser automation in this session used a direct CDP connection rather than the Claude-in-Chrome extension (which never connected), and a real on-screen Chrome window on this machine cannot be resized below roughly 500px, so the canonical 320px breakpoint was checked via DOM measurement and a headless Chromium context rather than a visual screenshot (headless full-page and even viewport screenshots were unreliable in this environment — they intermittently rendered the landing page's static content instead of the live page despite the DOM, title and visible nav items being correct for the authenticated dashboard throughout; this looks like a Chrome headless screenshot/compositor artifact specific to this sandbox, not a product defect, and is called out here so it isn't mistaken for one later).
+- Coverage this session was breadth-first across representative screens per module (list/detail/form/dialog), not an exhaustive page-by-page pass. Payroll's CTC/variable-pay templates, Taxation, Separation, Recruitment/Interview, Helpdesk, Approvals, chat, and most dialogs/exports were not individually opened this session.
+- The local Permission-catalog gap (seeded ad hoc for this session only) is a pre-existing backend/deployment characteristic, not something addressed here — flagging it since it will reproduce for any other fresh local database.
+- `docs/design/verify-template-contracts.cjs` carries an unrelated uncommitted modification from before this session; it was not touched here and is left as found.

@@ -1,14 +1,20 @@
 // Review guard: compare existing UI contracts with the Git baseline.
-// Run from the repository root: node docs/design/verify-template-contracts.cjs
+// Run from the repository root: node docs/design/verify-template-contracts.cjs [baseline-ref]
 const { execFileSync } = require('node:child_process');
 const { readFileSync } = require('node:fs');
 const assert = require('node:assert/strict');
 const git = (...args) => execFileSync('git', ['-c', 'core.safecrlf=false', ...args], { encoding: 'utf8' });
-const files = git('diff', 'HEAD', '--diff-filter=M', '--name-only', '--', '*.html').trim().split('\n').filter(Boolean);
+const baselineRef = process.argv[2] || 'HEAD';
+git('rev-parse', '--verify', `${baselineRef}^{commit}`);
+const files = git('diff', baselineRef, '--diff-filter=M', '--name-only', '--', '*.html').trim().split('\n').filter(Boolean);
+if (!files.length) {
+  console.log(`SKIP: no modified HTML templates relative to ${baselineRef}; supply an earlier baseline to verify committed changes.`);
+  process.exit(0);
+}
 const contracts = /(?:\([\w.]+\)|\[?formControlName\]?|\[?formGroup\]?|\[?routerLink\]?)\s*=\s*(?:"[^"]*"|'[^']*')/g;
 let checked = 0;
 for (const file of files) {
-  let baseline = git('show', `HEAD:${file}`);
+  let baseline = git('show', `${baselineRef}:${file}`);
   // Regression-tested repairs of bindings that previously threw during rendering.
   // Keep these exact substitutions explicit; do not broadly ignore form changes.
   if (file.endsWith('schedule-interview/schedule-interview.component.html')) {

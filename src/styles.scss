@@ -842,4 +842,11 @@ option:hover {
   cursor: pointer;
 }
 
+/* Keep toast notifications clear of the 65px fixed header so the
+   language, notification and account controls stay reachable while a toast is visible. */
+#toast-container.toast-top-right,
+#toast-container.toast-top-center {
+  top: 80px !important;
+}
+
 @import 'app/styles/workspace';

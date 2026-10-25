@@ -262,7 +262,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         state: { data: { empName: data.firstName + ' ' + data.lastName } },
       });
     } else {
-      console.error('empCode is not defined');
+      this.toast.error('This employee has no appointment record yet, so their profile cannot be opened.', 'Error!');
     }
   }
 
