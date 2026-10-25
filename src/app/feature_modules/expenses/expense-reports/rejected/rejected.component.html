@@ -42,6 +42,7 @@
               </button>
             </div>
           </div>
+          <div class="table-responsive">
           <table mat-table [dataSource]="dataSource" matSort class="hrm-table">
             <ng-container matColumnDef="title">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'expenses.report_title' | translate}}</th>
@@ -94,6 +95,7 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
+          </div>
           <mat-paginator [length]="totalRecords" [pageSize]="recordsPerPage" [pageSizeOptions]="[5, 10, 25, 50, 100]" (page)="onPageChange($event)">
           </mat-paginator>
         

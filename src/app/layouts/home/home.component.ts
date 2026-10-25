@@ -97,6 +97,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   //   });
   // }
   ngOnInit(): void {
+      this.checkScreen();
       let role = localStorage.getItem('role');
       this.adminView = localStorage.getItem('adminView');
       this.commonService.setCurrentUserRole(role);

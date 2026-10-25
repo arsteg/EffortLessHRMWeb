@@ -8,6 +8,7 @@
           <input type="text" placeholder="Search ..." [(ngModel)]="searchQuery" (ngModelChange)="onSearchInput($event)" class="form-control search mt-2 mb-3">
         </div>
       </div>
+      <div class="table-responsive">
       <table>
         <thead>
           <tr>
@@ -38,6 +39,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
     <div class="col-4 border-start">
       <h2 class="contentHeading p-2">Add/Edit Feedback Field</h2>

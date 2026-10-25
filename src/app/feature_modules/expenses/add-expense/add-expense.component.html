@@ -69,6 +69,7 @@
 
         @if(reportId){
         <div class="mb-2">
+            <div class="table-responsive">
             <table mat-table [dataSource]="expenseReportExpenses" class="mat-elevation-z2 mt-2">
                 <ng-container matColumnDef="incurredDate">
                     <th mat-header-cell *matHeaderCellDef>{{'expenses.incurred_date' | translate}}</th>
@@ -134,6 +135,7 @@
                     *matRowDef="let row; columns: ['incurredDate', 'category', 'amount', 'reimbursable', 'billable', 'actions'];">
                 </tr>
             </table>
+            </div>
         </div>
         <div>
             <button (click)="openSecondModal(false);" type="button"

@@ -1,3 +1,4 @@
+<div class="table-responsive">
 <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="hrm-table">
     <!-- Financial Year Column -->
     <ng-container matColumnDef="financialYear">
@@ -268,3 +269,4 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumnsWithIcon;"></tr>
     <tr mat-row *matRowDef="let row; columns: ['expand'];" class="expand-row"></tr>
 </table>
+</div>

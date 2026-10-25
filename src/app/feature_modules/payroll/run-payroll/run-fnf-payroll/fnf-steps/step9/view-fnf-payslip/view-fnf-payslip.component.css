@@ -8,9 +8,26 @@
   line-height: 1.6;
 }
 
+@media (max-width: 575.98px) {
+  .payslip-container {
+    padding: 16px;
+  }
+
+  .net-pay-box {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .payslip-title {
+    text-align: left;
+  }
+}
+
 /* Header Section */
 .payslip-header {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 20px;
@@ -59,6 +76,7 @@
 /* Employee Summary Section */
 .employee-summary-section {
   display: flex;
+  flex-wrap: wrap;
   gap: 30px;
   margin-bottom: 25px;
 }
@@ -160,7 +178,8 @@
 /* PF Details Section */
 .pf-details-section {
   display: flex;
-  gap: 40px;
+  flex-wrap: wrap;
+  gap: 20px 40px;
   margin-bottom: 20px;
 }
 
@@ -325,6 +344,8 @@
 
 .net-payable-content {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
 }
