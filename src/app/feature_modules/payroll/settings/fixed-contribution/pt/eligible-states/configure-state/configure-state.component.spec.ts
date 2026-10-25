@@ -1,3 +1,5 @@
+import { UpdateStateComponent } from 'src/app/feature_modules/payroll/settings/fixed-contribution/pt/eligible-states/configure-state/update-state/update-state.component';
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfigureStateComponent } from './configure-state.component';
@@ -8,7 +10,9 @@ describe('ConfigureStateComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ConfigureStateComponent]
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      imports: [UiTestingModule],
+      declarations: [UpdateStateComponent, ConfigureStateComponent]
     })
     .compileComponents();
     

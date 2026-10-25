@@ -3,7 +3,7 @@
         <div class="d-flex align-items-center flex-wrap">
             @if(!isProfileView){
                 <div class="d-flex align-items-center me-2">
-                    <button mat-icon-button (click)="toggleToEmployees()">
+                    <button mat-icon-button aria-label="Back to employees" (click)="toggleToEmployees()">
                         <mat-icon>keyboard_arrow_left</mat-icon>
                     </button>
                     <span class="text-muted">{{ empName || selectedTab }}</span>

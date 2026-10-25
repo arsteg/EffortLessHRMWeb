@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskCommentComponent } from './task-comment.component';
@@ -8,6 +9,8 @@ describe('TaskCommentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      imports: [UiTestingModule],
       declarations: [ TaskCommentComponent ]
     })
     .compileComponents();

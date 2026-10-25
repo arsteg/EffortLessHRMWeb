@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TrustComponent } from './trust.component';
@@ -8,7 +9,9 @@ describe('TrustComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TrustComponent]
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      declarations: [TrustComponent],
+      imports: [UiTestingModule]
     })
     .compileComponents();
     

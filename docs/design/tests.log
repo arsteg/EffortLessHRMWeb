@@ -1,0 +1,85 @@
+
+> effort-less-hrmweb@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless
+
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+
+./src/app/feature_modules/attendance/on-duty-records/approved/approved.component.spec.ts:9:21-38 - Error: export 'ApprovedComponent' (imported as 'ApprovedComponent') was not found in './approved.component' (possible exports: ApprovedOnDutyComponent)
+
+./src/app/feature_modules/attendance/on-duty-records/approved/approved.component.spec.ts:11:38-55 - Error: export 'ApprovedComponent' (imported as 'ApprovedComponent') was not found in './approved.component' (possible exports: ApprovedOnDutyComponent)
+
+./src/app/feature_modules/attendance/on-duty-records/cancelled/cancelled.component.spec.ts:9:21-39 - Error: export 'CancelledComponent' (imported as 'CancelledComponent') was not found in './cancelled.component' (possible exports: CancelledOnDutyComponent)
+
+./src/app/feature_modules/attendance/on-duty-records/cancelled/cancelled.component.spec.ts:11:38-56 - Error: export 'CancelledComponent' (imported as 'CancelledComponent') was not found in './cancelled.component' (possible exports: CancelledOnDutyComponent)
+
+./src/app/feature_modules/attendance/on-duty-records/rejected/rejected.component.spec.ts:9:21-38 - Error: export 'RejectedComponent' (imported as 'RejectedComponent') was not found in './rejected.component' (possible exports: RejectedOnDutyComponent)
+
+./src/app/feature_modules/attendance/on-duty-records/rejected/rejected.component.spec.ts:11:38-55 - Error: export 'RejectedComponent' (imported as 'RejectedComponent') was not found in './rejected.component' (possible exports: RejectedOnDutyComponent)
+
+./src/app/feature_modules/interview-process/feedback-field/feedback-field.component.spec.ts:9:16-43 - Error: export 'CandidateDataFieldComponent' (imported as 'CandidateDataFieldComponent') was not found in './feedback-field.component' (possible exports: FeedbackFieldComponent)
+
+./src/app/feature_modules/interview-process/feedback-field/feedback-field.component.spec.ts:11:38-65 - Error: export 'CandidateDataFieldComponent' (imported as 'CandidateDataFieldComponent') was not found in './feedback-field.component' (possible exports: FeedbackFieldComponent)
+
+./src/app/feature_modules/logs/log.component/log.component.component.spec.ts:9:16-37 - Error: export 'LogComponentComponent' (imported as 'LogComponentComponent') was not found in './log.component.component' (possible exports: LogComponent)
+
+./src/app/feature_modules/logs/log.component/log.component.component.spec.ts:11:38-59 - Error: export 'LogComponentComponent' (imported as 'LogComponentComponent') was not found in './log.component.component' (possible exports: LogComponent)
+
+Error: src/app/app.component.spec.ts:26:16 - error TS2339: Property 'title' does not exist on type 'AppComponent'.
+
+26     expect(app.title).toEqual('EffortLessHRMWeb');
+                  ~~~~~
+
+
+Error: src/app/feature_modules/attendance/on-duty-records/approved/approved.component.spec.ts:3:10 - error TS2305: Module '"./approved.component"' has no exported member 'ApprovedComponent'.
+
+3 import { ApprovedComponent } from './approved.component';
+           ~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/feature_modules/attendance/on-duty-records/cancelled/cancelled.component.spec.ts:3:10 - error TS2724: '"./cancelled.component"' has no exported member named 'CancelledComponent'. Did you mean 'CancelledOnDutyComponent'?
+
+3 import { CancelledComponent } from './cancelled.component';
+           ~~~~~~~~~~~~~~~~~~
+
+  src/app/feature_modules/attendance/on-duty-records/cancelled/cancelled.component.ts:8:14
+    8 export class CancelledOnDutyComponent {
+                   ~~~~~~~~~~~~~~~~~~~~~~~~
+    'CancelledOnDutyComponent' is declared here.
+
+
+Error: src/app/feature_modules/attendance/on-duty-records/rejected/rejected.component.spec.ts:3:10 - error TS2305: Module '"./rejected.component"' has no exported member 'RejectedComponent'.
+
+3 import { RejectedComponent } from './rejected.component';
+           ~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/feature_modules/interview-process/feedback-field/feedback-field.component.spec.ts:3:10 - error TS2305: Module '"./feedback-field.component"' has no exported member 'CandidateDataFieldComponent'.
+
+3 import { CandidateDataFieldComponent } from './feedback-field.component';
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/feature_modules/logs/log.component/log.component.component.spec.ts:3:10 - error TS2305: Module '"./log.component.component"' has no exported member 'LogComponentComponent'.
+
+3 import { LogComponentComponent } from './log.component.component';
+           ~~~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/layout/layout-component.component.spec.ts:3:42 - error TS2306: File 'C:/Work/EffortlessHRM/EffortLessHRMWeb/src/app/layout/layout-component.component.ts' is not a module.
+
+3 import { LayoutComponentComponent } from './layout-component.component';
+                                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+25 10 2026 12:09:31.005:INFO [karma-server]: Karma v6.3.20 server started at http://localhost:9876/
+25 10 2026 12:09:31.199:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+25 10 2026 12:09:31.200:ERROR [karma-server]: Error: Found 1 load error
+    at Server.<anonymous> (C:\Work\EffortlessHRM\EffortLessHRMWeb\node_modules\karma\lib\server.js:243:26)
+    at Object.onceWrapper (node:events:622:28)
+    at Server.emit (node:events:520:35)
+    at emitListeningNT (node:net:1983:10)
+    at process.processTicksAndRejections (node:internal/process/task_queues:88:21)
+√ Browser application bundle generation complete.
+√ Browser application bundle generation complete.

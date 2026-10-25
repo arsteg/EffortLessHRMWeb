@@ -17,18 +17,18 @@
             <thead>
                 <tr>
                     
-                    <th scope="col" [appSort]="allRoles" data-order="{{ sortOrder }}"
+                    <th scope="col" [appSort]="allRoles" attr.data-order="{{ sortOrder }}"
                     data-name="Name" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                     Role &nbsp;
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
-                <th scope="col" [appSort]="allRoles" data-order="{{ sortOrder }}"
+                <th scope="col" [appSort]="allRoles" attr.data-order="{{ sortOrder }}"
                     data-name="createdOn" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                     Created On &nbsp;
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                 </th>
                    
-                <th scope="col" [appSort]="allRoles" data-order="{{ sortOrder }}"
+                <th scope="col" [appSort]="allRoles" attr.data-order="{{ sortOrder }}"
                     data-name="updatedOn" (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">
                     Updated On &nbsp;
                     <i [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>

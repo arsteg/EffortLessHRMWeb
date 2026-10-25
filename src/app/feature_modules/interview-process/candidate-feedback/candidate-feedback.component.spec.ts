@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CandidateFeedbackComponent } from './candidate-feedback.component';
@@ -8,7 +9,7 @@ describe('CandidateFeedbackComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CandidateFeedbackComponent]
+      imports: [UiTestingModule, CandidateFeedbackComponent]
     })
     .compileComponents();
 

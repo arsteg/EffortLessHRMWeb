@@ -2,7 +2,7 @@
   <h1 mat-dialog-title>
     {{'expenses.expense_category_setting_title' | translate}} {{selectedTemplate?.policyLabel}}
   </h1>
-  <button mat-icon-button mat-dialog-close="" (click)="closeModal()" class="me-4">
+  <button mat-icon-button mat-dialog-close="" (click)="closeModal()" class="me-4" aria-label="Close dialog">
     <mat-icon>close</mat-icon>
   </button>
 </div>
@@ -170,7 +170,7 @@
                       <mat-error>{{ 'expenses.requiredFields' | translate }}</mat-error>
                       }
                     </mat-form-field>
-                    <button (click)="deleteCategoryField(i, j)" mat-icon-button type="button" color="warn">
+                    <button (click)="deleteCategoryField(i, j)" mat-icon-button type="button" color="warn" aria-label="Delete">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </div>

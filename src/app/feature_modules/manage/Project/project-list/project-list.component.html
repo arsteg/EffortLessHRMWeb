@@ -46,7 +46,7 @@
          <h4 mat-dialog-title>
             {{ 'manage.project.manage_member_title' | translate }}
          </h4>
-        <button type="button" mat-dialog-close mat-icon-button>
+        <button type="button" mat-dialog-close mat-icon-button aria-label="Close dialog">
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -163,7 +163,7 @@
         <h1 mat-dialog-title>
         {{ 'manage.project.modal.add_title' | translate }}
         </h1>
-        <button mat-icon-button mat-dialog-close="" class="me-4">
+        <button mat-icon-button mat-dialog-close="" class="me-4" aria-label="Close dialog">
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -284,7 +284,7 @@
         <h1 mat-dialog-title>
             {{ 'manage.project.modal.update_title' | translate }} <b style="color: var(--orange-60);">{{selectedProject.projectName | titlecase}}</b>
         </h1>
-        <button mat-icon-button mat-dialog-close="" class="me-4">
+        <button mat-icon-button mat-dialog-close="" class="me-4" aria-label="Close dialog">
             <mat-icon>close</mat-icon>
         </button>
     </div>

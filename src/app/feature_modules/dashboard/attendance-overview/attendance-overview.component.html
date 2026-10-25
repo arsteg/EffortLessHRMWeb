@@ -2,10 +2,10 @@
 <div class="row mt-4">
   <div class="col-12">
     <div class="card p-3">
-      <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Mobile App Attendance Overview</h2>
         <!-- Office Filter Dropdown -->
-        <mat-form-field class="densed-field" style="width: 250px;">
+        <mat-form-field class="densed-field" style="width: 250px; max-width: 100%;">
           <mat-label>Select Office</mat-label>
           <mat-select [(ngModel)]="selectedOffice" (selectionChange)="onOfficeChange($event.value)">
             <mat-option value="all">All Offices</mat-option>
@@ -19,7 +19,7 @@
       <!-- Summary Cards -->
       <div class="row mb-4">
         <div class="col-md-4 col-sm-6 mb-3">
-          <div class="card bg-primary text-white p-3">
+          <div class="card attendance-summary attendance-summary-total p-3">
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <h3 class="mb-0">{{attendanceSummary?.totalEmployees || 0}}</h3>
@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class="col-md-4 col-sm-6 mb-3">
-          <div class="card bg-success text-white p-3">
+          <div class="card attendance-summary attendance-summary-in p-3">
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <h3 class="mb-0">{{attendanceSummary?.checkedInToday || 0}}</h3>
@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="col-md-4 col-sm-6 mb-3">
-          <div class="card bg-info text-white p-3">
+          <div class="card attendance-summary attendance-summary-out p-3">
             <div class="d-flex justify-content-between align-items-center">
               <div>
                 <h3 class="mb-0">{{attendanceSummary?.checkedOutToday || 0}}</h3>
@@ -77,7 +77,7 @@
 
         <!-- Daily Tab -->
         <div class="tab-pane fade show active" id="daily" role="tabpanel" aria-labelledby="daily-tab">
-          <div class="table-responsive">
+          <div class="table-responsive" tabindex="0" role="region" aria-label="Attendance records">
             <h5 class="mb-3">Today's Attendance</h5>
             @if(selectedAttendanceView === 'daily' && attendanceOverviewData && attendanceOverviewData.length > 0) {
               <table class="table table-hover">
@@ -187,7 +187,7 @@
 
           <!-- Compact Weekly Calendar Grid -->
           @if(selectedAttendanceView === 'weekly' && attendanceOverviewData && attendanceOverviewData.length > 0) {
-            <div class="table-responsive">
+            <div class="table-responsive" tabindex="0" role="region" aria-label="Attendance records">
               <table class="table table-bordered attendance-calendar-table">
                 <thead class="table-light">
                   <tr>
@@ -282,7 +282,7 @@
             </div>
           </div>
           @if(selectedAttendanceView === 'monthly' && attendanceOverviewData && attendanceOverviewData.length > 0) {
-          <div class="table-responsive">
+          <div class="table-responsive" tabindex="0" role="region" aria-label="Attendance records">
             <table class="table table-bordered attendance-calendar-table-monthly">
               <thead class="table-light">
                 <tr>
@@ -316,7 +316,7 @@
                             <span class="badge mb-1" [ngClass]="getStatusBadgeClass(getAttendanceForDate(employee, day).status)">
                               {{getStatusLabel(getAttendanceForDate(employee, day).status)}}
                               @if(getAttendanceForDate(employee, day).allLogs && getAttendanceForDate(employee, day).allLogs.length > 1) {
-                                <mat-icon style="font-size: 8px; width: 8px; height: 8px; vertical-align: middle;">info</mat-icon>
+                                <mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle;">info</mat-icon>
                               }
                             </span>
                             @if(getAttendanceForDate(employee, day).checkIn) {
@@ -361,7 +361,7 @@
                             <span class="badge mb-1" [ngClass]="getStatusBadgeClass(getAttendanceForDate(employee, day).status)">
                               {{getStatusLabel(getAttendanceForDate(employee, day).status)}}
                               @if(getAttendanceForDate(employee, day).allLogs && getAttendanceForDate(employee, day).allLogs.length > 1) {
-                                <mat-icon style="font-size: 8px; width: 8px; height: 8px; vertical-align: middle;">info</mat-icon>
+                                <mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle;">info</mat-icon>
                               }
                             </span>
                             @if(getAttendanceForDate(employee, day).checkIn) {

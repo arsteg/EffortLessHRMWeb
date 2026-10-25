@@ -1,0 +1,415 @@
+
+> effort-less-hrmweb@0.0.0 start
+> ng serve --configuration=localhost --port 4201
+
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                                                                     | Names                                                                   |   Raw Size
+vendor.js                                                                                               | vendor                                                                  |   12.34 MB |
+main.js                                                                                                 | main                                                                    |    2.17 MB |
+styles.css, styles.js                                                                                   | styles                                                                  |  726.53 kB |
+polyfills.js                                                                                            | polyfills                                                               |  335.78 kB |
+scripts.js                                                                                              | scripts                                                                 |  290.13 kB |
+runtime.js                                                                                              | runtime                                                                 |   14.48 kB |
+
+| Initial Total                                                           |   15.85 MB
+
+Lazy Chunk Files                                                                                        | Names                                                                   |   Raw Size
+src_app_feature_modules_attendance_attendance_module_ts.js                                              | feature_modules-attendance-attendance-module                            |    2.63 MB |
+src_app_feature_modules_payroll_payroll_module_ts.js                                                    | feature_modules-payroll-payroll-module                                  |    1.80 MB |
+src_app_feature_modules_expenses_expenses_module_ts.js                                                  | feature_modules-expenses-expenses-module                                | 1009.29 kB |
+src_app_feature_modules_leave_leave_module_ts.js                                                        | feature_modules-leave-leave-module                                      |  866.66 kB |
+src_app_feature_modules_organization_organization_module_ts.js                                          | feature_modules-organization-organization-module                        |  633.36 kB |
+src_app_feature_modules_calendar_calendar_module_ts.js                                                  | feature_modules-calendar-calendar-module                                |  622.33 kB |
+quill.js                                                                                                | quill                                                                   |  482.78 kB |
+node_modules_canvg_lib_index_es_js.js                                                                   | canvg                                                                   |  431.56 kB |
+src_app_feature_modules_manage_users_employee-settings_employee-settings_module_ts.js                   | feature_modules-manage-users-employee-settings-employee-settings-module |  417.63 kB |
+src_app_feature_modules_taxation_taxation_module_ts.js                                                  | feature_modules-taxation-taxation-module                                |  393.41 kB |
+src_app_feature_modules_dashboard_dashboard_module_ts.js                                                | feature_modules-dashboard-dashboard-module                              |  383.37 kB |
+src_app_feature_modules_manage_manage_module_ts.js                                                      | feature_modules-manage-manage-module                                    |  317.63 kB |
+src_app_feature_modules_reports_reports_module_ts.js                                                    | feature_modules-reports-reports-module                                  |  243.50 kB |
+src_app_feature_modules_interview-process_interview-process_module_ts.js                                | feature_modules-interview-process-interview-process-module              |  224.38 kB |
+src_app_feature_modules_subscription_subscription_module_ts.js                                          | feature_modules-subscription-subscription-module                        |  147.33 kB |
+src_app_feature_modules_separation_separation_module_ts.js                                              | feature_modules-separation-separation-module                            |  120.96 kB |
+src_app_feature_modules_settings_settings_module_ts.js                                                  | feature_modules-settings-settings-module                                |  118.54 kB |
+src_app_feature_modules_alerts_alerts_module_ts.js                                                      | feature_modules-alerts-alerts-module                                    |  101.67 kB |
+src_app_feature_modules_screenshots_screenshots_module_ts.js                                            | feature_modules-screenshots-screenshots-module                          |   85.74 kB |
+default-src_app_feature_modules_timesheets_admin-timesheet_admin-timesheet_component_ts-src_a-e2e4ec.js | feature_modules-timesheets-timesheets-module                            |   78.05 kB |
+node_modules_dompurify_dist_purify_js.js                                                                | dompurify                                                               |   64.58 kB |
+src_app_feature_modules_realtime_realtime_module_ts.js                                                  | feature_modules-realtime-realtime-module                                |   61.01 kB |
+src_app_feature_modules_approvals_approvals_module_ts.js                                                | feature_modules-approvals-approvals-module                              |   57.28 kB |
+
+./src/app/feature_modules/approvals/productivityAppsApproval/productivityAppsApproval.component.css?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(138:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/feature_modules/screenshots/screenshots/screenshots.component.css?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(79:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+default-src_app__services_payroll_service_ts.js                                                         | feature_modules-attendance-attendance-module                            |   51.80 kB |
+default-src_app_feature_modules_manual-time_request-manual-time_request-manual-time_component_ts.js     | feature_modules-manage-manage-module                                    |   50.65 kB |
+src_app_feature_modules_manual-time_manual-time_module_ts.js                                            | feature_modules-manual-time-manual-time-module                          |   35.33 kB |
+default-src_app_feature_modules_roles_roles_roles_component_ts.js                                       | feature_modules-manage-manage-module                                    |   26.58 kB |
+default-src_app__services_attendance_service_ts.js                                                      | feature_modules-dashboard-dashboard-module                              |   26.22 kB |
+  justify-content: end
+
+
+Warning: C:\Work\EffortlessHRM\EffortLessHRMWeb\src\app\_services\excel.service.ts depends on 'exceljs'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Work\EffortlessHRM\EffortLessHRMWeb\src\app\feature_modules\timesheets\admin-timesheet\admin-timesheet.component.ts depends on 'file-saver'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+
+common.js                                                                                               | common                                                                  |   25.58 kB |
+default-src_app_feature_modules_subscription_subscriptions-list_payments_payments_component_ts.js       | feature_modules-dashboard-dashboard-module                              |   20.84 kB |
+default-src_app__services_leave_service_ts.js                                                           | feature_modules-calendar-calendar-module                                |   17.17 kB |
+src_app_feature_modules_permissions_permissions_module_ts.js                                            | feature_modules-permissions-permissions-module                          |    7.13 kB |
+src_app_feature_modules_role-permission_role-permission_module_ts.js                                    | feature_modules-role-permission-role-permission-module                  |    4.43 kB |
+src_app_feature_modules_timesheets_timesheets_module_ts.js                                              | feature_modules-timesheets-timesheets-module                            |    4.33 kB |
+src_app_feature_modules_roles_roles_module_ts.js                                                        | feature_modules-roles-roles-module                                      |    3.74 kB |
+
+Build at: 2026-10-25T07:12:57.624Z - Hash: 4c87c74240dfd3f0 - Time: 134846ms
+
+** Angular Live Development Server is listening on localhost:4201, open your browser on http://localhost:4201/ **
+
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                            | Names                                            |  Raw Size
+main.js                                                        | main                                             |   2.17 MB |
+runtime.js                                                     | runtime                                          |  14.48 kB |
+
+Lazy Chunk Files                                               | Names                                            |  Raw Size
+src_app_feature_modules_organization_organization_module_ts.js | feature_modules-organization-organization-module | 635.47 kB |
+
+38 unchanged chunks
+
+Build at: 2026-10-25T07:13:10.478Z - Hash: 1335a9d4e45e54eb - Time: 8332ms
+
+./src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.css?ngResource - Error: Module build failed (from ./node_modules/postcss-loader/dist/cjs.js):
+
+SyntaxError
+
+(38:1) C:\Work\EffortlessHRM\EffortLessHRMWeb\src\app\feature_modules\organization\AssetsManagement\assetTypeComponent\assetType.component.css Unknown word
+
+  36 |   font-size: 16px; /* Adjust the font size inside the button */
+  37 | }
+> 38 | >>>>>>> Stashed changes
+     | ^
+  39 | 
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetAssetManager/asset.component.html:72:1 - error NG5002: Unexpected closing tag "div". It may happen when the tag has already been closed by another tag. For more info see https://www.w3.org/TR/html5/syntax.html#closing-elements-that-have-implied-end-tags
+
+72 </div>
+   ~~~~~~
+
+  src/app/feature_modules/organization/AssetsManagement/assetAssetManager/asset.component.ts:9:16
+    9   templateUrl: './asset.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AssetManagerComponent.
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetAssetManager/asset.component.html:73:1 - error NG5002: Unexpected closing tag "div". It may happen when the tag has already been closed by another tag. For more info see https://www.w3.org/TR/html5/syntax.html#closing-elements-that-have-implied-end-tags
+
+73 </div>
+   ~~~~~~
+
+  src/app/feature_modules/organization/AssetsManagement/assetAssetManager/asset.component.ts:9:16
+    9   templateUrl: './asset.component.html',
+                     ~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AssetManagerComponent.
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetManagement.module.ts:37:1 - error TS1185: Merge conflict marker encountered.
+
+37 <<<<<<< Updated upstream
+   ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetManagement.module.ts:42:1 - error TS1185: Merge conflict marker encountered.
+
+42 =======
+   ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetManagement.module.ts:46:1 - error TS1185: Merge conflict marker encountered.
+
+46 >>>>>>> Stashed changes
+   ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.html:17:78 - error TS2339: Property 'searchQuery' does not exist on type 'AssetTypeComponent'.
+
+17           <input type="text" placeholder="Search Asset Type..." [(ngModel)]="searchQuery" (input)="filterAssetTypes()"
+                                                                                ~~~~~~~~~~~
+
+  src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:15:16
+    15   templateUrl: './assetType.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AssetTypeComponent.
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.html:17:78 - error TS2339: Property 'searchQuery' does not exist on type 'AssetTypeComponent'.
+
+17           <input type="text" placeholder="Search Asset Type..." [(ngModel)]="searchQuery" (input)="filterAssetTypes()"
+                                                                                ~~~~~~~~~~~
+
+  src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:15:16
+    15   templateUrl: './assetType.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AssetTypeComponent.
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.html:17:100 - error TS2554: Expected 1 arguments, but got 0.
+
+17           <input type="text" placeholder="Search Asset Type..." [(ngModel)]="searchQuery" (input)="filterAssetTypes()"
+                                                                                                      ~~~~~~~~~~~~~~~~
+
+  src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:15:16
+    15   templateUrl: './assetType.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AssetTypeComponent.
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.html:29:96 - error TS2339: Property 'onAddAssetType' does not exist on type 'AssetTypeComponent'.
+
+29                 <button class="actions  ms-2" mat-mini-fab title="Add New Asset Type" (click)="onAddAssetType()">
+                                                                                                  ~~~~~~~~~~~~~~
+
+  src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:15:16
+    15   templateUrl: './assetType.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AssetTypeComponent.
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.html:58:26 - error TS2551: Property 'addAssetType' does not exist on type 'AssetTypeComponent'. Did you mean 'assetTypes'?
+
+58       <form [formGroup]="addAssetType" (ngSubmit)="addAsset()" class="me-3">
+                            ~~~~~~~~~~~~
+
+  src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:15:16
+    15   templateUrl: './assetType.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AssetTypeComponent.
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.html:58:52 - error TS2339: Property 'addAsset' does not exist on type 'AssetTypeComponent'.
+
+58       <form [formGroup]="addAssetType" (ngSubmit)="addAsset()" class="me-3">
+                                                      ~~~~~~~~
+
+  src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:15:16
+    15   templateUrl: './assetType.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AssetTypeComponent.
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.html:68:79 - error TS2551: Property 'addAssetType' does not exist on type 'AssetTypeComponent'. Did you mean 'assetTypes'?
+
+68           <button mat-raised-button type="submit" class="addBtn" [disabled]="!addAssetType.valid">{{isEdit==true?'Save':'Add'}}</button>
+                                                                                 ~~~~~~~~~~~~
+
+  src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:15:16
+    15   templateUrl: './assetType.component.html',
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the template of component AssetTypeComponent.
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:22:1 - error TS1185: Merge conflict marker encountered.
+
+22 <<<<<<< Updated upstream
+   ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:24:1 - error TS1185: Merge conflict marker encountered.
+
+24 =======
+   ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:26:1 - error TS1185: Merge conflict marker encountered.
+
+
+× Failed to compile.
+26 >>>>>>> Stashed changes
+   ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:56:1 - error TS1185: Merge conflict marker encountered.
+
+56 <<<<<<< Updated upstream
+   ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:57:1 - error TS1185: Merge conflict marker encountered.
+
+57 =======
+   ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:64:1 - error TS1185: Merge conflict marker encountered.
+
+64 >>>>>>> Stashed changes
+   ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:188:1 - error TS1185: Merge conflict marker encountered.
+
+188 <<<<<<< Updated upstream
+    ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:229:1 - error TS1185: Merge conflict marker encountered.
+
+229 =======
+    ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:242:1 - error TS1185: Merge conflict marker encountered.
+
+242 >>>>>>> Stashed changes
+    ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:375:1 - error TS1185: Merge conflict marker encountered.
+
+375 <<<<<<< Updated upstream
+    ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:406:1 - error TS1185: Merge conflict marker encountered.
+
+406 =======
+    ~~~~~~~
+
+
+Error: src/app/feature_modules/organization/AssetsManagement/assetTypeComponent/assetType.component.ts:411:1 - error TS1185: Merge conflict marker encountered.
+
+411 >>>>>>> Stashed changes
+    ~~~~~~~
+
+
+
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                            | Names                                            |  Raw Size
+runtime.js                                                     | runtime                                          |  14.48 kB |
+
+Lazy Chunk Files                                               | Names                                            |  Raw Size
+src_app_feature_modules_organization_organization_module_ts.js | feature_modules-organization-organization-module | 640.21 kB |
+
+39 unchanged chunks
+
+Build at: 2026-10-25T07:14:12.363Z - Hash: 454b8ad3ba136198 - Time: 47925ms
+
+Warning: C:\Work\EffortlessHRM\EffortLessHRMWeb\src\app\feature_modules\timesheets\user-timesheet\user-timesheet.component.ts depends on 'file-saver'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                                                                     | Names                                            |  Raw Size
+runtime.js                                                                                              | runtime                                          |  14.48 kB |
+
+Lazy Chunk Files                                                                                        | Names                                            |  Raw Size
+src_app_feature_modules_organization_organization_module_ts.js                                          | feature_modules-organization-organization-module | 640.61 kB |
+default-src_app_feature_modules_timesheets_admin-timesheet_admin-timesheet_component_ts-src_a-e2e4ec.js | feature_modules-timesheets-timesheets-module     |  78.30 kB |
+
+38 unchanged chunks
+
+Build at: 2026-10-25T07:14:17.585Z - Hash: 7b2325b929aa9c0d - Time: 4417ms
+
+Warning: C:\Work\EffortlessHRM\EffortLessHRMWeb\src\app\_services\excel.service.ts depends on 'file-saver'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files | Names   | Raw Size
+main.js             | main    |  2.17 MB |
+runtime.js          | runtime | 14.48 kB |
+
+39 unchanged chunks
+
+Build at: 2026-10-25T07:16:51.487Z - Hash: 91795ba86580e14a - Time: 9472ms
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                                                                     | Names                                        | Raw Size
+runtime.js                                                                                              | runtime                                      | 14.48 kB |
+
+Lazy Chunk Files                                                                                        | Names                                        | Raw Size
+default-src_app_feature_modules_timesheets_admin-timesheet_admin-timesheet_component_ts-src_a-e2e4ec.js | feature_modules-timesheets-timesheets-module | 78.58 kB |
+
+39 unchanged chunks
+
+Build at: 2026-10-25T07:19:22.701Z - Hash: 28e9ab74e2258ab7 - Time: 24671ms
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                                                                     | Names                                            |  Raw Size
+runtime.js                                                                                              | runtime                                          |  14.48 kB |
+
+Lazy Chunk Files                                                                                        | Names                                            |  Raw Size
+src_app_feature_modules_organization_organization_module_ts.js                                          | feature_modules-organization-organization-module | 640.61 kB |
+default-src_app_feature_modules_timesheets_admin-timesheet_admin-timesheet_component_ts-src_a-e2e4ec.js | feature_modules-timesheets-timesheets-module     |  78.59 kB |
+
+38 unchanged chunks
+
+Build at: 2026-10-25T07:19:29.761Z - Hash: 79bac209fe79f8e9 - Time: 6826ms
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                              | Names                              |  Raw Size
+runtime.js                                       | runtime                            |  14.48 kB |
+
+Lazy Chunk Files                                 | Names                              |  Raw Size
+src_app_feature_modules_leave_leave_module_ts.js | feature_modules-leave-leave-module | 866.49 kB |
+
+39 unchanged chunks
+
+Build at: 2026-10-25T07:39:55.544Z - Hash: bd3fc73a0e18c17e - Time: 50768ms
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                                      | Names                                                      |  Raw Size
+runtime.js                                                               | runtime                                                    |  14.48 kB |
+
+Lazy Chunk Files                                                         | Names                                                      |  Raw Size
+src_app_feature_modules_interview-process_interview-process_module_ts.js | feature_modules-interview-process-interview-process-module | 224.37 kB |
+src_app_feature_modules_settings_settings_module_ts.js                   | feature_modules-settings-settings-module                   | 118.58 kB |
+
+38 unchanged chunks
+
+Build at: 2026-10-25T07:40:55.125Z - Hash: b57567c0dd0dd3f1 - Time: 15430ms
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                      | Names                                      | Raw Size
+runtime.js                                               | runtime                                    | 14.48 kB |
+
+Lazy Chunk Files                                         | Names                                      | Raw Size
+src_app_feature_modules_approvals_approvals_module_ts.js | feature_modules-approvals-approvals-module | 57.28 kB |
+
+39 unchanged chunks
+
+Build at: 2026-10-25T07:43:40.945Z - Hash: f807c3b9d62e56f9 - Time: 86420ms
+
+√ Compiled successfully.

@@ -1,0 +1,23 @@
+// Shared visual vocabulary. Brand artwork retains the original orange and green.
+:root {
+  --hrm-brand: #e47112;
+  --hrm-action: #ad4c08;
+  --hrm-action-hover: #873b06;
+  --hrm-accent: #487c17;
+  --hrm-canvas: #f6f7f9;
+  --hrm-surface: #ffffff;
+  --hrm-text: #253343;
+  --hrm-muted: #596778;
+  --hrm-border: #dce2e8;
+  --hrm-control-border: #8995a3;
+  --hrm-success: #176b4b;
+  --hrm-warning: #855309;
+  --hrm-danger: #b42332;
+  --hrm-info: #245c91;
+  --hrm-radius: 10px;
+  --hrm-control-radius: 6px;
+  --hrm-shadow: 0 2px 6px rgb(25 42 60 / 4%);
+  --hrm-overlay-shadow: 0 12px 40px rgb(25 42 60 / 14%);
+  --hrm-focus: #245c91;
+  --hrm-motion: 140ms;
+}

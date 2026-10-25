@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ChatbotComponent } from './chatbot.component';
@@ -8,7 +9,9 @@ describe('ChatbotComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ChatbotComponent]
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      declarations: [ChatbotComponent],
+      imports: [UiTestingModule]
     })
     .compileComponents();
     

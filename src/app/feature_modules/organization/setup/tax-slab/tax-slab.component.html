@@ -34,7 +34,7 @@
     <h1 mat-dialog-title>
       {{ (isEdit ? 'organization.tax_slab.modal.update' : 'organization.tax_slab.modal.add') | translate }}
     </h1>
-    <button mat-icon-button (click)="onClose()" class="me-4">
+    <button mat-icon-button (click)="onClose()" class="me-4" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>

@@ -47,3 +47,17 @@
     width: 40px;
     object-fit: cover;
 }
+/* Compact, wrapping header; the shell measures its actual height. */
+.navbar { background: white; border-bottom-color: var(--hrm-border); min-height: 65px; }
+.navbar .container-fluid { gap: 8px; }
+.navbar .text-right > .d-flex { flex-wrap: wrap; justify-content: flex-end; gap: 4px; }
+.profile-menu { background: transparent; color: var(--hrm-text); border: 1px solid transparent; border-radius: 8px; padding: 4px 8px; min-height: 44px; }
+.profile-menu:hover { background: var(--hrm-canvas); border-color: var(--hrm-border); }
+.profile-placeholder { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: var(--orange-10); color: var(--hrm-action); }
+.profile-img { box-shadow: var(--hrm-shadow); }
+.profile-menu > span { max-width: 220px; overflow-wrap: anywhere; text-align: left; }
+@media (max-width: 575.98px) {
+  .navbar .container-fluid { padding: 4px 8px; }
+  .navbar .container-fluid > .justify-content-end { margin-left: auto; }
+  .trial-banner { width: 100%; font-size: 13px; }
+}

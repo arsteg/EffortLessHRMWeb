@@ -35,7 +35,7 @@
     <h1 mat-dialog-title>
       {{ (isEdit ? 'attendance.sta_update_title' : 'attendance.sta_add_title') | translate }}
     </h1>
-    <button mat-icon-button mat-dialog-close="" class="me-4" (click)="closeModal()">
+    <button mat-icon-button mat-dialog-close="" class="me-4" (click)="closeModal()" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>

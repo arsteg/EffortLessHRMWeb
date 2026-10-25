@@ -21,20 +21,20 @@
 
   <div class="col-auto">
     <div class="dropdown">
-      <button mat-icon-button matTooltip="Download" matTooltipPosition="below"
+      <button mat-icon-button aria-label="Download timesheet" matTooltip="Download" matTooltipPosition="below"
           class="me-2" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
           <mat-icon>download</mat-icon>
       </button>
       <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuButton1" id="dropdown-export">
-        <li><a class="export-button" (click)="exportToCsv()">{{ 'reports.timesheet.csv' | translate }}</a></li>
-        <li><a class="export-button" (click)="exportToXlsx()">{{ 'reports.timesheet.xls' | translate }}</a></li>
-        <li><a class="export-button" (click)="exportToPdf()">{{ 'reports.timesheet.pdf' | translate }}</a></li>
+        <li><button type="button" class="export-button dropdown-item" (click)="exportToCsv()">{{ 'reports.timesheet.csv' | translate }}</button></li>
+        <li><button type="button" class="export-button dropdown-item" (click)="exportToXlsx()">{{ 'reports.timesheet.xls' | translate }}</button></li>
+        <li><button type="button" class="export-button dropdown-item" (click)="exportToPdf()">{{ 'reports.timesheet.pdf' | translate }}</button></li>
       </ul>
     </div>
   </div>
 </div>
 
-<div class="table-wrapper border-start border-end" style="overflow-x: auto;">
+<div tabindex="0" role="region" aria-label="Timesheet" class="table-wrapper border-start border-end" style="overflow-x: auto;">
   <div class="table-responsive">
   <table class="table table-bordered table-hover" id="userTimeSheet" #userTimeSheet style="min-width: max-content;">
     <thead>

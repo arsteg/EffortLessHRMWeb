@@ -1,0 +1,102 @@
+// Scoped to the authenticated workspace; marketing and exported documents keep
+// their own composition. Material overlays use the shared theme below.
+app-home {
+  color: var(--hrm-text);
+  --primary: var(--hrm-action);
+  --light-grey: var(--hrm-muted);
+  --card-border: var(--hrm-border);
+  --bs-body-color: var(--hrm-text);
+  --bs-secondary-color: var(--hrm-muted);
+  --bs-border-color: var(--hrm-border);
+
+  app-dashboard, app-user-dashboard {
+    h1 { font-size: 24px; line-height: 1.35; font-weight: 700; }
+    h2 { font-size: 18px; line-height: 1.4; font-weight: 700; }
+  }
+  .card { box-shadow: var(--hrm-shadow); }
+  .btn { min-height: 40px; border-radius: var(--hrm-control-radius); font-weight: 600; }
+  .btn-primary {
+    --bs-btn-bg: var(--hrm-action);
+    --bs-btn-border-color: var(--hrm-action);
+    --bs-btn-hover-bg: var(--hrm-action-hover);
+    --bs-btn-hover-border-color: var(--hrm-action-hover);
+    --bs-btn-active-bg: var(--hrm-action-hover);
+    --bs-btn-active-border-color: var(--hrm-action-hover);
+    --bs-btn-disabled-bg: var(--hrm-action);
+    --bs-btn-disabled-border-color: var(--hrm-action);
+  }
+  .mat-expansion-panel { border: 1px solid var(--hrm-border); box-shadow: var(--hrm-shadow); }
+  .mat-expansion-panel-header { min-height: 52px; height: auto; padding-block: 12px; }
+  .form-control, .form-select {
+    min-height: 42px;
+    border-color: var(--hrm-control-border);
+    border-radius: var(--hrm-control-radius);
+    font-size: 14px;
+  }
+  .form-control:focus, .form-select:focus {
+    border-color: var(--hrm-focus);
+    box-shadow: 0 0 0 3px rgb(36 92 145 / 15%);
+  }
+  .form-label, .form-check-label { color: var(--hrm-text); }
+  .formHeading { color: var(--hrm-action); text-decoration: none; font-weight: 700; }
+  .table-responsive { border-radius: var(--hrm-control-radius); }
+  .table:not(.attendance-calendar-table):not(.attendance-calendar-table-monthly):not(.payslipContainer *) {
+    --bs-table-bg: var(--hrm-surface);
+    --bs-table-color: var(--hrm-text);
+    --bs-table-border-color: var(--hrm-border);
+    --bs-table-hover-bg: #f8fafb;
+    font-size: 14px;
+  }
+  .submenuTab { min-height: 40px; color: var(--hrm-muted); border-radius: 6px; }
+  .submenuTab.active { color: var(--hrm-action); font-weight: 700; }
+  .subMenu { padding: 8px 0; }
+  .tabs { gap: 8px; padding-left: 0; flex-wrap: wrap; }
+  .tab-content { padding: 20px 0; }
+  .common { box-shadow: var(--hrm-shadow); border: 1px solid var(--hrm-border); }
+  .common:hover { transform: none; }
+  .error, .validationErroMessage { color: var(--hrm-danger); font-size: 13px; line-height: 1.5; }
+}
+
+// Namespaced library controls, including dialogs rendered outside app-home.
+.mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: var(--hrm-control-border);
+  --mdc-outlined-text-field-hover-outline-color: var(--hrm-text);
+  --mdc-outlined-text-field-focus-outline-color: var(--hrm-action);
+  --mdc-outlined-text-field-container-shape: 6px;
+  --mdc-filled-text-field-container-color: #f4f6f8;
+}
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: 12px;
+  --mdc-dialog-supporting-text-color: var(--hrm-text);
+}
+.mat-mdc-dialog-actions { gap: 8px; flex-wrap: wrap; }
+.mat-mdc-menu-panel { border: 1px solid var(--hrm-border); }
+app-sidebar .menu-item mat-icon path { fill: currentColor; }
+.mat-mdc-paginator { border-top: 1px solid var(--hrm-border); }
+.modal-content { border: 1px solid var(--hrm-border); border-radius: 12px; box-shadow: var(--hrm-overlay-shadow); }
+.modal-body { overflow-wrap: anywhere; }
+.modal-footer { gap: 8px; }
+.toast-container .ngx-toastr { box-shadow: var(--hrm-overlay-shadow); border-radius: 8px; }
+
+// Restore keyboard focus even where legacy styles disable box shadows.
+:where(a, button, input, select, textarea, [tabindex]):focus-visible,
+.mat-mdc-button-base:focus-visible,
+.btn:focus-visible,
+.form-control:focus-visible,
+app-sidebar .menu-item:focus-visible {
+  outline: 3px solid var(--hrm-focus);
+  outline-offset: 3px;
+}
+@media (max-width: 575.98px) {
+  app-home .content-wrapper h1 { font-size: 21px; }
+  .modal-content { padding: 12px; }
+  .mat-mdc-paginator-container { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

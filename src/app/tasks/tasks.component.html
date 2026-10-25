@@ -247,7 +247,7 @@
                         <!-- Actions -->
                         <td class="text-center pe-lg-1 pe-4">
                             <div ngbDropdown class="d-inline-block dropdown-center">
-                               <button mat-icon-button [matMenuTriggerFor]="actionMenu">
+                               <button mat-icon-button [matMenuTriggerFor]="actionMenu" aria-label="More actions">
                                     <mat-icon>more_vert</mat-icon>
                                 </button>
                                 <mat-menu #actionMenu="matMenu">
@@ -699,7 +699,7 @@
 <ng-template #addModal let-modal>
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>Create Task</h1>
-    <button mat-icon-button mat-dialog-close="" class="me-4">
+    <button mat-icon-button mat-dialog-close="" class="me-4" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>

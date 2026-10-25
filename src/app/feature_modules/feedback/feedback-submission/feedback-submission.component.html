@@ -1,7 +1,7 @@
 <div class="container py-3">
   <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" class="card shadow-sm">
     <div class="card-header bg-primary text-white">
-      <h5 class="mb-0">Submit Feedback</h5>
+      <h1 class="mb-0">Submit Feedback</h1>
     </div>
     <div class="card-body">
       <!-- Sender Name -->
@@ -52,7 +52,7 @@
 
         <!-- Number Field -->
         <div *ngIf="field.dataType.toLowerCase() === FieldType.Number" class="mb-3">
-          <input type="number" class="form-control" [formControlName]="field._id!" (input)="onTextareaChange(field._id!, $event)">
+          <input type="number" class="form-control" [formControlName]="field._id!" [attr.aria-label]="field.name" (input)="onTextareaChange(field._id!, $event)">
           <div class="text-danger mt-1" *ngIf="showValidationError(field._id!)">
             {{ field.name }} is required.
           </div>
@@ -60,7 +60,7 @@
 
         <!-- String Field (Multiline) -->
         <div *ngIf="field.dataType.toLowerCase() === FieldType.String" class="mb-3">
-          <textarea class="form-control" [formControlName]="field._id!" rows="3" placeholder="Enter your feedback here"   (input)="onTextareaChange(field._id!, $event)"></textarea>
+          <textarea class="form-control" [formControlName]="field._id!" [attr.aria-label]="field.name" rows="3" placeholder="Enter your feedback here"   (input)="onTextareaChange(field._id!, $event)"></textarea>
           <div class="text-danger mt-1" *ngIf="showValidationError(field._id!)">
             {{ field.name }} is required.
           </div>
@@ -69,13 +69,13 @@
         <!-- Rating -->
         <div *ngIf="field.dataType.toLowerCase() === FieldType.Rating" class="mb-3">
           <div class="star-rating d-flex align-items-center" (mouseleave)="resetPreview(field._id!)">
-            <span *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
-                  class="star mx-1"
+            <button type="button" *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
+                  class="star" [attr.aria-label]="field.name + ': ' + star + ' out of 5'" [attr.aria-pressed]="feedbackForm.get(field._id!)?.value === star"
                   [class.filled]="getDisplayedRating(field._id!) >= star"
                   (click)="setRating(field._id!, star)"
                   (mouseenter)="previewRating(field._id!, star)">
-              <i class="bi bi-star-fill"></i>
-            </span>
+              <i class="bi bi-star-fill" aria-hidden="true"></i>
+            </button>
           </div>
           <div class="text-danger mt-1" *ngIf="showValidationError(field._id!)">
             {{ field.name }} is required.
@@ -84,7 +84,7 @@
 
         <!-- Date -->
         <div *ngIf="field.dataType.toLowerCase() === FieldType.Date" class="mb-3">
-          <input type="date" class="form-control" [formControlName]="field._id!" (input)="onTextareaChange(field._id!, $event)">
+          <input type="date" class="form-control" [formControlName]="field._id!" [attr.aria-label]="field.name" (input)="onTextareaChange(field._id!, $event)">
           <div class="text-danger mt-1" *ngIf="showValidationError(field._id!)">
             {{ field.name }} is required.
           </div>
@@ -92,7 +92,7 @@
 
         <!-- Boolean -->
         <div *ngIf="field.dataType.toLowerCase() === FieldType.Date" class="form-check mb-3">
-          <input type="checkbox" class="form-check-input" [formControlName]="field._id!" id="checkbox-{{ field._id }}"  (change)="onCheckboxChange(field._id!, $event)">
+          <input type="checkbox" class="form-check-input" [formControlName]="field._id!" [attr.aria-label]="field.name" id="checkbox-{{ field._id }}"  (change)="onCheckboxChange(field._id!, $event)">
           <label class="form-check-label" for="checkbox-{{ field._id }}"></label>
           <div class="text-danger mt-1" *ngIf="showValidationError(field._id!)">
             {{ field.name }} is required.

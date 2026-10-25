@@ -2,7 +2,7 @@
     <div class="container-fluid d-flex">
         <div class="d-flex p-2">
             <img src="assets/logo/expanded-logo.svg" alt="Effortless HRM" width="110">
-            <button mat-icon-button (click)="toggleMenu()" class="ms-0 ms-md-5">
+            <button mat-icon-button (click)="toggleMenu()" aria-label="Toggle navigation" class="ms-0 ms-md-5">
                 <mat-icon svgIcon="menu"></mat-icon>
             </button>
         </div>
@@ -22,23 +22,23 @@
                     <hrm-language-selector cssClass="pe-2"></hrm-language-selector>
                     <app-notification></app-notification>
                     <section>
-                        <div class="d-flex align-items-center ms-3 profile-menu" #profileMenuTrigger="matMenuTrigger"
+                        <button type="button" aria-label="Account menu" class="d-flex align-items-center ms-3 profile-menu" #profileMenuTrigger="matMenuTrigger"
                             [matMenuTriggerFor]="profileMenu">
                             @if(loggedInUser?.photo) {
-                            <img src="{{loggedInUser?.photo}}" class="header-profile-img">
+                            <img src="{{loggedInUser?.photo}}" alt="" class="header-profile-img">
                             }
-                            @else {<button mat-icon-button>
+                            @else {<span class="profile-placeholder">
                                 <mat-icon>person</mat-icon>
-                            </button>
+                            </span>
                             }
 
-                            <p class="ps-2 mb-0 d-lg-block d-none">
+                            <span class="ps-2 mb-0 d-lg-block d-none">
                                 @if(loggedInUser) {
                                 {{loggedInUser?.firstName + ' ' + loggedInUser?.lastName}}
                                 }
-                            </p>
+                            </span>
                             <mat-icon>keyboard_arrow_down</mat-icon>
-                        </div>
+                        </button>
 
                         <mat-menu #profileMenu="matMenu" class="dropdown-menu-default drpLog shadow">
                             <div (click)="$event.stopPropagation()">
@@ -48,7 +48,7 @@
                                     <img [src]="loggedInUser?.photo || '../assets/profile-image.png'"
                                         class="profile-img" width="100" height="100" alt="Profile Picture">
 
-                                    <button mat-icon-button class="edit-icon" (click)="triggerFileInput()">
+                                    <button mat-icon-button class="edit-icon" aria-label="Change profile photo" (click)="triggerFileInput()">
                                         <mat-icon>edit</mat-icon>
                                     </button>
 

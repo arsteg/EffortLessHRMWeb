@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MainComponent } from './main.component';
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 
 describe('MainComponent', () => {
   let component: MainComponent;
@@ -8,6 +9,7 @@ describe('MainComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [UiTestingModule],
       declarations: [ MainComponent ]
     })
     .compileComponents();

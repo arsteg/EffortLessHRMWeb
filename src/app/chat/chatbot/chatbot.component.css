@@ -15,7 +15,7 @@
 }
 
 .chat-header {
-    background-color: var(--orange-60);
+    background-color: var(--hrm-action, #ad4c08);
     color: var(--white);
     padding: var(--size-10);
     font-size: var(--size-18);
@@ -23,6 +23,7 @@
 }
 
 .chat-messages {
+    min-height: 0;
     flex: 1;
     padding: var(--size-10);
     overflow-y: auto;
@@ -43,6 +44,7 @@
 }
 
 .message-bubble {
+    overflow-wrap: anywhere;
     max-width: 70%;
     padding: var(--size-10);
     border-radius: 15px;
@@ -51,7 +53,7 @@
 }
 
 .message.user .message-bubble {
-    background-color: var(--orange-60);
+    background-color: var(--hrm-action, #ad4c08);
     color: var(--white);
     border-top-right-radius: 0;
 }
@@ -69,6 +71,7 @@
 }
 
 .chat-input input {
+    min-width: 0;
     flex: 1;
     padding: var(--size-10);
     border: 1px solid #ccc;

@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UpdateShortLeaveComponent } from './update-short-leave.component';
@@ -8,6 +9,8 @@ describe('UpdateShortLeaveComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      imports: [UiTestingModule],
       declarations: [UpdateShortLeaveComponent]
     })
     .compileComponents();

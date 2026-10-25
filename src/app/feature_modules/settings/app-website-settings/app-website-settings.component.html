@@ -130,9 +130,9 @@
                                     <label for="productive" class="text-start">Productive</label>
                                 </div>
                                     <div class="col-md-8">
-                                        <input id="productivityyes" type="radio" [value]="true" checked name="isProductive" ngModel />
+                                        <input id="productivityyes" type="radio" [value]="true" checked name="isProductive" formControlName="isProductive" />
                                         <label class="custom-control-label me-3" for="productivityyes">Yes</label>
-                                        <input id="productivityno" type="radio" [value]="false" name="isProductive" ngModel />
+                                        <input id="productivityno" type="radio" [value]="false" name="isProductive" formControlName="isProductive" />
                                         <label class="custom-control-label" for="productivityno">No</label>
                                         <div *ngIf="addForm.controls['isProductive'].invalid && addForm.controls['isProductive'].touched"
                                             class="alert alert-danger error">

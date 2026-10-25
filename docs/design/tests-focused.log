@@ -1,0 +1,38 @@
+
+> effort-less-hrmweb@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless --include=src/app/app.component.spec.ts --include=src/app/layout/sidebar.directive.spec.ts --include=src/app/feature_modules/attendance/on-duty-records/approved/approved.component.spec.ts --include=src/app/feature_modules/attendance/on-duty-records/cancelled/cancelled.component.spec.ts --include=src/app/feature_modules/attendance/on-duty-records/rejected/rejected.component.spec.ts --include=src/app/feature_modules/interview-process/feedback-field/feedback-field.component.spec.ts --include=src/app/feature_modules/logs/log.component/log.component.component.spec.ts
+
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+25 10 2026 12:41:08.343:INFO [karma-server]: Karma v6.3.20 server started at http://localhost:9876/
+25 10 2026 12:41:08.350:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+25 10 2026 12:41:08.363:INFO [launcher]: Starting browser ChromeHeadless
+25 10 2026 12:41:14.756:INFO [Chrome Headless 155.0.0.0 (Windows 10)]: Connected on socket NRvvunW65HmEttEZAAAB with id 72300934
+Chrome Headless 155.0.0.0 (Windows 10): Executed 0 of 11[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 0 of 11[32m SUCCESS[39m (0 secs / 0 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 1 of 11[32m SUCCESS[39m (0 secs / 0.201 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 1 of 11[32m SUCCESS[39m (0 secs / 0.201 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 2 of 11[32m SUCCESS[39m (0 secs / 0.22 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 2 of 11[32m SUCCESS[39m (0 secs / 0.22 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 3 of 11[32m SUCCESS[39m (0 secs / 0.235 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 4 of 11[32m SUCCESS[39m (0 secs / 0.251 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 5 of 11[32m SUCCESS[39m (0 secs / 0.269 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 6 of 11[32m SUCCESS[39m (0 secs / 0.281 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 7 of 11[32m SUCCESS[39m (0 secs / 0.292 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 8 of 11[32m SUCCESS[39m (0 secs / 0.498 secs)
+[1A[2KLOG: [36m'Log received:', Object{message: 'Isolated unit test log'}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 8 of 11[32m SUCCESS[39m (0 secs / 0.498 secs)
+LOG: 'Log received:', Object{message: 'Isolated unit test log'}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 9 of 11[32m SUCCESS[39m (0 secs / 0.556 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 10 of 11[32m SUCCESS[39m (0 secs / 0.643 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 11 of 11[32m SUCCESS[39m (0 secs / 0.67 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 11 of 11[32m SUCCESS[39m (0.726 secs / 0.67 secs)
+[32mTOTAL: 11 SUCCESS[39m
+√ Browser application bundle generation complete.
+√ Browser application bundle generation complete.

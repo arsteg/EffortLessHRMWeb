@@ -7,8 +7,7 @@
                 <mat-form-field appearance="outline" class="w-100 mx-1">
                     <mat-label>Select User</mat-label>
                     <mat-select multiple [(ngModel)]="selectedUser">
-                        <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()"
-                            [selected]="selectedUser?.includes(member?.id)">
+                        <mat-option *ngFor="let member of members" [value]="member.id" (click)="filterData()">
                             {{member.name | titlecase}}
                         </mat-option>
                     </mat-select>
@@ -16,8 +15,7 @@
                 <mat-form-field appearance="outline" class="w-100 mx-1">
                     <mat-label>Select Project</mat-label>
                     <mat-select multiple [(ngModel)]="selectedProject">
-                        <mat-option *ngFor="let project of projectList" [value]="project.id" (click)="filterData()"
-                            [selected]="selectedProject?.includes(project?.id)">
+                        <mat-option *ngFor="let project of projectList" [value]="project.id" (click)="filterData()">
                             {{project.projectName | titlecase}}
                         </mat-option>
                     </mat-select>

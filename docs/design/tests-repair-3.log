@@ -1,0 +1,870 @@
+
+> effort-less-hrmweb@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless
+
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+25 10 2026 13:16:49.017:INFO [karma-server]: Karma v6.3.20 server started at http://localhost:9876/
+25 10 2026 13:16:49.047:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+25 10 2026 13:16:49.067:INFO [launcher]: Starting browser ChromeHeadless
+25 10 2026 13:16:53.261:INFO [Chrome Headless 155.0.0.0 (Windows 10)]: Connected on socket TrEBF92qLPYaFfJCAAAC with id 44685622
+25 10 2026 13:16:53.814:INFO [Chrome Headless 155.0.0.0 (Windows 10)]: Connected on socket zg6fo7kX3_6NxXk9AAAD with id 25264825
+Chrome Headless 155.0.0.0 (Windows 10) LOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+
+
+
+
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: [36m'NG0303: Can't bind to 'ngModel' since it isn't a known property of 'select' (used in the 'PaginationComponent' component template).
+1. If 'select' is an Angular component and it has the 'ngModel' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: 'NG0303: Can't bind to 'ngModel' since it isn't a known property of 'select' (used in the 'PaginationComponent' component template).
+1. If 'select' is an Angular component and it has the 'ngModel' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+
+
+
+
+
+
+
+Chrome Headless 155.0.0.0 (Windows 10) LOG: [36m'Language initialized:', 'en'[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) LOG: 'Language initialized:', 'en'
+
+Chrome Headless 155.0.0.0 (Windows 10) LOG: [36m'Language initialized:', 'en'[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) LOG: 'Language initialized:', 'en'
+
+Chrome Headless 155.0.0.0 (Windows 10) LOG: [36m'Language initialized:', 'en'[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) LOG: 'Language initialized:', 'en'
+
+
+[31mChrome Headless 155.0.0.0 (Windows 10) UserDashboardComponent should create FAILED[39m
+	Error: NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked. Previous value: '400'. Current value: '364'. Expression location: UserDashboardComponent component. Find more at https://angular.io/errors/NG0100
+	error properties: Object({ code: -100 })
+	Error: NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked. Previous value: '400'. Current value: '364'. Expression location: UserDashboardComponent component. Find more at https://angular.io/errors/NG0100
+	    at throwErrorIfNoChangesMode (node_modules/@angular/core/fesm2022/core.mjs:11912:11)
+	    at bindingUpdated (node_modules/@angular/core/fesm2022/core.mjs:17587:17)
+	    at checkStylingProperty (node_modules/@angular/core/fesm2022/core.mjs:20546:32)
+	    at ɵɵstyleProp (node_modules/@angular/core/fesm2022/core.mjs:20435:5)
+	    at templateFn (ng:///UserDashboardComponent.js:574:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12263:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13490:13)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:13677:5)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/core.mjs:13666:5)
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: [36m'ERROR', Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: 'ERROR', Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: [36m'ERROR', Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: 'ERROR', Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: [36m'ERROR', Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: 'ERROR', Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: [36m'ERROR', Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: 'ERROR', Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: [36m'ERROR', Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: 'ERROR', Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: [36m'ERROR', Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR: 'ERROR', Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+
+
+
+
+
+
+
+[31mChrome Headless 155.0.0.0 (Windows 10) ERROR[39m
+  Uncaught ReferenceError: jasmineRequire is not defined
+  at node_modules/karma-jasmine/lib/boot.js:14:17
+  
+  ReferenceError: jasmineRequire is not defined
+      at node_modules/karma-jasmine/lib/boot.js:14:17
+      at node_modules/karma-jasmine/lib/boot.js:43:2
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR
+  Uncaught ReferenceError: jasmineRequire is not defined
+  at node_modules/karma-jasmine/lib/boot.js:14:17
+  
+  ReferenceError: jasmineRequire is not defined
+      at node_modules/karma-jasmine/lib/boot.js:14:17
+      at node_modules/karma-jasmine/lib/boot.js:43:2
+[31mChrome Headless 155.0.0.0 (Windows 10) ERROR[39m
+  Uncaught ReferenceError: require is not defined
+  at node_modules/karma-jasmine-html-reporter/src/lib/html.jasmine.reporter.js:23:29
+  
+  ReferenceError: require is not defined
+      at node_modules/karma-jasmine-html-reporter/src/lib/html.jasmine.reporter.js:23:29
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR
+  Uncaught ReferenceError: require is not defined
+  at node_modules/karma-jasmine-html-reporter/src/lib/html.jasmine.reporter.js:23:29
+  
+  ReferenceError: require is not defined
+      at node_modules/karma-jasmine-html-reporter/src/lib/html.jasmine.reporter.js:23:29
+[31mChrome Headless 155.0.0.0 (Windows 10) ERROR[39m
+  Uncaught TypeError: Cannot read properties of undefined (reading 'html')
+  at node_modules/karma-jasmine-html-reporter/src/lib/adapter.js:6:18
+  
+  TypeError: Cannot read properties of undefined (reading 'html')
+      at node_modules/karma-jasmine-html-reporter/src/lib/adapter.js:6:18
+      at node_modules/karma-jasmine-html-reporter/src/lib/adapter.js:77:3
+
+Chrome Headless 155.0.0.0 (Windows 10) ERROR
+  Uncaught TypeError: Cannot read properties of undefined (reading 'html')
+  at node_modules/karma-jasmine-html-reporter/src/lib/adapter.js:6:18
+  
+  TypeError: Cannot read properties of undefined (reading 'html')
+      at node_modules/karma-jasmine-html-reporter/src/lib/adapter.js:6:18
+      at node_modules/karma-jasmine-html-reporter/src/lib/adapter.js:77:3
+
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 0 of 142[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 1 of 142[32m SUCCESS[39m (0 secs / 0.547 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 2 of 142[32m SUCCESS[39m (0 secs / 0.633 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 3 of 142[32m SUCCESS[39m (0 secs / 0.674 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 4 of 142[32m SUCCESS[39m (0 secs / 0.705 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 5 of 142[32m SUCCESS[39m (0 secs / 0.735 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 6 of 142[32m SUCCESS[39m (0 secs / 0.809 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 6 of 142[32m SUCCESS[39m (0 secs / 0.809 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 7 of 142[32m SUCCESS[39m (0 secs / 0.836 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 7 of 142[32m SUCCESS[39m (0 secs / 0.836 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 8 of 142[32m SUCCESS[39m (0 secs / 0.846 secs)
+[1A[2KLOG: [36m'Language initialized:', 'en'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 8 of 142[32m SUCCESS[39m (0 secs / 0.846 secs)
+LOG: 'Language initialized:', 'en'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 9 of 142[32m SUCCESS[39m (0 secs / 0.865 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 10 of 142[32m SUCCESS[39m (0 secs / 0.998 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 11 of 142[32m SUCCESS[39m (0 secs / 1.143 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 12 of 142[32m SUCCESS[39m (0 secs / 1.232 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 13 of 142[32m SUCCESS[39m (0 secs / 1.279 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 14 of 142[32m SUCCESS[39m (0 secs / 1.34 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 15 of 142[32m SUCCESS[39m (0 secs / 1.35 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 16 of 142[32m SUCCESS[39m (0 secs / 1.51 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 17 of 142[32m SUCCESS[39m (0 secs / 1.556 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 18 of 142[32m SUCCESS[39m (0 secs / 1.59 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 19 of 142[32m SUCCESS[39m (0 secs / 1.644 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 20 of 142[32m SUCCESS[39m (0 secs / 1.685 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 21 of 142[32m SUCCESS[39m (0 secs / 1.731 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 22 of 142[32m SUCCESS[39m (0 secs / 1.769 secs)
+[1A[2KWARN: [36m'
+  It looks like you're using ngModel on the same form field as formControlName.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlName#use-with-ngmodel
+  '[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 22 of 142[32m SUCCESS[39m (0 secs / 1.769 secs)
+WARN: '
+  It looks like you're using ngModel on the same form field as formControlName.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlName#use-with-ngmodel
+  '
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 23 of 142[32m SUCCESS[39m (0 secs / 1.841 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 24 of 142[32m SUCCESS[39m (0 secs / 1.863 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 25 of 142[32m SUCCESS[39m (0 secs / 1.903 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 26 of 142[32m SUCCESS[39m (0 secs / 1.953 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 27 of 142[32m SUCCESS[39m (0 secs / 1.992 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 28 of 142[32m SUCCESS[39m (0 secs / 2.016 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 29 of 142[32m SUCCESS[39m (0 secs / 2.056 secs)
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 29 of 142[32m SUCCESS[39m (0 secs / 2.056 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 30 of 142[32m SUCCESS[39m (0 secs / 2.204 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 31 of 142[32m SUCCESS[39m (0 secs / 2.259 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 32 of 142[32m SUCCESS[39m (0 secs / 2.271 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 33 of 142[32m SUCCESS[39m (0 secs / 2.341 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 34 of 142[32m SUCCESS[39m (0 secs / 2.441 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 35 of 142[32m SUCCESS[39m (0 secs / 2.493 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 36 of 142[32m SUCCESS[39m (0 secs / 2.516 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 37 of 142[32m SUCCESS[39m (0 secs / 2.608 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 38 of 142[32m SUCCESS[39m (0 secs / 2.642 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 39 of 142[32m SUCCESS[39m (0 secs / 2.709 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 40 of 142[32m SUCCESS[39m (0 secs / 2.799 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 41 of 142[32m SUCCESS[39m (0 secs / 2.843 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 42 of 142[32m SUCCESS[39m (0 secs / 2.887 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 43 of 142[32m SUCCESS[39m (0 secs / 2.892 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 44 of 142[32m SUCCESS[39m (0 secs / 2.914 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 45 of 142[32m SUCCESS[39m (0 secs / 2.955 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 46 of 142[32m SUCCESS[39m (0 secs / 3.016 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 47 of 142[32m SUCCESS[39m (0 secs / 3.085 secs)
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 47 of 142[32m SUCCESS[39m (0 secs / 3.085 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ERROR[39m
+  Uncaught ReferenceError: describe is not defined
+  at http://localhost:9876/_karma_webpack_/main.js:19100:1
+  
+  ReferenceError: describe is not defined
+      at Module.47288 (http://localhost:9876/_karma_webpack_/webpack:/src/app/app.component.spec.ts:15:1)
+      at __webpack_require__ (http://localhost:9876/_karma_webpack_/webpack:/webpack/bootstrap:19:1)
+      at __webpack_exec__ (http://localhost:9876/_karma_webpack_/main.js:47988:48)
+      at http://localhost:9876/_karma_webpack_/main.js:47989:79
+      at __webpack_require__.O (http://localhost:9876/_karma_webpack_/webpack:/webpack/runtime/chunk loaded:23:1)
+      at http://localhost:9876/_karma_webpack_/main.js:47990:56
+      at webpackJsonpCallback (http://localhost:9876/_karma_webpack_/webpack:/webpack/runtime/jsonp chunk loading:71:1)
+      at http://localhost:9876/_karma_webpack_/main.js:1:85
+Chrome Headless 155.0.0.0 (Windows 10): Executed 47 of 142[32m SUCCESS[39m (0 secs / 3.085 secs)
+Chrome Headless 155.0.0.0 (Windows 10) ERROR
+  Uncaught ReferenceError: describe is not defined
+  at http://localhost:9876/_karma_webpack_/main.js:19100:1
+  
+  ReferenceError: describe is not defined
+      at Module.47288 (http://localhost:9876/_karma_webpack_/webpack:/src/app/app.component.spec.ts:15:1)
+      at __webpack_require__ (http://localhost:9876/_karma_webpack_/webpack:/webpack/bootstrap:19:1)
+      at __webpack_exec__ (http://localhost:9876/_karma_webpack_/main.js:47988:48)
+      at http://localhost:9876/_karma_webpack_/main.js:47989:79
+      at __webpack_require__.O (http://localhost:9876/_karma_webpack_/webpack:/webpack/runtime/chunk loaded:23:1)
+      at http://localhost:9876/_karma_webpack_/main.js:47990:56
+      at webpackJsonpCallback (http://localhost:9876/_karma_webpack_/webpack:/webpack/runtime/jsonp chunk loading:71:1)
+      at http://localhost:9876/_karma_webpack_/main.js:1:85
+[1A[2KLOG: [36mtrue[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 47 of 142[32m SUCCESS[39m (0 secs / 3.085 secs)
+LOG: true
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 48 of 142[32m SUCCESS[39m (0 secs / 3.153 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 49 of 142[32m SUCCESS[39m (0 secs / 3.187 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 50 of 142[32m SUCCESS[39m (0 secs / 3.232 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 51 of 142[32m SUCCESS[39m (0 secs / 3.285 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 52 of 142[32m SUCCESS[39m (0 secs / 3.323 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 53 of 142[32m SUCCESS[39m (0 secs / 3.366 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 54 of 142[32m SUCCESS[39m (0 secs / 3.412 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 55 of 142[32m SUCCESS[39m (0 secs / 3.477 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 56 of 142[32m SUCCESS[39m (0 secs / 3.479 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 57 of 142[32m SUCCESS[39m (0 secs / 3.499 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 58 of 142[32m SUCCESS[39m (0 secs / 3.534 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 59 of 142[32m SUCCESS[39m (0 secs / 3.572 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 60 of 142[32m SUCCESS[39m (0 secs / 3.597 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 61 of 142[32m SUCCESS[39m (0 secs / 3.757 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 62 of 142[32m SUCCESS[39m (0 secs / 3.803 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 63 of 142[32m SUCCESS[39m (0 secs / 3.805 secs)
+[1A[2KERROR: [36m'NG0304: 'hrm-language-selector' is not a known element (used in the 'MainComponent' component template):
+1. If 'hrm-language-selector' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'hrm-language-selector' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 63 of 142[32m SUCCESS[39m (0 secs / 3.805 secs)
+ERROR: 'NG0304: 'hrm-language-selector' is not a known element (used in the 'MainComponent' component template):
+1. If 'hrm-language-selector' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'hrm-language-selector' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KLOG: [36mElementRef{nativeElement: <section _ngcontent-a-c3310946234="" id="hrmFeatures" class="manage hrmFeatures pt-5"><div _ngcontent-a-c3310946234="" class="section-container"><div _ngcontent-a-c3310946234="" data-aos="fade-up" class="manage__head aos-init"><h2 _ngcontent-a-c3310946234="" class="manage__title">HRM Features</h2><div _ngcontent-a-c3310946234="" class="manage__subtitle">EffortlessHRM streamlines HR management and time tracking with innovative features tailored to enhance the employee experience and organizational efficiency.</div></div><div _ngcontent-a-c3310946234="" class="row mt-5 d-flex justify-content-evenly"><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_1"><img _ngcontent-a-c3310946234="" src="assets/main/1.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Organization Set-up</h5><p _ngcontent-a-c3310946234="">Effortlessly set up your organization, assign templates, managers, and create an organizational hierarchy. Bulk upload employee data and manage leaves, expenses, and attendance with ease.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_2"><img _ngcontent-a-c3310946234="" src="assets/main/2.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Management Dashboards &amp; Reports</h5><p _ngcontent-a-c3310946234="">Access actionable insights and analytics to drive better business outcomes. Govern data access and share insights with customizable reports in various formats.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_3"><img _ngcontent-a-c3310946234="" src="assets/main/3.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Employee Onboarding</h5><p _ngcontent-a-c3310946234="">Simplify employee onboarding with integrated HR management. Set up multiple office locations, departments, designations, and streamline the onboarding process for new hires.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_4"><img _ngcontent-a-c3310946234="" src="assets/main/4.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Payroll</h5><p _ngcontent-a-c3310946234="">Organize payroll tasks efficiently with automated salary slip generation and CTC calculations, ensuring accurate and timely employee payments.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_5"><img _ngcontent-a-c3310946234="" src="assets/main/5.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Expense Management</h5><p _ngcontent-a-c3310946234="">Streamline expense reporting with easy-to-use modules that sync with employee reporting managers for seamless approval processes. Define expense policies, track expenses, and optimize expenditures. </p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_6"><img _ngcontent-a-c3310946234="" src="assets/main/6.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Attendance Management</h5><p _ngcontent-a-c3310946234="">Adapt to complex labor environments with automated attendance tracking and comprehensive reporting features. Manage time logs, approvals, and off-site worker attendance effortlessly.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_7"><img _ngcontent-a-c3310946234="" src="assets/main/7.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Leave Management</h5><p _ngcontent-a-c3310946234="">Customize leave policies and structures, automate leave approvals, and manage leave entitlements with ease. Configure different templates and workflows to suit departmental requirements.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_8"><img _ngcontent-a-c3310946234="" src="assets/main/8.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Recruitment System</h5><p _ngcontent-a-c3310946234="">Simplify recruitment processes with EffortlessHRM's intuitive features for job requisition, candidate engagement, collaboration, and onboarding.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_9"><img _ngcontent-a-c3310946234="" src="assets/main/9.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Interview Process</h5><p _ngcontent-a-c3310946234="">Create custom templates to streamline candidate data storage, interview scheduling, and feedback collection. Conduct interviews online and efficiently manage the entire recruitment process.</p></div></div></div></section>}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 63 of 142[32m SUCCESS[39m (0 secs / 3.805 secs)
+LOG: ElementRef{nativeElement: <section _ngcontent-a-c3310946234="" id="hrmFeatures" class="manage hrmFeatures pt-5"><div _ngcontent-a-c3310946234="" class="section-container"><div _ngcontent-a-c3310946234="" data-aos="fade-up" class="manage__head aos-init"><h2 _ngcontent-a-c3310946234="" class="manage__title">HRM Features</h2><div _ngcontent-a-c3310946234="" class="manage__subtitle">EffortlessHRM streamlines HR management and time tracking with innovative features tailored to enhance the employee experience and organizational efficiency.</div></div><div _ngcontent-a-c3310946234="" class="row mt-5 d-flex justify-content-evenly"><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_1"><img _ngcontent-a-c3310946234="" src="assets/main/1.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Organization Set-up</h5><p _ngcontent-a-c3310946234="">Effortlessly set up your organization, assign templates, managers, and create an organizational hierarchy. Bulk upload employee data and manage leaves, expenses, and attendance with ease.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_2"><img _ngcontent-a-c3310946234="" src="assets/main/2.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Management Dashboards &amp; Reports</h5><p _ngcontent-a-c3310946234="">Access actionable insights and analytics to drive better business outcomes. Govern data access and share insights with customizable reports in various formats.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_3"><img _ngcontent-a-c3310946234="" src="assets/main/3.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Employee Onboarding</h5><p _ngcontent-a-c3310946234="">Simplify employee onboarding with integrated HR management. Set up multiple office locations, departments, designations, and streamline the onboarding process for new hires.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_4"><img _ngcontent-a-c3310946234="" src="assets/main/4.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Payroll</h5><p _ngcontent-a-c3310946234="">Organize payroll tasks efficiently with automated salary slip generation and CTC calculations, ensuring accurate and timely employee payments.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_5"><img _ngcontent-a-c3310946234="" src="assets/main/5.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Expense Management</h5><p _ngcontent-a-c3310946234="">Streamline expense reporting with easy-to-use modules that sync with employee reporting managers for seamless approval processes. Define expense policies, track expenses, and optimize expenditures. </p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_6"><img _ngcontent-a-c3310946234="" src="assets/main/6.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Attendance Management</h5><p _ngcontent-a-c3310946234="">Adapt to complex labor environments with automated attendance tracking and comprehensive reporting features. Manage time logs, approvals, and off-site worker attendance effortlessly.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_7"><img _ngcontent-a-c3310946234="" src="assets/main/7.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Leave Management</h5><p _ngcontent-a-c3310946234="">Customize leave policies and structures, automate leave approvals, and manage leave entitlements with ease. Configure different templates and workflows to suit departmental requirements.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_8"><img _ngcontent-a-c3310946234="" src="assets/main/8.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Recruitment System</h5><p _ngcontent-a-c3310946234="">Simplify recruitment processes with EffortlessHRM's intuitive features for job requisition, candidate engagement, collaboration, and onboarding.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_9"><img _ngcontent-a-c3310946234="" src="assets/main/9.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Interview Process</h5><p _ngcontent-a-c3310946234="">Create custom templates to streamline candidate data storage, interview scheduling, and feedback collection. Conduct interviews online and efficiently manage the entire recruitment process.</p></div></div></div></section>}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 64 of 142[32m SUCCESS[39m (0 secs / 4.06 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 65 of 142[32m SUCCESS[39m (0 secs / 4.078 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 66 of 142[32m SUCCESS[39m (0 secs / 4.145 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 67 of 142[32m SUCCESS[39m (0 secs / 4.174 secs)
+[1A[2KWARN: [36m'
+  It looks like you're using ngModel on the same form field as formControl.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlDirective#use-with-ngmodel
+  '[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 67 of 142[32m SUCCESS[39m (0 secs / 4.174 secs)
+WARN: '
+  It looks like you're using ngModel on the same form field as formControl.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlDirective#use-with-ngmodel
+  '
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 68 of 142[32m SUCCESS[39m (0 secs / 4.223 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 69 of 142[32m SUCCESS[39m (0 secs / 4.25 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 70 of 142[32m SUCCESS[39m (0 secs / 4.296 secs)
+[1A[2KLOG: [36m'Log received:', Object{message: 'Isolated unit test log'}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 70 of 142[32m SUCCESS[39m (0 secs / 4.296 secs)
+LOG: 'Log received:', Object{message: 'Isolated unit test log'}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 71 of 142[32m SUCCESS[39m (0 secs / 4.321 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 72 of 142[32m SUCCESS[39m (0 secs / 4.367 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 73 of 142[32m SUCCESS[39m (0 secs / 4.392 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 74 of 142[32m SUCCESS[39m (0 secs / 4.411 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 75 of 142[32m SUCCESS[39m (0 secs / 4.439 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 76 of 142[32m SUCCESS[39m (0 secs / 4.497 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 77 of 142[32m SUCCESS[39m (0 secs / 4.53 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 78 of 142[32m SUCCESS[39m (0 secs / 4.532 secs)
+[1A[2KLOG: [36m'unit-test-user'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 78 of 142[32m SUCCESS[39m (0 secs / 4.532 secs)
+LOG: 'unit-test-user'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 79 of 142[32m SUCCESS[39m (0 secs / 4.602 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 80 of 142[32m SUCCESS[39m (0 secs / 4.607 secs)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 80 of 142[32m SUCCESS[39m (0 secs / 4.607 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 80 of 142[32m SUCCESS[39m (0 secs / 4.607 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 80 of 142[32m SUCCESS[39m (0 secs / 4.607 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 80 of 142[32m SUCCESS[39m (0 secs / 4.607 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 80 of 142[32m SUCCESS[39m (0 secs / 4.607 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 80 of 142[32m SUCCESS[39m (0 secs / 4.607 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 81 of 142[32m SUCCESS[39m (0 secs / 4.643 secs)
+[1A[2KLOG: [36m2026[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 81 of 142[32m SUCCESS[39m (0 secs / 4.643 secs)
+LOG: 2026
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 82 of 142[32m SUCCESS[39m (0 secs / 4.703 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 83 of 142[32m SUCCESS[39m (0 secs / 4.708 secs)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 83 of 142[32m SUCCESS[39m (0 secs / 4.708 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 83 of 142[32m SUCCESS[39m (0 secs / 4.708 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 83 of 142[32m SUCCESS[39m (0 secs / 4.708 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 83 of 142[32m SUCCESS[39m (0 secs / 4.708 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 83 of 142[32m SUCCESS[39m (0 secs / 4.708 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 83 of 142[32m SUCCESS[39m (0 secs / 4.708 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 84 of 142[32m SUCCESS[39m (0 secs / 4.88 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 85 of 142[32m SUCCESS[39m (0 secs / 4.889 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 86 of 142[32m SUCCESS[39m (0 secs / 4.909 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 87 of 142[32m SUCCESS[39m (0 secs / 4.93 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 88 of 142[32m SUCCESS[39m (0 secs / 4.983 secs)
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 88 of 142[32m SUCCESS[39m (0 secs / 4.983 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 89 of 142[32m SUCCESS[39m (0 secs / 5.021 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 90 of 142[32m SUCCESS[39m (0 secs / 5.054 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 91 of 142[32m SUCCESS[39m (0 secs / 5.066 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 92 of 142[32m SUCCESS[39m (0 secs / 5.092 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 93 of 142[32m SUCCESS[39m (0 secs / 5.141 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 94 of 142[32m SUCCESS[39m (0 secs / 5.174 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 95 of 142[32m SUCCESS[39m (0 secs / 5.183 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 96 of 142[32m SUCCESS[39m (0 secs / 5.203 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 97 of 142[32m SUCCESS[39m (0 secs / 5.224 secs)
+[1A[2KERROR: [36m'NG0304: 'app-tax-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 97 of 142[32m SUCCESS[39m (0 secs / 5.224 secs)
+ERROR: 'NG0304: 'app-tax-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-tax-component-by-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-component-by-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-component-by-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 97 of 142[32m SUCCESS[39m (0 secs / 5.224 secs)
+ERROR: 'NG0304: 'app-tax-component-by-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-component-by-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-component-by-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'isEdit' since it isn't a known property of 'app-tax-section' (used in the 'TaxDeclarationComponent' component template).
+1. If 'app-tax-section' is an Angular component and it has the 'isEdit' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 97 of 142[32m SUCCESS[39m (0 secs / 5.224 secs)
+ERROR: 'NG0303: Can't bind to 'isEdit' since it isn't a known property of 'app-tax-section' (used in the 'TaxDeclarationComponent' component template).
+1. If 'app-tax-section' is an Angular component and it has the 'isEdit' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 98 of 142[32m SUCCESS[39m (0 secs / 5.234 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 99 of 142[32m SUCCESS[39m (0 secs / 5.247 secs)
+[1A[2KERROR: [36m'NG0303: Can't bind to 'ngModel' since it isn't a known property of 'select' (used in the 'PaginationComponent' component template).
+1. If 'select' is an Angular component and it has the 'ngModel' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 99 of 142[32m SUCCESS[39m (0 secs / 5.247 secs)
+ERROR: 'NG0303: Can't bind to 'ngModel' since it isn't a known property of 'select' (used in the 'PaginationComponent' component template).
+1. If 'select' is an Angular component and it has the 'ngModel' input, then verify that it is a part of an @NgModule where this component is declared.
+2. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 100 of 142[32m SUCCESS[39m (0 secs / 5.255 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 101 of 142[32m SUCCESS[39m (0 secs / 5.262 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 102 of 142[32m SUCCESS[39m (0 secs / 5.284 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 103 of 142[32m SUCCESS[39m (0 secs / 5.288 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 104 of 142[32m SUCCESS[39m (0 secs / 5.317 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 105 of 142[32m SUCCESS[39m (0 secs / 5.385 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 106 of 142[32m SUCCESS[39m (0 secs / 5.392 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 107 of 142[32m SUCCESS[39m (0 secs / 5.482 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 108 of 142[32m SUCCESS[39m (0 secs / 5.53 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 109 of 142[32m SUCCESS[39m (0 secs / 5.566 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 110 of 142[32m SUCCESS[39m (0 secs / 5.607 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 111 of 142[32m SUCCESS[39m (0 secs / 5.649 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 112 of 142[32m SUCCESS[39m (0 secs / 5.687 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 113 of 142[32m SUCCESS[39m (0 secs / 5.707 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 114 of 142[32m SUCCESS[39m (0 secs / 5.726 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 115 of 142[32m SUCCESS[39m (0 secs / 5.728 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 116 of 142[32m SUCCESS[39m (0 secs / 5.78 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 117 of 142[32m SUCCESS[39m (0 secs / 5.794 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 118 of 142[32m SUCCESS[39m (0 secs / 5.833 secs)
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 118 of 142[32m SUCCESS[39m (0 secs / 5.833 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 119 of 142[32m SUCCESS[39m (0 secs / 5.838 secs)
+[1A[2KERROR: [36m'NG0304: 'app-supervisors' is not a known element (used in the 'GeneralComponent' component template):
+1. If 'app-supervisors' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-supervisors' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 119 of 142[32m SUCCESS[39m (0 secs / 5.838 secs)
+ERROR: 'NG0304: 'app-supervisors' is not a known element (used in the 'GeneralComponent' component template):
+1. If 'app-supervisors' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-supervisors' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 120 of 142[32m SUCCESS[39m (0 secs / 5.848 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 121 of 142[32m SUCCESS[39m (0 secs / 5.851 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 122 of 142[32m SUCCESS[39m (0 secs / 5.853 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 123 of 142[32m SUCCESS[39m (0 secs / 5.855 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 124 of 142[32m SUCCESS[39m (0 secs / 5.857 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 125 of 142[32m SUCCESS[39m (0 secs / 5.891 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 126 of 142[32m SUCCESS[39m (0 secs / 5.91 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 127 of 142[32m SUCCESS[39m (0 secs / 5.927 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 128 of 142[32m SUCCESS[39m (0 secs / 5.952 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 129 of 142[32m SUCCESS[39m (0 secs / 5.977 secs)
+[1A[2KERROR: [36m'WebSocket error for user null:', Event{isTrusted: true}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 129 of 142[32m SUCCESS[39m (0 secs / 5.977 secs)
+ERROR: 'WebSocket error for user null:', Event{isTrusted: true}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 130 of 142[32m SUCCESS[39m (0 secs / 6.024 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 131 of 142[32m SUCCESS[39m (0 secs / 6.029 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 132 of 142[32m SUCCESS[39m (0 secs / 6.075 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 133 of 142[32m SUCCESS[39m (0 secs / 6.234 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 134 of 142[32m SUCCESS[39m (0 secs / 6.258 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 135 of 142[32m SUCCESS[39m (0 secs / 6.261 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 136 of 142[32m SUCCESS[39m (0 secs / 6.309 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 137 of 142[32m SUCCESS[39m (0 secs / 6.393 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 138 of 142[32m SUCCESS[39m (0 secs / 6.407 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 139 of 142[32m SUCCESS[39m (0 secs / 6.447 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 140 of 142[32m SUCCESS[39m (0 secs / 6.464 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 141 of 142[32m SUCCESS[39m (0 secs / 6.468 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 142 of 142[32m SUCCESS[39m (0 secs / 6.475 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 142 of 142[32m SUCCESS[39m (8.274 secs / 6.475 secs)
+[31mTOTAL: 1 FAILED, 164 SUCCESS[39m
+√ Browser application bundle generation complete.
+25 10 2026 13:17:13.468:WARN [Chrome Headless 155.0.0.0 (Windows 10)]: Disconnected (0 times) Client disconnected from CONNECTED state (server shutting down)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ERROR[39m
+  Disconnected Client disconnected from CONNECTED state (server shutting down)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 142 of 142[32m SUCCESS[39m (8.274 secs / 6.475 secs)
+Chrome Headless 155.0.0.0 (Windows 10) ERROR
+  Disconnected Client disconnected from CONNECTED state (server shutting down)
+√ Browser application bundle generation complete.
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ERROR[39m
+  Disconnected , because no message in 30000 ms.
+Chrome Headless 155.0.0.0 (Windows 10): Executed 142 of 142[32m SUCCESS[39m (8.274 secs / 6.475 secs)
+Chrome Headless 155.0.0.0 (Windows 10) ERROR
+  Disconnected , because no message in 30000 ms.
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 142 of 142[32m SUCCESS[39m (8.274 secs / 6.475 secs)
+√ Browser application bundle generation complete.

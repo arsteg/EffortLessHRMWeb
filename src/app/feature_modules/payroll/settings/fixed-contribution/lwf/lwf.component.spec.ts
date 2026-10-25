@@ -1,3 +1,6 @@
+import { DeductionComponent } from 'src/app/feature_modules/payroll/settings/fixed-contribution/lwf/deduction/deduction.component';
+import { LwfSlabComponent } from 'src/app/feature_modules/payroll/settings/fixed-contribution/lwf/lwf-slab/lwf-slab.component';
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LwfComponent } from './lwf.component';
@@ -8,7 +11,9 @@ describe('LwfComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LwfComponent]
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      imports: [UiTestingModule],
+      declarations: [LwfSlabComponent, DeductionComponent, LwfComponent]
     })
     .compileComponents();
     

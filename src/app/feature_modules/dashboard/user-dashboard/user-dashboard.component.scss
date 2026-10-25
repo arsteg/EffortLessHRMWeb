@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 .densed-field {
-  @include mat.form-field-density(-5); 
+  @include mat.form-field-density(-5);
 }
 
 ::ng-deep .chart-legend .legend-labels {
@@ -14,6 +14,10 @@
 }
 
 .chart-legend{
-    span { font-size: var(--size-10);}
+    span { font-size: var(--size-12);}
     h3 { font-size: var(--size-14);}
 }
+
+:host { display: block; min-width: 0; }
+.card > .d-flex { flex-wrap: wrap; gap: 8px; }
+.card h2 { overflow-wrap: anywhere; }

@@ -16,4 +16,19 @@
     border: transparent !important;
     border-radius: 20px !important;
   }
-  
+  /* Reduce padding inside table header cells */
+thead th {
+  padding: 5px 10px; /* Adjust these values to your preference */
+  font-size: 14px; /* You can also decrease the font size if needed */
+}
+
+/* Optional: Reduce height of the entire table header row */
+thead tr {
+  height: 30px; /* Adjust height as needed */
+}
+
+/* Optional: Style for the button to reduce its size */
+button.mat-mini-fab {
+  padding: 4px; /* Adjust button padding to reduce its size */
+  font-size: 16px; /* Adjust the font size inside the button */
+}

@@ -1,3 +1,4 @@
+<a class="skip-link" href="#page-content-wrapper" (click)="$event.preventDefault(); mainContent.focus()">Skip to content</a>
 <app-header [loggedInUser]="currentProfile" [profileSwitch]="portalType?.toLowerCase() === 'admin'" [role]="adminView"
   (onMenuToggled)="toggleDrawer($event)" (onProfileSwitch)="switchView($event)">
 </app-header>
@@ -14,9 +15,9 @@
     </mat-drawer>
 
     <mat-drawer-content #contentArea>
-      <div id="page-content-wrapper" class="content-wrapper w-100">
+      <main #mainContent id="page-content-wrapper" tabindex="-1" class="content-wrapper w-100">
         <router-outlet></router-outlet>
-      </div>
+      </main>
     </mat-drawer-content>
   </mat-drawer-container>
   <ng-http-loader [backdrop]="false" [backgroundColor]="'#ff0000'" [debounceDelay]="100" [extraDuration]="1000"

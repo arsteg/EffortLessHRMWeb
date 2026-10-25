@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NotificationTypeComponent } from './notification-type.component';
@@ -8,7 +9,9 @@ describe('NotificationTypeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NotificationTypeComponent]
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      declarations: [NotificationTypeComponent],
+      imports: [UiTestingModule]
     })
     .compileComponents();
     

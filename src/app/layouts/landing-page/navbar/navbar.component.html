@@ -6,28 +6,28 @@
 
         <ul class="navbar-nav d-none d-lg-flex">
             <li class="nav-item">
-                <a (click)="scrollToSection('about-us')" class="nav-link">About Us</a>
+                <button type="button" (click)="scrollToSection('about-us')" class="nav-link">About Us</button>
             </li>
             <li class="nav-item">
-                <a (click)="scrollToSection('plans')" class="nav-link">Plans</a>
+                <button type="button" (click)="scrollToSection('plans')" class="nav-link">Plans</button>
             </li>
             <li class="nav-item">
-                <a class="nav-link" [matMenuTriggerFor]="featuresMenu">
+                <button type="button" class="nav-link" [matMenuTriggerFor]="featuresMenu">
                     Features <mat-icon>keyboard_arrow_down</mat-icon>
-                </a>
+                </button>
                 <mat-menu #featuresMenu="matMenu">
-                    <a mat-menu-item (click)="scrollToSection('time-tracking')"><mat-icon>schedule</mat-icon>Time
-                        Tracking Features</a>
-                    <a mat-menu-item (click)="scrollToSection('hrm-features')"><mat-icon>fact_check</mat-icon>HRM
-                        Features</a>
+                    <button type="button" mat-menu-item (click)="scrollToSection('time-tracking')"><mat-icon>schedule</mat-icon>Time
+                        Tracking Features</button>
+                    <button type="button" mat-menu-item (click)="scrollToSection('hrm-features')"><mat-icon>fact_check</mat-icon>HRM
+                        Features</button>
                 </mat-menu>
             </li>
             <li class="nav-item">
-                <a [matMenuTriggerFor]="downloadMenu" class="nav-link">Download
-                    <mat-icon>keyboard_arrow_down</mat-icon></a>
+                <button type="button" [matMenuTriggerFor]="downloadMenu" class="nav-link">Download
+                    <mat-icon>keyboard_arrow_down</mat-icon></button>
                 <mat-menu #downloadMenu="matMenu">
-                    <a mat-menu-item (click)="downloadWindowsInstaller()"><mat-icon>view_cozy</mat-icon>Windows
-                        Installer</a>
+                    <button type="button" mat-menu-item (click)="downloadWindowsInstaller()"><mat-icon>view_cozy</mat-icon>Windows
+                        Installer</button>
                 </mat-menu>
             </li>
         </ul>
@@ -42,7 +42,7 @@
             <a routerLink="/register" mat-flat-button color="primary" class="rounded-pill px-4 fs-6">Sign Up</a>
         </div>
 
-        <button mat-icon-button class="d-lg-none"
+        <button type="button" aria-label="Open navigation" mat-icon-button class="d-lg-none"
             (click)="dialog.open(dialogContent, { width: '100%', maxWidth:'100vw', height: '100%' })">
             <mat-icon>menu</mat-icon>
         </button>
@@ -52,16 +52,16 @@
 <ng-template #dialogContent>
     <div class="d-flex justify-content-between align-items-center p-3">
         <img src="assets/logo/expanded-logo.svg" alt="Effortless HRM" height="54">
-        <button mat-icon-button mat-dialog-close>
+        <button mat-icon-button mat-dialog-close aria-label="Close dialog">
             <mat-icon>close</mat-icon>
         </button>
     </div>
     <div mat-dialog-content>
         <mat-nav-list>
-            <a mat-list-item (click)="scrollToSection('about-us')">About Us</a>
-            <a mat-list-item (click)="scrollToSection('plans')">Plans</a>
-            <a mat-list-item [matMenuTriggerFor]="featuresMenu">Features</a>
-            <a mat-list-item [matMenuTriggerFor]="downloadMenu">Download</a>
+            <button type="button" mat-list-item (click)="scrollToSection('about-us')">About Us</button>
+            <button type="button" mat-list-item (click)="scrollToSection('plans')">Plans</button>
+            <button type="button" mat-list-item [matMenuTriggerFor]="featuresMenu">Features</button>
+            <button type="button" mat-list-item [matMenuTriggerFor]="downloadMenu">Download</button>
         </mat-nav-list>
 
         <mat-divider></mat-divider>

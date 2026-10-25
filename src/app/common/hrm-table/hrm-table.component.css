@@ -1,4 +1,19 @@
-td,
-th {
-    vertical-align: middle;
+:host { display: block; min-width: 0; }
+td, th { vertical-align: middle; }
+.table-responsive { border: 1px solid var(--hrm-border); border-radius: 8px; background: white; }
+.table.hrm-table { border: 0; }
+.table.hrm-table th { background: #f3f5f7; color: var(--hrm-muted); font-weight: 700; padding: 14px 16px; white-space: nowrap; }
+.table.hrm-table td { padding: 12px 16px; border-color: var(--hrm-border); line-height: 1.5; }
+.mat-mdc-row:hover { background: #fffaf5; }
+.mat-mdc-row:focus-within { background: #fff6ed; }
+.table-toolbar { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px 24px; justify-content: space-between; }
+.table-toolbar-search { flex: 1 1 220px; max-width: 360px; }
+.table-toolbar-actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+.table-toolbar mat-form-field { width: 100%; }
+.table-empty { padding: 28px 16px; color: var(--hrm-muted); }
+.table-empty img { width: 120px; max-width: 100%; }
+.table-empty p { margin: 12px 0 0; }
+@media (max-width: 575.98px) {
+  .table-toolbar-search, .table-toolbar-actions { max-width: none; width: 100%; }
+  .table.hrm-table th, .table.hrm-table td { padding: 12px; }
 }

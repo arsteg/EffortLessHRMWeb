@@ -10,17 +10,18 @@ import { FormsModule } from '@angular/forms';
 import { UserAssetAssignmentComponent } from "./user-asset-assignment/user-asset-assignment.component";
 import { SharedModule } from "src/app/shared/shared.Module";
 import { CommonComponentsModule } from "src/app/common/commonComponents.module";
+import { AssetReportsComponent } from "./asset-reports/asset-reports.component";
 
 
 @NgModule({
   declarations: [
-    AssetComponent, 
-    AssetStatusComponent, 
+    AssetComponent,
+    AssetStatusComponent,
     VendorComponent,
-    AssetTypeComponent, 
+    AssetTypeComponent,
     AssignAssetsComponent,
-    VendorAssetsComponent, 
-    AssetManagerComponent, 
+    VendorAssetsComponent,
+    AssetManagerComponent,
     UserAssetAssignmentComponent,
   ],
   exports: [
@@ -29,13 +30,14 @@ import { CommonComponentsModule } from "src/app/common/commonComponents.module";
     VendorComponent,
     AssetTypeComponent,
     AssignAssetsComponent,
-    VendorAssetsComponent, 
+    VendorAssetsComponent,
     AssetManagerComponent
   ],
   imports: [
     SharedModule,
      CommonComponentsModule,
-     FormsModule, 
+     FormsModule,
+     AssetReportsComponent,
   ]
 })
 export class AssetsModule {

@@ -1,0 +1,97 @@
+
+> effort-less-hrmweb@0.0.0 start
+> ng serve --configuration=localhost --port 4201
+
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+
+Initial Chunk Files                                                                                     | Names                                                                   |   Raw Size
+vendor.js                                                                                               | vendor                                                                  |   12.34 MB |
+main.js                                                                                                 | main                                                                    |    2.17 MB |
+styles.css, styles.js                                                                                   | styles                                                                  |  726.53 kB |
+polyfills.js                                                                                            | polyfills                                                               |  335.78 kB |
+scripts.js                                                                                              | scripts                                                                 |  290.13 kB |
+runtime.js                                                                                              | runtime                                                                 |   14.48 kB |
+
+| Initial Total                                                           |   15.85 MB
+
+Lazy Chunk Files                                                                                        | Names                                                                   |   Raw Size
+src_app_feature_modules_attendance_attendance_module_ts.js                                              | feature_modules-attendance-attendance-module                            |    2.63 MB |
+src_app_feature_modules_payroll_payroll_module_ts.js                                                    | feature_modules-payroll-payroll-module                                  |    1.80 MB |
+src_app_feature_modules_expenses_expenses_module_ts.js                                                  | feature_modules-expenses-expenses-module                                | 1009.29 kB |
+src_app_feature_modules_leave_leave_module_ts.js                                                        | feature_modules-leave-leave-module                                      |  866.49 kB |
+src_app_feature_modules_organization_organization_module_ts.js                                          | feature_modules-organization-organization-module                        |  640.62 kB |
+src_app_feature_modules_calendar_calendar_module_ts.js                                                  | feature_modules-calendar-calendar-module                                |  622.33 kB |
+quill.js                                                                                                | quill                                                                   |  482.78 kB |
+node_modules_canvg_lib_index_es_js.js                                                                   | canvg                                                                   |  431.56 kB |
+src_app_feature_modules_manage_users_employee-settings_employee-settings_module_ts.js                   | feature_modules-manage-users-employee-settings-employee-settings-module |  417.63 kB |
+src_app_feature_modules_taxation_taxation_module_ts.js                                                  | feature_modules-taxation-taxation-module                                |  393.41 kB |
+src_app_feature_modules_dashboard_dashboard_module_ts.js                                                | feature_modules-dashboard-dashboard-module                              |  383.91 kB |
+src_app_feature_modules_manage_manage_module_ts.js                                                      | feature_modules-manage-manage-module                                    |  317.63 kB |
+src_app_feature_modules_reports_reports_module_ts.js                                                    | feature_modules-reports-reports-module                                  |  241.93 kB |
+src_app_feature_modules_interview-process_interview-process_module_ts.js                                | feature_modules-interview-process-interview-process-module              |  224.19 kB |
+src_app_feature_modules_subscription_subscription_module_ts.js                                          | feature_modules-subscription-subscription-module                        |  147.33 kB |
+src_app_feature_modules_separation_separation_module_ts.js                                              | feature_modules-separation-separation-module                            |  120.96 kB |
+src_app_feature_modules_settings_settings_module_ts.js                                                  | feature_modules-settings-settings-module                                |  118.58 kB |
+src_app_feature_modules_alerts_alerts_module_ts.js                                                      | feature_modules-alerts-alerts-module                                    |  101.67 kB |
+src_app_feature_modules_screenshots_screenshots_module_ts.js                                            | feature_modules-screenshots-screenshots-module                          |   85.74 kB |
+default-src_app_feature_modules_timesheets_admin-timesheet_admin-timesheet_component_ts-src_a-e2e4ec.js | feature_modules-timesheets-timesheets-module                            |   78.59 kB |
+node_modules_dompurify_dist_purify_js.js                                                                | dompurify                                                               |   64.58 kB |
+src_app_feature_modules_realtime_realtime_module_ts.js                                                  | feature_modules-realtime-realtime-module                                |   61.01 kB |
+src_app_feature_modules_approvals_approvals_module_ts.js                                                | feature_modules-approvals-approvals-module                              |   57.28 kB |
+default-src_app__services_payroll_service_ts.js                                                         | feature_modules-attendance-attendance-module                            |   51.80 kB |
+default-src_app_feature_modules_manual-time_request-manual-time_request-manual-time_component_ts.js     | feature_modules-manage-manage-module                                    |   50.65 kB |
+src_app_feature_modules_manual-time_manual-time_module_ts.js                                            | feature_modules-manual-time-manual-time-module                          |   35.33 kB |
+default-src_app_feature_modules_roles_roles_roles_component_ts.js                                       | feature_modules-manage-manage-module                                    |   26.54 kB |
+default-src_app__services_attendance_service_ts.js                                                      | feature_modules-dashboard-dashboard-module                              |   26.22 kB |
+common.js                                                                                               | common                                                                  |   25.58 kB |
+default-src_app_feature_modules_subscription_subscriptions-list_payments_payments_component_ts.js       | feature_modules-dashboard-dashboard-module                              |   20.84 kB |
+default-src_app__services_leave_service_ts.js                                                           | feature_modules-calendar-calendar-module                                |   17.17 kB |
+src_app_feature_modules_permissions_permissions_module_ts.js                                            | feature_modules-permissions-permissions-module                          |    7.13 kB |
+src_app_feature_modules_role-permission_role-permission_module_ts.js                                    | feature_modules-role-permission-role-permission-module                  |    4.43 kB |
+src_app_feature_modules_timesheets_timesheets_module_ts.js                                              | feature_modules-timesheets-timesheets-module                            |    4.33 kB |
+src_app_feature_modules_roles_roles_module_ts.js                                                        | feature_modules-roles-roles-module                                      |    3.74 kB |
+
+Build at: 2026-10-25T07:54:11.835Z - Hash: abf61cbe558b7007 - Time: 73310ms
+
+./src/app/feature_modules/approvals/productivityAppsApproval/productivityAppsApproval.component.css?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(138:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+./src/app/feature_modules/screenshots/screenshots/screenshots.component.css?ngResource - Warning: Module Warning (from ./node_modules/postcss-loader/dist/cjs.js):
+(79:3) from "autoprefixer" plugin: end value has mixed support, consider using flex-end instead
+
+Code:
+  justify-content: end
+
+
+Warning: C:\Work\EffortlessHRM\EffortLessHRMWeb\src\app\_services\excel.service.ts depends on 'exceljs'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+Warning: C:\Work\EffortlessHRM\EffortLessHRMWeb\src\app\feature_modules\timesheets\admin-timesheet\admin-timesheet.component.ts depends on 'file-saver'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+
+
+** Angular Live Development Server is listening on localhost:4201, open your browser on http://localhost:4201/ **
+
+
+√ Compiled successfully.
+√ Browser application bundle generation complete.
+
+Initial Chunk Files | Names   | Raw Size
+runtime.js          | runtime | 14.48 kB |
+
+40 unchanged chunks
+
+Build at: 2026-10-25T07:54:27.456Z - Hash: 766eaa820100397e - Time: 12516ms
+
+Warning: C:\Work\EffortlessHRM\EffortLessHRMWeb\src\app\feature_modules\timesheets\user-timesheet\user-timesheet.component.ts depends on 'file-saver'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+
+
+√ Compiled successfully.

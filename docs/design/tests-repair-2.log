@@ -1,0 +1,580 @@
+
+> effort-less-hrmweb@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless
+
+- Generating browser application bundles (phase: setup)...
+√ Browser application bundle generation complete.
+25 10 2026 13:13:05.808:INFO [karma-server]: Karma v6.3.20 server started at http://localhost:9876/
+25 10 2026 13:13:05.902:INFO [launcher]: Launching browsers ChromeHeadless with concurrency unlimited
+25 10 2026 13:13:06.072:INFO [launcher]: Starting browser ChromeHeadless
+25 10 2026 13:14:06.080:WARN [launcher]: ChromeHeadless has not captured in 60000 ms, killing.
+25 10 2026 13:14:08.110:WARN [launcher]: ChromeHeadless was not killed in 2000 ms, sending SIGKILL.
+25 10 2026 13:14:10.124:WARN [launcher]: ChromeHeadless was not killed by SIGKILL in 2000 ms, continuing.
+25 10 2026 13:14:13.329:INFO [launcher]: Trying to start ChromeHeadless again (1/2).
+25 10 2026 13:14:13.334:WARN [temp-dir]: Failed to create a temp dir at C:\Users\dotne\AppData\Local\Temp\karma-25264825
+25 10 2026 13:14:23.373:INFO [Chrome Headless 155.0.0.0 (Windows 10)]: Connected on socket MIVetouUdu8MhXT9AAAB with id 25264825
+Chrome Headless 155.0.0.0 (Windows 10): Executed 0 of 140[32m SUCCESS[39m (0 secs / 0 secs)
+25 10 2026 13:14:33.456:ERROR [launcher]: ChromeHeadless crashed.
+	
+DevTools listening on ws://127.0.0.1:9222/devtools/browser/2f05a8fd-5dfb-4f0c-826b-a49a99b5338b
+[2608:13812:1025/131333.505:ERROR:content\browser\network_service_instance_impl.cc:653] Network service crashed or was terminated, restarting service.
+[2608:19616:1025/131341.520:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 12960: Access is denied. (0x5)
+[2608:36192:1025/131343.770:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 39352: Access is denied. (0x5)
+[2608:19616:1025/131345.947:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 18296: Access is denied. (0x5)
+[2608:32680:1025/131346.108:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 19056: Access is denied. (0x5)
+[2608:19616:1025/131346.293:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 30376: Access is denied. (0x5)
+[2608:32680:1025/131346.509:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 19484: Access is denied. (0x5)
+
+25 10 2026 13:14:33.457:ERROR [launcher]: ChromeHeadless stdout: 
+25 10 2026 13:14:33.457:ERROR [launcher]: ChromeHeadless stderr: [19044:22176:1025/131413.776:ERROR:components\segmentation_platform\internal\database\ukm_database_backend.cc:142] Failed to open UKM database: 0 database is locked
+[19044:28152:1025/131413.889:ERROR:net\socket\tcp_socket_win.cc:590] bind() returned an error: Only one usage of each socket address (protocol/network address/port) is normally permitted. (0x2740)
+
+DevTools listening on ws://[::1]:9222/devtools/browser/728349d3-6204-4c33-a8ec-9df47ba5c436
+[19044:27248:1025/131413.894:ERROR:components\password_manager\core\browser\password_store\login_database.cc:1128] Unable to open the password store database.
+[19044:27248:1025/131413.894:ERROR:components\password_manager\core\browser\password_store\login_database_async_helper.cc:78] Could not create/open login database.
+[19044:6148:1025/131413.898:ERROR:components\password_manager\core\browser\password_store\login_database.cc:1128] Unable to open the password store database.
+[19044:6148:1025/131413.898:ERROR:components\password_manager\core\browser\password_store\login_database_async_helper.cc:78] Could not create/open login database.
+[19044:12712:1025/131414.063:ERROR:components\history\core\browser\top_sites_backend.cc:77] Failed to initialize database.
+[19044:22060:1025/131414.262:ERROR:storage\browser\quota\quota_database.cc:1002] Could not open the quota database, resetting.
+[19044:22060:1025/131417.182:ERROR:storage\browser\quota\quota_database.cc:1002] Could not open the quota database, resetting.
+[19044:22060:1025/131420.040:ERROR:storage\browser\quota\quota_database.cc:1007] Failed to reset the quota database.
+[19044:22060:1025/131420.040:ERROR:storage\browser\quota\quota_database.cc:1007] Failed to reset the quota database.
+[19044:25720:1025/131432.897:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 3924: Access is denied. (0x5)
+
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) TimelineManagementComponent should create FAILED[39m
+	TypeError: Cannot read properties of null (reading 'id')
+	    at TimelineComponent.populateUsers (src/app/feature_modules/reports/timeline/timeline.component.ts:124:46)
+	    at TimelineComponent.call [as ngOnInit] (src/app/feature_modules/reports/timeline/timeline.component.ts:77:10)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3626:13)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13505:21)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:13677:5)
+	    at detectChangesInEmbeddedViews (node_modules/@angular/core/fesm2022/core.mjs:13634:13)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 1 of 140[31m (1 FAILED)[39m (0 secs / 0.512 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 2 of 140[31m (1 FAILED)[39m (0 secs / 0.561 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 3 of 140[31m (1 FAILED)[39m (0 secs / 0.691 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 4 of 140[31m (1 FAILED)[39m (0 secs / 0.769 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 5 of 140[31m (1 FAILED)[39m (0 secs / 0.919 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 6 of 140[31m (1 FAILED)[39m (0 secs / 0.927 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 7 of 140[31m (1 FAILED)[39m (0 secs / 1.026 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 8 of 140[31m (1 FAILED)[39m (0 secs / 1.153 secs)
+[1A[2KLOG: [36mtrue[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 8 of 140[31m (1 FAILED)[39m (0 secs / 1.153 secs)
+LOG: true
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 9 of 140[31m (1 FAILED)[39m (0 secs / 1.195 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 10 of 140[31m (1 FAILED)[39m (0 secs / 1.228 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 11 of 140[31m (1 FAILED)[39m (0 secs / 1.251 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 12 of 140[31m (1 FAILED)[39m (0 secs / 1.282 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 13 of 140[31m (1 FAILED)[39m (0 secs / 1.361 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 14 of 140[31m (1 FAILED)[39m (0 secs / 1.373 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 15 of 140[31m (1 FAILED)[39m (0 secs / 1.428 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 16 of 140[31m (1 FAILED)[39m (0 secs / 1.432 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 17 of 140[31m (1 FAILED)[39m (0 secs / 1.47 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 18 of 140[31m (1 FAILED)[39m (0 secs / 1.491 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 19 of 140[31m (1 FAILED)[39m (0 secs / 1.516 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 20 of 140[31m (1 FAILED)[39m (0 secs / 1.534 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 21 of 140[31m (1 FAILED)[39m (0 secs / 1.566 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 22 of 140[31m (1 FAILED)[39m (0 secs / 1.65 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 23 of 140[31m (1 FAILED)[39m (0 secs / 1.707 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 24 of 140[31m (1 FAILED)[39m (0 secs / 1.708 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 25 of 140[31m (1 FAILED)[39m (0 secs / 1.761 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 26 of 140[31m (1 FAILED)[39m (0 secs / 1.798 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 27 of 140[31m (1 FAILED)[39m (0 secs / 1.826 secs)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 27 of 140[31m (1 FAILED)[39m (0 secs / 1.826 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+Error: Error retrieving icon :google! Unable to find icon with the name ":google"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 27 of 140[31m (1 FAILED)[39m (0 secs / 1.826 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+Error: Error retrieving icon :facebook! Unable to find icon with the name ":facebook"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 27 of 140[31m (1 FAILED)[39m (0 secs / 1.826 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+Error: Error retrieving icon :instagram! Unable to find icon with the name ":instagram"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 27 of 140[31m (1 FAILED)[39m (0 secs / 1.826 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+Error: Error retrieving icon :linkedin! Unable to find icon with the name ":linkedin"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 27 of 140[31m (1 FAILED)[39m (0 secs / 1.826 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+Error: Error retrieving icon :x! Unable to find icon with the name ":x"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KERROR: [36m'ERROR', Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 27 of 140[31m (1 FAILED)[39m (0 secs / 1.826 secs)
+ERROR: 'ERROR', Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+Error: Error retrieving icon :youtube! Unable to find icon with the name ":youtube"
+    at Object.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/@angular/material/fesm2022/icon.mjs:939:48)
+    at ConsumerObserver.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:102:33)
+    at SafeSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at SafeSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at OperatorSubscriber._error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:64:30)
+    at OperatorSubscriber.error (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Subscriber.js:40:18)
+    at Observable._subscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/observable/throwError.js:5:45)
+    at Observable._trySubscribe (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:37:25)
+    at cb (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/Observable.js:31:30)
+    at errorContext (http://localhost:9876/_karma_webpack_/webpack:/node_modules/rxjs/dist/esm/internal/util/errorContext.js:19:9)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 28 of 140[31m (1 FAILED)[39m (0 secs / 1.86 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 29 of 140[31m (1 FAILED)[39m (0 secs / 1.886 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 30 of 140[31m (1 FAILED)[39m (0 secs / 1.938 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 31 of 140[31m (1 FAILED)[39m (0 secs / 1.971 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 32 of 140[31m (1 FAILED)[39m (0 secs / 1.989 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 33 of 140[31m (1 FAILED)[39m (0 secs / 1.997 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 34 of 140[31m (1 FAILED)[39m (0 secs / 2.033 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 35 of 140[31m (1 FAILED)[39m (0 secs / 2.063 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ApprovalsComponent should create FAILED[39m
+	TypeError: Cannot read properties of null (reading 'id')
+	    at productivityAppsApprovalComponent.populateMembers (src/app/feature_modules/approvals/productivityAppsApproval/productivityAppsApproval.component.ts:102:41)
+	    at productivityAppsApprovalComponent.call [as ngOnInit] (src/app/feature_modules/approvals/productivityAppsApproval/productivityAppsApproval.component.ts:82:10)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3626:13)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13505:21)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:13677:5)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/core.mjs:13666:5)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 36 of 140[31m (2 FAILED)[39m (0 secs / 2.108 secs)
+[1A[2KLOG: [36m'unit-test-user'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 36 of 140[31m (2 FAILED)[39m (0 secs / 2.108 secs)
+LOG: 'unit-test-user'
+[1A[2KWARN: [36m'
+  It looks like you're using ngModel on the same form field as formControlName.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlName#use-with-ngmodel
+  '[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 36 of 140[31m (2 FAILED)[39m (0 secs / 2.108 secs)
+WARN: '
+  It looks like you're using ngModel on the same form field as formControlName.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlName#use-with-ngmodel
+  '
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 37 of 140[31m (2 FAILED)[39m (0 secs / 2.25 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 38 of 140[31m (2 FAILED)[39m (0 secs / 2.285 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 39 of 140[31m (2 FAILED)[39m (0 secs / 2.321 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 40 of 140[31m (2 FAILED)[39m (0 secs / 2.359 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 41 of 140[31m (2 FAILED)[39m (0 secs / 2.382 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 42 of 140[31m (2 FAILED)[39m (0 secs / 2.396 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 43 of 140[31m (2 FAILED)[39m (0 secs / 2.401 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 44 of 140[31m (2 FAILED)[39m (0 secs / 2.448 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 45 of 140[31m (2 FAILED)[39m (0 secs / 2.487 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 46 of 140[31m (2 FAILED)[39m (0 secs / 2.534 secs)
+[1A[2KLOG: [36m'Log received:', Object{message: 'Isolated unit test log'}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 46 of 140[31m (2 FAILED)[39m (0 secs / 2.534 secs)
+LOG: 'Log received:', Object{message: 'Isolated unit test log'}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 47 of 140[31m (2 FAILED)[39m (0 secs / 2.577 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 48 of 140[31m (2 FAILED)[39m (0 secs / 2.612 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 49 of 140[31m (2 FAILED)[39m (0 secs / 2.631 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) AppAndWebsiteUsageComponent should create FAILED[39m
+	Error: NG0303: Can't bind to 'selected' since it isn't a known property of 'mat-option' (used in the 'AppAndWebsiteUsageComponent' component template).
+	1. If 'mat-option' is an Angular component and it has the 'selected' input, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'mat-option' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.
+	error properties: Object({ code: 303 })
+	Error: NG0303: Can't bind to 'selected' since it isn't a known property of 'mat-option' (used in the 'AppAndWebsiteUsageComponent' component template).
+	1. If 'mat-option' is an Angular component and it has the 'selected' input, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'mat-option' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.
+	    at reportUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:7415:15)
+	    at handleUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:7411:5)
+	    at elementPropertyInternal (node_modules/@angular/core/fesm2022/core.mjs:12696:17)
+	    at ɵɵproperty (node_modules/@angular/core/fesm2022/core.mjs:20399:9)
+	    at templateFn (ng:///AppAndWebsiteUsageComponent.js:14:43)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12263:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13490:13)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:13677:5)
+	    at detectChangesInEmbeddedViews (node_modules/@angular/core/fesm2022/core.mjs:13634:13)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 50 of 140[31m (3 FAILED)[39m (0 secs / 2.733 secs)
+25 10 2026 13:14:36.609:INFO [launcher]: Trying to start ChromeHeadless again (2/2).
+25 10 2026 13:14:36.610:WARN [temp-dir]: Failed to create a temp dir at C:\Users\dotne\AppData\Local\Temp\karma-25264825
+25 10 2026 13:14:36.833:ERROR [launcher]: Cannot start ChromeHeadless
+	
+25 10 2026 13:14:36.834:ERROR [launcher]: ChromeHeadless stdout: 
+25 10 2026 13:14:36.834:ERROR [launcher]: ChromeHeadless stderr: [19044:22176:1025/131435.034:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 10008: Access is denied. (0x5)
+[19044:25720:1025/131435.152:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 29868: Access is denied. (0x5)
+[19044:22176:1025/131435.269:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 45368: Access is denied. (0x5)
+[19044:25720:1025/131435.410:ERROR:chrome\updater\ipc\update_service_dialer_win.cc:76] Failed to open named pipe server process 38040: Access is denied. (0x5)
+
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 51 of 140[31m (3 FAILED)[39m (0 secs / 2.76 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 52 of 140[31m (3 FAILED)[39m (0 secs / 2.786 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 53 of 140[31m (3 FAILED)[39m (0 secs / 2.806 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 54 of 140[31m (3 FAILED)[39m (0 secs / 2.877 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ScheduleInterviewComponent should create FAILED[39m
+	Error: Cannot find control with name: 'candidate'
+	    at _throwError (node_modules/@angular/forms/fesm2022/forms.mjs:3162:11)
+	    at setUpControl (node_modules/@angular/forms/fesm2022/forms.mjs:2945:13)
+	    at FormGroupDirective.addControl (node_modules/@angular/forms/fesm2022/forms.mjs:4794:9)
+	    at FormControlName._setUpControl (node_modules/@angular/forms/fesm2022/forms.mjs:5382:43)
+	    at FormControlName.ngOnChanges (node_modules/@angular/forms/fesm2022/forms.mjs:5327:18)
+	    at FormControlName.call (node_modules/@angular/core/fesm2022/core.mjs:2565:14)
+	    at callHookInternal (node_modules/@angular/core/fesm2022/core.mjs:3599:14)
+	    at callHook (node_modules/@angular/core/fesm2022/core.mjs:3630:9)
+	    at callHooks (node_modules/@angular/core/fesm2022/core.mjs:3581:17)
+	    at executeInitAndCheckHooks (node_modules/@angular/core/fesm2022/core.mjs:3531:9)
+	Error: Expected null not to be null.
+	    at <Jasmine>
+	    at UserContext.apply (src/app/feature_modules/interview-process/schedule-interview/schedule-interview.component.spec.ts:25:66)
+	    at _ZoneDelegate.invoke (node_modules/zone.js/fesm2015/zone.js:368:26)
+	    at ProxyZoneSpec.onInvoke (node_modules/zone.js/fesm2015/zone-testing.js:273:39)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 55 of 140[31m (4 FAILED)[39m (0 secs / 2.918 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 56 of 140[31m (4 FAILED)[39m (0 secs / 2.939 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 57 of 140[31m (4 FAILED)[39m (0 secs / 2.977 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 58 of 140[31m (4 FAILED)[39m (0 secs / 2.992 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 59 of 140[31m (4 FAILED)[39m (0 secs / 3.006 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 60 of 140[31m (4 FAILED)[39m (0 secs / 3.054 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 61 of 140[31m (4 FAILED)[39m (0 secs / 3.114 secs)
+[1A[2KERROR: [36m'WebSocket error for user null:', Event{isTrusted: true}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 61 of 140[31m (4 FAILED)[39m (0 secs / 3.114 secs)
+ERROR: 'WebSocket error for user null:', Event{isTrusted: true}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 62 of 140[31m (4 FAILED)[39m (0 secs / 3.18 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 63 of 140[31m (4 FAILED)[39m (0 secs / 3.234 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 64 of 140[31m (4 FAILED)[39m (0 secs / 3.283 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 65 of 140[31m (4 FAILED)[39m (0 secs / 3.371 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 66 of 140[31m (4 FAILED)[39m (0 secs / 3.476 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 67 of 140[31m (4 FAILED)[39m (0 secs / 3.513 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 68 of 140[31m (4 FAILED)[39m (0 secs / 3.516 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 69 of 140[31m (4 FAILED)[39m (0 secs / 3.561 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ProductivityReportComponent should create FAILED[39m
+	Error: NG0303: Can't bind to 'selected' since it isn't a known property of 'mat-option' (used in the 'ProductivityReportComponent' component template).
+	1. If 'mat-option' is an Angular component and it has the 'selected' input, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'mat-option' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.
+	error properties: Object({ code: 303 })
+	Error: NG0303: Can't bind to 'selected' since it isn't a known property of 'mat-option' (used in the 'ProductivityReportComponent' component template).
+	1. If 'mat-option' is an Angular component and it has the 'selected' input, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'mat-option' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.
+	    at reportUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:7415:15)
+	    at handleUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:7411:5)
+	    at elementPropertyInternal (node_modules/@angular/core/fesm2022/core.mjs:12696:17)
+	    at ɵɵproperty (node_modules/@angular/core/fesm2022/core.mjs:20399:9)
+	    at templateFn (ng:///ProductivityReportComponent.js:19:43)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12263:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13490:13)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:13677:5)
+	    at detectChangesInEmbeddedViews (node_modules/@angular/core/fesm2022/core.mjs:13634:13)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 70 of 140[31m (5 FAILED)[39m (0 secs / 3.63 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 71 of 140[31m (5 FAILED)[39m (0 secs / 3.637 secs)
+[1A[2KERROR: [36m'NG0304: 'app-supervisors' is not a known element (used in the 'GeneralComponent' component template):
+1. If 'app-supervisors' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-supervisors' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 71 of 140[31m (5 FAILED)[39m (0 secs / 3.637 secs)
+ERROR: 'NG0304: 'app-supervisors' is not a known element (used in the 'GeneralComponent' component template):
+1. If 'app-supervisors' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-supervisors' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 72 of 140[31m (5 FAILED)[39m (0 secs / 3.654 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 73 of 140[31m (5 FAILED)[39m (0 secs / 3.709 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ActivityDescriptionComponent should create FAILED[39m
+	Error: NG0303: Can't bind to 'selected' since it isn't a known property of 'mat-option' (used in the 'ActivityDescriptionComponent' component template).
+	1. If 'mat-option' is an Angular component and it has the 'selected' input, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'mat-option' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.
+	error properties: Object({ code: 303 })
+	Error: NG0303: Can't bind to 'selected' since it isn't a known property of 'mat-option' (used in the 'ActivityDescriptionComponent' component template).
+	1. If 'mat-option' is an Angular component and it has the 'selected' input, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'mat-option' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.
+	    at reportUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:7415:15)
+	    at handleUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:7411:5)
+	    at elementPropertyInternal (node_modules/@angular/core/fesm2022/core.mjs:12696:17)
+	    at ɵɵproperty (node_modules/@angular/core/fesm2022/core.mjs:20399:9)
+	    at templateFn (ng:///ActivityDescriptionComponent.js:20:43)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12263:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13490:13)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:13677:5)
+	    at detectChangesInEmbeddedViews (node_modules/@angular/core/fesm2022/core.mjs:13634:13)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 74 of 140[31m (6 FAILED)[39m (0 secs / 3.761 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) DashboardComponent should create FAILED[39m
+	Error: NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked. Previous value: '400'. Current value: '342'. Expression location: DashboardComponent component. Find more at https://angular.io/errors/NG0100
+	error properties: Object({ code: -100 })
+	Error: NG0100: ExpressionChangedAfterItHasBeenCheckedError: Expression has changed after it was checked. Previous value: '400'. Current value: '342'. Expression location: DashboardComponent component. Find more at https://angular.io/errors/NG0100
+	    at throwErrorIfNoChangesMode (node_modules/@angular/core/fesm2022/core.mjs:11912:11)
+	    at bindingUpdated (node_modules/@angular/core/fesm2022/core.mjs:17587:17)
+	    at checkStylingProperty (node_modules/@angular/core/fesm2022/core.mjs:20546:32)
+	    at ɵɵstyleProp (node_modules/@angular/core/fesm2022/core.mjs:20435:5)
+	    at templateFn (ng:///DashboardComponent.js:715:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12263:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13490:13)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:13677:5)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/core.mjs:13666:5)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 75 of 140[31m (7 FAILED)[39m (0 secs / 3.978 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 76 of 140[31m (7 FAILED)[39m (0 secs / 4.043 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 77 of 140[31m (7 FAILED)[39m (0 secs / 4.081 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 78 of 140[31m (7 FAILED)[39m (0 secs / 4.092 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 79 of 140[31m (7 FAILED)[39m (0 secs / 4.102 secs)
+[1A[2KERROR: [36m'NG0304: 'hrm-language-selector' is not a known element (used in the 'MainComponent' component template):
+1. If 'hrm-language-selector' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'hrm-language-selector' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 79 of 140[31m (7 FAILED)[39m (0 secs / 4.102 secs)
+ERROR: 'NG0304: 'hrm-language-selector' is not a known element (used in the 'MainComponent' component template):
+1. If 'hrm-language-selector' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'hrm-language-selector' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KLOG: [36mElementRef{nativeElement: <section _ngcontent-a-c3310946234="" id="hrmFeatures" class="manage hrmFeatures pt-5"><div _ngcontent-a-c3310946234="" class="section-container"><div _ngcontent-a-c3310946234="" data-aos="fade-up" class="manage__head aos-init"><h2 _ngcontent-a-c3310946234="" class="manage__title">HRM Features</h2><div _ngcontent-a-c3310946234="" class="manage__subtitle">EffortlessHRM streamlines HR management and time tracking with innovative features tailored to enhance the employee experience and organizational efficiency.</div></div><div _ngcontent-a-c3310946234="" class="row mt-5 d-flex justify-content-evenly"><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_1"><img _ngcontent-a-c3310946234="" src="assets/main/1.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Organization Set-up</h5><p _ngcontent-a-c3310946234="">Effortlessly set up your organization, assign templates, managers, and create an organizational hierarchy. Bulk upload employee data and manage leaves, expenses, and attendance with ease.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_2"><img _ngcontent-a-c3310946234="" src="assets/main/2.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Management Dashboards &amp; Reports</h5><p _ngcontent-a-c3310946234="">Access actionable insights and analytics to drive better business outcomes. Govern data access and share insights with customizable reports in various formats.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_3"><img _ngcontent-a-c3310946234="" src="assets/main/3.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Employee Onboarding</h5><p _ngcontent-a-c3310946234="">Simplify employee onboarding with integrated HR management. Set up multiple office locations, departments, designations, and streamline the onboarding process for new hires.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_4"><img _ngcontent-a-c3310946234="" src="assets/main/4.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Payroll</h5><p _ngcontent-a-c3310946234="">Organize payroll tasks efficiently with automated salary slip generation and CTC calculations, ensuring accurate and timely employee payments.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_5"><img _ngcontent-a-c3310946234="" src="assets/main/5.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Expense Management</h5><p _ngcontent-a-c3310946234="">Streamline expense reporting with easy-to-use modules that sync with employee reporting managers for seamless approval processes. Define expense policies, track expenses, and optimize expenditures. </p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_6"><img _ngcontent-a-c3310946234="" src="assets/main/6.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Attendance Management</h5><p _ngcontent-a-c3310946234="">Adapt to complex labor environments with automated attendance tracking and comprehensive reporting features. Manage time logs, approvals, and off-site worker attendance effortlessly.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_7"><img _ngcontent-a-c3310946234="" src="assets/main/7.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Leave Management</h5><p _ngcontent-a-c3310946234="">Customize leave policies and structures, automate leave approvals, and manage leave entitlements with ease. Configure different templates and workflows to suit departmental requirements.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_8"><img _ngcontent-a-c3310946234="" src="assets/main/8.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Recruitment System</h5><p _ngcontent-a-c3310946234="">Simplify recruitment processes with EffortlessHRM's intuitive features for job requisition, candidate engagement, collaboration, and onboarding.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_9"><img _ngcontent-a-c3310946234="" src="assets/main/9.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Interview Process</h5><p _ngcontent-a-c3310946234="">Create custom templates to streamline candidate data storage, interview scheduling, and feedback collection. Conduct interviews online and efficiently manage the entire recruitment process.</p></div></div></div></section>}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 79 of 140[31m (7 FAILED)[39m (0 secs / 4.102 secs)
+LOG: ElementRef{nativeElement: <section _ngcontent-a-c3310946234="" id="hrmFeatures" class="manage hrmFeatures pt-5"><div _ngcontent-a-c3310946234="" class="section-container"><div _ngcontent-a-c3310946234="" data-aos="fade-up" class="manage__head aos-init"><h2 _ngcontent-a-c3310946234="" class="manage__title">HRM Features</h2><div _ngcontent-a-c3310946234="" class="manage__subtitle">EffortlessHRM streamlines HR management and time tracking with innovative features tailored to enhance the employee experience and organizational efficiency.</div></div><div _ngcontent-a-c3310946234="" class="row mt-5 d-flex justify-content-evenly"><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_1"><img _ngcontent-a-c3310946234="" src="assets/main/1.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Organization Set-up</h5><p _ngcontent-a-c3310946234="">Effortlessly set up your organization, assign templates, managers, and create an organizational hierarchy. Bulk upload employee data and manage leaves, expenses, and attendance with ease.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_2"><img _ngcontent-a-c3310946234="" src="assets/main/2.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Management Dashboards &amp; Reports</h5><p _ngcontent-a-c3310946234="">Access actionable insights and analytics to drive better business outcomes. Govern data access and share insights with customizable reports in various formats.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_3"><img _ngcontent-a-c3310946234="" src="assets/main/3.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Employee Onboarding</h5><p _ngcontent-a-c3310946234="">Simplify employee onboarding with integrated HR management. Set up multiple office locations, departments, designations, and streamline the onboarding process for new hires.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_4"><img _ngcontent-a-c3310946234="" src="assets/main/4.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Payroll</h5><p _ngcontent-a-c3310946234="">Organize payroll tasks efficiently with automated salary slip generation and CTC calculations, ensuring accurate and timely employee payments.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_5"><img _ngcontent-a-c3310946234="" src="assets/main/5.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Expense Management</h5><p _ngcontent-a-c3310946234="">Streamline expense reporting with easy-to-use modules that sync with employee reporting managers for seamless approval processes. Define expense policies, track expenses, and optimize expenditures. </p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_6"><img _ngcontent-a-c3310946234="" src="assets/main/6.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Attendance Management</h5><p _ngcontent-a-c3310946234="">Adapt to complex labor environments with automated attendance tracking and comprehensive reporting features. Manage time logs, approvals, and off-site worker attendance effortlessly.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_7"><img _ngcontent-a-c3310946234="" src="assets/main/7.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Leave Management</h5><p _ngcontent-a-c3310946234="">Customize leave policies and structures, automate leave approvals, and manage leave entitlements with ease. Configure different templates and workflows to suit departmental requirements.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_8"><img _ngcontent-a-c3310946234="" src="assets/main/8.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Recruitment System</h5><p _ngcontent-a-c3310946234="">Simplify recruitment processes with EffortlessHRM's intuitive features for job requisition, candidate engagement, collaboration, and onboarding.</p></div><div _ngcontent-a-c3310946234="" class="col-md-3 col-lg-3 col-xl-3 text-center my-3 hrmFeatureBox"><div _ngcontent-a-c3310946234="" class="big-circle_9"><img _ngcontent-a-c3310946234="" src="assets/main/9.png" alt=""></div><h5 _ngcontent-a-c3310946234="" class="hrmFeature py-2 text-center">Interview Process</h5><p _ngcontent-a-c3310946234="">Create custom templates to streamline candidate data storage, interview scheduling, and feedback collection. Conduct interviews online and efficiently manage the entire recruitment process.</p></div></div></div></section>}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 80 of 140[31m (7 FAILED)[39m (0 secs / 4.317 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 81 of 140[31m (7 FAILED)[39m (0 secs / 4.339 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 82 of 140[31m (7 FAILED)[39m (0 secs / 4.388 secs)
+[1A[2KLOG: [36m2026[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 82 of 140[31m (7 FAILED)[39m (0 secs / 4.388 secs)
+LOG: 2026
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 83 of 140[31m (7 FAILED)[39m (0 secs / 4.471 secs)
+[1A[2KERROR: [36m'NG0304: 'app-tax-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 83 of 140[31m (7 FAILED)[39m (0 secs / 4.471 secs)
+ERROR: 'NG0304: 'app-tax-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0304: 'app-tax-component-by-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-component-by-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-component-by-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 83 of 140[31m (7 FAILED)[39m (0 secs / 4.471 secs)
+ERROR: 'NG0304: 'app-tax-component-by-section' is not a known element (used in the 'TaxDeclarationComponent' component template):
+1. If 'app-tax-component-by-section' is an Angular component, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-component-by-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.'
+[1A[2KERROR: [36m'NG0303: Can't bind to 'isEdit' since it isn't a known property of 'app-tax-section' (used in the 'TaxDeclarationComponent' component template).
+1. If 'app-tax-section' is an Angular component and it has the 'isEdit' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 83 of 140[31m (7 FAILED)[39m (0 secs / 4.471 secs)
+ERROR: 'NG0303: Can't bind to 'isEdit' since it isn't a known property of 'app-tax-section' (used in the 'TaxDeclarationComponent' component template).
+1. If 'app-tax-section' is an Angular component and it has the 'isEdit' input, then verify that it is a part of an @NgModule where this component is declared.
+2. If 'app-tax-section' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.'
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 84 of 140[31m (7 FAILED)[39m (0 secs / 4.48 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 85 of 140[31m (7 FAILED)[39m (0 secs / 4.51 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 86 of 140[31m (7 FAILED)[39m (0 secs / 4.535 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 87 of 140[31m (7 FAILED)[39m (0 secs / 4.539 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 88 of 140[31m (7 FAILED)[39m (0 secs / 4.586 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 89 of 140[31m (7 FAILED)[39m (0 secs / 4.589 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 90 of 140[31m (7 FAILED)[39m (0 secs / 4.647 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 91 of 140[31m (7 FAILED)[39m (0 secs / 4.655 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 92 of 140[31m (7 FAILED)[39m (0 secs / 4.689 secs)
+[1A[2KLOG: [36mTimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 92 of 140[31m (7 FAILED)[39m (0 secs / 4.689 secs)
+LOG: TimeLine{fromdate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), todate: Sun Oct 25 2026 05:30:00 GMT+0530 (India Standard Time), projects: [], users: ['unit-test-user']}
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 93 of 140[31m (7 FAILED)[39m (0 secs / 4.728 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 94 of 140[31m (7 FAILED)[39m (0 secs / 4.792 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 95 of 140[31m (7 FAILED)[39m (0 secs / 4.841 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) LeaveReportComponent should create FAILED[39m
+	Error: NG0303: Can't bind to 'selected' since it isn't a known property of 'mat-option' (used in the 'LeaveReportComponent' component template).
+	1. If 'mat-option' is an Angular component and it has the 'selected' input, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'mat-option' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.
+	error properties: Object({ code: 303 })
+	Error: NG0303: Can't bind to 'selected' since it isn't a known property of 'mat-option' (used in the 'LeaveReportComponent' component template).
+	1. If 'mat-option' is an Angular component and it has the 'selected' input, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'mat-option' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.
+	    at reportUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:7415:15)
+	    at handleUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:7411:5)
+	    at elementPropertyInternal (node_modules/@angular/core/fesm2022/core.mjs:12696:17)
+	    at ɵɵproperty (node_modules/@angular/core/fesm2022/core.mjs:20399:9)
+	    at templateFn (ng:///LeaveReportComponent.js:20:43)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12263:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13490:13)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:13677:5)
+	    at detectChangesInEmbeddedViews (node_modules/@angular/core/fesm2022/core.mjs:13634:13)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 96 of 140[31m (8 FAILED)[39m (0 secs / 4.884 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 97 of 140[31m (8 FAILED)[39m (0 secs / 4.964 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 98 of 140[31m (8 FAILED)[39m (0 secs / 4.97 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 99 of 140[31m (8 FAILED)[39m (0 secs / 4.993 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 100 of 140[31m (8 FAILED)[39m (0 secs / 5.043 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 101 of 140[31m (8 FAILED)[39m (0 secs / 5.095 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 102 of 140[31m (8 FAILED)[39m (0 secs / 5.123 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 103 of 140[31m (8 FAILED)[39m (0 secs / 5.165 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 104 of 140[31m (8 FAILED)[39m (0 secs / 5.198 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 105 of 140[31m (8 FAILED)[39m (0 secs / 5.203 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 106 of 140[31m (8 FAILED)[39m (0 secs / 5.263 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 107 of 140[31m (8 FAILED)[39m (0 secs / 5.271 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 108 of 140[31m (8 FAILED)[39m (0 secs / 5.296 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 109 of 140[31m (8 FAILED)[39m (0 secs / 5.316 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 110 of 140[31m (8 FAILED)[39m (0 secs / 5.322 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 111 of 140[31m (8 FAILED)[39m (0 secs / 5.372 secs)
+[1A[2KWARN: [36m'
+  It looks like you're using ngModel on the same form field as formControl.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlDirective#use-with-ngmodel
+  '[39m
+Chrome Headless 155.0.0.0 (Windows 10): Executed 111 of 140[31m (8 FAILED)[39m (0 secs / 5.372 secs)
+WARN: '
+  It looks like you're using ngModel on the same form field as formControl.
+  Support for using the ngModel input property and ngModelChange event with
+  reactive form directives has been deprecated in Angular v6 and will be removed
+  in a future version of Angular.
+
+  For more information on this, see our API docs here:
+  https://angular.io/api/forms/FormControlDirective#use-with-ngmodel
+  '
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 112 of 140[31m (8 FAILED)[39m (0 secs / 5.433 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 113 of 140[31m (8 FAILED)[39m (0 secs / 5.435 secs)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 114 of 140[31m (8 FAILED)[39m (0 secs / 5.486 secs)
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) FixedDeductionComponent should create FAILED[39m
+	Error: NG0303: Can't bind to 'showPaginator' since it isn't a known property of 'hrm-table' (used in the 'FixedDeductionComponent' component template).
+	1. If 'hrm-table' is an Angular component and it has the 'showPaginator' input, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'hrm-table' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.
+	error properties: Object({ code: 303 })
+	Error: NG0303: Can't bind to 'showPaginator' since it isn't a known property of 'hrm-table' (used in the 'FixedDeductionComponent' component template).
+	1. If 'hrm-table' is an Angular component and it has the 'showPaginator' input, then verify that it is a part of an @NgModule where this component is declared.
+	2. If 'hrm-table' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+	3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component.
+	    at reportUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:7415:15)
+	    at handleUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:7411:5)
+	    at elementPropertyInternal (node_modules/@angular/core/fesm2022/core.mjs:12696:17)
+	    at ɵɵproperty (node_modules/@angular/core/fesm2022/core.mjs:20399:9)
+	    at templateFn (ng:///FixedDeductionComponent.js:176:18)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12263:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:13490:13)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:13714:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:13677:5)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/core.mjs:13666:5)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 115 of 140[31m (9 FAILED)[39m (0 secs / 5.521 secs)
+25 10 2026 13:14:40.001:ERROR [launcher]: ChromeHeadless failed 2 times (cannot start). Giving up.
+[31mTOTAL: 9 FAILED, 106 SUCCESS[39m
+√ Browser application bundle generation complete.
+√ Browser application bundle generation complete.
+[1A[2K[31mChrome Headless 155.0.0.0 (Windows 10) ERROR[39m
+  Disconnected reconnect failed before timeout of 2000ms (server shutting down)
+Chrome Headless 155.0.0.0 (Windows 10): Executed 115 of 140[31m (9 FAILED)[39m[31m DISCONNECTED[39m (8.96 secs / 5.521 secs)
+Chrome Headless 155.0.0.0 (Windows 10) ERROR
+  Disconnected reconnect failed before timeout of 2000ms (server shutting down)
+[1A[2KChrome Headless 155.0.0.0 (Windows 10): Executed 115 of 140[31m (9 FAILED)[39m[31m DISCONNECTED[39m (8.96 secs / 5.521 secs)
+√ Browser application bundle generation complete.

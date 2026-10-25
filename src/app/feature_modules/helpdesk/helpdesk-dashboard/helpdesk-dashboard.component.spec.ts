@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HelpdeskDashboardComponent } from './helpdesk-dashboard.component';
@@ -8,7 +9,9 @@ describe('HelpdeskDashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HelpdeskDashboardComponent]
+      errorOnUnknownElements: true, errorOnUnknownProperties: true,
+      declarations: [HelpdeskDashboardComponent],
+      imports: [UiTestingModule]
     })
     .compileComponents();
     

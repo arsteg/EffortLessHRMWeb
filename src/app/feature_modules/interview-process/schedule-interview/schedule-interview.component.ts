@@ -44,20 +44,7 @@ export class ScheduleInterviewComponent implements OnInit {
     private dialog: MatDialog,
     commonService: CommonService
   ) {
-    this.scheduleInterviewForm = this.fb.group({
-      _id:['', Validators.required],
-      candidate: ['', Validators.required],
-      topic: ['', Validators.required],
-      type: ['', Validators.required],
-      startTime: ['', Validators.required],
-      duration: ['', Validators.required],
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['',Validators.required],
-      timeZone: ['',Validators.required],
-      password: ['',Validators.required],
-      customAttributes: this.fb.array([]),
-    });
+    this.initCandidateForm();
   }
 
   ngOnInit(): void {
@@ -173,13 +160,21 @@ export class ScheduleInterviewComponent implements OnInit {
 
   initCandidateForm() {
     this.scheduleInterviewForm = this.fb.group({
-      _id:[''],
-      name: [''],
-      email: [''],
-      phoneNumber: [''],
-      customAttributes: new FormArray([]),
+      _id:['', Validators.required],
+      candidate: ['', Validators.required],
+      topic: ['', Validators.required],
+      type: ['', Validators.required],
+      startTime: ['', Validators.required],
+      duration: ['', Validators.required],
+      name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['',Validators.required],
+      timeZone: ['',Validators.required],
+      password: ['',Validators.required],
+      customAttributes: this.fb.array([]),
     });
   }
+
   initCustomAttributes() {
     return this.fb.group({
       attributeName: ['', Validators.required],

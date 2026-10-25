@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlansListComponent } from './plans-list.component';
@@ -8,7 +9,7 @@ describe('PlansListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PlansListComponent]
+      imports: [UiTestingModule, PlansListComponent]
     })
     .compileComponents();
     

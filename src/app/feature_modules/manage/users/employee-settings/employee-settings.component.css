@@ -10,3 +10,6 @@
     display: block;
     min-width: 165px;
 }
+:host { display: block; min-width: 0; }
+.child-tabs { min-width: 0; max-width: 100%; flex: 1 1 480px; }
+.container-fluid { padding-inline: 0; }

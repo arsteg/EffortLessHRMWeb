@@ -1,0 +1,414 @@
+[
+  {
+    "test": "RoleService should be created",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[RoleService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "SubscriptionService should be created",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[SubscriptionService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "PermissionModelService should be created",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PermissionModelService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "ViewApplicationComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[LeaveService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "FlexiBenefitsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ToastrService -> InjectionToken ToastConfig -> InjectionToken ToastConfig]:"
+  },
+  {
+    "test": "PlanDetailsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[PlanDetailsComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "HelpDeskComponent should create",
+    "firstError": "Error: Unexpected directive 'HelpDeskComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "EmailtemplateService should be created",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[EmailtemplateService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "ChatbotComponent should create",
+    "firstError": "Error: Unexpected directive 'ChatbotComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "AddLeaveComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[CommonService -> UserService -> UserService]:"
+  },
+  {
+    "test": "ConfigureStateComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "AlertsComponent should create",
+    "firstError": "Error: NG0301: Export of name 'routerLinkActive' not found! Find more at https://angular.io/errors/NG0301"
+  },
+  {
+    "test": "PermissionModelComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PermissionModelService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "UserDashboardComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[TimeLogService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "NotificationDetailsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[NotificationDetailsComponent])[NotificationService -> NotificationService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "UpdateShortLeaveComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[LeaveService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "HelpdeskDashboardComponent should create",
+    "firstError": "Error: Unexpected directive 'HelpdeskDashboardComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "ActivityDescriptionComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ProjectService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "ViewLeaveComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[LeaveService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "FormControlsComponent should create",
+    "firstError": "TypeError: Cannot read properties of undefined (reading 'class')"
+  },
+  {
+    "test": "PermissionsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[AuthenticationService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "CandidatesComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[CandidatesComponent])[InterviewProcessService -> InterviewProcessService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "HeroComponent should create",
+    "firstError": "Error: Unexpected directive 'HeroComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "EventNotificationViewerComponent should create",
+    "firstError": "Error: Unexpected directive 'EventNotificationViewerComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "LandingPageComponent should create",
+    "firstError": "Error: Unexpected directive 'LandingPageComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "ShowStatusComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[LeaveService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "UserFormCOntrolComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "BandComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[CompanyService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "FooterComponent should create",
+    "firstError": "Error: Unexpected directive 'FooterComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "Task.TagComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[TasksService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "UpdateStatusComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[LeaveService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "EventNotificationComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[EventNotificationComponent])[EventNotificationService -> EventNotificationService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "AppWebsiteSettingsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ToastrService -> InjectionToken ToastConfig -> InjectionToken ToastConfig]:"
+  },
+  {
+    "test": "DepartmentComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[CompanyService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "FeaturesComponent should create",
+    "firstError": "Error: Unexpected directive 'FeaturesComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "AboutUsComponent should create",
+    "firstError": "Error: Unexpected directive 'AboutUsComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "SeparationComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ActivatedRoute -> ActivatedRoute]:"
+  },
+  {
+    "test": "NotificationTypeComponent should create",
+    "firstError": "Error: Unexpected directive 'NotificationTypeComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "RejectedComponent should create",
+    "firstError": "Error: NG0302: The pipe 'translate' could not be found in the 'RejectedComponent' component. Verify that it is declared or imported in this module. Find more at https://angular.io/errors/NG0302"
+  },
+  {
+    "test": "LwfComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "CandidateFeedbackComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[CandidateFeedbackComponent])[InterviewProcessService -> InterviewProcessService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "SubscriptionsListComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[SubscriptionsListComponent])[SubscriptionService -> SubscriptionService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "VariableAllowanceComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "TrustComponent should create",
+    "firstError": "Error: Unexpected directive 'TrustComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "PendingComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[LeaveService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "HolidaysComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[CompanyService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "VarDeductionComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "ConfirmationDialogComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "RolesComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[RoleService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "DashboardComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[TimeLogService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "NavbarComponent should create",
+    "firstError": "Error: Unexpected directive 'NavbarComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "LocationComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[CompanyService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "DesignationComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[CompanyService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "ApprovedComponent should create",
+    "firstError": "Error: NG0302: The pipe 'translate' could not be found in the 'ApprovedComponent' component. Verify that it is declared or imported in this module. Find more at https://angular.io/errors/NG0302"
+  },
+  {
+    "test": "ChangePasswordComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ActivatedRoute -> ActivatedRoute]:"
+  },
+  {
+    "test": "RolePermissionComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PermissionModelService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "InterviewProcessMainComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[InterviewProcessMainComponent])[CommonService -> CommonService -> UserService -> UserService]:"
+  },
+  {
+    "test": "AddOnDutyComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[AttendanceService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "FlexiHolidaysComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[CompanyService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "PlansListComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[PlansListComponent])[SubscriptionService -> SubscriptionService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "TimelineManagementComponent should create",
+    "firstError": "Error: Unexpected directive 'TimelineManagementComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "OvertimeComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[AttendanceService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "SubscriptionComponent should create",
+    "firstError": "Error: Unexpected directive 'SubscriptionComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "PfChargesComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "CandidatesComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[ScheduleInterviewComponent])[InterviewProcessService -> InterviewProcessService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "ScreenshotsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[TimeLogService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "HrmFeaturesComponent should create",
+    "firstError": "Error: Unexpected directive 'HrmFeaturesComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "PaymentsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[PaymentsComponent])[SubscriptionService -> SubscriptionService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "SubDepartmentComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[CompanyService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "LwfSlabComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "WorkspaceComponent should create",
+    "firstError": "Error: Unexpected directive 'WorkspaceComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "ConfirmCancelComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[ConfirmCancelComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "UserTimesheetComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]:"
+  },
+  {
+    "test": "PlansComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[PlansComponent])[SubscriptionService -> SubscriptionService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "ProfileComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[CompanyService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "ApplicationStatusComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[ApplicationStatusComponent])[InterviewProcessService -> InterviewProcessService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "LeaveReportComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]:"
+  },
+  {
+    "test": "DeductionComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "TaskCommentListComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[TasksService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "FixedContributionComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "CreatePlanComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[CreatePlanComponent])[MatDialogRef -> MatDialogRef -> MatDialogRef]:"
+  },
+  {
+    "test": "ViewLiveScreenComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "UpdateHelpdeskTaskComponent should create",
+    "firstError": "Error: Unexpected directive 'UpdateHelpdeskTaskComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "SubscriptionsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[SubscriptionsComponent])[ActivatedRoute -> ActivatedRoute -> ActivatedRoute]:"
+  },
+  {
+    "test": "PtSlabComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "AiReportsComponent should create",
+    "firstError": "Error: Unexpected directive 'AiReportsComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "AppAndWebsiteUsageComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ProjectService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "TaskCommentComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ToastrService -> InjectionToken ToastConfig -> InjectionToken ToastConfig]:"
+  },
+  {
+    "test": "HrmTableComponent should create",
+    "firstError": "Error: Unexpected directive 'HrmTableComponent' imported by the module 'DynamicTestModule'. Please add an @NgModule annotation."
+  },
+  {
+    "test": "EmailTemplateComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[EmailtemplateService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "PtDeductionComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "UpdateApplicationComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[LeaveService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "TimelineComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ProjectService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "SignatoryDetailsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[CompanyService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "FixedDeductionComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ToastrService -> InjectionToken ToastConfig -> InjectionToken ToastConfig]:"
+  },
+  {
+    "test": "ApprovalsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ActivatedRoute -> ActivatedRoute]:"
+  },
+  {
+    "test": "UpdateStateComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[PayrollService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "AdminTimesheetComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[DatePipe -> DatePipe]:"
+  },
+  {
+    "test": "SubtaskComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[ActivatedRoute -> ActivatedRoute]:"
+  },
+  {
+    "test": "ProductivityReportComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[TimeLogService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "GenericSettingsComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "AddManualTimeComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(DynamicTestModule)[AuthenticationService -> HttpClient -> HttpClient]:"
+  },
+  {
+    "test": "CandidateDataFieldComponent should create",
+    "firstError": "NullInjectorError: R3InjectorError(Standalone[CandidateDataFieldComponent])[InterviewProcessService -> InterviewProcessService -> HttpClient -> HttpClient]:"
+  }
+]

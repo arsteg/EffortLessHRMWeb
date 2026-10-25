@@ -66,17 +66,17 @@
             <table class=" mt-2 rounded p-2">
                 <thead>
                     <tr>
-                        <th [appSort]="productivityApps" data-order="{{ sortOrder }}" data-name="project?.projectName"
+                        <th [appSort]="productivityApps" attr.data-order="{{ sortOrder }}" data-name="project?.projectName"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Key&nbsp;
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="productivityApps" data-order="{{ sortOrder }}" data-name="fromDate"
+                        <th [appSort]="productivityApps" attr.data-order="{{ sortOrder }}" data-name="fromDate"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Name&nbsp;
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>
                         </th>
-                        <th [appSort]="productivityApps" data-order="{{ sortOrder }}" data-name="toDate"
+                        <th [appSort]="productivityApps" attr.data-order="{{ sortOrder }}" data-name="toDate"
                             (click)="sortOrder = (sortOrder === 'asc' ? 'desc' : 'asc')">Is Approved&nbsp;
                             <i
                                 [class]="sortOrder === 'asc' ? 'bi bi-arrow-up sort-asc' : 'bi bi-arrow-down sort-desc'"></i>

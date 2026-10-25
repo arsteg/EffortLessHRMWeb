@@ -1,85 +1,34 @@
+:host { display: block; }
 .menu-search {
-  border-bottom: 1px solid var(--orange-20);
-
-  .input-group-text,
-  .form-control {
-    background: none;
-    border: none;
-  }
+  border: 1px solid var(--hrm-border);
+  border-radius: 6px;
+  background: white;
+  padding: 0 8px;
 }
-
-.menu {
-  list-style: none;
-  padding: var(--size-24);
-  font-size: var(--size-14);
-
-  &.rail-menu {
-    padding: var(--size-12);
-  }
-
-  .menu-item {
-    position: relative;
-    cursor: pointer;
-    padding: var(--size-8) var(--size-16);
-    margin-bottom: var(--size-16);
-    border-radius: var(--size-6);
-    text-decoration: none;
-    display: flex;
-    align-items: end;
-    gap: var(--size-8);
-    transition: background 0.3s ease, color 0.3s ease;
-
-    &:hover {
-      background: var(--orange-20);
-    }
-
-    &.active {
-      background: var(--orange-60);
-      color: var(--white);
-    }
-
-    &.active::before {
-      content: "";
-      position: absolute;
-      left: calc(0% - var(--size-28));
-      top: 0;
-      width: var(--size-8);
-      height: 100%;
-      background-color: var(--orange-60);
-      border-radius: var(--size-4);
-    }
-
-    &.rail-menu-item {
-      padding: 5px;
-      width: 40px;
-      height: 40px;
-      mat-icon {
-        width: 30px;
-        height: 30px;
-      }
-      span {
-        display: none;
-      }
-    }
-    mat-icon {
-      line-height: 0.2;
-    }
-  }
-
-  .active .icon-img,
-  :not(.active) .icon-img-light {
-    display: none;
-  }
-
-  .active .icon-img-light,
-  .icon-img {
-    display: inline;
-  }
+.menu-search .input-group-text,
+.menu-search .form-control { background: transparent; border: 0; }
+.menu-search .form-control { min-width: 0; font-size: 14px; min-height: 40px; }
+.menu { list-style: none; margin-bottom: 0; padding: 0 12px 24px; font-size: 14px; }
+.menu.rail-menu { padding: 0 8px 16px; }
+.menu-item {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--hrm-muted);
+  font-weight: 600;
+  line-height: 1.4;
+  transition: background var(--hrm-motion), color var(--hrm-motion);
 }
-
-/**
-ng-deep is deprecated but still supported, will change it later
-**/
-::ng-deep .active mat-icon path {
-  fill: currentColor !important;
-}
+.menu-item:hover { background: var(--orange-10); color: var(--hrm-action); }
+.menu-item.active { background: var(--hrm-action); color: white; }
+.menu-item mat-icon, .menu-item img { flex: 0 0 24px; width: 24px; height: 24px; }
+.menu-item span { overflow-wrap: anywhere; }
+.menu-item.rail-menu-item { width: 48px; justify-content: center; padding: 10px; }
+.rail-menu-item span { display: none; }
+.active .icon-img, .menu-item:not(.active) .icon-img-light { display: none; }
+.active .icon-img-light, .icon-img { display: inline; }

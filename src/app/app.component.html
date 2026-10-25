@@ -11,9 +11,11 @@
   <router-outlet></router-outlet>
 
 <!-- Chatbot Icon -->
-<div class="chatbot-icon" (click)="toggleChatbot()">
+<button type="button" class="chatbot-icon" (click)="toggleChatbot()"
+    [attr.aria-label]="isChatbotOpen ? 'Close chat' : 'Open chat'"
+    [attr.aria-expanded]="isChatbotOpen" aria-controls="hrm-chat-panel">
     <mat-icon>{{isChatbotOpen ? 'close' : 'chat'}}</mat-icon>
-</div>
+</button>
 
   <!-- Chatbot Component (conditionally shown) -->
-  <app-chatbot *ngIf="isChatbotOpen"></app-chatbot>
+  <app-chatbot id="hrm-chat-panel" *ngIf="isChatbotOpen"></app-chatbot>

@@ -1,0 +1,5 @@
+:host { display: block; }
+.crud-content { padding-block: 24px; }
+.crud-form { width: 100%; max-width: 760px; }
+.crud-form label { margin: 16px 0 6px; font-weight: 600; }
+.crud-form .d-flex { flex-wrap: wrap; gap: 8px; }

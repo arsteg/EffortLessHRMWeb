@@ -1,14 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GeneralComponent } from './general.component';
+import { SupervisorsComponent } from '../supervisors/supervisors.component';
+import { UiTestingModule } from 'src/testing/ui-testing.module';
+import { useEmployeeSessionFixture } from 'src/testing/session-fixture';
 
 describe('GeneralComponent', () => {
   let component: GeneralComponent;
   let fixture: ComponentFixture<GeneralComponent>;
 
+  beforeEach(useEmployeeSessionFixture);
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GeneralComponent]
+      imports: [UiTestingModule],
+      declarations: [GeneralComponent, SupervisorsComponent]
     })
     .compileComponents();
     

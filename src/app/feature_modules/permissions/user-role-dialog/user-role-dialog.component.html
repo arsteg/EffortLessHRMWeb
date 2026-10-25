@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-between p-1">
     <h4 mat-dialog-title>{{isEdit ? ('permissions.edit_user_role' | translate) : ('permissions.add_user_role' | translate)}}</h4>
-    <button type="button" mat-dialog-close mat-icon-button><mat-icon>close</mat-icon></button>
+    <button type="button" mat-dialog-close mat-icon-button aria-label="Close dialog"><mat-icon>close</mat-icon></button>
 </div>
 <mat-dialog-content>
   <form [formGroup]="userRoleForm">

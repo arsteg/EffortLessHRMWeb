@@ -2,7 +2,7 @@
   <h1 mat-dialog-title>
     {{ 'helpdesk.create_title' | translate }}
   </h1>
-  <button mat-icon-button mat-dialog-close="" class="me-4">
+  <button mat-icon-button mat-dialog-close="" class="me-4" aria-label="Close dialog">
     <mat-icon>close</mat-icon>
   </button>
 </div>
@@ -75,7 +75,7 @@
                 <button mat-icon-button
                   class="btn btn-sm btn-danger position-absolute top-0 end-0"
                   (click)="removeFile(file)"
-                >
+                 aria-label="Close dialog">
                   <mat-icon>close</mat-icon>
                 </button>
               </div>

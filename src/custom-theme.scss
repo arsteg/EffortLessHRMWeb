@@ -26,8 +26,8 @@ $custom-orange: (
   200: #f3be92,
   300: #eda060,
   400: #e98d41,
-  500: #e47112,  // Your base color
-  600: #cf6710,
+  500: #ad4c08,  // Accessible action shade of the existing orange brand
+  600: #873b06,
   contrast: (
     50: #000,
     100: #000,
@@ -39,8 +39,8 @@ $custom-orange: (
   )
 );
 $EffortLessHRMWeb-primary: mat.define-palette($custom-orange, 500, 100, 600);
-$EffortLessHRMWeb-accent: mat.define-palette(mat.$green-palette);
-$EffortLessHRMWeb-warn: mat.define-palette(mat.$red-palette);
+$EffortLessHRMWeb-accent: mat.define-palette(mat.$green-palette, 800);
+$EffortLessHRMWeb-warn: mat.define-palette(mat.$red-palette, 800);
 
 $custom-typography: mat.define-typography-config(
   $font-family: '"Nunito Sans", sans-serif',

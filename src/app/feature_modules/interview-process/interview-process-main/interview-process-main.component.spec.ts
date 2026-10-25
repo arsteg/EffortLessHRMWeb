@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InterviewProcessMainComponent } from './interview-process-main.component';
@@ -8,7 +9,7 @@ describe('InterviewProcessMainComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InterviewProcessMainComponent]
+      imports: [UiTestingModule, InterviewProcessMainComponent]
     })
     .compileComponents();
     

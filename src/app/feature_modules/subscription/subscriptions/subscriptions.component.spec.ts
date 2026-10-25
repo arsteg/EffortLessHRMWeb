@@ -1,3 +1,4 @@
+import { UiTestingModule } from 'src/testing/ui-testing.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SubscriptionsComponent } from './subscriptions.component';
@@ -8,7 +9,7 @@ describe('SubscriptionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SubscriptionsComponent]
+      imports: [UiTestingModule, SubscriptionsComponent]
     })
     .compileComponents();
     

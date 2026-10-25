@@ -33,7 +33,7 @@
 <ng-template #dialogTemplate>
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>{{isEditMode ? 'Update' : 'Create'}} Termination</h1>
-    <button class="me-3" mat-icon-button mat-dialog-close (click)="closeDialog()">
+    <button class="me-3" mat-icon-button mat-dialog-close (click)="closeDialog()" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -122,7 +122,7 @@
 <ng-template #updateStatusResignation>
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>Confirm Status Change</h1>
-    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()">
+    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -138,7 +138,7 @@
 <ng-template #appealDialog>
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>{{ 'separation.appeal_request' | translate }}</h1>
-    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()">
+    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -168,7 +168,7 @@
 <ng-template #reviewAppealDialog>
   <div class="d-flex align-items-center justify-content-between">
     <h1 mat-dialog-title>{{ 'separation.appeal_heading' | translate }}</h1>
-    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()">
+    <button type="button" mat-icon-button mat-dialog-close (click)="closeDialog()" aria-label="Close dialog">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -214,5 +214,3 @@
     </form>
   </mat-dialog-content>
 </ng-template>
-  
-  
