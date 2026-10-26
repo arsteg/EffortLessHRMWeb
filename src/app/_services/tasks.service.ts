@@ -29,8 +29,11 @@ export class TasksService {
     return localStorage.getItem('jwtToken');
   }
 
-  getAllTasks(skip: string, next: string, search?: string): Observable<Task[]> {
-    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklist`, { skip, next, search }, this.httpOptions);
+  // TM-019: status/priority are sent to the server so pagination and the
+  // total count stay correct for a filtered view, instead of only
+  // hiding/showing rows already present on the current page client-side.
+  getAllTasks(skip: string, next: string, search?: string, status?: string[], priority?: string[]): Observable<Task[]> {
+    return this.http.post<Task[]>(`${this.apiUrl}/task/tasklist`, { skip, next, search, status, priority }, this.httpOptions);
   }
 
   getTasklistbyTeam(skip: string, next: string, search?: string): Observable<Task[]> {
@@ -85,8 +88,8 @@ export class TasksService {
     return this.http.put<Task>(`${environment.apiUrlDotNet}/task/update/${id}`, task, this.httpOptions);
   }
 
-  getTaskByUser(userId: string, skip: string, next: string, search?: string): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, { userId, skip, next, search }, this.httpOptions);
+  getTaskByUser(userId: string, skip: string, next: string, search?: string, status?: string[], priority?: string[]): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrlDotNet}/task/tasklistbyuser`, { userId, skip, next, search, status, priority }, this.httpOptions);
   }
 
   updateTag(tag: Tag): Observable<Tag> {

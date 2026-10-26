@@ -55,6 +55,7 @@ import { environment } from '../environments/environment';
 import { UserProfileComponent } from './feature_modules/manage/users/user-profile/user-profile.component';
 import { SubscriptionComponent } from './layouts/subscription/subscription.component';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
+import { AuthTokenInterceptor } from './_helpers/auth-token.interceptor';
 import { ChatbotComponent } from './chat/chatbot/chatbot.component';
 import { EffortlessTranslateModule } from './translate/translate.module';
 import { HelpDeskComponent } from './feature_modules/helpdesk/help-desk/help-desk.component';
@@ -141,6 +142,7 @@ const config: SocketIoConfig = { url: environment.webSocketUrl, options: {} };
     DatePipe,
     HttpClient,
     provideHttpClient(withInterceptorsFromDi()),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthTokenInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],

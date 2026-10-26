@@ -63,6 +63,14 @@ export class TasksComponent implements OnInit {
     { name: 'Closed', faclass: "fa-window-close-o", isChecked: true }
   ];
 
+  // TM-019: send the checked statuses to the server so pagination/counts
+  // stay correct for a filtered view. Omit the filter entirely when every
+  // status is checked (the default) — that's equivalent to "no filter".
+  get selectedStatusFilter(): string[] | undefined {
+    const checked = this.statusList.filter(item => item.isChecked).map(item => item.name);
+    return checked.length > 0 && checked.length < this.statusList.length ? checked : undefined;
+  }
+
   unKnownImage = "assets/images/icon-unknown.svg";
 
   showPriorityDropdown = false;
@@ -127,6 +135,7 @@ export class TasksComponent implements OnInit {
       title: [''],
       startDate: [moment().format('YYYY-MM-DD')],
       endDate: [moment().format('YYYY-MM-DD')],
+      dueDate: [''], // TM-014: distinct hard deadline, separate from endDate
       description: [''],
       estimate: [0],
       comment: ['Task Created'],
@@ -223,6 +232,11 @@ export class TasksComponent implements OnInit {
       this.statusList.forEach(item => {
         item.isChecked = value.includes(item.name);
       });
+      // TM-019: status is now a server-side filter, so changing it has to
+      // re-fetch (previously this only toggled client-side visibility of
+      // rows already present on the current, unfiltered page).
+      this.skip = '0';
+      this.getTasks();
     });
 
     this.searchSubject.pipe(
@@ -251,13 +265,13 @@ export class TasksComponent implements OnInit {
     if (!isAllProjects && !isAllUsers) {
       return this.authService.getUserTaskListByProject(this.userId, this.projectId, this.skip, this.next, this.searchText);
     } else if (!isAllUsers) {
-      return this.tasksService.getTaskByUser(this.userId, this.skip, this.next, this.searchText);
+      return this.tasksService.getTaskByUser(this.userId, this.skip, this.next, this.searchText, this.selectedStatusFilter);
     } else if (!isAllProjects) {
       return this.tasksService.getTasksByProjectId(this.projectId, this.skip, this.next, this.searchText);
     } else {
       const isAdmin = (this.view === 'admin') && (this.role?.toLowerCase() === 'admin' || this.role == null) || (this.role?.toLowerCase() === 'admin' && this.view == null);
       if (isAdmin) {
-        return this.tasksService.getAllTasks(this.skip, this.next, this.searchText);
+        return this.tasksService.getAllTasks(this.skip, this.next, this.searchText, this.selectedStatusFilter);
       } else {
         return this.tasksService.getTasklistbyTeam(this.skip, this.next, this.searchText);
       }
@@ -307,7 +321,7 @@ export class TasksComponent implements OnInit {
 
   getCurrentUsersTasks() {
     if (this.currentProfile.id) {
-      this.tasksService.getTaskByUser(this.currentProfile.id, this.skip, this.next, this.searchText).subscribe(response => {
+      this.tasksService.getTaskByUser(this.currentProfile.id, this.skip, this.next, this.searchText, this.selectedStatusFilter).subscribe(response => {
         this.tasks = response && response.data && response.data['taskList'];
         this.totalRecords = response && response.data;
         this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;
@@ -389,7 +403,7 @@ export class TasksComponent implements OnInit {
   }
 
   async listAllTasks() {
-    this.tasksService.getAllTasks(this.skip, this.next, this.searchText).subscribe((response: any) => {
+    this.tasksService.getAllTasks(this.skip, this.next, this.searchText, this.selectedStatusFilter).subscribe((response: any) => {
 
       // this.tasksService.getTasklistbyTeam(this.skip, this.next).subscribe((response: any) => {
       this.totalRecords = response && response.data
@@ -501,6 +515,7 @@ export class TasksComponent implements OnInit {
         estimate: this.addForm.value.estimate,
         startDate: this.addForm.value.startDate,
         endDate: this.addForm.value.endDate,
+        dueDate: this.addForm.value.dueDate || undefined,
         description: this.addForm.value?.description,
         comment: this.addForm.value.comment,
         isSubTask: false,
@@ -673,10 +688,6 @@ export class TasksComponent implements OnInit {
     }
 
   deleteTask() {
-    if (!this.selectedTask.project) {
-      this.toast.error('Task Cannot be Deleted: Please update Project', 'Error!');
-      return;
-    }
     this.tasksService.deleteTask(this.selectedTask._id).subscribe(response => {
       const index = this.tasks.findIndex(task => task.id === this.selectedTask._id);
       if (index !== -1) {
@@ -715,7 +726,7 @@ export class TasksComponent implements OnInit {
   }
 
   async getTaskByIds() {
-    this.tasksService.getTaskByUser(this.userId, this.skip, this.next, this.searchText).subscribe(response => {
+    this.tasksService.getTaskByUser(this.userId, this.skip, this.next, this.searchText, this.selectedStatusFilter).subscribe(response => {
       this.tasks = response && response.data && response.data['taskList'];
       this.totalRecords = response && response.data
       this.currentPage = Math.floor(parseInt(this.skip) / parseInt(this.next)) + 1;

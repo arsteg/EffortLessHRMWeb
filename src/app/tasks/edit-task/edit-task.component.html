@@ -246,6 +246,17 @@
                                                     (ngModelChange)="tasks?.data?.task && (tasks.data.task.endDate = $event)"
                                                     required>
                                             </div>
+                                            <div class=" ms-2">
+                                                <span class="text-muted">
+                                                    Due Date
+                                                    <span *ngIf="tasks?.data?.task?.isOverdue" class="badge bg-danger ms-1">Overdue</span>
+                                                </span>
+                                                <input placeholder="YYYY-MM-DD" class="form-control"
+                                                    #dueDatePicker="bsDatepicker" bsDatepicker
+                                                    [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                                    formControlName="dueDate" [ngModel]="tasks?.data?.task?.dueDate"
+                                                    (ngModelChange)="tasks?.data?.task && (tasks.data.task.dueDate = $event)">
+                                            </div>
                                         </div>
 
                                         <div class="mx-3 mt-2">

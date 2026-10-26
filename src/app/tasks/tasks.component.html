@@ -126,7 +126,10 @@
                             {{task?.taskName| titlecase}}</td>
 
                         <!-- due date -->
-                        <td class="pe-lg-1 pe-4">{{task?.endDate | date:'mediumDate'}}</td>
+                        <td class="pe-lg-1 pe-4" [class.text-danger]="task?.isOverdue" [class.fw-bold]="task?.isOverdue">
+                            {{(task?.dueDate || task?.endDate) | date:'mediumDate'}}
+                            <span *ngIf="task?.isOverdue" class="badge bg-danger ms-1" title="Past due date">Overdue</span>
+                        </td>
 
                         <!-- priority task -->
                         <td class="pe-lg-1 pe-4"
@@ -283,6 +286,14 @@
                                     </li>
                                 </ul> -->
                             </div>
+                        </td>
+                    </tr>
+                    <tr *ngIf="tasks != null && tasks.length === 0">
+                        <td colspan="9" class="text-center text-muted py-5">
+                            <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                            <p class="mb-0 mt-2">
+                                {{ (searchText || selectedStatusFilter) ? 'No tasks match your search/filters.' : 'No tasks yet — create your first task.' }}
+                            </p>
                         </td>
                     </tr>
                 </tbody>
@@ -790,15 +801,28 @@
         Start date should not be greater than end date.
         </div>
 
+        <div class="form-group col-md-6 mt-2">
+            <mat-form-field class="w-100">
+                <mat-label>Due Date (optional)</mat-label>
+                <input matInput [matDatepicker]="dueDatePicker" formControlName="dueDate" placeholder="YYYY-MM-DD">
+                <mat-datepicker-toggle matSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #dueDatePicker></mat-datepicker>
+            </mat-form-field>
+        </div>
+
         <div class="form-group col-md-6">
         <mat-form-field class="w-100">
             <mat-label>Priority</mat-label>
             <mat-select formControlName="priority">
             <mat-option value="">Select Priority</mat-option>
-            <mat-option value="Low">Low</mat-option>
-            <mat-option value="Normal">Normal</mat-option>
+            <!-- TM-008/009: canonical priority vocabulary (Urgent/High/Normal),
+                 matching the icon-equipped priorityList used elsewhere in this
+                 component and the API's Task_Priorities enum. This dropdown
+                 previously offered Low/Normal/High/Highest, a third,
+                 incompatible priority scale that existed only in this form. -->
+            <mat-option value="Urgent">Urgent</mat-option>
             <mat-option value="High">High</mat-option>
-            <mat-option value="Highest">Highest</mat-option>
+            <mat-option value="Normal">Normal</mat-option>
             </mat-select>
         </mat-form-field>
         </div>
@@ -962,15 +986,26 @@
                             <div class="d-flex row">
                                 <div class="col-6">
                                     <div class="row mt-3">
+                                        <label for="dueDate" class="text-start">Due Date (optional)</label>
+                                    </div>
+                                    <input placeholder="YYYY-MM-DD" class="form-control mb-3"
+                                        #datepickerYMD="bsDatepicker" bsDatepicker
+                                        [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD' }"
+                                        formControlName="dueDate">
+                                </div>
+                            </div>
+
+                            <div class="d-flex row">
+                                <div class="col-6">
+                                    <div class="row mt-3">
                                         <label for="priority" class="text-start">Priority</label>
                                     </div>
 
                                     <select class="custom-select mb-3 p-2" formControlName="priority" ngModel>
                                         <option value="">Select Priority</option>
-                                        <option value="Low">Low</option>
-                                        <option value="Normal">Normal</option>
+                                        <option value="Urgent">Urgent</option>
                                         <option value="High">High</option>
-                                        <option value="Highest">Highest</option>
+                                        <option value="Normal">Normal</option>
                                     </select>
 
                                 </div>

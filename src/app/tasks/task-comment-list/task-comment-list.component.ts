@@ -5,6 +5,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { CommonService } from 'src/app/_services/common.Service';
 import { attachments, commentAttachment } from '../task';
 import { ActivatedRoute } from '@angular/router';
+import { readFilesAsAttachments } from 'src/app/util/file-attachment-utils';
 @Component({
   selector: 'app-task-comment-list',
   templateUrl: './task-comment-list.component.html',
@@ -106,61 +107,45 @@ export class TaskCommentListComponent implements OnInit {
     comment.taskAttachments = taskAttachments;
 
     this.taskService.addComments(comment).subscribe(response => {
-      this.newCommentId = response.data.id
-      this.comments.push(response);
+      this.newCommentId = response.data.id;
+      // Push the actual comment (response.data), not the whole {status,
+      // data} response wrapper — pushing `response` rendered a malformed
+      // entry in the list until the ngOnInit() refetch below corrected it.
+      this.comments.push(response.data);
       this.commentsArray = [...this.comments];
-      this.commentAdded.emit(response);
+      this.commentAdded.emit(response.data);
       this.newComment = '';
       this.showEditor = false;
       this.ngOnInit();
 
-      if (taskAttachments) {
-        const attachments: attachments[] = [];
-
-        for (let i = 0; i < this.selectedFiles.length; i++) {
-          const file: File = this.selectedFiles[i];
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => {
-            const base64String = reader.result.toString().split(',')[1];
-            const fileSize = file.size; // size of the file in bytes
-            const fileType = file.type; // type of the file (e.g. image/png)
-            const fileNameParts = file.name.split('.');
-            const extention = fileNameParts[fileNameParts.length - 1];
-
-            attachments.push({
-              attachmentName: file.name,
-              attachmentType: fileType,
-              attachmentSize: fileSize,
-              extention: extention,
-              file: base64String
-            });
-
-            if (i === this.selectedFiles.length - 1) {
-              const commentAttachment: commentAttachment = {
-                taskId: this.tasks?.task?.id,
-                comment: this.newCommentId,
-                taskAttachments: attachments
-              };
-
-              this.taskService.addTaskAttachment(commentAttachment).subscribe((response) => {
-                this.commentAttachment = response.data['taskAttachmentList']
-                this.selectedFiles = []
-                this.showEditor = false;
-                this.ngOnInit();
-              },
-                (error) => {
-                  console.error('Error creating task attachment:', error);
-                }
-              );
-            }
+      if (this.selectedFiles.length > 0) {
+        // TM-022: wait for ALL files to finish reading (Promise.all) rather
+        // than assuming the last array index is the last to finish —
+        // FileReader callbacks for different files can resolve out of
+        // order, which previously could silently drop attachments.
+        readFilesAsAttachments(this.selectedFiles).then((attachmentsList) => {
+          const commentAttachment: commentAttachment = {
+            taskId: this.tasks?.task?.id,
+            comment: this.newCommentId,
+            taskAttachments: attachmentsList
           };
-        }
 
+          this.taskService.addTaskAttachment(commentAttachment).subscribe((response) => {
+            this.commentAttachment = response.data['taskAttachmentList']
+            this.selectedFiles = []
+            this.showEditor = false;
+            this.ngOnInit();
+          },
+            (error) => {
+              console.error('Error creating task attachment:', error);
+            }
+          );
+        }).catch((error) => {
+          console.error('Error reading selected files:', error);
+        });
       }
-      err => {
-        console.log("Error creating task!");
-      }
+    }, (err) => {
+      console.log("Error creating comment!", err);
     });
   }
 
