@@ -6,6 +6,8 @@ export class Task {
   estimate: string;
   startDate: string;
   endDate: string;
+  dueDate?: string;
+  isOverdue?: boolean;
   description: string;
   comment: string;
   isSubTask: boolean;

@@ -13,6 +13,7 @@ import { ProjectService } from 'src/app/_services/project.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { takeUntil, debounceTime, distinctUntilChanged, tap, switchMap } from 'rxjs/operators';
+import { readFilesAsAttachments } from 'src/app/util/file-attachment-utils';
 
 @Component({
   providers: [DatePipe],
@@ -110,6 +111,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       taskName: ['', Validators.required],
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
+      dueDate: [''], // TM-014: optional hard deadline, distinct from endDate
       description: ['', Validators.required],
       comment: ['', Validators.required],
       priority: ['', Validators.required],
@@ -207,6 +209,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
           taskName: this.tasks.data.task.taskName,
           startDate: this.tasks.data.task.startDate,
           endDate: this.tasks.data.task.endDate,
+          dueDate: this.tasks.data.task.dueDate,
           description: this.tasks.data.task.description,
           comment: this.tasks.data.task.comment,
           priority: this.tasks.data.task.priority,
@@ -357,7 +360,8 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       title: this.updateForm.value.taskName,
       status: this.currentTaskProject.status,
       comment: this.updateForm.value.comment,
-      endDate: this.updateForm.value.endDate
+      endDate: this.updateForm.value.endDate,
+      dueDate: this.updateForm.value.dueDate
     }
     this.tasksService.updateTask(this.tasks.data.task.id, updateTask).pipe(takeUntil(this.destroy$)).subscribe(response => {
       this.showEditor = false;
@@ -448,32 +452,6 @@ export class EditTaskComponent implements OnInit, OnDestroy {
     });
   }
 
-  private convertFilesToAttachments(files: File[], callback: (attachmentsList: attachments[]) => void): void {
-    const attachmentsList: attachments[] = [];
-    for (let i = 0; i < files.length; i++) {
-      const file: File = files[i];
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = reader.result.toString().split(',')[1];
-        const fileSize = file.size;
-        const fileType = file.type;
-        const fileNameParts = file.name.split('.');
-        const extention = fileNameParts[fileNameParts.length - 1];
-        attachmentsList.push({
-          attachmentName: file.name,
-          attachmentType: fileType,
-          attachmentSize: fileSize,
-          extention: extention,
-          file: base64String
-        });
-        if (i === files.length - 1) {
-          callback(attachmentsList);
-        }
-      };
-    }
-  }
-
   onFileSelect(event) {
     const files: FileList = event.target.files;
     if (files) {
@@ -485,7 +463,10 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.convertFilesToAttachments(this.selectedFiles, (attachmentsList) => {
+    // TM-022: readFilesAsAttachments waits for ALL files to finish reading
+    // (Promise.all), not just whichever happens to be the last index to
+    // fire its onload callback — see util/file-attachment-utils.ts.
+    readFilesAsAttachments(this.selectedFiles).then((attachmentsList) => {
       const taskAttachment: taskAttachments = {
         taskId: this.taskId,
         taskAttachments: attachmentsList
@@ -497,6 +478,8 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       }, (error) => {
         console.error('Error creating task attachment:', error);
       });
+    }).catch((error) => {
+      console.error('Error reading selected files:', error);
     });
   }
 
@@ -546,8 +529,12 @@ export class EditTaskComponent implements OnInit, OnDestroy {
   }
 
   onSub() {
-    const id: '' = this.currentUser.id
-    const newTask = {
+    // TM-021: adding a subtask to a parent that has no assignee yet used to
+    // throw here (`newTaskUserList[0]` was undefined), silently failing the
+    // "Add Subtask" action with no useful message. Default to unassigned
+    // instead of assuming an assignee exists.
+    const parentAssigneeId: string | undefined = this.tasks?.data?.newTaskUserList?.[0]?.user?._id;
+    const newTask: any = {
       _id: '',
       parentTask: this.taskId,
       taskName: this.addForm.value.taskName,
@@ -559,11 +546,13 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       comment: 'Child Task',
       isSubTask: true,
       priority: this.addForm.value.priority,
-      user: this.tasks.data.newTaskUserList[0].user._id,
       status: "ToDo",
       project: this.currentTaskProject?.project?.id,
       taskAttachments: []
     };
+    if (parentAssigneeId) {
+      newTask.user = parentAssigneeId;
+    }
     const taskAttachmentsList: taskAttachments[] = [];
     newTask.taskAttachments = taskAttachmentsList;
     console.log(newTask)
@@ -573,7 +562,7 @@ export class EditTaskComponent implements OnInit, OnDestroy {
       this.addForm.reset();
       this.refreshData();
       if (this.selectedFile.length > 0) {
-        this.convertFilesToAttachments(this.selectedFile, (attachmentsList) => {
+        readFilesAsAttachments(this.selectedFile).then((attachmentsList) => {
           const taskAttachment: taskAttachments = {
             taskId: this.task.data.newTask.id,
             taskAttachments: attachmentsList
@@ -585,6 +574,8 @@ export class EditTaskComponent implements OnInit, OnDestroy {
           }, (error) => {
             console.error('Error creating task attachment:', error);
           });
+        }).catch((error) => {
+          console.error('Error reading selected files:', error);
         });
       }
     }, err => {
