@@ -139,7 +139,7 @@ export class TasksComponent implements OnInit {
       description: [''],
       estimate: [0],
       comment: ['Task Created'],
-      priority: [''],
+      priority: ['Normal'],
       user: ['', Validators.required],
       project: ['', Validators.required],
       taskAttachments: [this.attachments]
@@ -519,7 +519,7 @@ export class TasksComponent implements OnInit {
         description: this.addForm.value?.description,
         comment: this.addForm.value.comment,
         isSubTask: false,
-        priority: this.addForm.value.priority,
+        priority: this.addForm.value.priority || 'Normal',
         user: this.addForm.value.user,
         status: "ToDo",
         project: this.addForm.value.project,
@@ -900,7 +900,7 @@ export class TasksComponent implements OnInit {
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
-      priority: this.createTask_Board.value.priority,
+      priority: this.createTask_Board.value.priority || 'Normal',
       user: this.view === 'admin' ? null : id,
       status: 'ToDo',
       project: this.createTask_Board.value.project
@@ -923,7 +923,7 @@ export class TasksComponent implements OnInit {
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
-      priority: this.createTask_Board.value.priority,
+      priority: this.createTask_Board.value.priority || 'Normal',
       user: this.view === 'admin' ? null : id,
       status: 'In Progress',
       project: this.createTask_Board.value.project
@@ -946,7 +946,7 @@ export class TasksComponent implements OnInit {
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
-      priority: this.createTask_Board.value.priority,
+      priority: this.createTask_Board.value.priority || 'Normal',
       user: this.view === 'admin' ? null : id,
       status: 'Done',
       project: this.createTask_Board.value.project
@@ -969,7 +969,7 @@ export class TasksComponent implements OnInit {
       title: this.createTask_Board.value.taskName,
       description: '',
       comment: '',
-      priority: this.createTask_Board.value.priority,
+      priority: this.createTask_Board.value.priority || 'Normal',
       user: this.view === 'admin' ? null : id,
       status: 'Closed',
       project: this.createTask_Board.value.project
@@ -998,7 +998,7 @@ export class TasksComponent implements OnInit {
   }
 
   removePriority() {
-    this.newTask.priority = null;
+    this.newTask.priority = 'Normal';
   }
 
   getTasks() {
